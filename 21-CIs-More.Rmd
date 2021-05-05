@@ -1,0 +1,321 @@
+
+# More about forming CIs {#AboutCIs}
+
+```{block2, type="rmdobjectives"}
+So far,
+you have learnt to
+ask a RQ, 
+identify different ways of obtaining data,
+design the study,
+collect the data
+describe the data,
+summarise data graphically and numerically,
+and
+understand the tools of inference.
+
+**In this chapter**,
+you will learn more about *confidence intervals*.
+```
+
+
+
+
+
+```{r echo=FALSE, fig.cap="", fig.align="center", fig.width=3, out.width="35%"}
+SixSteps(5, "Confidence intervals")
+```
+
+
+## General comments
+
+The previous chapter discussed
+forming a confidence interval (CI) for one proportion.
+We will also study CIs in other contexts too.
+
+The following applies to *all* CIs:
+
+* CIs are formed for the unknown *population* parameter 
+  (such as the population proportion $p$),
+  based on a *sample* statistic 
+  (such as the sample proportion $\hat{p}$).
+* CIs give an interval in which the sample statistic 
+  is likely to lie, 
+  over repeated sampling.
+* Loosely speaking,
+  this is usually interpreted as the CIs giving an interval 
+  which is likely to straddle the value of the 
+  unknown *population* quantity.
+  That is,
+  the CI gives an interval of plausible values 
+  of the population parameter 
+  that may have produced the observed sample statistic.
+* Most CIs have the form
+   \[
+      \text{Statistic} \pm \overbrace{(\text{Multiplier} \times \text{standard error})}^{\text{Called the `margin of error'}}.
+   \] 
+* The *multiplier* is *approximately* 2 
+  for a 95% CI 
+  (from the [68--95--99.7 rule](#def:EmpiricalRule)).
+* The *margin of error* is 
+  $(\text{Multiplier} \times \text{standard error})$.
+* The statistical conditions 
+  should always be checked to see if the CI is 
+  (at least approximately) statistically valid.
+
+
+
+
+
+## Validity and confidence intervals {#ValidityCIs}
+
+When constructing confidence intervals,
+certain *statistical validity conditions* must be true;
+these ensure that the sampling distribution is sufficiently
+close to a normal distribution for the
+[68--95--99.7 rule](#def:EmpiricalRule) rule to apply.
+
+If these conditions are *not* met,
+the sampling distribution may not be normally distributed,
+so the 68--95--99.7 rule
+(on which the CI is based) 
+maybe inappropriate, 
+so the CI itself may also be inappropriate.
+
+In addition to the statistical validity condition,
+the *internal validity* and 
+*external validity* of the study should be discussed also
+(Fig.&nbsp;\@ref(fig:ValiditiesCI)).
+
+Regarding *external validity*,
+all the CI computations in this book 
+assume a *simple random sample*.
+If the sample is from a [*random* sampling method](#RandomSamples), 
+but not from a [*simple random sample*](#SRS),
+then methods exist for producing CIs that are externally valid,
+but are more complicated than those described in this book.
+
+If the sample is a [non-random sample](#NonRandomSamples),
+then the CI may be reasonable for the quite specific population 
+that *is* represented by the sample;
+however,
+the sample probably does not represent 
+the more general population that is probably intended.
+
+*Externally validity* requires that 
+a study is also internally valid.
+*Internal validity* can only be discussed
+if details are known about the study design.
+
+
+```{r ValiditiesCI, echo=FALSE, fig.cap="Three types of validities for studies.", fig.align="center", fig.height=4, out.width="90%"}
+par( mar=c(0.15, 0.15, 0.15, 0.15))
+openplotmat()
+
+pos <- array(NA, dim=c(9, 2))
+pos[1, ] <- c(0.30, 0.90) # External
+pos[2, ] <- c(0.60, 0.90) # Internal
+pos[3, ] <- c(0.90, 0.90)   # Statistical
+pos[4, ] <- c(0.30, 0.50)   # EX: conditions
+pos[5, ] <- c(0.60, 0.50)   # IN: conditions
+pos[6, ] <- c(0.90, 0.50)   # ST: conditions
+pos[7, ] <- c(0.30, 0.08)   # EX: upshot
+pos[8, ] <- c(0.60, 0.08)   # IN: upshot
+pos[9, ] <- c(0.90, 0.08)   # ST: upshot
+
+textplain( mid = c(0.13, pos[1, 2]),
+           lab = "Type:",
+           adj = c(0.5, 1))
+textplain( mid = c(0.13, pos[4, 2]),
+           lab = "Condition:",
+           adj = c(0.5, 1))
+textplain( mid = c(0.13, pos[7, 2]),
+           lab = "Implication:",
+           adj = c(0.5, 1))
+
+
+straightarrow(from = pos[1, ], to = pos[4, ], 
+              lty = 1, 
+              lcol = "black",
+              lwd = 2)
+straightarrow(from = pos[2, ], to = pos[5, ], 
+              lwd = 2,
+              lcol = "black",
+              lty = 1)
+straightarrow(from = pos[3, ], to = pos[6, ], 
+              lwd = 2,
+              lcol = "black",
+              lty = 1)
+
+
+straightarrow(from = pos[4, ], to = pos[7, ], 
+              lty = 3, 
+              lcol = "black",
+              lwd = 2)
+straightarrow(from = pos[5, ], to = pos[8, ], 
+              lwd = 3,
+              lcol = "black",
+              lty = 3)
+straightarrow(from = pos[6, ], to = pos[9, ], 
+              lwd = 2,
+              lcol = "black",
+              lty = 3)
+
+
+#straightarrow(from = pos[1, ], to = pos[2, ], 
+#              lwd = 2,
+#              code = 3,
+#              lcol = "black",
+#              lty = 3)
+
+
+textrect( pos[1, ], 
+           lab = "External\n validity", 
+           radx = 0.09, 
+           rady = 0.125, 
+           shadow.size = 0,
+           box.col = "aliceblue",
+           lcol = "aliceblue")
+textrect( pos[2, ], 
+           lab = "Internal\n validity", 
+           radx = 0.09, 
+           rady = 0.125, 
+           shadow.size = 0,
+           box.col = "aliceblue",
+           lcol = "aliceblue")
+textrect( pos[3, ], 
+           lab = "Statistical\n validity", 
+           radx = 0.09, 
+           rady = 0.125, 
+           shadow.size = 0,
+           box.col = "aliceblue",
+           lcol = "aliceblue")
+
+
+
+
+textrect( pos[4, ], 
+           lab = "Random\n samples", 
+           radx = 0.09, 
+           rady = 0.125, 
+           shadow.size = 0,
+           box.col = "darkseagreen1",
+           lcol = "darkseagreen1")
+textrect( pos[5, ], 
+           lab = "Study is\n well-designed", 
+           radx = 0.09, 
+           rady = 0.125, 
+           shadow.size = 0,
+           box.col = "darkseagreen1",
+           lcol = "darkseagreen1")
+textrect( pos[6, ], 
+           lab = "Specific\n conditions", 
+           radx = 0.09, 
+           rady = 0.125, 
+           shadow.size = 0,
+           box.col = "darkseagreen1",
+           lcol = "darkseagreen1")
+
+
+
+textrect( pos[7, ], 
+           lab = "Sample\n represents\n population", 
+           radx = 0.09, 
+           rady = 0.150, 
+           adj = c(0.5, 0.25),
+           shadow.size = 0,
+           box.col = "mistyrose",
+           lcol = "mistyrose")
+textrect( pos[8, ], 
+           lab = c("Within-sample\n conclusions\n are sound"), 
+           radx = 0.09, 
+           rady = 0.150, 
+           adj = c(0.5, 0.25),
+           shadow.size = 0,
+           box.col = "mistyrose",
+           lcol = "mistyrose")
+textrect( pos[9, ], 
+           lab = "Statistical\n methods\n appropriate", 
+           radx = 0.10, 
+           rady = 0.150, 
+           adj = c(0.5, 0.25),
+           shadow.size = 0,
+           box.col = "mistyrose",
+           lcol = "mistyrose")
+
+```
+
+
+In addition,
+CIs also require that the sample size is less than 10% of the population size;
+however this is almost always the case.
+
+
+
+
+
+## Quick revision exercises {#Chap21-QuickReview}
+
+1. True or false: CIs always have 95% confidence.  
+`r if( knitr::is_html_output() ) {torf(answer = FALSE )}`
+1. True or false: The statistical validity conditions concern *external* validity.  
+`r if( knitr::is_html_output() ) {torf(answer = FALSE )}`
+1. True or false: CIs give intervals in which the value of a *population* parameter will fall.  
+`r if( knitr::is_html_output() ) {torf(answer = FALSE )}`
+1. True or false: All other things being equal, a 95% CI is *wider* than a 90% CI.  
+`r if( knitr::is_html_output() ) {torf(answer = TRUE )}`
+1. The multiplier times the standard error is called the   
+`r if( knitr::is_html_output() ) {mcq( c(
+           "CI",
+  answer = "margin of error",
+           "sampling variation"
+) )}`
+1. A CI gives an interval in which we are fairly sure that the value of the
+`r if( knitr::is_html_output() ) {mcq( c(
+           "sample statistic",
+  answer = "population parameter",
+           "population sample"
+) )}`
+is within.
+
+
+
+
+
+
+
+## Exercises {#AboutCIsExercises}
+
+Selected answers are available in
+Sect.&nbsp;\@ref(AboutCIsAnswer).
+
+
+```{exercise AboutCIsInterpretation}
+A researcher was computing a 95% CI for a single proportion
+to estimate the proportion of trees with apple scabe
+[@hirst1962epidemiology],
+and found that $\hat{p} = 0.314$ and $\text{s.e.}(\hat{p}) = 0.091$.
+
+What is wrong with the following conclusion that the researcher made?
+
+> The approximate 95% CI for the sample proportion is between
+> 0.223 and 0.405.
+
+```
+
+
+
+```{exercise AboutCIsInterpretation2}
+A researcher was computing a 95% CI for a single proportion
+to estimate the proportion of trees with apple scabe
+[@hirst1962epidemiology],
+and found that $\hat{p} = 0.314$ and $\text{s.e.}(\hat{p}) = 0.091$.
+
+What is wrong with the following conclusion that the researcher made?
+
+> This CI means we are 95% confident 
+> that between 22.3 and 40.5 trees are infected with apple scab.
+
+```
+
+
+

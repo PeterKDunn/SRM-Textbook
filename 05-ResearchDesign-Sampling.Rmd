@@ -1,0 +1,3215 @@
+
+# External validity: Sampling {#Sampling}
+
+
+```{block2, type="rmdobjectives"}
+So far,
+you have learnt to
+ask a RQ,
+identify different ways of obtaining data,
+and design the study.
+
+**In this chapter**,
+you will learn how to obtain the sample to study.
+You will learn to:
+
+* distinguish, and explain, precision and accuracy.
+* distinguish between random and non-random sampling.
+* select random samples.
+* identify, describe why random samples are preferred over non-random samples.
+* identify, describe and use simple random sampling.
+* identify, describe and use systematic sampling.
+* identify, describe and use stratified  sampling.
+* identify, describe and use cluster sampling.
+* identify, describe and use multistage sampling.
+* identify ways of obtaining samples that are more likely to be representative samples.
+
+```
+
+
+
+```{r echo=FALSE, fig.cap="", fig.align="center", fig.width=3, out.width="35%"}
+SixSteps(2, "Selecting samples")
+```
+
+
+
+
+
+## The idea of sampling {#IdeaOfSampling}
+
+A RQ implies that every member of the population should be studied
+(the **P** in **P**OCI stand for 'population').
+However,
+being able to do so is very rare
+because of cost, time, ethics, logistics or practicality.
+Hence,
+a subset of the population (a *sample*) is almost always studied.
+
+A sample consists of some *individuals* 
+(or *cases*, or (if the individuals are people) *subjects*) 
+from the population.
+The *purpose* of a sample is to *approximate* the population.
+
+A study is [*externally valid*](#def:ExternalValidity) 
+if the results can be generalised to other groups in the population, 
+apart from the sample studied.
+This is only possible if the sample is chosen to well-represent the whole population.
+
+However,
+since a sample doesn't include every member of the population,
+conclusions made from samples
+cannot be certain to apply to the whole population.
+
+
+```{block2, type="rmdimportant"}
+In research, the goal is to learn about the *population*,
+but only a *sample* can be studied.
+
+This book is essentially about how to learn about a population
+based on an imperfect sample.
+```
+
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "25%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/pexels-gerd-altmann-23180.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+```{example name="Samples"}
+A study
+(based on @data:aspirin:headaches)
+of the effect of aspirin in treating headaches
+cannot possible use every single human alive who might one day wish to take aspirin.
+
+Not only would this be prohibitively expensive, time-consuming, and impractical,
+but such a study would not even use those humans who had not been born yet
+who might use aspirin.
+(That is,
+using the whole target population is *impossible*.)
+A *sample* must be used.
+```
+
+
+Having seen that using a sample is necessary,
+other issues are raised:
+
+* *How* can we learn something useful about the *whole* population 
+  if only *some* of that population is studied?
+* *Which* individuals should be included in the sample?
+* *How many* individuals should be included in the sample be?
+
+The last issue must be left until later,
+after learning more about the implications
+of studying a sample rather than a population.
+
+Using a sample instead of the entire population presents challenges.
+*Every sample is likely to be a bit different*,
+so what is learnt from a sample depends 
+on which individuals happen to be present in the sample being used.
+This is called *sampling variation*.\index{sampling variation}
+That is,
+each sample produced different data,
+and so may lead to different answers to the RQ.
+
+This is the challenge of research:
+*How to make decisions about populations, 
+using an imperfect sample information.*
+Perhaps surprisingly,
+*lots* can be learnt about the population
+if we approach the task of selecting a sample correctly.
+
+
+```{block2, type="rmdimportant"}
+Almost always,
+*samples* are studied, not *populations*.
+
+*Every sample is likely to be different*,
+and hence the *results from every sample are likely to be different*.
+This is called *sampling variation*.
+
+While
+*we can never be certain* about the conclusions from the sample,
+special tools can be used to help make decisions 
+about the *population* from a *sample*.
+```
+
+`r if (knitr::is_latex_output()) {
+   'Consider a fair pack of cards, where 50% of cards are red. Figure \\@ref(fig:SampleCardsRed) shows five samples of 10 cards, and the percentage of red cards is not the same in every sample (and not necessarily 50%).'
+} else {
+   'The animation below shows how the estimates calculated from a sample vary from sample to sample.  We know that 50% of cards in a fair pack are red, but each sample of 10 cards can produced a different percentage of red cards (and does not always produce an estimate of 50%).'
+}`
+
+
+
+```{r echo=FALSE}
+library(png)
+```
+
+
+```{r DealCards, echo=FALSE, animation.hook="gifski", cache=FALSE, interval=0.20}
+library(png)
+
+showCardSampling <- function(i, numSamples, numCardsPerSample){
+
+    # i  is the card number
+  # FOR THIS VALUE OF i, DETERMINE WHERE TO STOP:
+  doThisManySamples <- ( (i - 1) %/% numCardsPerSample ) + 1
+    # So, if i = 1 to 10, we will get  doThisManySample to be one: The first "sample pack"
+  balanceOfCards <- (i - 1) %/% numCardsPerSample
+    
+  ### CARDS ARE OF SIZE 500 x 726
+  asp.cards <- 726/500 # Aspect ratio: Height over Width
+
+  ### LOAD CARD IMAGES
+  fileList  <- list.files("Cards", 
+                          full.names = TRUE)
+  fileList2 <- list.files("Cards", 
+                          full.names = FALSE) # No path name
+  
+  # Remove jokers
+  redj <- match("red_joker.png", fileList2) # Needs to match just *file* name
+  blackj <- match("black_joker.png", fileList2)
+  fileList <- fileList[ -c(redj, blackj)] 
+  
+  numFiles <- length(fileList) - 1 
+     # Should be 52- 1 = 51, as we don't select the card showing on the pack
+
+  # Parameter calculator
+  gapCalc <- function(numCardSets, ratio = 0.05) {
+    # numCardSets: How many sets of cards to be shown
+    # ratio: The ratio of gap between cards, to card width.
+    #        So default means gap is 0.2 the size of the width of cards being shown
+    cardWidth <- 4 / ( numCardSets + (numCardSets-1)*ratio)
+    list( cardWidth = cardWidth, 
+          gapWidth = ratio * cardWidth)
+  }
+  
+  out <- gapCalc(numSamples)
+  
+  samplePackWidth <- out$cardWidth
+  sampleGapWidth <- out$gapWidth
+  
+    # Set up canvas
+    par(mar = rep(0.05, 4)) 
+    plot( c(-2.1, 2.1), c(-2.25, 2.25), 
+          type = "n",
+          xlab = "",
+          asp = 1, #asp.cards,
+          ylab = "",
+          axes = FALSE)
+    
+    
+    # INDICATE FULL PACK AT TOP OF SCREEN:
+    # Show whole pack at top of canvas
+    imPack  <- readPNG(fileList[ numFiles])
+    
+    # Now create the top pack, but offsetting a series of 10 cards.
+    # Since we do not see the actual card, it doesn't matter what the hidden cards are,
+    # so we use the same card repeatedly.
+    jitterPack <- -0.01
+    for (iii in 1:10) { # That is, we draw a stack of 10 cards
+      jitterThis <- jitterPack * (iii - 1)
+      rasterImage(imPack,  
+                  -0.5 + jitterThis, 
+                   0.5 + jitterThis, 
+                   0.5 + jitterThis, 
+                   0.5 + jitterThis + asp.cards)
+    }
+    # Add some explanation text
+    text(0, 2.1,
+         "In the pack (the 'population'), 50% of cards are red",
+         cex = 1.1)
+    text( 0, 0,
+          paste("Take", 
+                numSamples, 
+                "samples of", 
+                numCardsPerSample, 
+                "cards each\n(starting with a full deck each time)"),
+          col = grey(0.2), 
+          cex = 1.1)
+        
+    pileNumber <- 1
+    selection <- sample(1:numFiles, 
+                        min(i, numCardsPerSample), 
+                        replace = FALSE) # The cards to get in first pile
+    selection.number <- 0
+    
+    # Percentage red setup
+    countRed <- 0
+    text( -2.1 , -2.1,
+          "% red:", 
+          pos = 2 )
+    
+    ### Set seed: DO NOT set outside this function!
+    seedvalue <- 9238314
+    set.seed(seedvalue)
+
+    # GET ALL CARDS NOW!
+    # We need to get  i  cards, but need each "pile" to be done separately.
+    cardsList <- array( dim = numSamples * numCardsPerSample)
+    redPercentage <- array( dim = numSamples)
+    countRed <- 0
+    
+    for (k in 1:numSamples){ # For each pile...
+      
+      # Resample the cards to got for this pile
+      cardsForThisPile <- (numCardsPerSample*(k-1) + 1) : (numCardsPerSample*k)
+      cardsList[ cardsForThisPile ] <- sample.int(numFiles, 
+                                                  numCardsPerSample, 
+                                                  replace=FALSE) 
+          
+      # And may as well count the number of red cards while we are here...
+      countRed[k] <- sum ( grepl("diamonds", 
+                                 fileList[ cardsList[ cardsForThisPile ] ], 
+                                 fixed=TRUE ) | 
+                           grepl("hearts",   
+                                 fileList[cardsList[ cardsForThisPile ] ], 
+                                 fixed=TRUE ) ) 
+    }
+    # We now have the list of cards from start to end. 
+    # So now we just select what we need as we need them.
+    
+    
+    ###
+    ### SO NOW, DISPLAY THE CARDS:
+    ###
+    
+    jitterCards <- 1 # how much to offset the cards in any one pile
+    pileCount <- 1
+    jitterCount <- 0
+    cardNumberInThePile <- 0
+      
+    for (k in 1:i){ # We need to sample  i  cards; i  is the card number
+
+      # Add arrows for the first pile
+      arrows(0, 0.45, -2 + (pileCount - 0.5) + sampleGapWidth, -0.56,
+             length = 0.1,
+             col = "grey",
+             angle = 15)
+
+      cardNumberInThePile <- cardNumberInThePile + 1
+      
+      if (k >= ((pileCount * numCardsPerSample) + 1) ) { # NEW PILE STARTS
+
+        cardNumberInThePile <- 0
+
+        # At the end of this pile, report the percentage red, and reset the jitter
+        text( -2 + (pileCount - 0.5) + sampleGapWidth, -2.1,
+              paste(round( countRed[pileCount] / numCardsPerSample*100), 
+                    "%", 
+                    sep=""),
+              pos = 2)
+
+        # Move to next pile
+        pileCount <- pileCount + 1 # Move to next pile, so start the random selection again:
+       # cat("Moving to pile", pileCount,"\n")
+        
+        # And restart the offset for displaying the cards
+        jitterCount <- 0
+      
+        # Add arrows for this *new* pile (so after increment)
+        arrows(0, 0.43, -2 + (pileCount - 0.5) + sampleGapWidth, -0.56,
+               length = 0.1,
+               col = "grey",
+               angle = 15)
+        
+      }
+      
+      jitterCount <- jitterCount + 1
+      
+      # Add the percentage red after the last pile is printed
+      if (i == (pileCount * numCardsPerSample) ) {
+        text( -2 + (pileCount - 0.5) + sampleGapWidth, -2.1,
+              paste(round( countRed[pileCount] / numCardsPerSample*100), 
+                    "%", 
+                    sep = ""),
+              pos = 2)
+      }
+      
+      leftX <- -2 + (pileCount-1) + sampleGapWidth 
+      rightX <- leftX + samplePackWidth 
+
+      botY <- -1.8 
+      topY <-  botY + asp.cards*(rightX - leftX) 
+      
+      thisImage  <- readPNG(fileList[ cardsList[ k ] ] )
+
+      rasterImage(thisImage,  
+                  leftX, 
+                  botY, 
+                  rightX, 
+                  topY,
+                  angle = jitterCards * (cardNumberInThePile - (numCardsPerSample/2)))
+
+    }
+
+}
+
+
+numSamples <- 5
+numCardsPerSample <- 10
+  
+### CARDS ARE OF SIZE 500 x 726
+if (knitr::is_html_output()) {
+   for (iteration in 1:( (numSamples * numCardsPerSample) + 20)){
+     # Now pad by 10, so the images appears to "stop"
+     iterationj <- min(iteration,
+              numSamples * numCardsPerSample) # 1, 2, ..., 50, 50, 50, 50...
+     
+     showCardSampling(iterationj, 
+                       numSamples = numSamples, 
+                       numCardsPerSample = numCardsPerSample)
+     points(-2.1, -2.25 + iteration/1000, 
+            col = "white",
+            cex = 0.5) # To keep getting a new plot, so the final plot holds to be looked art
+   }
+}
+```
+
+
+
+
+
+
+
+```{r SampleCardsRed, echo=FALSE, fig.align="center", fig.width=8, fig.cap="The sample of 10 cards do not always produce the same sample percentage of red cards" }
+if (knitr::is_latex_output()){
+   showCardSampling(i = 50, 
+                    numSamples = numSamples, 
+                    numCardsPerSample = numCardsPerSample)
+}
+```
+
+
+```{lemma SamplingPresident, ame="Sampling"}
+Two surveys were conducted before the 1936 presidential election in the USA
+to predict the winner [@data:Bryson1976:Poll],
+summarised in 
+Table \@ref(tab:USAVoting).
+Which do you think predicted correctly the winner of the election?
+Why?
+```
+
+
+
+```{r echo=FALSE, USAVoting}
+USsurveys <- array( dim=c(2, 4) )
+colnames(USsurveys) <- c("Study", "Number in sample", 
+                          "Population", "Method")
+
+USsurveys[1, ] <- c("A", "10 000 000",  "Specific groups", "Voluntary survey")
+USsurveys[2, ] <- c("B", "50 000", "All Americans", "Random survey")
+
+   
+if( knitr::is_latex_output() ) {
+   kable(USsurveys,
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        caption = "Two surveys about the USA presidential election",
+        align = c("r", "r", "r", "r"))   %>%
+   kable_styling(full_width = FALSE, font_size = 10) %>%
+  row_spec(0, bold=TRUE) #%>% # Columns headings in bold
+}
+
+if( knitr::is_html_output() ) {
+  kable(USsurveys,
+        format = "html",
+        align = c("r", "r", "r", "r"),
+        longtable = FALSE,
+      caption = "Two surveys about the USA presidential election",
+      booktabs = TRUE) # %>%
+}
+```
+
+
+
+
+
+
+
+## Precision and accuracy {#PrecisionAccuracy}
+
+Two issues concerning sampling,
+raised in Sect. \@ref(IdeaOfSampling),
+were:
+*which* individuals should be in the sample,
+and *how many* individuals should be in the sample be.
+These two issues address two different aspects of sampling:
+**precision** and **accuracy** 
+(Fig. \@ref(fig:PrecisionAccuracy)).
+
+**Accuracy** refers to how close 
+a *sample* estimate is to the *population* value (on *average*).
+**Precision** refers to how close all the possible sample estimates are likely to be
+(that is, how much variation is likely in the sample estimates).
+
+
+```{definition name="Accuracy"}
+*Accuracy* refers to how close a *sample* estimate is to the *population* value, on average.
+```
+
+
+```{definition name="Precision"}
+*Precision* refers to how close the sample estimates
+from different samples are likely to be to each other.
+```
+
+
+Using this language:
+
+* The *type* of sampling (i.e., the way in which the samples in selected) 
+impacts the *accuracy* of the sample estimate.
+In other words, the type of sampling impacts the *external validity* of the study.
+* The *size* of the sample impacts the *precision* of the sample estimate.
+
+For example,
+large samples are more likely to be *precise* estimates 
+because each possible sample value will produced similar estimates, 
+but they may or may not be accurate estimates.
+Similarly,
+random samples are likely to produce *accurate* estimates
+(and hence the study is more likely to be externally valid),
+but they may not be *precise* unless the sample is also large.
+
+
+```{r PrecisionAccuracy, echo=FALSE,fig.align="center", fig.cap="Precision and accuracy: Each coloured dot is like a sample estimate of the population value (shown by the black central dot)", fig.width=6}
+# library(plotrix)   # For the  draw.circle()  function
+par( mfrow=c(2,2),
+     mar=c(1, 1, 1, 1),
+     oma=c(1, 1, 1, 1) )
+
+Shots <- function(x=0, y=0, radius=1, n=20, seed=27469){
+   set.seed(seed)
+   
+   xx <- runif(n, min=x-radius, max=x+radius)
+   yy <- runif(n, min= -sqrt( radius^2 - (xx-x)^2) + y, max=sqrt( radius^2 - (xx-x)^2)+ y ) 
+   
+   list(x=xx, y=yy)
+   
+}
+
+### PRECISE + ACCURATE
+plot( c(-1.01, 1.01),
+      c(-1.01, 1.01),
+      main="Precise and accurate",
+      xlab="",
+      ylab="",
+      type="n",
+      axes=FALSE,
+      asp=1)
+plotrix::draw.circle(0, 0,
+            radius = 1,
+            #asp=1, # aspect ratio = 1, circles look like circles
+            lwd=2,
+            col="white",
+            border="black",
+)
+shots <- Shots(x=0, y=0, radius=0.15, n=20, seed=121314)
+points( shots$x, shots$y,
+        pch=19,
+        cex=0.75,
+        col="darkgoldenrod1")
+points(0, 0, pch=19)
+
+
+### PRECISE + INACCURATE
+plot( c(-1.01, 1.01),
+      c(-1.01, 1.01),
+      main="Precise and inaccurate",
+      xlab="",
+      ylab="",
+      type="n",
+      axes=FALSE,
+      asp=1)
+draw.circle(0, 0,
+            radius = 1,
+            #asp=1, # aspect ratio = 1, circles look like circles
+            lwd=2,
+            col="white",
+            border="black",
+)
+shots <- Shots(x=0.25, y=0.3, radius=0.15, n=20, seed=12131415)
+points( shots$x, shots$y,
+        pch=19,
+        cex=0.75,
+        col="darkgoldenrod1")
+points(0, 0, pch=19)
+
+
+### IMPRECISE + ACCURATE
+plot( c(-1.01, 1.01),
+      c(-1.01, 1.01),
+      main="Imprecise but accurate",
+      xlab="",
+      ylab="",
+      type="n",
+      axes=FALSE,
+      asp=1)
+draw.circle(0, 0,
+            radius = 1,
+            #asp=1, # aspect ratio = 1, circles look like circles
+            lwd=2,
+            col="white",
+            border="black",
+)
+shots <- Shots(x=0, y=0, radius=0.5, n=20, seed=1213141516)
+points( shots$x, shots$y,
+        pch=19,
+        cex=0.75,
+        col="darkgoldenrod1")
+points(0, 0, pch=19)
+
+
+### IMPRECISE + INACCURATE
+plot( c(-1.01, 1.01),
+      c(-1.01, 1.01),
+      main="Imprecise and inaccurate",
+      xlab="",
+      ylab="",
+      type="n",
+      axes=FALSE,
+      asp=1)
+draw.circle(0, 0,
+            radius = 1,
+            #asp=1, # aspect ratio = 1, circles look like circles
+            lwd=2,
+            col="white",
+            border="black",
+)
+shots <- Shots(x=0.4, y=0.3, radius=0.5, n=20, seed=985421)
+points( shots$x, shots$y,
+        pch=19,
+        cex=0.75,
+        col="darkgoldenrod1")
+points(0, 0, pch=19)
+
+```
+
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "25%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/pexels-iqwan-alif-1206101.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+```{example name="Precision and accuracy"}
+To estimate the average age of *all Queenslanders*,
+we could ask 9000 Queensland school children (a large sample indeed!).
+
+This will give a *precise* answer because the sample is large,
+but *inaccurate* answer because the sample is not representative 
+of *all* Queenslanders.
+In fact, 
+the sample may give a precise answer to a *different* question:
+'What is the average age of Queensland school children?'
+```
+
+
+
+
+
+
+## Types of sampling
+
+One key to obtaining accurate estimates about the population
+is to ensure that the sample
+studied is representative of the population of interest
+(that is, to ensure the study is externally valid).
+
+So,
+*how* can a representative sample of the population be found?
+Whenever a sample is taken,
+only *some* of the population is selected.
+The selected individuals can be chosen using either 
+**random sampling**
+or 
+**non-random sampling**.
+
+
+
+
+
+
+### Random sampling methods {#RandomSamples}
+
+In a **random sample**, 
+each individual in the population can be selected
+on the basis of impersonal chance.
+Some examples of random sampling methods appear in the following sections
+(Table \@ref(tab:TypesOfRandomSampling)).
+
+```{block2, type="rmdimportant"}
+The results obtained from a random sample
+probably generalise to the population from which the sample is drawn;
+that is, *random samples* are likely to produce *externally valid* studies.
+```
+
+
+```{r echo=FALSE, TypesOfRandomSampling}
+SampleTypes <- array( dim=c(4, 5) )
+colnames(SampleTypes) <- c("Type", "Stage 1", "Stage 2", "Reference", "") 
+
+   
+if( knitr::is_latex_output() ) {
+   SampleTypes[1, ] <- c("Systematic", 
+                         "Start at a \\emph{random} location",
+                         "Take every $n$th element thereafter",
+                         "Sect. \\ref{SystematicSampling}",
+                         "")
+   SampleTypes[2, ] <- c("Stratified",
+                         "Split into a few large groups ('strata')",
+                         "Select *\\emph{simple random sample} from every stratum",
+                         "Sect. \\ref{StratifiedSampling}",
+                         "")
+   SampleTypes[3, ] <- c("Cluster",
+                         "Split into many small groups ('clusters'); select \\emph{simple random sample} of clusters",
+                         "Select all in the chosen clusters",
+                         "Sect. \\ref{ClusterSampling}",
+                         "")
+   SampleTypes[4, ] <- c("Multi-stage",
+                         "Select \\emph{simple random sample} from the larger stage",
+                         "Select \\emph{simple random sample} from those chosen in Stage 1; etc.",
+                         "Sect. \\ref{MultistageSampling}",
+                         "")
+
+
+
+   kable(SampleTypes[, 1:4],
+         format="latex",
+         longtable=FALSE,
+         booktabs=TRUE,
+         escape=FALSE, # For latex to work in \rightarrow
+         #linesep = c( "\\addlinespace"), # Add a bit of space between all rows. 
+         caption="Comparing four types of random sampling",
+         align=c("r", "l", "l", "r"))   %>%
+      kable_styling(full_width=FALSE, font_size=10) %>%
+      row_spec(0, bold=TRUE) %>% # Columns headings in bold
+      column_spec(column=1, width="18mm") %>% 
+      column_spec(column=2, width="60mm") %>%
+      column_spec(column=3, width="47mm") %>%
+      column_spec(column=4, width="15mm")
+}
+
+if( knitr::is_html_output() ) {
+   
+   SampleTypes[1, ] <- c("Systematic", 
+                         "Start at a *random* location",
+                         "Take every $n$th element thereafter",
+                         "Sect. \\@ref(SystematicSampling)",
+                         "")
+   SampleTypes[2, ] <- c("Stratified",
+                         "Split into a few large groups ('strata')",
+                         "Select *simple random sample* from every stratum",
+                         "Sect. \\@ref(StratifiedSampling)",
+                         "")
+   SampleTypes[3, ] <- c("Cluster",
+                         "Split into many small groups ('clusters'); select *simple random sample* of clusters",
+                         "Select all in the chosen clusters",
+                         "Sect. \\@ref(ClusterSampling)",
+                         "")
+   SampleTypes[4, ] <- c("Multistage",
+                         "Select *simple random sample* from the larger stage",
+                         "Select *simple random sample* from those chosen in Stage 1; etc.",
+                         "Sect. \\@ref(MultistageSampling)",
+                         "")
+   
+   SampleTypes[1, 5] <- "![](./Pics/iconmonstr-chart-22-240.png){#id .class height=auto width=90px}"
+   SampleTypes[2, 5] <- "![](./Pics/iconmonstr-layer-17-240.png){#id .class height=auto width=90px}"
+   SampleTypes[3, 5] <- "![](./Pics/iconmonstr-view-5-240.png){#id .class height=auto width=90px}"
+   SampleTypes[4, 5] <- "![](./Pics/iconmonstr-view-4-240.png){#id .class height=auto width=90px}"
+   
+   
+   kable(SampleTypes[, c(5, 1:4)], # Move icons to the front
+         format="html",
+         align=c("c", "r", "l", "l", "r"),
+         longtable=FALSE,
+         caption="Comparing four types of random sampling",
+         booktabs=TRUE) # %>%
+   #row_spec(row=1, bold=TRUE) %>%
+   #   column_spec(column=1, bold=TRUE)
+}
+```
+
+
+
+
+Consider testing a pot of soup by 'sampling'.
+If the soup is stirred,
+we don't need to taste the whole pot of soup to see how the soup tastes.
+The same principle applies in research:
+If we use a random sample (analagous to the stirring the soup),
+we don't need to study *every* member of the population.
+If we don't use a random sample 
+(that is, we don't stir the soup),
+we do not get an *overall* impression of the population (or the soup).
+
+
+
+
+
+
+### Non-random sampling methods {#NonRandomSamples}
+
+A **non-random** sample\index{non-random sampling}
+requires some kind personal input.
+Examples of non-random samples include:
+
+* *Judgement sample*:\index{judgement samples}
+  Individuals are selected, based on the researchers' judgement,
+  depending on whether the researcher thinks they are likely to be agreeable or helpful.
+  For example,
+  researchers may decided to survey people who are not in a hurry.
+* *Convenience sample*:\index{convenience samples}
+  Individuals are selected because they are convenient for the researcher.
+  For example,
+  researchers may gather data from their family and friends.
+* *Voluntary* response (self-selecting) sample:\index{voluntary response samples}\index{self-selecting samples}
+  Individuals participate if they wish to.
+  For example,
+  a voluntary response survey, or a TV station call-in survey.
+
+In non-random sampling,
+those who *are* in the study may be different than those who *are not* in the study.
+That is, 
+*non-random samples are not likely to be externally valid*.
+
+
+```{block2, type="rmdimportant"}
+Using a non-random sample means that the results may not generalise
+to the intended population: 
+they probably do not produce externally valid studies.
+```
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "40%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/pexels-andrea-piacquadio-3807629.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+```{example COVIDsampling, name="Different ways to sample"}
+During the COVID-19 (coronavirus) pandemic in 2020,
+[a Facebook poll](https://www.abc.net.au/news/2020-07-03/coronacheck-anti-vaxxers-flood-online-poll-pete-evans/12415860)
+asked the question:
+
+> Do you think a Coronavirus vaccine should be compulsory?
+
+The result was reported as '79 per cent of Australians oppose a compulsory vaccination',
+from a sample of over 53,000 responses.
+
+However,
+this sample was a *voluntary response sample*, not a random sample,
+so the results may not be *accurate*.
+For example,
+many anti-vaccination groups instructed their members to flood the poll with 'No' responses
+(including celebrity chef Pete Evans),
+and the poll could have been completed by non-Australians as well as Australians.
+
+A different study
+[@smith2020majority]
+asked Australians:
+
+> The Federal Government's 'No Jab, No Pay' policy withholds certain benefits and payments 
+> from families who don't fully vaccinate their children. Do you agree with this policy?
+
+In the sample of 1809 respondents,
+83.7% either agreed or strongly agreed with this statement.
+
+While this study did not use a *random* sample, the researchers 
+made efforts to sample a *representative* cross-section of Australians:
+
+> Researchers recruited Australian adults aged 18-years and older to participate
+> in the study through a large, well-established online panel provider. 
+> While not a random sample of the Australian population, 
+> researchers made efforts to ensure the sample included individuals representing a wide range of demographics 
+> (e.g., age, gender, location, income, political preferences, religiosity).
+>
+> --- @smith2020majority, p. 194
+
+Further more,
+'respondents were paid small token sum for their participation in the study'
+to encourage all selected respondents to provide an answer.
+```
+
+
+
+In Sect. \@ref(Final-Example),
+*random* and *non-random samples* are compared using an example.
+
+
+## Simple random sampling {#SRS}
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "10%", out.extra='style="float:left; padding:10px"'}
+include_graphics("Pics/iconmonstr-media-control-55-240.png")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+```{definition, SamplingSRS, SRSname="Simple random sample"}
+In a *simple random sample*,\index{simple random samples}
+*every* possible sample of the same size has *same* chance of being selected.
+```
+
+A simple random sample is chosen
+from a list of all members of the population
+(the *sampling frame*)\index{sampling frame}
+using tables of *random numbers*\index{random numbers}
+(Appendix \@ref(AppendixRandomNumbers))
+or 
+`r if (knitr::is_html_output()){
+  'websites like https://www.random.org.  A smaller version of this webpage, which only generates one number at a time, is shown below; just press *Generate*. The numbers generated by this widget come from the true random number generator at RANDOM.ORG. (The webpage generates as many numbers as you want all at the same time.)'
+} else {
+  'even websites like https://www.random.org.'
+}`
+
+
+<iframe src="https://www.random.org/widgets/integers/iframe.php?title=True+Random+Number+Generator&amp;buttontxt=Generate&amp;width=160&amp;height=200&amp;border=on&amp;bgcolor=%23FFFFFF&amp;txtcolor=%23777777&amp;altbgcolor=%23CCCCFF&amp;alttxtcolor=%23000000&amp;defaultmin=&amp;defaultmax=&amp;fixed=off" frameborder="0" width="160" height="200" scrolling="no" longdesc="https://www.random.org/integers/">
+</iframe>
+
+
+```{definition, SamplingFrame, name="Sampling frame"}
+The *sampling frame*\index{sampling frame}
+is a list of *all* the members of the population (the *individuals*, or *cases*, or *subjects*).
+```
+
+
+Often,
+establishing the sampling frame is difficult or impossible,
+and so finding a random sample is also difficult.
+
+For example,
+to study a simple random sample of wombats
+[@yang2018wombats]
+would require having a list of all
+wombats,
+so some could be selected using random number tables.
+This is clearly absurd,
+and other random sampling methods,
+such as [special ecological sampling methods](http://www.countrysideinfo.co.uk/what_method.htm),
+would be used instead
+[@manly2014introduction].
+
+Other good (random) sampling methods use a system to select randomly,
+rather than by human choice
+(discussed in the following sections).
+
+
+```{block2, type="rmdimportant"}
+This book
+always assumes simple random samples,
+for simplicity,
+unless otherwise noted.
+```
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "40%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/pexels-startup-stock-photos-7357.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+```{example, Typing, name="Simple random sampling"}
+Suppose we are interested in this RQ:
+
+> For students in this course this semester,
+> is the average number of letters typed on a keyboard in 10 seconds
+> the same for females and males?
+
+Suppose a sample of 40 students in this course is needed.
+The sampling frame is 
+the list of all students enrolled in this course for this semester.
+Obtaining the *sampling frame* is feasible here
+(lecturers have access to this information for grading).
+```
+
+
+```{lemma SRS, name="Simple random sampling"}
+Suppose budget and time constraints mean only 40 students
+can be selected for the study above.
+Describe *how* to use the course enrolment list
+to find a simple random sample of 40 students to study.
+```
+
+
+```{r echo=FALSE, animation.hook="gifski", cache=TRUE, interval=0.4}
+# SRS
+if (knitr::is_html_output()){
+
+# SRS
+  set.seed(56789)
+  sample.size <- 40
+  num.x <- 21
+  num.y <- 21
+  population.size <- num.x * num.y
+  population <- 1:(population.size)
+  
+  selected <- sample(1:population.size, sample.size)
+  
+  plot( c(1, num.x), c(1, num.y),
+        type="n",
+        main="Simple random sampling",
+        axes=FALSE,
+        ylab="",
+        xlab= paste("Sample size:", sample.size))
+  
+  for (i in 1:sample.size){
+    plot( c(1, num.x), c(1, num.y),
+          type="n",
+          main="Simple random sampling",
+          axes=FALSE,
+          ylab="",
+          xlab= paste("Sample size:", sample.size),
+          sub=paste("Person number", i))
+    
+    # Plot the "populations
+    sample.pch <- rep(1, length=population.size)
+    sample.pch[selected[1:i]] <- 15
+    
+    sample.col <- rep("grey", length=population.size)
+    sample.col[selected[1:i]] <- "darkolivegreen4"
+    
+    sample.cex <- rep(1, length=population.size)
+    sample.cex[selected[1:i]] <- 1.2
+    
+    points( expand.grid(1:num.x, 1:num.y), 
+            pch=sample.pch, 
+            col=sample.col,
+            cex=sample.cex)
+  }
+}
+```
+
+
+
+```{r SRS40, echo=FALSE, fig.align="center", fig.width=7, fig.cap="Taking a simple random sample of size 40" } 
+# SRS
+if (knitr::is_latex_output()){
+
+# SRS
+  set.seed(56789)
+  sample.size <- 40
+  num.x <- 21
+  num.y <- 21
+  population.size <- num.x * num.y
+  population <- 1:(population.size)
+  
+  selected <- sample(1:population.size, sample.size)
+  
+#  plot( c(1, num.x), c(1, num.y),
+#        type="n",
+#        main="Simple random sampling",
+#        axes=FALSE,
+#        ylab="",
+#        xlab= paste("Sample size:", sample.size))
+  
+  for (i in sample.size:sample.size){
+    plot( c(1, num.x), c(1, num.y),
+          type="n",
+          main="Simple random sampling",
+          axes=FALSE,
+          ylab="",
+          xlab= paste("Sample size:", sample.size),
+          sub=paste("Person number", i))
+    
+    # Plot the "populations
+    sample.pch <- rep(1, length=population.size)
+    sample.pch[selected[1:i]] <- 15
+    
+    sample.col <- rep("grey", length=population.size)
+    sample.col[selected[1:i]] <- "darkolivegreen4"
+    
+    sample.cex <- rep(1, length=population.size)
+    sample.cex[selected[1:i]] <- 1.2
+    
+    points( expand.grid(1:num.x, 1:num.y), 
+            pch=sample.pch, 
+            col=sample.col,
+            cex=sample.cex)
+  }
+}
+```
+
+
+
+
+
+## Systematic sampling {#SystematicSampling}
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "10%", out.extra='style="float:left; padding:10px"'}
+include_graphics("Pics/iconmonstr-chart-22-240.png")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+In **systematic sampling**,\index{systematic sampling}
+the first case is *randomly* selected;
+then,
+every (say) fifth element is selected thereafter.
+
+In general,
+we say that every $n$th individual is selected.
+
+
+```{block2, type="rmdimportant"}
+There is no advantage in using a systematic sample to take
+every $n$th individual if it is just as easy and efficient to take every individual.
+```
+
+
+
+
+```{example name="Systematic sampling"}
+Suppose for a particular study,
+a sample of 40 students in this course is needed.
+
+If 441 students are enrolled.
+40 students could be randomly selected,
+by choosing a number at random between 1 and $441/40$ (approximately 11) as a starting point;
+suppose the random number selected is 9.
+The first student selected is the 9th person in the list
+(which may be ordered alphabetically, by student ID, or any other means).
+
+Thereafter,
+every $441/40$th person, or 11th person, in the list is selected:
+people numbered 9, 20, 31, 42...
+```   
+
+
+
+`r if (knitr::is_latex_output()) {
+   'Figure \\@ref(fig:Systematic40) shows a diagram of selecting 40 students from a class of 441 students using a systematic random sample, by starting at student number 9 and then talking every 11th person. (The online version has an animation.)'
+} else {
+   'The animation below shows how a sample of 40 students could be selected from a class of 441 students using a systematic random sample of size 40, by starting at student number 9 and then talking every 11th person.'
+}`
+
+
+
+
+```{r echo=FALSE, animation.hook="gifski", cache=TRUE, interval=0.4}
+# Systematic
+if (knitr::is_html_output()){
+   set.seed(456780)
+  sample.size <- 40
+  num.x <- 21
+  num.y <- 21
+  population.size <- num.x * num.y
+  population <- 1:(population.size)
+  
+  jump <- floor(num.x*num.y/sample.size)
+  
+  selected <- seq(1, num.x*num.y, by=jump)
+  # But also start somewhere at random:
+  selected <- selected + sample(1:jump, 1)
+  
+  plot( c(1, num.x), c(1, num.y),
+        type="n",
+        main="Systematic sampling",
+        axes=FALSE,
+        xlab=paste("Select every ", jump,"th person", sep=""),
+        ylab="")
+  
+  for (i in (1:sample.size)){
+    plot( c(1, num.x), c(1, num.y),
+          type="n",
+          main="Systematic sampling",
+          sub=paste("Person number", i),
+          axes=FALSE,
+          xlab=paste("Select every ", jump,"th person, but start at random", sep=""),
+          ylab="")
+    
+    # Plot the "populations
+    sample.pch <- rep(1, length=population.size)
+    sample.pch[selected[1:i]] <- 15
+    
+    sample.col <- rep("grey", length=population.size)
+    sample.col[selected[1:i]] <- "darkolivegreen4"
+    
+    sample.cex <- rep(1, length=population.size)
+    sample.cex[selected[1:i]] <- 1.2
+    
+    points( expand.grid(1:num.x, 1:num.y), 
+            pch=sample.pch, 
+            col=sample.col,
+            cex=sample.cex)
+  }
+}
+```
+
+
+```{r Systematic40, echo=FALSE, fig.align="center", fig.width=7, fig.cap="Taking a systematic random sample of size 40, by starting at student number 9 and then talking every 11th person" } 
+# Systematic
+if (knitr::is_latex_output()){
+   set.seed(456780)
+  sample.size <- 40
+  num.x <- 21
+  num.y <- 21
+  population.size <- num.x * num.y
+  population <- 1:(population.size)
+  
+  jump <- floor(num.x*num.y/sample.size)
+  
+  selected <- seq(1, num.x*num.y, by=jump)
+  # But also start somewhere at random:
+  selected <- selected + sample(1:jump, 1)
+  
+#  plot( c(1, num.x), c(1, num.y),
+#        type="n",
+#        main="Systematic sampling",
+#        axes=FALSE,
+#        xlab=paste("Select every ", jump,"th person", sep=""),
+#        ylab="")
+  
+  for (i in (sample.size:sample.size)){
+    plot( c(1, num.x), c(1, num.y),
+          type="n",
+          main="Systematic sampling",
+          sub=paste("Person number", i),
+          axes=FALSE,
+          xlab=paste("Select every ", jump,"th person, but start at random", sep=""),
+          ylab="")
+    
+    # Plot the "populations
+    sample.pch <- rep(1, length=population.size)
+    sample.pch[selected[1:i]] <- 15
+    
+    sample.col <- rep("grey", length=population.size)
+    sample.col[selected[1:i]] <- "darkolivegreen4"
+    
+    sample.cex <- rep(1, length=population.size)
+    sample.cex[selected[1:i]] <- 1.2
+    
+    points( expand.grid(1:num.x, 1:num.y), 
+            pch=sample.pch, 
+            col=sample.col,
+            cex=sample.cex)
+  }
+}
+```
+
+<!-- ```{r echo=FALSE} -->
+<!-- htmltools::tags$iframe(title = "Systematic Sampling", src = "./Animations/SamplingSystematicMovie.html", frameborder=0, height=640, width=520)  -->
+<!-- ``` -->
+
+
+
+<!-- ```{r Systematic40, echo=FALSE, fig.align="center", fig.width=5, fig.cap="Taking a systematic random sample of size 40, by starting at student number 9 and then talking every 11th person" } -->
+<!-- if (knitr::is_latex_output()){ -->
+<!--   include_graphics("./Animations/SamplingSystematic41") -->
+<!-- } -->
+<!-- ``` -->
+
+
+
+```{block2, type="rmdimportant"}
+Care needs to be taken when using systematic samples
+to ensure a pattern is not hidden.
+
+For example, 
+consider a study where residents in a large, eight-level residential accommodation complex are to be visited and a survey administered.
+Each floor of the building has a similar layout (Fig. \@ref(fig:ApartmentLayout)),
+with nine apartments per level.
+
+If the researchers decide to systematically sample every *tenth* apartment,
+the very same apartment on each floor woud be chosen.
+
+For example, suppose Apartments 1-10, 2-10, 3-10,... 8-10
+were chosen.
+These apartments are all larger than all the other apartments.
+The residents of these apartments may be wealthier than the other residents,
+so the systematic sample will not be a representative sample of residents.
+```
+
+
+```{r ApartmentLayout, echo=FALSE, fig.align="center", fig.cap="The layout of each level in an eight-storey apartment building; Level 2 is shown"}
+par( mar=c(1, 1, 4.1, 1))
+
+Elevator_Blue <- rgb(0, 0.1, 0.1, alpha=0.2, maxColorValue = 1)
+# This is  plot.colour:  rgb(0, 0, 1, alpha=0.2, maxColorValue = 1)
+
+Apt_Width <- 20
+Apt_Height <- 45
+Num_Apartments_On_Each_Side <- 5
+Elevator_Width <- Apt_Width * 0.75
+
+Left <- 0
+Top <- 110
+Bottom <- 0
+Right <- (Num_Apartments_On_Each_Side * Apt_Width) + Elevator_Width
+
+Hall_Height <- (Top - Bottom) - 2*Apt_Height
+
+
+
+plot( y = c(Bottom, Top),
+      x = c(Left, Right),
+      type="n",
+      xlab="",
+      ylab="",
+      main="The layout of Level 2\n(Note: All levels have a similar layout)",
+      axes=FALSE)
+
+### Outside walls
+polygon( y=c(Bottom, Bottom, Top, Top),
+         x=c(Left, Right, Right, Left),
+         col=plot.colour,
+         lwd=2)
+
+### Inner walls
+for (i in 1:(Num_Apartments_On_Each_Side-1)){
+   Top_Wall <- i * Apt_Width
+
+   # Top
+   lines(y = c(Top - Apt_Height, Top),
+         x = c(Top_Wall, Top_Wall))
+   
+   # Bottom
+   lines( y=c(Bottom, Apt_Height),
+          x=c(Top_Wall+Elevator_Width, Top_Wall+Elevator_Width) )
+   
+}
+
+
+# Extra wall for Elevator
+lines( x = c(Elevator_Width, Elevator_Width),
+       y = c(Bottom, Bottom + Apt_Height))
+
+
+# Numbering
+Big_Room <- 0
+for (i in 1:(Num_Apartments_On_Each_Side)){
+
+   # Top
+   if (i == Num_Apartments_On_Each_Side) Big_Room <- Apt_Width/3
+   text(x = i*Apt_Width - (Apt_Width/2) + Big_Room,
+        y = Top - (Apt_Height/2),
+        paste("2-",as.character(i + 5), sep="" )
+        )
+
+   # Bottom
+   text(x = i*Apt_Width - (Apt_Width/2) + Elevator_Width,
+        y = Bottom + (Apt_Height/2),
+        paste("2-", as.character(i), sep="" )
+   )
+}
+
+# "Elevator" text
+text(x = Elevator_Width/2,
+     y = Bottom + (Apt_Height/2),
+     "Elevator",
+     srt=90)
+
+   
+   
+# Colour elevator
+polygon(x = c(Left, Left, Left + Elevator_Width, Left + Elevator_Width),
+        y = c(Bottom, Bottom + Apt_Height, Bottom + Apt_Height, Bottom ),
+        col=Elevator_Blue )
+
+
+
+   
+## Hall
+polygon( x=c(0, 0, Right, Right),
+         y = c(Bottom + Apt_Height, Bottom + Apt_Height + Hall_Height, Bottom + Apt_Height + Hall_Height, Bottom + Apt_Height),
+         col="white")
+
+```
+
+
+
+
+   
+   
+## Stratified sampling  {#StratifiedSampling}
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "10%", out.extra='style="float:left; padding:10px"'}
+include_graphics("Pics/iconmonstr-layer-17-240.png")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+In **stratified sampling**,\index{stratified sampling}
+the population is split into a small number of large (usually homogeneous) groups called *strata*,
+then cases are selected using a *simple random sample* from *each* stratum.
+
+
+```{block2, type="rmdimportant"}
+The strata must be unrelated to the variables.
+
+For example,
+if the RQ is about comparing the percentage of females and males who wear hats at midday,
+a *stratified sample* of size 100 is **not** obtained by selecting 50 females and 50 males, for example.
+This is merely selecting people from each level of the explanatory variable.
+
+The sex of the person is the explanatory variable;
+it does not define the strata.
+```
+
+
+
+
+
+```{example name="Stratified sampling"}
+To select students in this course again,
+20 of the females and 20 of the males could be selected.
+The sample is stratified by *sex* of the person.
+
+Alternatively,
+since about 67% of USC students are females,
+two-thirds of the sample could be chosen to be females 
+(around 26.7, say 27) 
+and about one-third males (about 13.3, say 13). 
+```
+
+
+
+`r if (knitr::is_latex_output()) {
+   'Figure \\@ref(fig:Stratified5050) shows a diagram of selecting a stratified random sample of size 40, by randomly selecting 20 female and 20 male students (The online version has an animation.) Similarly, Fig. \\@ref(fig:Stratified6733) shows a diagram of selecting a stratified random sample of size 40, by randomly selecting 27 female and 13 male students. (Again, the online version has an animation.)'
+} else {
+   'The animation below shows how a stratified random sample of size 40 might be selected, by randomly selecting 20 female and 20 male students.'
+}`
+
+
+
+```{r echo=FALSE, animation.hook="gifski", cache=TRUE, interval=0.2}
+# STRATIFIED,  By M/F: 20:20
+if (knitr::is_html_output()){
+  set.seed(34567)
+
+  sample.size <- 40
+  num.x <- 21
+  num.y <- 21
+  population.size <- num.x * num.y
+  population <- 1:(population.size)
+  
+  prop.female <- 2/3
+  num.female <- prop.female * num.x
+  prop.male <- 1 - prop.female
+  num.male <- prop.male * num.x
+  
+  sample.female <- 20
+  sample.male <- 20
+  
+  selected.female <- sample(1:(num.female*num.y), sample.female)
+  selected.male   <- sample(1:(num.male*num.y  ), sample.male)
+  
+  separation <- num.x*prop.female + 0.5 # LEFT: Females: RIGHT: Males
+  population.sex <- rep("F", length=population.size)
+  population.sex <- population.sex[]
+  
+  population.size.Females <- round(population.size * prop.female)
+  population.size.Males   <- population.size - population.size.Females
+  
+  selected <- sample(1:population.size, sample.size)
+  
+  # For Female, Male symbols:
+  # text(x=x,y=y,labels='\\VE',vfont=c("sans serif","bold")) #add Venus (Female) symbols
+  # text(x=x,y=y,labels='\\MA',vfont=c("sans serif","bold")) #add Mars (male) symbols
+  
+  plot( c(1, num.x), c(1, num.y),
+        type="n",
+        main="Stratified: equal F/M in sample",
+        axes=FALSE,
+        xlab="",
+        ylab="")
+  
+  abline(v=separation, col="grey", lwd=2) # LEFT: Females: RIGHT: Males
+  mtext( paste("Females (",population.size.Females,")", sep=""), side=3, at=separation/2)
+  mtext( paste("Males (",  population.size.Males,  ")", sep=""), side=3, at= separation + (num.x-separation)/2)
+  
+  points( expand.grid(1:num.female, 1:num.y))
+  EGmale <- expand.grid(1:num.male, 1:num.y)
+  EGmale$Var1 <- EGmale$Var1 + separation
+  points( EGmale$Var1, EGmale$Var2)
+  
+  
+  ### Plot the selected **Females**
+  for (i in (1:sample.female)){
+    plot( c(1, num.x), c(1, num.y),
+          type="n",
+          main="Stratified: equal F/M in sample",
+          axes=FALSE,
+          xlab="",
+          ylab="")
+    
+    abline(v=separation, col="grey", lwd=2) # LEFT: Females: RIGHT: Males
+    mtext( paste("Females (",population.size.Females,")", sep=""), side=3, at=separation/2)
+    mtext( paste("Males (",  population.size.Males,  ")", sep=""), side=3, at= separation + (num.x-separation)/2)
+    
+    mtext(paste("Select", sample.female,"females"),   side=1, at= separation/2)
+    mtext(paste("Select", sample.male,"males"),   side=1, at= separation + (num.x-separation)/2)
+    
+    points( expand.grid(1:num.female, 1:num.y))
+    EGmale <- expand.grid(1:num.male, 1:num.y)
+    EGmale$Var1 <- EGmale$Var1 + separation
+    points( EGmale$Var1, EGmale$Var2)
+    
+    # Plot the selected **Females**
+    sample.pchF <- rep(1, length=num.female*num.y)
+    sample.pchF[selected.female[1:i]] <- 15
+    
+    sample.colF <- rep("grey", length=num.female*num.y)
+    sample.colF[selected.female[1:i]] <- "darkolivegreen4"
+    
+    sample.cexF <- rep(1, length=num.female*num.y)
+    sample.cexF[selected.female[1:i]] <- 1.2
+    
+    points( expand.grid(1:num.female, 1:num.y), 
+            pch=sample.pchF, 
+            col=sample.colF,
+            cex=sample.cexF)
+  }
+  
+  
+  ### Plot the selected **Males**
+  for (i in (1:sample.male)){
+    plot( c(1, num.x), c(1, num.y),
+          type="n",
+          main="Stratified: equal F/M in sample",
+          axes=FALSE,
+          xlab="",
+          ylab="")
+    
+    abline(v=separation, col="grey", lwd=2) # LEFT: Females: RIGHT: Males
+    mtext( paste("Females (",population.size.Females,")", sep=""), side=3, at=separation/2)
+    mtext( paste("Males (",  population.size.Males,  ")", sep=""), side=3, at= separation + (num.x-separation)/2)
+    
+    mtext(paste("Select", sample.female,"females"),   side=1, at= separation/2)
+    mtext(paste("Select", sample.male,"males"),   side=1, at= separation + (num.x-separation)/2)
+    
+    points( expand.grid(1:num.female, 1:num.y))
+    EGmale <- expand.grid(1:num.male, 1:num.y)
+    EGmale$Var1 <- EGmale$Var1 + separation
+    points( EGmale$Var1, EGmale$Var2)
+    
+    # Plot the selected **Females**
+    sample.pchF <- rep(1, length=num.female*num.y)
+    sample.pchF[selected.female] <- 15
+    
+    sample.colF <- rep("grey", length=num.female*num.y)
+    sample.colF[selected.female] <- "darkolivegreen4"
+    
+    sample.cexF <- rep(1, length=num.female*num.y)
+    sample.cexF[selected.female] <- 1.2
+    
+    points( expand.grid(1:num.female, 1:num.y), 
+            pch=sample.pchF, 
+            col=sample.colF,
+            cex=sample.cexF)
+    
+    # Plot the selected **Males**
+    sample.pchM <- rep(1, length=num.male*num.y)
+    sample.pchM[selected.male[1:i]] <- 15
+    
+    sample.colM <- rep("grey", length=num.male*num.y)
+    sample.colM[selected.male[1:i]] <- "darkolivegreen4"
+    
+    sample.cexM <- rep(1, length=num.male*num.y)
+    sample.cexM[selected.male[1:i]] <- 1.2
+    
+    EGmale <- expand.grid(1:num.male, 1:num.y)
+    EGmale$Var1 <- EGmale$Var1 + separation
+    points( EGmale$Var1, EGmale$Var2, 
+            pch=sample.pchM, 
+            col=sample.colM,
+            cex=sample.cexM)
+  }
+}
+```
+
+
+
+
+
+```{r Stratified5050, echo=FALSE, fig.align="center", fig.width=7, fig.cap="Selecting a stratified random sample of size 40, by randomly selecting 20 female and 20 male students." } 
+# STRATIFIED,  By M/F: 20:20
+if (knitr::is_latex_output()){
+  set.seed(34567)
+
+  sample.size <- 40
+  num.x <- 21
+  num.y <- 21
+  population.size <- num.x * num.y
+  population <- 1:(population.size)
+  
+  prop.female <- 2/3
+  num.female <- prop.female * num.x
+  prop.male <- 1 - prop.female
+  num.male <- prop.male * num.x
+  
+  sample.female <- 20
+  sample.male <- 20
+  
+  selected.female <- sample(1:(num.female*num.y), sample.female)
+  selected.male   <- sample(1:(num.male*num.y  ), sample.male)
+  
+  separation <- num.x*prop.female + 0.5 # LEFT: Females: RIGHT: Males
+  population.sex <- rep("F", length=population.size)
+  population.sex <- population.sex[]
+  
+  population.size.Females <- round(population.size * prop.female)
+  population.size.Males   <- population.size - population.size.Females
+  
+  selected <- sample(1:population.size, sample.size)
+  
+  # For Female, Male symbols:
+  # text(x=x,y=y,labels='\\VE',vfont=c("sans serif","bold")) #add Venus (Female) symbols
+  # text(x=x,y=y,labels='\\MA',vfont=c("sans serif","bold")) #add Mars (male) symbols
+  
+#  plot( c(1, num.x), c(1, num.y),
+#        type="n",
+#        main="Stratified: equal F/M in sample",
+#        axes=FALSE,
+#        xlab="",
+#        ylab="")
+  
+#  abline(v=separation, col="grey", lwd=2) # LEFT: Females: RIGHT: Males
+#  mtext( paste("Females (",population.size.Females,")", sep=""), side=3, at=separation/2)
+#  mtext( paste("Males (",  population.size.Males,  ")", sep=""), side=3, at= separation + (num.x-separation)/2)
+  
+#  points( expand.grid(1:num.female, 1:num.y))
+  EGmale <- expand.grid(1:num.male, 1:num.y)
+  EGmale$Var1 <- EGmale$Var1 + separation
+#  points( EGmale$Var1, EGmale$Var2)
+  
+  
+  ### Plot the selected **Females**
+  for (i in (sample.female)){
+    plot( c(1, num.x), c(1, num.y),
+          type="n",
+          main="Stratified: equal F/M in sample",
+          axes=FALSE,
+          xlab="",
+          ylab="")
+    
+    abline(v=separation, col="grey", lwd=2) # LEFT: Females: RIGHT: Males
+    mtext( paste("Females (",population.size.Females,")", sep=""), side=3, at=separation/2)
+    mtext( paste("Males (",  population.size.Males,  ")", sep=""), side=3, at= separation + (num.x-separation)/2)
+    
+    mtext(paste("Select", sample.female,"females"),   side=1, at= separation/2)
+    mtext(paste("Select", sample.male,"males"),   side=1, at= separation + (num.x-separation)/2)
+    
+    points( expand.grid(1:num.female, 1:num.y))
+    EGmale <- expand.grid(1:num.male, 1:num.y)
+    EGmale$Var1 <- EGmale$Var1 + separation
+    points( EGmale$Var1, EGmale$Var2)
+    
+    # Plot the selected **Females**
+    sample.pchF <- rep(1, length=num.female*num.y)
+    sample.pchF[selected.female[1:i]] <- 15
+    
+    sample.colF <- rep("grey", length=num.female*num.y)
+    sample.colF[selected.female[1:i]] <- "darkolivegreen4"
+    
+    sample.cexF <- rep(1, length=num.female*num.y)
+    sample.cexF[selected.female[1:i]] <- 1.2
+    
+    points( expand.grid(1:num.female, 1:num.y), 
+            pch=sample.pchF, 
+            col=sample.colF,
+            cex=sample.cexF)
+  }
+  
+  
+  ### Plot the selected **Males**
+  for (i in (sample.male)){
+    plot( c(1, num.x), c(1, num.y),
+          type="n",
+          main="Stratified: equal F/M in sample",
+          axes=FALSE,
+          xlab="",
+          ylab="")
+    
+    abline(v=separation, col="grey", lwd=2) # LEFT: Females: RIGHT: Males
+    mtext( paste("Females (",population.size.Females,")", sep=""), side=3, at=separation/2)
+    mtext( paste("Males (",  population.size.Males,  ")", sep=""), side=3, at= separation + (num.x-separation)/2)
+    
+    mtext(paste("Select", sample.female,"females"),   side=1, at= separation/2)
+    mtext(paste("Select", sample.male,"males"),   side=1, at= separation + (num.x-separation)/2)
+    
+    points( expand.grid(1:num.female, 1:num.y))
+    EGmale <- expand.grid(1:num.male, 1:num.y)
+    EGmale$Var1 <- EGmale$Var1 + separation
+    points( EGmale$Var1, EGmale$Var2)
+    
+    # Plot the selected **Females**
+    sample.pchF <- rep(1, length=num.female*num.y)
+    sample.pchF[selected.female] <- 15
+    
+    sample.colF <- rep("grey", length=num.female*num.y)
+    sample.colF[selected.female] <- "darkolivegreen4"
+    
+    sample.cexF <- rep(1, length=num.female*num.y)
+    sample.cexF[selected.female] <- 1.2
+    
+    points( expand.grid(1:num.female, 1:num.y), 
+            pch=sample.pchF, 
+            col=sample.colF,
+            cex=sample.cexF)
+    
+    # Plot the selected **Males**
+    sample.pchM <- rep(1, length=num.male*num.y)
+    sample.pchM[selected.male[1:i]] <- 15
+    
+    sample.colM <- rep("grey", length=num.male*num.y)
+    sample.colM[selected.male[1:i]] <- "darkolivegreen4"
+    
+    sample.cexM <- rep(1, length=num.male*num.y)
+    sample.cexM[selected.male[1:i]] <- 1.2
+    
+    EGmale <- expand.grid(1:num.male, 1:num.y)
+    EGmale$Var1 <- EGmale$Var1 + separation
+    points( EGmale$Var1, EGmale$Var2, 
+            pch=sample.pchM, 
+            col=sample.colM,
+            cex=sample.cexM)
+  }
+}
+```
+
+
+
+
+<!-- ```{r Stratified5050, echo=FALSE, fig.align="center", fig.width=5, fig.cap="Selecting a stratified random sample of size 40, by randomly selecting 20 female and 20 male students." } -->
+<!-- if (knitr::is_latex_output()){ -->
+<!--   include_graphics("./Animations/SamplingStratifiedEqual41") -->
+<!-- } -->
+<!-- ``` -->
+
+
+
+<!-- ```{r Stratified6733, echo=FALSE, fig.align="center", fig.width=5, fig.cap="Selecting a stratified random sample of size 40, by randomly selecting 27 female and 13 male students." } -->
+<!-- if (knitr::is_latex_output()){ -->
+<!--   include_graphics("./Animations/SamplingStratifiedProp41") -->
+<!-- } -->
+<!-- ``` -->
+
+
+
+<!-- ```{r echo=FALSE} -->
+<!-- htmltools::tags$iframe(title = "Systematic Sampling, equal numbers", src = "./Animations/SamplingStratifiedEqualMovie.html", frameborder=0, height=640, width=520)  -->
+<!-- ``` -->
+
+
+
+`r if (knitr::is_html_output()) {
+   'Similarly, the second animation below shows how a stratified random sample of size 40 might be selected, by randomly selecting 27 female and 13 male students.'
+}`
+
+
+
+
+```{r echo=FALSE, animation.hook="gifski", cache=TRUE, interval=0.2}
+# STRATIFIED, By M/F: 30:10-ish
+if (knitr::is_html_output()){
+   set.seed(34567)
+  sample.size <- 40
+  num.x <- 21
+  num.y <- 21
+  population.size <- num.x * num.y
+  population <- 1:(population.size)
+  
+  prop.female <- 2/3
+  num.female <- prop.female * num.x
+  prop.male <- 1 - prop.female
+  num.male <- prop.male * num.x
+  
+  sample.female <- 27
+  sample.male <- 13
+  
+  selected.female <- sample(1:(num.female*num.y), sample.female)
+  selected.male   <- sample(1:(num.male*num.y  ), sample.male)
+  
+  separation <- num.x*prop.female + 0.5 # LEFT: Females: RIGHT: Males
+  population.sex <- rep("F", length=population.size)
+  population.sex <- population.sex[]
+  
+  population.size.Females <- round(population.size * prop.female)
+  population.size.Males   <- population.size - population.size.Females
+  
+  selected <- sample(1:population.size, sample.size)
+  
+  # For Female, Male symbols:
+  # text(x=x,y=y,labels='\\VE',vfont=c("sans serif","bold")) #add Venus (Female) symbols
+  # text(x=x,y=y,labels='\\MA',vfont=c("sans serif","bold")) #add Mars (male) symbols
+  
+#  plot( c(1, num.x), c(1, num.y),
+#        type="n",
+#        main="Stratified: equal F/M in sample",
+#        axes=FALSE,
+#        xlab="",
+#        ylab="")
+  
+#  abline(v=separation, col="grey", lwd=2) # LEFT: Females: RIGHT: Males
+#  mtext( paste("Females (",population.size.Females,")", sep=""), side=3, at=separation/2)
+#  mtext( paste("Males (",  population.size.Males,  ")", sep=""), side=3, at= separation + (num.x-separation)/2)
+  
+#  points( expand.grid(1:num.female, 1:num.y))
+  EGmale <- expand.grid(1:num.male, 1:num.y)
+  EGmale$Var1 <- EGmale$Var1 + separation
+#  points( EGmale$Var1, EGmale$Var2)
+  
+  
+  ### Plot the selected **Females**
+  for (i in (1:sample.female)){
+    plot( c(1, num.x), c(1, num.y),
+          type="n",
+          main="Stratified: proportional F/M in sample",
+          axes=FALSE,
+          xlab="",
+          ylab="")
+    
+    abline(v=separation, col="grey", lwd=2) # LEFT: Females: RIGHT: Males
+    mtext( paste("Females (",population.size.Females,")", sep=""), side=3, at=separation/2)
+    mtext( paste("Males (",  population.size.Males,  ")", sep=""), side=3, at= separation + (num.x-separation)/2)
+    
+    mtext(paste("Select", sample.female,"females"),   side=1, at= separation/2)
+    mtext(paste("Select", sample.male,"males"),   side=1, at= separation + (num.x-separation)/2)
+    
+    points( expand.grid(1:num.female, 1:num.y))
+    EGmale <- expand.grid(1:num.male, 1:num.y)
+    EGmale$Var1 <- EGmale$Var1 + separation
+    points( EGmale$Var1, EGmale$Var2)
+    
+    # Plot the selected **Females**
+    sample.pchF <- rep(1, length=num.female*num.y)
+    sample.pchF[selected.female[1:i]] <- 15
+    
+    sample.colF <- rep("grey", length=num.female*num.y)
+    sample.colF[selected.female[1:i]] <- "darkolivegreen4"
+    
+    sample.cexF <- rep(1, length=num.female*num.y)
+    sample.cexF[selected.female[1:i]] <- 1.2
+    
+    points( expand.grid(1:num.female, 1:num.y), 
+            pch=sample.pchF, 
+            col=sample.colF,
+            cex=sample.cexF)
+  }
+  
+  
+  ### Plot the selected **Males**
+  for (i in (1:sample.male)){
+    plot( c(1, num.x), c(1, num.y),
+          type="n",
+          main="Stratified: proportional F/M in sample",
+          axes=FALSE,
+          xlab="",
+          ylab="")
+    
+    abline(v=separation, col="grey", lwd=2) # LEFT: Females: RIGHT: Males
+    mtext( paste("Females (",population.size.Females,")", sep=""), side=3, at=separation/2)
+    mtext( paste("Males (",  population.size.Males,  ")", sep=""), side=3, at= separation + (num.x-separation)/2)
+    
+    mtext(paste("Select", sample.female,"females"),   side=1, at= separation/2)
+    mtext(paste("Select", sample.male,"males"),   side=1, at= separation + (num.x-separation)/2)
+    
+    points( expand.grid(1:num.female, 1:num.y))
+    EGmale <- expand.grid(1:num.male, 1:num.y)
+    EGmale$Var1 <- EGmale$Var1 + separation
+    points( EGmale$Var1, EGmale$Var2)
+    
+    # Plot the selected **Females**
+    sample.pchF <- rep(1, length=num.female*num.y)
+    sample.pchF[selected.female] <- 15
+    
+    sample.colF <- rep("grey", length=num.female*num.y)
+    sample.colF[selected.female] <- "darkolivegreen4"
+    
+    sample.cexF <- rep(1, length=num.female*num.y)
+    sample.cexF[selected.female] <- 1.2
+    
+    points( expand.grid(1:num.female, 1:num.y), 
+            pch=sample.pchF, 
+            col=sample.colF,
+            cex=sample.cexF)
+    
+    # Plot the selected **Males**
+    sample.pchM <- rep(1, length=num.male*num.y)
+    sample.pchM[selected.male[1:i]] <- 15
+    
+    sample.colM <- rep("grey", length=num.male*num.y)
+    sample.colM[selected.male[1:i]] <- "darkolivegreen4"
+    
+    sample.cexM <- rep(1, length=num.male*num.y)
+    sample.cexM[selected.male[1:i]] <- 1.2
+    
+    EGmale <- expand.grid(1:num.male, 1:num.y)
+    EGmale$Var1 <- EGmale$Var1 + separation
+    points( EGmale$Var1, EGmale$Var2, 
+            pch=sample.pchM, 
+            col=sample.colM,
+            cex=sample.cexM)
+  }
+}
+```
+
+
+```{r Stratified6733, echo=FALSE, fig.align="center", fig.width=7, fig.cap="Selecting a stratified random sample of size 40, by randomly selecting 27 female and 13 male students." }
+# STRATIFIED, By M/F: 30:10-ish
+if (knitr::is_latex_output()){
+   set.seed(34567)
+  sample.size <- 40
+  num.x <- 21
+  num.y <- 21
+  population.size <- num.x * num.y
+  population <- 1:(population.size)
+  
+  prop.female <- 2/3
+  num.female <- prop.female * num.x
+  prop.male <- 1 - prop.female
+  num.male <- prop.male * num.x
+  
+  sample.female <- 27
+  sample.male <- 13
+  
+  selected.female <- sample(1:(num.female*num.y), sample.female)
+  selected.male   <- sample(1:(num.male*num.y  ), sample.male)
+  
+  separation <- num.x*prop.female + 0.5 # LEFT: Females: RIGHT: Males
+  population.sex <- rep("F", length=population.size)
+  population.sex <- population.sex[]
+  
+  population.size.Females <- round(population.size * prop.female)
+  population.size.Males   <- population.size - population.size.Females
+  
+  selected <- sample(1:population.size, sample.size)
+  
+  # For Female, Male symbols:
+  # text(x=x,y=y,labels='\\VE',vfont=c("sans serif","bold")) #add Venus (Female) symbols
+  # text(x=x,y=y,labels='\\MA',vfont=c("sans serif","bold")) #add Mars (male) symbols
+  
+#  plot( c(1, num.x), c(1, num.y),
+#        type="n",
+#        main="Stratified: equal F/M in sample",
+#        axes=FALSE,
+#        xlab="",
+#        ylab="")
+  
+#  abline(v=separation, col="grey", lwd=2) # LEFT: Females: RIGHT: Males
+#  mtext( paste("Females (",population.size.Females,")", sep=""), side=3, at=separation/2)
+#  mtext( paste("Males (",  population.size.Males,  ")", sep=""), side=3, at= separation + (num.x-separation)/2)
+  
+#  points( expand.grid(1:num.female, 1:num.y))
+  EGmale <- expand.grid(1:num.male, 1:num.y)
+  EGmale$Var1 <- EGmale$Var1 + separation
+#  points( EGmale$Var1, EGmale$Var2)
+  
+  
+  ### Plot the selected **Females**
+  for (i in (sample.female:sample.female)){
+    plot( c(1, num.x), c(1, num.y),
+          type="n",
+          main="Stratified: proportional F/M in sample",
+          axes=FALSE,
+          xlab="",
+          ylab="")
+    
+    abline(v=separation, col="grey", lwd=2) # LEFT: Females: RIGHT: Males
+    mtext( paste("Females (",population.size.Females,")", sep=""), side=3, at=separation/2)
+    mtext( paste("Males (",  population.size.Males,  ")", sep=""), side=3, at= separation + (num.x-separation)/2)
+    
+    mtext(paste("Select", sample.female,"females"),   side=1, at= separation/2)
+    mtext(paste("Select", sample.male,"males"),   side=1, at= separation + (num.x-separation)/2)
+    
+    points( expand.grid(1:num.female, 1:num.y))
+    EGmale <- expand.grid(1:num.male, 1:num.y)
+    EGmale$Var1 <- EGmale$Var1 + separation
+    points( EGmale$Var1, EGmale$Var2)
+    
+    # Plot the selected **Females**
+    sample.pchF <- rep(1, length=num.female*num.y)
+    sample.pchF[selected.female[1:i]] <- 15
+    
+    sample.colF <- rep("grey", length=num.female*num.y)
+    sample.colF[selected.female[1:i]] <- "darkolivegreen4"
+    
+    sample.cexF <- rep(1, length=num.female*num.y)
+    sample.cexF[selected.female[1:i]] <- 1.2
+    
+    points( expand.grid(1:num.female, 1:num.y), 
+            pch=sample.pchF, 
+            col=sample.colF,
+            cex=sample.cexF)
+  }
+  
+  
+  ### Plot the selected **Males**
+  for (i in (sample.male:sample.male)){
+    plot( c(1, num.x), c(1, num.y),
+          type="n",
+          main="Stratified: proportional F/M in sample",
+          axes=FALSE,
+          xlab="",
+          ylab="")
+    
+    abline(v=separation, col="grey", lwd=2) # LEFT: Females: RIGHT: Males
+    mtext( paste("Females (",population.size.Females,")", sep=""), side=3, at=separation/2)
+    mtext( paste("Males (",  population.size.Males,  ")", sep=""), side=3, at= separation + (num.x-separation)/2)
+    
+    mtext(paste("Select", sample.female,"females"),   side=1, at= separation/2)
+    mtext(paste("Select", sample.male,"males"),   side=1, at= separation + (num.x-separation)/2)
+    
+    points( expand.grid(1:num.female, 1:num.y))
+    EGmale <- expand.grid(1:num.male, 1:num.y)
+    EGmale$Var1 <- EGmale$Var1 + separation
+    points( EGmale$Var1, EGmale$Var2)
+    
+    # Plot the selected **Females**
+    sample.pchF <- rep(1, length=num.female*num.y)
+    sample.pchF[selected.female] <- 15
+    
+    sample.colF <- rep("grey", length=num.female*num.y)
+    sample.colF[selected.female] <- "darkolivegreen4"
+    
+    sample.cexF <- rep(1, length=num.female*num.y)
+    sample.cexF[selected.female] <- 1.2
+    
+    points( expand.grid(1:num.female, 1:num.y), 
+            pch=sample.pchF, 
+            col=sample.colF,
+            cex=sample.cexF)
+    
+    # Plot the selected **Males**
+    sample.pchM <- rep(1, length=num.male*num.y)
+    sample.pchM[selected.male[1:i]] <- 15
+    
+    sample.colM <- rep("grey", length=num.male*num.y)
+    sample.colM[selected.male[1:i]] <- "darkolivegreen4"
+    
+    sample.cexM <- rep(1, length=num.male*num.y)
+    sample.cexM[selected.male[1:i]] <- 1.2
+    
+    EGmale <- expand.grid(1:num.male, 1:num.y)
+    EGmale$Var1 <- EGmale$Var1 + separation
+    points( EGmale$Var1, EGmale$Var2, 
+            pch=sample.pchM, 
+            col=sample.colM,
+            cex=sample.cexM)
+  }
+}
+```
+
+
+
+
+
+
+
+
+
+
+## Cluster sampling {#ClusterSampling}
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "10%", out.extra='style="float:left; padding:10px"'}
+include_graphics("Pics/iconmonstr-view-5-240.png")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+In **cluster sampling**,\index{cluster sampling}
+the population is split into a large number
+of small groups called *clusters*,
+then a *simple random sample* of clusters is selected and 
+*every* member of the chosen small groups is part of the sample.
+
+
+```{example name="Cluster sampling"}
+To select students in this course again,
+a simple random sample of (say) three 
+of the many SCI110 tutorials could be selected,
+and *every* student enrolled in those selected tutorials 
+constitute the sample.
+```
+
+
+`r if (knitr::is_latex_output()) {
+   'Figure \\@ref(fig:Cluster40) shows a diagram of selecting approximately 40 students using cluster sampling, using the tutorials as clusters. (The online version has an animation.)'
+} else {
+   'The animation below shows how a sample of approximately 40 students could be obtained using cluster sampling, using the tutorials as clusters.'
+}`
+
+
+```{r echo=FALSE, animation.hook="gifski", cache=TRUE, interval=0.75}
+ if (knitr::is_html_output()) {
+    # CLUSTER
+
+  set.seed(123450)
+  sample.size <- 40
+  num.x <- 21
+  num.y <- 21
+  total.number <- num.x * num.y
+  
+  num.tutorials <- 20
+  num.students.in.tutorials <- array( NA, dim = num.tutorials) 
+  
+  for (i in (1:(num.tutorials - 1))){
+    num.students.in.tutorials[i] <- sample(19:25, 1)
+  }
+  num.students.in.tutorials[ num.tutorials] <- total.number - sum( num.students.in.tutorials, na.rm = TRUE)
+  max.tutorial <- max(num.students.in.tutorials)
+  
+  
+  plot( c(1, max.tutorial), c(1, num.tutorials),
+        type = "n",
+        main = "Cluster sampling",
+        axes = FALSE,
+        xlab = "",
+        ylab = "")
+  axis(side = 2, 
+       at = 1:num.tutorials, labels=paste("Tut.", 1:num.tutorials),
+       las = 1)
+  
+  
+  selected.tutorials <- sample(1: num.tutorials, 2)
+  
+  plot( c(1, max.tutorial), c(1, num.tutorials),
+        type="n",
+        main="Cluster sampling",
+        axes=FALSE,
+        xlab="",
+        ylab="")
+  axis(side=2, at=1:num.tutorials, labels=paste("Tut.", 1:num.tutorials), las=1)
+  for (i in (1:num.tutorials)){
+    points(1:num.students.in.tutorials[i], rep(i, num.students.in.tutorials[i]), col="grey" )
+  }
+  title(xlab = paste("Selected classes:", paste( sort(selected.tutorials), collapse=", ")))
+  
+  
+  
+  
+  plot( c(1, max.tutorial), c(1, num.tutorials),
+        type = "n",
+        main = "Cluster sampling",
+        axes = FALSE,
+        xlab = "",
+        ylab = "")
+  axis(side = 2, 
+       at = 1:num.tutorials, labels=paste("Tut.", 1:num.tutorials), 
+       las = 1)
+  axis(side = 2, 
+       at = selected.tutorials, labels=paste("Tut.", selected.tutorials), 
+       las = 1, 
+       font = 2) # BOLD text
+  
+  for (i in (1:num.tutorials)){
+    points(1:num.students.in.tutorials[i], rep(i, num.students.in.tutorials[i]),
+           col = "grey" )
+  }
+  title(xlab = paste("Selected classes:", paste( sort(selected.tutorials), collapse = ", ")))
+  
+  
+  plot( c(1, max.tutorial), c(1, num.tutorials),
+        type = "n",
+        main = "Cluster sampling",
+        axes = FALSE,
+        xlab = "",
+        ylab = "")
+  axis(side = 2, 
+       at = 1:num.tutorials, labels=paste("Tut.", 1:num.tutorials), 
+       las = 1)
+  axis(side = 2, 
+       at = selected.tutorials, labels=paste("Tut.", selected.tutorials), 
+       las = 1, 
+       font = 2) # BOLD text
+  
+  for (i in (1:num.tutorials)){
+    sample.pch <- ifelse( i %in% selected.tutorials, 15, 1)
+    sample.col <- ifelse( i %in% selected.tutorials, "darkolivegreen4", "grey")
+    sample.cex <- ifelse( i %in% selected.tutorials, 1.2, 1)
+    
+    points(1:num.students.in.tutorials[i], rep(i, num.students.in.tutorials[i]),
+           pch = sample.pch,
+           col = sample.col,
+           cex = sample.cex)
+  }
+  title(xlab = paste("Selected classes:", paste( sort(selected.tutorials), collapse=", ")))
+}
+```
+
+
+
+```{r Cluster40, echo=FALSE, fig.align="center", fig.width=7, fig.height=6, fig.cap="Taking a cluster random sample of size 40, using the tutorials as clusters" }
+if (knitr::is_latex_output()) {
+    # CLUSTER
+
+  set.seed(123450)
+  sample.size <- 40
+  num.x <- 21
+  num.y <- 21
+  total.number <- num.x * num.y
+  
+  num.tutorials <- 20
+  num.students.in.tutorials <- array( NA, dim = num.tutorials) 
+  
+  for (i in (1:(num.tutorials-1))){
+    num.students.in.tutorials[i] <- sample(19:25, 1)
+  }
+  num.students.in.tutorials[ num.tutorials] <- total.number - sum( num.students.in.tutorials, na.rm = TRUE)
+  max.tutorial <- max(num.students.in.tutorials)
+  
+
+  
+  selected.tutorials <- sample(1: num.tutorials, 2)
+
+  
+  plot( c(1, max.tutorial), c(1, num.tutorials),
+        type = "n",
+        main = "Cluster sampling",
+        axes = FALSE,
+        xlab = "",
+        ylab = "")
+  axis(side = 2, 
+       at = 1:num.tutorials, 
+       labels = paste("Tut.", 1:num.tutorials), 
+       las = 1)
+  axis(side = 2, 
+       at = selected.tutorials, 
+       labels = paste("Tut.", selected.tutorials), 
+       las = 1, 
+       font = 2) # BOLD text
+  
+  for (i in (1:num.tutorials)){
+    sample.pch <- ifelse( i %in% selected.tutorials, 15, 1)
+    sample.col <- ifelse( i %in% selected.tutorials, "darkolivegreen4", "grey")
+    sample.cex <- ifelse( i %in% selected.tutorials, 1.2, 1)
+    
+    points(1:num.students.in.tutorials[i], rep(i, num.students.in.tutorials[i]),
+           pch = sample.pch,
+           col = sample.col,
+           cex = sample.cex)
+  }
+  title(xlab = paste("Selected classes:", paste( sort(selected.tutorials), collapse = ", ")))
+}
+```
+
+
+
+
+
+
+## Multistage sampling {#MultistageSampling}
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "10%", out.extra='style="float:left; padding:10px"'}
+include_graphics("Pics/iconmonstr-view-4-240.png")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+In **multistage sampling**,\index{multistage sampling}
+large groups are selected using a *simple random sample*,
+then smaller groups within those large groups are selected using a *simple random sample*.
+The simple randomly sampling can continue for as many levels as necessary.
+
+
+```{example name="Multistage sampling"}
+To select students in this course again,
+a *simple random* sample of (say) ten of the many tutorials could be selected (Stage 1),
+and then 4 people *randomly* selected 
+from each of these 10 selected tutorials (Stage 2).
+```   
+
+
+`r if (knitr::is_latex_output()) {
+   'Figure \\@ref(fig:Multistage40) shows a diagram of selecting approximately 40 students using multistage sampling, by randomly selecting 10 classes at random in Stage 1, then randomly selecting students from each class in Stage 2. (The online version has an animation.)'
+} else {
+   'The animation below shows how a sample of approximately 40 students could be obtained using multistage sampling, by randomly selecting 10 classes at random in Stage 1, then randomly selecting students from each class in Stage 2.'
+}`
+
+
+
+
+```{r echo=FALSE, animation.hook="gifski", cache=TRUE, interval=0.75}
+if (knitr::is_html_output()){
+   ### MULTI-STAGE
+
+  set.seed(123450)
+  sample.size <- 40
+  num.x <- 21
+  num.y <- 21
+  total.number <- num.x * num.y
+  
+  num.tutorials <- 20
+  num.students.in.tutorials <- array( NA, dim = num.tutorials) 
+  
+  for (i in (1:(num.tutorials-1))){
+    num.students.in.tutorials[i] <- sample(19:25, 1)
+  }
+  num.students.in.tutorials[ num.tutorials] <- total.number - sum( num.students.in.tutorials, na.rm = TRUE)
+  max.tutorial <- max(num.students.in.tutorials)
+  
+  
+  plot( c(1, max.tutorial), c(1, num.tutorials),
+        type = "n",
+        main = "Multistage sampling",
+        axes = FALSE,
+        xlab = "",
+        ylab = "")
+  axis(side = 2, 
+       at = 1:num.tutorials, 
+       labels = paste("Tut.", 1:num.tutorials), 
+       las = 1)
+  
+  
+  selected.tutorials <- sample(1: num.tutorials, 10)
+  
+  plot( c(1, max.tutorial), c(1, num.tutorials),
+        type = "n",
+        main = "Multistage sampling",
+        axes = FALSE,
+        xlab = "",
+        ylab = "")
+  axis(side = 2, 
+       at = 1:num.tutorials, 
+       labels = paste("Tut.", 1:num.tutorials), 
+       las = 1)
+  for (i in (1:num.tutorials)){
+    points(1:num.students.in.tutorials[i], rep(i, num.students.in.tutorials[i]), 
+           col = "grey" )
+  }
+  title(xlab = paste("Selected classes:", paste( sort(selected.tutorials), collapse = ", ")))
+  
+  
+  plot( c(1, max.tutorial), c(1, num.tutorials),
+        type = "n",
+        main = "Multistage sampling",
+        axes = FALSE,
+        xlab = "",
+        ylab = "")
+  axis(side = 2, 
+       at = 1:num.tutorials, 
+       labels=paste("Tut.", 1:num.tutorials), 
+       las = 1)
+  axis(side = 2, 
+       at = selected.tutorials, 
+       labels=paste("Tut.", selected.tutorials), 
+       las = 1, 
+       font = 2) # BOLD text
+  
+  for (i in (1:num.tutorials)){
+    if ( i %in% selected.tutorials){
+      points(1:num.students.in.tutorials[i], rep(i, num.students.in.tutorials[i]), col="black" )
+    } else {
+      points(1:num.students.in.tutorials[i], rep(i, num.students.in.tutorials[i]), col="grey" )
+    }
+  }
+  title(xlab = paste("Selected classes:", paste( sort(selected.tutorials), collapse=", ")))
+  
+  
+  num.students.selected.each.tutorial <- 4
+  plot( c(1, max.tutorial), c(1, num.tutorials),
+        type = "n",
+        main = "Multistage sampling",
+        axes = FALSE,
+        xlab = "",
+        ylab = "")
+  axis(side = 2, 
+       at = 1:num.tutorials, 
+       labels = paste("Tut.", 1:num.tutorials), 
+       las = 1)
+  axis(side = 2, 
+       at = selected.tutorials,
+       labels = paste("Tut.", selected.tutorials), 
+       las = 1, 
+       font = 2) # BOLD text
+  
+  for (i in (1:num.tutorials)){
+    sample.pch <- rep(1, (num.students.in.tutorials[i]))
+    sample.col <- rep("grey", (num.students.in.tutorials[i]))
+    sample.cex <- rep(1, (num.students.in.tutorials[i]))
+    
+    
+    if ( i %in% selected.tutorials){
+      sample.col <- rep("black", (num.students.in.tutorials[i]))
+      selected.students <- sample(1 : num.students.in.tutorials[i], num.students.selected.each.tutorial)
+      sample.pch[selected.students] <- 15
+      sample.col[selected.students] <- "green"
+      sample.cex[selected.students] <- 1.2
+      
+    }
+    
+    points(1:num.students.in.tutorials[i], rep(i, num.students.in.tutorials[i]),
+           pch=sample.pch,
+           col=sample.col,
+           cex=sample.cex)
+  }
+  title(xlab = paste("Selected classes:", paste( sort(selected.tutorials), collapse=", ")))
+  title(sub = "Stage 1: Select classes.  Stage 2: Select students in those classes")
+}
+```
+
+
+
+
+```{r Multistage40, echo=FALSE, fig.align="center", fig.width=7, fig.height=6, fig.cap="Taking a multistage random sample of size 40, by randomly selecting 10 classes at random in Stage 1, then randomly selecting students from each class in Stage 2" }
+if (knitr::is_latex_output()){
+   ### MULTI-STAGE
+
+  set.seed(123450)
+  sample.size <- 40
+  num.x <- 21
+  num.y <- 21
+  total.number <- num.x * num.y
+  
+  num.tutorials <- 20
+  num.students.in.tutorials <- array( NA, dim = num.tutorials) 
+  
+  for (i in (1:(num.tutorials-1))){
+    num.students.in.tutorials[i] <- sample(19:25, 1)
+  }
+  num.students.in.tutorials[ num.tutorials] <- total.number - sum( num.students.in.tutorials, na.rm = TRUE)
+  max.tutorial <- max(num.students.in.tutorials)
+  
+  selected.tutorials <- sample(1: num.tutorials, 10)
+  
+  num.students.selected.each.tutorial <- 4
+  plot( c(1, max.tutorial), c(1, num.tutorials),
+        type = "n",
+        main = "Multistage sampling",
+        axes = FALSE,
+        xlab = "",
+        ylab = "")
+  axis(side = 2, 
+       at = 1:num.tutorials, 
+       labels = paste("Tut.", 1:num.tutorials), 
+       las = 1)
+  axis(side = 2, 
+       at = selected.tutorials, 
+       labels = paste("Tut.", selected.tutorials), 
+       las = 1, 
+       font = 2) # BOLD text
+  
+  for (i in (1:num.tutorials)){
+    sample.pch <- rep(1, (num.students.in.tutorials[i]))
+    sample.col <- rep("grey", (num.students.in.tutorials[i]))
+    sample.cex <- rep(1, (num.students.in.tutorials[i]))
+    
+    
+    if ( i %in% selected.tutorials){
+      sample.col <- rep("black", (num.students.in.tutorials[i]))
+      selected.students <- sample(1 : num.students.in.tutorials[i], num.students.selected.each.tutorial)
+      sample.pch[selected.students] <- 15
+      sample.col[selected.students] <- "green"
+      sample.cex[selected.students] <- 1.2
+      
+    }
+    
+    points(1:num.students.in.tutorials[i], rep(i, num.students.in.tutorials[i]),
+           pch = sample.pch,
+           col = sample.col,
+           cex = sample.cex)
+  }
+  title(xlab = paste("Selected classes:", paste( sort(selected.tutorials), collapse = ", ")))
+}
+```
+
+
+
+
+
+
+
+
+```{example name="Multistage sampling"}
+Multistage sampling is often used by the 
+Australian Bureau of Statistics (ABS).
+For example,
+to obtain a random sample of Queenslanders,
+one procedure is:
+
+* Stage 1: Randomly select some cities in Queensland;
+* Stage 2: Randomly select some suburbs in these chosen cities;
+* Stage 3: Randomly select some streets in these chosen suburbs;
+* Stage 4: Randomly select some houses in these chosen streets.
+
+This is cheaper than simple random sampling,
+as data collectors can be employed in a smaller number of Queensland cities
+(only those chosen in Stage 1).
+```
+
+
+
+
+## Representative sampling {#Representative-samples}
+
+Obtaining a truly random sample is usually hard or impossible,
+and
+the best we can do is to select
+a sample that we hope is *representative*\index{representative samples}
+of the population.
+Even so,
+the results from any non-random sample
+*may not generalise* to the intended population.
+The results will generalise to the population which the sample *does* represents.
+
+Ideally,
+even if obtaining a random sample is impossible,
+prefer a sample where those *in* the sample
+are not likely to be different than those *not in* the sample,
+at least for the variables of interest.
+
+
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "20%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/pexels-thisisengineering-3912979.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+```{example name="Representative sample"}
+A randomly-chosen group of Queensland and Northern Territory residents 
+is asked to evaluate two types of hand prosthetics.
+
+It is probable (but not certain) that their views 
+would be similar to those all of Australians.
+There is no obvious reason why 
+residents of Queensland and the Northern Territory would be very different from 
+residents in the rest of Australia,
+regarding their view of hand prosthetics.
+	
+Even though the sample is not a random sample of all Australians,
+the results *may* generalise to all Australians
+(though we cannot be sure).
+```
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "20%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/pexels-juergen-striewski-301048.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+```{example AirConUse, name="Non-representative samples"}
+Suppose we wish to determine the average time per day that
+Australia households use their air-conditioners for *cooling* in summer. 
+
+If a group of Queensland and Northern Territory residents is asked,
+this sample would not be expected to represent all Australians:
+it would *over*-represent the average number of hours 
+air-conditioners are used for *cooling* in summer.
+
+In this case, 
+those *in* the sample are likely to be very different
+to those *not in* the sample,
+regarding
+their air-conditioners usage for *cooling* in winter.
+
+In contrast,
+suppose a group of Tasmanians was asked the same question.
+This second sample would not be expected to represent all Australians either
+(it would *under*-represent).
+
+Again,
+those *in* the sample are likely to be very different
+to those *not in* the sample,
+regarding
+their air-conditioners usage for *cooling* in winter.
+```	
+
+
+Sometimes, a *combination*
+of different sampling methods is used.
+		
+```{example, name="A combination of sampling methods"}
+In a study of pathogens present on magazines in doctors' surgeries in Melbourne,
+some suburbs can be selected at *random*, 
+and then (within each suburb)
+surgeries are used which *volunteer* to be part of the study. 
+```
+
+
+```{block2, type="exampleExtra"}
+In a study of diets of children at child-care centres,
+researchers used samples in 2010 and 2016,
+described as follows:
+   
+> In 2010, 
+> a stratified random sampling procedure was used to
+> select representative cross-sections of providers 
+> working in licensed center-based programs and 
+> licensed providers of family home-based care from publically available lists. 
+> [...] Additional participants were also recruited in 2016 
+> using a combination of stratified random and open, convenience-based sampling. 
+>
+> --- @larson2019staff, p. 336
+
+```
+
+
+Sometimes,
+practicalities override how the sample can be obtained,
+which may not result in a random sample.
+Even so,
+the impact of this on the conclusions shoud be noted
+(that is, in discussing the limitations of the study).
+Sometimes,
+ways exist to obtain a sample
+that is *more likely* to be representative.
+
+
+```{block2, type="rmdimportant"}
+Random samples are often difficult to obtain,
+and sometimes *representative* samples 
+are the best that can be done.
+
+In a good representative sample,
+those *in* the sample are not obviously different
+than those *not in* the sample.
+Try to ensure a broad cross-section of
+the target population appears in the sample.
+```
+
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "40%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/pexels-lina-kivaka-3395280.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+```{example name="Attempts to increase representativeness"}
+To find a sample of USC students at Sippy Downs,
+students at Cafe C could be approached
+every Monday morning at 8am, for four consecutive weeks.
+
+This is a *convenience* sample,
+and not a random sample.
+However,
+the sample would be
+*more likely* to be representative
+if a broader cross-section of students was approached:
+
+* Students at Cafe C on Monday at 8am;
+* Students at the Brasserie on Tuesday at 11:30am; and
+* Students entering the library on Thursdays at 2pm.
+
+This is still not a *random* sample,
+but the sample now comprises more than
+just students who attend university on Mondays
+at 8am, at Cafe C.
+
+Ideally,
+**student would not be included more than once in our sample**,
+though this is difficult to ensure.
+```
+
+
+```{lemma SamplingBearings, name="Sampling"}
+To assess the quality of bearings from a manufacturer,
+a researcher takes a random sample of 25 bearings 
+from *each* of the 
+three cases delivered.
+
+What type of sampling scheme is being used?
+```   
+
+
+```{block2, type="fold"}
+Stratified sampling.
+```
+
+
+Sometimes,
+information may be recorded from those in the sample,
+and this information used this to make some comment
+about whether our sample seems reasonably representative.
+
+For example,
+the sex and age of a sample of USC students may be recorded;
+if the proportion of females in the sample,
+and the average age of students in the sample,
+are similar to those of the whole USC population,
+then the
+sample may be somewhat representative of the population.
+(though we cannot be sure). 
+
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "40%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/pexels-rathaphon-nanthapreecha-3846205.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+```{example CFSamplePop, name="Comparing samples and populations"}
+A study of the adoption of electric vehicles (EVs)
+by Americans
+[@egbue2017mass]
+used a sample of $n=121$ found through
+social media (such as Facebook)
+and professional engineering channels.
+This is not a random sample.
+
+The authors compared some characteristics
+of the sample with the American population 
+from the 2010 census
+(Table \@ref(tab:EVAsdoptCompare)),
+stating:
+   
+> The sample has a higher representation of males 
+> and individuals in the 18--44 age group [...] 
+> compared to the US population.
+> In addition, the sample has a higher representation
+> of [...] wealthier individuals. 
+>
+> --- @egbue2017mass, p. 1931
+
+In interpreting the results of this
+study,
+the authors say:
+
+> ...the results of this study 
+> are more applicable to people with an 
+> engineering or technical background... 
+>
+> --- @egbue2017mass, p. 1931
+
+```
+
+
+```{r EVAsdoptCompare, echo=FALSE}
+EVAdopt <- array( dim=c(9, 2))
+
+colnames(EVAdopt) <- c("Sample", "Population")
+rownames(EVAdopt)<- c("Male", "Female",
+							"Under 18", "18--44", "45--64", "65 and older",
+							"Under $75,000","$75,000 and over", "Prefer not to say")
+
+EVAdopt[1, ] <- c(77.68, 49.20)
+EVAdopt[2, ] <- c(22.32, 50.80)
+EVAdopt[3, ] <- c( 0.00, 24.00)
+EVAdopt[4, ] <- c(55.36, 36.50)
+EVAdopt[5, ] <- c(31.25, 26.40)
+EVAdopt[6, ] <- c(13.39, 13.00)
+EVAdopt[7, ] <- c(28.56, 67.49)
+EVAdopt[8, ] <- c(51.78, 22.51)
+EVAdopt[9, ] <- c(19.64,  0.00)
+
+
+
+if( knitr::is_latex_output() ) {
+  kable(EVAdopt,
+        format = "latex",
+        longtable = FALSE,
+      booktabs = TRUE,
+      caption = "Comparing the sample and the population (in percentages), for the EV study") %>%
+	kable_styling(font_size=10) %>%
+	row_spec(0, bold = TRUE) %>%
+   pack_rows("Gender", 1, 2) %>%
+   pack_rows("Age", 3, 6) %>%
+   pack_rows("Annual income", 7, 9)
+}
+
+if( knitr::is_html_output() ) {
+  kable(EVAdopt,
+        format = "html",
+        longtable = FALSE,
+      booktabs = TRUE,
+      caption = "Comparing the sample and the population (in percentages), for the EV study") %>%
+   pack_rows("Gender", 1, 2) %>%
+   pack_rows("Age", 3, 6) %>%
+   pack_rows("Annual income", 7, 9)
+}
+```
+
+
+
+
+
+
+## Bias in selecting samples
+   
+The sample may not be representative of the population for many reasons,
+all of which compromise how well the sample represents the population
+(i.e., compromises *external* validity).
+This is called *bias*.
+Biased samples are less likely to produce externally valid studies.
+
+
+```{definition, Bias, name="Bias"}
+*Bias*\index{bias}
+is the tendency of a sample to over- or under-estimate a population quantity.
+```
+
+
+More formally:
+
+> ...bias is the introduction of systematic error, subconsciously or otherwise, 
+> in the design, data collection, data analysis, or publication of a study.
+>
+> --- @sedgwick2014non
+
+In *selection bias*,\index{selection bias}
+the wrong sampling frame may be used,
+or non-random sampling is used.
+The sample is biased
+because
+those *in* the sample may be different than those *not in* the sample.
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "15%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/pexels-juergen-striewski-301048.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+```{example name="Selection bias"}
+Consider Example \@ref(exm:AirConUse),
+about estimating the average time per day that air conditioners 
+are used for cooling in summer.
+
+Using people only from Queensland and the Northern Territory in the sample
+is using the wrong sampling frame: 
+the sampling frame does not represent the target population ('Australians').
+This is *selection bias*.
+```
+
+
+*Non-response bias*\index{non-response bias}
+occurs when 
+chosen participants do not respond for some reason.
+The problem is that
+the responses from those who *do not* respond
+may be different than the responses who *do* respond.
+Non-response bias can occur because of a poorly-designed survey,
+using voluntary-response sampling,
+chosen participants refusing to participate,
+participants forgetting to return completed surveys,
+etc.
+
+
+```{example name="Non-response bias"}
+Consider a study to determine the average number of hours
+of overtime worked by various professions.
+People who work a large amount of overtime are likely to be too busy
+to answer the survey.
+
+Those who answer the survey may be likely to work less overtime
+than those who do not answer the survey.
+This is an example of *non-response bias*.
+```
+
+
+*Response bias* occurs when 
+participants provide *incorrect information*:
+the answers provided by the participants may not reflect the truth.
+This may be intentional
+(for example, if the survey questions are very personal or controversial in nature)
+or non-intentional
+(for example, if the question is poorly written or is misunderstood).
+
+
+```{lemma SamplingOnline, name="Sampling"}
+One (true) survey concluded
+(@data:Heiger:Homebuyer, cited in @bock2010stats, p. 283):
+
+> All but 2% of the home buyers 
+> have at least one computer at home,
+> and 62% have two or more.
+> Of those with a computer,
+> 99% are connected to the internet.
+
+The article later reveals the survey 
+was conducted *on-line* (and recall the survey was done in 2001...).
+What type of bias is apparent?
+```
+
+
+```{block2, type="fold"}
+Non-response bias.
+```
+
+
+```{lemma BiasEG, name="Bias"}
+For these samples,
+to what populations will results generalise?
+  
+* Obtaining data using a telephone survey.
+* Obtaining data using a  TV stations call-in.
+* Asking your friends to participate because it is easier than finding a random sample.
+
+For each of the above samples, 
+give an example of an outcome 
+which would be likely to *over*-estimate the true (population) value.
+```
+
+
+
+
+## Final example {#Final-Example}
+
+As a demonstration sampling schemes
+[@mypapers:ExperientialLearningStats],
+consider taking a [*non-random* sample](#NonRandomSamples) of 
+10% of the pixels of an image
+(Fig. \@ref(fig:Sampling-NonRandom)).
+What is the image?
+Seeing the **big picture** is hard using these non-random samples.
+
+
+```{r Sampling-NonRandom, echo=FALSE, out.width='49%', fig.align="center", fig.cap="Non-random samples from an image: 5 percent of pixels (top left); 10 percent of pixels (top right); 25 percent of pixels (bottom left); 50 percent of pixels (bottom right)", fig.show="hold"}
+knitr::include_graphics( c('Sampling/crazy-emotion-eyewear-2015-SMALLER-NonR05-boxed.png',
+                           'Sampling/crazy-emotion-eyewear-2015-SMALLER-NonR10-boxed.png',
+                           'Sampling/crazy-emotion-eyewear-2015-SMALLER-NonR25-ALT-boxed.png',
+                           'Sampling/crazy-emotion-eyewear-2015-SMALLER-NonR50-boxed.png') )
+```
+
+
+In contrast,
+taking [*simple random sample*](#SRS) makes the **big picture** much clearer
+(Fig. \@ref(fig:Sampling-Random)).
+
+```{r Sampling-Random, echo=FALSE, out.width='49%', fig.align="center", fig.cap="Random samples from an image: 5 percent of pixels (top left); 10 percentof pixels (top right); 25 percent of pixels (bottom left); 50 percent of pixels (bottom right)", fig.show="hold"}
+knitr::include_graphics( c( 'Sampling/crazy-emotion-eyewear-2015-SMALLEST-R05.png',
+                            'Sampling/crazy-emotion-eyewear-2015-SMALLEST-R10.png',
+                            'Sampling/crazy-emotion-eyewear-2015-SMALLEST-R25.png',
+                            'sampling/crazy-emotion-eyewear-2015-SMALLEST-R50.png') )
+```
+
+
+Indeed,
+*any* type of random sample makes seeing the **big picture** easier.
+
+For example, 
+for a [*cluster sample*](#ClusterSampling) we treat each *column* as a cluster, 
+and select some *columns* at random.
+Then,
+the entire chosen columns are selected.
+
+
+```{r animation.hook="gifski", cache=TRUE, echo=FALSE, interval=1.5}
+if (knitr::is_html_output()){
+   for (i in 1:4){
+      if (i == 1) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R05-cluster.png') ))
+      if( i == 2) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R10-cluster.png') ))
+      if (i == 3) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R25-cluster.png') ))
+      if (i == 4) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R50-cluster.png') ))
+   }
+}
+```
+
+For a [*systematic sample*](#SystematicSampling),
+we take:
+
+* every 20th pixel for a 5% sample;
+* every 10th pixel for a 10% sample;
+* every 4th pixel for a 25% sample; and
+* every second pixel for a 50% sample.
+
+
+```{r animation.hook="gifski", cache=TRUE, echo=FALSE, interval=1.5}
+if (knitr::is_html_output()){
+   for (i in 1:4){
+      if (i == 1) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R05-systematic.png') ))
+      if( i == 2) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R10-systematic.png') ))
+      if (i == 3) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R25-systematic.png') ))
+      if (i == 4) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R50-systematic.png') ))
+   }
+}
+```
+
+
+
+For a [*multi-stage sample*](#MultistageSampling) we select some columns at random,
+then select some pixels in those columns at random.
+
+```{r animation.hook="gifski", cache=TRUE, echo=FALSE, interval=1.5}
+if (knitr::is_html_output()){
+   for (i in 1:4){
+      if (i == 1) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R05-multistage.png') ))
+      if( i == 2) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R10-multistage.png') ))
+      if (i == 3) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R25-multistage.png') ))
+      if (i == 4) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R50-multistage.png') ))
+   }
+}
+```
+
+
+
+For a [*stratified sample*](#StratifiedSampling),
+we select :
+
+* a simple random sample from the background greenery, and then
+* a simple random sample from the person.
+
+These two are then combined to get an overall random sample.
+
+
+```{r animation.hook="gifski", cache=TRUE, echo=FALSE, interval=1.5}
+if (knitr::is_html_output()){
+   for (i in 1:(20)) {
+      if (i == 1) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R05-stratified-GREENERY.png') ))
+      if (i == 2) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R05-stratified-NONGREENERY.png') ))
+      if (i == 3) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R05-stratified-COMBINED.png') ))
+      if (i == 4) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-WHITE.png') ))
+      if (i == 5) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-WHITE.png') ))
+         
+      if( i == 6) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R10-stratified-GREENERY.png') ))
+      if( i == 7) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R10-stratified-NONGREENERY.png') ))
+      if( i == 8) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R10-stratified-COMBINED.png') ))
+      if( i == 9) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-WHITE.png') ))
+      if( i == 10) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-WHITE.png') ))
+
+      if (i == 11) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R25-stratified-GREENERY.png') ))
+      if (i == 12) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R25-stratified-NONGREENERY.png') ))
+      if (i == 13) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R25-stratified-COMBINED.png') ))
+      if (i == 14) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-WHITE.png') ))
+      if (i == 15) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-WHITE.png') ))
+      
+      if (i == 16) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R50-stratified-GREENERY.png') ))
+      if (i == 17) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R50-stratified-NONGREENERY.png') ))
+      if (i == 18) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-R50-stratified-COMBINED.png') ))
+      if (i == 19) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-WHITE.png') ))
+      if (i == 20) plot( as.raster( readPNG('Sampling/crazy-emotion-eyewear-2015-SMALLEST-WHITE.png') ))
+   }
+}
+```
+
+
+
+
+
+
+## Summary {#Chap5-Summary}
+
+Almost always,
+the entire population of interest cannot be studied, 
+so a **sample** (a subset of the population) must be studied.
+Samples can be **random samples** or **non-random samples**.
+Conclusions made from random samples can usually be generalized to the population
+(that is, they are externally valid).
+
+Random sampling methods include **simple random samples**,
+**systematic samples**, **stratified samples**, **cluster samples** and **multi-stage samples**.
+Random samples are likely to be *externally valid*.
+Non-random sampling methods include 
+**convenience samples**, **judgement samples** and **self-selecting samples**.
+
+Random samples are often very difficult to obtain,
+so the best we can do is to aim for **reasonably representative** samples,
+where those who *are* in the sample are
+ unlikely to be different than those who *are not* in the sample.
+Non-random samples *may not be externally valid*.
+
+
+`r if (knitr::is_html_output()){
+  'The following video may be helpful.'
+}`
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/KyuaX10l3GQ" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+
+
+## Quick review questions  {#Chap5-QuickReview}
+
+1. Suppose we randomly select a student and send them a postal survey,
+but the student has moved address and so never receives the survey.
+What type of bias will this result in?  
+`r if( knitr::is_html_output() ) {mcq( c(
+	"Selection bias",
+	"Response bias",
+	answer = "Non-response bias"))}`
+1. What is the main advantage of using a *random* sample?  
+`r if( knitr::is_html_output() ) {mcq( c(
+	"It is easier.",
+	"It is more likely to produces an internally-valid study.",
+	answer = "It is more likely to produces an externally-valid study.",
+	"It is more likely to produce precise estimates."))}`
+1. What is the main advantage of using a *large* sample?  
+`r if( knitr::is_html_output() ) {mcq( c(
+	"It is easier.",
+	"It is more likely to produces an internally-valid study.",
+	"It is more likely to produces an externally-valid study.",
+	answer = "It is more likely to produce precise estimates."))}`
+1. A *large* sample is always better than a *random* sample: True or false?  
+`r if( knitr::is_html_output() ) {torf( answer=FALSE )}`
+1. Suppose I classify a natural forest region into two zones, which are quite different:
+Region A is mostly dunes and lightly vegetated, and is on the coastal side of a ridge;
+Region B is more densely vegetated and on the inland side of the ridge.
+I then take samples of sugar ants (*Camponotus app*) from each zone to study their size.
+What is the best description of the *type* of sampling method being used?  
+`r if( knitr::is_html_output() ) {mcq( c(
+	         "Simple random sampling",
+	         "Cluster sampling",
+	answer = "Stratified sampling",
+	         "Multi-stage sampling",
+	         "Voluntary response sampling"))}`
+
+
+
+
+
+<!-- ####################### REVIEW QUESTIONS ##################################### -->
+```{r, child = if (knitr::is_html_output()) './children/ReviewQuestions/ReviewQuestions-Chapter4.Rmd'}
+```
+
+
+
+
+
+
+## Exercises {#SamplingExercises}
+
+Selected answers are available in
+Sect. \@ref(SamplingAnswer).
+
+```{exercise SamplingBooks}
+Suppose we needed to estimate the average number of pages 
+in a book in the USC library (including all campuses),
+using a sample of 200 books.
+
+1. Describe how you might select a *simple random sample* of books.
+1. Describe how you might select a *stratified sample* of books.
+1. Describe how you might select a *cluster sample* of books.
+1. Describe how you might select a *convenience sample* of books.
+1. Describe how you might select a *multi-stage sample* of books.
+1. Which would be most *practical*?
+
+```
+
+
+
+
+```{exercise SamplingParking}
+Suppose we needed a sample of 80 vehicles parking at USC (Sippy Downs), 
+and we wish to determine the proportion displaying P plates.
+Determine a useful way to find a suitable representative sample.
+The map below of the USC Sippy Downs campus may prove helpful
+(where areas labelled P are car parks).
+```
+
+```{r echo=FALSE}
+# From : http://rstudio.github.io/leaflet/
+
+m <- leaflet() %>%
+   setView(lng=153.064970, lat=-26.716504, zoom=15.5) %>%
+  addTiles() %>%  # Add default OpenStreetMap map tiles
+  addMarkers(lng=153.064970, lat=-26.716504, popup="USC (Sippy Downs Campus)")
+m 
+```
+
+
+
+
+
+```{exercise SamplingApartments}
+Suppose we need a sample of 20 residents 
+from apartments in a large residential apartment complex,
+comprising 20 floors with 30 apartments in each floor.
+We plan to interview the residents of these apartments.
+
+1. One approach to obtaining a sample is to randomly select five floors,
+   then randomly select four apartments from each of those five floors, 
+   and interview the oldest resident of that apartment.
+   What type of sampling scheme is this?
+1. Another approach is to select one floor at random, 
+   and select the first 20 apartments on that floor
+   then interview the oldest resident of that apartment.
+   What type of sampling scheme is this?
+1. Another approach is to wait at the ground-floor elevator, 
+   and ask people who emerge to participate in our interview.
+   What type of sampling scheme is this?
+1. Another approach is to select five floors at random, 
+   then wait by the elevator and interview residents as they arrive at the elevator.
+   What type of sampling scheme is this?
+1. Which of the above sampling methods are good, 
+   and which are poor? Explain your answers.
+
+```
+
+
+
+```{exercise SamplingShoppingCentre}
+Suppose a researcher needs a sample of customers 
+who shop at a large, local shopping centre to complete a survey.
+
+1. The researcher stations themselves outside the 
+   supermarket at the shopping centre one morning, 
+   and approaches every 10th person who walks past. 
+   What is the sampling method?
+1. The researcher waits at the main entrance for 30 minutes 
+   at 8am every morning for a week, and approaches every 5th person. 
+   What is the sampling method?
+1. The researcher leaves a pile of survey forms at an 
+   unattended booth in the shopping centre, 
+   and a locked barrell in which to place completed surveys.
+   What is the sampling method?
+1. The researcher goes to the shopping centre every day for two weeks, 
+   at a different time and location each day, 
+   and approaches someone every 15 minutes.
+   What is the sampling method?
+1. Which would the best sampling method?
+1. Which (if any) of the methods produce a random sample?
+
+```
+
+
+
+```{exercise SamplingSchools}
+A study 
+[@ridgewell2009school]
+investigated how children in Brisbane travel to state schools. 
+Suppose researchers randomly sampled four schools from a list of Brisbane state schools,
+and invited every family at each of those four schools to complete a survey. 
+
+What type of sampling method is this?
+```
+
+
+
+

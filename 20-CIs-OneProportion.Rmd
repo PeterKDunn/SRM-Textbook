@@ -1,0 +1,2173 @@
+
+
+# Confidence intervals for one proportion {#CIOneProportion}
+
+```{block2, type="rmdobjectives"}
+So far,
+you have learnt to
+ask a RQ, 
+identify different ways of obtaining data,
+design the study,
+collect the data
+describe the data,
+summarise data graphically and numerically,
+and
+understand the tools of inference.
+
+**In this chapter**,
+you will learn about *confidence intervals* for one proportion.
+You will learn to:
+
+* identify situations where the analysis of one sample proportion is appropriate.
+* form confidence intervals for single proportions.
+* estimate the sample size needed to estimate a proportion within given constraints.
+
+```
+
+
+
+
+
+```{r echo=FALSE, fig.cap="", fig.align="center", fig.width=3, out.width="35%"}
+SixSteps(5, "CIs: One proportion")
+```
+
+
+```{r echo=FALSE}
+library(knitr)
+# set global chunk options
+options(formatR.arrow = TRUE,
+        width = 90)
+```
+
+
+
+
+## Sampling distribution: Known proportion {#SamplingDistributionKnownp}
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "40%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/pexels-skitterphoto-705171.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+
+Suppose a fair, six-sided 
+die^[Note the language: two *dice*, but one *die*. *Dice* is plural.]
+is rolled 25 times.
+What proportion of the rolls will produce an even number?
+That is,
+what will be the *sample proportion* of even numbers?
+
+No-one knows exactly what will happen for *any* individual roll,
+so no-one knows what proportion will be even for any set of 25 rolls.
+
+In addition,
+the proportion of the 25 rolls that will be even
+will not be the same for every set of 25 rolls.
+The sample proportion will *vary*: 
+there is *sampling variation*.
+
+Describing *how* the sample proportion 
+varies from sample to sample is useful (Sect. \@ref(ExpectationOf)).
+
+To do this,
+statistical theory could be used...
+or thousands of repetitions of a set of 25 rolls could be performed...
+or a computer could *simulate* many sets of 25 rolls.
+
+Let's simulate rolling a die 25 times, 
+using just 10 sets of 25 rolls;
+`r if (knitr::is_latex_output()) {
+   'see Fig. \\@ref(fig:RollDiceFig) (the online version has an animation).'
+} else {
+   'see the animation below.'
+}`
+
+
+```{r RollDice, echo=FALSE, animation.hook="gifski", cache=TRUE, interval=0.5}
+if (knitr::is_html_output()){
+  
+  set.seed(99999)
+    num.rolls <- 25
+    num.sims <- 10
+    x.loc <- 1:(num.rolls)
+    y.loc <- 1
+    prop.even <- array(dim = num.sims)
+    all.rolls <- array( dim = c(num.sims, num.rolls))
+    for (i in 1:num.sims){
+      
+      plot( c(1, (num.rolls+2)), c(1, num.sims),
+            type = "n",
+            las = 1,
+            xlab = "",
+            ylab = "",
+            main= paste("Set number",i),
+            axes = FALSE)
+      roll <- sample(1:6, num.rolls, replace=TRUE)
+      all.rolls[i, ] <- roll
+      prop.even[i] <- sum(roll/2 == floor(roll/2)) / num.rolls
+      
+      col1 <- col2rgb("darkolivegreen2")
+      col2 <- col2rgb("indianred2")
+      
+      for (j in 1:i){
+        
+        text(y = j, x = 1:num.rolls,
+             labels = all.rolls[j, ],
+             col = ifelse( all.rolls[j,]/2 == floor(all.rolls[j,]/2), "black", "grey") )
+
+              # Add some slight background colour under the sample proportions
+              polygon( c(num.rolls + 1, num.rolls + 1, num.rolls + 3, num.rolls + 3),
+                       c(j-0.5, j+0.5, j+0.5, j-0.5),
+                       border = NA,
+                       col = ifelse( prop.even[j] > 0.5, rgb( col1[1], col1[2], col1[3], alpha = 75, max = 255), 
+                                                         rgb( col2[1], col2[2], col2[3], alpha = 75, max = 255) ) )
+      }
+      # Add p-hat heading
+      mtext(expression(hat( italic(p) ) ), 
+            side = 3, 
+            line = 0, 
+            at = num.rolls + 2 )
+      # Add the roll number to the left-hand side
+      axis(side = 2, 
+           at = 1:i,
+           las = 1,
+           labels = paste("Set #", 1:i, sep="") )
+      
+      # Add the sample proportion to right-hand side 
+      text(num.rolls+2, 1:i, 
+           labels = format(round(prop.even[1:i], 2), 
+                           nsmall = 2) )
+      
+      
+      #Add dividing line
+      abline(v = num.rolls+1, 
+             col = "grey")
+      
+      # Divide each roll set
+      abline(h = (1:i)-0.5, 
+             col = "grey")
+    }
+  }
+```
+
+
+```{r RollDiceFig, echo=FALSE, fig.align="center", fig.width=7, fig.height=4, fig.cap="The proportion of rolls that are even change from one sample of 25 rolls to the next sample of 25 rolls" }
+if (knitr::is_latex_output()){
+  set.seed(99999)
+    num.rolls <- 25
+    num.sims <- 10
+    x.loc <- 1:(num.rolls)
+    y.loc <- 1
+    prop.even <- array(dim=num.sims)
+    all.rolls <- array( dim=c(num.sims, num.rolls))
+
+    
+          plot( c(1, (num.rolls+2)), c(1, num.sims),
+            type="n",
+            las=1,
+            xlab="",
+            ylab="",
+            main="",
+            axes=FALSE)
+
+    col1 <- col2rgb("darkolivegreen2")
+    col2 <- col2rgb("indianred2")
+      
+    for (i in 1:num.sims){
+      
+      roll <- sample(1:6, num.rolls, 
+                     replace = TRUE)
+      all.rolls[i, ] <- roll
+      prop.even[i] <- sum(roll/2 == floor(roll/2)) / num.rolls
+      
+      for (j in 1:i){
+        text(y = j, x = 1:num.rolls,
+             labels = all.rolls[j, ],
+             col = ifelse( all.rolls[j,]/2 == floor(all.rolls[j,]/2), "black", "grey") )
+              
+              # Add some slight background colour under the sample proportions
+              polygon( c(num.rolls + 1, num.rolls + 1, num.rolls + 3, num.rolls+3),
+                       c(j - 0.5, j + 0.5, j + 0.5, j - 0.5),
+                       border = NA,
+                       col = ifelse( prop.even[j] > 0.5, rgb( col1[1], col1[2], col1[3], alpha = 75, max = 255), 
+                                                         rgb( col2[1], col2[2], col2[3], alpha = 75, max = 255) ) )
+
+      }
+      # Add p-hat heading
+      mtext(expression(hat( italic(p) ) ), 
+            side = 3, 
+            line = 0, 
+            at = num.rolls + 2 )
+      # Add the roll number to the left-hand side
+      axis(side = 2, 
+           at = 1:i,
+           las = 1,
+           labels = paste("Set #", 1:i, sep = "") )
+      
+      # Add the sample proportion to right-hand side 
+      text(num.rolls+2, 1:i, 
+           labels = format(round(prop.even[1:i], 2), nsmall = 2) )
+      #Add dividing line
+      abline(v = num.rolls+1, 
+             col = "grey")
+      
+      # Divide each roll set
+      abline(h = (1:i)-0.5, 
+             col = "grey")
+    }
+}
+```
+
+The proportion of rolls that is even varies from set to set.
+For these 10 sets of $n=25$ rolls,
+the percentage of even rolls ranged from 
+$\hat{p}=0.32$ even rolls to $\hat{p}=0.60$ even rolls.
+
+The sample proportion of even rolls would
+be expected to vary around $p=0.5$,
+since three of the six faces of the die are even numbers 
+(the *population proportion*),
+using the classical approach to probability.
+
+Of course,
+the sample proportion
+could be very small or very high by chance,
+but we wouldn't expect to see that very often.
+
+
+
+
+
+
+<!-- ```{r RollDice, echo=FALSE, fig.align="center", out.width="85%", fig.cap="The proportion of rolls that is even changes from one sample of 25 rolls to the next sample of 25 rolls"} -->
+<!-- htmltools::tags$iframe(title = "My embedded document", src = "./Animations/RollDiceMovie.html", frameborder=0, height=600, width=520)  -->
+<!-- ``` -->
+
+<!-- ```{r RollDiceFig, echo=FALSE, fig.align="center", fig.width=5, fig.cap="The proportion of rolls that are even change from one sample of 25 rolls to the next sample of 25 rolls" } -->
+<!-- if (knitr::is_latex_output()){ -->
+<!--   include_graphics("./Animations/images/RollDice10") -->
+<!-- } -->
+<!-- ``` -->
+
+
+In this example,
+the *population proportion* of even rolls 
+is known to be $p=0.5$.
+Each set of $n=25$ rolls is a *sample* of all possible sets of $n=25$ rolls,
+and the *sample* proportion of even rolls is denoted by $\hat{p}$.
+
+For any set of 25 rolls,
+the value of $\hat{p}$ will be unknown until we roll the die.
+The proportion of even rolls is likely to vary from sample to sample;
+that is,
+the sample proportions exhibit sampling variation,
+and the *amount* of sampling variation is quantified
+using a *standard error*.
+
+
+```{block2, type="rmdtip"}
+$p$ refers to the *population* proportion, 
+and $\hat{p}$ refers to the *sample* proportion.
+```
+
+```{block2, type="rmdpronunciation"}
+The symbol $\hat{p}$ is pronounced 'pee-hat'.
+```
+
+
+Suppose a fair die was rolled 25 times,
+and this was repeated *thousands* of times 
+(not just 10 sets times, as in 
+`r if (knitr::is_latex_output()) {
+   'Fig. \\@ref(fig:RollDiceFig)'
+} else {
+   'the animation'
+}`
+above),
+and the proportion of even rolls was recorded
+for every set of 25 rolls.
+
+These thousands of sample proportions $\hat{p}$, 
+one from every set of 25 rolls,
+could be graphed using a histogram;
+`r if (knitr::is_latex_output()) {
+   'see Fig. \\@ref(fig:RollDiceHistFig) (the online version has an animation).'
+} else {
+   'see the animation below.'
+}`
+
+
+
+
+
+
+
+<center>
+```{r fig.show="animate", RollDiceHistHTML, echo=FALSE, cache = TRUE, animation.hook="gifski", cache=TRUE, interval=0.0005, loop=FALSE}
+if (knitr::is_html_output()){
+  set.seed(990099)
+    num.rolls <- 25
+    num.sims <- 1000
+    prop.even <- array(dim = num.sims)
+    
+    for (i in 1:num.sims){
+      
+      roll <- sample(1:6, num.rolls, 
+                     replace = TRUE)
+      prop.even[i] <- sum( (roll %% 2) )/num.rolls ### sum( roll/2 == floor(roll/2)) / num.rolls
+      
+      out <- hist( prop.even,
+                   breaks = seq(0.05, 0.95, by = 0.04) - 0.03,
+                   las = 1,
+                   ylim = c(0, 200),
+                   xlim = c(0, 1),
+                   col = plot.colour,
+                   main = paste("Histogram of sample proportions\nSet number:", i),
+                   xlab = "Proportion of the 25 rolls showing an even number",
+                   sub = paste("(For this set: proportion of rolls even is ", 
+                               format(round(prop.even[i], 2), nsmall = 2),
+                               ")", 
+                               sep = "" ),
+                   ylab = "Frequency",
+                   right = FALSE,
+                   axes = FALSE)
+      axis(side=1)
+      axis(side=2, las=1)
+      
+      points(prop.even[i], 0,
+             pch = 19,
+             col = plot.colour0)
+      
+      xx <- seq(0, 1, length = 500)
+      yy <- dnorm(xx, mean = 0.5, sd = 0.1 )
+      yy <- yy/max(yy) * max(out$count)
+      
+      lines(yy ~ xx, 
+            col = "grey", 
+            lwd = 2)  
+    }
+  }
+```
+</center>
+
+
+```{r RollDiceHistFig, echo=FALSE, fig.align="center", fig.width=7, fig.cap="The proportion of rolls that are even change from one sample of 25 rolls to the next sample of 25 rolls" }
+if (knitr::is_latex_output()){
+  set.seed(990099)
+    num.rolls <- 25
+    num.sims <- 1000
+    prop.even <- array(dim = num.sims)
+    
+    for (i in 1:num.sims){
+      
+      roll <- sample(1:6, num.rolls,  
+                     replace = TRUE)
+      prop.even[i] <- sum(roll/2 == floor(roll/2)) / num.rolls
+    }
+    
+      out <- hist( prop.even,
+                   breaks = seq(0.05, 0.95, by=0.04) - 0.03,
+                   las = 1,
+                   ylim = c(0, 400),
+                   xlim = c(0, 1),
+                   col = plot.colour,
+                   main = paste("Histogram of sample proportions\nfrom",
+                              num.sims, 
+                              "simulations of",
+                              num.rolls,
+                              "rolls"),
+                   xlab = "Proportion of the 25 rolls showing an even number",
+                   ylab = "Frequency",
+                   right = FALSE,
+                   axes = FALSE)
+      axis(side = 1)
+      axis(side = 2, 
+           las = 1)
+
+      xx <- seq(0, 1, length=500)
+      yy <- dnorm(xx, mean = 0.5, sd = 0.1 )
+      yy <- yy/max(yy) * max(out$count)
+      
+      lines(yy ~ xx, 
+            col = "grey", 
+            lwd = 2)  
+    }
+```
+
+
+
+<!-- ```{r RollDiceHistHTML, echo=FALSE, fig.cap="Rolling 1000 times", fig.align="center"} -->
+<!-- #includeHTML("./Animations/RollDiceHistMovie.html") -->
+<!-- htmltools::tags$iframe(title = "My embedded document", src = "./Animations/RollDiceHistMovie.html", frameborder=0, height=450, width=350)  -->
+<!-- ``` -->
+
+
+<!-- ```{r RollDiceHistFig, echo=FALSE, fig.align="center", fig.width=5, out.width="85%", fig.cap="The proportion of rolls that are even change from one sample of 25 rolls to the next sample of 25 rolls" } -->
+<!-- if (knitr::is_latex_output()){ -->
+<!--   include_graphics("./Animations/images/RollDiceHist1000") -->
+<!-- } -->
+<!-- ``` -->
+
+
+
+```{r echo=FALSE}
+se.die <- sqrt(0.5 * (1 - 0.5) / 25)
+```
+
+The shape of the histogram is roughly a normal distribution.
+This is no accident:
+statistical theory says this will happen
+(when certain conditions are met: see Sect.&nbsp;\@ref(ValidityProportions)).
+
+The possible values of the *sample* proportion $\hat{p}$ 
+have a [*sampling distribution*](#def:SamplingDistribution)
+which is roughly a normal distribution;
+the mean and standard deviation of the normal distribution
+`r if (knitr::is_latex_output()) {
+   'in Fig. \\@ref(fig:RollDiceHistFig)'
+} else {
+   'the animation above'
+}`
+can even be determined. 
+The possible values of the *sample* proportion $\hat{p}$ 
+will have a *sampling distribution*,
+described by:
+
+* an approximate normal distribution;
+* centred around a mean of $p=0.5$;
+* with a standard deviation of `r round(se.die, 3)` 
+  (where this number comes from will be [revealed soon](#def:SamplingDistProp)).
+
+This distribution is called a [*sampling distribution*](#def:SamplingDistribution),
+as discussed in Sect.&nbsp;\@ref(SamplingVariationIntro).
+The standard deviation of the sampling distribution 
+is called a *standard error*,
+since it measures how much a sample statistic 
+(in this case, a sample proportion $\hat{p}$) 
+varies from sample to sample.
+
+Since the variation in the sample proportions can be described,
+a picture of this normal distribution can be drawn
+(Fig.&nbsp;\@ref(fig:NormalDieTheory)).
+We still don't know *exactly* what we'll find next roll...
+but we have some idea of *how* the sample proportion 
+is likely to vary in sets of 25 rolls.
+
+
+```{r NormalDieTheory, echo=FALSE, fig.cap="The normal distribution, showing how the proportion of even rolls varies when a die is rolled 25 times", fig.align="center", fig.width=5, fig.height=3}
+pop.p <- 0.5
+n <- 25
+se.p <- sqrt( pop.p * (1-pop.p) / n )
+
+plot.norm(mu=pop.p, sd=se.die, 
+          xlab.name="Sample proportion of even rolls out of 25", 
+          type="",
+          shade.lo.x=-10, 
+          shade.hi.x=-10)
+```
+
+```{block2, type="rmdimportant"}
+The [parameter](##StatisticsAndParameters) $p$ and the [statistic](#StatisticsAndParameters) $\hat{p}$
+are both *proportions*,
+but a *mean* and *standard deviation* are used to describe
+the *sampling distribution*.
+```
+
+
+The value of $p$ 
+(the *population* proportion: 
+the proportion of even numbers on the die) 
+remains the same,
+but the value of $\hat{p}$ 
+(the *sample* proportion: 
+the proportion of even numbers in the sample of 25 rolls) 
+is not the same in every set of 25 rolls.
+That is, 
+$\hat{p}$ varies,
+and exhibits 
+*sampling variation*.
+The variation in $\hat{p}$ from sample to sample 
+is measured by the *standard error of the sample proportion*,
+written as $\text{s.e.}(\hat{p})$.
+
+In general,
+the **standard error for a sample proportion** 
+when $p$ is known is
+given by
+
+\begin{equation}
+   \text{s.e.}(\hat{p}) = \sqrt{\frac{p \times (1-p)}{n}},
+   (\#eq:StdErrorPknown)
+\end{equation}
+where $n$ is the number of rolls, 
+and $p$ is the population proportion.
+For this example,
+there are $n = 25$ rolls of a die,
+and the population proportion of even rolls is $p=0.5$.
+Then,
+the standard error of the sample proportion is
+
+\begin{equation}
+	\text{s.e.} (\hat{p}) = \sqrt{\frac{0.5 \times (1-0.5)}{25}} = 0.1.
+   (\#eq:StdErrorExampleDie)
+\end{equation}
+
+This standard deviation is the standard deviation of the normal distribution in
+Fig.&nbsp;\@ref(fig:NormalDieTheory).
+
+Recall that the 
+*the standard error is just a special standard deviation*,
+that
+measures how much a sample estimate is likely to vary 
+from sample to sample.
+In that sense,
+the standard error of the proportion measures how precisely $\hat{p}$
+estimates the population proportion $p$.
+
+Almost always, the value of $p$ is unknown, so when
+$\text{s.e.}(\hat{p})$ is computed,
+the value of $p$ can't be used.
+Instead,
+the best available estimate of $p$ is used,
+which is $\hat{p}$.
+This situation is studied from 
+Sect.&nbsp;\@ref(SamplingDistributionUnknownp) onwards.
+
+  
+
+```{definition SamplingDistProp, name="Sampling distribution of a sample proportion when $p$ is *known*"}
+When the value of $p$ is *known*,
+the *sampling distribution of the sample proportion* is described by
+
+* an approximate normal distribution,
+* centred around a mean of $p$,
+* with a standard deviation (called the *standard error* of $\hat{p}$) of
+
+\[
+   \text{s.e.}(\hat{p}) = \sqrt{\frac{ p \times (1-p)}{n}},
+\]
+
+when [certain conditions are met](#ValidityProportions),
+where $n$ is the size of the sample,
+and $p$ is the population proportion.
+
+In general,
+the approximation gets better as the sample size gets larger.
+```
+
+
+
+```{lemma Valuesphat, name="Values for $\\hat{p}$"}
+From the die example,
+the values of $\hat{p}$ will vary
+
+* with an approximate normal distribution;
+* centred around $p=0.5$; and
+* with a standard error of approximately 
+$\text{s.e.}({\hat{p}}) = 0.1$.
+
+This distribution is shown in 
+Fig.&nbsp;\@ref(fig:NormalDieTheory).
+How often would a value of $\hat{p}$ larger than 0.80
+be expected?
+```
+
+```{block2, type="fold"}
+Figure \@ref(fig:NormalDieTheory) suggests that, while not impossible, 0.80 or greater will be observed rarely.
+```
+
+
+
+
+
+
+
+
+
+
+
+## Sampling intervals: Known proportion {#CIpKnownp}
+
+The possible values of the sample proportions $\hat{p}$
+can be described by an
+approximate *normal distribution*,
+as just discussed.
+This enables the [68--95--99.7 rule](#def:EmpiricalRule)
+to be applied;
+for example,
+about 68% of the time with sets of 25 rolls,
+the sample proportion of even rolls will be between
+$0.5$ give-or-take *one* standard deviation 
+(that is, give-or-take `r round(se.die, 3)`).
+So, about 68% of the time, 
+the proportion of even rolls in a set of 25 rolls will be between:
+
+* $0.5 - `r round(se.die, 3)` =  `r round(0.5 - se.die, 3)`$ and
+* $0.5 + `r round(se.die, 3)` =  `r round(0.5 + se.die, 3)`$.
+
+Similarly,
+about 95% of the time,
+the proportion of even rolls will be between
+$0.5$ give-or-take *two* standard deviations,
+or between:
+
+* $0.5 - (2\times`r round(se.die, 3)`) =  `r round(0.5 - 2*se.die, 3)`$ and
+* $0.5 + (2\times`r round(se.die, 3)`) =  `r round(0.5 + 2*se.die, 3)`$.
+
+This interval tell us what values of 
+$\hat{p}$ are likely to be observed in samples of size 25.
+Most of the time (i.e., approximately 95% of the time),
+the value of $\hat{p}$ is expected to be between 0.30 and 0.70.
+(For instance,
+`r if (knitr::is_latex_output()) {
+   'in Fig. \\@ref(fig:RollDiceHistFig),'
+} else {
+   'in the animation above,'
+}`
+all ten sets of 25 rolls (or 100%) had a 
+sample proportion betweeen 0.30 and 0.70.)
+
+More formally,
+the sample proportion $\hat{p}$ is likely to lie within the interval
+
+\[
+   p \pm (\text{multiplier} \times \text{s.e.}(\hat{p})),
+\]
+where $\text{s.e.}(\hat{p})$ is the 
+*standard error of the sample proportion*
+(calculated using Eq.&nbsp;\@ref(eq:StdErrorPknown)).
+The symbol '$\pm$' means 'plus or minus', or 'give-or-take'.
+
+The *multiplier* depends on how confident 
+we wish to be that the
+interval contains the value of $\hat{p}$.
+
+For a 95% interval---the most common *level of confidence*---the multiplier is *approximately* 2,
+based on the [68--95--99.7 rule](#def:EmpiricalRule):
+Approximately 95% of observations are within 
+*two* standard deviations of the value of $p$ 
+(the mean of the normal distribution in 
+Fig.&nbsp;\@ref(fig:NormalDieTheory)).
+
+That is,
+the *approximate* 95% interval is:
+
+\[
+   p \pm (2 \times \text{s.e.}(\hat{p}) ).
+\]
+For a 90% interval,
+either tables or a computer would be used to find the
+correct multiplier,
+since the [68--95--99.7 rule](#def:EmpiricalRule) isn't helpful.
+
+In practice,
+95% intervals are the most common,
+and we'll use a multiplier of $2$ to find an 
+*approximate* 95% interval when computing the interval 
+without using software.
+Software can be used for any other percentage interval
+(or for an *exact* 95% interval).
+
+In general,
+higher confidence means wider intervals
+(Fig. \@ref(fig:SIWidths)),
+since wider intervals are needed to be
+more certain that the interval contains $\hat{p}$.
+
+
+```{r SIWidths, echo=FALSE, fig.height=3, fig.width=5.5, fig.cap="To have greater confidence that the interval will include the sample proportion, the interval needs to be wider", fig.align="center"}
+phat <- 0.5
+n <- 25
+
+sep <- sqrt( phat*(1-phat)/n )
+levels <- c(0.90, 0.95, 0.99, 0.997)
+zs <- qnorm( 1 - (1-levels)/2)
+mes <- sep * zs
+
+plot( c(0.18, 0.82),
+	c(0,1), 
+	axes=FALSE, 
+	xlab="Sample proportions",
+	ylab="", 
+	main="", 
+	type="n")
+axis(side=1)
+abline(v=phat)
+
+arrows(phat - mes[1], 0.9,    
+	   	phat + mes[1], 0.9,    
+		code=3, 
+		angle=15, 
+		col="blue", 
+		lwd=2, 
+		ylim=c(0, 0.35))
+text(0.21,0.9,"90%", cex=0.9)
+
+arrows(phat-mes[2], 0.6, 
+		phat+mes[2], 0.6, 
+		code=3, 
+		angle=15, 
+		col="blue", 
+		lwd=2, 
+		ylim=c(0, 0.35))
+text(0.21,0.6,"95%", cex=0.9)
+
+arrows(phat-mes[3], 0.3, 
+		phat+mes[3], 0.3, 
+		code=3, 
+		angle=15, 
+		col="blue", 
+		lwd=2, 
+		ylim=c(0, 0.35))
+text(0.21,0.3,"99%", cex=0.9)
+```
+
+
+
+
+
+## Sampling distribution: Unknown proportion  {#SamplingDistributionUnknownp}
+
+In\index{confidence interval!proportions}
+the die example
+(Sect.&nbsp;\@ref(SamplingDistributionKnownp)),
+an equation was given for computing the standard error for the sample proportion for samples of size $n$,
+*when the value of $p$ was known*.
+
+However,
+usually the value of $p$ (the *parameter*) is unknown;
+after all,
+the reason for taking a sample 
+is to *estimate* the unknown value of $p$.
+When $p$ is unknown,
+the best available estimate can be used,
+which is $\hat{p}$.
+*When the value of $p$ is unknown*,
+the standard error of the sample proportion
+(written $\text{s.e.}(\hat{p})$) is approximately
+
+\[
+   \text{s.e.}(\hat{p}) = \sqrt{\frac{ \hat{p} \times (1-\hat{p})}{n}}.
+\]
+
+  
+
+```{definition DEFSamplingDistributionPhat, name="Sampling distribution of a sample proportion when $p$ is *unknown*"}
+When the value of $p$ is *unknown*,
+the *sampling distribution of the sample proportion* is described by
+
+* an approximate normal distribution,
+* centred around the (unknown) mean of ${p}$,
+* with a standard deviation (called the *standard error* of $\hat{p}$) of
+
+\begin{equation}
+   \text{s.e.}(\hat{p}) = \sqrt{\frac{ \hat{p} \times (1-\hat{p})}{n}},
+   (\#eq:stderrorphat)
+\end{equation}
+
+when [certain conditions are met](#ValidityProportions),
+where $n$ is the size of the sample,
+and $\hat{p}$ is the sample proportion.
+
+In general,
+the approximation gets better as the sample size gets larger.
+```
+
+
+Let's *pretend* for the moment that the
+proportion of even rolls of a fair die is unknown
+(to demonstrate some points).
+In this case,
+an *estimate* of the proportion of even rolls
+can be found by rolling a die $n=25$ times
+and computing $\hat{p}$.
+
+Suppose 11 of the $n=25$ rolls produced an even number,
+so that $\hat{p} = 11/25 = 0.44$.
+Then
+(from Definition \@ref(def:DEFSamplingDistributionPhat)),
+
+\[
+   \text{s.e.}(\hat{p}) = \sqrt{ \frac{ 0.44 \times (1 - 0.44)}{25}} = 0.099277.
+\]
+(This is very similar to the value of 0.1, 
+the value of the standard error when the value of $p$ was known; 
+see Eq.&nbsp;\@ref(eq:StdErrorExampleDie).)
+
+Hence,
+the sample proportions would vary with an
+approximate normal distribution
+(Fig.\@ref(fig:NormalDieTheoryUnknownp)),
+centred around the unknown value of $p$ 
+with a standard deviation of
+$\text{s.e.}(\hat{p}) = 0.099277$.
+
+
+```{r NormalDieTheoryUnknownp, echo=FALSE, fig.cap="The normal distribution, showing how the proportion of even rolls varies when a die is rolled 25 times", fig.align="center", fig.width=4, fig.height=3}
+HT.mn <- 175
+HT.sd <- 7
+
+plot.normZ(HT.mn, HT.sd, 
+           xlab.name="Sample proportion of even rolls out of 25", 
+           zlim.lo = -4, zlim.hi = 4, 
+           shade.lo.z = -5, shade.hi.z = -5,
+#           axis.labels=c(" p - 0.298", " p - 0.199", " p - 0.099", " p", " p + 0.099", " p + 0.199", " p + 0.298"),
+           axis.labels=c( 	
+                expression( paste("  ", italic(p), " - 0.298")),
+								expression( paste("  ", italic(p), " - 0.199")), 
+								expression( paste("  ", italic(p), " - 0.099")), 
+								expression( paste(" ", italic(p))),
+								expression( paste("  ", italic(p), " + 0.099")), 
+								expression( paste("  ", italic(p), " + 0.199")), 
+								expression( paste("  ", italic(p), " + 0.298")) ),
+           cex.tickmarks = 0.7, # Shrink the tick marks labels so they fit a bit better
+           srt = -25 # Rotate axis labels so they fit better
+)
+```
+
+Using the 68--95--99.7 rule again:
+
+> About 95% of the values of $\hat{p}$ are expected to be between
+> $p - 0.199$ and $p + 0.199$.
+
+Though we are pretending the value of $p$ is unknown,
+the value of $\hat{p}$ is known however.
+What if the roles of $p$ and $\hat{p}$ were 'reversed'?
+Then,
+
+> About 95% of the values of $p$ are expected to be between
+> $\hat{p} - 0.199$ and $\hat{p} + 0.199$.
+
+Since $\hat{p} = 0.44$,
+this is equivalent to:
+
+> About 95% of the values of $p$ are expected to be between
+> $0.24$ and $0.64$.
+
+This interpretation is not quite correct,
+but the idea seems reasonable.
+This is called a *confidence interval* (or CI),
+based on ideas from 
+Sect.&nbsp;\@ref(CIpKnownp).
+
+In summary,
+using $\hat{p} = 0.44$ and $\text{s.e.}(\hat{p}) = 0.0993$,
+the (approximate) 95% CI is
+
+\[
+   0.44 \pm (2 \times 0.0993),
+\]
+or from 0.241 to 0.639.
+This CI straddles the population proportion of $p=0.5$,
+though we would not know this if $p$ truly was unknown.
+
+```{block2, type="rmdtip"}
+In this case, 
+we know the value of the population parameter: $p = 0.5$.
+
+Usually we do *not* know the value of the parameter:
+that's why we are taking a sample.
+```
+
+
+
+
+
+## Confidence intervals: Unknown proportion {#ConfIntPUnknownP}
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "30%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/pexels-skitterphoto-705171.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+Suppose *thousands* of people rolled a die 25 times,
+and *each* person found $\hat{p}$ for their sample,
+and hence computed the CI for their sample of 25 rolls.
+
+Every sample of 25 rolls could produce 
+a different estimate $\hat{p}$,
+and so a different value for $\text{s.e.}(\hat{p})$, 
+and hence a different 95% CI.
+However,
+*about 95% of these thousands of confidence intervals 
+from those thousands of repetitions 
+would straddle the true proportion $p$*.
+
+Since we usually don't know the value of $p$,
+and we usually only have one sample (and hence one CI),
+in general 
+*we never know whether the single CI computed from our single sample
+straddles $p$ or not*.
+
+Again,
+consider letting the computer *simulate* the situation.
+Suppose the process of recording the sample proportion of even numbers 
+in $n=25$ rolls is repeated 50 times,
+and for each of those 50 sets of 25 rolls a CI is produced
+`r if (knitr::is_latex_output()) {
+   '(Fig. \\@ref(fig:RollDiceCIFig); the online version has an animation).'
+} else {
+   '(see the animation below).'
+}`
+
+
+```{r RollDiceCIMovie, echo=FALSE, animation.hook="gifski", cache=TRUE, interval=0.1}
+if (knitr::is_html_output()){
+  set.seed(99999)
+    num.rolls <- 25
+    num.sims <- 50
+    x.loc <- 1:(num.rolls)
+    y.loc <- 1
+    
+    p.mean <- 0.5
+    p.se <- sqrt( p.mean * (1-p.mean)/num.rolls)
+    
+    p.ci <- function(roll){ 
+      mn <- sum(roll/2 == floor(roll/2)) / num.rolls
+      se <- sqrt( mn * (1-mn) / length(roll))
+      upper <- mn + 1.96*se
+      lower <- mn - 1.96*se
+      list(lower=lower, mn=mn, upper=upper)
+    }
+    
+    prop.even <- ci.upper <- ci.lower <- ci.est <- array(dim=num.sims)
+    all.rolls <- array( dim=c(num.sims, num.rolls))
+    
+    for (i in 1:num.sims){
+      plot( c(1, (num.sims+2)), c(0, 1),
+            type="n",
+            las=1,
+            ylim=c(0, 1),
+            xlim=c(0, num.sims+2),
+            xlab="The individual sets of 25 rolls",
+            ylab="95% confidence interval for p",
+            main=paste("95% CIs from each set of 25 rolls; Set",i),
+            axes=FALSE)
+      axis(side=1,
+           las=1)
+      axis(side=2,
+           las=1)
+      abline(h=0.5, col="grey", lwd=2)
+      
+      roll <- sample(1:6, num.rolls, replace=TRUE)
+      ci <- p.ci( roll )
+      ci.upper[i] <- ci$upper
+      ci.lower[i] <- ci$lower
+      ci.est[i] <- ci$mn
+      for (j in (1:i)){
+        p.col <- ifelse( (ci.lower[j]<0.5) & (ci.upper[j]>0.5), "green", "red")
+        l.ty  <- ifelse( (ci.lower[j]<0.5) & (ci.upper[j]>0.5), 1, 2)
+        lines( c(j, j), c(ci.lower[j], ci.upper[j]),
+               lwd=2,
+               lty=l.ty,
+               col=p.col)
+        points( j, ci.est[j], pch=20)
+      }
+    }
+  }
+```
+
+
+```{r RollDiceCIFig, echo=FALSE, fig.align="center", fig.width=7, out.width="85%", fig.cap="About 95\\% of CIs contain the population proportion"}
+if (knitr::is_latex_output()){
+  set.seed(99999)
+    num.rolls <- 25
+    num.sims <- 50
+    x.loc <- 1:(num.rolls)
+    y.loc <- 1
+    
+    p.mean <- 0.5
+    p.se <- sqrt( p.mean * (1-p.mean)/num.rolls)
+    
+    p.ci <- function(roll){ 
+      mn <- sum(roll/2 == floor(roll/2)) / num.rolls
+      se <- sqrt( mn * (1-mn) / length(roll))
+      upper <- mn + 1.96*se
+      lower <- mn - 1.96*se
+      list(lower=lower, mn=mn, upper=upper)
+    }
+    
+    prop.even <- ci.upper <- ci.lower <- ci.est <- array(dim=num.sims)
+    all.rolls <- array( dim=c(num.sims, num.rolls))
+    
+      plot( c(1, (num.sims+2)), c(0, 1),
+            type="n",
+            las=1,
+            ylim=c(0, 1),
+            xlim=c(0, num.sims+2),
+            xlab="The individual sets of 25 rolls",
+            ylab="95% confidence interval for p",
+            main="",
+            axes=FALSE)
+      axis(side=1,
+           las=1)
+      axis(side=2,
+           las=1)
+      abline(h=0.5, col="grey", lwd=2)
+
+      
+    for (i in 1:num.sims){
+      
+      roll <- sample(1:6, num.rolls, replace=TRUE)
+      ci <- p.ci( roll )
+      ci.upper[i] <- ci$upper
+      ci.lower[i] <- ci$lower
+      ci.est[i] <- ci$mn
+      for (j in (1:i)){
+        p.col <- ifelse( (ci.lower[j]<0.5) & (ci.upper[j]>0.5), "green", "red")
+        l.ty  <- ifelse( (ci.lower[j]<0.5) & (ci.upper[j]>0.5), 1, 2)
+        lines( c(j, j), c(ci.lower[j], ci.upper[j]),
+               lwd=2,
+               lty=l.ty,
+               col=p.col)
+        points( j, ci.est[j], pch=20)
+      }
+    }
+}
+```
+
+
+Most of those CIs straddle the population proportion of $p=0.5$ 
+(shown as solid lines)... 
+but some do not (shown as dashed lines).
+Of course,
+since the value of $p$ is usually unknown,
+we never know if our CI contains $p$ or not.
+
+
+<!-- ```{r RollDiceCIMovie, echo=FALSE, fig.cap="Most CIs straddle the population proportion; here are the CIs for 50 samples", fig.align="center"} -->
+<!-- htmltools::tags$iframe(title = "Most CIs straddle the population proportion", src = "./Animations/RollDiceCIMovie.html", frameborder=0, height=640, width=520)  -->
+<!-- ``` -->
+
+
+<!-- ```{r RollDiceCIFig, echo=FALSE, fig.align="center", fig.width=5, out.width="85%", fig.cap="About 95\\% of CIs contain the population proportion"} -->
+<!-- if (knitr::is_latex_output()){ -->
+<!--   include_graphics("./Animations/images/RollDiceCI50") -->
+<!-- } -->
+<!-- ``` -->
+
+
+
+```{definition ConfidenceInterval, name="Confidence interval"}
+A *confidence interval* is an interval in which the population [*parameter*](#def:Parameter)
+is likely to be contained,
+if we found many samples the same way.
+
+If a 95% confidence interval (or CI) is computed from each sample,
+about 95% of the CIs would straddle the 
+[*parameter*](#def:Parameter) 
+of interest.
+This interval is called a *confidence interval*.
+```
+
+
+In general,
+a CI for the population proportion $p$ is found using
+
+\[
+  \hat{p} \pm ( \text{multiplier} \times \text{s.e.}(\hat{p})),
+\]
+where the multiplier is 2 for an *approximate* 95% CI
+(based on the 68--95--99.7 rule).
+
+
+
+```{definition, ConfidenceIntervalp, name="Confidence interval for $p$"}
+A *confidence interval* (CI) for the unknown value of the parameter $p$ is
+\begin{equation}
+  \hat{p} \pm ( \text{multiplier} \times \text{s.e.}(\hat{p})), (\#eq:CIp)
+\end{equation}
+where
+
+\[
+	\text{s.e.}(\hat{p}) 
+	=
+	\sqrt{\frac{ \hat{p} \times (1 - \hat{p}) }{n}}
+\]
+is the *standard error* of $\hat{p}$,
+$\hat{p}$ is the sample proportion,
+and
+$n$ is the sample size.
+For an *approximate* 95% CI,
+the multiplier is 2.
+```
+
+
+In general,
+*higher* confidence levels means *wider* intervals:
+To be *more* confident that the interval straddles 
+the unknown value of $p$,
+*wider* intervals are needed
+(Fig.&nbsp;\@ref(fig:CIWidths))
+to cover more possibilities.
+
+
+
+```{r CIWidths, echo=FALSE, fig.height=3, fig.width=5.5, fig.cap="To have greater confidence that the interval will straddle the population proportion, the interval needs to be wider", fig.align="center"}
+phat <- 0.44
+n <- 25
+
+sep <- sqrt( phat*(1-phat)/n )
+levels <- c(0.90, 0.95, 0.99, 0.997)
+zs <- qnorm( 1 - (1-levels)/2)
+mes <- sep * zs
+
+plot( c(-0.05, 1.13),
+	c(0,1.1), 
+	axes=FALSE, 
+	xlab="Sample proportions",
+	ylab="", 
+	main="", 
+	type="n")
+axis(side=1,
+     cex=0.9,
+     at = c( seq(0, 0.4, by=0.1), 0.44, seq(0.5, 1, by=0.1)))
+     label = c( as.character(seq(0, 0.4, by=0.1)), "", as.character(seq(0.5, 1, by=0.1)))
+
+abline(v=phat,
+       col="grey")
+
+text(0.44, 0,
+     cex=0.9,
+     pos=3,
+     expression( hat(italic(p)) == 0.44))
+
+arrows(phat - mes[1], 0.9,    
+	   	phat + mes[1], 0.9,    
+		code=3, 
+		angle=15, 
+		col="blue", 
+		lwd=2, 
+		ylim=c(0, 0.35))
+text(0.1,0.9,"90%", cex=0.9)
+
+arrows(phat-mes[2], 0.6, 
+		phat+mes[2], 0.6, 
+		code=3, 
+		angle=15, 
+		col="blue", 
+		lwd=2, 
+		ylim=c(0, 0.35))
+text(0.1,0.6,"95%", cex=0.9)
+
+arrows(phat-mes[3], 0.3, 
+		phat+mes[3], 0.3, 
+		code=3, 
+		angle=15, 
+		col="blue", 
+		lwd=2, 
+		ylim=c(0, 0.35))
+text(0.1,0.3,"99%", cex=0.9)
+```
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "30%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/tin-1568095_640.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+
+
+```{example, CanadianEnergyDrinks, name="Energy drinks in Canadian youth"}
+A study of young Canadians aged 12--24
+[@data:Hammond2018:Drinks]
+found
+that 365 of the 1516 respondents
+reported sleeping difficulties
+after consuming energy drinks.
+
+The unknown parameter is $p$, the *population* proportion of 
+young Canadians reporting sleeping difficulties.
+
+The sample proportion reporting sleeping difficulties 
+after consuming energy drinks is 
+$\hat{p} = 365/1516 = 0.241$.
+As usual, 
+the sample proportion would vary from 
+one sample of size $n=1516$ to another;
+*sampling variation* exists.
+The *standard error* 
+(Definition&nbsp;\@ref(def:ConfidenceIntervalp)) 
+quantifies how much the sample proportion 
+is likely to vary from sample to sample:
+
+\begin{align*}
+  \text{s.e.}(\hat{p}) 
+  &= \sqrt{\frac{\hat{p}\times(1-\hat{p})}{n}}\\
+  &= \sqrt{\frac{0.241 \times (1-0.241)}{1516}} =  0.01098449,
+\end{align*}
+or about $0.011$.
+So,
+in samples of size 1516,
+the approximate 95% CI 
+(Definition&nbsp;\@ref(def:ConfidenceIntervalp))
+is between
+
+* $0.241 - (2\times 0.01098449) = 0.2190$ and
+* $0.241 + (2\times 0.01098449) = 0.2627$.
+
+The approximate 95% CI is from
+0.219 to 0.263.
+
+This CI may or may not straddle the population proportion $p$;
+it is *likely* that the interval straddles the value of $p$.
+In other words,
+it is plausible that the sample proportion of $p=0.241$ may have come
+from a population with a proportion somewhere between 0.219 and 0.263.
+```
+
+
+```{block2, type="rmdimportant"}
+Notice that many decimal places are used in the working, 
+but final answers are rounded.
+```
+
+
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "30%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/eriksson-luo-ppgFysfT7tc-unsplash.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+```{example KoalasCrossingRoads, name="Koalas crossing roads"}
+A study of koalas
+[@data:Dexter2018:Koalas]
+found that 18 of the $n=51$ koalas studied in a certain area 
+(over 30 months)
+had crossed at least one road during that time.
+
+The unknown parameter is $p$, the *population* proportion of 
+koalas that had crossed at least one road over the 30 months.
+
+The sample proportion having crossed a road is
+$\hat{p} = 18/51 = 0.3529$.
+The standard error 
+(Definition&nbsp;\@ref(def:ConfidenceIntervalp))
+is
+
+\begin{align*}
+	\text{s.e.}(\hat{p})
+	&= \sqrt{ \frac{ \hat{p} \times (1 - \hat{p})}{n} }\\
+	&= \sqrt{ \frac{0.3529 \times (1 - 0.3529)}{51} }\\
+	&= 0.06692.
+\end{align*}
+An approximate 95% CI, then, is
+$0.3529 \pm (2 \times 0.06692)$,
+or 
+
+\[
+	0.3529 \pm 0.1338.
+\]
+The *margin of error* is $0.1338$.
+
+Computing the 'plus' and the 'minus' bits, 
+the approximate 95% CI is from
+0.219 to 0.487
+(after rounding appropriately).
+
+The approximate 95% CI for the population proportion of koalas
+that crossed at least one road in the last 30 months
+is from 0.219 to 0.487. 
+That is,
+it is plausible that the 
+sample proportion of $\hat{p}=0.3529$ may have come
+from a population with a
+proportion somewhere between 0.219 and 0.487.
+
+The research article reports:
+
+> Of the 51 koalas, 
+> 18 (35.3%) crossed at least one road. 
+> The [...] probability of a koala crossing at least one road during 
+> the study was 35.3% (95% CI  = 22--48%).
+>
+> --- @data:Dexter2018:Koalas, p. 70.
+
+This agrees with our calculations.
+```
+
+
+
+
+
+
+## Interpretation of a CI
+
+The *correct* interpretation (Definition&nbsp;\@ref(def:ConfidenceInterval))
+of a 95% CI is the following:
+
+> *If* samples were repeatedly taken many times, 
+> and the 95% confidence interval computed for each sample, 
+> 95% of these confidence intervals formed would contain the 
+> population [*parameter*](#def:Parameter).
+
+This is the idea shown in
+`r if (knitr::is_latex_output()) {
+   'Fig. \\@ref(fig:RollDiceCIFig).'
+} else {
+   'the animation in Sect. \\@ref(ConfIntPUnknownP).'
+}`
+In practice,
+this definition is unsatisfying:
+we almost always have only *one* sample,
+and since the value of $p$ is unknown
+we don't know if *our* CI includes the population parameter or not.
+
+A reasonable alternative interpretation
+is:
+
+> The interval gives a range of values of $p$
+> that could plausibly 
+> (with 95% confidence)
+> have given rise to our observed value of $\hat{p}$.
+
+Or we might say that:
+
+> There is a 95% chance that our computed CI
+> straddles the population value of $p$.
+
+These alternatives are not entirely correct,
+but are reasonable interpretations.
+
+Many people will write---and you will see it written in many places---that
+the CI means that there is a 95% chance that the CI contains the population [parameter](##StatisticsAndParameters).
+This is not strictly correct, but is common.
+
+I use this analogy:
+Most people say the sun rises in the east.
+This is incorrect: the sun doesn't *rise* at all.
+It *appears* to rise in the east 
+because the earth rotates on its axis.
+But almost everyone says that the 'sun rises in the east',
+and for most circumstances this is fine and serviceable,
+even though incorrect.
+Similarly, 
+most people use the final interpretation above in practice,
+even though it is incorrect.
+
+
+
+
+
+<!-- ```{r TwoIntervals, echo=FALSE, fig.cap="Sampling intervals (top) and confidence intervals (bottom)", fig.align="center", fig.height=7} -->
+<!-- par( mar=c(0.05, 0.05, 0.05, 0.05)) -->
+<!-- openplotmat() -->
+
+<!-- pos <- array(NA, dim=c(6, 2)) -->
+<!-- pos[1, ] <- c(0.50, 0.95) # p -->
+<!-- pos[2, ] <- c(0.20, 0.65) # p-hat range -->
+<!-- pos[3, ] <- c(0.80, 0.65) # p-hat range -->
+
+<!-- pos[4, ] <- c(0.50, 0.15)   # p-hat -->
+<!-- pos[5, ] <- c(0.20, 0.45)   # p ranges -->
+<!-- pos[6, ] <- c(0.80, 0.45)   # p ranges -->
+
+
+
+
+
+<!-- range.from <- 2 -->
+<!-- range.to   <- 8 -->
+
+<!-- polygon( x=c(0.20, 0.80, 0.5, 0.20), -->
+<!--          y=c(0.65, 0.65, 0.95, 0.65), -->
+<!--          border=NA, -->
+<!--          col=blueTransparent) -->
+
+<!-- polygon( x=c(0.20, 0.80, 0.5, 0.20), -->
+<!--          y=c(0.45, 0.45, 0.15, 0.45), -->
+<!--          border=NA, -->
+<!--          col=blueTransparent) -->
+
+<!-- straightarrow(from=pos[1,], to=pos[2,],  -->
+<!--             lty=3,  -->
+<!--             lcol="black", -->
+<!--             lwd=2) -->
+<!-- straightarrow(from=pos[1,], to=pos[3,],  -->
+<!--             lty=3,  -->
+<!--             lcol="black", -->
+<!--             lwd=2) -->
+<!-- straightarrow(to=pos[4,], from=pos[5,],  -->
+<!--             lty=3,  -->
+<!--             lcol="black", -->
+<!--             lwd=2) -->
+<!-- straightarrow(to=pos[4,], from=pos[6,],  -->
+<!--             lty=3,  -->
+<!--             lcol="black", -->
+<!--             lwd=2) -->
+
+<!-- # Other in-between lines -->
+<!-- for (i in ( (range.from+1):(range.to-1))){ -->
+<!--   straightarrow(from=pos[1,], to=c(i/10, pos[2, 2]),  -->
+<!--             lty=3,  -->
+<!--             lcol="grey", -->
+<!--             lwd=1) -->
+<!--   straightarrow(to=pos[4,], from=c(i/10, pos[5, 2]),  -->
+<!--             lty=3,  -->
+<!--             lcol="grey", -->
+<!--             lwd=1) -->
+
+<!-- } -->
+
+
+
+<!-- # AXES -->
+<!-- lines( x = c(0.05, 0.95), -->
+<!--        y = c(0.65, 0.65)) -->
+<!-- lines( x = c(0.05, 0.95), -->
+<!--        y = c(0.45, 0.45)) -->
+
+
+
+<!-- #Tickmarks -->
+<!-- for (i in (1:9)){ -->
+<!--   lines( c( i/10, i/10), c(0.65, 0.64) ) -->
+<!--   text( x = i/10, -->
+<!--         y=0.64, -->
+<!--         lab=i/10, -->
+<!--         cex=0.8, -->
+<!--         pos=1) -->
+
+<!--   lines( c( i/10, i/10), c(0.45, 0.46) ) -->
+<!--   text( x = i/10, -->
+<!--         y=0.46, -->
+<!--         lab=i/10, -->
+<!--         cex=0.8, -->
+<!--         pos=3) -->
+<!-- } -->
+
+
+<!-- # TEXT -->
+<!-- text(x = pos[1, 1],  -->
+<!--      y = pos[1, 2], -->
+<!--          lab=expression(italic(p)), -->
+<!--      pos=3 -->
+<!--      ) -->
+<!-- text(x = pos[4, 1], -->
+<!--      y = pos[4, 2], -->
+<!--          lab=expression(hat(italic(p))), -->
+<!--      pos=1 -->
+<!--      ) -->
+
+<!-- # ARROWS -->
+<!-- arrows(0.2, 0.60, -->
+<!--        0.8, 0.60, -->
+<!--        code=3, -->
+<!--        angle=15) -->
+<!-- text(0.5, 0.58, -->
+<!--      "Plausible values for p-hat that could come from p") -->
+
+<!-- arrows(0.2, 0.50, -->
+<!--        0.8, 0.50, -->
+<!--        code=3, -->
+<!--        angle=15) -->
+<!-- text(0.5, 0.52, -->
+<!--      "Plausible values for p that may have produced p-hat") -->
+
+
+
+
+<!-- # MORE TEXT -->
+<!-- greyBackground <- rgb(0.1, 0.1, 0.1, alpha=0.3, maxColorValue = 1) -->
+
+
+<!-- textrect( c(0.5, 0.70), -->
+<!--           radx=0.07, -->
+<!--           rady=0.043, -->
+<!--           box.col=greyBackground, -->
+<!--           lcol=greyBackground, -->
+<!--           lab="Population\nestimates\nstatistic", -->
+<!--           shadow.size=0) -->
+<!-- textrect( c(0.5, 0.40), -->
+<!--           radx=0.07, -->
+<!--           rady=0.043, -->
+<!--           box.col=greyBackground, -->
+<!--           lcol=greyBackground, -->
+<!--           lab="Sample\nsuggests\nparameter", -->
+<!--           shadow.size=0) -->
+
+<!-- ``` -->
+
+
+
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "30%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/tin-1568095_640.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+
+```{example, EnergyDrinks, name="Energy drinks in Canadian youth"}
+In Example \@ref(exm:CanadianEnergyDrinks),
+the approximate 95% CI was from 0.192 to 0.236
+The correct interpretation is:
+
+> If we took many samples of 1516 Canadian youth,
+> and computed the approximate 95% CI for each one,
+> about 95% of those CIs would contain the population proportion.
+
+We don't know if *our* CI includes the value of $p$, however.
+We might say:
+
+> This 95% CI is likely to straddle the actual value of $p$. 
+
+or
+
+> The range of values of $p$
+> that could plausibly (with 95% confidence) 
+> have produced $\hat{p}=0.241$
+> is between 0.192 and 0.236. 
+
+In practice,
+the CI is usually interpreted as saying:
+
+> There is a 95% chance that the population proportion
+> of Canadian youth who have experienced sleeping difficulties 
+> after consuming energy drinks
+> is between 0.192 to 0.236.
+
+This is not strictly correct, but is commonly used.
+```
+
+
+```{lemma InterpretCIKoalas, name="Interpretation of a CI"}
+In Example \@ref(exm:KoalasCrossingRoads) about koalas crossing roads,
+the approximate 95% CI was from 0.130 to 0.209.
+
+What is the correct interpretation of this CI?
+```
+
+
+
+
+
+
+
+
+## Statistical validity conditions {#ValidityProportions}
+
+The histogram in
+Sect.&nbsp;\@ref(SamplingDistributionKnownp),
+shows the proportion of $n=25$ rolls that were even
+for many samples;
+it has an approximate normal distribution.
+Because of this, 
+the 
+[68--95--99.7 rule](#def:EmpiricalRule)
+could be used
+to form the approximate 95% CIs.
+
+However,
+the distribution of the sample proportions 
+only looks like a normal distribution under certain conditions.
+Certain conditions must be true
+for the calculations to be sensible,
+or **statistically valid**.
+
+
+```{definition StatisticalValidity, name="Statistical validity"}
+A result is *statistically valid* if
+the conditions for the underlying mathematical calculations and assumptions to be
+approximately correct are met.
+Every confidence interval
+has statistical validity conditions.
+```
+
+
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "40%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/pexels-karolina-grabowska-4226912.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+```{example StatisticalValidityAnalogy, name="Statistical validity analogy"}
+Suppose your doctor asks you to get a blood test,
+after fasting (refraining from eating) 
+for 12 hours before your blood test.
+	
+After leaving the doctor, 
+you proceed to a restaurant for dinner.
+You start the next day with a hearty breakfast,
+have lunch at a beach-side cafe,
+and then go for your blood test.
+Your blood is extracted,
+the blood is analysed in the pathology lab,
+and your doctor is emailed the results of the blood test.
+
+However,
+since you did not fast as required,
+the results may or may not be valid.
+The doctor can still learn something... 
+but not as much 
+as if you had followed the instructions.
+
+Similarly,
+if the conditions for computing the confidence interval are not met,
+the results may be suspect. 
+```
+
+The *statistical validity conditions* 
+for creating CI for a single proportion
+is that:
+
+* the number of individuals in the group of interest must exceed 5, **and**
+* the number of individuals in the group *not* of interest must exceed 5.
+
+These conditions ensure that 
+the sampling distribution of $\hat{p}$
+has an approximate normal distribution, 
+so that the 68--95--99.7 rule (approximately) applies.
+If this condition is not met,
+the sampling distribution may not have normal distribution,
+so the 68--95--99.7 rule
+(used to create the CI) 
+maybe inappropriate, 
+and so the CI may also be inappropriate.
+
+In addition to the statistical validity condition,
+the CI will be:
+
+* [**internally valid**](#def:InternalValidity)
+  if the study was well designed; and
+* [**externally valid**](#def:ExternalValidity) 
+  if the
+  the sample is a [simple random sample](#SRS)
+  and is internally valid.
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "30%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/tin-1568095_640.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+```{example, EnergyDrinks2, name="Energy drinks in Canadian youth"}
+In Example \@ref(exm:CanadianEnergyDrinks),
+the approximate 95% CI was from 0.192 to 0.236.
+This confidence interval for the sample proportion 
+will be *statistically* valid if:
+
+* the number of youth in the sample who experienced sleeping difficulties exceeds 5; **and**
+* the number of youth in the sample who *didn't* experience sleeping difficulties exceeds 5.
+
+The number of youth experiencing sleeping difficulties was 365, 
+which is more than five.
+The number of youth *not* experiencing sleeping difficulties was 
+$1516 - 365 =  1151$,
+which is also more than five.
+Hence,
+the CI is *statistically* valid.
+
+In addition,
+the CI will be *internally* valid if the study was well designed,
+and will be *externally* valid if the sample is a simple random sample from the population and is internally valid.
+```
+
+
+```{lemma, StatisticalValidityKoalas, name="Koalas crossing roads"}
+Consider Example \@ref(exm:KoalasCrossingRoads),
+about koalas crossing roads.
+Is the CI likely to be statistically, 
+internally and externally valid?
+```
+
+
+
+```{example StatisticalValidityDieRolls, name="Statistical validity"}
+Consider an artificial situation to estimate 
+the proportion of die rolls
+that show as a **one**.
+The population proportion 
+(using the classical approach to probability) 
+is 1/6, or about 0.167.
+
+If we repeatedly rolled a die in sets of $n=20$ rolls,
+say 5000 times,
+the proportion of rolls that showed as **one** 
+could be recorded for each set of 20 rolls.
+Then, a histogram of the sample proportions could be produced.
+Using a computer to simulate this,
+a histogram of the sample proportions is shown in 
+the top panel of Fig.&nbsp;\@ref(fig:HistoProportionsConditions).
+The normal distribution does a poor job
+of describing the sampling distribution 
+(the distribution is not even symmetric).
+The statistical validity conditions do *not* seem satisfied.
+
+Alternatively,
+we could repeatedly roll a die in sets of $n=60$ rolls,
+say 5000 times,
+and record the proportion of
+rolls that show as **one** for each set of 60 rolls.
+Then,
+a histogram of the proportion of **ones** for those
+sets of 60 rolls could be produced.
+Using a computer to simulate this,
+a histogram of these proportions is shown in 
+the bottom panel of Fig.&nbsp;\@ref(fig:HistoProportionsConditions).
+The normal distribution does a reasonable job
+of describing the sampling distribution.
+The statistical validity conditions seem satisfied.
+```
+
+
+```{r HistoProportionsConditions, echo=FALSE, fig.width=5, fig.height=7, fig.align="center", fig.cap="The sampling distribution of the proportion of ones rolled, for sets of 20 rolls (top panel) and sets of 60 rolls (bottom panel)" }
+par( mfrow=c(2, 1),
+     mar=c(5, 5, 4, 0.5) + 0.1)  # The default is c(5, 4, 4, 2) + 0.1.
+
+p <- 1/6
+n <- 20
+
+set.seed <- 412791
+num.sims <- 5000
+
+p.hat.vec <- array( dim=num.sims)
+
+for (i in (1:num.sims)){
+  roll <- sample( 1:6, n, replace=TRUE)
+  p.hat <- sum( roll==1)/n
+  p.hat.vec[i] <- p.hat 
+}
+
+out <- hist(p.hat.vec, 
+     breaks=seq(0, 0.60, by=0.05),
+     main="Proportion of ones\nin sets of 20 rolls",
+     ylab="Number of sets\nof 20 rolls",
+     xlab="Sample proportion of ones",
+     las=1,
+     col=plot.colour
+     )
+
+xn <- seq(0, 0.55, length=100)
+yn <- dnorm(xn, mean=1/6, sd = sqrt( p*(1-p)/n) )
+yn <- yn/max(yn) * max(out$counts)
+  
+lines( yn ~ xn, 
+       col="grey",
+       lwd=2)
+
+
+###############
+
+
+
+
+
+n <- 60
+set.seed <- 412791
+num.sims <- 5000
+
+p.hat.vec <- array( dim=num.sims)
+
+for (i in (1:num.sims)){
+  roll <- sample( 1:6, n, replace=TRUE)
+  p.hat <- sum( roll==1)/n
+  p.hat.vec[i] <- p.hat 
+}
+
+out <- hist(p.hat.vec, 
+     breaks=seq(0, 0.60, by=0.05),
+     main="Proportion of ones\nin sets of 60 rolls",
+     ylab="Number of sets\nof 60 rolls",
+     xlab="Sample proportion of ones",
+     las=1,
+     col=plot.colour)
+
+xn <- seq(0, 0.60, length=100)
+yn <- dnorm(xn, mean=1/6, sd = sqrt( p*(1-p)/n) )
+yn <- yn/max(yn) * max(out$counts)
+  
+lines( yn ~ xn, 
+       col="grey",
+       lwd=2)
+```
+
+
+
+
+
+
+## Summary: Finding a CI for $p$ {#Chap20-Summary}
+
+The procedure for computing a confidence interval (CI)
+for a proportion is:
+
+* Compute the sample proportion, $\hat{p}$, 
+  and identify the sample size $n$.
+* Compute the standard error, 
+  which quantifies how much the value of $\hat{p}$ varies 
+  from 
+  one sample to the next:
+
+\[
+  \text{s.e.}(\hat{p})
+  =
+  \sqrt{\frac{ \hat{p} \times (1-\hat{p})}{n}}.
+\]
+
+* Find the multiplier: 
+  this is $2$ for an approximate 95% CI using the 68--95--99.7 rule.
+  (Note: (Multiplier$\times$standard error) is called the
+  *margin of error*.)
+* Compute:
+
+\[
+   \hat{p} \pm \left( \text{Multiplier}\times\text{standard error} \right).
+\]
+
+* Check the [statistical validity conditions](#ValidityProportions) 
+  are satisfied.
+
+
+```{block2 type="rmdtip"}
+You must use *proportions* in this formula, **not** *percentages*
+(that is, values like 0.23 and **not** 23%).
+```
+
+
+
+```{r echo=FALSE}
+Tab.Smoke <- table(NHANES$SmokeNow)
+p.Smoker <- Tab.Smoke["Yes"] / sum(Tab.Smoke)
+
+se.Smoker <- sqrt( p.Smoker * (1-p.Smoker) / sum(Tab.Smoke) )
+
+ci.lo.Smoker <- p.Smoker - 2*se.Smoker
+ci.hi.Smoker <- p.Smoker + 2*se.Smoker
+```
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "30%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/cigarette-1270516_640.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+```{example, NHANESSmokers, name="NHANES data"}
+For the NHANES data,
+first seen in
+Sect.&nbsp;\@ref(NHANESGraphs),
+the unknown parameter is $p$, the *population* proportion of 
+Americans that currently smoke.
+
+In the study,
+1466 out of the 3211 respondents
+who reported their smoking status
+said they currently smoked:
+$\hat{p}= 1466\div 3211 = 0.4566$.
+
+What is the *population* proportion $p$ that currently smoke?
+We don't know,
+and the estimate of $p$ from every sample 
+is likely to be different.
+The standard  error is $\text{s.e.}(\hat{p}) = 0.00879$,
+so the approximate 95% CI for $p$ is 
+$0.4566\pm 0.01758$,
+or 
+from 0.439 to 0.474.
+*(Check the calculations!)*
+
+For the conclusions to be statistically valid,
+the number of smokers must exceed 5, 
+**and** the number of non-smokers must exceed 5.
+Both are true.
+The CI  appears to be statistically valid. 
+
+We write:
+
+> Based on the *sample*,
+> we are approximately 95% confident that the interval from 
+> from 0.429 to 0.474
+> straddles the *population* proportion of smokers in the USA.
+
+```
+
+
+
+
+
+
+## Estimating sample sizes for one proportion
+
+For a given level of confidence,
+the width of a CI depends on
+the size of the sample.
+In general,
+larger samples produce 
+more [precise](#PrecisionAccuracy) estimates of the parameter
+(Sect.&nbsp;\@ref(PrecisionAccuracy)),
+and hence narrower CIs.
+
+Suppose we want our 95% CI for the proportion of smokers 
+(Example \@ref(exm:NHANESSmokers))
+to be
+precise to give-or-take $0.01$ 
+(rather than the $\pm0.018$ found from the sample):
+what size sample is needed?
+Since we seek a *more* precise estimate, 
+we'd expect to need a *larger* sample... 
+but how much larger?
+
+Conservatively,
+the sample size for a 95% CI needed is *at least*
+
+\[
+   \frac{1}{(\text{Margin of error})^2}.
+\]
+That is,
+a sample size of at least 
+$\displaystyle \frac{1}{0.01^2} = 10\,000$ 
+Americans is needed.
+
+
+```{example SampleSizep, name="Sample size calculations"}
+To estimate the population proportion of Australians that smoke, 
+to within $0.07$ with 95% confidence,
+a sample size of at least
+   
+\[
+  \frac{1}{(\text{Margin of error})^2} { = \frac{1}{0.07^2}}
+\]
+is needed;
+at least $n=204.0816$ people.
+
+In practice,
+at least 205 people are needed
+to achieve this desired level of precision
+(that is, **always round up** in sample size calulations).
+```
+
+
+
+```{block2, type="rmdimportant"}
+Always **round up** the result of the sample size calculation.
+```
+
+
+
+
+`r if (knitr::is_html_output()){
+  'The following short video may help explain some of these concepts:'
+}`
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/-fflEggczG4" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+
+
+
+## Example: Female coffee drinkers {#Female-Coffee-Drinkers}
+
+
+
+
+<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
+<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r, echo=FALSE, out.width= "30%", out.extra='style="float:right; padding:10px"'}
+include_graphics("Illustrations/gian-cescon-GxQ13MXLTHQ-unsplash.jpg")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+A study of 360 female college students in the United States
+[@data:Kelpin2018:AlcoholCoffee]
+found that 61 drank coffee daily. 
+
+The unknown parameter is $p$, the *population* proportion of 
+female college students in the United States that drink coffee daily.
+
+The sample size is $n = 360$,
+and the *sample* proportion of daily coffee drinkers is 
+$\hat{p} = 61/360 = 0.16944$.
+Another sample of 360 students from the same population is likely 
+to produce a different sample proportion $\hat{p}$ of daily coffee drinkers:
+the sample proportion has *sampling variation*.
+The size of this sampling variation 
+is quantified using a *standard error*;
+from \@ref(eq:stderrorphat):
+
+\[
+  \text{s.e.}(\hat{p})
+               = \sqrt{ \frac{ 0.16944 \times (1 - 0.16944)}{360}}
+               = 0.01977.
+\]
+
+An *approximate* 95% CI is
+$0.1694 \pm (2 \times 0.01977)$,
+or $0.1694 \pm 0.03954$.
+That is,
+the margin of error is $0.03954$. 
+
+Computing the 'plus' and the 'minus' bits,
+the approximate 95% CI is from
+$0.1694 - 0.03954 = 0.12986$ to $0.1694 + 0.03954 = 0.20894$.
+Round appropriately,
+the approximate 95% CI is from $0.130$ to $0.209$.
+
+The plausible values for $p$ that 
+may have led to this value of $\hat{p} = 0.1694$
+are between 0.130 and 0.209.
+(This CI may or may not contain the true proportion $p$.)
+
+This CI is *statistically* valid.
+We cannot comment on the internal validity:
+we would need details of how the study was conducted.
+
+The CI is *externally* valid 
+if the sample is simple random sample of some population,
+and the study is internally valid.
+The CI is approximately *externally* valid 
+if the sample is somewhat representative of some population,
+and the study is internally valid.
+
+
+
+
+
+## Quick review questions {#Chap20-QuickReview}
+
+1. True or false: $p$ is called a *parameter*.  
+`r if( knitr::is_html_output() ) {torf(answer = TRUE )}`
+1. True or false: The value of $p$ will vary from sample to sample.  
+`r if( knitr::is_html_output() ) {torf(answer = FALSE )}`
+1. True or false: The *standard error* refers to the sampling variation in $p$.  
+`r if( knitr::is_html_output() ) {torf(answer = FALSE )}`
+1. Suppose $n=50$ and $\hat{p} = 0.4$. What is the standard error?  
+`r if( knitr::is_html_output() ) {mcq( c(
+  answer = "0.06928",
+  "0.0048",
+  "0.13856") )}`
+
+
+
+
+
+## Exercises {#CIOneProportionExercises}
+
+Selected answers are available in
+Sect.&nbsp;\@ref(CIOneProportionAnswer).
+
+
+```{exercise, CIOneProportionSaltIntake}
+A study of salt intake in the United Kingdom
+[@data:Sutherland:SaltIntake]
+found that 2,182 out of the 6,882 people sampled in 2007
+'generally added salt at the table'.
+
+Find an approximate 95% CI for the true proportion
+of Britons that generally add salt at the table.
+```
+
+
+```{exercise, CIOneProportionSnacking}
+A study of the eating habits of university students in Canada
+[@data:Mann12017:UniStudents]
+found that 8 students out of 154 met the recommendation for eating a sufficient number of servings of grains each day.
+
+1. Find an approximate 95% CI for the true proportion
+   of Canadian students that
+   meet the recommendation for eating a sufficient
+   number of servings of grains each day.
+1. Would these results be likely to apply to Australian university students?
+   Why or why not?
+
+```
+
+
+```{exercise CIOneProportionHiccups}
+
+A meta-study of hiccups
+[@data:Lee2016:Hiccups]
+found that, of 864 patients examined 
+(across many different studies) who had hiccups,
+708 were male.
+
+1. Find an approximate 95% CI for the true proportion of people 
+with hiccups who are male.
+1. Check if the statistical validity conditions are met or not.
+1. Draw a sketch of how the sample proportion varies from sample to sample for samples of size 864.
+
+```
+
+
+```{exercise, CIOneProportionAustSmokers}
+We wish to estimate the population proportion of Australians that smoke.
+
+1. Suppose we wish our 95% CI to be give-or-take $0.05$. How many Australians would we need to survey?
+1. Suppose we wish our 95% CI to be give-or-take $0.025$; 
+that is, we wish to *halve* the width of the interval above. 
+How many Australians would we need to survey? 
+1. How many *times* as many Australians are needed
+to *halve* the width of the interval?
+
+```
+
+
+
+
+```{exercise, CITurbines}
+A study of turbine failures
+[@MyersBook; @NelsonLifeData]
+ran 42 turbines for around 3000 hours,
+and found that nine developed fissures (small cracks).
+Find a 95% CI for the true proportion of turbines
+that would develop fissures after 3000 hours of use.
+Are the statistical validity conditions satisfied?
+
+The study also 
+ran 39 turbines for around 400 hours,
+and found that zero developed fissures.
+Find a 95% CI for the true proportion of turbines
+that would develop fissures after 400 hours of use.
+Are the statistical validity conditions satisfied?
+```
+ 
+
+
+
+<!-- ## Lecture 6 review questions -->
+
+<!-- <iframe src="https://h5p.org/h5p/embed/187559" width="1090" height="403" frameborder="0" allowfullscreen="allowfullscreen"></iframe><script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js" charset="UTF-8"></script> -->
+
+
