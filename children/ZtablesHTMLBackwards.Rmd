@@ -1,0 +1,72 @@
+## When the area is known, and the $z$-score is sought {#ZTablesOnlineBackwards}
+
+
+```{r echo=FALSE, fig.width=2.5, fig.height=1.5, fig.align="center"}
+par(mar=c(2.1, 0.5, 0.5, 0.5))
+delta <- 0.01
+z <- seq(-3.5, 3.5, by=delta)
+zy <- dnorm(z)
+
+zval <- 1.875
+
+plot( zy ~ z,
+      lwd=2,
+      type="l",
+      xlab="",
+      ylab="",
+      axes=FALSE)
+#axis(side=1, at=-3:3)
+axis(side=1, at=zval, label=expression(italic(z)))
+abline(h=0, lwd=2)
+
+abline(v=zval, lwd=2, col="grey")
+
+xshade <- c(  seq(min(z), zval, by=delta),
+              seq(zval, min(z), by=-delta) )
+yshade <- c( rep(0, length(xshade)/2),
+             rev(zy[ z<zval]) )
+            
+polygon( xshade, yshade, 
+         col = plot.colour)
+
+arrows(-2.5, max(zy)/2,
+       0, max(zy)/2, 
+       angle=15,
+       length=0.1)
+text(-2.5, max(zy)/2, 
+     "Area",
+     pos=3)
+```
+
+The table gives the $z$-score such that a given probability (area) is to the left of the $z$-score.
+For example: 
+Look up an area of 10%, and the corresponding $z$-score is $z = -1.282$; 
+that is,
+the area to the left of $z=1.282$ is about 10%.
+
+To use this table,
+enter that area *to the left* in the search box *under* the `Area.to.left` column. 
+The corresponding $z$-score will be shown.
+(Alternatively, you can search through the table manually.)
+
+```{r echo=FALSE, fig.width=2.5, fig.height=1.5, fig.align="center"}
+AreaAll <- c(0.001, seq(0.01, 0.99, by=0.01), 0.999)
+zscores <- qnorm(AreaAll)
+
+ZtabAllBackwards <- data.frame(
+  "Area to left" = sprintf("%.3f", AreaAll ),
+  "z score" = as.numeric(format( round(zscores, 3), nsmall=3) )
+)
+
+#colnames(ZtabAll) <- c("z-score", "Area to the *left*")
+#rownames(ZtabAll) <- as.character( round(zall, 2) )
+
+datatable(ZtabAllBackwards, 
+          filter = 'top', 
+          rownames=FALSE,
+          options = list(
+            pageLength = 10, 
+            autoWidth = FALSE
+          )
+)
+```
