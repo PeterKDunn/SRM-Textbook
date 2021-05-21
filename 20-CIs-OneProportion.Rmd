@@ -170,25 +170,27 @@ if (knitr::is_latex_output()){
 
     
           plot( c(1, (num.rolls+2)), c(1, num.sims),
-            type="n",
-            las=1,
-            xlab="",
-            ylab="",
-            main="",
-            axes=FALSE)
+            type = "n",
+            las = 1,
+            xlab = "",
+            ylab = "",
+            main = "",
+            axes = FALSE)
 
     col1 <- col2rgb("darkolivegreen2")
     col2 <- col2rgb("indianred2")
       
     for (i in 1:num.sims){
       
-      roll <- sample(1:6, num.rolls, 
+      roll <- sample(1:6, 
+                     num.rolls, 
                      replace = TRUE)
       all.rolls[i, ] <- roll
       prop.even[i] <- sum(roll/2 == floor(roll/2)) / num.rolls
       
       for (j in 1:i){
-        text(y = j, x = 1:num.rolls,
+        text(y = j, 
+	     x = 1:num.rolls,
              labels = all.rolls[j, ],
              col = ifelse( all.rolls[j,]/2 == floor(all.rolls[j,]/2), "black", "grey") )
               
@@ -212,7 +214,8 @@ if (knitr::is_latex_output()){
            labels = paste("Set #", 1:i, sep = "") )
       
       # Add the sample proportion to right-hand side 
-      text(num.rolls+2, 1:i, 
+      text(num.rolls + 2, 
+           1:i, 
            labels = format(round(prop.even[1:i], 2), nsmall = 2) )
       #Add dividing line
       abline(v = num.rolls+1, 
@@ -259,8 +262,8 @@ but we wouldn't expect to see that very often.
 
 In this example,
 the *population proportion* of even rolls 
-is known to be $p=0.5$.
-Each set of $n=25$ rolls is a *sample* of all possible sets of $n=25$ rolls,
+is known to be $p = 0.5$.
+Each set of $n = 25$ rolls is a *sample* of all possible sets of $n=25$ rolls,
 and the *sample* proportion of even rolls is denoted by $\hat{p}$.
 
 For any set of 25 rolls,
@@ -403,20 +406,6 @@ if (knitr::is_latex_output()){
 
 
 
-<!-- ```{r RollDiceHistHTML, echo=FALSE, fig.cap="Rolling 1000 times", fig.align="center"} -->
-<!-- #includeHTML("./Animations/RollDiceHistMovie.html") -->
-<!-- htmltools::tags$iframe(title = "My embedded document", src = "./Animations/RollDiceHistMovie.html", frameborder=0, height=450, width=350)  -->
-<!-- ``` -->
-
-
-<!-- ```{r RollDiceHistFig, echo=FALSE, fig.align="center", fig.width=5, out.width="85%", fig.cap="The proportion of rolls that are even change from one sample of 25 rolls to the next sample of 25 rolls" } -->
-<!-- if (knitr::is_latex_output()){ -->
-<!--   include_graphics("./Animations/images/RollDiceHist1000") -->
-<!-- } -->
-<!-- ``` -->
-
-
-
 ```{r echo=FALSE}
 se.die <- sqrt(0.5 * (1 - 0.5) / 25)
 ```
@@ -441,7 +430,7 @@ will have a *sampling distribution*,
 described by:
 
 * an approximate normal distribution;
-* centred around a mean of $p=0.5$;
+* centred around a mean of $p = 0.5$;
 * with a standard deviation of `r round(se.die, 3)` 
   (where this number comes from will be [revealed soon](#def:SamplingDistProp)).
 
@@ -467,10 +456,10 @@ n <- 25
 se.p <- sqrt( pop.p * (1-pop.p) / n )
 
 plot.norm(mu=pop.p, sd=se.die, 
-          xlab.name="Sample proportion of even rolls out of 25", 
-          type="",
-          shade.lo.x=-10, 
-          shade.hi.x=-10)
+          xlab.name = "Sample proportion of even rolls out of 25", 
+          type = "",
+          shade.lo.x = -10, 
+          shade.hi.x = -10)
 ```
 
 ```{block2, type="rmdimportant"}
@@ -692,41 +681,47 @@ zs <- qnorm( 1 - (1-levels)/2)
 mes <- sep * zs
 
 plot( c(0.18, 0.82),
-	c(0,1), 
-	axes=FALSE, 
-	xlab="Sample proportions",
-	ylab="", 
-	main="", 
-	type="n")
-axis(side=1)
-abline(v=phat)
+	c(0, 1), 
+	axes = FALSE, 
+	xlab = "Sample proportions",
+	ylab = "", 
+	main = "", 
+	type = "n")
+axis(side = 1)
+abline(v = phat)
 
 arrows(phat - mes[1], 0.9,    
 	   	phat + mes[1], 0.9,    
-		code=3, 
-		angle=15, 
-		col="blue", 
-		lwd=2, 
-		ylim=c(0, 0.35))
-text(0.21,0.9,"90%", cex=0.9)
+		code = 3, 
+		angle = 15, 
+		col = "blue", 
+		lwd = 2, 
+		ylim = c(0, 0.35))
+text(0.21, 0.9,
+	"90%", 
+	cex = 0.9)
 
-arrows(phat-mes[2], 0.6, 
-		phat+mes[2], 0.6, 
-		code=3, 
-		angle=15, 
-		col="blue", 
-		lwd=2, 
-		ylim=c(0, 0.35))
-text(0.21,0.6,"95%", cex=0.9)
+arrows(phat - mes[2], 0.6, 
+       phat + mes[2], 0.6, 
+       code = 3,
+       angle = 15,		
+       col = "blue", 
+       lwd = 2,
+       ylim = c(0, 0.35))
+text(0.21, 0.6, 
+     "95%", 
+	cex = 0.9)
 
-arrows(phat-mes[3], 0.3, 
-		phat+mes[3], 0.3, 
-		code=3, 
-		angle=15, 
-		col="blue", 
-		lwd=2, 
-		ylim=c(0, 0.35))
-text(0.21,0.3,"99%", cex=0.9)
+arrows(phat - mes[3], 0.3, 
+       phat + mes[3], 0.3, 
+       code = 3, 
+       angle = 15, 
+       col = "blue", 
+       lwd = 2, 
+       ylim = c(0, 0.35))
+text(0.21, 0.3,
+     "99%", 
+     cex = 0.9)
 ```
 
 
@@ -815,18 +810,19 @@ HT.mn <- 175
 HT.sd <- 7
 
 plot.normZ(HT.mn, HT.sd, 
-           xlab.name="Sample proportion of even rolls out of 25", 
-           zlim.lo = -4, zlim.hi = 4, 
-           shade.lo.z = -5, shade.hi.z = -5,
-#           axis.labels=c(" p - 0.298", " p - 0.199", " p - 0.099", " p", " p + 0.099", " p + 0.199", " p + 0.298"),
-           axis.labels=c( 	
+           xlab.name = "Sample proportion of even rolls out of 25", 
+           zlim.lo = -4, 
+	   zlim.hi = 4, 
+           shade.lo.z = -5, 
+  	   shade.hi.z = -5,
+           axis.labels = c( 	
                 expression( paste("  ", italic(p), " - 0.298")),
-								expression( paste("  ", italic(p), " - 0.199")), 
-								expression( paste("  ", italic(p), " - 0.099")), 
-								expression( paste(" ", italic(p))),
-								expression( paste("  ", italic(p), " + 0.099")), 
-								expression( paste("  ", italic(p), " + 0.199")), 
-								expression( paste("  ", italic(p), " + 0.298")) ),
+		expression( paste("  ", italic(p), " - 0.199")), 
+		expression( paste("  ", italic(p), " - 0.099")), 
+		expression( paste(" ", italic(p))),
+		expression( paste("  ", italic(p), " + 0.099")), 
+		expression( paste("  ", italic(p), " + 0.199")), 
+		expression( paste("  ", italic(p), " + 0.298")) ),
            cex.tickmarks = 0.7, # Shrink the tick marks labels so they fit a bit better
            srt = -25 # Rotate axis labels so they fit better
 )
@@ -939,29 +935,33 @@ if (knitr::is_html_output()){
       se <- sqrt( mn * (1-mn) / length(roll))
       upper <- mn + 1.96*se
       lower <- mn - 1.96*se
-      list(lower=lower, mn=mn, upper=upper)
+      list(lower = lower, 
+	   mn = mn, 
+	   upper = upper)
     }
     
-    prop.even <- ci.upper <- ci.lower <- ci.est <- array(dim=num.sims)
-    all.rolls <- array( dim=c(num.sims, num.rolls))
+    prop.even <- ci.upper <- ci.lower <- ci.est <- array(dim = num.sims)
+    all.rolls <- array( dim = c(num.sims, num.rolls))
     
     for (i in 1:num.sims){
       plot( c(1, (num.sims+2)), c(0, 1),
-            type="n",
-            las=1,
-            ylim=c(0, 1),
-            xlim=c(0, num.sims+2),
-            xlab="The individual sets of 25 rolls",
-            ylab="95% confidence interval for p",
-            main=paste("95% CIs from each set of 25 rolls; Set",i),
-            axes=FALSE)
-      axis(side=1,
-           las=1)
-      axis(side=2,
-           las=1)
-      abline(h=0.5, col="grey", lwd=2)
+            type = "n",
+            las = 1,
+            ylim = c(0, 1),
+            xlim = c(0, num.sims + 2),
+            xlab = "The individual sets of 25 rolls",
+            ylab = "95% confidence interval for p",
+            main = paste("95% CIs from each set of 25 rolls; Set",i),
+            axes = FALSE)
+      axis(side = 1,
+           las = 1)
+      axis(side = 2,
+           las = 1)
+      abline(h = 0.5, 
+	     col = "grey", 
+	     lwd = 2)
       
-      roll <- sample(1:6, num.rolls, replace=TRUE)
+      roll <- sample(1:6, num.rolls, replace = TRUE)
       ci <- p.ci( roll )
       ci.upper[i] <- ci$upper
       ci.lower[i] <- ci$lower
@@ -970,10 +970,11 @@ if (knitr::is_html_output()){
         p.col <- ifelse( (ci.lower[j]<0.5) & (ci.upper[j]>0.5), "green", "red")
         l.ty  <- ifelse( (ci.lower[j]<0.5) & (ci.upper[j]>0.5), 1, 2)
         lines( c(j, j), c(ci.lower[j], ci.upper[j]),
-               lwd=2,
-               lty=l.ty,
-               col=p.col)
-        points( j, ci.est[j], pch=20)
+               lwd = 2,
+               lty = l.ty,
+               col = p.col)
+        points( j, ci.est[j], 
+	        pch = 20)
       }
     }
   }
@@ -996,26 +997,30 @@ if (knitr::is_latex_output()){
       se <- sqrt( mn * (1-mn) / length(roll))
       upper <- mn + 1.96*se
       lower <- mn - 1.96*se
-      list(lower=lower, mn=mn, upper=upper)
+      list(lower = lower, 
+	   mn = mn, 
+           upper = upper)
     }
     
     prop.even <- ci.upper <- ci.lower <- ci.est <- array(dim=num.sims)
     all.rolls <- array( dim=c(num.sims, num.rolls))
     
       plot( c(1, (num.sims+2)), c(0, 1),
-            type="n",
-            las=1,
-            ylim=c(0, 1),
-            xlim=c(0, num.sims+2),
-            xlab="The individual sets of 25 rolls",
-            ylab="95% confidence interval for p",
-            main="",
-            axes=FALSE)
-      axis(side=1,
-           las=1)
-      axis(side=2,
-           las=1)
-      abline(h=0.5, col="grey", lwd=2)
+            type = "n",
+            las = 1,
+            ylim = c(0, 1),
+            xlim = c(0, num.sims + 2),
+            xlab = "The individual sets of 25 rolls",
+            ylab = "95% confidence interval for p",
+            main = "",
+            axes = FALSE)
+      axis(side = 1,
+           las = 1)
+      axis(side = 2,
+           las = 1)
+      abline(h = 0.5, 
+	     col = "grey", 
+	     lwd = 2)
 
       
     for (i in 1:num.sims){
@@ -1029,10 +1034,11 @@ if (knitr::is_latex_output()){
         p.col <- ifelse( (ci.lower[j]<0.5) & (ci.upper[j]>0.5), "green", "red")
         l.ty  <- ifelse( (ci.lower[j]<0.5) & (ci.upper[j]>0.5), 1, 2)
         lines( c(j, j), c(ci.lower[j], ci.upper[j]),
-               lwd=2,
-               lty=l.ty,
-               col=p.col)
-        points( j, ci.est[j], pch=20)
+               lwd = 2,
+               lty = l.ty,
+               col = p.col)
+        points(j, ci.est[j], 
+	       pch = 20)
       }
     }
 }
@@ -1045,18 +1051,6 @@ but some do not (shown as dashed lines).
 Of course,
 since the value of $p$ is usually unknown,
 we never know if our CI contains $p$ or not.
-
-
-<!-- ```{r RollDiceCIMovie, echo=FALSE, fig.cap="Most CIs straddle the population proportion; here are the CIs for 50 samples", fig.align="center"} -->
-<!-- htmltools::tags$iframe(title = "Most CIs straddle the population proportion", src = "./Animations/RollDiceCIMovie.html", frameborder=0, height=640, width=520)  -->
-<!-- ``` -->
-
-
-<!-- ```{r RollDiceCIFig, echo=FALSE, fig.align="center", fig.width=5, out.width="85%", fig.cap="About 95\\% of CIs contain the population proportion"} -->
-<!-- if (knitr::is_latex_output()){ -->
-<!--   include_graphics("./Animations/images/RollDiceCI50") -->
-<!-- } -->
-<!-- ``` -->
 
 
 
@@ -1125,51 +1119,61 @@ zs <- qnorm( 1 - (1-levels)/2)
 mes <- sep * zs
 
 plot( c(-0.05, 1.13),
-	c(0,1.1), 
-	axes=FALSE, 
-	xlab="Sample proportions",
-	ylab="", 
-	main="", 
-	type="n")
-axis(side=1,
-     cex=0.9,
-     at = c( seq(0, 0.4, by=0.1), 0.44, seq(0.5, 1, by=0.1)))
-     label = c( as.character(seq(0, 0.4, by=0.1)), "", as.character(seq(0.5, 1, by=0.1)))
+	c(0, 1.1), 
+	axes = FALSE, 
+	xlab = "Sample proportions",
+	ylab = "", 
+	main = "", 
+	type = "n")
+axis(side = 1,
+     cex = 0.9,
+     at = c( seq(0, 0.4, by = 0.1), 
+	     0.44, 
+	     seq(0.5, 1, by = 0.1)))
+     label = c( as.character(seq(0, 0.4, by = 0.1)), 
+	        "", 
+	        as.character(seq(0.5, 1, by = 0.1)))
 
-abline(v=phat,
-       col="grey")
+abline(v = phat,
+       col = "grey")
 
 text(0.44, 0,
-     cex=0.9,
-     pos=3,
+     cex = 0.9,
+     pos = 3,
      expression( hat(italic(p)) == 0.44))
 
 arrows(phat - mes[1], 0.9,    
-	   	phat + mes[1], 0.9,    
-		code=3, 
-		angle=15, 
-		col="blue", 
-		lwd=2, 
-		ylim=c(0, 0.35))
-text(0.1,0.9,"90%", cex=0.9)
+       phat + mes[1], 0.9,    
+       code = 3  
+       angle = 15, 
+       col = "blue", 
+       lwd = 2, 
+       ylim = c(0, 0.35))
+text(0.1, 0.9,
+     "90%", 
+      cex = 0.9)
 
-arrows(phat-mes[2], 0.6, 
-		phat+mes[2], 0.6, 
-		code=3, 
-		angle=15, 
-		col="blue", 
-		lwd=2, 
-		ylim=c(0, 0.35))
-text(0.1,0.6,"95%", cex=0.9)
+arrows(phat - mes[2], 0.6, 
+      phat + mes[2], 0.6, 
+      code = 3, 
+      angle = 15, 
+      col = "blue", 
+      lwd = 2, 
+      ylim = c(0, 0.35))
+text(0.1, 0.6, 
+     "95%", 
+     cex = 0.9)
 
-arrows(phat-mes[3], 0.3, 
-		phat+mes[3], 0.3, 
-		code=3, 
-		angle=15, 
-		col="blue", 
-		lwd=2, 
-		ylim=c(0, 0.35))
-text(0.1,0.3,"99%", cex=0.9)
+arrows(phat - mes[3], 0.3, 
+       phat + mes[3], 0.3, 
+       code = 3, 
+       angle = 15, 
+       col = "blue", 
+       lwd = 2, 
+       ylim = c(0, 0.35))
+text(0.1, 0.3,
+     "99%", 
+     cex = 0.9)
 ```
 
 
@@ -1367,150 +1371,6 @@ even though incorrect.
 Similarly, 
 most people use the final interpretation above in practice,
 even though it is incorrect.
-
-
-
-
-
-<!-- ```{r TwoIntervals, echo=FALSE, fig.cap="Sampling intervals (top) and confidence intervals (bottom)", fig.align="center", fig.height=7} -->
-<!-- par( mar=c(0.05, 0.05, 0.05, 0.05)) -->
-<!-- openplotmat() -->
-
-<!-- pos <- array(NA, dim=c(6, 2)) -->
-<!-- pos[1, ] <- c(0.50, 0.95) # p -->
-<!-- pos[2, ] <- c(0.20, 0.65) # p-hat range -->
-<!-- pos[3, ] <- c(0.80, 0.65) # p-hat range -->
-
-<!-- pos[4, ] <- c(0.50, 0.15)   # p-hat -->
-<!-- pos[5, ] <- c(0.20, 0.45)   # p ranges -->
-<!-- pos[6, ] <- c(0.80, 0.45)   # p ranges -->
-
-
-
-
-
-<!-- range.from <- 2 -->
-<!-- range.to   <- 8 -->
-
-<!-- polygon( x=c(0.20, 0.80, 0.5, 0.20), -->
-<!--          y=c(0.65, 0.65, 0.95, 0.65), -->
-<!--          border=NA, -->
-<!--          col=blueTransparent) -->
-
-<!-- polygon( x=c(0.20, 0.80, 0.5, 0.20), -->
-<!--          y=c(0.45, 0.45, 0.15, 0.45), -->
-<!--          border=NA, -->
-<!--          col=blueTransparent) -->
-
-<!-- straightarrow(from=pos[1,], to=pos[2,],  -->
-<!--             lty=3,  -->
-<!--             lcol="black", -->
-<!--             lwd=2) -->
-<!-- straightarrow(from=pos[1,], to=pos[3,],  -->
-<!--             lty=3,  -->
-<!--             lcol="black", -->
-<!--             lwd=2) -->
-<!-- straightarrow(to=pos[4,], from=pos[5,],  -->
-<!--             lty=3,  -->
-<!--             lcol="black", -->
-<!--             lwd=2) -->
-<!-- straightarrow(to=pos[4,], from=pos[6,],  -->
-<!--             lty=3,  -->
-<!--             lcol="black", -->
-<!--             lwd=2) -->
-
-<!-- # Other in-between lines -->
-<!-- for (i in ( (range.from+1):(range.to-1))){ -->
-<!--   straightarrow(from=pos[1,], to=c(i/10, pos[2, 2]),  -->
-<!--             lty=3,  -->
-<!--             lcol="grey", -->
-<!--             lwd=1) -->
-<!--   straightarrow(to=pos[4,], from=c(i/10, pos[5, 2]),  -->
-<!--             lty=3,  -->
-<!--             lcol="grey", -->
-<!--             lwd=1) -->
-
-<!-- } -->
-
-
-
-<!-- # AXES -->
-<!-- lines( x = c(0.05, 0.95), -->
-<!--        y = c(0.65, 0.65)) -->
-<!-- lines( x = c(0.05, 0.95), -->
-<!--        y = c(0.45, 0.45)) -->
-
-
-
-<!-- #Tickmarks -->
-<!-- for (i in (1:9)){ -->
-<!--   lines( c( i/10, i/10), c(0.65, 0.64) ) -->
-<!--   text( x = i/10, -->
-<!--         y=0.64, -->
-<!--         lab=i/10, -->
-<!--         cex=0.8, -->
-<!--         pos=1) -->
-
-<!--   lines( c( i/10, i/10), c(0.45, 0.46) ) -->
-<!--   text( x = i/10, -->
-<!--         y=0.46, -->
-<!--         lab=i/10, -->
-<!--         cex=0.8, -->
-<!--         pos=3) -->
-<!-- } -->
-
-
-<!-- # TEXT -->
-<!-- text(x = pos[1, 1],  -->
-<!--      y = pos[1, 2], -->
-<!--          lab=expression(italic(p)), -->
-<!--      pos=3 -->
-<!--      ) -->
-<!-- text(x = pos[4, 1], -->
-<!--      y = pos[4, 2], -->
-<!--          lab=expression(hat(italic(p))), -->
-<!--      pos=1 -->
-<!--      ) -->
-
-<!-- # ARROWS -->
-<!-- arrows(0.2, 0.60, -->
-<!--        0.8, 0.60, -->
-<!--        code=3, -->
-<!--        angle=15) -->
-<!-- text(0.5, 0.58, -->
-<!--      "Plausible values for p-hat that could come from p") -->
-
-<!-- arrows(0.2, 0.50, -->
-<!--        0.8, 0.50, -->
-<!--        code=3, -->
-<!--        angle=15) -->
-<!-- text(0.5, 0.52, -->
-<!--      "Plausible values for p that may have produced p-hat") -->
-
-
-
-
-<!-- # MORE TEXT -->
-<!-- greyBackground <- rgb(0.1, 0.1, 0.1, alpha=0.3, maxColorValue = 1) -->
-
-
-<!-- textrect( c(0.5, 0.70), -->
-<!--           radx=0.07, -->
-<!--           rady=0.043, -->
-<!--           box.col=greyBackground, -->
-<!--           lcol=greyBackground, -->
-<!--           lab="Population\nestimates\nstatistic", -->
-<!--           shadow.size=0) -->
-<!-- textrect( c(0.5, 0.40), -->
-<!--           radx=0.07, -->
-<!--           rady=0.043, -->
-<!--           box.col=greyBackground, -->
-<!--           lcol=greyBackground, -->
-<!--           lab="Sample\nsuggests\nparameter", -->
-<!--           shadow.size=0) -->
-
-<!-- ``` -->
-
 
 
 
@@ -1750,8 +1610,8 @@ The statistical validity conditions seem satisfied.
 
 
 ```{r HistoProportionsConditions, echo=FALSE, fig.width=5, fig.height=7, fig.align="center", fig.cap="The sampling distribution of the proportion of ones rolled, for sets of 20 rolls (top panel) and sets of 60 rolls (bottom panel)" }
-par( mfrow=c(2, 1),
-     mar=c(5, 5, 4, 0.5) + 0.1)  # The default is c(5, 4, 4, 2) + 0.1.
+par( mfrow = c(2, 1),
+     mar = c(5, 5, 4, 0.5) + 0.1)  # The default is c(5, 4, 4, 2) + 0.1.
 
 p <- 1/6
 n <- 20
@@ -1762,40 +1622,40 @@ num.sims <- 5000
 p.hat.vec <- array( dim=num.sims)
 
 for (i in (1:num.sims)){
-  roll <- sample( 1:6, n, replace=TRUE)
-  p.hat <- sum( roll==1)/n
+  roll <- sample( 1:6, n, 
+	          replace = TRUE)
+  p.hat <- sum( roll == 1)/n
   p.hat.vec[i] <- p.hat 
 }
 
 out <- hist(p.hat.vec, 
-     breaks=seq(0, 0.60, by=0.05),
-     main="Proportion of ones\nin sets of 20 rolls",
-     ylab="Number of sets\nof 20 rolls",
-     xlab="Sample proportion of ones",
-     las=1,
-     col=plot.colour
+     breaks = seq(0, 0.60, by=0.05),
+     main = "Proportion of ones\nin sets of 20 rolls",
+     ylab = "Number of sets\nof 20 rolls",
+     xlab = "Sample proportion of ones",
+     las = 1,
+     col = plot.colour
      )
 
-xn <- seq(0, 0.55, length=100)
-yn <- dnorm(xn, mean=1/6, sd = sqrt( p*(1-p)/n) )
+xn <- seq(0, 0.55, 
+	  length = 100)
+yn <- dnorm(xn, 
+            mean = 1/6, 
+            sd = sqrt( p * (1 - p)/n) )
 yn <- yn/max(yn) * max(out$counts)
   
 lines( yn ~ xn, 
-       col="grey",
-       lwd=2)
+       col = "grey",
+       lwd = 2)
 
 
 ###############
-
-
-
-
 
 n <- 60
 set.seed <- 412791
 num.sims <- 5000
 
-p.hat.vec <- array( dim=num.sims)
+p.hat.vec <- array( dim = num.sims)
 
 for (i in (1:num.sims)){
   roll <- sample( 1:6, n, replace=TRUE)
@@ -1804,20 +1664,23 @@ for (i in (1:num.sims)){
 }
 
 out <- hist(p.hat.vec, 
-     breaks=seq(0, 0.60, by=0.05),
-     main="Proportion of ones\nin sets of 60 rolls",
-     ylab="Number of sets\nof 60 rolls",
-     xlab="Sample proportion of ones",
-     las=1,
-     col=plot.colour)
+     breaks = seq(0, 0.60, by=0.05),
+     main = "Proportion of ones\nin sets of 60 rolls",
+     ylab = "Number of sets\nof 60 rolls",
+     xlab = "Sample proportion of ones",
+     las = 1,
+     col = plot.colour)
 
-xn <- seq(0, 0.60, length=100)
-yn <- dnorm(xn, mean=1/6, sd = sqrt( p*(1-p)/n) )
+xn <- seq(0, 0.60, 
+          length = 100)
+yn <- dnorm(xn, 
+	    mean = 1/6, 
+	    sd = sqrt( p * (1 - p) / n) )
 yn <- yn/max(yn) * max(out$counts)
   
 lines( yn ~ xn, 
-       col="grey",
-       lwd=2)
+       col = "grey",
+       lwd = 2)
 ```
 
 
