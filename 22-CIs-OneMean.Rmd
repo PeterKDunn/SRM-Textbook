@@ -229,7 +229,7 @@ yrs <- NULL
 col.number <- 1 # Recall col 1 is the dummy data!
 
 for (i in (Yr.min:Yr.max) ) {
-  S.sub <-  S.fun[S.fun$Year==i, ]
+  S.sub <-  S.fun[S.fun$Year == i, ]
   
   n.sub <- length(S.sub$Number)
   
@@ -241,10 +241,11 @@ for (i in (Yr.min:Yr.max) ) {
       
       col.number <- col.number + 1
 
-      new.col <- S.sub$Number[((j-1)*nn+1) : (j*nn)]
+      new.col <- S.sub$Number[((j - 1) * nn + 1) : (j * nn)]
 
       new.col.name <- paste(i, "-", j, sep="")
-      new.df <- cbind(new.df, new.col.name=new.col)
+      new.df <- cbind(new.df, 
+                      new.col.name = new.col)
       colnames( new.df ) [col.number] <- new.col.name
 
       yrs <- c(yrs, i)
@@ -255,18 +256,19 @@ for (i in (Yr.min:Yr.max) ) {
 new.df <- new.df[, -1]
 
 # Add years
-new.df2 <- data.frame( "Mn"=colMeans(new.df), "Year"=yrs) 
+new.df2 <- data.frame( "Mn" = colMeans(new.df), 
+                       "Year" = yrs) 
 Num.Bags <-  dim(new.df)[2]
 
 # Each year's data:
 for (i in (Yr.min:Yr.max)){
-  #cat(i, ": ", new.df2$Mn[new.df2$Year==i ], "\n", sep="; ")
-  tmp.mns <- new.df2$Mn[new.df2$Year==i ]
+  tmp.mns <- new.df2$Mn[new.df2$Year == i ]
   
-  VALS <- paste(tmp.mns, collapse=", ")
+  VALS <- paste(tmp.mns, 
+                collapse = ", ")
    eval(
    	parse( 
-   		text = paste("YR", i, " <- c(", VALS, ")", sep="" )  
+   		text = paste("YR", i, " <- c(", VALS, ")", sep = "" )  
    		) 
    	)
 }
@@ -309,10 +311,10 @@ the *mean* of the 25 numbers that are rolled is recorded.
 What will be the sample mean of the numbers in the 25 rolls?
 
 ```{r echo=FALSE}
-die.mn <- sum( (1:6)*(1/6))  # 3.5 as expected
+die.mn <- sum( (1:6) * (1/6))  # 3.5 as expected
 
 
-die.vr <-  sum( ((1:6)-3.5)^2 *(1/6))
+die.vr <-  sum( ((1:6) - 3.5)^2 * (1/6))
 die.se <- sqrt( die.vr/25)
 ```
 
@@ -344,18 +346,20 @@ if (knitr::is_html_output()){
     num.sims <- 10
     x.loc <- 1:(num.rolls)
     y.loc <- 1
-    mean.even <- array(dim=num.sims)
-    all.rolls <- array( dim=c(num.sims, num.rolls))
+    mean.even <- array(dim = num.sims)
+    all.rolls <- array( dim = c(num.sims, num.rolls))
     for (i in 1:num.sims){
-      plot( c(1, (num.rolls+2)), c(1, num.sims),
-            type="n",
-            las=1,
-            xlab="",
-            ylab="",
-            main=paste("Set number",i),
-            axes=FALSE)
+      plot( c(1, (num.rolls + 2)), c(1, num.sims),
+            type = "n",
+            las = 1,
+            xlab = "",
+            ylab = "",
+            main = paste("Set number", i),
+            axes = FALSE)
       
-      roll <- sample(1:6, num.rolls, replace=TRUE)
+      roll <- sample(1:6, 
+                     num.rolls, 
+		     replace = TRUE)
       all.rolls[i, ] <- roll
       mean.even[i] <- mean(roll)
       
@@ -363,31 +367,39 @@ if (knitr::is_html_output()){
       col2 <- col2rgb("indianred2")
  
       for (j in 1:i){
-        text(y=j, x=1:num.rolls,
-             labels=all.rolls[j, ])
+        text(y = j, 
+	     x = 1:num.rolls,
+             labels = all.rolls[j, ])
         
         # Add some slight background colour under the sample proportions
-        polygon( c(num.rolls+1, num.rolls+1, num.rolls+3, num.rolls+3),
-                 c(j-0.5, j+0.5, j+0.5, j-0.5),
-                 border=NA,
-                 col=ifelse( mean.even[j] > 3.5, rgb( col1[1], col1[2], col1[3], alpha= 75, max=255), 
-                                                 rgb( col2[1], col2[2], col2[3], alpha= 75, max=255) ) )
+        polygon( c(num.rolls + 1, num.rolls + 1, num.rolls + 3, num.rolls + 3),
+                 c(j - 0.5, j + 0.5, j + 0.5, j - 0.5),
+                 border = NA,
+                 col = ifelse( mean.even[j] > 3.5, rgb( col1[1], col1[2], col1[3], alpha = 75, max = 255), 
+                                                   rgb( col2[1], col2[2], col2[3], alpha = 75, max = 255) ) )
 
       }
       # Add x-bar heading
-      mtext(expression(bar( italic(x) ) ), side=3, line=0, at=num.rolls+2 )
+      mtext(expression(bar( italic(x) ) ), 
+            side = 3, 
+	    line = 0, 
+	    at = num.rolls + 2 )
       # Add the roll number to the left-hand side
-      axis(side=2, at=1:i,
-           las=1,
-           labels = paste("Set #", 1:i, sep="") )
+      axis(side = 2, 
+           at = 1:i,
+           las = 1,
+           labels = paste("Set #", 1:i, sep = "") )
       
       # Add the sample mean to right-hand side 
-      text(num.rolls+2, 1:i, 
-           labels=format(round(mean.even[1:i], 2), nsmall=2) )
+      text(num.rolls + 2, 
+           1:i, 
+           labels = format(round(mean.even[1:i], 2), nsmall = 2) )
       #Add dividing line
-      abline(v=num.rolls+1, col="grey")
+      abline(v = num.rolls + 1, 
+             col = "grey")
       # Add line dividing roll sets
-      abline(h=seq(0.5,10.5, by=1), col="gray")
+      abline(h = seq(0.5, 10.5, by = 1), 
+             col = "gray")
     }
   }
 ```
@@ -404,62 +416,58 @@ if (knitr::is_latex_output()){
     num.sims <- 10
     x.loc <- 1:(num.rolls)
     y.loc <- 1
-    mean.even <- array(dim=num.sims)
-    all.rolls <- array( dim=c(num.sims, num.rolls))
+    mean.even <- array(dim = num.sims)
+    all.rolls <- array( dim = c(num.sims, num.rolls))
 
-      plot( c(1, (num.rolls+2)), c(1, num.sims),
-            type="n",
-            las=1,
-            xlab="",
-            ylab="",
-            main="The sample mean from 25 rolls\nover 10 simulations",
-            axes=FALSE)
+      plot( c(1, (num.rolls + 2)), c(1, num.sims),
+            type = "n",
+            las = 1,
+            xlab = "",
+            ylab = "",
+            main = "The sample mean from 25 rolls\nover 10 simulations",
+            axes = FALSE)
 
     for (i in 1:num.sims){
-      roll <- sample(1:6, num.rolls, replace=TRUE)
+      roll <- sample(1:6, 
+                     num.rolls, 
+		     replace = TRUE)
       all.rolls[i, ] <- roll
       mean.even[i] <- mean(roll)
       for (j in 1:i){
-        text(y=j, x=1:num.rolls,
-             labels=all.rolls[j, ])
+        text(y = j, 
+	     x = 1:num.rolls,
+             labels = all.rolls[j, ])
       }
       # Add x-bar heading
-      mtext(expression(bar( italic(x) ) ), side=3, line=0, at=num.rolls+2 )
+      mtext(expression(bar( italic(x) ) ), 
+            side = 3, 
+	    line = 0, 
+	    at = num.rolls + 2 )
       # Add the roll number to the left-hand side
-      axis(side=2, at=1:i,
-           las=1,
-           labels = paste("Set #", 1:i, sep="") )
+      axis(side = 2, 
+           at = 1:i,
+           las = 1,
+           labels = paste("Set #", 1:i, sep = "") )
       
       # Add the sample mean to right-hand side 
-      text(num.rolls+2, 1:i, 
-           labels=format(round(mean.even[1:i], 1), nsmall=1) )
+      text(num.rolls + 2, 1:i, 
+           labels = format(round(mean.even[1:i], 1), nsmall = 1) )
+
       #Add dividing line
-      abline(v=num.rolls+1, col="grey")
+      abline(v = num.rolls + 1, 
+             col = "grey")
+	     
       # Add line dividing roll sets
-      abline(h=seq(0.5,10.5, by=1), col="gray")
+      abline(h = seq(0.5, 10.5, by = 1), 
+             col = "gray")
     }
 }
 ```
 
 
-
-
-
-<!-- ```{r RollDiceMeanHTML, echo=FALSE, fig.cap="Rolling dice: The average of 25 rolls, for 10 sets of 25 rolls", fig.align="center"} -->
-<!-- htmltools::tags$iframe(title = "Rolling dice: The average of 25 rolls", src = "./Animations/RollDiceMeanMovie.html", frameborder=0, height=600, width=520)  -->
-<!-- ``` -->
-
-
-<!-- ```{r RollDiceMeanFig, echo=FALSE, fig.align="center", fig.width=5, out.width="85%", fig.cap="Rolling dice: The average of 25 rolls, for 10 sets of 25 rolls" } -->
-<!-- if (knitr::is_latex_output()){ -->
-<!--   include_graphics("./Animations/images/RollDiceMean10") -->
-<!-- } -->
-<!-- ``` -->
-
-
-The mean for any single *sample* of $n=25$ rolls 
-will sometimes be higher than $\mu=3.5$,
-and sometimes lower than $\mu=3.5$,
+The mean for any single *sample* of $n = 25$ rolls 
+will sometimes be higher than $\mu = 3.5$,
+and sometimes lower than $\mu = 3.5$,
 but most of the time the mean should be close to 3.5.
 
 If many people made a set of 25 rolls, 
@@ -482,25 +490,28 @@ if (knitr::is_html_output()){
     num.sims <- 1000
     num.rolls <- 25
     
-    die.mn <- sum( (1:6)*(1/6))  # 3.5 as expected
-    die.vr <-  sum( ((1:6)-3.5)^2 *(1/6))
+    die.mn <- sum( (1:6) * (1/6))  # 3.5 as expected
+    die.vr <-  sum( ((1:6) - 3.5)^2 * (1/6))
     
-    meanList <- array( dim=num.sims)
+    meanList <- array( dim = num.sims)
     
     for (i in 1:num.sims){
-      meanSingleRoll <- mean(sample(1:6, num.rolls, replace=TRUE))
+      meanSingleRoll <- mean(sample(1:6, 
+                                    num.rolls, 
+			            replace = TRUE))
       meanList[i] <- meanSingleRoll
       
       out <- hist(meanList,
-                  xlab="Mean of 25 rolls",
-                  ylab="Number of times observed",
-                  main=paste("Histogram of the mean of 25 rolls:\nSimulation number:", i),
-                  sub=paste("(For this set: mean roll is ", format(round(meanList[i], 2), nsmall=2), ")", sep="" ),
-                  col=plot.colour,
-                  las=1,
-                  xlim=c(1.5, 5.5), right=FALSE,
-                  ylim=c(0, 300),
-                  breaks = seq(2, 5, by=0.25)
+                  xlab = "Mean of 25 rolls",
+                  ylab = "Number of times observed",
+                  main = paste("Histogram of the mean of 25 rolls:\nSimulation number:", i),
+                  sub = paste("(For this set: mean roll is ", format(round(meanList[i], 2), nsmall = 2), ")", sep = "" ),
+                  col = plot.colour,
+                  las = 1,
+                  xlim = c(1.5, 5.5), 
+		  right = FALSE,
+                  ylim = c(0, 300),
+                  breaks = seq(2, 5, by = 0.25)
       )
       
       points(meanList[i], 0,
@@ -508,10 +519,14 @@ if (knitr::is_html_output()){
              col = plot.colour0)
       
       xx <- seq(1, 6, length=500)
-      yy <- dnorm(xx, mean=die.mn, sd=sqrt(die.vr/num.rolls) )
+      yy <- dnorm(xx, 
+                  mean = die.mn, 
+		  sd = sqrt(die.vr/num.rolls) )
       yy <- yy/max(yy) * max(out$count)
       
-      lines(yy~xx, col="grey", lwd=2)  
+      lines(yy ~ xx, 
+            col = "grey", 
+	    lwd = 2)  
     }
   }
 ```
@@ -524,50 +539,42 @@ if (knitr::is_latex_output()){
     num.sims <- 1000
     num.rolls <- 25
     
-    die.mn <- sum( (1:6)*(1/6))  # 3.5 as expected
-    die.vr <-  sum( ((1:6)-3.5)^2 *(1/6))
+    die.mn <- sum( (1:6) * (1/6))  # 3.5 as expected
+    die.vr <-  sum( ((1:6) - 3.5)^2 * (1/6))
     
     meanList <- array( dim=num.sims)
     
     for (i in 1:num.sims){
-      meanSingleRoll <- mean(sample(1:6, num.rolls, replace=TRUE))
+      meanSingleRoll <- mean(sample(1:6, 
+                                    num.rolls, 
+				    replace = TRUE))
       meanList[i] <- meanSingleRoll
     }
 
     out <- hist(meanList,
-                  xlab="Mean of 25 rolls",
-                  ylab="Number of times observed",
-                  main=paste("Histogram of the mean of 25 rolls:\nafter",
-                             num.sims,"simulations"),
-                  col=plot.colour,
-                  las=1,
-                  xlim=c(1.5, 5.5), right=FALSE,
-                  ylim=c(0, 300),
-                  breaks = seq(2, 5, by=0.25)
+                  xlab = "Mean of 25 rolls",
+                  ylab = "Number of times observed",
+                  main = paste("Histogram of the mean of 25 rolls:\nafter",
+                                num.sims, "simulations"),
+                  col = plot.colour,
+                  las = 1,
+                  xlim = c(1.5, 5.5), 
+		  right = FALSE,
+                  ylim = c(0, 300),
+                  breaks = seq(2, 5, by = 0.25)
       )
-      xx <- seq(1, 6, length=500)
-      yy <- dnorm(xx, mean=die.mn, sd=sqrt(die.vr/num.rolls) )
+      xx <- seq(1, 6, 
+                length = 500)
+      yy <- dnorm(xx, 
+                  mean = die.mn, 
+		  sd = sqrt(die.vr/num.rolls) )
       yy <- yy/max(yy) * max(out$count)
 
-      lines(yy~xx, col="grey", lwd=2)  
+      lines(yy ~ xx, 
+            col = "grey", 
+	    lwd = 2)  
 }      
 ```
-
-
-
-
-<!-- ```{r RollDiceHistMeanHTML, echo=FALSE, fig.cap="Rolling dice: The mean of 25 rolls, for 1000 religions of 25 rolls", fig.align="center"} -->
-<!-- #includeHTML("./Animations/RollDiceHistMovie.html") -->
-<!-- htmltools::tags$iframe(title = "Rolling dice: The mean of 25 rolls, for 1000 repetitions of 25 rolls", src = "./Animations/RollDiceMeanHistMovie.html", frameborder=0, height=580, width=520)  -->
-<!-- ``` -->
-
-
-
-<!-- ```{r RollDiceHistMeanFig, echo=FALSE, fig.align="center", fig.width=5, fig.cap="Rolling dice: The mean of 25 rolls, for 1000 repetitions" } -->
-<!-- if (knitr::is_latex_output()){ -->
-<!--   include_graphics("./Animations/images/RollDiceMeanHist1000") -->
-<!-- } -->
-<!-- ``` -->
 
 
 
@@ -610,51 +617,6 @@ the 68--95--99.7 rule can be applied:
 approximately 95% of the sample means are expected to be within
 two standard errors of $\mu$.
 
-
-
-<!-- When we know the value of the population mean (denoted $\mu$) -->
-<!-- and the population standard deviation (denoted $\sigma$)---which is almost never the case---then, -->
-<!-- under certain conditions -->
-<!-- (Sect. \@ref(ValiditySampleMean)), -->
-<!-- the sample means will be distributed as: -->
-
-<!-- * a normal distribution -->
-<!-- * with a mean of $\mu$; and -->
-<!-- * with a standard deviation of $\displaystyle \text{s.e.}(\bar{x}) = \frac{\sigma}{\sqrt{n}}$. (this is not obvious!) -->
-
-<!-- For our dice example, -->
-<!-- some fancy statistical theory,  -->
-<!-- that's beyond this course, -->
-<!-- shows us that the standard deviation of the mean of the 25 rolls  -->
-<!-- will be $\text{s.e.}(\bar{x}) = `r round(die.se, 3)`$. -->
-<!-- So for our dice example, -->
-<!-- the sample means will be distributed as: -->
-
-<!-- * a normal distribution -->
-<!-- * with a mean of $\mu = 3.5$; and -->
-<!-- * with a standard deviation of $\displaystyle \text{s.e.}(\bar{x}) = \frac{\sigma}{\sqrt{n}}$. -->
-<!-- Remember, this standard deviation is called the *standard error*, -->
-<!-- since it is the standard deviation of a sample statistic (the sample mean). -->
-
-
-<!-- With this knowledge, -->
-<!-- we can make some statements about what values of the sample mean -->
-<!-- we are likely to expect in practice, -->
-<!-- using the [68--95--99.7 rule](#def:EmpiricalRule). -->
-<!-- For example, -->
-
-<!-- * *Approximately* 68% of sample means will be between  -->
-<!-- 3.5 give-or-take `r round(die.se, 3)`. -->
-<!-- * *Approximately* 95% of sample means will be between  -->
-<!-- 3.5 give-or-take $2\times `r round(die.se, 3)`$. -->
-<!-- * *Approximately* 99.7% of sample means will be between  -->
-<!-- 3.5 give-or-take $3\times`r round(die.se, 3)`$. -->
-
-
-<!-- Of course, -->
-<!-- in practice we almost never know the population mean (after all, we are taking a sample to estimate the mean...), -->
-<!-- and almost never know the population standard deviation either. -->
-<!-- But these ideas give us something to work with... -->
 
 
 
@@ -851,20 +813,21 @@ stdd <- 0.94
 
 se <- stdd/sqrt(n)
 
-plot.norm(mu=mn, sd=se, 
-          xlab.name="Sample mean bag weight, in kg (sample size: 586)", 
-          round.dec=3,
-          shade.lo.x=-10, 
-          shade.hi.x=-10,
-           axis.labels=c( 	
+plot.norm(mu = mn, 
+          sd = se, 
+          xlab.name = "Sample mean bag weight, in kg (sample size: 586)", 
+          round.dec = 3,
+          shade.lo.x = -10, 
+          shade.hi.x = -10,
+           axis.labels = c( 	
                 expression( paste("    ", mu, " - 0.114")),
-								expression( paste("    ", mu, " - 0.076")), 
-								expression( paste("    ", mu, " - 0.038")), 
-								expression( mu ),
-								expression( paste("    ", mu, " + 0.038")), 
-								expression( paste("    ", mu, " + 0.076")), 
-								expression( paste("    ", mu, " + 0.114")) ),
-                cex.tickmarks=0.8,
+                expression( paste("    ", mu, " - 0.076")), 
+                expression( paste("    ", mu, " - 0.038")), 
+                expression( mu ),
+                expression( paste("    ", mu, " + 0.038")), 
+                expression( paste("    ", mu, " + 0.076")), 
+                expression( paste("    ", mu, " + 0.114")) ),
+                cex.tickmarks = 0.8,
                srt = -25 # Rotate axis labels so they fit better
 )
 ```
@@ -906,7 +869,7 @@ this will be approximately true
 *even if* the distribution of the individuals in the
 population does not have a normal distribution.
 That is,
-when $n>25$
+when $n > 25$
 the sample means generally have an approximate normal distribution,
 even if the data themselves don't have a normal distribution.
 
@@ -922,7 +885,7 @@ the CI will be
 
 
 ```{block2, type="rmdimportant"}
-When $n>25$ approximately,
+When $n > 25$ approximately,
 we do *not* require that the *data* has a normal distribution.
 We require that the *sample means* have a normal distribution,
 which is approximately true if the statistical validity condition is true.
@@ -963,7 +926,7 @@ A study
 [@data:silverman:CT; @data:zou:fluoroscopy]
 to examine exposure to radiation
 for CT scans in the abdomen assessed
-$n=17$ patients.
+$n = 17$ patients.
 A histogram of the
 total radiation dose received is shown in
 Fig.&nbsp;\@ref(fig:CTscanHistogram);
@@ -991,11 +954,11 @@ library(GLMsData)
 data(fluoro)
 
 hist(fluoro$Dose,
-	col=plot.colour,
-	las=1,
-	xlab="Radiation dose (in rads)",
-	ylab="Number of people",
-	main="Radiation dose for 17 people\nundergoing a CT scan")
+	col = plot.colour,
+	las = 1,
+	xlab = "Radiation dose (in rads)",
+	ylab = "Number of people",
+	main = "Radiation dose for 17 people\nundergoing a CT scan")
 box()
 ```
 
@@ -1026,18 +989,20 @@ as the sample size is (much) larger than 25.
 ```{r echo=FALSE, cache=TRUE}
 n.S <- length(NHANES$DirectChol) - sum( is.na(NHANES$DirectChol))
 
-mean.S <- mean(NHANES$DirectChol, na.rm=TRUE)
-sd.S <- sd(NHANES$DirectChol, na.rm=TRUE)
+mean.S <- mean(NHANES$DirectChol, 
+               na.rm = TRUE)
+sd.S <- sd(NHANES$DirectChol, 
+           na.rm = TRUE)
 
-se.S <- sd(NHANES$DirectChol, na.rm=TRUE) / sqrt( n.S )
+se.S <- sd.S / sqrt( n.S )
 
-ci.lo.S <- mean.S - 2*se.S
-ci.hi.S <- mean.S + 2*se.S
+ci.lo.S <- mean.S - 2 * se.S
+ci.hi.S <- mean.S + 2 * se.S
 
 
-t99 <- abs( qt(0.005, df=n.S - 1) )
-ci.lo.S99 <- mean.S - t99*se.S
-ci.hi.S99 <- mean.S + t99*se.S
+t99 <- abs( qt(0.005, df = n.S - 1) )
+ci.lo.S99 <- mean.S - t99 * se.S
+ci.hi.S99 <- mean.S + t99 * se.S
 ```
 
 
@@ -1067,8 +1032,7 @@ What is the *population* mean direct HDL cholesterol concentration?
 
 From the data (using jamovi or SPSS),
 the sample mean is 
-$\bar{x} = 
-		`r round( mean.S, 4)`$ mmol/L;
+$\bar{x} = `r round( mean.S, 4)`$ mmol/L;
 the standard deviation is 
 $s=`r round( sd.S, 5)`$ mmol/L;
 and the sample size is $n= `r n.S`$.
@@ -1124,12 +1088,12 @@ the distribution of the *sample means* should be normally distributed,
 
 ```{r NHANEShistogram, echo=FALSE, cache=TRUE, fig.cap="Histogram of direct HDL cholesterol concentration", fig.align="center", fig.width=4.5, fig.height=3.5}
 hist( NHANES$DirectChol, 
-      xlab="Direct HDL cholesterol concentration (mmol/L)",
-      ylab="Number of people",
-      col=plot.colour,
-      las=1,
-      xlim=c(0, 4.5),
-      main="Histogram of direct\nHDL cholesterol concentrations")
+      xlab = "Direct HDL cholesterol concentration (mmol/L)",
+      ylab = "Number of people",
+      col = plot.colour,
+      las = 1,
+      xlim = c(0, 4.5),
+      main = "Histogram of direct\nHDL cholesterol concentrations")
 ```
 
 
@@ -1160,7 +1124,7 @@ a variety of regions at various times
 
 The parameter is $\mu$, the population mean cadmium concentration in peanuts.
 
-Every sample of $n=290$ peanuts is likely to produce
+Every sample of $n = 290$ peanuts is likely to produce
 a different sample mean;
 that is,
 the sample means show *sampling variation*.
@@ -1203,8 +1167,7 @@ LC.F11 <- subset(lungcap, Age==11 & Gender=="F")
 
 
 
-
-## One mean: Sample size estimation
+## Estimating sample sizes: one mean
 
 ```{r echo=FALSE}
 me <- 0.02
@@ -1248,7 +1211,7 @@ to within 0.02&nbsp;mmol/L, with 95% confidence?
   
 Since we would like to estimate the population mean give-or-take 0.02&nbsp;mmol/L,
 the 'margin of error' that we would like is 0.02.
-So, using $s=0.39926$, the required sample size is at least
+So, using $s=0.39926$, the required sample size is *at least*
 
 \[
    \left( \frac{2 \times 0.39926}{0.02}\right)^2 = 1594.085;
@@ -1317,7 +1280,7 @@ found the mean lead concentration at one playground
 (Memorial Park, Port Pirie, in South Australia) to be 
 6956.41 micrograms per square metre, with a 
 standard deviation of 7571.74 micrograms of lead per square metre,
-from a sample of $n=58$ wipes taken over a seven-day period.
+from a sample of $n = 58$ wipes taken over a seven-day period.
 (As a reference,
 the Western Australian government recommends a maximum of 400 micrograms of lead per square metre.)
 
@@ -1341,7 +1304,7 @@ Find an approximate 95% CI for the mean brushing time for young adults.
 ```{exercise, CIOneMeanBloodLoss}
 A study of paramedics
 [@data:Williams2007:BloodLoss]
-asked participants ($n=199$) to estimate the amount of blood loss on four different surfaces.
+asked participants ($n = 199$) to estimate the amount of blood loss on four different surfaces.
 When the actual amount of blood spill on concrete was 1000&nbsp;ml,
 the mean guess was 846.4&nbsp;ml (with a standard deviation of 651.1&nbsp;ml).
 
