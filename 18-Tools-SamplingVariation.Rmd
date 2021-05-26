@@ -126,7 +126,7 @@ How does it vary from spin to spin?
 date.str <- date()
 seed <- as.numeric( paste( substr(date.str, 18, 19), # Second
                            substr(date.str, 15, 16),
-                           sep="") # Minutes
+                           sep = "") # Minutes
                        )
 source("./R/RouletteWheel.R")
 ```
@@ -159,19 +159,19 @@ if (knitr::is_html_output()){
 
   phi <- seq( from = (StartOffset * sectorAngle), # All of this is in degrees
               to   = (StartOffset * sectorAngle) + (Turns * 360),
-              by   = sectorAngle) -
-         sectorAngle/2 #So ball rests in the *middle* of each segment
+              by   = sectorAngle) - sectorAngle/2 #So ball rests in the *middle* of each segment
 
   phir <- deg2rad(phi) # Convert to radians
 
   
   # Radius that changes
-  radius <- seq(0.85 * DD, dd, length=length(phi) )
+  radius <- seq(0.85 * DD, dd, 
+                length = length(phi) )
 
   # Grey that colours, to show "moving" ball
   greyBall <- rgb(100, 100, 100,    
                   max = 255, 
-                  alpha = seq(125, 0, length=length(phi)))
+                  alpha = seq(125, 0, length = length(phi)))
 
   Delay <- 75
   Stop <- length(phir) + Delay
@@ -193,7 +193,7 @@ if (knitr::is_html_output()){
       # Plot stuff to make things stick
       points( x = runif(1, 0.8, 0.9)*DD,
               y = runif(1, 0.8, 0.9)*DD,
-              col="white")
+              col = "white")
     }
 
   }
@@ -258,101 +258,123 @@ and the variation gets smaller.
 p <- 18/37
 spins <- c(15, 30, 70, 100)
 
-se <- sqrt( p * (1-p) / spins )
-break.list <- seq(0, 1, by=0.05)
+se <- sqrt( p * (1 - p) / spins )
+break.list <- seq(0, 1, 
+                  by = 0.05)
 
 num.sims <- 5000
 
-par( mfrow=c(2,2))
+par( mfrow=c(2, 2))
 
 ### Spin the wheel spins[1] * num.sims. times 
 ### and grab each sim set from there
 
-xNorm <- seq(0, 1, length=100)
+xNorm <- seq(0, 1, 
+             length = 100)
 
 propOdd <- function(x){
 	sum( (x%%2 !=0 ) ) / length(x)
 }
 
 set.seed(37945000)
-spinNumbersAll <- sample( 0:36, spins[1] * num.sims, replace=TRUE)
-spinNumbers <- array( spinNumbersAll, dim=c(spins[1], num.sims) )
+spinNumbersAll <- sample( 0:36, 
+                          spins[1] * num.sims, 
+                          replace = TRUE)
+spinNumbers <- array( spinNumbersAll, 
+                      dim = c(spins[1], num.sims) )
 sampleP <- apply( spinNumbers, 2, propOdd )
 
 out <- hist( sampleP,
-		breaks=break.list*1.5, 
-		  xlim=c(0, 1),
-      axes=FALSE,
-		col=plot.colour,
-      xlab="Sample proportions", 
-      ylab="",
-      main=paste("From", spins[1],"spins\nof the wheel") )
-yNorm <- dnorm(xNorm, mean=p, sd=se[1]) 
+             breaks = break.list * 1.5, 
+	     xlim = c(0, 1),
+             axes = FALSE,
+             col = plot.colour,
+             xlab = "Sample proportions", 
+             ylab = "",
+             main = paste("From", spins[1], "spins\nof the wheel") )
+yNorm <- dnorm(xNorm, 
+               mean = p, 
+	       sd = se[1]) 
 lines( xNorm,
-		 (yNorm) / max(yNorm) * max(out$count),
-		col="black",
-		lwd=2)
-axis(side=1)
+      (yNorm) / max(yNorm) * max(out$count),
+      col = "black",
+      lwd = 2)
+axis(side = 1)
 
 
-spinNumbersAll <-sample( 0:36, spins[2] * num.sims, replace=TRUE)
-spinNumbers <- array( spinNumbersAll, dim=c(spins[2], num.sims) )
+spinNumbersAll <- sample( 0:36, 
+                          spins[2] * num.sims, 
+                          replace = TRUE)
+spinNumbers <- array( spinNumbersAll,   
+                      dim = c(spins[2], num.sims) )
 sampleP <- apply( spinNumbers, 2, propOdd )
 
 out <- hist( sampleP, 
-		breaks=break.list*1.5, 
-      xlim=c(0, 1),
-      axes=FALSE,
-		col=plot.colour,
-      xlab="Sample proportions", 
-      ylab="",
-      main=paste("From", spins[2],"spins\nof the wheel") )
-yNorm <- dnorm(xNorm, mean=p, sd=se[2]) 
+             breaks = break.list * 1.5, 
+             xlim = c(0, 1),
+             axes = FALSE,
+             col = plot.colour,
+             xlab = "Sample proportions", 
+             ylab = "",
+             main = paste("From", spins[2], "spins\nof the wheel") )
+yNorm <- dnorm(xNorm, 
+               mean = p, 
+	       sd = se[2]) 
 lines( xNorm,
-		 (yNorm) / max(yNorm) * max(out$count),
-		col="black",
-		lwd=2)
-axis(side=1)
+       (yNorm) / max(yNorm) * max(out$count),
+       col = "black",
+       lwd = 2)
+axis(side = 1)
 
 
-spinNumbersAll <- sample( 0:36, spins[3] * num.sims, replace=TRUE)
-spinNumbers <- array( spinNumbersAll, dim=c(spins[3], num.sims) )
+spinNumbersAll <- sample( 0:36,
+                          spins[3] * num.sims, 
+			  replace = TRUE)
+spinNumbers <- array( spinNumbersAll, 
+                      dim = c(spins[3], num.sims) )
 sampleP <- apply( spinNumbers, 2, propOdd )
 
 out <- hist( sampleP, 
-		breaks=break.list*1.5,
-      xlim=c(0, 1),
-      axes=FALSE,
-		col=plot.colour,
-      xlab="Sample proportions", 
-      ylab="",
-      main=paste("From", spins[3],"spins\nof the wheel") )
-yNorm <- dnorm(xNorm, mean=p, sd=se[3]) 
+             breaks = break.list * 1.5,
+             xlim = c(0, 1),
+             axes = FALSE,
+             col = plot.colour,
+             xlab = "Sample proportions", 
+             ylab = "",
+             main = paste("From", spins[3], "spins\nof the wheel") )
+yNorm <- dnorm(xNorm, 
+               mean = p, 
+	       sd = se[3]) 
 lines( xNorm,
-		 (yNorm) / max(yNorm) * max(out$count),
-		col="black",
-		lwd=2)
-axis(side=1)
+       (yNorm) / max(yNorm) * max(out$count),
+        col = "black",
+        lwd = 2)
+axis(side = 1)
 
 
-spinNumbersAll <-sample( 0:36, spins[4] * num.sims, replace=TRUE)
-spinNumbers <- array( spinNumbersAll, dim=c(spins[4], num.sims) )
+spinNumbersAll <- sample( 0:36, 
+                          spins[4] * num.sims, 
+			  replace = TRUE)
+spinNumbers <- array( spinNumbersAll, 
+                      dim = c(spins[4], num.sims) )
 sampleP <- apply( spinNumbers, 2, propOdd )
 
 out <- hist( sampleP, 
-		breaks=break.list*1.5,
-      xlim=c(0, 1),
-      axes=FALSE,
-		col=plot.colour,
-      xlab="Sample proportions", 
-      ylab="",
-      main=paste("From", spins[4],"spins\nof the wheel") )
-yNorm <- dnorm(xNorm, mean=p, sd=se[4])
+             breaks = break.list * 1.5,
+             xlim = c(0, 1),
+             axes = FALSE,
+             col = plot.colour,
+             xlab = "Sample proportions", 
+             ylab = "",
+             main = paste("From", spins[4], "spins\nof the wheel") )
+yNorm <- dnorm(xNorm, 
+               mean = p, 
+	       sd = se[4])
 lines( xNorm,
-		 (yNorm) / max(yNorm) * max(out$count),
-		col="black",
-		lwd=2)
-axis(side=1)
+       (yNorm) / max(yNorm) * max(out$count),
+       col = "black",
+       lwd = 2)
+axis(side = 1)
 
 ```
 
@@ -454,97 +476,119 @@ sigma <- sqrt( sum( ( (0:36) - mu )^2 )/37 )
 spins <- c(15, 50, 100, 250)
 
 se <- sigma / sqrt( spins )
-break.list <- seq(0, 37, by=1)
+break.list <- seq(0, 37, 
+                  by = 1)
 
 num.sims <- 5000
 
-par( mfrow=c(2,2))
+par( mfrow = c(2, 2))
 
 ### Spin the wheel spins[1] * num.sims. times 
 ### and grab each sim set from there
 set.seed(37389457)
 
-xNorm <- seq(0, 37, length=100)
+xNorm <- seq(0, 37, 
+             length = 100)
 
 
-spinNumbersAll <- sample( 0:36, spins[1] * num.sims, replace=TRUE)
-spinNumbers <- array( spinNumbersAll, dim=c(spins[1], num.sims) )
+spinNumbersAll <- sample( 0:36, 
+                          spins[1] * num.sims, 
+			  replace = TRUE)
+spinNumbers <- array( spinNumbersAll, 
+                      dim = c(spins[1], num.sims) )
 sampleMeans <- colMeans(spinNumbers)
 
 out <- hist( sampleMeans,
-		breaks=break.list,
-      xlim=c(5, 30),
-      axes=FALSE,
-		col=plot.colour,
-      xlab="Sample means", 
-      ylab="",
-      main=paste("From", spins[1],"spins\nof the wheel") )
-yNorm <- dnorm(xNorm, mean=mu, sd=se[1]) 
+             breaks = break.list,
+             xlim = c(5, 30),
+             axes = FALSE,
+             col = plot.colour,
+             xlab = "Sample means", 
+             ylab = "",
+             main = paste("From", spins[1], "spins\nof the wheel") )
+yNorm <- dnorm(xNorm, 
+               mean = mu, 
+	       sd = se[1]) 
 lines( xNorm,
-		 (yNorm) / max(yNorm) * max(out$count),
-		col="black",
-		lwd=2)
-axis(side=1)
+      (yNorm) / max(yNorm) * max(out$count),
+      col = "black",
+      lwd = 2)
+axis(side = 1)
 
 
-spinNumbersAll <-sample( 0:36, spins[2] * num.sims, replace=TRUE)
-spinNumbers <- array( spinNumbersAll, dim=c(spins[2], num.sims) )
+spinNumbersAll <- sample( 0:36, 
+                          spins[2] * num.sims, 
+			  replace = TRUE)
+spinNumbers <- array( spinNumbersAll, 
+                      dim = c(spins[2], num.sims) )
 sampleMeans <- colMeans(spinNumbers)
 
 out <- hist( sampleMeans, 
-		breaks=break.list,
-      xlim=c(5, 30),
-      axes=FALSE,
-		col=plot.colour,
-      xlab="Sample means", 
-      ylab="",
-      main=paste("From", spins[2],"spins\nof the wheel") )
-yNorm <- dnorm(xNorm, mean=mu, sd=se[2])
+             breaks = break.list,
+             xlim = c(5, 30),
+             axes = FALSE,
+             col = plot.colour,
+             xlab = "Sample means", 
+             ylab = "",
+             main = paste("From", spins[2], "spins\nof the wheel") )
+yNorm <- dnorm(xNorm, 
+               mean = mu, 
+	       sd = se[2])
 lines( xNorm,
-		 (yNorm) / max(yNorm) * max(out$count),
-		col="black",
-		lwd=2)
-axis(side=1)
+       (yNorm) / max(yNorm) * max(out$count),
+       col = "black",
+       lwd = 2)
+axis(side = 1)
 
 
-spinNumbersAll <- sample( 0:36, spins[3] * num.sims, replace=TRUE)
-spinNumbers <- array( spinNumbersAll, dim=c(spins[3], num.sims) )
+spinNumbersAll <- sample( 0:36, 
+                          spins[3] * num.sims, 
+			  replace = TRUE)
+spinNumbers <- array( spinNumbersAll, 
+                      dim = c(spins[3], num.sims) )
 sampleMeans <- colMeans(spinNumbers)
 
 out <- hist( sampleMeans, 
-		breaks=break.list,
-      xlim=c(5, 30),
-      axes=FALSE,
-		col=plot.colour,
-      xlab="Sample means", 
-      ylab="",
-      main=paste("From", spins[3],"spins\nof the wheel") )
-yNorm <- dnorm(xNorm, mean=mu, sd=se[3]) 
+             breaks = break.list,
+             xlim = c(5, 30),
+             axes = FALSE,
+             col = plot.colour,
+             xlab = "Sample means", 
+             ylab = "",
+             main = paste("From", spins[3], "spins\nof the wheel") )
+yNorm <- dnorm(xNorm, 
+               mean = mu, 
+	       sd = se[3]) 
 lines( xNorm,
-		 (yNorm) / max(yNorm) * max(out$count),
-		col="black",
-		lwd=2)
-axis(side=1)
+       (yNorm) / max(yNorm) * max(out$count),
+       col = "black",
+       lwd = 2)
+axis(side = 1)
 
 
-spinNumbersAll <-sample( 0:36, spins[4] * num.sims, replace=TRUE)
-spinNumbers <- array( spinNumbersAll, dim=c(spins[4], num.sims) )
+spinNumbersAll <- sample( 0:36, 
+                          spins[4] * num.sims, 
+			  replace = TRUE)
+spinNumbers <- array( spinNumbersAll, 
+                      dim = c(spins[4], num.sims) )
 sampleMeans <- colMeans(spinNumbers)
 
 out <- hist( sampleMeans, 
-		breaks=break.list,
-      xlim=c(5, 30),
-      axes=FALSE,
-		col=plot.colour,
-      xlab="Sample means", 
-      ylab="",
-      main=paste("From", spins[4],"spins\nof the wheel") )
-yNorm <- dnorm(xNorm, mean=mu, sd=se[4]) 
+             breaks = break.list,
+             xlim = c(5, 30),
+             axes = FALSE,
+             col = plot.colour,
+             xlab = "Sample means", 
+             ylab = "",
+             main = paste("From", spins[4], "spins\nof the wheel") )
+yNorm <- dnorm(xNorm, 
+               mean = mu, 
+	       sd = se[4]) 
 lines( xNorm,
-		 (yNorm) / max(yNorm) * max(out$count),
-		col="black",
-		lwd=2)
-axis(side=1)
+       (yNorm) / max(yNorm) * max(out$count),  
+       col = "black",
+       lwd = 2)
+axis(side = 1)
 
 ```
 
@@ -680,80 +724,6 @@ there is no such thing as a '*non*-standard error'.)
 
 
 
-
-
-
-<!-- ## OLD HAT 2 -->
-
-<!-- For example, -->
-<!-- the sample mean is used to estimate the population mean.  -->
-<!-- However,  -->
-<!-- every sample we select produces a different sample mean -->
-<!-- (and hence a different estimate of the population mean). -->
-<!-- So there are a lot of possible sample means, -->
-<!-- depending on which sample happens to be obtained. -->
-<!-- That is, -->
-<!-- the values of the sample mean that could be observed have a -->
-<!-- *distribution*, -->
-<!-- and so they can be described using a mean and a standard deviation. -->
-
-<!-- The *standard error of the mean* is the  -->
-<!-- standard deviation of all values of the sample mean that could be observed -->
-<!-- (for a given size sample). -->
-<!-- The standard error of the *mean* -->
-<!-- measures how much the sample *mean* is likely to vary from sample to sample. -->
-<!-- In a way, -->
-<!-- the standard error is like  -->
-<!-- a measure of how precisely the *sample* mean estimates the *population* mean. -->
-
-
-<!-- ```{example name="Standard errors"} -->
-<!-- Suppose the population mean age is estimated as $\bar{x}=26$ from a sample of size $n=37$. -->
-<!-- If the standard error was 0.01,  -->
-<!-- this estimate is relatively precise, -->
-<!-- as the standard error is very small so this means that the value of $\bar{x}$  -->
-<!-- is not likely to change much from one sample to the next. -->
-<!-- $\bar{x}$ is likely to be close to $\mu$. -->
-
-<!-- However, -->
-<!-- if the standard error was 2,  -->
-<!-- the estimate of the population mean is not as precise, -->
-<!-- because the standard error is larger so it means that the value of $\bar{x}$ is  -->
-<!-- likely to change a lot more from one sample to the next. -->
-<!-- $\bar{x}$ may not be close to $\mu$. -->
-<!-- ``` -->
-
-
-
-<!-- ```{definition, StandardError3, name="Standard error"} -->
-<!-- A *standard error* is -->
-<!-- the standard deviation of all possible -->
-<!-- values of the sample estimate (from samples of a certain size). -->
-<!-- *Any* quantity estimated from a sample has a standard error.  -->
-<!-- ``` -->
-
-
-<!-- Notice that the standard error is a standard deviation; -->
-<!-- however, it is the standard deviation of something quite specific: -->
-<!-- the variation in some sample estimate *from sample to sample*. -->
-
-
-<!-- ```{block2, type="rmdnote"} -->
-<!-- The standard error is an unfortunate term:  -->
-<!-- It is not an *error* or *mistake*, or even *standard*. -->
-<!-- For example, -->
-<!-- there is no such thing as a 'non-standard error'. -->
-<!-- ``` -->
-
-
-<!-- Recall from  -->
-<!-- Sect. \@ref(SamplingVariationIntro) that, -->
-<!-- for many sample statistics, -->
-<!-- *the variation from sample to sample can be approximately described by normal distributions* -->
-<!-- if certain conditions are met. -->
-<!-- Furthermore, -->
-<!-- the  -->
-<!-- *standard deviation of this normal distribution is called the standard error*. -->
 
 
 
