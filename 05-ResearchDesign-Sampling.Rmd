@@ -173,10 +173,10 @@ showCardSampling <- function(i, numSamples, numCardsPerSample){
   fileList2 <- list.files("Cards", 
                           full.names = FALSE) # No path name
   
-  # Remove jokers
-  redj <- match("red_joker.png", fileList2) # Needs to match just *file* name
-  blackj <- match("black_joker.png", fileList2)
-  fileList <- fileList[ -c(redj, blackj)] 
+  # Remove jokers: Commented out, as I just removed the jokers from the files 
+  #redj <- match("red_joker.png", fileList2) # Needs to match just *file* name
+  #blackj <- match("black_joker.png", fileList2)
+  #fileList <- fileList[ -c(redj, blackj)] 
   
   numFiles <- length(fileList) - 1 
      # Should be 52- 1 = 51, as we don't select the card showing on the pack
@@ -186,7 +186,7 @@ showCardSampling <- function(i, numSamples, numCardsPerSample){
     # numCardSets: How many sets of cards to be shown
     # ratio: The ratio of gap between cards, to card width.
     #        So default means gap is 0.2 the size of the width of cards being shown
-    cardWidth <- 4 / ( numCardSets + (numCardSets-1)*ratio)
+    cardWidth <- 4 / ( numCardSets + (numCardSets-1) * ratio)
     list( cardWidth = cardWidth, 
           gapWidth = ratio * cardWidth)
   }
@@ -212,18 +212,26 @@ showCardSampling <- function(i, numSamples, numCardsPerSample){
     
     # Now create the top pack, but offsetting a series of 10 cards.
     # Since we do not see the actual card, it doesn't matter what the hidden cards are,
-    # so we use the same card repeatedly.
+    # so we use the BLANK card.
     jitterPack <- -0.01
     for (iii in 1:10) { # That is, we draw a stack of 10 cards
       jitterThis <- jitterPack * (iii - 1)
-      rasterImage(imPack,  
-                  -0.5 + jitterThis, 
-                   0.5 + jitterThis, 
-                   0.5 + jitterThis, 
-                   0.5 + jitterThis + asp.cards)
+      if ( iii < 10 ) {
+#        rasterImage(readPNG("Cards/BLANK.png"), # BLANK CARD  
+#                  -0.5 + jitterThis, 
+#                   0.5 + jitterThis, 
+#                   0.5 + jitterThis, 
+#                   0.5 + jitterThis + asp.cards)
+      } else { #TOP CARD: So we show this one
+ #       rasterImage(imPack,  
+#                  -0.5 + jitterThis, 
+#                   0.5 + jitterThis, 
+#                   0.5 + jitterThis, 
+#                   0.5 + jitterThis + asp.cards)
+      }
     }
     # Add some explanation text
-    text(0, 2.1,
+    text(0, 1.1,
          "In the pack (the 'population'), 50% of cards are red",
          cex = 1.1)
     text( 0, 0,
@@ -260,18 +268,18 @@ showCardSampling <- function(i, numSamples, numCardsPerSample){
     for (k in 1:numSamples){ # For each pile...
       
       # Resample the cards to got for this pile
-      cardsForThisPile <- (numCardsPerSample*(k-1) + 1) : (numCardsPerSample*k)
+      cardsForThisPile <- (numCardsPerSample * (k - 1) + 1) : (numCardsPerSample*k)
       cardsList[ cardsForThisPile ] <- sample.int(numFiles, 
                                                   numCardsPerSample, 
-                                                  replace=FALSE) 
+                                                  replace = FALSE) 
           
       # And may as well count the number of red cards while we are here...
       countRed[k] <- sum ( grepl("diamonds", 
                                  fileList[ cardsList[ cardsForThisPile ] ], 
-                                 fixed=TRUE ) | 
+                                 fixed = TRUE ) | 
                            grepl("hearts",   
                                  fileList[cardsList[ cardsForThisPile ] ], 
-                                 fixed=TRUE ) ) 
+                                 fixed = TRUE ) ) 
     }
     # We now have the list of cards from start to end. 
     # So now we just select what we need as we need them.
@@ -289,10 +297,10 @@ showCardSampling <- function(i, numSamples, numCardsPerSample){
     for (k in 1:i){ # We need to sample  i  cards; i  is the card number
 
       # Add arrows for the first pile
-      arrows(0, 0.45, -2 + (pileCount - 0.5) + sampleGapWidth, -0.56,
-             length = 0.1,
-             col = "grey",
-             angle = 15)
+#      arrows(0, 0.45, -2 + (pileCount - 0.5) + sampleGapWidth, -0.56,
+#             length = 0.1,
+#             col = "grey",
+#             angle = 15)
 
       cardNumberInThePile <- cardNumberInThePile + 1
       
@@ -302,9 +310,9 @@ showCardSampling <- function(i, numSamples, numCardsPerSample){
 
         # At the end of this pile, report the percentage red, and reset the jitter
         text( -2 + (pileCount - 0.5) + sampleGapWidth, -2.1,
-              paste(round( countRed[pileCount] / numCardsPerSample*100), 
+              paste(round( countRed[pileCount] / numCardsPerSample * 100), 
                     "%", 
-                    sep=""),
+                    sep = ""),
               pos = 2)
 
         # Move to next pile
@@ -315,10 +323,10 @@ showCardSampling <- function(i, numSamples, numCardsPerSample){
         jitterCount <- 0
       
         # Add arrows for this *new* pile (so after increment)
-        arrows(0, 0.43, -2 + (pileCount - 0.5) + sampleGapWidth, -0.56,
-               length = 0.1,
-               col = "grey",
-               angle = 15)
+#        arrows(0, 0.43, -2 + (pileCount - 0.5) + sampleGapWidth, -0.56,
+#               length = 0.1,
+#               col = "grey",
+#               angle = 15)
         
       }
       
@@ -327,7 +335,7 @@ showCardSampling <- function(i, numSamples, numCardsPerSample){
       # Add the percentage red after the last pile is printed
       if (i == (pileCount * numCardsPerSample) ) {
         text( -2 + (pileCount - 0.5) + sampleGapWidth, -2.1,
-              paste(round( countRed[pileCount] / numCardsPerSample*100), 
+              paste(round( countRed[pileCount] / numCardsPerSample * 100), 
                     "%", 
                     sep = ""),
               pos = 2)
@@ -346,7 +354,7 @@ showCardSampling <- function(i, numSamples, numCardsPerSample){
                   botY, 
                   rightX, 
                   topY,
-                  angle = jitterCards * (cardNumberInThePile - (numCardsPerSample/2)))
+                  angle = jitterCards * (cardNumberInThePile - (numCardsPerSample / 2)))
 
     }
 
@@ -368,8 +376,10 @@ if (knitr::is_html_output()) {
                        numCardsPerSample = numCardsPerSample)
      points(-2.1, -2.25 + iteration/1000, 
             col = "white",
-            cex = 0.5) # To keep getting a new plot, so the final plot holds to be looked art
+            cex = 0.5) # To keep getting a new plot, so the final plot holds to be looked at
+     gc() # Try garbage collection to prevent "Cannot allocate vector of size" error
    }
+  
 }
 ```
 
