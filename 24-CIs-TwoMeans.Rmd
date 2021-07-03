@@ -600,6 +600,7 @@ How much longer are female gray whales than males, on average?
 Let's define the *difference* as the length of female gray whales *minus* the length of male gray whales.
 Then we wish to estimate the difference $\mu_F - \mu_M$,
 where $F$ and $M$ represent female and male gray whales respectively.
+In this situation, this is the *parameter* of interest.
 The best estimate of this difference is $\bar{x}_F - \bar{x}_M = 4.66 - 4.60 = 0.06$.
 
 We know that this value is likely to vary from sample to sample,
@@ -724,6 +725,14 @@ both samples are larger than $25$,
 so the CI will be statisticall valid.
 ```
 
+
+
+```{example StatisticalValidityWhale, name="Statistical validity"}
+In the whales examples of Example \@ref(exm:TwoSampleCIWhales),
+the two sample sizes are 26 (for females) and 30 (for males).
+
+Since both samples are larger than 25, the CI will be statistically valid.
+```
 
 
 
@@ -940,7 +949,6 @@ ses <- with(lime, tapply(Foliage, Origin, function(x){sd(x)/sqrt(length(x))}) )
 ci.lo <- mns - ses*2
 ci.hi <- mns + ses*2
 
-
 plot( range( c( ci.lo, ci.hi) ) ~ c(1,3), data=lime,
       type="n",
       ylim=c(0, 14),
@@ -966,26 +974,81 @@ arrows(1:3, mns-2*ses, 1:3, mns+2*ses, length=0.05, angle=90, code=3)
 
       
 ```{r LimeTreesErrorbar, echo=FALSE, fig.cap="Error bar chart comparing the mean foliage biomass for small-leaved lime trees from three sources, but with a more sensible scale on the vertical axis", fig.align="center", fig.width=5, fig.height=4}
-plot( range( c( ci.lo, ci.hi) ) ~ c(1,3), data=lime,
-      type="n",
-      ylim=c(1, 3.5),
-     pch=19,
-     axes=FALSE,
-     main="Error bars chart:\n mean foliage biomass",
-     xlab="Origin", 
-     ylab="Foliage biomass (kg)",
-     sub = "(Error bars are 95% confidence intervals)",
-     las=1)
-axis(side=1, 
-     at=1:3, 
-     labels=levels(lime$Origin), 
-     las=1) 
+plot( range( c( ci.lo, ci.hi) ) ~ c(1,3), 
+      data = lime,
+      type = "n",
+      ylim = c(1, 3.5),
+      pch = 19,
+      axes = FALSE,
+      main = "Error bars chart:\n mean foliage biomass",
+      xlab = "Origin", 
+      ylab = "Foliage biomass (kg)",
+      sub = "(Error bars are 95% confidence intervals)",
+      las = 1)
+axis(side = 1, 
+     at = 1:3, 
+     labels = levels(lime$Origin), 
+     las = 1) 
 axis(side=2, las=1)
 box()
 
-points( mns ~ c(1:3), pch=19)
+points( mns ~ c(1:3), 
+        pch = 19,
+        cex = 1.5,
+        col = plot.colour)
 
-arrows(1:3, mns-2*ses, 1:3, mns+2*ses, length=0.05, angle=90, code=3)
+arrows(1:3, mns-2*ses, 
+       1:3, mns+2*ses, 
+       length = 0.05, 
+       angle = 90, 
+       code = 3)
+```    
+
+
+```{example ErrorBarWhales, name="Whales"}
+Using the data about gray whales from Example \@ref(exm:TwoSampleCIWhales),
+the error bar chart in Fig. \@ref(fig:WhalesErrorbar) can be constructed.
+
+The plot seems to suggest little difference between the mean length of female and male gray whales at birth.
+```
+
+      
+```{r WhalesErrorbar, echo=FALSE, fig.cap="Error bar chart comparing the lengths of female and male gray whales", fig.align="center", fig.width=5, fig.height=4}
+
+ciF <- c(4.66 - 2 * (0.379 / sqrt(26)),
+         4.66 + 2 * (0.379 / sqrt(26)) )
+ciM <- c(4.60 - 2 * (0.305 / sqrt(30)),
+         4.60 + 2 * (0.305 / sqrt(30)) )
+
+
+plot( range( c( ciF, ciM) ) ~ c(1,2), 
+      type = "n",
+      ylim = c(4.45, 4.85),
+      pch = 19,
+      axes = FALSE,
+      main = "Error bars chart:\n length of gray whales at birth",
+      xlab = "Sex", 
+      ylab = "Length (in metres)",
+      sub = "(Error bars are 95% confidence intervals)",
+      las = 1)
+axis(side = 1, 
+     at =1:2, 
+     labels = c("Females", "Males"), 
+     las = 1) 
+axis(side = 2, 
+     las = 1)
+box()
+
+points( c(4.66, 4.60) ~ c(1:2), 
+        pch = 19,
+        col = plot.colour,
+        cex = 1.5)
+
+arrows(1:2, c(ciF[1], ciM[1]), 
+       1:2, c(ciF[2], ciM[2]), 
+       length = 0.05, 
+       angle = 90, 
+       code = 3)
 ```    
 
 
