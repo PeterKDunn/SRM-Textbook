@@ -26,8 +26,6 @@ library("plotfunctions") # For adding images (e.g. icons) to diagrams
 # set global chunk options
 options(formatR.arrow=TRUE,width=90)
 
-
-
 blueTransparent <- rgb(0, 0, 1, 
                        alpha = 0.2, 
                        maxColorValue = 1)
@@ -42,6 +40,20 @@ blueTransparent0 <- rgb(0, 0, 1,
                         alpha = 0.8, 
                         maxColorValue = 1)
 plot.colour0 <- blueTransparent0
+
+makeTransparent <- function(someColor, alpha = 100)
+{
+  newColor<-col2rgb( someColor )
+  apply(newColor, 
+        2, 
+        function(curcoldata){ rgb(red = curcoldata[1], 
+                                  green = curcoldata[2],
+                                  blue = curcoldata[3],
+                                  alpha = alpha, 
+                                  maxColorValue = 255)
+        }
+  )
+}
 
 # Environment defaults
 foldLaTeXText <- "The answer is given in the online book."
