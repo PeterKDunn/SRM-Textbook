@@ -41,8 +41,7 @@ blueTransparent0 <- rgb(0, 0, 1,
                         maxColorValue = 1)
 plot.colour0 <- blueTransparent0
 
-makeTransparent <- function(someColor, alpha = 100)
-{
+makeTransparent <- function(someColor, alpha = 100){
   newColor<-col2rgb( someColor )
   apply(newColor, 
         2, 

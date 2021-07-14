@@ -2630,7 +2630,7 @@ from the top to the bottom of the plot
   This is the line at the bottom of the boxplot.
 
 
-```{r BoxplotKrillTreatment, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="A boxplot for the krill-egg data; the boxplot just for the treatment group", fig.width=5, fig.align="center", }
+```{r BoxplotKrillTreatment, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="A boxplot for the krill-egg data; the boxplot just for the treatment group", fig.width=7, fig.height=6.5, fig.align="center", }
 Eggs.quantiles <- quantile(Eggs.T)
 out <- boxplot( list(Treatment = Eggs.T), 
             main = "A boxplot of the number of\neggs laid by krill: Treatment group",
@@ -2638,7 +2638,7 @@ out <- boxplot( list(Treatment = Eggs.T),
             pch = 19,
             col = "white",
             ylim = c(-4, 50),
-            xlim = c(0.7, 1.75),
+            xlim = c(0.7, 2.75),
             ylab = "Number of eggs")
 abline( h = Eggs.quantiles, 
         col = "grey",
@@ -2669,6 +2669,49 @@ text( 1.45, Eggs.quantiles[1],
       "Minimum value", 
       pos = 1, 
       cex = 0.75)
+stripchart( list(Treatment = Eggs.T), 
+            vertical = TRUE, 
+            at = 2.0, 
+            add = TRUE, 
+            method = "stack",
+            pch = 19,
+            col = plot.colour0)
+text( x = 2.5,
+      y = c( mean(Eggs.quantiles[1:2]),
+             mean(Eggs.quantiles[2:3]),
+             mean(Eggs.quantiles[3:4]),
+             mean(Eggs.quantiles[4:5])
+             ),
+      "25% of data\n in here")
+
+arrows(x0 = 2.25,
+       y0 = Eggs.quantiles[1],
+       x1 = 2.25,
+       y1 = Eggs.quantiles[2],
+       code = 3, # Arrow at both ends
+       length = 0.1,
+       angle = 15)
+arrows(x0 = 2.2,
+       y0 = Eggs.quantiles[2],
+       x1 = 2.2,
+       y1 = Eggs.quantiles[3],
+       code = 3, # Arrow at both ends
+       length = 0.1,
+       angle = 15)
+arrows(x0 = 2.25,
+       y0 = Eggs.quantiles[3],
+       x1 = 2.25,
+       y1 = Eggs.quantiles[4],
+       code = 3, # Arrow at both ends
+       length = 0.1,
+       angle = 15)
+arrows(x0 = 2.2,
+       y0 = Eggs.quantiles[4],
+       x1 = 2.2,
+       y1 = Eggs.quantiles[5],
+       code = 3, # Arrow at both ends
+       length = 0.1,
+       angle = 15)
 
 # Add values to right axis
 Eggs.quantiles.labs <- Eggs.quantiles # So we get all the labels appearing; these two are very close, so only one gets printed
@@ -2827,7 +2870,7 @@ library(NHANES)
 data(NHANES)
 
 # Grab some of the necessary stats
-Qs <- quantile(NHANES$Age, seq(0, 1, by=0.25)) # See below for better way when there are outliers
+Qs <- quantile(NHANES$Age, seq(0, 1, by = 0.25)) # See below for better way when there are outliers
 
 left <- 0.75
 right <- 1.25
@@ -2843,47 +2886,76 @@ mid.r <- mean( c(right, axis.edge.right) )
 if (knitr::is_html_output()) {
   for (i in 1:6){
     boxplot( NHANES$Age, 
-             col=plot.colour,
-             las=1,
-             ylim=c(0, 85),
-             main="Boxplot of Age (NHANES data)",
-             ylab="Age (in years)")
+             col = plot.colour,
+             las = 1,
+             lwd = 2,
+             ylim = c(0, 85),
+             main = "Boxplot of Age (NHANES data)",
+             ylab = "Age (in years)")
     
     if ( i == 2){
       arrows(left, Qs[5],
              axis.edge, Qs[5],
-             angle=angle,
-             lwd=2)
-      text(mid, Qs[5], label="Maximum", pos=1)
+             angle = angle,
+             lwd = 2)
+      text(mid, Qs[5], 
+           label = "Maximum", 
+           pos = 1)
     }
     if ( i == 3 ){
+      
       arrows(left, Qs[4],
              axis.edge, Qs[4],
-             angle=angle,
-             lwd=2)
-      text(mid, Qs[4], label=expression( italic(Q)[3]), pos=1)
+             angle = angle,
+             lwd = 2)
+      text(mid, Qs[4], 
+           label = expression( italic(Q)[3]), 
+           pos = 1)
     }
     if (i == 4){
       arrows(left, Qs[3],
              axis.edge, Qs[3],
-             angle=angle,
-             lwd=2)
-      text(mid, Qs[3], label=expression( italic(Q)[2]), pos=1)
+             angle = angle,
+             lwd = 2)
+      text(mid, Qs[3], 
+           label = expression( italic(Q)[2]), 
+           pos = 1)
     }
     if (i == 5){  
       arrows(left, Qs[2],
              axis.edge, Qs[2],
-             angle=angle,
-             lwd=2)
-      text(mid, Qs[2], label=expression( italic(Q)[1]), pos=1)
+             angle = angle,
+             lwd = 2)
+      text(mid, Qs[2], label = expression( italic(Q)[1]), 
+           pos = 1)
     }
     if ( i == 6){    
       arrows(left, Qs[1],
              axis.edge, Qs[1],
-             angle=angle,
-             lwd=2)
-      text(mid, Qs[1], label="Minimum", pos=3)
+             angle = angle,
+             lwd = 2)
+      text(mid, Qs[1], 
+           label = "Minimum", 
+           pos = 3)
     }
+    
+    xL <- -10
+    xR <- 10
+    polygon( x = c(xL, xL, xR, xR),
+             y = c(Qs[1], Qs[2], Qs[2], Qs[1]),
+             col = makeTransparent(plot.colour2),
+             border = NA)
+    polygon( x = c(xL, xL, xR, xR),
+             y = c(Qs[3], Qs[4], Qs[4], Qs[3]),
+             col = makeTransparent(plot.colour2),
+             border = NA)
+    
+    text(x = 1.35,
+         y = c( mean(Qs[1:2]),
+                mean(Qs[2:3]),
+                mean(Qs[3:4]),
+                mean(Qs[4:5])),
+         c("25% of the data\nin this region"))
   }
 }
 ```
