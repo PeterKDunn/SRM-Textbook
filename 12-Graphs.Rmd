@@ -2324,14 +2324,19 @@ if( knitr::is_latex_output() ) {
 	row_spec(0, bold = TRUE)
 }
 if( knitr::is_html_output() ) {
-  kable(simpletab,
+ out <-  kable(simpletab,
         format = "html",
         longtable = FALSE,
       align = c("r", "r", "r"),
       booktabs = TRUE,
       row.names = FALSE,
-      caption = "The NHANES age distribution, displayed as a table") %>%
-   kable_styling(full_width = FALSE)
+      caption = "The NHANES age distribution, displayed as a table") 
+      
+   if ( knitr::is_html_output(excludes = "epub")) {
+      kable_styling(out, full_width = FALSE)
+  } else {
+    out
+  }
 }
 ```
 
@@ -2418,19 +2423,22 @@ if( knitr::is_latex_output() ) {
     
 }
 if( knitr::is_html_output() ) {
-  kable( KrillEggs2,
+  out <- kable( KrillEggs2,
          format = "html",
          longtable = FALSE,
-       booktabs = TRUE,
-       align = c("c","c"),
-       col.names = rep("",4),
-      #col.names = c("Treatment group ", " Control group"),
-      caption = "The number of eggs laid by krill, for those in a treatment group and for those in a control group") %>%
-   # kable_styling(full_width=FALSE) %>%
-    add_header_above(header = c("Treatment group" = 2, 
-                                "Control group" = 2), 
-				bold = TRUE, 
-				align = "c")
+         booktabs = TRUE,
+         align = c("c","c"),
+         col.names = rep("",4)
+         caption = "The number of eggs laid by krill, for those in a treatment group and for those in a control group") 
+	 
+ if ( knitr::is_html_output(excludes = "epub")) {
+    add_header_above(out, header = c("Treatment group" = 2, 
+                                     "Control group" = 2), 
+				     bold = TRUE, 
+				     align = "c")
+  } else {
+    out
+  }  
 }
 ```
 
@@ -3340,13 +3348,17 @@ if( knitr::is_latex_output() ) {
     row_spec(0, bold = TRUE)
 }
 if( knitr::is_html_output() ) {
-  knitr::kable(Counts,
+  out <- knitr::kable(Counts,
                format = "html",
                longtable = FALSE,
                align = c("r", "c", "c", "c"),
                booktabs = TRUE,
-               caption = "The number of possums found as road kill, by sex and season") %>%
-   kable_styling(full_width = FALSE)
+               caption = "The number of possums found as road kill, by sex and season")
+   if ( knitr::is_html_output(excludes = "epub")) {
+     kable_styling(out, full_width = FALSE)
+  } else {
+    out
+  }  
 }
 ```
 
@@ -3701,13 +3713,17 @@ if( knitr::is_latex_output() ) {
     row_spec(0, bold = TRUE)
 }
 if( knitr::is_html_output() ) {
-  knitr::kable(Percentages,
+  out <- knitr::kable(Percentages,
                format = "html",
                longtable = FALSE,
                align = c("r", "r", "r"),
                booktabs = TRUE,
-               caption = "The percentages of possums found as road kill by sex, within each season (rows sum to 100%)") %>%
-   kable_styling(full_width = FALSE)
+               caption = "The percentages of possums found as road kill by sex, within each season (rows sum to 100%)")
+ if ( knitr::is_html_output(excludes = "epub")) {
+    kable_styling(out, full_width = FALSE)
+  } else {
+    out
+  }   
 }
 ```
 
@@ -4103,9 +4119,6 @@ if( knitr::is_latex_output() ) {
 if( knitr::is_html_output() ) {
   DT::datatable( round(insulate, 1),
                  fillContainer = FALSE, # Make more room, so we don't just have ten values
-                 #filter = "top", 
-                 #selection = "multiple", 
-                 #escap e =FALSE,
                  options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                  caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)")
 }
@@ -4826,7 +4839,6 @@ if( knitr::is_latex_output() ) {
         longtable = FALSE,
         booktabs = TRUE,
         escape = FALSE, # For latex to work in \rightarrow
-        #linesep = c( "\\addlinespace"), # Add a bit of space between all rows. 
         caption = "Graphs to use for most situations",
         align = c("l", "l"))   %>%
    kable_styling(full_width = FALSE, font_size = 10) %>%
@@ -4966,14 +4978,18 @@ if( knitr::is_latex_output() ) {
 	row_spec(0, bold=TRUE)
 }
 if( knitr::is_html_output() ) {
-  kable( table(mtcars$cyl),
+  out <- kable( table(mtcars$cyl),
          format="html",
          lomngtable=FALSE,
        caption="The number of cylinders in cars in a study",
        col.names = c("Number of cylinders", "Number of cars"),
        align=c("r", "r"),
-       booktabs=TRUE)%>%
-   kable_styling(full_width=FALSE)
+       booktabs=TRUE)
+ if ( knitr::is_html_output(excludes = "epub")) {
+   kable_styling(out, full_width=FALSE)
+  } else {
+    out
+  }   
 }
 ```
 
@@ -5194,9 +5210,6 @@ according to current smoking status",
    kable_styling(full_width=FALSE, font_size=10) %>%
   row_spec(0, bold=TRUE) %>% # Columns headings (row 0) in bold
   column_spec(0, bold=TRUE)     # Row headings in bold
-#   column_spec(column=1, width="7cm") %>% 
-#   column_spec(column=2, width="500mm") %>%
-#   column_spec(column=3, width="7cm")
 }
 
 if( knitr::is_html_output() ) {
@@ -5204,13 +5217,8 @@ if( knitr::is_html_output() ) {
         format="html",
         align=c("c", "c"),
         longtable=FALSE,
-      caption="A summary of the temperature (in degrees C) in three offices at CSU during working hours
-according to current smoking status",
-      booktabs=TRUE) #%>%
-  #row_spec(0, bold=TRUE) #%>% # Columns headings in bold
-  #column_spec(0, bold=TRUE)     # Row headings in bold
-   #row_spec(row=1, bold=TRUE) %>%
-#   column_spec(column=1, bold=TRUE)
+        caption="A summary of the temperature (in degrees C) in three offices at CSU during working hours according to current smoking status",
+        booktabs=TRUE) 
 }
 ```
 
