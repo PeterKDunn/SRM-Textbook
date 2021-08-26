@@ -373,14 +373,19 @@ if( knitr::is_html_output() ) {
   # Now do some repeating, so we can "collapse"
   DMP[1:3, 4 ] <- DMP[1:3, 3]
 
-  kable( t(DMP),
+  out <- kable( t(DMP),
          format = "html",
          booktabs = TRUE,
          longtable = FALSE,
-         caption = "The decision-making process") %>%
-   column_spec(2, bold = TRUE) %>%
-   kable_styling(full_width = FALSE) %>%
-   collapse_rows(1:3, valign = "middle")
+         caption = "The decision-making process")
+  if ( knitr::is_html_output(excludes = "epub")) {
+    column_spec(out, 2, bold = TRUE) %>%
+    kable_styling(full_width = FALSE) %>%
+    collapse_rows(1:3, valign = "middle")
+  } else {
+    out
+  }
+   
 }
 ```
 
