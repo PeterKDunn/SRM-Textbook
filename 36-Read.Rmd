@@ -460,7 +460,6 @@ if( knitr::is_latex_output() ) {
         longtable=FALSE,
         booktabs = TRUE,
         align=c("r", "r", "c", "l", "l", "r"),
-#        digits=0,
         linesep = c("", "\\addlinespace", 
                     "", "", "\\addlinespace",
                     "",""), # Otherwise addes a space after five lines... which looks odd when there are only six
@@ -472,16 +471,19 @@ if( knitr::is_latex_output() ) {
 }
 
 if( knitr::is_html_output() ) {
-  kable(HearingTable,
+  out <- kable(HearingTable,
         format="html",
         longtable=FALSE,
         booktabs = TRUE,
         align=c("r", "r", "c", "l", "l", "r"),
-#        digits=0,
         col.names = colnames(HearingTable),
-        caption = tab.cap.HL ) %>%
-   column_spec(column=1, bold=TRUE) %>%
-   row_spec(row=0, bold=TRUE)
+        caption = tab.cap.HL )
+  if ( knitr::is_html_output(excludes = "epub")) {
+    column_spec(out, column=1, bold=TRUE) %>%
+    row_spec(row=0, bold=TRUE)
+  } else {
+    out
+  }
 }
 ```
 
