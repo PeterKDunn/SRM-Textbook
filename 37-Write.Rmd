@@ -1044,21 +1044,21 @@ ResultsTable[4, ] <- c(1.25, 14.8)
 
 if( knitr::is_latex_output() ) {
   kable(ResultsTable,
-        format="latex",
-      booktabs=TRUE,
-      longtable=FALSE,
-      align=c("l", "l"),
-      caption="A table of results") %>%
-    kable_styling(font_size=10)
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = c("l", "l"),
+        caption = "A table of results") %>%
+    kable_styling(font_size = 10)
 }
 
 if( knitr::is_html_output() ) {
   kable(ResultsTable,
-        format="html",
-      booktabs=TRUE,
-      longtable=FALSE,
-      align=c("l", "l"),
-      caption="A table of results")
+        format = "html",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = c("l", "l"),
+        caption = "A table of results")
 }
 
 ```
@@ -1126,18 +1126,18 @@ WEStudent1[1,] <- c(50,
 
 if( knitr::is_latex_output() ) {
    kable(WEStudent1,
-         format="latex",
-         longtable=FALSE,
-         caption="The information showing how much higher the (standing) jump height is compared to the squat jump",
-         booktabs=TRUE) %>%
+         format = "latex",
+         longtable = FALSE,
+         caption = "The information showing how much higher the (standing) jump height is compared to the squat jump",
+         booktabs = TRUE) %>%
       kable_styling(font_size = 9)
 }
 if( knitr::is_html_output() ) {
    kable(WEStudent1,
-         format="html",
-         longtable=FALSE,
-         caption="The information showing how much higher the (standing) jump height is compared to the squat jump",
-         booktabs=TRUE)
+         format = "html",
+         longtable = FALSE,
+         caption = "The information showing how much higher the (standing) jump height is compared to the squat jump",
+         booktabs = TRUE)
 }
 
 ```
@@ -1242,34 +1242,32 @@ BaurTable[4, ] <- c("1.002 (0.982--1.021)", "0.8713")
 tab.cap <- "The OR and 95% CI of MetSyn as a function of increasing METS and age (continuous) model 1: unadjusted, model 2 adjusted for age or cardiorespiratory fitness (CRF) (METS)"
 
 if( knitr::is_html_output() ) {
-  kable(BaurTable,
-      format="html",
-      booktabs=TRUE,
-      longtable=FALSE,
-      caption=tab.cap) %>%
-  kable_styling("striped", full_width = F) %>%
-  pack_rows("Model 1", 1, 2) %>%
-  pack_rows("Model 2", 3, 4) 
+  out <- kable(BaurTable,
+               format = "html",
+               booktabs = TRUE,
+               longtable = FALSE,
+               caption = tab.cap)
+  if ( knitr::is_html_output(excludes = "epub")) {
+     pack_rows(out, "Model 1", 1, 2) %>%
+     pack_rows("Model 2", 3, 4) %>%
+     kable_styling(font_size = 10)
+  } else {
+    out
+  }
 }
 if( knitr::is_latex_output() ) {
   colnames(BaurTable) <- c("OR (95\\% CI)",
                          "$p$-value")
-tab.cap <- "The OR and 95\\% CI of MetSyn as a function of increasing METS and age (continuous) model 1: unadjusted, model 2 adjusted for age or cardiorespiratory fitness (CRF) (METS)"
-out <- kable(BaurTable,
-      format="latex",
-      booktabs=TRUE,
-      longtable=FALSE,
-      escape=FALSE,
-      caption=tab.cap)
-  if ( knitr::is_html_output(excludes = "epub")) {
-    pack_rows(out, "Model 1", 1, 2) %>%
-    pack_rows("Model 2", 3, 4) %>%
-    kable_styling(font_size=10)
-  } else {
-    out
-  }
-
-
+  tab.cap <- "The OR and 95\\% CI of MetSyn as a function of increasing METS and age (continuous) model 1: unadjusted, model 2 adjusted for age or cardiorespiratory fitness (CRF) (METS)"
+   kable(BaurTable,
+         format = "latex",
+         booktabs = TRUE,
+         longtable = FALSE,
+         escape = FALSE,
+         caption = tab.cap) %>%
+   kable_styling("striped", full_width = F) %>%
+   pack_rows("Model 1", 1, 2) %>%
+   pack_rows("Model 2", 3, 4)   
 }
 ```
 
@@ -1279,41 +1277,58 @@ Prop <- matrix( c(0, 0, 11, 0,
                   10, 22, 16, 10,
                   28, 29, 27, 25, 
                   44, 46, 48, 60),
-                nrow=4, ncol=4,
-                byrow=TRUE)
-hist3D( x=1:4, 
-        y=1:4, 
-        z=Prop,
-        scale=FALSE,
-        space=0.5, # gap between bars
-        phi=20, theta=-60, ltheta=90,
-        expand=0.08,
-        ticktype="detailed",
-        #colvar=NULL,
-        col="grey",
-        border="black",
-        ylab="Age category", xlab="", zlab="Proportion METS",
-        zlim=c(0, 70),
+                nrow = 4, 
+		ncol = 4,
+                byrow = TRUE)
+hist3D( x = 1:4, 
+        y = 1:4, 
+        z = Prop,
+        scale = FALSE,
+        space = 0.5, # gap between bars
+        phi = 20, theta = -60, ltheta=90,
+        expand = 0.08,
+        ticktype = "detailed",
+        col = "grey",
+        border = "black",
+        ylab = "Age category", 
+	xlab = "", 
+	zlab = "Proportion METS",
+        zlim = c(0, 70),
         cex.axis = 1e-9,       # colvar=cols,
-        bty="u"
+        bty = "u"
         )
 
 # Label age axis
-text3D(x = rep(1, 4),   y = 1:4, z = rep(-4.85, 4),
-       labels  = rev(c("18-29", "30-39", "40-49", "50-62")),
-       add = TRUE, adj = 1)
+text3D(x = rep(1, 4),   
+       y = 1:4, 
+       z = rep(-4.85, 4),
+       labels  = rev( c("18-29", 
+                        "30-39", 
+			"40-49", 
+			"50-62")),
+       add = TRUE, 
+       adj = 1)
 
 
 # Label y axis
-text3D(x = 1:4,   y = rep(0, 4), z = rep(-1, 4),
-       labels  = c("METS>14", "12<METS<14", "10<METS<12", "METS<10"),
-       add = TRUE, adj = 0)
+text3D(x = 1:4,   
+       y = rep(0, 4), 
+       z = rep(-1, 4),
+       labels  = c("METS>14", 
+                   "12<METS<14", 
+		   "10<METS<12", 
+		   "METS<10"),
+       add = TRUE, 
+       adj = 0)
 
 
 # Labels z axis
-text3D(x = rep(1, 4),   y = rep(4.85, 4), z = seq(0, 60, by=20)-1,
-       labels  = seq(0, 60, by=20),
-       add = TRUE, adj = 1)
+text3D(x = rep(1, 4),   
+       y = rep(4.85, 4), 
+       z = seq(0, 60, by = 20) - 1,
+       labels  = seq(0, 60, by = 20),
+       add = TRUE, 
+       adj = 1)
 ```
        
        
@@ -1343,18 +1358,22 @@ which appears in the paper.
 hts <- c(3, 15, 44, 33, 22, 18, 5, 3)
 
 out <- barplot(hts, 
-        space=0.075,
-        ylim=c(0, 45),
-        width=1,
-        xlab="Fatigue Assessment Scale",
-        ylab="Number of Patients",
-        col="grey",
-        axes=FALSE)
+               space = 0.075,
+               ylim = c(0, 45),
+               width = 1,
+               xlab = "Fatigue Assessment Scale",
+               ylab = "Number of Patients",
+               col = "grey",
+               axes = FALSE)
 axis(side=1, 
-     at=seq(0, max(out)+diff(out)[1], by=diff(out)[1]),
-     labels=seq(10, 50, by=5))
+     at = seq(0, 
+              max(out) + diff(out)[1], 
+              by = diff(out)[1]),
+     labels = seq(10, 50, by = 5))
 
-axis(side=2, at=seq(0, 45, by=5), las=1 )
+axis(side = 2, 
+     at = seq(0, 45, by = 5), 
+     las=1 )
 box()
 ```
 
