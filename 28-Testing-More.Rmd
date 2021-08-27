@@ -395,54 +395,72 @@ Meaning.html <- c("*Insufficient* evidence to support $H_1$",
 Pvals <- c(0.5, 0.075, 0.025, 0.005, 0)
 
 if( knitr::is_html_output() ) {
-PVTable <- data.frame( 
-  Value =c("Larger than 0.10", 
-           "Between 0.05 and 0.10", 
-           "Between 0.01 and 0.05",
-           "Between 0.001 and 0.01",
-           "Smaller than 0.001"),
-    Meaning = Meaning.html
-)
+   PVTable <- data.frame( Value = c("Larger than 0.10", 
+                                    "Between 0.05 and 0.10", 
+                                    "Between 0.01 and 0.05",
+                                    "Between 0.001 and 0.01",
+                                    "Smaller than 0.001"),
+                          Meaning = Meaning.html)
 
-PVTable %>%
- mutate_if(is.numeric, function(x) {
-    cell_spec(x,
-              color = spec_color(x, end = 0.9),
-              font_size = spec_font_size(x))
-  }) %>%
-  mutate(Meaning = cell_spec(
-    Meaning, color = "white", bold = T,
-    background = spec_color(1:5, begin=0.2, end = 0.9, option = "D", direction = -1) # FOR COLORS, see  https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html
-  )) %>%
-  kable(escape = FALSE, 
-        align = c("r", "l"), 
-        caption="A guideline for interpreting $P$-values. $P$-values should be interpreted in context.", 
-        col.names=c("If the $P$-value is...", "Write the conclusion as...")) %>%
-  kable_styling(c("striped", "condensed"), full_width = F)
+   if ( knitr::is_html_output(excludes = "epub")) {
+
+      PVTable %>%
+      mutate_if(is.numeric, function(x) {
+                cell_spec(x,
+                color = spec_color(x, end = 0.9),
+                font_size = spec_font_size(x))
+     }) %>%
+     mutate(Meaning = cell_spec(
+                 Meaning, 
+                 color = "white", 
+                 bold = TRUE,
+                 background = spec_color(1:5, 
+                                         begin = 0.2, 
+                                         end = 0.9, 
+                                         option = "D", 
+                                         direction = -1) # FOR COLORS, see  https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html
+            )) %>%
+     kable(escape = FALSE, 
+           align = c("r", "l"), 
+           format = "html",
+           caption = caption = "A guideline for interpreting \\(P\\)-values. \\(P\\)-values should be interpreted in context.",
+           col.names = c("If the $P$-value is...", 
+                         "Write the conclusion as...")) %>%
+     kable_styling(c("striped", "condensed"), 
+                   full_width = F)    
+
+   } else {
+     kable(PVTable,
+           format = "html",
+           booktabs = TRUE,
+           escape = FALSE,
+           longtable = FALSE,
+           col.names = c("If the $P$-value is...", "Write the conclusion as..."),
+           caption = "A guideline for interpreting \\(P\\)-values. \\(P\\)-values should be interpreted in context.",
+           align = c("r", "l")   ))
+   }
 }
-
+ 
+  
+  
 if( knitr::is_latex_output() ) {
-PVTable <- data.frame( 
-  Value =c("Larger than 0.10", 
-           "Between 0.05 and 0.10", 
-           "Between 0.01 and 0.05",
-           "Between 0.001 and 0.01",
-           "Smaller than 0.001"),
-    Meaning = Meaning.latex
-)
-out <- kable(PVTable,
-      format="latex",
-      booktabs=TRUE,
-      escape=FALSE,
-      longtable=FALSE,
-      col.names=c("If the $P$-value is...", "Write the conclusion as..."),
-      caption="A guideline for interpreting \\(P\\)-values. \\(P\\)-values should be interpreted in context.",
-      align = c("r", "l")   )
-  if ( knitr::is_html_output(excludes = "epub")) {
-    kable_styling(out, font_size=10)
-  } else {
-    out
-  }
+   PVTable <- data.frame(Value = c("Larger than 0.10", 
+                                   "Between 0.05 and 0.10", 
+                                   "Between 0.01 and 0.05",
+                                   "Between 0.001 and 0.01",
+                                   "Smaller than 0.001"),
+                          Meaning = Meaning.latex
+                         )
+
+   kable(PVTable,
+         format = "latex",
+         booktabs = TRUE,
+         escape = FALSE,
+         longtable = FALSE,
+         col.names = c("If the $P$-value is...", "Write the conclusion as..."),
+         caption = "A guideline for interpreting \\(P\\)-values. \\(P\\)-values should be interpreted in context.",
+         align = c("r", "l")   )
+  
   
 }
 
