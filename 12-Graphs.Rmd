@@ -3745,110 +3745,6 @@ what *is* the main message that you would like to get across?)
 
 
 
-## Comparing 2-D and 3-D graphs
-
-Always remember the purpose of a graph:
-to display the information in the
-*simplest* and *clearest* possible way, to help the reader understand the message(s) in the data.
-
-Instead of aiming to communicate information,
-sometimes graphs are prepared to look fancy or clever,
-or to show off the researchers computing skills.
-
-One way that people try to be fancy is to use 
-a third dimension when it is not needed.
-This is a bad idea:
-the resulting graphs can be misleading and hard to read
-[@siegrist1996use].
-
-
-
-```{lemma GraphsTables, name="Graphs and tables"}
-In the NHANES study
-[@data:NHANES3:Data],
-the age and sex of each participant were recorded.
-
-Using Fig. \@ref(fig:Bar3D),
-can you easily determine if more females or more males 
-are in each age group?
-```
-
-
-```{r Bar3D, echo=FALSE, fig.cap="A three-dimensional bar chart of the NHANES data", fig.align="center", fig.width=5.5, out.width="85%"}
-AgeD.Gender <- xtabs( ~ AgeD + NHANES$Gender)
-
-TwoDData <- data.frame(
-  Counts = c(
-    AgeD.Gender[, 1],  
-    AgeD.Gender[, 2]),
-    Gender = c( rep("F", 7), rep("M", 7)),
-    Age = levels(AgeD)
-  
-)
-
-par(mar=c(0, 0, 0, 0) + 0.1)
-
-lattice::cloud(Counts ~ factor(Gender) + factor(Age), 
-               data = TwoDData, 
-               panel.3d.cloud = panel.3dbars, 
-               col.facet = c( rep('#FFFAF0', 7), rep('#5844ff', 7)),
-               xbase = 0.4, 
-               ybase = 0.4,
-               scales = list(arrows = FALSE, 
-                             col = 1), 
-               zlim = c(0, 850),
-               zlab = list("Number", rot = 95),
-               ylab = list("Age group", rot = -50),
-               xlab = list("Gender", rot = 23),
-               screen = list(z = 30, x = -60), # The view; rotations about axes
-               main = "Number per group",
-               par.settings = list(axis.line = list(col = "transparent"))
-      )
-```
-
-
-The artificial third dimension makes quickly determining
-the heights of the bars hard.
-In contrast,
-a 2-D graph
-(a side-by-side bar graph; Fig. \@ref(fig:Bar3D))
-makes it clear whether each age group has more females or more males.
-
-
-```{r Bar2D, echo=FALSE, fig.cap="A side-by-side bar chart of treatment data", fig.align="center", fig.width=3.75, fig.height=3.5}
-locatn <- barplot(t( AgeD.Gender ), 
-        beside = TRUE,
-        legend = FALSE, 
-        las = 2, 
-        cex.names = 0.8,
-        ylim = c(0, 900),
-        args.legend = list(x = "bottom", 
-	                   bg = "white", 
-			   cex = 0.75), 
-        ylab = "Number",
-        xlab = "Age group",
-        main = "Number per group",
-        col = c("#FFFAF0", "#5844ff"))
-#text(locatn[1, 4], 700, "F")
-#text(locatn[2, 4], 700, "M")
-legend("top", 
-       legend = c("Females", "Males"), 
-       #levels(NHANES$Gender),
-       bty = "n", 
-       xpd = TRUE, 
-       ncol=2, 
-       cex = 0.9, 
-       fill=c( '#FFFAF0', '#5844ff') )
-
-```
-
-
-
-
-
-
-
-
 
 
 ## Other types of graphs
@@ -4312,8 +4208,108 @@ if (knitr::is_html_output()) {
 
 
 
-## Notes on constructing graphs
-   
+## Notes on constructing graphs {GraphsConstructing}
+
+
+### Comparing 2-D and 3-D graphs {Graphs3Dimensional}
+
+Always remember the purpose of a graph:
+to display the information in the
+*simplest* and *clearest* possible way, to help the reader understand the message(s) in the data.
+
+Instead of aiming to communicate information,
+sometimes graphs are prepared to look fancy or clever,
+or to show off the researchers computing skills.
+
+One way that people try to be fancy is to use 
+a third dimension when it is not needed.
+This is a bad idea:
+the resulting graphs can be misleading and hard to read
+[@siegrist1996use].
+
+
+
+```{lemma GraphsTables, name="Graphs and tables"}
+In the NHANES study
+[@data:NHANES3:Data],
+the age and sex of each participant were recorded.
+
+Using Fig. \@ref(fig:Bar3D),
+can you easily determine if more females or more males 
+are in each age group?
+```
+
+
+```{r Bar3D, echo=FALSE, fig.cap="A three-dimensional bar chart of the NHANES data", fig.align="center", fig.width=5.5, out.width="85%"}
+AgeD.Gender <- xtabs( ~ AgeD + NHANES$Gender)
+
+TwoDData <- data.frame(
+  Counts = c(
+    AgeD.Gender[, 1],  
+    AgeD.Gender[, 2]),
+    Gender = c( rep("F", 7), rep("M", 7)),
+    Age = levels(AgeD)
+  
+)
+
+par(mar=c(0, 0, 0, 0) + 0.1)
+
+lattice::cloud(Counts ~ factor(Gender) + factor(Age), 
+               data = TwoDData, 
+               panel.3d.cloud = panel.3dbars, 
+               col.facet = c( rep('#FFFAF0', 7), rep('#5844ff', 7)),
+               xbase = 0.4, 
+               ybase = 0.4,
+               scales = list(arrows = FALSE, 
+                             col = 1), 
+               zlim = c(0, 850),
+               zlab = list("Number", rot = 95),
+               ylab = list("Age group", rot = -50),
+               xlab = list("Gender", rot = 23),
+               screen = list(z = 30, x = -60), # The view; rotations about axes
+               main = "Number per group",
+               par.settings = list(axis.line = list(col = "transparent"))
+      )
+```
+
+
+The artificial third dimension makes quickly determining
+the heights of the bars hard.
+In contrast,
+a 2-D graph
+(a side-by-side bar graph; Fig. \@ref(fig:Bar3D))
+makes it clear whether each age group has more females or more males.
+
+
+```{r Bar2D, echo=FALSE, fig.cap="A side-by-side bar chart of treatment data", fig.align="center", fig.width=3.75, fig.height=3.5}
+locatn <- barplot(t( AgeD.Gender ), 
+        beside = TRUE,
+        legend = FALSE, 
+        las = 2, 
+        cex.names = 0.8,
+        ylim = c(0, 900),
+        args.legend = list(x = "bottom", 
+	                   bg = "white", 
+			   cex = 0.75), 
+        ylab = "Number",
+        xlab = "Age group",
+        main = "Number per group",
+        col = c("#FFFAF0", "#5844ff"))
+#text(locatn[1, 4], 700, "F")
+#text(locatn[2, 4], 700, "M")
+legend("top", 
+       legend = c("Females", "Males"), 
+       #levels(NHANES$Gender),
+       bty = "n", 
+       xpd = TRUE, 
+       ncol=2, 
+       cex = 0.9, 
+       fill=c( '#FFFAF0', '#5844ff') )
+
+```
+
+### Further comments {GraphsFurtherComments}
+
 Always remember:
 
 ```{block2, type = "rmdimportant"}
@@ -4340,9 +4336,9 @@ Graphs need to be clear and well-labelled with captions.
 
 Ensure that you:
 
-*	**Do not** add artificial third dimensions, or other 'chart junk' [@su2008s].
-*	**Do not** add optical illusions.
-*	**Do not** make any errors.
+* **Do not** add artificial third dimensions, or other 'chart junk' [@su2008s].
+* **Do not** add optical illusions.
+* **Do not** make any errors.
 
 Ensure that you:
 
