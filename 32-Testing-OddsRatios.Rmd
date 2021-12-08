@@ -1,7 +1,7 @@
 
-# Hypothesis tests for comparing odds {#TestsOddsRatio}
+# Tests for comparing odds {#TestsOddsRatio}
 
-```{block2, type="rmdobjectives"}
+::: {.objectivesBox .objectives data-latex="{objectives}"}
 So far,
 you have learnt to
 ask a RQ, 
@@ -23,8 +23,7 @@ You will learn to:
   using chi-square tests using jamovi and SPSS output.
 * determine whether the conditions for using these methods 
   apply in a given situation.
-
-```
+:::
 
 
 
@@ -39,14 +38,11 @@ SixSteps(5, "Tests: Odds ratios")
 ## Introduction: Meals on-campus {#MealsOnCampus}
 
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-startup-stock-photos-7096.jpg" width="200px">
+</div>
 
-```{r, echo=FALSE, out.width= "40%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/pexels-startup-stock-photos-7096.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
+
 
 
 `r if (knitr::is_html_output()) '<!--'`
@@ -77,53 +73,56 @@ into groups according to two qualitative variables:
 Counts <- c(52, 105, 2, 24)
 Live <- rep( c(1, 2), 2)
 Live <- ordered(Live,
-                levels=1:2,
-                labels=c("Lives with parents", "Doesn't live with parents") )
+                levels = 1:2,
+                labels = c("Lives with parents", 
+                           "Doesn't live with parents") )
 Meals <- c( rep(1, 2), 
             rep(2, 2))
 Meals <- ordered(Meals, 
-                 levels=1:2,
-                 labels=c("Most off-campus", "Most on-campus"))
+                 levels = 1:2,
+                 labels = c("Most off-campus", 
+                            "Most on-campus"))
 
-Eating <- data.frame(
-  Counts=Counts,
-  Live=Live,
-  Meals=Meals
-)
+Eating <- data.frame( Counts = Counts,
+                      Live = Live,
+                      Meals = Meals)
 
-Eating.tab <- Eating.tab.Counts <- xtabs(Counts ~ Meals + Live + Meals, data=Eating)
+Eating.tab <- Eating.tab.Counts <- xtabs(Counts ~ Meals + Live + Meals, 
+                                         data = Eating)
 
-Eating.tab <- cbind( Eating.tab, "Total" = rowSums(Eating.tab))
-Eating.tab <- rbind( Eating.tab, "Total" = colSums(Eating.tab))
+Eating.tab <- cbind( Eating.tab, 
+                     "Total" = rowSums(Eating.tab))
+Eating.tab <- rbind( Eating.tab, 
+                     "Total" = colSums(Eating.tab))
 
 
 
 if( knitr::is_latex_output() ) {
   kable(Eating.tab,
-        format="latex",
-      booktabs = TRUE,
-      longtable=FALSE,
-      align="r",
-      caption="Where university students live and eat"
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = "r",
+        caption = "Where university students live and eat"
   ) %>%
-     column_spec(4, bold=TRUE)  %>%
-     row_spec(3, bold=TRUE) %>%
-     row_spec(0, bold=TRUE) %>%
-	kable_styling(font_size=10)
+     column_spec(4, bold = TRUE)  %>%
+     row_spec(3, bold = TRUE) %>%
+     row_spec(0, bold = TRUE) %>%
+	kable_styling(font_size = 10)
  }
 
 
  if( knitr::is_html_output() ) {
   out <- kable(Eating.tab,
-        format="html",
-      booktabs = TRUE,
-      longtable=FALSE,
-      align="r",
-      caption="Where university students live and eat"
+               format = "html",
+               booktabs = TRUE,
+               longtable = FALSE,
+               align ="r",
+               caption = "Where university students live and eat"
   ) 
   if ( knitr::is_html_output(excludes = "epub")) {
-    column_spec(out, 4, bold=TRUE) %>%
-     row_spec(3, bold=TRUE)
+    column_spec(out, 4, bold = TRUE) %>%
+     row_spec(3, bold = TRUE)
   } else {
     out
   }
@@ -151,16 +150,18 @@ Sect. \@ref(OddsRatioIntro)).
 
 
 ```{r echo=FALSE}
-UniS <- matrix( ncol=2,
-				 data=c(52, 2, 105, 24), 
-				 byrow=TRUE)
-rownames(UniS) <- c("Lives\nwith parents", "Doesn't live\nwith parents")
-colnames(UniS) <- c("Most meals off-campus", "Most meals on-campus")
+UniS <- matrix( ncol = 2,
+                data = c(52, 2, 105, 24), 
+                byrow = TRUE)
+rownames(UniS) <- c("Lives\nwith parents", 
+                    "Doesn't live\nwith parents")
+colnames(UniS) <- c("Most meals off-campus", 
+                    "Most meals on-campus")
 ```
 
 
 ```{r EatingNumericalSummaryHT, echo=FALSE}
-EatingNumericalSummary <- array( dim=c(3, 3))
+EatingNumericalSummary <- array( dim = c(3, 3))
 
 EatingNumericalSummary[1, ] <- c(round(UniS[1,1]/UniS[1,2], 4),
                                  round(UniS[1,1]/sum(UniS[1,]) * 100, 1),
@@ -177,36 +178,36 @@ rownames(EatingNumericalSummary) <- c("Living with parents",
     
 if( knitr::is_latex_output() ) {
   kable(EatingNumericalSummary,
-        format="latex",
-        longtable=FALSE,
-    booktabs = TRUE,
-    #align=c(">{\\raggedleft\\arraybackslash}p{38mm}", ">{\\raggedleft\\arraybackslash}p{38mm}", "r"),
-    col.names = c("Odds of having most\n meals off-campus", 
-                  "Percentage having most\n meals off-campus", 
-                  "Sample size"),
-    caption="The odds and percentage of university students eating most meals off-campus"
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        #align=c(">{\\raggedleft\\arraybackslash}p{38mm}", ">{\\raggedleft\\arraybackslash}p{38mm}", "r"),
+        col.names = c("Odds of having most\n meals off-campus",
+                      "Percentage having most\n meals off-campus", 
+                      "Sample size"),
+       caption = "The odds and percentage of university students eating most meals off-campus" 
   ) %>%
-     row_spec(2, hline_after=TRUE) %>%
-     row_spec(0, bold=TRUE) %>%
-	 kable_styling(font_size=10) %>%
-    column_spec(1, width="35mm") %>%
-    column_spec(2, width="33mm") %>%
-    column_spec(3, width="33mm") %>%
-    column_spec(4, width="15mm")
+     row_spec(2, hline_after = TRUE) %>%
+     row_spec(0, bold = TRUE) %>%
+	 kable_styling(font_size = 10) %>%
+    column_spec(1, width = "35mm") %>%
+    column_spec(2, width = "33mm") %>%
+    column_spec(3, width = "33mm") %>%
+    column_spec(4, width = "15mm")
 }
 if( knitr::is_html_output() ) {
   out <- kable(EatingNumericalSummary,
-        format="html",
-        longtable=FALSE,
-    booktabs = TRUE,
-    align=c("r", "r", "r"),
-    col.names = c("Odds of having most\n meals off-campus", 
-                  "Percentage having most\n meals off-campus", 
-                  "Sample size"),
-    caption="The odds and percentage of university students eating most meals off-campus"
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               align = c("r", "r", "r"),
+               col.names = c("Odds of having most\n meals off-campus", 
+                             "Percentage having most\n meals off-campus", 
+                             "Sample size"),
+               caption = "The odds and percentage of university students eating most meals off-campus"
   )
   if ( knitr::is_html_output(excludes = "epub")) {
-    kable_styling(out, full_width=FALSE)
+    kable_styling(out, full_width = FALSE)
   } else {
     out
   }
@@ -223,7 +224,7 @@ for students living with their parents to students *not* living with their paren
 
 
 
-```{block2, type="rmdspss"}
+::: {.softwareBox .software data-latex="{software}"}
 Understanding how software computes the odds ratio is important for understanding the output.
 In jamovi and SPSS,
 the odds ratio can be interpreted in *either* of these two ways:
@@ -267,7 +268,7 @@ the odds ratio can be interpreted in *either* of these two ways:
 In other words,
 the odds and odds ratios are relative to the first row
 or first column.
-```
+:::
 
 
 Unlike the previous decision-making RQs,
@@ -358,10 +359,10 @@ The alternative hypothesis is *always*
 two-tailed for analysing two-way tables of counts.
 
 
-```{block2, type="rmdimportant"}
+::: {.importantBox .important data-latex="{important}"}
 For analysing two-way tables of counts,
 the alternative hypotheses **are always two-tailed**.
-```
+:::
 
 
 The hypotheses can also be written in terms of 
@@ -375,14 +376,14 @@ The hypotheses can also be written in terms of associations:
   there is *an association* between the two variables
 
 
-```{block2, type="rmdimportant"}
+::: {.importantBox .important data-latex="{important}"}
 The RQ and hypothesis only needs to be given
 in one of these ways.
 The RQ and hypotheses should be consistent
 (for example,
 if the RQ is written in terms of odds, 
 the hypotheses should be written in terms of odds).
-```
+:::
 
 
 As usual,
@@ -448,14 +449,14 @@ if the percentage was exactly the same in each group
 if the null hypothesis (the assumption) was true.
 
 
-```{lemma, ORExpectedCounts, name="OR for expected counts"}
+::: {.thinkBox .think data-latex="{think}"}
 Consider the expected counts in 
 Table \@ref(tab:MealsDataTableHTExpected).
 
 Confirm that the *odds* of having most meals off-campus
 is the same for students living with their parents,
 and for students not living with their parents.
-```
+:::
 
 How do those *expected values* compare to what was *observed*?
 For example:
@@ -479,14 +480,15 @@ may be explained by sampling variation
 (that is, the null hypothesis explanation).
 
 
-```{block2, type="rmdimportant"}
+::: {.importantBox .important data-latex="{important}"}
 You do not have to compute the expected values 
 when you answer one of these types of RQs
 (software does it for you).
+
 However,
 seeing how the decision-making process works in this context
 is helpful.
-```
+:::
 
 
 When discussing previous hypothesis tests,
@@ -503,35 +505,37 @@ so will not be presented.
 
 ```{r MealsDataTableHTExpected, echo=FALSE}
 Eating.tab.ExpCounts <- chisq.test(Eating.tab[1:2, 1:2])$expected
-Eating.tab.ExpCounts <- cbind( Eating.tab.ExpCounts, "Total" = round( rowSums(Eating.tab.ExpCounts)) )
-Eating.tab.ExpCounts <- rbind( Eating.tab.ExpCounts, "Total" = round( colSums(Eating.tab.ExpCounts)) )
+Eating.tab.ExpCounts <- cbind( Eating.tab.ExpCounts, 
+                               "Total" = round( rowSums(Eating.tab.ExpCounts)) )
+Eating.tab.ExpCounts <- rbind( Eating.tab.ExpCounts, 
+                               "Total" = round( colSums(Eating.tab.ExpCounts)) )
 
 if( knitr::is_latex_output() ) {
   kable(Eating.tab.ExpCounts,
-        format="latex",
-      booktabs = TRUE,
-      longtable=FALSE,
-      digits=2,
-      align="r",
-      caption="Where university students live and eat: Expected counts"
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        digits = 2,
+        align = "r",
+        caption = "Where university students live and eat: Expected counts"
   ) %>%
-     column_spec(4, bold=TRUE)  %>%
-     row_spec(3, bold=TRUE) %>%
-     row_spec(0, bold=TRUE) %>%
-	kable_styling(font_size=10)
+     column_spec(4, bold = TRUE)  %>%
+     row_spec(3, bold = TRUE) %>%
+     row_spec(0, bold = TRUE) %>%
+	kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
   out <- kable(Eating.tab.ExpCounts,
-        format="html",
-      booktabs = TRUE,
-      longtable=FALSE,
-      digits=2,
-      align="r",
-      caption="Where university students live and eat: Expected counts"
+               format = "html",
+               booktabs = TRUE,
+               longtable = FALSE,
+               digits = 2,
+               align = "r",
+               caption = "Where university students live and eat: Expected counts"
   )
   if ( knitr::is_html_output(excludes = "epub")) {
-     column_spec(out, 4, bold=TRUE)  %>%
-     row_spec(3, bold=TRUE)
+     column_spec(out, 4, bold = TRUE)  %>%
+     row_spec(3, bold = TRUE)
   } else {
     out
   }
@@ -550,6 +554,7 @@ if the null hypothesis about the parameter is true
 (Table \@ref(tab:MealsDataTableHTExpected))
 to what is **observe** in the sample
 (Table \@ref(tab:MealsDataTableHT)).
+
 Previously,
 when the summary statistics were means,
 $t$-tests were used.
@@ -567,16 +572,13 @@ and observed counts, over the entire table.
 
 
 
+:::: {.pronounceBox .pronounce data-latex="{pronounce}"}
 
-:::: {style="display: flex;"}
-
-::: {}
-```{block2, type="rmdpronunciation"}
-The Greek letter $\chi$ is pronounced 'ki', as in **ki**te.
-
+::: {style="display: flex;"}
+The Greek letter $\chi$ is pronounced 'ki', as in **ki**te.  
 The test statistic $\chi^2$ is pronounced as 'chi-squared'.
-```
 :::
+
 
 ::: {}
 ```{r, echo=FALSE}
@@ -597,11 +599,13 @@ From the software
 (jamovi: Fig. \@ref(fig:UniMealsTestOutputHTjamovi);
 SPSS: Fig. \@ref(fig:UniMealsTestOutputHTSPSS)),
 $\chi^2=6.934$.
+
 In a $2\times 2$ table of counts
 (when the 'degrees of freedom', or `df`, is equal to 1,
 as shown in the computer output),
 the *square root* of the $\chi^2$ value is 
-approximately equivalent to a $z$-score. 
+approximately equivalent to a $z$-score.
+
 So here, 
 the equivalent $z$-score is about $\sqrt{6.934} = 2.63$, 
 which is fairly large:
@@ -617,6 +621,7 @@ is like a $z$-score,
 where df is the 'degrees of freedom'
 (related to the size of the table^[For those who want to know: the degrees of freedom in a two-way table is the number of rows of data minus one, times the number of columns of data minus one. So, for a two-way table, the degrees of freedom is $(2-1) \times (2-1) = 1$.]), 
 as shown in the software output.
+
 This allows a $P$-value to be estimated using the 
 68--95--99.7 rule
 from the value of the $\chi^2$ statistic.
@@ -632,12 +637,9 @@ knitr::include_graphics( "SPSS/UniStudents/UniStudents-Chisq-CI.png")
 ```
 
 
-<!-- ```{r UniMealsTestOutputHT, echo=FALSE, fig.show="hold", fig.cap="The SPSS output for computing a CI and conducting a test", fig.align="center", out.width="80%"} -->
-<!-- knitr::include_graphics( "SPSS/UniStudents/UniStudentsRiskOutput.png") -->
-<!-- ``` -->
 
 
-```{block2, type="rmdnote"}
+::: {.tipBox .tip data-latex="{tip}"}
 In a chi-squared test,
 with a given number of 'degrees of freedom' 
 (written `df` in the software output),
@@ -646,9 +648,10 @@ the value of
   \sqrt{\frac{\chi^2}{\text{df}}}
 \]
 is like a $z$-score.
+
 This allows the $P$-value to be estimated using the 
 [68--95--99.7 rule](#def:EmpiricalRule).
-```
+:::
 
 
 
@@ -677,11 +680,11 @@ is very small
 ($0.008$ to three decimals).
 
    
-```{block2, type="rmdimportant"}
+::: {.importantBox .important data-latex="{important}"}
 Recall that, for two-way tables of counts,
 the alternative hypotheses *are always two-tailed*,
 so a two-tailed $P$-value is always reported.
-```
+:::
 
 
 `r if (knitr::is_html_output()){
@@ -732,7 +735,7 @@ and the OR as then comparing these odds between
 and students *not* living with their parents'.
 
 
-```{block2, type="rmdimportant"}
+::: {.importantBox .important data-latex="{important}"}
 For two-way tables,
 RQs are best framed in terms of ORs or odds 
 (but can be framed in terms of proportions or percentages,
@@ -744,7 +747,7 @@ the hypotheses and conclusion should be about the odds ratio;
 if the RQ is about odds, 
 the hypotheses and conclusion should be about the odds;
 and so on.
-```  
+:::
       
 
 
@@ -815,8 +818,7 @@ and so on.
 As usual,
 these results hold
 [under certain conditions](#exm:StatisticalValidityAnalogy).
-The test above is statistically valid
-if 
+The test above is statistically valid if: 
 
 * All *expected* counts are at least five.
 
@@ -859,11 +861,11 @@ the statistical validity condition.
 
 
 
-```{example StatisticalValidityEatingHT, name="Statistical validity"}
+::: {.example #StatisticalValidityEatingHT name="Statistical validity"}
 For the university-student eating data,
 *all* the cells have an expected count of at least five
 so the statistical validity condition is satisfied.
-```
+:::
 
 
 
@@ -889,15 +891,10 @@ PB2.exp <- chisq.test(PB2)$expected
 
 
 
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-andre-lisatchok-2226006.jpg" width="200px">
+</div>
 
-
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "43%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/pexels-andre-lisatchok-2226006.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
 
 
 `r if (knitr::is_html_output()) '<!--'`
@@ -923,29 +920,31 @@ and the numerical summary in Table \@ref(tab:BirdsDataSummary)
 
 
 ```{r BirdsData2,  echo=FALSE}
-PB2T <- cbind( PB2, "Total" = rowSums(PB2))
-PB2T <- rbind( PB2T, "Total" = colSums(PB2T))
+PB2T <- cbind( PB2, 
+               "Total" = rowSums(PB2))
+PB2T <- rbind( PB2T, 
+               "Total" = colSums(PB2T))
 
 if( knitr::is_latex_output() ) {
   kable(PB2T,
-        format="latex",
-      booktabs = TRUE,
-      longtable=FALSE,
-      caption="The pet bird data") %>%
-     column_spec(4, bold=TRUE) %>%
-     row_spec(3, bold=TRUE) %>%
-     row_spec(0, bold=TRUE) %>%
-    kable_styling(font_size=10)
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        caption = "The pet bird data") %>% 
+    column_spec(4, bold = TRUE) %>%
+    row_spec(3, bold = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
   out <- kable(PB2T,
-        format="html",
-      booktabs = TRUE,
-      longtable=FALSE,
-      caption="The pet bird data")
+               format = "html",
+               booktabs = TRUE,
+               longtable = FALSE,
+               caption = "The pet bird data")
   if ( knitr::is_html_output(excludes = "epub")) {
-     column_spec(out, 4, bold=TRUE) %>%
-     row_spec(3, bold=TRUE)
+     column_spec(out, 4, bold = TRUE) %>%
+     row_spec(3, bold = TRUE)
   } else {
     out
   }
@@ -966,7 +965,7 @@ comparing the odds of keeping a pet bird,
 for adults with lung cancer to adults who do not have lung cancer.
 
 
-```{block2, type="extraInfo"}
+::: {.tipBox .tip data-latex="{tip}"}
 The RQ could also be written as:
   
 *  Is the **percentage** of people having a pet bird the same for people *with* lung cancer (cases) and for people *without* lung cancer (controls)?
@@ -974,7 +973,7 @@ The RQ could also be written as:
 *  Is there a **relationship** between having a pet bird and having lung cancer?
   
 Of these, the first is probably the easiest to understand.
-```
+:::
 
 
 From this RQ (which is written in terms of *odds*), 
@@ -983,7 +982,7 @@ the hypotheses could be written as:
 * $H_0$: The *odds* of having a pet bird is *the same* for people *with* lung cancer (cases) and for people *without* lung cancer (controls).
 * $H_1$: The *odds* of having a pet bird is *not the same* for people *with* lung cancer (cases) and for people *without* lung cancer (controls).
 
-```{block2, type="extraInfo"}
+::: {.tipBox .tip data-latex="{tip}"}
 The null hypothesis could also be written as:
   
 *  The **percentage** of people having a pet bird is *the same* for people *with* lung cancer (cases) and for people *without* lung cancer (controls).
@@ -991,7 +990,7 @@ The null hypothesis could also be written as:
 *  There is **no relationship** between having a pet bird and having lung cancer.
   
 Of these, the first is probably the easiest to understand.
-```
+:::
 
 
 
@@ -1004,6 +1003,7 @@ From the data
 (Table \@ref(tab:BirdsData2)),
 overall
 $199\div 668 = 29.79$% of people own a pet bird.
+
 If there really was no difference in the odds (or the percentages) 
 of owning a pet bird between those with and without lung cancer,
 about $29.79$% of the people in *both* lung cancer groups
@@ -1012,7 +1012,7 @@ are **expected** to own a pet bird.
 
 
 ```{r BirdsDataSummary,  echo=FALSE}
-PBsummary <- array( dim=c(3, 3) )
+PBsummary <- array( dim = c(3, 3) )
 
 colnames(PBsummary) <- c( "Odds of keeping pet bird",
                           "Percentage keeping pet bird",
@@ -1022,29 +1022,35 @@ rownames(PBsummary) <- c("With lung cancer:",
                          "Odds ratio:")
   
   
-PBsummary[1, ] <- c("0.6950", "41.0%", "239")
-PBsummary[2, ] <- c("0.3079", "25.5%", "429")
-PBsummary[3, ] <- c("2.26", "", "")
+PBsummary[1, ] <- c("0.6950", 
+                    "41.0%", 
+                    "239")
+PBsummary[2, ] <- c("0.3079", 
+                    "25.5%", 
+                    "429")
+PBsummary[3, ] <- c("2.26", 
+                    "", 
+                    "")
 
 
 if( knitr::is_latex_output() ) {
   kable(PBsummary,
-        format="latex",
-      booktabs = TRUE,
-      longtable=FALSE,
-      #align=c("p{28mm}", "p{28mm}", "c"),
-      caption="The odds and percentage of subjects keeping pet birds") %>%
-    row_spec(0, bold=TRUE) %>%
-    row_spec(2, hline_after=TRUE) %>%
-    kable_styling(font_size=10)
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        #align=c("p{28mm}", "p{28mm}", "c"),
+        caption = "The odds and percentage of subjects keeping pet birds") %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(2, hline_after = TRUE) %>%
+    kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
   kable(PBsummary,
-        format="html",
-      booktabs = TRUE,
-      longtable=FALSE,
-      align=c("l", "r", "c"),
-      caption="The odds and percentage of subjects keeping pet birds")
+        format = "html",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = c("l", "r", "c"),
+        caption = "The odds and percentage of subjects keeping pet birds")
 }
 ```
 
@@ -1054,6 +1060,7 @@ would be expected to have a pet bird,
 and
 about 29.79% of the 429 non-lung-cancer cases (or 127.80)
 would be expected to have a pet bird.
+
 A table of these *expected counts*
 (Table \@ref(tab:PetBirdsExpected)).
 shows that all expected counts are greater than five.
@@ -1151,24 +1158,12 @@ knitr::include_graphics("SPSS/PetBirds/Pets-Chisq-OR.png")
 
 
 
-```{lemma InterpretationPets, name="Interpretation"}
+::: {.thinkBox .think data-latex="{think}"}
 This doesn't imply that owning a pet bird *causes* lung cancer.
 Why not?
-```
 
-
-```{r echo=FALSE}
-Interpretation3 <- "Because the study *observational*. Confounders may explain the relationship (can you think of one?). In addition, may be having lung cancer means that people seek companionship in the form of a pet."
-if( knitr::is_latex_output() ) {
-Interpretation3 <- foldLaTeXText
-}
-```
-
-(ref:Interpretation3r) `r Interpretation3`
-
-```{block2, type="fold"}
-(ref:Interpretation3r)
-```
+(Answer is here^[Because the study *observational*. Confounders may explain the relationship (can you think of one?). In addition, may be having lung cancer means that people seek companionship in the form of a pet.].)
+:::
 
 
 
@@ -1181,14 +1176,9 @@ Interpretation3 <- foldLaTeXText
 
 
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "40%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/pexels-vegan-liftz-2377164.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
-
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-vegan-liftz-2377164.jpg" width="200px">
+</div>
 
 
 
@@ -1203,9 +1193,7 @@ include_graphics("Illustrations/pexels-vegan-liftz-2377164.jpg")
 
 
 
-A study in New Zealand
-[@data:Gammon2012:B12]
-asked:
+A study in New Zealand [@data:Gammon2012:B12] asked:
 
 > Among a certain group of women, 
 > are the odds of being vitamin B12 deficient 
@@ -1216,8 +1204,7 @@ The population was
 'predominantly overweight/obese women of South Asian origin living in Auckland'.
 The RQ could be worded in terms of odds ratios or proportions, too.
 
-To test the claim,
-the hypotheses are:
+To test the claim, the hypotheses are:
  
 * $H_0$: $\text{population odds for vegetarians} = 
   \text{population odds for non-vegetarians}$:
@@ -1250,6 +1237,7 @@ The data are shown in
 Table \@ref(tab:B12Data),
 and the numerical summary in
 Table \@ref(tab:B12DataSummary).
+
 Since the RQ is about odds, 
 a side-by-side bar chart is produced
 (Fig. \@ref(fig:B12Barcharts))
@@ -1257,7 +1245,7 @@ as the graphical summary.
 
 
 ```{r B12Data,  echo=FALSE}
-B12Data <- array( dim=c(3, 3) )
+B12Data <- array( dim = c(3, 3) )
 
 rownames(B12Data) <- c("Vegetarians",
                        "Non-vegetarians",
@@ -1272,29 +1260,29 @@ B12Data[3, ] <- c(16, 108, 124)
   
 if( knitr::is_latex_output() ) {
   kable(B12Data,
-        format="latex",
-      booktabs = TRUE,
-      longtable=FALSE,
-      align=c("r", "r", "r"),
-      caption="The number of vegetarian and non-vegetarian women who are (and are not) B12 deficient") %>%
-    row_spec(0, bold=TRUE) %>%
-    row_spec(3, bold=TRUE) %>%
-    column_spec(4, bold=TRUE) %>%
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = c("r", "r", "r"),
+        caption = "The number of vegetarian and non-vegetarian women who are (and are not) B12 deficient") %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, bold = TRUE) %>%
+    column_spec(4, bold = TRUE) %>%
     row_spec(2, hline_after = TRUE) %>%
-    kable_styling(font_size=10)
+    kable_styling(font_size = 10)
   
 }
 if( knitr::is_html_output() ) {
   out <- kable(B12Data,
-        format="html",
-      booktabs = TRUE,
-      longtable=FALSE,
-      align=c("r","r", "r"),
-      caption="The number of vegetarian and non-vegetarian women who are (and are not) B12 deficient")
+               format = "html",
+               booktabs = TRUE,
+               longtable = FALSE,
+               align = c("r","r", "r"),
+               caption = "The number of vegetarian and non-vegetarian women who are (and are not) B12 deficient")
   if ( knitr::is_html_output(excludes = "epub")) {
-    row_spec(out, 0, bold=TRUE) %>%
-    row_spec(3, bold=TRUE) %>%
-    column_spec(4, bold=TRUE)
+    row_spec(out, 0, bold = TRUE) %>%
+    row_spec(3, bold = TRUE) %>%
+    column_spec(4, bold = TRUE)
   } else {
     out
   }
@@ -1316,48 +1304,59 @@ rownames(B12summary) <- c("Vegetarians:",
                          "Odds ratio:")
   
   
-B12summary[1, ] <- c("0.3077", "23.5%", "34")
-B12summary[2, ] <- c("0.0976", "8.9%", "90")
-B12summary[3, ] <- c("3.15", "", "")
+B12summary[1, ] <- c("0.3077", 
+                     "23.5%", 
+                     "34")
+B12summary[2, ] <- c("0.0976", 
+                     "8.9%", 
+                     "90")
+B12summary[3, ] <- c("3.15", 
+                     "", 
+                     "")
 
 
 if( knitr::is_latex_output() ) {
   kable(B12summary,
-        format="latex",
-      booktabs = TRUE,
-      longtable=FALSE,
-      #align=c("p{20mm}", "p{25mm}", "c"),
-      caption="The odds and percentage of subjects that are B12 deficient") %>%
-    row_spec(0, bold=TRUE) %>%
-    row_spec(2, hline_after=TRUE) %>%
-    kable_styling(font_size=10)
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        #align=c("p{20mm}", "p{25mm}", "c"),
+        caption = "The odds and percentage of subjects that are B12 deficient") %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(2, hline_after = TRUE) %>%
+    kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
   kable(B12summary,
-        format="html",
-      booktabs = TRUE,
-      longtable=FALSE,
-      align=c("l", "r", "c"),
-      caption="The odds and percentage of subjects that are B12 deficient")
+        format = "html",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = c("l", "r", "c"),
+        caption = "The odds and percentage of subjects that are B12 deficient")
 }
 ```
 
 
 ```{r B12Barcharts, echo=FALSE, fig.cap="A side-by-side barchart comparing the number of women B12 deficient", fig.align="center", fig.width=4.5, fig.height=4}
 ### B12 example
-counts <- matrix( c(8, 26, 8, 82), byrow=TRUE, nrow=2)
-rownames(counts) <- c("Veg.", "Non-veg.")
-colnames(counts) <- c("B12 def.", "Not B12 def.")
+counts <- matrix( c(8, 26, 8, 82), 
+                  byrow = TRUE, 
+                  nrow = 2)
+rownames(counts) <- c("Veg.", 
+                      "Non-veg.")
+colnames(counts) <- c("B12 def.", 
+                      "Not B12 def.")
 
 mp <- barplot(t(counts),
-        las=1,
-        ylab="Number of women",
-        col=c("blue", plot.colour),
-        legend.text=TRUE,
-        ylim=c(0, 100),
-        args.legend=list(x="topleft", bty="n"),
-        main="Number of women who are\nand who are not B12 deficient",
-         beside=TRUE)
+             las = 1,
+             ylab = "Number of women",
+             col = c("blue", plot.colour),
+             legend.text = TRUE,
+             ylim = c(0, 100),
+             args.legend = list(x = "topleft", 
+                                bty = "n"),
+             main = "Number of women who are\nand who are not B12 deficient",
+            beside = TRUE)
 box()
 ```
 
@@ -1375,6 +1374,7 @@ approximately equivalent to $z$-score of
 \]
 a small $P$-value is expected
 using the [68--95--99.7 rule](#def:EmpiricalRule).
+
 The software output shows that 
 the two-tailed $P$-value is $0.030$,
 which is indeed 'small'.
@@ -1433,13 +1433,9 @@ so we shouldn't be too concerned
 
 
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "40%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/karl-bewick-FlBuD_jS2Kk-unsplash.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/karl-bewick-FlBuD_jS2Kk-unsplash.jpg" width="200px">
+</div>
 
 
 
@@ -1465,27 +1461,30 @@ so it is more difficult to define a parameter.
 
 
 ```{r DumpingTable, echo=FALSE}
-DumpTab <- array( dim=c(2, 3))
+DumpTab <- array( dim  =c(2, 3))
 
 DumpTab[1, ] <- c(22, 18, 15)
 DumpTab[2, ] <- c(6, 36, 1)
-colnames(DumpTab) <- c("Acceptable", "Not acceptable", "Conditionally acceptable")
-rownames(DumpTab) <- c("Reuseable", "Non-reuseable")
+colnames(DumpTab) <- c("Acceptable", 
+                       "Not acceptable", 
+                       "Conditionally acceptable")
+rownames(DumpTab) <- c("Reuseable", 
+                       "Non-reuseable")
 
 if( knitr::is_latex_output() ) {
   kable(DumpTab,
-        format="latex",
-        longtable=FALSE,
-      caption="The opinion of Brisbane residents about kerbside dumping",
-      booktabs=TRUE) %>%
-    kable_styling(font_size=10)
+        format = "latex",
+        longtable = FALSE,
+        caption = "The opinion of Brisbane residents about kerbside dumping",
+        booktabs = TRUE) %>%
+    kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
   kable(DumpTab,
-        format="html",
-        longtable=FALSE,
-      caption="The opinion of Brisbane residents about kerbside dumping",
-      booktabs=TRUE)
+        format = "html",
+        longtable = FALSE,
+        caption = "The opinion of Brisbane residents about kerbside dumping",
+        booktabs = TRUE)
 }
 ```
 
@@ -1524,41 +1523,50 @@ Most of the numerical summary must be produced manually
 since software only produces odds ratios for $2\times 2$ tables.
 
 ```{r KerbsideHTNumerical,  echo=FALSE}
-DumpSummary <- array( dim=c(3, 4) )
+DumpSummary <- array( dim = c(3, 4) )
 
 colnames(DumpSummary) <- c( "Odds",
                             "Odds ratio",
-                          "Percentage",
-                          "Sample size")
+                           "Percentage",
+                           "Sample size")
 rownames(DumpSummary) <- c("Acceptable:",
-                         "Not acceptable:",
-                         "Conditionally acceptable:")
+                           "Not acceptable:",
+                           "Conditionally acceptable:")
   
   
-DumpSummary[1, ] <- c( 3.667, "(Reference)", "78.6%", 28)
-DumpSummary[2, ] <- c( 0.500, 0.136, "33.3%", 54)
-DumpSummary[3, ] <- c(15.000, 4.09, "93.4%", 16)
+DumpSummary[1, ] <- c( 3.667, 
+                       "(Reference)", 
+                       "78.6%", 
+                       28)
+DumpSummary[2, ] <- c( 0.500, 
+                       0.136, 
+                       "33.3%", 
+                       54)
+DumpSummary[3, ] <- c(15.000, 
+                      4.09, 
+                      "93.4%", 
+                      16)
 
 
 cap.tab <- "Odds and percentage that the opinion listed is held for reuseable rubbish; the odds ratios are computed relative to the `Acceptable' opinion"
 
 if( knitr::is_latex_output() ) {
   kable(DumpSummary,
-        format="latex",
-      booktabs = TRUE,
-      longtable=FALSE,
-      align=c("r", "r", "r", "r"),
-      caption=cap.tab) %>%
-    row_spec(0, bold=TRUE) %>%
-    kable_styling(font_size=10)
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = c("r", "r", "r", "r"),
+        caption = cap.tab) %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
   kable(DumpSummary,
-        format="html",
-      booktabs = TRUE,
-      longtable=FALSE,
-      align=c("r", "r", "r", "r"),
-      caption=cap.tab)
+        format = "html",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = c("r", "r", "r", "r"),
+        caption = cap.tab)
 }
 ```
 
@@ -1578,6 +1586,7 @@ Then the **odds ratios** can be computed:
 Note that Table \@ref(tab:KerbsideHTNumerical)
 has *three* groups to compare,
 so three odds calculations.
+
 However,
 the summary has $3 - 1 = 2$ odds ratios,
 since odds *ratios* compare two odds.
@@ -1694,13 +1703,13 @@ data are **consistent (Step 4)** with the assumption.
 
 
 
-```{block2, type="rmdthinkHTML", echo=FALSE}
+::: {.thinkBox .think data-latex="{think}"}
 A study was conducted on people wearings hats and sunglasses, producing the SPSS output below.
 
-**Click on the $P$-value.**'
+**Click on the $P$-value.**
 
 <iframe src="https://usc.h5p.com/content/1291007874602128549/embed" width="1088" height="637" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></iframe><script src="https://usc.h5p.com/js/h5p-resizer.js" charset="UTF-8"></script>
-```
+:::
 
 
 
@@ -1719,13 +1728,11 @@ htmltools::tags$video(src = "./videos/tablesChiSquare.mp4",
 
 
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "40%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/pexels-rathaphon-nanthapreecha-3846205.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-rathaphon-nanthapreecha-3846205.jpg" width="200px">
+</div>
+
 
 
 A study 
@@ -1740,10 +1747,12 @@ Fig. \@ref(fig:EVjamoviHT).
 
 
 ```{r EV10yearsHT, echo=FALSE}
-EV10 <- array(dim=c(2, 2))
+EV10 <- array(dim = c(2, 2))
 
-colnames(EV10) <- c("Yes", "No")
-rownames(EV10) <- c("No post-grad", "Post-grad study")
+colnames(EV10) <- c("Yes", 
+                    "No")
+rownames(EV10) <- c("No post-grad", 
+                    "Post-grad study")
 
 EV10[1, ] <- c(24, 8)
 EV10[2, ] <- c(51, 29)
@@ -1751,20 +1760,20 @@ EV10[2, ] <- c(51, 29)
 
 if( knitr::is_latex_output() ) {
   kable(EV10,
-        format="latex",
-        longtable=FALSE,
-      booktabs=TRUE,
-      caption="Responses to the question 'Would you purchase an electric vehicle in the next 10 years?' by education") %>%
-	kable_styling(font_size=10) %>%
-	row_spec(0, bold=TRUE)
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        caption = "Responses to the question 'Would you purchase an electric vehicle in the next 10 years?' by education") %>%
+	kable_styling(font_size = 10) %>%
+	row_spec(0, bold = TRUE)
 }
 
 if( knitr::is_html_output() ) {
   kable(EV10,
-        format="html",
-        longtable=FALSE,
-      booktabs=TRUE,
-      caption="Responses to the question 'Would you purchase an electric vehicle in the next 10 years?' by education")
+        format = "html",
+        longtable = FALSE,
+        booktabs = TRUE,
+        caption = "Responses to the question 'Would you purchase an electric vehicle in the next 10 years?' by education")
 }
 ```
 
@@ -1775,9 +1784,9 @@ if( knitr::is_html_output() ) {
     0.253,
     112)  )}`
 1. The approximately-equivalent $z$-score (to two decimal places) is:  
-`r if( knitr::is_html_output() ) {fitb(answer=1.144, tol=0.01, num=TRUE)}`
+`r if( knitr::is_html_output() ) {fitb(answer = 1.144, tol = 0.01, num = TRUE)}`
 1. Using the 68--95--99.5 rule, the $P$-value is:  
-`r if( knitr::is_html_output() ) {mcq(
+`r if( knitr::is_html_output() ) {longmcq(
   c("Smaller than 0.05",
     answer = "Larger than 0.05",
     "About 0.05",
@@ -1789,7 +1798,7 @@ if( knitr::is_html_output() ) {
     "1.71",
     "There is not enough information")  )}`
 1. The alternative hypothesis will be:  
-`r if( knitr::is_html_output() ) {mcq(
+`r if( knitr::is_html_output() ) {longmcq(
   c("One-tailed",
     answer = "Two-tailed",
     "There is not enough information")  )}`
@@ -1800,12 +1809,13 @@ between those with and without post-graduate study.
 `r if( knitr::is_html_output() ) {torf(answer=TRUE)}`
 
 
-
-
 ```{r EVjamoviHT, echo=FALSE, fig.show="hold", fig.cap="jamovi output for the EV study", fig.align="center", out.width="50%"}
 knitr::include_graphics( "jamovi/EVs/EVs-Tests-CI.png")
 ```
 
+
+
+**Progress:** `r webexercises::total_correct()`
 
 
 
@@ -1824,8 +1834,7 @@ Sect. \@ref(TestsOddsRatioAnswer).
 
 
 
-```{exercise TestsOddsSandflies}
-
+::: {.exercise #TestsOddsSandflies}
 Researchers
 [@data:Christensen:sandflies]
 studied the number of sandflies caught in light traps 
@@ -1848,35 +1857,37 @@ Use the jamovi output
 (Fig. \@ref(fig:Sandfliesjamovi)) to evaluate the evidence,
 complete Table \@ref(tab:SandfliesHTNumerical),
 and write a conclusion.
-```
+:::
 
   
 
 ```{r SandfliesHT, echo=FALSE}
-FliesData <- array( dim=c(2, 2))
+FliesData <- array( dim = c(2, 2))
 
 FliesData[1, ] <- c(173, 125)
 FliesData[2, ] <- c(150, 73)
-colnames(FliesData) <- c("3 feet above ground", "35 feet above ground")
-rownames(FliesData) <- c("Males", "Females")
+colnames(FliesData) <- c("3 feet above ground", 
+                         "35 feet above ground")
+rownames(FliesData) <- c("Males", 
+                         "Females")
 
 if( knitr::is_latex_output() ) {
   kable(FliesData,
-        format="latex",
-        longtable=FALSE,
-      caption="The sex of sandflies at two heights",
-      booktabs=TRUE) %>%
-    row_spec(0, bold=TRUE) %>%
-    kable_styling(font_size=10)
+        format = "latex",
+        longtable = FALSE,
+        caption = "The sex of sandflies at two heights",
+        booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
   out <- kable(FliesData,
-        format="html",
-        longtable=FALSE,
-      caption="The sex of sandflies at two heights",
-      booktabs=TRUE)
+               format = "html",
+               longtable = FALSE,
+               caption = "The sex of sandflies at two heights",
+               booktabs = TRUE)
   if ( knitr::is_html_output(excludes = "epub")) {
-      kable_styling(out, full_width=FALSE) 
+      kable_styling(out, full_width = FALSE) 
   } else {
     out
   }
@@ -1888,14 +1899,14 @@ if( knitr::is_html_output() ) {
 
 
 ```{r SandfliesHTNumerical,  echo=FALSE}
-FliesSummary <- array( dim=c(3, 3) )
+FliesSummary <- array( dim = c(3, 3) )
 
 colnames(FliesSummary) <- c( "Odds",
-                          "Percentage",
-                          "Sample size")
+                             "Percentage",
+                             "Sample size")
 rownames(FliesSummary) <- c("3 feet:",
-                         "35 feet:",
-                         "Odds ratio:")
+                            "35 feet:",
+                            "Odds ratio:")
   
   
 FliesSummary[1, ] <- c( "??", "??", 298)
@@ -1907,23 +1918,23 @@ cap.tab <- "Odds and percentages of male sandflies at two heights above ground l
 
 if( knitr::is_latex_output() ) {
   kable(FliesSummary,
-        format="latex",
-      booktabs = TRUE,
-      longtable=FALSE,
-      align=c("r", "r", "r"),
-      caption=cap.tab) %>%
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = c("r", "r", "r"),
+        caption = cap.tab) %>%
     row_spec(0, bold=TRUE) %>%
     kable_styling(font_size=10)
 }
 if( knitr::is_html_output() ) {
   out <- kable(FliesSummary,
-        format="html",
-      booktabs = TRUE,
-      longtable=FALSE,
-      align=c("r", "r", "r"),
-      caption=cap.tab)
+               format = "html",
+               booktabs = TRUE,
+               longtable = FALSE,
+               align = c("r", "r", "r"),
+               caption = cap.tab)
   if ( knitr::is_html_output(excludes = "epub")) {
-    kable_styling(out, full_width=FALSE) 
+    kable_styling(out, full_width = FALSE) 
   } else {
     out
   }
@@ -1934,18 +1945,23 @@ if( knitr::is_html_output() ) {
 
 
 ```{r SandfliesPlot, echo=FALSE, fig.cap="A side-by-side barchart of the sandflies data", fig.align="center", fig.width=5.5, fig.height=3.5}
-counts <- matrix( c(173, 125, 150, 73), byrow=TRUE, nrow=2)
-rownames(counts) <- c("M", "F")
-colnames(counts) <- c("3 ft", "35 ft")
+counts <- matrix( c(173, 125, 150, 73), 
+                  byrow = TRUE, 
+                  nrow = 2)
+rownames(counts) <- c("M", 
+                      "F")
+colnames(counts) <- c("3 ft", 
+                      "35 ft")
 
-mp <- barplot( (counts),
-        las=1,
-        ylim=c(0, 200),
-        col=c("lightblue", "thistle3"),
-        ylab="Number of sandflies",
-        main="Number of female and male\nsandflies at different heights",
-        xlab="Height above ground",
-        beside=TRUE)
+mp <- barplot( counts,
+               las = 1,
+               ylim = c(0, 200),
+               col = c("lightblue", 
+                       "thistle3"),
+               ylab = "Number of sandflies",
+               main = "Number of female and male\nsandflies at different heights",
+               xlab = "Height above ground",
+               beside = TRUE)
 
 text(1.5, 50, "M")
 text(2.5, 50, "F")
@@ -1970,7 +1986,7 @@ knitr::include_graphics( "jamovi/Sandflies/Sandflies-All.png")
 
 
 
-```{exercise TestsOddsRatioScars}
+::: {.exercise #TestsOddsRatioScars}
 A prospective observational study in Western Australia
 compared the heights of scars
 from burns received
@@ -1990,41 +2006,42 @@ were computed.)
 1. Write down the conclusion.
 1. Is the test statistically valid?
 
-```
+:::
 
 
 
 ```{r ScarsDataHT,  echo=FALSE}
-ScarsData <- array( dim=c(2, 2) )
+ScarsData <- array( dim = c(2, 2) )
 
 rownames(ScarsData) <- c("Scar height 0mm (smooth)",
-                       "Scar height more than 0mm, less than 1mm")
+                         "Scar height more than 0mm, less than 1mm")
 colnames(ScarsData) <- c("Women",
-                       "Men")
+                         "Men")
 
 ScarsData[1, ] <- c(99, 216)
 ScarsData[2, ] <- c(62, 115)
 
 if( knitr::is_latex_output() ) {
   kable(ScarsData,
-        format="latex",
-      booktabs = TRUE,
-      longtable=FALSE,
-      align=c("r", "r"),
-      caption="The number of men and women, with scars of different heights") %>%
-    row_spec(0, bold=TRUE) %>%
-  kableExtra::kable_styling(latex_options = "hold_position", font_size=10)
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = c("r", "r"),
+        caption = "The number of men and women, with scars of different heights") %>%
+    row_spec(0, bold = TRUE) %>%
+  kableExtra::kable_styling(latex_options = "hold_position", 
+                            font_size = 10)
 }
 if( knitr::is_html_output() ) {
   out <- kable(ScarsData,
-        format="html",
-      booktabs = TRUE,
-      longtable=FALSE,
-      align=c("r","r"),
-      caption="The number of men and women, with scars of different heights")
+               format = "html",
+               booktabs = TRUE,
+               longtable = FALSE,
+               align = c("r","r"),
+               caption = "The number of men and women, with scars of different heights")
   if ( knitr::is_html_output(excludes = "epub")) {
-    row_spec(out, 0, bold=TRUE) %>%
-    kable_styling(full_width=FALSE) 
+    row_spec(out, 0, bold = TRUE) %>%
+    kable_styling(full_width = FALSE) 
   } else {
     out
   }  
@@ -2042,7 +2059,7 @@ knitr::include_graphics( "jamovi/ScarHeight/ScarHeight-All.png")
 
 
 
-```{exercise OddsRatiosCITurbinesHT}
+::: {.exercise #OddsRatiosCITurbinesHT}
 In a study of turbine failures
 [@MyersBook; @NelsonLifeData],
 73 turbines were run for around 1800 hours,
@@ -2057,8 +2074,7 @@ and nine developed fissures.
 1. Write down, then carefully interpret, the test results.
 1. Is the CI likely to be statistically valid
    (Fig. \@ref(fig:TurbinesOutputExpectedHT))?
-
-```
+:::
 
 
 ```{r TurbinesOutputHT, echo=FALSE, fig.show="hold", fig.cap="jamovi output for the turbine data", fig.align="center", out.width="50%"}
@@ -2080,7 +2096,6 @@ knitr::include_graphics( "jamovi/Turbines/TurbinesExpected-jamovi.png" )
 
 
 ```{r echo=FALSE}
-library(GLMsData)
 data(emeraldaug)
 
 emeraldaug$SOIpos <- factor( emeraldaug$SOI>0 )
@@ -2089,10 +2104,13 @@ emeraldaug$SOIpos <- factor( emeraldaug$SOI>0 )
 #                          levels(emeraldaug$SOIpos)[ c(2,1)] )
                          
 
-SOI.tab <- xtabs( ~ (SOIpos) + (Rain>0), data=emeraldaug)
+SOI.tab <- xtabs( ~ (SOIpos) + (Rain > 0), 
+                  data = emeraldaug)
 
-colnames(SOI.tab) <- c("No rainfall recorded", "Rainfall recorded")
-rownames(SOI.tab) <- c("Non-positive SOI", "Positive SOI")
+colnames(SOI.tab) <- c("No rainfall recorded", 
+                       "Rainfall recorded")
+rownames(SOI.tab) <- c("Non-positive SOI", 
+                       "Positive SOI")
 
 #prop.table(SOI.tab, margin=1 )
 
@@ -2101,8 +2119,7 @@ rownames(SOI.tab) <- c("Non-positive SOI", "Positive SOI")
 #chisq.test(SOI.tab, correct=FALSE)$expected
 ```
 
-```{exercise TestsOddsRatioAugustRainfallInEmerald}
-
+::: {.exercise #TestsOddsRatioAugustRainfallInEmerald}
 The *Southern Oscillation Index* (SOI) 
 is a standardised measure of the air pressure difference 
 between Tahiti and Darwin,
@@ -2111,6 +2128,7 @@ in some parts of the world
 [@climate:stone:1996],
 and especially Queensland
 [@climate:stone:1992; @mypapers:Dunn:bootstrap:2001].
+
 As an example
 [@mypapers:dunnsmyth:glms],
 the rainfall at 
@@ -2130,27 +2148,26 @@ Exercise \@ref(exr:OddsRatiosCIAugustRainfall).)
    with non-positive and negative SOI.
 1. Write down the conclusion.
 1. Is the test statistically valid?
-
-```
+:::
 
 
 ```{r SOItableHT, echo=FALSE}
 if( knitr::is_latex_output() ) {
   kable( t(SOI.tab),
-         format="latex",
-         longtable=FALSE,
-      booktabs = TRUE,
-      caption="The SOI, and whether rainfall was recorded in Augusts between 1889 and 2002 inclusive") %>%
-    kable_styling(font_size=10)
+         format = "latex",
+         longtable = FALSE,
+         booktabs = TRUE,
+         caption = "The SOI, and whether rainfall was recorded in Augusts between 1889 and 2002 inclusive") %>%
+    kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
   out <- kable( t(SOI.tab),
-         format="html",
-         longtable=FALSE,
-      booktabs = TRUE,
-      caption="The SOI, and whether rainfall was recorded in Augusts between 1889 and 2002 inclusive")
+                format = "html",
+                longtable = FALSE,
+                booktabs = TRUE,
+                caption = "The SOI, and whether rainfall was recorded in Augusts between 1889 and 2002 inclusive")
   if ( knitr::is_html_output(excludes = "epub")) {
-     kable_styling(out, full_width=FALSE)
+     kable_styling(out, full_width = FALSE)
   } else {
     out
   }
@@ -2179,15 +2196,16 @@ SG <- structure(list(Gender = structure(c(1L, 1L, 1L, 1L, 1L, 1L, 1L,
 "Hat", "Sunglasses", "Phone", "Count"), row.names = c(NA, -16L
 ), class = "data.frame")
 
-SG.Table.GenderHat <- xtabs(Count~Hat+Gender, data=SG)
+SG.Table.GenderHat <- xtabs(Count ~ Hat + Gender, 
+                            data = SG)
 ```
 
-```{exercise TestOddsRatioSunglasses}
-
+::: {.exercise #TestOddsRatioSunglasses}
 A research study conducted in Brisbane
 [@data:Dexter2019:SunProtection]
 recorded the number of people at the foot of the Goodwill Bridge, Southbank,
 who wore sunglasses and hats.
+
 The data were recorded between 11:30am to 12:30pm.
 Table \@ref(tab:GenderHatTable) 
 records the number of females and males
@@ -2205,29 +2223,29 @@ wearing hats.
    the odds of wearing a hat is the same for females and males.
 1. Write down the conclusion.
 1. Is the test statistically valid?
-
-```
+:::
 
 
 
 
 ```{r GenderHatTable, echo=FALSE}
-rownames(SG.Table.GenderHat) <- c("Not wearing hat", "Wearing hat")
+rownames(SG.Table.GenderHat) <- c("Not wearing hat", 
+                                  "Wearing hat")
 
 if( knitr::is_latex_output() ) {
-  kable( t(SG.Table.GenderHat),
-         format="latex",
-      booktabs = TRUE,
-      longtable=FALSE,
-      caption="The number of people wearing hats, for males and females") %>%
-    kable_styling(font_size=10)
+  kable( t(SG.Table.GenderHat), 
+         format = "latex",
+         booktabs = TRUE,
+         longtable = FALSE,
+         caption = "The number of people wearing hats, for males and females") %>%
+    kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
   kable( t(SG.Table.GenderHat),
-         format="html",
-      booktabs = TRUE,
-      longtable=FALSE,
-      caption="The number of people wearing hats, for males and females")
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         caption = "The number of people wearing hats, for males and females")
 }
 ```
 
@@ -2239,7 +2257,7 @@ knitr::include_graphics( c("SPSS/Sunglasses/SunglassesSPSS.png") )
 
 
 
-```{exercise TestOddsRatioPedestrianPhones}
+::: {.exercise #TestOddsRatioPedestrianPhones}
 A study [@lennon2017pedestrian]
 asked people about their mobile-phone interactions 
 while crossing the road as pedestrians.
@@ -2256,33 +2274,35 @@ Table \@ref(tab:PedestrianPhonesData).
    Would you expect a large or small $P$-value?
 1. The $P$-value is given as $P<0.000$. 
    Write a conclusion.
-
-```
+:::
 
 
 
 ```{r PedestrianPhonesData, echo=FALSE}
-PhoneTable <- array( dim=c(2,3))
+PhoneTable <- array( dim = c(2,3))
 PhoneTable[1, ] <- c(263, 259, 302)
 PhoneTable[2, ] <- c(94, 98, 51)
-colnames(PhoneTable) <- c("Answer call", "Respond to text", "Reply to email")
-rownames(PhoneTable) <- c("Low exposure", "High exposure")
+colnames(PhoneTable) <- c("Answer call", 
+                          "Respond to text", 
+                          "Reply to email")
+rownames(PhoneTable) <- c("Low exposure", 
+                          "High exposure")
 
 if( knitr::is_latex_output() ) {
   kable(PhoneTable,
-        format="latex",
-        longtable=FALSE,
-      caption="Mobile-phone behaviour of pedestrians. (`Low exposure' means the behaviour was displayed less than once per week; `High exposure' means the behaviour was displayed one per week or more.) ",
-      booktabs=TRUE)
+        format = "latex",
+        longtable = FALSE,
+        caption = "Mobile-phone behaviour of pedestrians. (`Low exposure' means the behaviour was displayed less than once per week; `High exposure' means the behaviour was displayed one per week or more.) ",
+      booktabs = TRUE)
 }
 
 
 if( knitr::is_html_output() ) {
   kable(PhoneTable,
-        format="html",
-        longtable=FALSE,
-      caption="Mobile-phone behaviour of pedestrians. ('Low exposure' means the behaviour was displayed less than once per week; 'High exposure' means the behaviour was displayed one per week or more.) ",
-      booktabs=TRUE)
+        format = "html",
+        longtable = FALSE,
+        caption = "Mobile-phone behaviour of pedestrians. ('Low exposure' means the behaviour was displayed less than once per week; 'High exposure' means the behaviour was displayed one per week or more.) ",
+      booktabs = TRUE)
 }
 ```
 

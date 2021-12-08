@@ -1,7 +1,7 @@
 
-# Confidence intervals for two independent means {#CITwoMeans}
+# CIs for two independent means {#CITwoMeans}
 
-```{block2, type="rmdobjectives"}
+::: {.objectivesBox .objectives data-latex="{objectives}"}
 So far,
 you have learnt to
 ask a RQ, 
@@ -20,9 +20,7 @@ You will learn to:
 
 * produce confidence intervals for two independent means.
 * determine whether the conditions for using the confidence intervals apply in a given situation.
-
-```
-
+:::
 
 
 ```{r echo=FALSE, fig.cap="", fig.align="center", fig.width=3, out.width="35%"}
@@ -60,6 +58,7 @@ RT <- structure(list(Reaction = c(636, 623, 615, 672, 601, 600, 542,
 ##  Means of two independent samples {#MeansIndSamples}
 
 
+
 `r if (knitr::is_html_output()) '<!--'`
 \begin{wrapfigure}{R}{.25\textwidth}
   \begin{center}
@@ -81,13 +80,9 @@ The reaction time for each student was measured in a driving simulator.
 
 
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "40%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/pexels-splitshire-2224.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-splitshire-2224.jpg" width="200px">
+</div>
 
 
 
@@ -119,67 +114,70 @@ Consider the RQ:
 
 
 
-```{lemma POCIReaction, name="POCI"}
+::: {.thinkBox .think data-latex="{think}"}
 What are P, O, C and I in this study?
-```
 
-
-
-```{r echo=FALSE}
-POCI3 <- "**P**: Students (this is defined more specifically in the original study). **O**: Mean reaction time. **C**: Between those using and not using a mobile phone while driving. **I**: Yes; the use of a phone (or not) was decided by the researchers."
-if( knitr::is_latex_output() ) {
-POCI3 <- foldLaTeXText
-}
-```
-
-(ref:POCI3r) `r POCI3`
-
-```{block2, type="fold"}
-(ref:POCI3r)
-```
+(Answer is here^[**P**: Students (this is defined more specifically in the original study). **O**: Mean reaction time. **C**: Between those using and not using a mobile phone while driving. **I**: Yes; the use of a phone (or not) was decided by the researchers.].)
+:::
 
 
 
 ```{r PhoneDataTable, echo=FALSE}
-RT.DataTable     <- cbind( "Use phone"=head(RT$Reaction[RT$Group=="Phone"], 10), "Not using phone"=head(RT$Reaction[RT$Group=="Control"], 10))
-RT.DataTableHTML <- cbind( "Use phone"=RT$Reaction[RT$Group=="Phone"], "Not using phone"=RT$Reaction[RT$Group=="Control"])
+RT.DataTable     <- cbind( "Use phone" = head(RT$Reaction[RT$Group == "Phone"], 10), 
+                           "Not using phone" = head(RT$Reaction[RT$Group == "Control"], 10))
+RT.DataTableHTML <- cbind( "Use phone" = RT$Reaction[RT$Group == "Phone"], 
+                           "Not using phone" = RT$Reaction[RT$Group == "Control"])
 
 if( knitr::is_latex_output() ) {
 kable(RT.DataTable,
-      format="latex",
+      format = "latex",
       booktabs = TRUE,
-      longtable=FALSE,
-      col.names = c("Using phone", "Not using phone"),
-      caption="Reaction times (in milliseconds) for students using, and not using, mobile phones. The first ten observations are shown, but 32 students are in each group",
-      align=c("r", "r")) %>%
-      row_spec(0, bold=TRUE) %>%
-      kable_styling(font_size=10)
+      longtable = FALSE,
+      col.names = c("Using phone", 
+                    "Not using phone"),
+      caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones. The first ten observations are shown, but 32 students are in each group",
+      align = c("r", "r")) %>%
+      row_spec(0, bold = TRUE) %>%
+      kable_styling(font_size = 10)
 } else {
    DT::datatable(RT.DataTableHTML,
                  fillContainer=FALSE, # Make more room, so we don't just have ten values
-                 colnames = c("Using phone", "Not using phone"),
-                 filter="none",
+                 colnames = c("Using phone", 
+                              "Not using phone"),
+                 filter = "none",
                  options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
-                 caption="Reaction times (in milliseconds) for students using, and not using, mobile phones.")
+                 caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones.")
 }
 ```
+
 
 <iframe src="https://h5p.org/h5p/embed/488113" width="1090" height="469" frameborder="0" allowfullscreen="allowfullscreen"></iframe><script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js" charset="UTF-8"></script>
 
 
 
 ```{r echo=FALSE}
-Phone.DataSummary <- Phone.DataSummary.rnd <- array(NA, dim=c(3, 4) )
+Phone.DataSummary <- Phone.DataSummary.rnd <- array(NA, 
+                                                    dim = c(3, 4) )
 
-Phone.DataSummary[1:2, 1] <- aggregate( Reaction ~ Group, data=RT, FUN="mean")[, 2]
-Phone.DataSummary[1:2, 2] <- aggregate( Reaction ~ Group, data=RT, FUN="length")[, 2] 
-Phone.DataSummary[1:2, 3] <- aggregate( Reaction ~ Group, data=RT, FUN="sd")[, 2]
-Phone.DataSummary[1:2, 4] <- aggregate( Reaction ~ Group, data=RT, FUN=function(x){ sd(x)/sqrt(length(x))})[, 2] 
+Phone.DataSummary[1:2, 1] <- aggregate( Reaction ~ Group, 
+                                        data = RT, 
+                                        FUN = "mean")[, 2]
+Phone.DataSummary[1:2, 2] <- aggregate( Reaction ~ Group, 
+                                        data = RT, 
+                                        FUN = "length")[, 2] 
+Phone.DataSummary[1:2, 3] <- aggregate( Reaction ~ Group, 
+                                        data = RT, 
+                                        FUN = "sd")[, 2]
+Phone.DataSummary[1:2, 4] <- aggregate( Reaction ~ Group, 
+                                        data = RT, 
+                                        FUN = function(x){ sd(x)/sqrt(length(x))})[, 2] 
 
 Phone.DataSummary[3, 1] <- Phone.DataSummary[1, 1] - Phone.DataSummary[2, 1]
 Phone.DataSummary[3, 4] <- sqrt( Phone.DataSummary[1, 3]^2/Phone.DataSummary[1, 2] +
                                  Phone.DataSummary[2, 3]^2/Phone.DataSummary[2, 2]  )
-rownames(Phone.DataSummary) <- c("Using phone", "Not using phone", "Differences")
+rownames(Phone.DataSummary) <- c("Using phone", 
+                                 "Not using phone", 
+                                 "Differences")
 ```
 
 
@@ -203,11 +201,11 @@ one large outlier is present for the phone-using group.
 #par(mfrow=c(2, 1) )
 
 boxplot(RT$Reaction ~ RT$Group,
-	col=plot.colour,
-	las=1,
-	ylim=c(400, 1000),
-	ylab="Reaction time (in ms)",
-	xlab="Group")
+        col = plot.colour,
+        las = 1,
+        ylim = c(400, 1000),
+        ylab = "Reaction time (in ms)",
+        xlab = "Group")
 
 
 #stripchart(RT$Reaction ~ factor(RT$Group), 
@@ -235,53 +233,60 @@ One way is to use subscripts
 
 ```{r IndSampleNotation, echo=FALSE}
 Diff2Notation <- array(dim=c(5, 2))
-colnames(Diff2Notation) <- c(	"Group A", "Group B")
+colnames(Diff2Notation) <- c(	"Group A", 
+                              "Group B")
 rownames(Diff2Notation) <- c(	"Population means:",
-								"Sample means:",
-								"Standard deviations:",
-								"Standard errors:",
-								"Sample sizes:")
+								              "Sample means:",
+								              "Standard deviations:",
+								              "Standard errors:",
+								              "Sample sizes:")
 
 
 if( knitr::is_latex_output() ) {
-  Diff2Notation[1, ] <- c(	"$\\mu_A$", 	"$\\mu_B$")
-  Diff2Notation[2, ] <- c(	"$\\bar{x}_A$",		"$\\bar{x}_B$")
-  Diff2Notation[3, ] <- c(	"$s_A$", 			"$s_B$")
-  Diff2Notation[4, ] <- c(	"$\\displaystyle\\text{s.e.}(\\bar{x}_A) = \\frac{s_A}{\\sqrt{n_A}}$",
-  							            "$\\displaystyle\\text{s.e.}(\\bar{x}_B) = \\frac{s_B}{\\sqrt{n_B}}$")
-  Diff2Notation[5, ] <- c(	"$n_A$",
-  							            "$n_B$")
+  Diff2Notation[1, ] <- c( "$\\mu_A$", 	
+                           "$\\mu_B$")
+  Diff2Notation[2, ] <- c( "$\\bar{x}_A$",		
+                           "$\\bar{x}_B$")
+  Diff2Notation[3, ] <- c( "$s_A$", 			
+                           "$s_B$")
+  Diff2Notation[4, ] <- c( "$\\displaystyle\\text{s.e.}(\\bar{x}_A) = \\frac{s_A}{\\sqrt{n_A}}$",
+  							           "$\\displaystyle\\text{s.e.}(\\bar{x}_B) = \\frac{s_B}{\\sqrt{n_B}}$")
+  Diff2Notation[5, ] <- c( "$n_A$",
+  							           "$n_B$")
 
   kable( Diff2Notation,
-         format="latex",
+         format = "latex",
          booktabs = TRUE,
-         align=c("c", "c"),
-         longtable=FALSE,
-         escape=FALSE,
-         col.names=colnames(Diff2Notation),
-         caption="Notation used to distinguish between the two independent groups") %>%
-    row_spec(0, bold=TRUE) %>%
-    kable_styling(font_size=10)
+         align = c("c", "c"),
+         longtable = FALSE,
+         escape = FALSE,
+         col.names = colnames(Diff2Notation),
+         caption = "Notation used to distinguish between the two independent groups") %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
 
-  Diff2Notation[1, ] <- c(	"$\\mu_A$", 	"$\\mu_B$")
-  Diff2Notation[2, ] <- c(	"$\\bar{x}_A$",		"$\\bar{x}_B$")
-  Diff2Notation[3, ] <- c(	"$s_A$", 			"$s_B$")
-  Diff2Notation[4, ] <- c(	"$\\displaystyle\\text{s.e.}(\\bar{x}_A) = \\frac{s_A}{\\sqrt{n_A}}$",
-  							            "$\\displaystyle\\text{s.e.}(\\bar{x}_B) = \\frac{s_B}{\\sqrt{n_B}}$")
-  Diff2Notation[5, ] <- c(	"$n_A$",
-  							            "$n_B$")
+  Diff2Notation[1, ] <- c( "$\\mu_A$", 	
+                           "$\\mu_B$")
+  Diff2Notation[2, ] <- c( "$\\bar{x}_A$",		
+                           "$\\bar{x}_B$")
+  Diff2Notation[3, ] <- c( "$s_A$", 			
+                           "$s_B$")
+  Diff2Notation[4, ] <- c( "$\\displaystyle\\text{s.e.}(\\bar{x}_A) = \\frac{s_A}{\\sqrt{n_A}}$",
+  							           "$\\displaystyle\\text{s.e.}(\\bar{x}_B) = \\frac{s_B}{\\sqrt{n_B}}$")
+  Diff2Notation[5, ] <- c( "$n_A$",
+  							           "$n_B$")
 
   out <- kable( Diff2Notation,
-         format="html",
+         format = "html",
          booktabs = TRUE,
-         longtable=FALSE,
-         align=c("c", "c"),
-         col.names=colnames(Diff2Notation),
-         caption="Notation used to distinguish between the two independent groups")
+         longtable = FALSE,
+         align = c("c", "c"),
+         col.names = colnames(Diff2Notation),
+         caption = "Notation used to distinguish between the two independent groups")
   if ( knitr::is_html_output(excludes = "epub")) {
-    row_spec(out, 0, bold=TRUE) 
+    row_spec(out, 0, bold = TRUE) 
   } else {
     out
   }
@@ -362,23 +367,29 @@ Phone.DataSummary.rnd[, 2] <- round( Phone.DataSummary[, 2], 0)
 Phone.DataSummary.rnd[, 3] <- round( Phone.DataSummary[, 3], 2)
 Phone.DataSummary.rnd[, 4] <- round( Phone.DataSummary[, 4], 3)
   
-Phone.DataSummary2 <- array( dim=c(3, 4), data=Phone.DataSummary.rnd)
+Phone.DataSummary2 <- array( dim = c(3, 4), 
+                             data = Phone.DataSummary.rnd)
 Phone.DataSummary2[3, 2] <- ""
 Phone.DataSummary2[3, 3] <- ""
-rownames(Phone.DataSummary2) <- c("Using phone", "Not using phone", "Difference")
+rownames(Phone.DataSummary2) <- c("Using phone", 
+                                  "Not using phone", 
+                                  "Difference")
 
 
 if( knitr::is_latex_output() ) {
   kable(Phone.DataSummary2,
         format="latex",
-      booktabs = TRUE,
-      longtable=FALSE,
-      align="r",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = "r",
 #      digits=c(2, 0, 2, 3),
-      col.names = c("Mean", "Sample size", "Standard deviation", "Standard error"),
-      caption="The mean, median, standard deviation and standard error for the driving data (in ms)") %>%
-		row_spec(0, bold=TRUE) %>%
-		kable_styling(font_size=10)
+        col.names = c("Mean", 
+                      "Sample size", 
+                      "Standard deviation", 
+                      "Standard error"),
+        caption = "The mean, median, standard deviation and standard error for the driving data (in ms)") %>%
+		row_spec(0, bold = TRUE) %>%
+		kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
 kable(Phone.DataSummary2,
@@ -386,7 +397,10 @@ kable(Phone.DataSummary2,
       booktabs = TRUE,
       longtable = FALSE,
       align = "r",
-      col.names = c("Mean", "Sample size", "Std dev", "Standard error"),
+      col.names = c("Mean", 
+                    "Sample size", 
+                    "Std dev", 
+                    "Standard error"),
       digits = 2,
       caption = "The mean, median, standard deviation and standard error for the driving data (in ms)")
 }
@@ -402,17 +416,14 @@ the difference between the means has *sampling variation* and hence a *standard 
 since it varies from sample to sample.
 
 
-```{lemma StdDevStdError, name="Standard deviation and standard error"}
+::: {.thinkBox .think data-latex="{think}"}
 For those using a phone,
 what is the difference between the *standard deviation* and the *standard error*
 in the context of the reaction-time study?
-```
 
-
-```{block2, type="fold"}
-*Standard deviation*:  how much the individual reactions times vary from *person to person*.
-*Standard error*: how much the *difference between sample mean reaction times* varies from *sample to sample*.
-```
+(Answer is here^[*Standard deviation*:  how much the individual reactions times vary from *person to person*.
+*Standard error*: how much the *difference between sample mean reaction times* varies from *sample to sample*.].)
+:::
 
 
 
@@ -444,7 +455,7 @@ the differences then refer to how much greater (on average)
 the reaction times are when students are using phones,
 
 
-```{block2, type="rmdnote"}
+::: {.tipBox .tip data-latex="{tip}"}
 Making clear 
 how the differences are computed is important!
 Therefore, carefully defining the *parameter* is important.
@@ -452,14 +463,14 @@ Therefore, carefully defining the *parameter* is important.
 The differences could be computed as:
   
 * the reaction time for phone users, *minus* the reaction time for non-phone users
-(how much slower the phone users are, on average); or
+  (how much slower the phone users are, on average); or
 * the reaction time for non-phone users, *minus* the reaction time for phone users
-(how much slower the non-phone users are, on average).
+  (how much slower the non-phone users are, on average).
 
 Either is fine,
 provided you are consistent, and clear about how the difference are computed.
 The meaning of any conclusions will be the same.
-```
+:::
 
 
 Each sample of students
@@ -471,7 +482,7 @@ The *difference* between the sample means varies from sample to sample,
 and so has a sampling distribution and *standard error*.
 
 
-```{definition name="Sampling distribution of the difference between two sample means"}
+::: {.definition name="Sampling distribution of the difference between two sample means"}
 The *sampling distribution of the difference between two sample means*
 is described by:
 
@@ -484,17 +495,17 @@ when the [appropriate conditions](#ValidityTwoMeans) are met.
 We don't give a formula for finding the standard error
 $\displaystyle\text{s.e.}( \bar{x}_A - \bar{x}_B)$,
 so the value of this standard error will be *given*.
-```
+:::
 
 
-```{block2, type="rmdimportant"}
+::: {.importantBox .important data-latex="{important}"}
 A formula exists for finding the standard error of the
 difference between two means,
 but is complicated and we won't provide it.
 (It is not necessary for our purposes anyway; software can handle details.)
 We will provide the standard error of the difference between two means,
 or expect you to find it on computer output.
-```
+:::
 
 
 For the reaction-time data,
@@ -514,10 +525,11 @@ We can draw this sampling distribution
 mn <- Phone.DataSummary[3, 1]
 se <- Phone.DataSummary[3, 4] 
 
-plot.norm(mu=mn, sd=se, 
-          xlab.name="Difference between sample means (in milliseconds)", 
-          type="", # Otherwise, a "z" labels the x-axis
-           axis.labels=c( 	
+plot.norm(mu = mn, 
+          sd = se, 
+          xlab.name = "Difference between sample means (in milliseconds)", 
+          type = "", # Otherwise, a "z" labels the x-axis
+           axis.labels = c( 	
                 "-58.83",
 								"-39.22", 
 								"- 19.61", 
@@ -526,15 +538,15 @@ plot.norm(mu=mn, sd=se,
 								"+ 39.22", 
 								"+ 58.83" ),
           srt = -25, # Rotate axis labels so they fit better
-          cex.tickmarks=0.8,
-          shade.lo.x=-10, 
-          shade.hi.x=-10)
+          cex.tickmarks = 0.8,
+          shade.lo.x = -10, 
+          shade.hi.x = -10)
 ```
 
 
-```{lemma UnderstandDiffs,  name="Understanding differences"}
+::: {.thinkBox .think data-latex="{think}"}
 What does a *negative* difference mean?
-```
+:::
 
 
 
@@ -598,7 +610,7 @@ so readers know which group had the higher mean.
 
 
 
-```{example,  TwoSampleCIWhales, name = "Gray whales"}
+::: {.example #TwoSampleCIWhales name="Gray whales"}
 A study of gray whales (*Eschrichtius robustus*) 
 measured (among other things) the length of whales at birth [@agbayani2020growth].
 The data are shown below.
@@ -645,8 +657,7 @@ So we could say:
 > The population mean difference between the length of female and male gray whales at birth
 > has a 95% chance of being between 
 > $0.12$&nbsp;m longer for male whales to $0.25$&nbsp;m longer for female whales.
-
-```
+:::
 
 
 
@@ -663,14 +674,14 @@ as this row of output is more general
 
 
 
-```{block2, type="rmdimportant"}
+::: {.importantBox .important data-latex="{important}"}
 jamovi and SPSS give *two* confidence intervals.
 In this book,
 we will use the *second row* of information
 (the Welch's $t$ row in jamovi;
 the 'Equal variance not assumed' row in SPSS)
 because it is more general and makes fewer assumptions.
-```
+:::
 
 
 
@@ -731,20 +742,20 @@ the CI will be
 
 
 
-```{example StatisticalValidityReaction, name="Statistical validity"}
+::: {.example #StatisticalValidityReaction name="Statistical validity"}
 For the reaction-time data,
 both samples are larger than $25$,
-so the CI will be statisticall valid.
-```
+so the CI will be statistically valid.
+:::
 
 
 
-```{example StatisticalValidityWhale, name="Statistical validity"}
+::: {.example #StatisticalValidityWhale name="Statistical validity"}
 In the whales examples of Example \@ref(exm:TwoSampleCIWhales),
 the two sample sizes are 26 (for females) and 30 (for males).
 
 Since both samples are larger than 25, the CI will be statistically valid.
-```
+:::
 
 
 
@@ -770,71 +781,76 @@ shows the 95% CI for each group
 
 
 ```{r PhoneErrorbar, echo=FALSE, fig.cap="Error bar chart comparing the mean reaction time for students using a mobile phone and not using a mobile phone (control)", fig.align="center", fig.width=5, fig.height=4}
-ci.lo <- Phone.DataSummary[, 1] - 2*Phone.DataSummary[, 4] 
-ci.hi <- Phone.DataSummary[, 1] + 2*Phone.DataSummary[, 4] 
+ci.lo <- Phone.DataSummary[, 1] - 2 * Phone.DataSummary[, 4] 
+ci.hi <- Phone.DataSummary[, 1] + 2 * Phone.DataSummary[, 4] 
 
-plot( range( c( ci.lo, ci.hi) ) ~ c(0.9,2.1), data=RT,
-      type="n",
-      ylim=c(500, 650),
-     pch=19,
-     axes=FALSE,
-     main="Error bars chart:\n reaction times",
-     xlab="Group", 
-     ylab="Reaction times (in ms)",
-     sub = "(Error bars are 95% confidence intervals)",
-     las=1)
-axis(side=1, 
-     at=1:2, 
-     labels=levels(RT$Group), 
-     las=1) 
-axis(side=2, las=1)
+plot( range( c( ci.lo, ci.hi) ) ~ c(0.9,2.1), 
+      data = RT,
+      type = "n",
+      xlim = c(0.5, 2.5),
+      ylim = c(500, 650),
+      pch = 19,
+      axes = FALSE,
+      main = "Error bars chart:\n reaction times",
+      xlab = "Group", 
+      ylab = "Reaction times (in ms)",
+      sub = "(Error bars are 95% confidence intervals)",
+      las = 1)
+axis(side = 1, 
+     at = 1:2, 
+     labels = levels(RT$Group), 
+     las = 1) 
+axis(side = 2, 
+     las = 1)
 box()
 
 mns <- Phone.DataSummary[1:2, 1]
 
-points( mns ~ c(1:2), pch=19)
+points( mns ~ c(1:2), 
+        pch = 19)
 
-arrows(1:2, ci.lo[1:2], 1:2, ci.hi[1:2], 
-  length=0.05, 
-  angle=90, 
-  code=3)
+arrows(1:2, 
+       ci.lo[1:2], 
+       1:2, 
+       ci.hi[1:2], 
+  length = 0.05, 
+  angle = 90, 
+  code = 3)
 ```    
 
 
 
-```{lemma CompareGraphs, name="Comparing graphs"}
+::: {.thinkBox .think data-latex="{think}"}
 What is different about the information displayed in the 
 error bar chart in
 (Fig.&nbsp;\@ref(fig:PhoneErrorbar))
 and the boxplot
 (Fig.&nbsp;\@ref(fig:PhonePlots))?
-```
+:::
 
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "40%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/pexels-lucien-wanda-2827735.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-lucien-wanda-2827735.jpg" width="200px">
+</div>
 
 
-```{example ErrorBarCharts, name="Error bar charts"}
+
+::: {.example #ErrorBarCharts name="Error bar charts"}
 A study [@data:Aloy2011:Litter]
 examined the impact of plastic litter on the shoreline at 
 Talim Bay (Batangas, Philippines)
 during various seasons,
 and the impact on the gastropod *Nassarius pullus*.
+
 The error bar chart
 (Fig.&nbsp;\@ref(fig:MonsoonRubbish))
 shows that summer seems different---in terms 
 of average value (mean) and the amount of variation---than the other seasons.
-```
+:::
 
 
 ```{r MonsoonRubbish, echo=FALSE, fig.cap="Relative abundance of a gastropod from random quadrat surveys conducted over prevalent monsoon types in all study areas in Talim Bay. Error bars represent 95\\% confidence intervals.", fig.align="center", fig.width=5.5, fig.height=4.5}
-par( mar=c(5, 5, 4, 2) + 0.1) #WAS  5.1 4.1 4.1 2.1
+par( mar = c(5, 5, 4, 2) + 0.1) #WAS  5.1 4.1 4.1 2.1
 NE <- c(0.25, 1)
 SW <- c(0.2, 0.6)
 Summer <- c(0.25, 2.2)
@@ -843,19 +859,22 @@ width <- 0.1
 Mdns <- c(0.63, 0.38, 1.21)
 Ns <- c(60, 69, 39)
 
-plot( c(0.5, 3.5), c(0, 2.5), 
-      type="n",
-      xlab="",
-      ylab="Mean N. pullus\nrelative abundance",
-      axes=FALSE,
-      las=1)
+plot( c(0.5, 3.5), 
+      c(0, 2.5), 
+      type = "n",
+      xlab = "",
+      ylab = "Mean N. pullus\nrelative abundance",
+      axes = FALSE,
+      las = 1)
 
-axis(side=1,
-     at=1:3,
-     labels=c("NE\nmonsoon", "SW\nmonsoon", "Summer"))
-axis(side=2,
-     las=1,
-     at=0:2)
+axis(side = 1,
+     at = 1:3,
+     labels = c("NE\nmonsoon", 
+                "SW\nmonsoon", 
+                "Summer"))
+axis(side = 2,
+     las = 1,
+     at = 0:2)
 
 # Vertical lines
 segments(1, NE[1], 
@@ -865,63 +884,61 @@ segments(2, SW[1],
 segments(3, Summer[1], 
          3, Summer[2])
 
-segments( 1-width, NE[1],
-          1+width, NE[1])
-segments( 1-width, NE[2],
-          1+width, NE[2])
+segments( 1 - width, NE[1],
+          1 + width, NE[1])
+segments( 1 - width, NE[2],
+          1 + width, NE[2])
 
-segments( 2-width, SW[1],
-          2+width, SW[1])
-segments( 2-width, SW[2],
-          2+width, SW[2])
+segments( 2 - width, SW[1],
+          2 + width, SW[1])
+segments( 2 - width, SW[2],
+          2 + width, SW[2])
 
-segments( 3-width, Summer[1],
-          3+width, Summer[1])
-segments( 3-width, Summer[2],
-          3+width, Summer[2])
+segments( 3 - width, Summer[1],
+          3 + width, Summer[1])
+segments( 3 - width, Summer[2],
+          3 + width, Summer[2])
 
 # Plot medians
 points( c(1, 2, 3),
-        Mdns, pch=20)
+        Mdns, 
+        pch = 20)
 
 # Sample sizes
-text( 1:3, c(NE[1], SW[1], Summer[1]),
-      labels= paste("n =", Ns),
-      pos=1,
-      cex=0.9
+text( 1:3, 
+      c(NE[1], SW[1], Summer[1]),
+      labels = paste("n =", Ns),
+      pos = 1,
+      cex = 0.9
 )
 
 # Label medians
-text( (1:3)-0.1, Mdns,
-     labels=paste("  ",Mdns),
-     pos=4)
+text( (1:3) - 0.1, Mdns,
+     labels = paste("  ",Mdns),
+     pos = 4)
 
 # Add minor tick marks
-rug( seq(0, 2.5, by=0.2), ticksize=-0.01, side=2)
+rug( seq(0, 2.5, by = 0.2), 
+     ticksize = -0.01, 
+     side = 2)
 
 box()
 ```
 
 
 ```{r echo=FALSE}
-library(GLMsData)
 data(lime)
 ```
 
 
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "40%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/pexels-anderson-guerra-1171521.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-anderson-guerra-1171521.jpg" width="200px">
+</div>
 
 
 
-
-```{example ErrorBarCharts2, name="Error bar charts"}
+::: {.example #ErrorBarCharts2 name="Error bar charts"}
 A study
 [@data:ForestBiomass2017]
 examined  the foliage biomass of small-leaved lime trees
@@ -934,61 +951,41 @@ a boxplot (showing the variation in *individual* trees)
 and an error bar chart (showing the variation in the *sample means*).
 Using a better scale for the error-bar plot is helpful
 (Fig.&nbsp;\@ref(fig:LimeTreesErrorbar)).
-```
+:::
 
 
 ```{r LimeTreesBoxErrorbar, echo=FALSE, fig.cap="Boxplot and error bar chart comparing the mean foliage biomass for small-leaved lime trees from three sources, using the same vertical scale. The solid dots in the boxplot are shown the mean of the distributions", fig.align="center", fig.width=5, fig.height=7}
-par( mfrow=c(2, 1))
+par( mfrow = c(2, 1))
 
 lime.mns <- tapply(lime$Foliage, lime$Origin, "mean")
 
-boxplot(Foliage ~ Origin, data=lime,
-	xlab="Origin",
-	ylab="Foliage biomass (kg)",
-	las=1,
-	ylim=c(0, 14),
-	main="Boxplot: Foliage biomass",
-	col="white")
-points(1:3, lime.mns, 
-	pch=19,
-	col="red")
+boxplot(Foliage ~ Origin, 
+        data = lime,
+	      xlab = "Origin",
+	      ylab = "Foliage biomass (kg)",
+	      las = 1,
+      	ylim = c(0, 14),
+	      main = "Boxplot: Foliage biomass",
+	      col = "white")
+points(1:3, 
+       lime.mns, 
+	     pch = 19,
+	     col = "red")
 
 
 
-mns <- with(lime, tapply(Foliage, Origin, "mean") )
-ses <- with(lime, tapply(Foliage, Origin, function(x){sd(x)/sqrt(length(x))}) )
+mns <- with(lime, 
+            tapply(Foliage, Origin, "mean") )
+ses <- with(lime, 
+            tapply(Foliage, Origin, function(x){sd(x)/sqrt(length(x))}) )
 ci.lo <- mns - ses*2
 ci.hi <- mns + ses*2
 
-plot( range( c( ci.lo, ci.hi) ) ~ c(1,3), data=lime,
-      type="n",
-      ylim=c(0, 14),
-      pch=19,
-      axes=FALSE,
-      main="Error bars chart:\n mean foliage biomass",
-      xlab="Origin", 
-      ylab="Foliage biomass (kg)",
-      sub = "(Error bars are 95% confidence intervals)",
-      las=1)
-axis(side=1, 
-     at=1:3, 
-     labels=levels(lime$Origin), 
-     las=1) 
-axis(side=2, las=1)
-box()
-
-points( mns ~ c(1:3), pch=19)
-
-arrows(1:3, mns-2*ses, 1:3, mns+2*ses, length=0.05, angle=90, code=3)
-```
-
-
-      
-```{r LimeTreesErrorbar, echo=FALSE, fig.cap="Error bar chart comparing the mean foliage biomass for small-leaved lime trees from three sources, but with a more sensible scale on the vertical axis", fig.align="center", fig.width=5, fig.height=4}
 plot( range( c( ci.lo, ci.hi) ) ~ c(1,3), 
       data = lime,
       type = "n",
-      ylim = c(1, 3.5),
+      ylim = c(0, 14),
+      xlim = c(0.5, 3.5),
       pch = 19,
       axes = FALSE,
       main = "Error bars chart:\n mean foliage biomass",
@@ -1000,7 +997,43 @@ axis(side = 1,
      at = 1:3, 
      labels = levels(lime$Origin), 
      las = 1) 
-axis(side=2, las=1)
+axis(side = 2, 
+     las = 1)
+box()
+
+points( mns ~ c(1:3), 
+        pch = 19)
+
+arrows(1:3, 
+       mns - 2 * ses, 
+       1:3, 
+       mns + 2 * ses, 
+       length = 0.05, 
+       angle = 90, 
+       code = 3)
+```
+
+
+      
+```{r LimeTreesErrorbar, echo=FALSE, fig.cap="Error bar chart comparing the mean foliage biomass for small-leaved lime trees from three sources, but with a more sensible scale on the vertical axis", fig.align="center", fig.width=5, fig.height=4}
+plot( range( c( ci.lo, ci.hi) ) ~ c(1, 3), 
+      data = lime,
+      type = "n",
+      ylim = c(1, 3.5),
+      xlim = c(0.5, 3.5),
+      pch = 19,
+      axes = FALSE,
+      main = "Error bars chart:\n mean foliage biomass",
+      xlab = "Origin", 
+      ylab = "Foliage biomass (kg)",
+      sub = "(Error bars are 95% confidence intervals)",
+      las = 1)
+axis(side = 1, 
+     at = 1:3, 
+     labels = levels(lime$Origin), 
+     las = 1) 
+axis(side = 2, 
+     las = 1)
 box()
 
 points( mns ~ c(1:3), 
@@ -1008,20 +1041,20 @@ points( mns ~ c(1:3),
         cex = 1.5,
         col = plot.colour)
 
-arrows(1:3, mns-2*ses, 
-       1:3, mns+2*ses, 
+arrows(1:3, mns - 2 * ses, 
+       1:3, mns + 2 * ses, 
        length = 0.05, 
        angle = 90, 
        code = 3)
 ```    
 
 
-```{example ErrorBarWhales, name="Whales"}
+::: {.example #ErrorBarWhales name="Whales"}
 Using the data about gray whales from Example \@ref(exm:TwoSampleCIWhales),
 the error bar chart in Fig. \@ref(fig:WhalesErrorbar) can be constructed.
 
 The plot seems to suggest little difference between the mean length of female and male gray whales at birth.
-```
+:::
 
       
 ```{r WhalesErrorbar, echo=FALSE, fig.cap="Error bar chart comparing the lengths of female and male gray whales", fig.align="center", fig.width=5, fig.height=4}
@@ -1032,8 +1065,9 @@ ciM <- c(4.60 - 2 * (0.305 / sqrt(30)),
          4.60 + 2 * (0.305 / sqrt(30)) )
 
 
-plot( range( c( ciF, ciM) ) ~ c(1,2), 
+plot( range( c( ciF, ciM) ) ~ c(1, 2), 
       type = "n",
+      xlim = c(0.5, 2.5),
       ylim = c(4.45, 4.85),
       pch = 19,
       axes = FALSE,
@@ -1043,7 +1077,7 @@ plot( range( c( ciF, ciM) ) ~ c(1,2),
       sub = "(Error bars are 95% confidence intervals)",
       las = 1)
 axis(side = 1, 
-     at =1:2, 
+     at = 1:2, 
      labels = c("Females", "Males"), 
      las = 1) 
 axis(side = 2, 
@@ -1071,14 +1105,11 @@ arrows(1:2, c(ciF[1], ciM[1]),
 
 
 
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-marcus-aurelius-4063510.jpg" width="200px">
+</div>
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "30%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/pexels-marcus-aurelius-4063510.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
+
 
 `r if (knitr::is_html_output()) '<!--'`
 \begin{wrapfigure}{R}{.25\textwidth}
@@ -1142,28 +1173,34 @@ BHADPSummary[3, ] <- c(6.76, "", "", 0.80285)
 
 if( knitr::is_latex_output() ) {
   kable(BHADPSummary,
-        format="latex",
-        longtable=FALSE,
-    booktabs = TRUE,
-	 #linesep = c("", "", "", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), # Otherwise addes a space after five lines... 
-    align=c("r", "r", "r", "l"),
-    col.names = c("Sample mean", "Std deviation", "Sample size", "Std error"),
-    caption="The BHADP data summary"
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        #linesep = c("", "", "", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), # Otherwise addes a space after five lines... 
+        align = c("r", "r", "r", "l"),
+        col.names = c("Sample mean", 
+                      "Std deviation", 
+                      "Sample size", 
+                      "Std error"),
+        caption = "The BHADP data summary"
   ) %>%
-    row_spec(0, bold=TRUE) %>%
-    kable_styling(font_size=10)
+  row_spec(0, bold = TRUE) %>%
+  kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
   out <- kable(BHADPSummary,
-        format="html",
-        longtable=FALSE,
-    booktabs = TRUE,
-    align=c("r", "r", "r", "l"),
-    col.names = c("Sample mean", "Std deviation", "Sampe size", "Std error"),
-    caption="The BHADP data summary"
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               align = c("r", "r", "r", "l"),
+               col.names = c("Sample mean", 
+                            "Std deviation", 
+                            "Sampe size", 
+                            "Std error"),
+    caption = "The BHADP data summary"
   )
   if ( knitr::is_html_output(excludes = "epub")) {
-    kable_styling(out, full_width=FALSE)
+    kable_styling(out, full_width = FALSE)
   } else {
     out
   }
@@ -1174,11 +1211,11 @@ if( knitr::is_html_output() ) {
 
 
 
-```{block2, type="rmdnote"}
+::: {.tipBox .tip data-latex="{tip}"}
 The *standard error is given*; 
 you *cannot* easily calculate this from the other information.
 You are not expected to do so.
-```
+:::
 
 
 ```{r BHADPErrorBar, echo=FALSE, fig.cap="Error bar chart showing the mean BHADP score for people with and without a disability, and the 95\\% CIs", fig.align="center", fig.width=5, fig.height=3.5}
@@ -1194,22 +1231,25 @@ se <- sd/sqrt(nn)
 ci.lo <- mns - 2*se
 ci.hi <- mns + 2*se
 
-plot( 1:2, mns,
-      pch=19,
-      ylim=c(24, 34 ),
-      xlim=c(1-bit, 2+bit),
-      las=1,
-      axes=FALSE,
-      xlab="",
-      ylab="BHADP score",
-      main="Access to health promotion\nservices for two groups ",
-      sub="(Error bars are the 95% CI)",
-      type="p")
-axis(side=1, 
-     at=1:2,
+plot( 1:2, 
+      mns,
+      pch = 19,
+      ylim = c(24, 34 ),
+      xlim = c(0.4, 2.6),
+      las = 1,
+      axes = FALSE,
+      xlab = "",
+      ylab = "BHADP score",
+      main = "Access to health promotion\nservices for two groups ",
+      sub = "(Error bars are the 95% CI)",
+      type = "p")
+axis(side = 1, 
+     at = 1:2,
      las=1,
-     labels=c("Disability", "No disability"))
-axis(side=2, las=1)
+     labels = c("Disability", 
+                "No disability"))
+axis(side = 2, 
+     las = 1)
 box()
 
 lines( c(1, 1),
@@ -1218,11 +1258,15 @@ lines( c(2, 2),
        c(ci.lo[2], ci.hi[2]))
 
 
-lines( c(1-bit, 1+bit), c( ci.hi[1], ci.hi[1]) )
-lines( c(1-bit, 1+bit), c( ci.lo[1], ci.lo[1]) )
+lines( c(1 - bit, 1 + bit), 
+       c( ci.hi[1], ci.hi[1]) )
+lines( c(1 - bit, 1 + bit), 
+       c( ci.lo[1], ci.lo[1]) )
 
-lines( c(2-bit, 2+bit), c( ci.hi[2], ci.hi[2]) )
-lines( c(2-bit, 2+bit), c( ci.lo[2], ci.lo[2]) )
+lines( c(2 - bit, 2 + bit), 
+       c( ci.hi[2], ci.hi[2]) )
+lines( c(2 - bit, 2 + bit), 
+       c( ci.lo[2], ci.lo[2]) )
 ```
 
 
@@ -1250,10 +1294,9 @@ there is a 95% chance that our CI straddles the difference in the population mea
 Using the [validity conditions](#ValidityTwoMeans),
 the CI is statistically valid.
 
-```{block2, type="rmdimportant"}
-Remember:
-clearly state which mean is larger.
-```
+::: {.tipBox .tip data-latex="{tip}"}
+Remember: clearly state *which* mean is larger.
+:::
 
 
 
@@ -1320,7 +1363,7 @@ if( knitr::is_latex_output() ) {
          booktabs = TRUE,
          align = c("c", "c", "c"),
          caption = "Lean-forward angles for older and younger women") %>%
-    add_header_above(header = c("Younger women "=2, "Older women "=1), 
+    add_header_above(header = c("Younger women " = 2, "Older women " = 1), 
                      bold = TRUE, 
 		     align = "c") %>%
     kable_styling(font_size = 10)
@@ -1337,7 +1380,7 @@ if( knitr::is_html_output() ) {
  if ( knitr::is_html_output(excludes = "epub")) {
     kable_styling(out, 
                   full_width = FALSE) %>%
-    add_header_above(header = c("Younger women "=2, "Older women "=1), 
+    add_header_above(header = c("Younger women " = 2, "Older women " = 1), 
                      bold = TRUE, 
 		     align = "c")
   } else {
@@ -1353,10 +1396,12 @@ if( knitr::is_html_output() ) {
 
 
 ```{r FacePlantPlots, echo=FALSE, fig.cap="Plot of the face-plant data", fig.align="center", fig.width=5, fig.height=3.5} 
-mns <- with(FF, tapply(LeanAngle, Group, "mean") )
-ses <- with(FF, tapply(LeanAngle, Group, function(x){sd(x)/sqrt(length(x))}) )
-ci.lo <- mns - ses*2
-ci.hi <- mns + ses*2
+mns <- with(FF, 
+            tapply(LeanAngle, Group, "mean") )
+ses <- with(FF, 
+            tapply(LeanAngle, Group, function(x){sd(x)/sqrt(length(x))}) )
+ci.lo <- mns - ses * 2
+ci.hi <- mns + ses * 2
 
 
 # par(mfrow=c(3, 1) )
@@ -1380,41 +1425,58 @@ ci.hi <- mns + ses*2
 # 	ylab="Lean-forward angle (degrees)")
 
 # Error bar
-plot( range( c( ci.lo, ci.hi) ) ~ c(1,3), data=FF,
-      type="n",
-      ylim=c(10, 35),
-      xlim=c(0.5, 2.5),
-      pch=19,
-      axes=FALSE,
-      main="Error bars chart:\n mean lean forward angle",
-      xlab="Age group", 
-      ylab="Lean forward angle (degrees)",
+plot( range( c( ci.lo, ci.hi) ) ~ c(1,3), 
+      data = FF,
+      type = "n",
+      ylim = c(10, 35),
+      xlim = c(0.5, 2.5),
+      pch = 19,
+      axes = FALSE,
+      main = "Error bars chart:\n mean lean forward angle",
+      xlab = "Age group", 
+      ylab = "Lean forward angle (degrees)",
       sub = "(Error bars are 95% confidence intervals)",
-      las=1)
-axis(side=1, 
-     at=1:2, 
-     labels=c("Younger", "Older"), 
-     las=1) 
-axis(side=2, las=1)
+      las = 1)
+axis(side = 1, 
+     at = 1:2, 
+     labels = c("Younger", "Older"), 
+     las = 1) 
+axis(side = 2, 
+     las = 1)
 box()
 
-points( mns ~ c(1:2), pch=19)
+points( mns ~ c(1:2), 
+        pch = 19)
 
-arrows(1:2, mns-2*ses, 1:2, mns+2*ses, length=0.05, angle=90, code=3)
+arrows(1:2, 
+       mns - 2 * ses, 
+       1:2, 
+       mns + 2 * ses, 
+       length = 0.05, 
+       angle = 90, 
+       code = 3)
 ```
+
+
 
 ```{r FacePlantSummary, echo=FALSE}
 FF.Summary <- array( NA, dim=c(3, 4))
 
-FF.Summary[1:2, 1] <- aggregate(FF$LeanAngle ~ FF$Group, FUN="mean")[, 2]
-FF.Summary[1:2, 2] <- aggregate(FF$LeanAngle ~ FF$Group, FUN="sd")[, 2]
-FF.Summary[1:2, 3] <- aggregate(FF$LeanAngle ~ FF$Group, FUN=function(x){sd(x) / sqrt(length(x))})[, 2]
-FF.Summary[1:2, 4] <- aggregate(FF$LeanAngle ~ FF$Group, FUN="length")[, 2]
+FF.Summary[1:2, 1] <- aggregate(FF$LeanAngle ~ FF$Group, 
+                                FUN = "mean")[, 2]
+FF.Summary[1:2, 2] <- aggregate(FF$LeanAngle ~ FF$Group, 
+                                FUN = "sd")[, 2]
+FF.Summary[1:2, 3] <- aggregate(FF$LeanAngle ~ FF$Group, 
+                                FUN = function(x){sd(x) / sqrt(length(x))})[, 2]
+FF.Summary[1:2, 4] <- aggregate(FF$LeanAngle ~ FF$Group, 
+                                FUN = "length")[, 2]
 
 FF.Summary[3, 1] <- FF.Summary[1, 1] - FF.Summary[2, 1] 
 FF.Summary[3, 3] <- sqrt( FF.Summary[1, 2]^2/FF.Summary[1, 4] + 
                           FF.Summary[2, 2]^2/FF.Summary[2, 4] )
-row.names(FF.Summary) <- c("Younger women", "Older women", "Difference")
+row.names(FF.Summary) <- c("Younger women", 
+                           "Older women",
+                           "Difference")
 
 FF.Summary2 <- FF.Summary
 FF.Summary2[, 1] <- round(FF.Summary[, 1], 1) 
@@ -1430,7 +1492,10 @@ if( knitr::is_latex_output() ) {
       format = "latex",
       booktabs = TRUE,
       align = "r",
-      col.names = c("Mean", "Standard deviation", "Standard error", "Sample size"),
+      col.names = c("Mean", 
+                    "Standard deviation", 
+                    "Standard error", 
+                    "Sample size"),
       caption = "Numerical summary for the face-plant data (means, standard deviations and standard errors are in degrees)"
       ) %>%
     row_spec(0, bold = TRUE) %>%
@@ -1441,7 +1506,10 @@ if( knitr::is_html_output() ) {
       format = "html",
       booktabs = TRUE,
       align = "r",
-      col.names = c("Mean", "Standard deviation", "Standard error", "Sample size"),
+      col.names = c("Mean", 
+                    "Standard deviation", 
+                    "Standard error", 
+                    "Sample size"),
       caption = "Numerical summary for the face-plant data (means, standard deviations and standard errors are in degrees)"
       )
 }
@@ -1495,16 +1563,17 @@ so the CIs may not be accurate.
 ## Quick review questions {#Chap24-QuickReview}
 
 1. The appropriate graph for displaying quantitative *data* for two separate groups is a:  
-`r if( knitr::is_html_output() ) { mcq( c( 
-  answer="boxplot",
+`r if( knitr::is_html_output() ) { longmcq( c( 
+  answer = "boxplot",
   "histogram",
   "side-by-side bar chart",
   "error bar chart") )}`
 1. True or false: The difference in population means could be denoted by $\mu_A - \mu_B$.  
-`r if( knitr::is_html_output() ) { torf( answer=TRUE )}`
+`r if( knitr::is_html_output() ) { torf( answer = TRUE )}`
 1. True or false: The standard error of the difference between the sample means is denoted by $\text{s.e.}(\bar{x}_A) - \text{s.e.}(\bar{x}_B)$.  
-`r if( knitr::is_html_output() ) { torf( answer=FALSE )}`
+`r if( knitr::is_html_output() ) { torf( answer = FALSE )}`
 
+**Progress:** `r webexercises::total_correct()`
 
 
 
@@ -1516,8 +1585,7 @@ so the CIs may not be accurate.
 Selected answers are available in
 Sect.&nbsp;\@ref(MeansIndSamplesAnswer).
 
-```{exercise MeansIndSamplesExercisesNHANES}
-
+::: {.exercise #MeansIndSamplesExercisesNHANES}
 Earlier,
 we studied the NHANES study
 (Sect.&nbsp;\@ref(NHANESGraphs)),
@@ -1535,8 +1603,7 @@ to answer these questions.
 1. Determine, and suitably communicate, the 95% CI for the difference
    between the direct HDL cholesterol
    values between current smokers and non-smokers.
-
-```
+:::
 
 ```{r NHANESTwoSample, echo=FALSE, fig.cap="SPSS output for the NHANES data", fig.align="center", out.width='85%'}
 knitr::include_graphics("SPSS/NHANES/NHANES-TOutput.png")
@@ -1544,7 +1611,7 @@ knitr::include_graphics("SPSS/NHANES/NHANES-TOutput.png")
 
 
 
-```{exercise MeansIndSamplesExercisesEchinacea}
+::: {.exercise #MeansIndSamplesExercisesEchinacea}
 A study
 [@data:barrett:echinacea]
 of the effectiveness of echinacea to treat the common cold
@@ -1562,8 +1629,7 @@ Table \@ref(tab:Echinacea).
 1. Compute an approximate 95% CI for the population mean duration of symptoms 
    for those treated with echinacea.
 1. Are the CIs likely to be statistically valid?
-
-```
+:::
 
 
 
@@ -1615,13 +1681,13 @@ if( knitr::is_html_output() ) {
 
 
 
-```{exercise MeansIndSamplesExercisesCarpalTunnelSyndrome}
-
+::: {.exercise #MeansIndSamplesExercisesCarpalTunnelSyndrome}
 Carpal tunnel syndrome (CTS) is pain experienced in the wrists.
 One study
 [@data:Schmid2012:splinting]
 compared two different treatments:
 night splinting, or gliding exercises.
+
 Participants were *randomly allocated* to
 one of the two groups.
 Pain intensity (measured using a quantitative visual analog scale; *larger* values mean *greater* pain)
@@ -1634,8 +1700,7 @@ Table \@ref(tab:CarpalTunnel).
 1. Compute an approximate 95% CI for the *difference* in the mean pain intensity for the treatments.
 1. Compute an approximate 95% CI for the population mean pain intensity for those treated with splinting.
 1. Are the CIs likely to be statistically valid?
-
-```
+:::
 
 
 
@@ -1688,7 +1753,7 @@ if( knitr::is_html_output() ) {
 
 
 
-```{exercise TestTwoMeansDentalCI}
+::: {.exercise #TestTwoMeansDentalCI}
 A study
 [@data:woodward:dental]
 examined the sugar consumption in industrialised 
@@ -1696,7 +1761,7 @@ examined the sugar consumption in industrialised
 Using the jamovi output
 (Fig. \@ref(fig:DentaljamoviCI)),
 write down and interpret the CI.
-```
+:::
 
 
 

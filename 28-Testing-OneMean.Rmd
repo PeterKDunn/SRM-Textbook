@@ -1,7 +1,7 @@
 
-# Hypothesis tests for one mean {#TestOneMean}
+# Tests for one mean {#TestOneMean}
 
-```{block2, type="rmdobjectives"}
+::: {.objectivesBox .objectives data-latex="{objectives}"}
 So far,
 you have learnt to
 ask a RQ, 
@@ -20,9 +20,7 @@ You will learn to:
   
 * conduct hypothesis tests for one sample mean, using a $t$-test.
 * determine whether the conditions for using these methods apply in a given situation.
-
-```
-
+:::
 
 
 ```{r echo=FALSE, fig.cap="", fig.align="center", fig.width=3, out.width="35%"}
@@ -38,7 +36,7 @@ SixSteps(5, "Tests: One mean")
 
 ## Introduction: Body temperatures {#BodyTemperature}
 
-```{r echo=FALSE, cache=TRUE}
+```{r echo=FALSE, cache=FALSE}
 bodyt <- structure(list(BodyTemp = c(96.3, 96.7, 96.9, 97, 97.1, 97.1, 
 97.1, 97.2, 97.3, 97.4, 97.4, 97.4, 97.4, 97.5, 97.5, 97.6, 97.6, 
 97.6, 97.7, 97.8, 97.8, 97.8, 97.8, 97.9, 97.9, 98, 98, 98, 98, 
@@ -110,13 +108,10 @@ bodyt <- structure(list(BodyTemp = c(96.3, 96.7, 96.9, 97, 97.1, 97.1,
 
 
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "30%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/pexels-anna-shvets-3987141.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-anna-shvets-3987141.jpg" width="200px">
+</div>
+
 
 
 `r if (knitr::is_html_output()) '<!--'`
@@ -131,8 +126,7 @@ include_graphics("Illustrations/pexels-anna-shvets-3987141.jpg")
 
 
 The average internal body temperature is commonly believed to be $\mu= 37.0^\circ\text{C}$,
-a guideline based on data over 150 years old
-[@data:Wunderlich:BodyTemp].
+a guideline based on data over 150 years old [@data:Wunderlich:BodyTemp].
 More recently,
 researchers wanted to re-examine this claim
 [@data:mackowiak:bodytemp]
@@ -272,17 +266,19 @@ should be possible.
 
 
 ```{r DataBodyTemp, echo=FALSE}
-subBodyT <- round(cbind(bodyt$BodyTempC[1:10], bodyt$BodyTempC[121:130] ), 2)
+subBodyT <- round(cbind(bodyt$BodyTempC[1:10], 
+                        bodyt$BodyTempC[121:130] ), 2)
 
 if( knitr::is_latex_output() ) {
   kable( subBodyT[1:10, ],
-         format="latex",
+         format = "latex",
          booktabs = TRUE,
-         longtable=FALSE,
-         col.names=c("Gender", "Body temp (deg. C)"),
-         caption="The body temperature data: The first 5 and the last 5 of the 130 observations") %>%
-	kable_styling(font_size=10) %>%
-	row_spec(0, bold=TRUE)
+         longtable = FALSE,
+         col.names = c("Gender", 
+                       "Body temp (deg. C)"),
+         caption = "The body temperature data: The first 5 and the last 5 of the 130 observations") %>%
+	kable_styling(font_size = 10) %>%
+	row_spec(0, bold = TRUE)
 }
 if( knitr::is_html_output() ) {
   DT::datatable( bodyt,
@@ -291,7 +287,7 @@ if( knitr::is_html_output() ) {
                  #selection="multiple", 
                  #escape=FALSE,
                  options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
-                 caption="The body temperature data")
+                 caption = "The body temperature data")
 }
 ```
 
@@ -300,12 +296,12 @@ if( knitr::is_html_output() ) {
    
 ```{r BodyTempHist,  echo=FALSE, fig.cap="The histogram of the body temperature data", fig.align="center", fig.height=3.5, fig.width=4.5}
 hist( bodyt$BodyTempC,
-	xlab="Body temperature, in degrees C",
-	ylab="Frequency",
-	las=1,
-	main="",
-	breaks =seq(35, 39, by=0.5),
-	col=plot.colour)
+	xlab = "Body temperature, in degrees C",
+	ylab = "Frequency",
+	las = 1,
+	main = "",
+	breaks = seq(35, 39, by = 0.5),
+	col = plot.colour)
 box()
 ```
 
@@ -366,40 +362,49 @@ n <- 130
 se <- s/sqrt(n)
 
 plot.norm( mn, s/sqrt(n), 
-   width=7,height=5,
+   width = 7,
+   height = 5,
    xlab.name="Sample means from samples of size 130 (deg C)", 
-   type="",
-   shade.hi.z=0,
-   shade.lo.z=0,
-   srt=0,
-   cex.tickmarks=0.8,
-   round.dec=3)
+   type = "",
+   shade.hi.z = 0,
+   shade.lo.z = 0,
+   srt = 0,
+   cex.tickmarks = 0.8,
+   round.dec = 3)
 #lines(c(0,0), c(0,100), col="gray")
-lines(c(-1,-1), c(0,100), col="gray")
-lines(c(1,1), c(0,100), col="gray")
-lines(c(-2,-2), c(0,100), col="gray")
-lines(c(2,2), c(0,100), col="gray")
-lines(c(-3,-3), c(0,100), col="gray")
-lines(c(3,3), c(0,100), col="gray")
+lines(c(-1, -1), 
+      c(0, 100), 
+      col = "gray")
+lines(c(1, 1), 
+      c(0, 100), 
+      col = "gray")
+lines(c(-2, -2), 
+      c(0, 100), 
+      col = "gray")
+lines(c(2, 2), 
+      c(0, 100), 
+      col = "gray")
+lines(c(-3, -3), 
+      c(0, 100), 
+      col = "gray")
+lines(c(3, 3), 
+      c(0, 100), 
+      col = "gray")
 ```
 
 
 
 
-```{lemma ValuesXbar, name="Values of $\\bar{x}$"}
+::: {.thinkBox .think data-latex="{think}"}
 Given the sampling distribution shown in 
 Fig. \@ref(fig:BodyTempSamplingDist),
 use the [68--95--99.7 rule](#def:EmpiricalRule) to determine
 how often will $\bar{x}$ be **larger** than 37.036 degrees C 
 just because of sampling variation, 
 if $\mu$ really is $37^\circ$C.
-```
 
-
-
-```{block2, type="fold"}
-About 16% of the time.
-```
+(Answer is here^[About 16% of the time.].)
+:::
 
 
 
@@ -434,23 +439,33 @@ n <- 130
 
 se <- s/sqrt(n)
 
-z36 <- (36.8 - mn)/(s/sqrt(n))
+z36 <- (36.8 - mn)/(s / sqrt(n))
 
-plot.norm( mn, s/sqrt(n), 
-   width=7,height=5,
-   xlab.name="Temp (deg C)", 
-   type="",
-   shade.hi.x=36.8,
-   shade.lo.x=0,
-   zlim.hi = 3.5,
-   zlim.lo = -6,
-   show.lo="36.8",
-   srt=-25,
-   round.dec=3)
+plot.norm( mn, 
+           s/sqrt(n), 
+           width = 7,
+           height = 5,
+           xlab.name = "Temp (deg C)", 
+           type = "",
+           shade.hi.x = 36.8,
+           shade.lo.x = 0,
+           zlim.hi = 3.5,
+           zlim.lo = -6,
+           show.lo = "36.8",
+           srt = -25,
+           round.dec = 3)
 
 #abline(v=z36)
-arrows(z36, 0.1, z36, 0, length=0.15, angle=15)
-text(z36, 0.1, "36.8 deg.",pos=4)
+arrows(z36, 
+       0.1, 
+       z36, 
+       0, 
+       length = 0.15, 
+       angle = 15)
+text(z36, 
+     0.1, 
+     "36.8 deg.",
+     pos = 4)
 ```
 
 Relatively speaking,
@@ -491,7 +506,7 @@ so the appropriate standard deviation is the standard deviation
 of the sampling distribution: the *standard error*.
 
 
-```{block2, type="rmdnote"}
+::: {.tipBox .tip data-latex="{tip}"}
 Like $z$-scores, $t$-scores measure the
 number of standard deviations that an observation is from the mean.
 $z$-scores are calculated using the *population* standard deviation,
@@ -507,7 +522,7 @@ it is sufficient
 to think of $z$-scores and $t$-scores as approximately the same.
 Unless sample sizes are small,
 this is a reasonable approximation.
-```
+:::
 
 
 So the calculation is:
@@ -601,63 +616,67 @@ a $P$-value is always between 0 and 1.
 
 
 ```{r BodyTempPvals, echo=FALSE, fig.cap="Computing $P$-values for the body temperature data", fig.align="center", fig.width=5, fig.height=5}
-par( mfrow=c(2, 1))
+par( mfrow = c(2, 1))
 
-plot.norm( mn, s/sqrt(n), 
-   width=7,height=5,
-   xlab.name="Temp (deg C)", 
-   main="The two-tailed P-value\nif the t-score was -1...",
-   type="",
-   shade.hi.z=-1,
-   shade.lo.x=0,
-   zlim.hi = 3.5,
-   zlim.lo = -3.5,
-   round.dec=2)
-plot.norm( mn, s/sqrt(n), new=FALSE,
-   xlab.name="Temp (deg C)", 
-   type="",
-   shade.hi.z=100,
-   shade.lo.z=1,
-   zlim.hi = 3.5,
-   zlim.lo = -3.5,
-   round.dec=2)
+plot.norm( mn, 
+           s/sqrt(n), 
+           width = 7, 
+           height = 5,
+           xlab.name = "Temp (deg C)", 
+           main = "The two-tailed P-value\nif the t-score was -1...",
+           type = "",
+           shade.hi.z = -1,
+           shade.lo.x = 0,
+           zlim.hi = 3.5,
+           zlim.lo = -3.5,
+           round.dec = 2)
+plot.norm( mn, 
+           s/sqrt(n), 
+           new = FALSE,
+           xlab.name = "Temp (deg C)", 
+           type = "",
+           shade.hi.z = 100,
+           shade.lo.z = 1,
+           zlim.hi = 3.5,
+           zlim.lo = -3.5,
+           round.dec = 2)
    
    
    
-plot.norm( mn, s/sqrt(n), 
-   width=7,height=5,
-   xlab.name="Temp (deg C)", 
-   main="The two-tailed P-value\nif the t-score was -2...",
-   type="",
-   shade.hi.z=-2,
-   shade.lo.x=0,
-   zlim.hi = 3.5,
-   zlim.lo = -3.5,
-   show.hi="",
-   round.dec=2)
-plot.norm( mn, s/sqrt(n), 
-   new=FALSE,
-   xlab.name="Temp (deg C)", 
-   type="",
-   shade.hi.z=100,
-   shade.lo.z=2,
-   zlim.hi = 3.5,
-   zlim.lo = -3.5,
-   show.lo="",
-   round.dec=2)
+plot.norm( mn, 
+           s/sqrt(n), 
+           width = 7,
+           height = 5,
+           xlab.name = "Temp (deg C)", 
+           main = "The two-tailed P-value\nif the t-score was -2...",
+           type = "",
+           shade.hi.z = -2,
+           shade.lo.x = 0,
+           zlim.hi = 3.5,
+           zlim.lo = -3.5,
+           show.hi = "",
+           round.dec = 2)
+plot.norm( mn, 
+           s/sqrt(n), 
+           new = FALSE,
+           xlab.name = "Temp (deg C)", 
+           type = "",
+           shade.hi.z = 100,
+           shade.lo.z = 2,
+           zlim.hi = 3.5,
+           zlim.lo = -3.5,
+           show.lo = "",
+           round.dec = 2)
 ```
 
 
 
-```{lemma, Pvals, name="$P$-values"}
-What do you think the $P$-value will be for $t=-5.45$
+::: {.thinkBox .think data-latex="{think}"}
+What do you think the $P$-value will be for $t = -5.45$
 (using Fig. \@ref(fig:BodyTempSamplingDistT))?
-```
 
-```{block2, type="fold"}
-Based on the [68--95--99.7 rule](#def:EmpiricalRule), 
-the $P$-value will be *extremely* small.
-```
+(Answer is here^[Based on the [68--95--99.7 rule](#def:EmpiricalRule), the $P$-value will be *extremely* small.].)
+:::
 
 
 
@@ -679,11 +698,11 @@ or that $P$ is less than 0.001
 (written as $P<0.001$, as jamovi reports).
 
 
-```{block2, type="rmdtip"}
+::: {.tipBox .tip data-latex="{tip}"}
 When software reports a $P$-value of `0.000`,
 it really means (and we should write) $P<0.001$:
 That is, the $P$-value is *smaller* than 0.001.
-```
+:::
 
 
 This $P$-value means that,
@@ -712,13 +731,15 @@ knitr::include_graphics("jamovi/BodyTemp/BodyTempTtest.png")
 knitr::include_graphics("SPSS/BodyTemp/BodyTempTtest.png")
 ```
 
-```{block2, type="rmdspss"}
+
+
+::: {.softwareBox .software data-latex="{software}"}
 SPSS always produces **two-tailed** $P$-values,
 calls then *Significance values*,
 and labels them as `Sig.`
 
 jamovi can produce one- or two-tailed $P$-values.
-```
+:::
 
 
 
@@ -730,11 +751,13 @@ jamovi can produce one- or two-tailed $P$-values.
 $P$-values tells us the likelihood of observing the sample statistic 
 (or something more extreme),
 based on the **assumption** about the population parameter being true.
+
 In this context,
 the $P$-value tells us the likelihood of
 observing the value of $\bar{x}$
 (or something more extreme), just through sampling variation (chance) 
-if $\mu=37$. 
+if $\mu = 37$. 
+
 The $P$-value is a probability,
 albeit a probability of something quite specific,
 so it is a value between 0 and 1.
@@ -766,36 +789,40 @@ Between the values of 1% and 10% is often a 'grey area'.
 
 
 ```{r BigSmallP, echo=FALSE, fig.cap="A picture of large (top) and small (bottom) $P$-value situations", fig.align="center", fig.width=5, fig.height=5}
-par( mfrow=c(2, 1))
+par( mfrow = c(2, 1))
 
-plot.norm(mu=0, sd=1, 
-          xlab.name="t-score", 
-          main="'Big' P-value (two-tailed)",
-          type="", # Otherwise, a "z" labels the x-axis
-          shade.lo.x= -10, 
-          shade.hi.x= -1.2)
-plot.norm(mu=0, sd=1, 
-          new=FALSE,
-          xlab.name="t-score", 
-          main="'Big' P-value (two-tailed)",
-          type="", # Otherwise, a "z" labels the x-axis
-          shade.lo.x= 1.2, 
-          shade.hi.x= 10)
+plot.norm(mu = 0, 
+          sd = 1, 
+          xlab.name = "t-score", 
+          main = "'Big' P-value (two-tailed)",
+          type = "", # Otherwise, a "z" labels the x-axis
+          shade.lo.x = -10, 
+          shade.hi.x = -1.2)
+plot.norm(mu = 0, 
+          sd = 1, 
+          new = FALSE,
+          xlab.name = "t-score", 
+          main = "'Big' P-value (two-tailed)",
+          type = "", # Otherwise, a "z" labels the x-axis
+          shade.lo.x = 1.2, 
+          shade.hi.x = 10)
 
 
-plot.norm(mu=0, sd=1, 
-          xlab.name="t-score", 
-          main="'Small' P-value: two-tailed",
-          type="", # Otherwise, a "z" labels the x-axis
-          shade.lo.x= -10, 
-          shade.hi.x= -2.3)
-plot.norm(mu=0, sd=1, 
-          new=FALSE,
-          xlab.name="t-score", 
-          main="'Small' P-value: two-tailed",
-          type="", # Otherwise, a "z" labels the x-axis
-          shade.lo.x= 2.3, 
-          shade.hi.x= 10)
+plot.norm(mu = 0, 
+          sd = 1, 
+          xlab.name = "t-score", 
+          main = "'Small' P-value: two-tailed",
+          type = "", # Otherwise, a "z" labels the x-axis
+          shade.lo.x = -10, 
+          shade.hi.x = -2.3)
+plot.norm(mu = 0, 
+          sd = 1, 
+          new = FALSE,
+          xlab.name = "t-score", 
+          main = "'Small' P-value: two-tailed",
+          type = "", # Otherwise, a "z" labels the x-axis
+          shade.lo.x = 2.3, 
+          shade.hi.x = 10)
 
 
 
@@ -807,16 +834,19 @@ a $P$-value is 'small' if it is less than 5%
 (less than 0.05),
 and 'big' if greater than 5% 
 (greater than 0.05).
+
 However,
 again this is *arbitrary*,
 and
 binary decision making (*either* big *or* small)
 is unreasonable.
+
 More reasonably,
 $P$-values should be interpreted
 as providing varying strength of evidence in support of
 the alternative hypothesis $H_1$
 (Table \@ref(tab:PvaluesInterpretation)).
+
 These are not definitive,
 but are only guidelines.
 Of course,
@@ -824,7 +854,8 @@ conclusions should be written in the context of the problem.
 
 
 
-```{block2, type="rmdimportant"}
+::: {.importantBox .important data-latex="{important}"}
+
 For *one-tailed tests*,
 the $P$-value is *half* the value of the two-tailed $P$-value.
 
@@ -832,7 +863,8 @@ SPSS always produces two-tailed $P$-values,
 usually calls them 'Significance values', 
 and labels them as `Sig.`, 
 and sometimes explicitly notes that they are two-tailed.
-```
+:::
+
 
 For the body-temperature data then,
 where $P<0.001$,
@@ -865,7 +897,7 @@ So write:
 > The sample provides very strong evidence
 > ($t = -5.45$; two-tailed $P<0.001$)
 > that the population mean body temperature is not $37.0^\circ\text{C}$
-> ($\bar{x} = 36.81$; $n=130$; 95% CI\ from 36.73$^\circ$C to 36.88$^\circ$C).
+> ($\bar{x} = 36.81$; $n = 130$; 95% CI\ from 36.73$^\circ$C to 36.88$^\circ$C).
 
 The components are:
 
@@ -922,13 +954,13 @@ in this context about body temperatures:
 The **conclusion** is that there is very strong evidence 
 that $\mu$ is not $37.0^\circ\text{C}$:
 
-```{block2, type="rmdthinkHTML"}
+
+
 <iframe src="https://h5p.org/h5p/embed/497798" width="1090" height="412" frameborder="0" allowfullscreen="allowfullscreen"></iframe><script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js" charset="UTF-8"></script>
-```
+
  
  
- 
-```{example, OneTSpeeds, name = "Mean driving speeds"}
+::: {.example #OneTSpeeds name="Mean driving speeds"}
 A study of driving speeds in Malaysia [@azwari2021evaluating]
 recorded the speeds of vehicles on various roads.
 
@@ -963,7 +995,7 @@ We write (remembering the alternative hypothesis is one-tailed):
 > is greater than 90 km.h^-1^.
 
 Of course, this statement refers to the *mean* speed; there may be individual vehicles travelling below the speed limit.
-```
+:::
 
  
 
@@ -1012,7 +1044,7 @@ the test will be
 
 
 
-```{example StatisticalValidityTemps, name="Statistical validity"}
+::: {.example #StatisticalValidityTemps name="Statistical validity"}
 The hypothesis test regarding body temperature 
 is statistically valid
 since the sample size is large ($n=130$).
@@ -1020,21 +1052,19 @@ since the sample size is large ($n=130$).
 Since the sample size is large,
 we *do not* require the data to 
 come from a population with a normal distribution.
-```
+:::
 
 
 
-```{block2, type="rmdthinkHTML"}
 <iframe src="https://h5p.org/h5p/embed/488117" width="1090" height="403" frameborder="0" allowfullscreen="allowfullscreen"></iframe><script src="https://h5p.org/sites/all/modules/h5p/library/js/h5p-resizer.js" charset="UTF-8"></script>
-```
 
 
-```{example, OneTSpeedsValid, name = "Driving speeds"}
+::: {.example #OneTSpeedsValid name="Driving speeds"}
 In Example \@ref(exm:OneTSpeeds) about mean driving speeds,
 the sample size was 400, much larger than 25.
 
 The test will be statistically valid.
-```
+:::
 
 
 
@@ -1042,9 +1072,6 @@ The test will be statistically valid.
 
 
 ```{r echo=FALSE}
-# library(foreign)
-# RT <- read.spss("../Data/RecoveryTime.sav", to.data.frame=TRUE)
-
 RTime <- structure(list(RecTime = c(14, 9, 18, 26, 12, 0, 10, 4, 8, 21, 
 28, 24, 24, 2, 3, 14, 9)), .Names = "RecTime", row.names = c(NA, 
 -17L), class = "data.frame", variable.labels = structure(character(0), .Names = character(0)), codepage = 28591L)
@@ -1052,17 +1079,9 @@ RTime <- structure(list(RecTime = c(14, 9, 18, 26, 12, 0, 10, 4, 8, 21,
 ```
 
 
-
-
-
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "30%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/pexels-anna-shvets-3846157.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
-
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-anna-shvets-3846157.jpg" width="200px">
+</div>
 
 
 `r if (knitr::is_html_output()) '<!--'`
@@ -1116,26 +1135,27 @@ $\bar{x} = 13.29$ and $s=8.887$.
 
 
 ```{r RecoveryData, echo=FALSE}
-RTimeArray <- array( c(RTime$RecTime, NA),  dim=c(2, 9))
+RTimeArray <- array( c(RTime$RecTime, NA),  
+                     dim = c(2, 9))
 options(knitr.kable.NA = '')
 
 if( knitr::is_latex_output() ) {
   kable(RTimeArray,
-        format="latex",
-      col.names=rep(" ", 9),
-      booktabs=TRUE,
-      longtable=FALSE,
-      caption="The recovery times (in days) for a new treatment") %>%
-    kable_styling(font_size=10)
+        format = "latex",
+        col.names = rep(" ", 9),
+        booktabs = TRUE,
+        longtable = FALSE,
+        caption = "The recovery times (in days) for a new treatment") %>%
+    kable_styling(font_size = 10)
 }
 
 if( knitr::is_html_output() ) {
   kable(RTimeArray,
-        format="html",
-        col.names=rep(" ", 9),
-        booktabs=TRUE,
-        longtable=FALSE,
-        caption="The recovery times (in days) for a new treatment")
+        format = "html",
+        col.names = rep(" ", 9),
+        booktabs = TRUE,
+        longtable = FALSE,
+        caption = "The recovery times (in days) for a new treatment")
 }
 ```
 
@@ -1144,6 +1164,7 @@ If the null hypothesis is true (and $\mu=15$),
 the values of the sample mean that are likely to occur 
 through sampling variation can be described 
 (**Step 2: Expectation**).
+
 The sample means are likely to vary with 
 an approximate normal distribution
 ([under certain assumptions](#ValiditySampleMeanTest)),
@@ -1194,17 +1215,18 @@ knitr::include_graphics("SPSS/RecoveryTimes/RecoveryTimeOneSampleTOutput.png")
 
 
 
-```{block2, type="rmdimportant"}
+::: {.importantBox .important data-latex="{important}"}
 Recall: 
 For *one-tailed tests*,
 the $P$-value is *half* the value of the two-tailed $P$-value.
-```
+:::
 
 
 This 'large' $P$-value suggests that 
 a sample mean of 13.29 could reasonably have
 been observed just through sampling variation:
 there is no evidence to support the alternative hypothesis $H_1$.
+
 If $\mu$ really was 15,
 then about 22% of the time $\bar{x}$ 
 would be less than 13.29 just through sampling variation alone.
@@ -1217,38 +1239,41 @@ mn.RT <- 15
 sd.RT <- sd(RTime$RecTime)
 n.RT <- length(RTime$RecTime)
 
-plot.norm( mn.RT, sd.RT/sqrt(n.RT), 
-   xlab.name=" ", 
-   type=expression(bar(italic(x))),
-   shade.lo.x=0,
-   shade.hi.x=13.29,
-   zlim.hi = 3,
-   zlim.lo = -3,
-   show.hi="",
-   round.dec=2)
+plot.norm( mn.RT, 
+           sd.RT/sqrt(n.RT), 
+           xlab.name = " ", 
+           type = expression(bar(italic(x))),
+           shade.lo.x = 0,
+           shade.hi.x = 13.29,
+           zlim.hi = 3,
+           zlim.lo = -3,
+           show.hi = "",
+           round.dec = 2)
 
-abline(v=13.29)
-text( -0.79, dnorm( -0.79, 0, 1), 
-   expression( paste(bar(italic(x)) == "13.29")),
-   pos=2)
+abline(v = 13.29)
+text( -0.79, 
+      dnorm( -0.79, 0, 1), 
+      expression( paste(bar(italic(x)) == "13.29")),
+      pos = 2)
 
 
 
-plot.norm( 0, 1, 
-   xlab.name="t-scores", 
-   type=expression(italic(t)),
-   zlim.hi =3,
-   zlim.lo = -3,
-   shade.lo.z = -4,
-   shade.hi.z = -0.79,
-   show.hi="",
-   round.dec=2)
+plot.norm( 0, 
+           1, 
+           xlab.name = "t-scores", 
+           type = expression(italic(t)),
+           zlim.hi =3,
+           zlim.lo = -3,
+           shade.lo.z = -4,
+           shade.hi.z = -0.79,
+           show.hi = "",
+           round.dec = 2)
 
 lines( x = c(-0.79, -0.79),
        y = c(0, dnorm(-0.79)) )
 text( -2, dnorm(-0.79), 
   "sample mean", 
-  pos=3)
+  pos = 3)
 ```
 
 
@@ -1284,13 +1309,14 @@ and some *sample summary information*:
 
 (The CI is found using the ideas in 
 Sect. \@ref(OneMeanCI), or manually.)
+
 Notice the wording:
 The new method *may* be better,
 but no evidence exists of this in the sample.
 The onus is on the new method to demonstrate 
 that it is better than the current method.
 
-The sample size is small ($n=17$),
+The sample size is small ($n = 17$),
 so the test may not be statistically valid
 (but the $P$-value is so large that it 
 probably won't affect the conclusions).
@@ -1336,7 +1362,9 @@ or found using software.
   'The following short video may help explain some of these concepts:'
 }`
 
+<div style="text-align:center;">
 <iframe width="560" height="315" src="https://www.youtube.com/embed/ZbJ58Ag22Mw" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"></iframe>
+<div style="text-align:center;">
 
 
 
@@ -1354,10 +1382,11 @@ The recommended protein intake was 13g.
 
 The researchers wanted to see if the mean intake met the recommendation, or not.
 
+
 1. The standard error of the mean (to four decimal places) is
 `r if( knitr::is_html_output() ) {fitb(num=TRUE, tol=0.0001, answer=0.4243)}`
 1. The null hypothesis is:
-`r if( knitr::is_html_output() ) {mcq( c(
+`r if( knitr::is_html_output() ) {longmcq( c(
   "The sample mean is 13g",
   "The sample mean is 14g",
   answer = "The population mean is 13g",
@@ -1380,6 +1409,7 @@ The researchers wanted to see if the mean intake met the recommendation, or not.
 to support the *alternative* hypothesis
 (that the mean daily protein intake is *not* 13g).
 
+**Progress:** `r webexercises::total_correct()`
 
 
 
@@ -1402,7 +1432,7 @@ WE <- structure(list(Energy = c(5260, 5470, 5640, 6180, 6390, 7515,
 
 
 
-```{exercise TestOneMeanExercisesEnergyIntake}
+::: {.exercise #TestOneMeanExercisesEnergyIntake}
 The recommended daily energy intake for women
 is 7725kJ
 (for a particular cohort, in a particular country;
@@ -1426,7 +1456,7 @@ Table \@ref(tab:WomenEnergyData).
 1. Is the test statistically valid?
 1. Sketch the sampling distribution of $\bar{x}$.
 
-```
+:::
 
 
 
@@ -1434,19 +1464,19 @@ Table \@ref(tab:WomenEnergyData).
 WEArray <- array( c(WE$Energy, NA),  dim=c(2, 6))
 if( knitr::is_latex_output() ) {
   kable(WEArray,
-        format="latex",
-      col.names=rep(" ", 6),
-      booktabs=TRUE,
-      caption="Energy consumptions (in kJ) for women")
+        format = "latex",
+        col.names = rep(" ", 6),
+        booktabs = TRUE,
+        caption = "Energy consumptions (in kJ) for women")
 }
 if( knitr::is_html_output() ) {
   kable(WEArray,
-        format="html",
-        booktabs=TRUE,
-        longtable=FALSE,
-      col.names=rep(" ", 6),
-      booktabs=TRUE,
-      caption="Energy consumptions (in kJ) for women")
+        format = "html",
+        booktabs = TRUE,
+        longtable = FALSE,
+        col.names = rep(" ", 6),
+        booktabs = TRUE,
+        caption = "Energy consumptions (in kJ) for women")
 }
 ```
 
@@ -1467,7 +1497,7 @@ knitr::include_graphics("jamovi/WomenEnergy/WomenEnergyOutput.png")
 
 
 
-```{exercise TestOneMeanExercisesToothbrushing}
+::: {.exercise #TestOneMeanExercisesToothbrushing}
 Most dental associations^[Such as the *American Dental Association*
 and the *Australian Dental Association*.]
 recommend brushing teeth for two minutes. 
@@ -1481,13 +1511,12 @@ with a standard deviation of 23.8 seconds.
 1. Is there evidence that the mean brushing time 
    for schoolchildren from England is two minutes (as recommended)?
 1. Sketch the sampling distribution of the sample mean.
-
-```
-
+:::
 
 
 
-```{exercise TestOneMeanExercisesAutomatedVehicles}
+
+::: {.exercise #TestOneMeanExercisesAutomatedVehicles}
 A study 
 [@data:greenlee2018:vehicles]
 of human-automation interaction with
@@ -1517,10 +1546,10 @@ For the sample,
 the mean score was 84.00 with a standard deviation of 22.05.
 
 Is there evidence of a 'substantial workload' associated with monitoring roadways while 'driving' automated vehicles?
-```
+:::
 
 
-```{exercise TestOneMeanExercisesQualityOfLife}
+::: {.exercise #TestOneMeanExercisesQualityOfLife}
 A study explored the quality of life of patients 
 receiving cavopulmonary shunts
 [@data:Steele2016:Shunt].
@@ -1538,11 +1567,10 @@ was 52.7 (with a standard deviation of 5.6).
 Is there evidence that the patients are different, on average, 
 to the general population
 on the basis of the results?
-```
+:::
 
 
-```{exercise TestOneMeanExercisesCherryRipes}
-
+::: {.exercise #TestOneMeanExercisesCherryRipes}
 A *Cherry Ripe*
 is a popular chocolate bar in Australia.
 In 2017 and 2018, 
@@ -1553,7 +1581,7 @@ Use the SPSS summary of the data
 (Fig. \@ref(fig:CherryRipes20172018))
 to perform a hypothesis test to determine if the mean
 weight really is 12&nbsp;g or not.
-```
+:::
 
 
 ```{r CherryRipes20172018, echo=FALSE, fig.cap="jamovi output for the Cherry Ripes data", fig.align="center", out.width="75%"}
@@ -1564,7 +1592,7 @@ knitr::include_graphics( "SPSS/CherryRipes/CherryRipes20172018.png")
 
 
 
-```{exercise, TestOneMeanBloodLoss}
+::: {.exercise #TestOneMeanBloodLoss}
 A study of paramedics
 [@data:Williams2007:BloodLoss]
 asked participants ($n=199$) 
@@ -1575,9 +1603,9 @@ the mean guess was 846.4&nbsp;ml
 
 Is there evidence that the mean guess really is 1000&nbsp;ml (the true amount)?
 Is this test likely to be valid?
-```
+:::
 
-```{r echo=FALSE, cache=TRUE}
+```{r echo=FALSE, cache=FALSE}
 QC <- structure(list(High1 = c(61.63, 63.11, 66.88, 62.56, 66.12, 65.34, 
 64.83, 64.22, 65.54, 65.33, 67.83, 65.97, 65.01, 64.51, 64.3, 
 64.38, 64.75, 63.12, 62.93, 63.59, 67.04, 64.38, 63.41, 64.19, 
@@ -1597,46 +1625,51 @@ QC <- structure(list(High1 = c(61.63, 63.11, 66.88, 62.56, 66.12, 65.34,
 18.75, 19.57)), .Names = c("High1", "Mid1", "High2", "Mid2"), class = "data.frame", row.names = c(NA, 
 -36L))
 
-DataAndTargets <- array(dim=c(3, 4))
+DataAndTargets <- array(dim = c(3, 4))
 DataAndTargets[1, ]<- c(64.31, 19.24, 64.97, 19.40)
 DataAndTargets[2, ]<- c(1.700, 0.588, 1.029, 0.413)
 DataAndTargets[3, ]<- c(64.22, 19.01, 65.05, 19.45)
 
-rownames(DataAndTargets) <- c("Mean of data", "Std. dev. of data", "Pre-determined target")
-colnames(DataAndTargets) <- c("High level (Inst. 1)", "Mid level (Inst. 1)", "High level (Inst. 2)", "Mid level (Inst. 2)")
+rownames(DataAndTargets) <- c("Mean of data", 
+                              "Std. dev. of data", 
+                              "Pre-determined target")
+colnames(DataAndTargets) <- c("High level (Inst. 1)", 
+                              "Mid level (Inst. 1)", 
+                              "High level (Inst. 2)", 
+                              "Mid level (Inst. 2)")
 ```
 
-```{exercise TestOneMeanQualityControl}
+::: {.exercise #TestOneMeanQualityControl}
 A quality-control study
 [@feng2017application]
 assessed the accuracy of two instruments from a clinical laboratory,
 by comparing the reported luteotropichormone (LH) concentrations
 to known pre-determined values
 (data below).
-q
+
 Perform a series of tests to determine how well the two instruments perform,
 for both high- and mid-level LH concentrations
 (using Table \@ref(tab:QualityControlDataSummary)).
-```
+:::
 
 
 ```{r QualityControlData, echo=FALSE}
 if( knitr::is_latex_output() ) {
   kable( head(QC, 10),
-        format="latex",
-      caption="The quality-control data: LH levels (in mIU/mL) for two instruments (only the first ten observations shown)",
-      col.names=colnames(DataAndTargets),
-      booktabs=TRUE,
-      longtable=FALSE) %>%
-    kable_styling(font_size=10)
+        format = "latex",
+        caption = "The quality-control data: LH levels (in mIU/mL) for two instruments (only the first ten observations shown)",
+        col.names = colnames(DataAndTargets),
+        booktabs = TRUE,
+        longtable = FALSE) %>%
+    kable_styling(font_size = 10)
 }
 
 if( knitr::is_html_output() ) {
   DT::datatable(QC,
-      caption="The quality-control data: LH levels (in mIU/mL) for two instruments",
-      colnames=colnames(DataAndTargets),
-      options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
-      filter="none")
+               caption = "The quality-control data: LH levels (in mIU/mL) for two instruments",
+               colnames = colnames(DataAndTargets),
+               options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
+               filter = "none")
 }
 ```
 
@@ -1646,21 +1679,22 @@ if( knitr::is_html_output() ) {
 ```{r QualityControlDataSummary, echo=FALSE}
 if( knitr::is_latex_output() ) {
   kable(DataAndTargets,
-        format="latex",
-      caption="Summary of the quality-control data for LH levels (in mIU/mL) for two instruments",
-      booktabs=TRUE,
-      #align=c("p{17mm}", "p{17mm}","p{17mm}","p{17mm}"),
-      longtable=FALSE) %>%
-    row_spec(row=0, bold=TRUE) %>%
-    kable_styling(font_size=10)
+        format = "latex",
+        caption = "Summary of the quality-control data for LH levels (in mIU/mL) for two instruments",
+        booktabs = TRUE,
+        #align = c("p{17mm}", "p{17mm}","p{17mm}","p{17mm}"),
+        longtable = FALSE) %>%
+    row_spec(row = 0, 
+             bold = TRUE) %>%
+    kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
   kable(DataAndTargets,
-        format="html",
-      caption="Summary of the quality-control data for LH levels (in mIU/mL) for two instruments",
-      booktabs=TRUE,
-      align="r",
-      longtable=FALSE)
+        format = "html",
+        caption = "Summary of the quality-control data for LH levels (in mIU/mL) for two instruments",
+        booktabs = TRUE,
+        align = "r",
+        longtable = FALSE)
 }
 ```
 

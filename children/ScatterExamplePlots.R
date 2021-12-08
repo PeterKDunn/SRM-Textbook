@@ -9,7 +9,7 @@ x <- runif(50,
            max = 10)
 y <- 2*x + 5 + rnorm( length(x), 0, 1)
 
-par( mar = c(5, 4, 2, 2) + 0.1) # DEFAULT: c(5, 4, 4, 2) + 0.1.
+par( mar = c(5, 4, 4, 4) + 0.1) # DEFAULT: c(5, 4, 4, 2) + 0.1.
 plot( y ~ x,
       pch = 19,
       las = 1,

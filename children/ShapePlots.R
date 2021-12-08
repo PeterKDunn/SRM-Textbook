@@ -5,14 +5,18 @@
 
 set.seed(110110)
 
-xx <- c( rchisq(300, df=2), 7,7,8,7,7,7,8,7,7,6)
+xx <- c( rchisq(300, 
+                df = 2), 7,7,8,7,7,7,8,7,7,6)
 
-hist( scales::rescale(xx, to=c(0, 5)), 
-      xlab="Values", ylab="Number of obs.",
-      main="Skewed right",
-      axes=FALSE,
-      col="wheat", las=1)
-axis(side=2, las=1)
+hist( scales::rescale(xx, to = c(0, 5)), 
+      xlab = "Values", 
+      ylab = "Number of obs.",
+      main = "Skewed right",
+      axes = FALSE,
+      col = "wheat", 
+      las = 1)
+axis(side = 2, 
+     las = 1)
 box()
 dev.print(png, filename="ShapeExampleA.png", width=5, height=6,  units="in", res=100)
 

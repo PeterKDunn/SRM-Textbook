@@ -2,13 +2,7 @@
 # Numerical summaries: quantitative data {#NumericalQuant}
 
 
-```{r echo=FALSE}
-library(NHANES)
-```
-
-
-
-```{block2, type="rmdobjectives"}
+::: {.objectivesBox .objectives data-latex="{objectives}"}
 So far,
 you have learnt to
 ask a RQ, 
@@ -26,9 +20,7 @@ You will learn to:
 
 * numerically summarise quantitative data using the appropriate statistics.
 * describe quantitative data by average, variation, shape and unusual features.
-
-```
-
+:::
 
 
 
@@ -68,13 +60,11 @@ to learn how to summarise *quantitative* data numerically.
 
 
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "30%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/hamburger-2253349_640.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/hamburger-2253349_640.jpg" width="200px">
+</div>
+
+
 
 `r if (knitr::is_html_output()) '<!--'`
 \begin{wrapfigure}{R}{.25\textwidth}
@@ -85,7 +75,7 @@ include_graphics("Illustrations/hamburger-2253349_640.jpg")
 `r if (knitr::is_html_output()) '-->'`
 
 
-```{example DescribeQuantDataHDL, name="Describing quantitative data"}
+::: {.example #DescribeQuantDataHDL name="Describing quantitative data"}
 For the RQ above,
 understanding the response variable
 (direct HDL cholesterol values) is important;
@@ -100,10 +90,10 @@ What does the histogram tell us?
 * **Outliers**: Some large outliers are present (that are hard to see on the histogram).
 
 Describing some of these features more precisely, with *numbers*, can be helpful.
-```
+:::
 
 
-```{r NHANESdirectHDLHisto, echo=FALSE, fig.cap="The histogram of the direct HDL cholesterol from the NHANES study", fig.align="center", fig.width=5, fig.height=3.5}
+```{r NHANESdirectHDLHisto, fig.cap="The histogram of the direct HDL cholesterol from the NHANES study", fig.align="center", fig.width=5, fig.height=3.5}
 hist(NHANES$DirectChol,
 	xlab = "Direct HDL cholesterol (mmol/L)",
 	ylab = "Frequency",
@@ -131,44 +121,42 @@ That is:
 * **P**opulations are numerically described by [**p**arameters](#StatisticsAndParameters).\index{parameter}\index{population}
 
 
-```{definition Parameter, name="Parameter"}
+::: {.definition #Parameter name="Parameter"}
 A [**parameter**](#StatisticsAndParameters) 
 is a number describing some feature of a population.
-```
+:::
 
 
-```{definition Statistic, name="Statistic"}
+::: {.definition #Statistic name="Statistic"}
 A [**statistic**](#StatisticsAndParameters)
 is a number describing some feature of a sample
 (to estimate a population *parameter*).
-```
+:::
 
 
 
-```{block2, type="rmdimportant"}
+::: {.importantBox .important data-latex="{important}"}
 The RQ identifies the population, 
 but in practice a sample is studied.
 *Statistics* are estimates of *parameters*,
 and the value of the *statistic* is not
 the same for every possible *sample*.
-```
+:::
 
 
 
 
 ## Computing the average value {#ComputeAverage}
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "10%", out.extra='style="float:left; padding:10px"'}
-include_graphics("Pics/iconmonstr-weather-109-240.png")
-```
-`r if (knitr::is_latex_output()) '-->'`
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Pics/iconmonstr-weather-109-240.png" width="50px">
+</div>
+
+
 
 The average (or *location*, or *centre*, or *typical value*) for
-*quantitative sample data* can be described 
-in many ways;
+*quantitative sample data* can be described in many ways;
 the two most common ways are:
 
 * [the **sample mean** (or *sample arithmetic mean*)](#Mean), which estimate the population mean; and
@@ -182,44 +170,41 @@ Understanding
 
 
 
-```{block2, type="rmdnote"}
+::: {.tipBox .tip data-latex="{tip}"}
 The word 'average' can refer to either mean or median (or other measures of centre too).
 Use the precise terms 'mean' or 'median', rather than 'average', when necessary!
-```
+:::
 
 
-```{r echo=FALSE}
+```{r}
 MR2 <- read.csv("./Data/138110A.csv") # https://water-monitoring.information.qld.gov.au/
 
 MR2$Month <- as.numeric(substr(MR2$Date.and.time, 4, 5))
 
 Mn <- aggregate(MR2$Mean, 
                 by = list(MR2$Month), 
-		FUN = "mean", 
-		na.rm = TRUE, 
-		simplify = TRUE)
+		            FUN = "mean", 
+		            na.rm = TRUE, 
+		            simplify = TRUE)
 Mdn <- aggregate(MR2$Mean, 
                  by = list(MR2$Month), 
-		 FUN = "median", 
-		 na.rm = TRUE, 
-		 simplify = TRUE)
+		             FUN = "median", 
+		             na.rm = TRUE, 
+		             simplify = TRUE)
 
 MRsummary <- data.frame(Month = month.abb, 
                         "Mean" = Mn[, 2], 
-			"Median" = Mdn[, 2])
+			                  "Median" = Mdn[, 2])
 ```
 
 
 
 
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "25%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/river-4221472_640.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/river-4221472_640.jpg" width="200px">
+</div>
+
 
 `r if (knitr::is_html_output()) '<!--'`
 \begin{wrapfigure}{R}{.25\textwidth}
@@ -231,7 +216,7 @@ include_graphics("Illustrations/river-4221472_640.jpg")
 
 
 
-```{lemma DifferenceAverages, name="Difference between averages"}
+::: {.thinkBox .think data-latex="{think}"}
 Consider the daily river flow volume (called 'streamflow') at the Mary River from 01 October 1959 to 17 January 2019,
 summarised by month in Table \@ref(tab:MRtable)
 (from [Queensland DNRM](http://watermonitoring.dnrm.qld.gov.au/cgi/webhyd.pl?rsdf_org=138110A&cat=rs&lvl=1&0)).
@@ -249,20 +234,22 @@ Why?
 Which is the best 'average' to use?
 To decide,
 both measures of average will need to be studied.
-```
+:::
 
 
-```{r MRtable, echo=FALSE}
+```{r MRtable}
 if( knitr::is_latex_output() ) {
   kable(MRsummary,
         format = "latex",
         longtable = FALSE,
         booktabs = TRUE,
         digits = 1,
-	linesep = c("", "", "", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), # Otherwise adds a space after five lines... 
+	      linesep = c("", "", "", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), # Otherwise adds a space after five lines... 
         align = c("r", "r", "r"),
-    col.names = c("Month", "Mean", "Median"),
-    caption = "The daily streamflow at Mary River (Bellbird Creek), in ML, from 01 October 1959 to 17 January 2019; average for each month"
+        col.names = c("Month", 
+                      "Mean", 
+                      "Median"),
+        caption = "The daily streamflow at Mary River (Bellbird Creek), in ML, from 01 October 1959 to 17 January 2019; average for each month"
   ) %>%
   kable_styling(font_size = 10) %>%
   row_spec(0, bold = TRUE)
@@ -274,7 +261,9 @@ if( knitr::is_html_output() ) {
         booktabs = TRUE,
         digits = 1,
         align = c("r", "r", "r"),
-        col.names = c("Month", "Mean", "Median"),
+        col.names = c("Month", 
+                      "Mean", 
+                      "Median"),
         caption = "The daily streamflow at Mary River (Bellbird Creek), in ML, from 01 October 1959 to 17 January 2019; average for each month"
   )
  if ( knitr::is_html_output(excludes = "epub")) {
@@ -307,24 +296,24 @@ The sample mean is used to *estimate* the population mean.
 
 
 
-:::: {style="display: flex;"}
 
-::: {}
-```{block2, type="rmdpronunciation"}
-The Greek letter $\mu$ is pronounced 'myoo', as in **mu**sic.
 
+
+:::: {.pronounceBox .pronounce data-latex="{pronounce}"}
+
+::: {style="display: flex;"}
+The Greek letter $\mu$ is pronounced 'myoo', as in **mu**sic.  
 The symbol $\bar{x}$ is pronounced 'ex-bar'.
-```
 :::
 
 ::: {}
-```{r, echo=FALSE}
+```{r}
 htmltools::tags$video(src ="./Movies/mu.mp4", 
-                      width="121", 
-                      loop="FALSE", 
-                      controls="controls", 
-                      loop="loop", 
-                      style="padding:5px; border: 2px solid gray;")
+                      width = "121", 
+                      loop = "FALSE", 
+                      controls = "controls", 
+                      loop = "loop", 
+                      style = "padding:5px; border: 2px solid gray;")
 ```
 :::
 
@@ -334,17 +323,11 @@ htmltools::tags$video(src ="./Movies/mu.mp4",
 
 
 
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/jersey-cow-4269262_640.jpg" width="200px">
+</div>
 
 
-
-
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "20%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/jersey-cow-4269262_640.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
 
 `r if (knitr::is_html_output()) '<!--'`
 \begin{wrapfigure}{R}{.25\textwidth}
@@ -355,7 +338,7 @@ include_graphics("Illustrations/jersey-cow-4269262_640.jpg")
 `r if (knitr::is_html_output()) '-->'`
 
 
-```{example JerseyCows, name="A small data set to work with"}
+::: {.example #JerseyCows name="A small data set to work with"}
 To demonstrate ideas, 
 consider a small data set
 for answering this descriptive RQ:
@@ -374,10 +357,10 @@ The unknown population mean is estimated
 using the sample mean ($\bar{x}$).
 Measurements were taken from milk from 10 cows, in percentages
 (Table \@ref(tab:BFatData)).
-```
+:::
 
 
-```{r BFatData, echo=FALSE}
+```{r BFatData}
 BFat <- c(4.8, 6.5, 5.2, 4.5, 5.2, 5.7, 5.4, 4.8, 5.2, 5.2)
 BFat <- array( BFat, 
                dim = c(2, 5))
@@ -435,7 +418,7 @@ for identifying the 'average' of the data.
 
 
 
-```{r echo=FALSE, animation.hook="gifski", cache=TRUE, interval=0.25, progress=TRUE, dev=if (is_latex_output()){"pdf"}else{"png"}}
+```{r animation.hook="gifski", interval=0.25, progress=TRUE, dev=if (is_latex_output()){"pdf"}else{"png"}}
 BalanceMean <- function(locate.fulcrum, numberImages, iteration){
   # Parameters
   
@@ -638,7 +621,7 @@ if (knitr::is_html_output()){
 
 
 
-```{r BalanceMeansFig, echo=FALSE, fig.align="center", fig.width=4.5, fig.cap="The mean is the balance point of the data" }
+```{r BalanceMeansFig, fig.align="center", fig.width=4.5, fig.cap="The mean is the balance point of the data" }
 if (knitr::is_latex_output()){
   FL <- c(   seq(5, 5.5, by = 0.025), 
              seq(5.5, 5.2, by = -0.025),
@@ -651,7 +634,7 @@ if (knitr::is_latex_output()){
 ```
 
 
-```{r echo=FALSE, animation.hook="gifski", cache=TRUE, interval=0.20, dev=if (is_latex_output()){"pdf"}else{"png"}}
+```{r animation.hook="gifski", cache=FALSE, interval=0.20, dev=if (is_latex_output()){"pdf"}else{"png"}}
 FindMean <- function(locate.x = 5.25, numberImages, iteration){
   
   # Data
@@ -801,7 +784,7 @@ if (knitr::is_html_output()){
 
 
 
-```{r PosNegDistMeansFig, echo=FALSE, fig.align="center", fig.width=4.5, fig.cap="The mean is the value such that the positive and negative distances sum to zero" }
+```{r PosNegDistMeansFig, fig.align="center", fig.width=4.5, fig.cap="The mean is the value such that the positive and negative distances sum to zero" }
 if (knitr::is_latex_output()){
   FindMean( meanCandidates[43], 
             numberImages = length(meanCandidates), 43 )
@@ -811,11 +794,11 @@ if (knitr::is_latex_output()){
 
 
 
-```{definition, Mean, name="Mean"}
+::: {.definition #Mean name="Mean"}
 The **mean** is one way to measure the 'average' value of quantitative data.
 The *arithmetic mean* can be considered as the 'balance point' of the data,
 or the value such that the positive and negative distances from the mean add to zero.
-```
+:::
 
 
 To find the *value* of the sample mean:
@@ -832,13 +815,12 @@ then divide by the size of the sample (denoted by $n$).
 
 
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "20%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/jersey-cow-4269262_640.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
+
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/jersey-cow-4269262_640.jpg" width="200px">
+</div>
 
 `r if (knitr::is_html_output()) '<!--'`
 \begin{wrapfigure}{R}{.25\textwidth}
@@ -850,7 +832,7 @@ include_graphics("Illustrations/jersey-cow-4269262_640.jpg")
 
 
 
-```{example, ComputeMean, name="Computing a sample mean"}
+::: {.example #ComputeMean name="Computing a sample mean"}
 For data for the Jersey cow data
 (Example \@ref(exm:JerseyCows)),
 an estimate of the population mean
@@ -861,43 +843,41 @@ sum all $n=10$ observations and divide by $n$:
                    &= \frac{52.5}{10}  =  5.25.
 \end{align*}
 The sample mean, the best estimate of the population mean, is 5.25 *percent*.
-```
+:::
 
 
-```{block2, type="rmdtip"}
+::: {.tipBox .tip data-latex="{tip}"}
 Usually, 
 software (such as jamovi or SPSS) or a calculator (in *Statistics Mode*)
 will be used to compute the sample mean.
 However,
 knowing *how* these quantities are computed is important.
-```
+:::
 
 
 
-```{lemma MeanButterfat, name="Mean"}
+::: {.thinkBox .think data-latex="{think}"}
 For the butterfat data (Table \@ref(tab:BFatData)),
 what is the value of $\mu$,
 the *population* mean?
-```
 
-```{block2, type="fold"}
-We do not know!
-We know the value of the *sample* mean, but not the *population* mean.
-We only have an *estimate* of the value of the population mean.
-```
+(Answer is here^[We do not know! We know the value of the *sample* mean, but not the *population* mean.
+We only have an *estimate* of the value of the population mean.].)
+:::
 
 
-```{lemma MeanEyes, name="Estimating a mean"}
+::: {.thinkBox .think data-latex="{think}"}
 A study of eyes
 [@ehlers1970corneal]
 aimed to estimate 
 the average thickness of eyes affected by glaucoma.
 The collected data (in microns) are shown in
 Table \@ref(tab:EyesData).
-Estimate the population mean corneal thickness.
-```
 
-```{r EyesData, echo=FALSE}
+Estimate the population mean corneal thickness.
+:::
+
+```{r EyesData}
 Eyes <- c(484, 478, 492, 444, 436, 398, 464, 476)
 Eyes <- array(Eyes, 
               dim = c(2,4))
@@ -935,7 +915,7 @@ if( knitr::is_html_output() ) {
 
 
 
-```{block2, type="rmdimportant"}   
+::: {.importantBox .important data-latex="{important}"}
 Software and calculators often produce numerical answers to many decimal places,\index{Rounding}
 some of which may not be meaningful or useful.
 A useful rule-of-thumb is to 
@@ -945,8 +925,8 @@ For example,
 the butterfat data are given to one decimal place.
 The *sample mean* weight can be given
 to two decimal places:
-$\bar{x}=5.25$%.
-```
+$\bar{x} = 5.25$%.
+:::
 
 
 
@@ -973,27 +953,24 @@ The median is:
 
 Most calculators cannot find the median.
 
-```{block2, type="rmdnote"}
+::: {.tipBox .tip data-latex="{tip}"}
 The median has no commonly-used symbol.
-```
+:::
 
       
       
-```{definition, Median, name="Median"}
+::: {.definition #Median name="Median"}
 The **median** is one way to measure the 'average' value of some data.
 The *median* is a value such that half the values are larger than the median,
 and
 half the values are smaller than the median.
-```
+:::
 
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "20%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/jersey-cow-4269262_640.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/jersey-cow-4269262_640.jpg" width="200px">
+</div>
+
 
 `r if (knitr::is_html_output()) '<!--'`
 \begin{wrapfigure}{R}{.25\textwidth}
@@ -1005,7 +982,7 @@ include_graphics("Illustrations/jersey-cow-4269262_640.jpg")
 
 
 
-```{example SampleMedian, name="Find a sample median"}
+::: {.example #SampleMedian name="Find a sample median"}
 To find the sample median for the Jersey cow data 
 (Example \@ref(exm:JerseyCows)),
 first 
@@ -1022,10 +999,10 @@ the *median itself is not 5.5*).
 So the sample median is between $5.2$ (ordered observation five) 
 and $5.2$ (ordered observation six):
 the sample median is $5.20$ percent.
-```
+:::
 
 
-```{r JerseyCowsSorted, echo=FALSE}
+```{r JerseyCowsSorted}
 BFat.sort <- sort( c(4.8, 6.5, 5.2, 4.5, 5.2, 5.7, 5.4, 4.8, 5.2, 5.2) )
 BFat.sort <- matrix( BFat.sort, 
                      ncol = 5, 
@@ -1063,20 +1040,17 @@ if( knitr::is_html_output() ) {
 ```
 
 
-```{lemma MedianButterfat, name="Median"}
+::: {.thinkBox .think data-latex="{think}"}
 For the butterfat data (Table \@ref(tab:BFatData)),
 what is the *population* median?
-```
 
-
-```{block2, type="fold"}
-We do not know!
+(Answer is here^[We do not know!
 We know the value of the *sample* median, but not the *population* median.
-We only have an *estimate* of the value of the population median.
-```
+We only have an *estimate* of the value of the population median.].)
+:::
 
          
-```{lemma, ComputeMedians, name="Medians"}
+::: {.thinkBox .think data-latex="{think}"}
 A study of eyes
 [@ehlers1970corneal]
 aimed to estimate 
@@ -1086,29 +1060,23 @@ Using the collected data
 (Table \@ref(tab:EyesData)),
 estimate the population *median* corneal thickness.
 What is the population median?
-```
 
-
-```{block2, type="fold"}
-With $n = 8$ observations, 
-the median is ordered observation number $(8 + 1)/2 = 4.5$, 
+(Answer is here^[With $n = 8$ observations, the median is ordered observation number $(8 + 1)/2 = 4.5$, 
 halfway between ordered observation numbers 4 and 5. 
 After sorting into increasing order, 
 the two middle numbers (the 4th and 5th) are
 464 and 476. 
 The median could be *any* number between 464 and 476, 
 but the usual answer would be that the median is $(464 + 476)/2 = 470$. 
-
 The *sample* median is 470 microns; 
-the value of the *population* median remains unknown.
-```
-
+the value of the *population* median remains unknown.].)
+:::
 
 To clarify:
 
 * If the sample size $n$ is *odd*, 
   the median is the middle number when the observations are ordered. 
-* If the sample size $n$ is *even* (such as in Think \@ref(lem:ComputeMedians)), 
+* If the sample size $n$ is *even* (such as the glaucoma example), 
   the median is halfway between the two middle numbers,
   when the observations are ordered. 
 
@@ -1120,8 +1088,9 @@ Some software uses different rules when $n$ is even.
 
 ### Which average to use? {#CompareMeanMedian}
 
-```{r echo=FALSE}
-LessThanMean <- sum(MR2$Mean[MR2$Month == 2] < 1123.2, na.rm = TRUE) / sum( !is.na(MR2$Mean[MR2$Month == 2]))
+```{r}
+LessThanMean <- sum( MR2$Mean[MR2$Month == 2] < 1123.2, na.rm = TRUE ) / 
+                sum( !is.na(MR2$Mean[MR2$Month == 2]) )
 ```
 
 Consider again estimating the average daily streamflow at the Mary River (Bellbird Creek)
@@ -1138,6 +1107,7 @@ with many *very* large outliers:
 the maximum value is
 `r sprintf( "%.1f", max(MR2$Mean[MR2$Month == 2], na.rm = TRUE))`ML,
 more than one hundred times larger than the mean of `r round(MRsummary[2, 2], 1)`ML).
+
 In fact,
 about 
 `r round(LessThanMean * 100)`% of the observations are *less* than the mean.
@@ -1147,7 +1117,7 @@ For these data,
 the mean is hardly a *central* value...
 
 
-```{r DailyStreamflow, echo=FALSE, fig.cap="A dot plot of the daily streamflow at Mary River from 1960 to 2017, for February. The vertical grey line is the mean value. Many large outliers exist, so the data near zero are all squashed together", fig.align="center", fig.width=5, fig.height=3}
+```{r DailyStreamflow, fig.cap="A dot plot of the daily streamflow at Mary River from 1960 to 2017, for February. The vertical grey line is the mean value. Many large outliers exist, so the data near zero are all squashed together", fig.align="center", fig.width=5, fig.height=3}
 par(mfrow = c(1, 1))
 set.seed(183763286)
 stripchart(MR2$Mean[MR2$Month == 2], 
@@ -1193,7 +1163,7 @@ Sometimes, quoting *both* the mean and the median may be appropriate.
 
 
 
-```{lemma WhichAverage, name="Which average to use"}
+::: {.thinkBox .think data-latex="{think}"}
 An engineering study [@data:hald:statistical] 
 was studying a new building material
 to determine the average permeability time.
@@ -1204,11 +1174,9 @@ Using a histogram of the data
 estimate the value of the population mean and median.
 Which would be best to use
 (for example, to quote an average permeability time on a specification sheet)?  
-```
 
 
-```{r Permeability, echo=FALSE, fig.cap="A histogram of the permeability of a type of building material", fig.align="center", fig.width=5, fig.height=3.5}
-library(GLMsData)
+```{r Permeability, fig.cap="A histogram of the permeability of a type of building material", fig.align="center", fig.width=5, fig.height=3.5}
 data(perm)
 
 hist(perm$Perm, 
@@ -1226,7 +1194,7 @@ axis(side = 1,
 axis(side = 2, 
      las = 1)
 ```
-
+:::
 
 
 
@@ -1241,13 +1209,12 @@ axis(side = 2,
 
 ## Computing the variation
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "10%", out.extra='style="float:left; padding:10px"'}
-include_graphics("Pics/iconmonstr-ruler-21-240.png")
-```
-`r if (knitr::is_latex_output()) '-->'`
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Pics/iconmonstr-ruler-21-240.png" width="50px">
+</div>
+
+
 
 For quantitative data,
 the amount of *variation* 
@@ -1276,9 +1243,9 @@ estimates the unknown value in the *population*
 
 The range is the simplest measure of variation.
 
-```{definition, Range, name="Range"}
+::: {.definition #Range name="Range"}
 The range is the maximum value *minus* the minimum value.
-```
+:::
 
 The range is not often used,
 because only the two extreme observations are used,
@@ -1289,7 +1256,7 @@ instead of giving the *difference* between the maximum and the minimum values.
 The range is measured in the same measurement units as the data. 
 
 
-```{example RangeEG, name="The range"}
+::: {.example #RangeEG name="The range"}
 For Jersey cow data
 (Example \@ref(exm:JerseyCows)),
 the range is:
@@ -1298,7 +1265,7 @@ the range is:
 \]   
 So the sample median percentage butterfat is 5.20 percent, with a *range* of 2.00 percent.
 
-```
+:::
 
 
 
@@ -1315,33 +1282,40 @@ The population standard deviation is denoted by $\sigma$
 ('sigma', the [parameter](#StatisticsAndParameters))
 and is estimated by the sample standard deviation $s$ 
 (the [statistic](#StatisticsAndParameters)).
+
 The standard deviation is the most commonly-used measure of variation,
 but is complicated to compute manually (but you don't need to do it manually!).
 The *standard deviation* is
 (roughly) the mean distance that the observations are away from the mean.
 This seems like a reasonable way to measure the amount of variation in some data.
 
-:::: {style="display: flex;"}
 
-::: {}
-```{block2, type="rmdpronunciation"}
+
+
+
+
+
+
+:::: {.pronounceBox .pronounce data-latex="{pronounce}"}
+::: {style="display: flex;"}
 The Greek letter $\sigma$ ('sigma') is pronounced as expected: 'sigma'.
-```
-
 :::
 
+
 ::: {}
-```{r, echo=FALSE}
+```{r}
 htmltools::tags$video(src ="./Movies/sigma.mp4", 
-                      width="121", 
-                      loop="FALSE", 
-                      controls="controls", 
-                      loop="loop", 
-                      style="padding:5px; border: 2px solid gray;")
+                      width = "121", 
+                      loop = "FALSE", 
+                      controls = "controls", 
+                      loop = "loop", 
+                      style = "padding:5px; border: 2px solid gray;")
 ```
 :::
 
 ::::
+
+
 
 
 The sample standard deviation $s$ is mostly found using 
@@ -1350,9 +1324,9 @@ or a calculator (in *Statistics Mode*).
 
 
 
-```{definition, StandardDeviation, name="Standard deviation"}
+::: {.definition #StandardDeviation name="Standard deviation"}
 The *standard deviation* is, approximately, the average distance that observations are away from the mean.
-```
+:::
 
 
 **You do not have to use the formula** to calculate $s$,
@@ -1378,24 +1352,21 @@ follow these steps:
 * Take the (positive) square root of the answer.
 
 
-```{block2, type="rmdimportant"}
+::: {.importantBox .important data-latex="{important}"}
 **You do not need to use the formula!**
 You **must** know how to use software or a calculator to find the standard deviation.
-```      
+:::
+
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/jersey-cow-4269262_640.jpg" width="200px">
+</div>
 
 
 
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "20%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/jersey-cow-4269262_640.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
-
-
-```{example StdDev, name="Standard deviation"}
+::: {.example #StdDev name="Standard deviation"}
 For the Jersey cow data
 (Example \@ref(exm:JerseyCows)),
 the *deviations* of each observation from the mean of $5.25$ can be found
@@ -1414,10 +1385,10 @@ the sample standard deviation is:
      = \sqrt{ 0.3072222} = 0.5542763.
 \]
 The sample mean percentage butterfat is 5.25 percent, with a sample *standard deviation* of 0.554 percent. 
-```
+:::
 
 
-```{r ShowVar, echo=FALSE, fig.cap="The standard deviation is related to the sum of the squared-distances from the mean", fig.align="center",fig.width=5.5}
+```{r ShowVar, fig.cap="The standard deviation is related to the sum of the squared-distances from the mean", fig.align="center",fig.width=5.5}
 
 ShowVar <- function(){
   
@@ -1561,17 +1532,18 @@ ShowVar()
 
 
 
-```{lemma StdDeviations, name="Standard deviations"}
+::: {.thinkBox .think data-latex="{think}"}
 The standard deviation for Dataset A 
 in Fig. \@ref(fig:TwoDatasets),
 is 2.00.
+
 What do you estimate the standard deviation of Dataset B will be:
 *smaller* than 2.00 or *greater* than 2.00?
 Why?
-```
+:::
 
 
-```{r TwoDatasets, echo=FALSE, fig.width=5, fig.height=3, fig.cap="Dotplots of two sets of data", fig.align="center"}
+```{r TwoDatasets, fig.width=5, fig.height=3, fig.cap="Dotplots of two sets of data", fig.align="center"}
 ### DOT CHARTS of two samples with similar mean, range but diff sd
 
 set.seed(100010)
@@ -1591,15 +1563,16 @@ len <- 50
 tmp1 <- runif(len)
 x1 <- rescale(tmp1, -4, 4)
 
-par(mfrow=c(2, 1))
+par(mfrow = c(2, 1))
 
 y1.jitter <- jitter(rep(1, length(x1)))
 
-par( mar=c(2,0,2,0) + 0.1)
+par( mar=c(2, 0, 2, 0) + 0.1)
 plot( y = y1.jitter, 
       x = x1, 
       pch = 1,
-      ylim = c( 0.95 * min(y1.jitter), 1.05 * max(y1.jitter) ),
+      ylim = c( 0.95 * min(y1.jitter), 
+                1.05 * max(y1.jitter) ),
       ylab = "",
       xlab = "Observations",
       main = "Data set A",
@@ -1617,7 +1590,8 @@ par( mar =c (2, 0, 2, 0) + 0.1)
 plot( y = y2.jitter, 
       x = x2, 
       pch = 1,
-      ylim = c( 0.95 * min(y2.jitter), 1.05 * max(y2.jitter) ),
+      ylim = c( 0.95 * min(y2.jitter), 
+                1.05 * max(y2.jitter) ),
       ylab = "",
       xlab = "Observations",
       main = "Data set B",
@@ -1639,19 +1613,17 @@ The sample standard deviation is:
 * Influenced by *skewness* and outliers, like the mean.
 
 
-```{lemma StdDeviationsButterfat, name="Standard deviation"}
+::: {.thinkBox .think data-latex="{think}"}
 Consider again the Jersey cow data
 (Example \@ref(exm:JerseyCows)).
+
 Using your calculator's Statistics Mode,
 find the *population* standard deviation
 and the *sample* standard deviation.
-```   
 
-
-```{block, type="fold"}
-The *population* standard deviation is unknown.
-The best estimate is the *sample* standard deviation: $s=0.554$%.
-```
+(Answer is here^[The *population* standard deviation is unknown.
+The best estimate is the *sample* standard deviation: $s=0.554$%.].)
+:::
 
 
 
@@ -1666,7 +1638,7 @@ To understand the IQR,
 understanding *quartiles* first is important.
 
 
-```{definition Quartiles, name="Quartiles"}
+::: {.definition #Quartiles name="Quartiles"}
 *Quartiles* to describe the variation and shape of data:
 
 * The first quartile $Q_1$ is a value that
@@ -1680,8 +1652,7 @@ understanding *quartiles* first is important.
   separates the smallest 75% of observations from the largest 25%.
   The $Q_3$ is like the median of the *larger* half of the data,
   halfway between the median and the maximum value.
-
-```
+:::
 
 
 Quartiles divide the data into four parts
@@ -1689,15 +1660,16 @@ of approximately equal numbers of observations,
 and *a boxplot is a picture of the quartiles*.\index{boxplot}
 The **inter-quartile range**, or the **IQR**\index{IQR}
 is the difference between $Q_3$ and $Q_1$.
+
 The IQR measures the range of the middle 50% of the data,
 and is a measure of variation not influenced by outliers.
 The IQR is measured in the same measurements units as the data.
 
 
-```{definition, IQR, name="IQR"}
+::: {.definition #IQR name="IQR"}
 The *IQR* is the range in which the middle 50% of the data lie;
 the difference between the third and the first quartiles.
-```
+:::
 
 
 Quartiles were previously
@@ -1713,12 +1685,14 @@ and the boxplot in
 Fig. \@ref(fig:BoxplotKrillTreatment2).
 
 
-```{r KrillDataTable2, echo=FALSE}
+```{r KrillDataTable2}
 Eggs.T <- c(0, 0, 1, 1, 3, 8, 8, 12, 18, 21, 26, 30, 35, 48, 50)
 Eggs.C <- c(0, 0, 0, 0, 1, 1, 1,  2,  2,  3,  8, 16, 20, 26, 31)
 
-KrillEggs2 <- cbind( Eggs.T[1:8], c(Eggs.T[9:15], ""), 
-                     Eggs.C[1:8], c(Eggs.T[9:15], "") )
+KrillEggs2 <- cbind( Eggs.T[1:8], 
+                     c(Eggs.T[9:15], ""), 
+                     Eggs.C[1:8], 
+                     c(Eggs.T[9:15], "") )
 
 if( knitr::is_latex_output() ) {
   kable( KrillEggs2,
@@ -1755,13 +1729,14 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-```{r echo=FALSE}
+```{r}
 KrillT.quantiles <- quantile(Eggs.T)
 Eggs.C2 <- Eggs.C[ -which.max(Eggs.C)]
 KrillC2.quantiles <- quantile(Eggs.C2)
 ```
 
-```{r BoxplotKrillTreatment2, echo=FALSE, message=FALSE, warning=FALSE, fig.cap="A boxplot for the krill-egg data; the boxplot just for the treatment group", fig.width=5, fig.height=4, fig.align="center"}
+
+```{r BoxplotKrillTreatment2, message=FALSE, warning=FALSE, fig.cap="A boxplot for the krill-egg data; the boxplot just for the treatment group", fig.width=5, fig.height=4, fig.align="center"}
 Eggs.quantiles <- quantile(Eggs.T)
 out <- boxplot( list(Treatment = Eggs.T), 
             main = "A boxplot of the number of\neggs laid by krill: Treatment group",
@@ -1845,12 +1820,13 @@ so that $\text{IQR} = `r KrillT.quantiles[4] - KrillT.quantiles[2]`$.
 
 
 
-```{r echo=FALSE, animation.hook="gifski", interval=0.75, cache=TRUE, dev=if (is_latex_output()){"pdf"}else{"png"}}
+```{r animation.hook="gifski", interval=0.75, cache=FALSE, dev=if (is_latex_output()){"pdf"}else{"png"}}
 Eggs.T <- c(0, 0, 1, 1, 3, 8, 8, 12, 18, 21, 26, 30, 35, 48, 50)
 
 
 # Grab some of the necessary stats
-Qs <- quantile(Eggs.T, seq(0, 1, by=0.25)) # See below for better way when there are outliers
+Qs <- quantile(Eggs.T, 
+               seq(0, 1, by = 0.25)) # See below for better way when there are outliers
 
 left <- 0.75
 right <- 1.25
@@ -1922,7 +1898,7 @@ if (knitr::is_html_output()) {
 
 
 
-```{r IQRKrill, echo=FALSE, fig.align="center", fig.width=6, fig.cap="Computing the IQR for the krill Treatment-group data" }
+```{r IQRKrill, fig.align="center", fig.width=6, fig.cap="Computing the IQR for the krill Treatment-group data" }
 if (knitr::is_latex_output()){
     boxplot( Eggs.T, 
              col = plot.colour,
@@ -1961,15 +1937,20 @@ if (knitr::is_latex_output()){
 
 
 
-```{r echo=FALSE}
+```{r}
 Age.quantiles <- quantile(NHANES$Age)
+#  0%  25%  50%  75% 100% 
+#   0   18   36   54   80 
+#HDL.quantiles <- quantile(NHANES$DirectChol, na.rm = TRUE)
+#  0%  25%  50%  75% 100% 
+#0.52 1.06 1.29 1.58 3.44 
 ```
 
 
-```{example BoxplotNHANES, name="Boxplots"}
+::: {.example #BoxplotNHANES name="Boxplots"}
 Consider the NHANES data 
 [@data:NHANES3:Data; @data:NHANES3; @data:NHANES:Rpackage].
-```
+
 
 
 The boxplot for the age of respondents in the NHANES data set
@@ -1984,11 +1965,11 @@ For these data:
 * No outliers are identified.
 * The oldest person is `r Age.quantiles[5]`.
 * About 75% of the subjects are aged less than about `r Age.quantiles[4]` ($Q_3$):
-   	the third  quartile $Q_3 = `r Age.quantiles[4]`$,
+  the third  quartile $Q_3 = `r Age.quantiles[4]`$,
 	the median of the *largest half* of the data.
 * About 50% of the subjects are aged less than about `r Age.quantiles[3]`  ($Q_2$, the median):
-   	the second quartile $Q_2 = `r Age.quantiles[3]`$,
-   	the median of the data set.
+  the second quartile $Q_2 = `r Age.quantiles[3]`$,
+  the median of the data set.
 * About 25% of the subjects are aged less than about `r Age.quantiles[2]`  ($Q_1$):
 	the first quartile $Q_1 = `r Age.quantiles[2]`$,
   the median of the *smallest half* of the data.
@@ -1998,24 +1979,14 @@ Then, $Q_3 = `r Age.quantiles[4]`$ and $Q_1 = `r Age.quantiles[2]`$,
 so the $\text{IQR} = Q_3 - Q_1 = `r Age.quantiles[4]` - `r Age.quantiles[2]` 
 = `r (Age.quantiles[4] - Age.quantiles[2])`$ years.
 The middle 50% of the participants have an age range of 37 years.
+:::
 
 
-
-
-```{r echo=FALSE}
-Age.quantiles <- quantile(NHANES$Age)
-#  0%  25%  50%  75% 100% 
-#   0   18   36   54   80 
-#HDL.quantiles <- quantile(NHANES$DirectChol, na.rm = TRUE)
-#  0%  25%  50%  75% 100% 
-#0.52 1.06 1.29 1.58 3.44 
-```
 	 
 
 
 
-```{r IQRAgeMovie, echo=FALSE, animation.hook="gifski", cache=TRUE, interval=0.75, dev=if (is_latex_output()){"pdf"}else{"png"}}
-library(NHANES)
+```{r IQRAgeMovie, animation.hook="gifski", cache=FALSE, interval=0.75, dev=if (is_latex_output()){"pdf"}else{"png"}}
 data(NHANES)
 
 # Grab some of the necessary stats
@@ -2103,7 +2074,7 @@ if (knitr::is_html_output()){
 
 
 
-```{r  IQRAge, echo=FALSE, fig.align="center", fig.width=6, fig.cap="Computing the IQR for the age in the NHANES data set" }
+```{r  IQRAge, fig.align="center", fig.width=6, fig.cap="Computing the IQR for the age in the NHANES data set" }
 if (knitr::is_latex_output()){
     boxplot( NHANES$Age, 
              col = plot.colour,
@@ -2171,10 +2142,10 @@ for example:
 
 Percentiles are measured in the same measurements units as the data.
 
-```{definition, Percentiles, name="Percentiles"}
+::: {.definition #Percentiles name="Percentiles"}
 The $p$th percentile of the data is a value 
 separating the smallest $p$% of the data from the rest.
-```
+:::
 
 
 By this definition,
@@ -2194,16 +2165,18 @@ may design structures to withstand 1-in-100 year events  (the 99th percentile) o
 which are unusual events.
 
 
-```{example PercentilesEG, name="Percentiles"}
+::: {.example #PercentilesEG name="Percentiles"}
 For the streamflow data at the Mary River
 (Table \@ref(tab:MRtable)),
 the February data is highly right-skewed
-(Fig. \@ref(fig:DailyStreamflow)).
-The median (50th percentile) is 146.1 ML.
-The 95th percentile is 3\,480 ML,
-and the 99th percentile is 19\,043 ML.
+(Fig. \@ref(fig:DailyStreamflow)):
+
+* The median (50th percentile) is 146.1 ML.
+* The 95th percentile is 3\,480 ML.
+* The 99th percentile is 19\,043 ML.
+
 Constructing infrastructure to cope with the *median* streamflow is clearly silly.
-```
+:::
 
 <!-- > quantile( MR2$Mean[MR2$Month==2][ !is.na(MR2$Mean[MR2$Month==2])], probs=c(0.5, 0.9, 0.95, 0.99)) -->
 <!--       50%       90%       95%       99%  -->
@@ -2229,13 +2202,14 @@ Sometimes, both the standard deviation and the IQR can be quoted.
  
 ## Describing shape
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "10%", out.extra='style="float:left; padding:10px"'}
-include_graphics("Pics/iconmonstr-shape-24-240.png")
-```
-`r if (knitr::is_latex_output()) '-->'`
+
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Pics/iconmonstr-shape-24-240.png" width="50px">
+</div>
+
+
 
 Describing the skewness numerically is possible; 
 however,
@@ -2244,18 +2218,19 @@ in this book the shape will be described just using words
 as before (Sect. \@ref(SummariseData)).
 
 
-```{example Skewness, name="Skewness"}
+::: {.example #Skewness name="Skewness"}
 The Australian Bureau of Statistics ([ABS](http://www.abs.gov.au/))
 records the 
 [age at death of Australians](http://www.abs.gov.au/AUSSTATS/subscriber.nsf/log?openagent&33020do008_2012.xls&3302.0&Data%20Cubes&19D242509768F63BCA257C1B000D6ECA&0&2012&07.11.2013&Latest).
+
 The histograms of the age of death for females and males
 (Fig. \@ref(fig:DeathAgeHist))
 show that both distributions are *left* skewed:
 Few Australians die at a very young age,
 and most die at an older age.
-```
 
-```{r DeathAgeHist, echo=FALSE, fig.cap="Histograms of age at death for Australians in 2012", fig.align="center", fig.width=4.5, fig.height=3}
+
+```{r DeathAgeHist, fig.cap="Histograms of age at death for Australians in 2012", fig.align="center", fig.width=4.5, fig.height=3}
 deathCounts <- c(565, 116, 69, 78, 319, 501, 633, 655, 848, 1226, 1633, 2459, 3375, 4669, 6152, 7436, 9526, 12619, 12455, 7113, 2104, 241)
 ageBreaks <- c(0, 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 110)
 
@@ -2266,7 +2241,8 @@ ageBreaks <- c(0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80,
 dCountsM2 <-  c(565 + 116  + 69, 78+ 319, 501+ 633, 655+ 848, 1226+ 1633, 2459+ 3375, 4669+ 6152, 7436+ 9526, 12619+ 12455, 7113+ 2104, 241)
 dCountsF2 <- c(466+87+ 59, 63+ 181, 202+ 218, 328+ 454, 750+ 1024, 1569+ 2093, 2909+ 3745, 4810+ 6914, 11290+ 15430, 12946+ 5637, 1128)
 
-ageBreaks2 <- seq(0, 110, by = 10)
+ageBreaks2 <- seq(0, 110, 
+                  by = 10)
 
  
 # Now, try combining boxes in pairs"
@@ -2290,7 +2266,9 @@ ageBreaks2 <- seq(0, 110, by = 10)
       las = 1)
  title(xlab = "Age (in years)", 
        ylab = "Number (in thousands)",
-       sub = paste("(Total deaths: ",sum(dCountsF2),")", sep=""))
+       sub = paste("(Total deaths: ",
+                   sum(dCountsF2),")", 
+                   sep=""))
  box()
  
  
@@ -2309,9 +2287,12 @@ ageBreaks2 <- seq(0, 110, by = 10)
       las = 1)
  title(xlab = "Age (in years)", 
        ylab = "Number (in thousands)", 
-       sub = paste("(Total deaths: ", sum(dCountsM2),")", sep = "") )
+       sub = paste("(Total deaths: ", 
+                   sum(dCountsM2),")", 
+                   sep = "") )
  box()
 ```
+:::
 
 
 
@@ -2320,13 +2301,12 @@ ageBreaks2 <- seq(0, 110, by = 10)
 
 ## Identifying outliers
 
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "10%", out.extra='style="float:left; padding:10px"'}
-include_graphics("Pics/iconmonstr-log-out-13-240.png")
-```
-`r if (knitr::is_latex_output()) '-->'`
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Pics/iconmonstr-log-out-13-240.png" width="50px">
+</div>
+
 
 Outliers are 'unusual' observations:
 observation 
@@ -2337,14 +2317,14 @@ so 'rules' for identifying outliers are
 somewhat arbitrary too.
 
 
-```{definition, Outliers, name = "Outliers"}
+::: {.definition #Outliers name="Outliers"}
 An *outlier* is an observation 
 that is 'unusual'
 compared to the bulk of the data
 (either larger or smaller).
 Rules for identifying outliers
 are arbitrary.
-```
+:::
 
 
 Two rules for identifying outliers are:
@@ -2402,7 +2382,7 @@ For example,
 The solid line represents the average of many sample histograms.
 
 
-```{r HeightsModelQUANTMovie, echo=FALSE, animation.hook="gifski", cache=TRUE, dev=if (is_latex_output()){"pdf"}else{"png"}}
+```{r HeightsModelQUANTMovie, animation.hook="gifski", cache=FALSE, dev=if (is_latex_output()){"pdf"}else{"png"}}
  if (knitr::is_html_output()) {
    set.seed(6000)
 
@@ -2476,7 +2456,7 @@ The solid line represents the average of many sample histograms.
 
 
 
-```{r HeightsModelQUANTFig, echo=FALSE, fig.align="center", fig.width=5, fig.height=4, fig.cap="The model for heights of Australian adult males, plus the histogram from one specific sample if size $n=100$ of Australian adult males" }
+```{r HeightsModelQUANTFig, fig.align="center", fig.width=5, fig.height=4, fig.cap="The model for heights of Australian adult males, plus the histogram from one specific sample if size $n=100$ of Australian adult males" }
 
 if (knitr::is_latex_output()) {
    set.seed(6000)
@@ -2562,7 +2542,7 @@ of the total number.
 
 
 
-```{r HusbandHistNormal, warning=FALSE, echo=FALSE, fig.cap="The heights of husbands have an approximate normal distribution", fig.align="center", fig.height=2.25, fig.width=6.5, out.width='90%'}
+```{r HusbandHistNormal, warning=FALSE, fig.cap="The heights of husbands have an approximate normal distribution", fig.align="center", fig.height=2.25, fig.width=6.5, out.width='90%'}
 hts <- 
 structure(list(Hage = c(49L, 25L, 40L, 52L, 58L, 32L, 43L, 42L, 
 47L, 31L, 26L, 40L, 35L, 45L, 35L, 35L, 47L, 38L, 33L, 32L, 38L, 
@@ -2723,6 +2703,7 @@ Using this idea,
 areas of the histogram can be shaded
 (Fig. \@ref(fig:HusbandHistNormalShade))
 to represent various percentages of the husbands' heights.
+
 For example:
 
 * The middle 50% of husbands (Fig. \@ref(fig:HusbandHistNormalShade), centre  panel)
@@ -2731,7 +2712,7 @@ For example:
 	are taller than about 179cm.
 
 
-```{r HusbandHistNormalShade, echo=FALSE, fig.cap="The heights of husbands, with certain percentages shaded", fig.align="center", fig.width=6, fig.height=2, out.width='90%'}
+```{r HusbandHistNormalShade, fig.cap="The heights of husbands, with certain percentages shaded", fig.align="center", fig.width=6, fig.height=2, out.width='90%'}
 par( mfrow = c(1,3),
      mar = c(4, 1, 2, 1) )
 
@@ -2852,21 +2833,21 @@ the areas under the smoothed curve approximately follow this important rule:
 *The 68--95--99.7 rule*.
 
 
-```{definition, EmpiricalRule, name="The 68--95--99.7 Rule (or the Empirical Rule)"}
+::: {.definition #EmpiricalRule name="The 68--95--99.7 Rule (or the Empirical Rule)"}
 For *any* bell-shaped distribution, *approximately*:
 
 * 68% of observations lie within one standard deviation of the mean;
 * 95% of observations lie within two standard deviations of the mean;
 * 99.7% of observations lie within three standard deviations of the mean.
 
-```
+:::
 
 
-```{block2, type="rmdimportant"}
+::: {.importantBox .important data-latex="{important}"}
 The **68--95--99.7 rule**,\index{68--95--99.7 rule}
 or the **empirical rule**,\index{empirical rule}
 is one of the **most important rules we will see**.
-```
+:::
 
 `r if (knitr::is_latex_output()) {
    'The 68--95--99.7 rule is shown in Fig. \\@ref(fig:EmpRuleFig) (the online version has an animation).'
@@ -2877,7 +2858,7 @@ is one of the **most important rules we will see**.
 
 
  
-```{r EmpRule, echo=FALSE, animation.hook="gifski", interval=1, cache=TRUE, dev=if (is_latex_output()){"pdf"}else{"png"}}
+```{r EmpRule, echo=FALSE, animation.hook="gifski", interval=1, cache=FALSE, dev=if (is_latex_output()){"pdf"}else{"png"}}
 empRule <- function(z){
   zseq <- seq(-4, 4, by=0.1)
   dseq <- dnorm(zseq)
@@ -2972,12 +2953,12 @@ if (knitr::is_latex_output()){
 
 
 
-```{block2, type="rmdnote"}
+::: {.noteBox .note data-latex="{note}"}
 The percentages given in the 68--95--99.7 rule are *approximate*;
 the exact percentages are
 68.27%, 95.45% and 99.73%
 respectively.
-```
+:::
 
 
 The 68--95--99.7 rule can be used to understand variables that have an
@@ -2987,6 +2968,7 @@ consider the heights of husbands again
 (Fig. \@ref(fig:HusbandHistNormalShadeEmpirical));
 the sample mean height is $\bar{x} = 173.2$cm;
 the sample standard deviation is $s = 6.88$cm.
+
 Using the 68--95--99.7 rule,
 approximately
 68% of the husbands would have heights between 
@@ -3004,27 +2986,16 @@ approximately 95% of the husbands would have heights between
 * $173.2 + (2\times 6.88) = 187.0$cm.
 
 
-```{lemma EmpiricalRuleHts, name="69--95--99.7 rule"}
+::: {.thinkBox .think data-latex="{think}"}
 For the husbands' heights,
 the sample mean height is $173.2$cm;
 the sample standard deviation is $6.88$cm.
+
 Using the [68--95--99.7 rule](#def:EmpiricalRule),
 about 99.7% of the husbands are between what heights?
-```
 
-
-```{r echo=FALSE}
-Empirical <- "Three standard deviations is $3\\times6.88=20.64$; about 99.7% of husbands are between $(173.2 - 20.64) = 152.6$cm and $(173.2 + 20.64) = 193.8$cm."
-if( knitr::is_latex_output() ) {
-Empirical <- foldLaTeXText
-}
-```
-
-(ref:Empiricalr) `r Empirical`
-
-```{block2, type="fold"}
-(ref:Empiricalr)
-```
+(Answer is here^[Three standard deviations is $3\times6.88=20.64$; about 99.7% of husbands are between $(173.2 - 20.64) = 152.6$cm and $(173.2 + 20.64) = 193.8$cm.].)
+:::
 
 
 The empirical rule indicates that
@@ -3045,7 +3016,7 @@ Chap. \@ref(SamplingDistributions)).
 
 
 
-```{r HusbandHistNormalShadeEmpirical, echo=FALSE, fig.cap="The heights of husbands, showing the 68--95--99.7 rule in use", fig.align="center", fig.width=6.5, fig.height=2.5, out.width='90%'}
+```{r HusbandHistNormalShadeEmpirical, fig.cap="The heights of husbands, showing the 68--95--99.7 rule in use", fig.align="center", fig.width=6.5, fig.height=2.5, out.width='90%'}
 par( mfrow = c(1,3),
      mar = c(4, 1, 2, 1) )
 
@@ -3094,10 +3065,10 @@ One rule for identifying outliers
 is based on the [68--95--99.7 rule](#def:EmpiricalRule).
 
 
-```{definition, StandardDeviationRuleForIdentifyingOutliers, name = "Standard deviation rule for identifying outliers"}
+::: {.definition #StandardDeviationRuleForIdentifyingOutliers name="Standard deviation rule for identifying outliers"}
 For approximately symmetric distributions,
 an observation more than three standard deviations from the mean may be considered an outlier.
-```
+:::
 
 
 This rule uses the mean and the standard deviation,
@@ -3128,7 +3099,7 @@ Another rule is needed for identifying outliers in these situations:
 the IQR rule.
 
 
-```{definition, IQRRuleForIdentifyingOutliers, name="IQR rule for identifying outliers"}
+::: {.definition #IQRRuleForIdentifyingOutliers name="IQR rule for identifying outliers"}
 The IQR rule identifies mild and extreme outliers as:
 
 * *Extreme outliers*:
@@ -3139,14 +3110,13 @@ The IQR rule identifies mild and extreme outliers as:
   observations $1.5\times \text{IQR}$
   more unusual than $Q_1$ or $Q_3$
   (that are not also extreme outliers).
-
-```
+:::
 
 
 This definition is *much* easier to understand using an example.
 
 
-```{example IQROutliersEG, name="IQR rule for identifying outliers"}
+::: {.example #IQROutliersEG name="IQR rule for identifying outliers"}
 An engineering project
 [@data:hald:statistical]
 studied a new building material,
@@ -3189,7 +3159,7 @@ then,
 *mild outliers* are shown using a $\circ$,
 and
 *extreme outliers* are shown using a $\star$.
-```
+:::
 
 You don't need to *do* this
 (that's what software is for),
@@ -3203,7 +3173,7 @@ but you do need to *understand* what the software is doing.
 
 
 
-```{r IQROutlier, echo=FALSE, animation.hook="gifski", interval=1.75, cache=TRUE, dev=if (is_latex_output()){"pdf"}else{"png"}}
+```{r IQROutlier, echo=FALSE, animation.hook="gifski", interval=1.75, cache=FALSE, dev=if (is_latex_output()){"pdf"}else{"png"}}
 x <- c(25.35, 22.18, 41.5, 20.23, 42.46, 25.7, 85.51, 47.21, 25.06, 
        27.99, 37.07, 66.07, 17.42, 15.31, 32.81, 26.67, 58.61, 72.28, 
        82.04, 29.99, 78.34, 32.06, 37.58, 44.57, 24.1, 48.98, 22.96, 
@@ -3436,20 +3406,20 @@ But remember:
 All rules for identifying outliers are arbitrary!
 
 
-```{example BoxplotsHistograms, name="Boxplots and histograms"}
+::: {.example #BoxplotsHistograms name="Boxplots and histograms"}
 For the permeability data
 [@data:hald:statistical],
 compare the boxplot and histogram
 (Fig. \@ref(fig:PermBoxHist)).
+
 Can you see how the boxplot identifies 
 the observations in the histogram 
 that seem to be outliers?
-```
+
 
 ```{r PermBoxHist, echo=FALSE, fig.align="center", fig.cap="A boxplot and histogram for the permeability data", fig.width=5, fig.height=6}
-par (mfrow=c(2,1))
+par (mfrow = c(2, 1))
 
-library(GLMsData)
 data(perm)
 
 hist( perm$Perm,
@@ -3461,7 +3431,7 @@ hist( perm$Perm,
 	ylim = c(0, 30),
 	xlim = c(0, 180),
 	axes = FALSE,
-	breaks = seq(0, 190, by=10),
+	breaks = seq(0, 190, by = 10),
 	las = 1)
 axis(side = 1, 
      at = seq(0, 180, by = 20), 
@@ -3472,26 +3442,29 @@ axis(side = 2,
 
 boxplot( perm$Perm,
         horizontal = TRUE,
-	xlab = "Permeability (in secs)",
-	main = "Permeability of\nbuilding material",
-	col = plot.colour,
-	cex = 0.8,
-	ylim = c(0, 180),
-	axes = FALSE,
-	las = 1)
+        xlab = "Permeability (in secs)",
+	      main = "Permeability of\nbuilding material",
+	      col = plot.colour,
+	      cex = 0.8,
+	      ylim = c(0, 180),
+	      axes = FALSE,
+	      las = 1)
 axis(side = 1, 
      at = seq(0, 180, by = 20), 
      las = 2, 
      cex = 0.8 ) # las=2: Perpendicular to axes
 box()
 ```
+:::
 
 
-```{lemma UnderstandSummariesFEV, name="Understanding data summaries"}
+
+::: {.thinkBox .think data-latex="{think}"}
 In an American study
 [@data:Tager:FEV],
 the lung capacity (FEV) of 
 youth aged 3 to 19 was measured.
+
 The data are slightly skewed right,
 and the average FEV is about 2.6 litres,
 The FEV varies from about 0.8 to 5.8 litres,
@@ -3499,7 +3472,7 @@ with no outliers.
 
 Using this information,
 sketch the boxplot and the histogram for the data. 
-```
+:::
 
 
 
@@ -3520,15 +3493,10 @@ for compiling tables of numerical summary information:
 
 
 
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/raspberries-1925178_640.jpg" width="200px">
+</div>
 
-
-<!-- Text wrap from: https://stackoverflow.com/questions/43551312/wrap-text-around-plots-in-markdown -->
-<!-- Trick from: https://blog.earo.me/2019/10/26/reduce-frictions-rmd/ -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r, echo=FALSE, out.width= "30%", out.extra='style="float:right; padding:10px"'}
-include_graphics("Illustrations/raspberries-1925178_640.jpg")
-```
-`r if (knitr::is_latex_output()) '-->'`
 
 `r if (knitr::is_html_output()) '<!--'`
 \begin{wrapfigure}{R}{.25\textwidth}
@@ -3540,7 +3508,7 @@ include_graphics("Illustrations/raspberries-1925178_640.jpg")
 
 
 
-```{example, DataSummaryTable, name="Tables for summarising data"}
+::: {.example #DataSummaryTable name="Tables for summarising data"}
 Consider a study
 [@data:Ejtahed2012:Yoghurt] assessing the effects of probiotic and conventional yoghurt 
 on blood glucose and antioxidant status in Type 2 diabetic patients.
@@ -3551,11 +3519,11 @@ Compare the two numerical summary tables in Tables \@ref(tab:YoghurtDataSummary)
 Table \@ref(tab:YoghurtDataSummary) makes comparing the two groups easier,
 but Table \@ref(tab:YoghurtDataSummary2) is the more conventional orientation
 (for practical purposes: fewer columns).
-```
+:::
 
 
 ```{r YoghurtDataSummary, echo=FALSE}
-YoghurtSummary <- array(dim=c(2, 6))
+YoghurtSummary <- array(dim = c(2, 6))
 
 if( knitr::is_latex_output() ) {
 colnames(YoghurtSummary) <- c("Yoghurt", 
@@ -3696,15 +3664,16 @@ out <- kable(YoghurtSummary2,
 
  
 
-```{lemma SampleDiffsBMI, name="Sample differences"}
+::: {.thinkBox .think data-latex="{think}"}
 Do  you think a difference exists between the mean BMI
 in the two groups *in the population*,
 based on 
 Tables \@ref(tab:YoghurtDataSummary) 
 and 
 \@ref(tab:YoghurtDataSummary2)?
+
 Explain.
-```
+:::
 
 
  
@@ -3830,14 +3799,14 @@ if( knitr::is_html_output() ) {
 
 
 
-```{block2, type="rmdnote"}
+::: {.noteBox .note data-latex="{note}"}
 Notice that information about current smoking status 
 is unavailable for all people in the study.
 This could impact the results,
 especially if those who provide data
 and those who do not
 are different regarding direct HDL.
-```
+:::
 
 
 The RQ, as usual,
@@ -3894,9 +3863,9 @@ may be appropriate.
   'The following short video may help explain some of these concepts:'
 }`
 
-
+<div style="text-align:center;">
 <iframe width="560" height="315" src="https://youtu.be/Xm0PPtci3JE" frameborder="0" allow="accelerometer; encrypted-media; gyroscope; picture-in-picture" allowfullscreen="allowfullscreen"></iframe>
-
+</div>
 
 
 
@@ -3907,10 +3876,16 @@ colnames(SummaryQS) <- c("Feature:",
                          "Approximately symmetric", 
                          "Not symmetric, or outliers")
 
-SummaryQS[1, ] <- c("Average:",   "Mean", "Median")
-SummaryQS[2, ] <- c("Variation:", "Standard deviation", "IQR")
-SummaryQS[3, ] <- c("Shape:",     rep("Verbal description only", 2))
-SummaryQS[4, ] <- c("Outliers:",  "Standard deviation rule", "IQR rule")
+SummaryQS[1, ] <- c("Average:",   
+                    "Mean", 
+                    "Median")
+SummaryQS[2, ] <- c("Variation:", 
+                    "Standard deviation", 
+                    "IQR")
+SummaryQS[3, ] <- c("Shape:",     
+                    rep("Verbal description only", 2))
+SummaryQS[4, ] <- c("Outliers:",  
+                    "Standard deviation rule", "IQR rule")
 
 if( knitr::is_latex_output() ) {
   kable(SummaryQS, 
@@ -3986,10 +3961,15 @@ The mass of the female birds were (in grams):
 	"8.75g",
 	answer = "We do not know"))}`
 
+`r webexercises::hide()`
+Remember that the *population* values ae not known, and are *estimated* by the *sample* values!
+`r webexercises::unhide()`
+
+**Progress:** `r webexercises::total_correct()`
 
 
 <!-- ####################### REVIEW QUESTIONS ##################################### -->
-```{r, child = if (knitr::is_html_output()) './children/ReviewQuestions/ReviewQuestions-Chapter13.Rmd'}
+```{r, child = if (knitr::is_html_output()) './children/ReviewQuestions/ReviewQuestions-NumQuant.Rmd'}
 ```
 
 
@@ -4006,16 +3986,15 @@ Selected answers are available in
 Sect. \@ref(NumericalQuantAnswer).
 
 
-```{exercise, NumericalQuantNHANES}
+::: {.exercise #NumericalQuantNHANES}
 The histogram of the direct HDL cholesterol
 from the NHANES study is shown 
 in Fig. \@ref(fig:NHANESdirectHDLHisto).
 Should the mean or median be used to measure location?  
-```
+:::
 
 
-```{exercise NumericalQuantSOI}
-
+::: {.exercise #NumericalQuantSOI}
 The [average monthly SOI](http://www.bom.gov.au/climate/current/soihtm1.shtml)
 values in August from 1995 to 2000 are shown in
 Table \@ref(tab:SOIvalues).
@@ -4026,8 +4005,7 @@ calculate the:
 1. sample median.
 1. range.
 1. sample standard deviation.
-
-```
+:::
 
 
 
@@ -4043,7 +4021,8 @@ if( knitr::is_latex_output() ) {
         format = "latex",
         longtable = FALSE,
         linesep = c("", "", "\\addlinespace", "", "", ""), # Otherwise addes a space after five lines... which looks odd when there are only six
-        col.names = c("Year", "Monthly average SOI"),
+        col.names = c("Year", 
+                      "Monthly average SOI"),
         booktabs = TRUE,
         caption = "The average monthly SOI values in August from 1995 to 2000") %>%
   kable_styling(font_size = 10) %>%
@@ -4053,7 +4032,8 @@ if( knitr::is_html_output() ) {
   out <- kable(SOIdf, 
         format = "html",
         longtable = FALSE,
-        col.names = c("Year", "Monthly average SOI"),
+        col.names = c("Year", 
+                      "Monthly average SOI"),
         booktabs = TRUE,
         caption = "The average monthly SOI values in August from 1995 to 2000")
   if ( knitr::is_html_output(excludes = "epub")) {
@@ -4067,8 +4047,7 @@ if( knitr::is_html_output() ) {
 
 
 
-```{exercise NumericalQuantMatchingHistogramsAndBoxplots}
-
+::: {.exercise #NumericalQuantMatchingHistogramsAndBoxplots}
 The activity below
 contains histogram and boxplots.
 
@@ -4078,31 +4057,39 @@ contains histogram and boxplots.
   
    For which data sets would the median and IQR 
    be the appropriate numerical summary?
-
-```
+:::
 
 <iframe src="https://usc.h5p.com/content/1291083153980046469/embed" width="1088" height="637" frameborder="0" allowfullscreen="allowfullscreen" allow="geolocation *; microphone *; camera *; midi *; encrypted-media *"></iframe><script src="https://usc.h5p.com/js/h5p-resizer.js" charset="UTF-8"></script>
 
-```{exercise NumericalQuantConstructionWorkerProductivity}
-
+::: {.exercise #NumericalQuantConstructionWorkerProductivity}
 A study of the productivity of construction workers
 [@data:Gatti2013:WorkforceStrain]
 recorded,
 among other things,
 the rate at which concrete panels could be installed by workers.
+
 Data for three different female workers in the study
 are shown in 
 Table \@ref(tab:PanelsTable).
 Construct the boxplot comparing the three workers.
 What does it tell you?
-```
+:::
 
 
 ```{r PanelsTable, echo=FALSE}
-Panels <- array(NA, dim=c(7, 3))
+Panels <- array(NA, 
+                dim = c(7, 3))
 
-rownames(Panels) <- c("Mean", "Minimum", "1st quartile", "Median", "3rd quartile", "Maximum", "Range")
-colnames(Panels) <- c("Worker 1", "Worker 2", "Worker 3")
+rownames(Panels) <- c("Mean", 
+                      "Minimum", 
+                      "1st quartile", 
+                      "Median", 
+                      "3rd quartile", 
+                      "Maximum", 
+                      "Range")
+colnames(Panels) <- c("Worker 1", 
+                      "Worker 2", 
+                      "Worker 3")
 
 Panels[, 1] <- c(1.24, 0.59, 0.88, 1.35, 1.49, 1.88, 1.28)
 Panels[, 2] <- c(1.73, 1.13, 1.51, 1.70, 1.91, 3.00, 1.87)
@@ -4120,7 +4107,9 @@ if( knitr::is_latex_output() ) {
                   "\\addlinespace",
                   "", 
                   ""),       
-        col.names = c("Worker 1", "Worker 2", "Worker 3"),
+        col.names = c("Worker 1", 
+                      "Worker 2",
+                      "Worker 3"),
         caption = "The productivity of three females workers installing concrete panels (in panels per minute)") %>%
   kable_styling(font_size = 10) %>%
   row_spec(0, bold = TRUE)
@@ -4130,7 +4119,9 @@ if( knitr::is_html_output() ) {
         format = "html",
         longtable = FALSE,
         booktabs = TRUE,
-        col.names = c("Worker 1", "Worker 2", "Worker 3"),
+        col.names = c("Worker 1", 
+                      "Worker 2", 
+                      "Worker 3"),
         caption = "The productivity of three females workers installing concrete panels (in panels per minute)")
   }
 ```
