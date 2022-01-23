@@ -316,7 +316,7 @@ and Group B has 45 individuals,
 and we wish to study the difference
 $\bar{x}_A - \bar{x}_B$.
 what is the sample size be?
-Certain not $15-45=-30$.
+Certainly not $15-45=-30$.
 
 On the other hand,
 the *standard error*
@@ -482,7 +482,7 @@ The *difference* between the sample means varies from sample to sample,
 and so has a sampling distribution and *standard error*.
 
 
-::: {.definition name="Sampling distribution of the difference between two sample means"}
+::: {.definition name="Sampling distribution for the difference between two sample means"}
 The *sampling distribution of the difference between two sample means*
 is described by:
 
@@ -552,13 +552,13 @@ What does a *negative* difference mean?
 
 
 
-
-## Confidence intervals: Two independent means
-
 ```{r echo=FALSE}
 RT.mn <- Phone.DataSummary[3, 1]
 RT.se <- Phone.DataSummary[3, 4]
 ```
+
+## Confidence intervals: Two independent means
+
 
 
 Being able to describe\index{confidence interval!difference between two  means}
@@ -678,7 +678,7 @@ as this row of output is more general
 jamovi and SPSS give *two* confidence intervals.
 In this book,
 we will use the *second row* of information
-(the Welch's $t$ row in jamovi;
+(the 'Welch's $t$' row in jamovi;
 the 'Equal variance not assumed' row in SPSS)
 because it is more general and makes fewer assumptions.
 :::
@@ -725,7 +725,7 @@ if *one* of these conditions is true:
 1. Either sample size is smaller than 25, **and**
    the *populations* corresponding to both comparison groups have an approximate normal distribution.
    
-The sample size of 25 is a rough figure here, and some books give other values (such as 30).
+The sample size of 25 is a rough figure here, and some books give other (similar) values (such as 30).
 We can explore the histograms of the *samples*
 to determine if normality of the *populations* seems reasonable.
 
@@ -1101,6 +1101,267 @@ arrows(1:2, c(ciF[1], ciM[1]),
 
 
 
+## Example: Speed signage {#SpeedSignage}
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-pixabay-315939.jpg" width="200px">
+</div>
+
+
+
+`r if (knitr::is_html_output()) '<!--'`
+\begin{wrapfigure}{R}{.25\textwidth}
+  \begin{center}
+    \includegraphics[width=.20\textwidth]{Illustrations/pexels-pixabay-315939.jpg}
+  \end{center}
+\end{wrapfigure}
+`r if (knitr::is_html_output()) '-->'`
+
+
+In an attempt to reduce vehicle speeds on freeway exit ramps,
+a Chinese study tried using additional signage [@ma2019impacts].
+
+At one site studied (Ningxuan Freeway), 
+speeds were recorded for vehicles before the extra signage was added,
+and then after the extra signage was added.
+
+
+```{r Signage, echo=FALSE}
+
+Speed <- structure(list(When = c("Before", "Before", "Before", "Before", 
+"Before", "Before", "Before", "Before", "Before", "Before", "Before", 
+"Before", "Before", "Before", "Before", "Before", "Before", "Before", 
+"Before", "Before", "Before", "Before", "Before", "Before", "Before", 
+"Before", "Before", "Before", "Before", "Before", "Before", "Before", 
+"Before", "Before", "Before", "Before", "Before", "Before", "After", 
+"After", "After", "After", "After", "After", "After", "After", 
+"After", "After", "After", "After", "After", "After", "After", 
+"After", "After", "After", "After", "After", "After", "After", 
+"After", "After", "After", "After", "After", "After", "After", 
+"After", "After", "After", "After", "After", "After", "After", 
+"After", "After", "After", "After", "After"), Speed = c(90, 83.1, 
+93.9, 113.7, 120, 108, 98.2, 90, 90, 108, 102.9, 108, 83.1, 72, 
+98.2, 102.9, 108, 120, 127.1, 72, 80, 86.4, 80, 90, 98.2, 90, 
+102.9, 102.9, 113.7, 108, 93.9, 98.2, 108, 108, 102.9, 102.9, 
+86.4, 83.1, 98.2, 102.9, 93.9, 98.2, 80, 86.4, 102.9, 83.1, 98.2, 
+98.2, 93.9, 98.2, 67.5, 98.2, 93.9, 98.2, 63.5, 83.1, 93.9, 93.9, 
+120, 93.9, 77.1, 86.4, 98.2, 108, 74.5, 102.9, 90, 98.2, 108, 
+86.4, 113.7, 72, 98.2, 93.9, 69.7, 113.7, 102.9, 72, 80)), class = "data.frame", row.names = c(NA, 
+-79L))
+Speed$When <- factor(Speed$When,
+                     levels = c("Before", "After"),
+                     ordered = TRUE)
+
+if( knitr::is_latex_output() ) {
+  
+  kable( Speed,
+         format = "latex",
+         longtable = FALSE,
+         booktabs = TRUE,
+         align = c("c", "c", "c"),
+         caption = "Vehicle speeds before and after adding extra signage") %>%
+    kable_styling(font_size = 10)
+}
+
+if( knitr::is_html_output() ) {
+  
+   out2 <-  DT::datatable( Speed,
+                 fillContainer = FALSE, # Make more room, so we don't just have ten values
+                 colnames = c("When measured", "Speed (km/h)"),
+                 options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
+                 caption = "The observations from the signage data")
+
+    out <- kable( Speed,
+                format = "html",
+                longtable = FALSE,
+                booktabs = TRUE,
+                align = c("c", "c"),
+                caption = "Vehicle speeds before and after adding extra signage")
+    
+ if ( knitr::is_html_output(excludes = "epub")) {
+    out2
+  } else {
+    out
+  }
+}
+```
+
+The RQ is:
+
+> At this freeway exit,
+> is the mean vehicle speed the same
+> before extra signage is added
+> and after extra signage is added?
+
+The data are *not* paired:
+different vehicles are measured before and after the extra signage is added.
+
+The data are summarised in Table \@ref(tab:SignageSummary).
+
+
+
+
+```{r SignageSummary, echo=FALSE}
+SignageSummary <- array(dim = c(3, 4))
+rownames(SignageSummary) <- c("Before", 
+                            "After",
+                            "Speed reduction")
+colnames(SignageSummary) <- c("Mean",
+                              "Std deviation",
+                            "Std error",
+                            "Sample size")
+
+Speed.n <- tapply(Speed$Speed, 
+                  list(Speed$When), 
+                  "length") 
+Speed.sd <- tapply(Speed$Speed, 
+                   list(Speed$When), 
+                   "sd") 
+
+SignageSummary[1:2, 1] <- round( tapply(Speed$Speed, 
+                                        list(Speed$When), 
+                                        "mean"),
+                                 2)
+SignageSummary[1:2, 2] <- round( Speed.sd, 2)
+SignageSummary[1:2, 3] <- round( Speed.sd / sqrt(Speed.n), 3)
+SignageSummary[1:2, 4] <- Speed.n 
+
+SignageSummary[3, 1] <- SignageSummary[1, 1] -  
+                        SignageSummary[2, 1] 
+
+sdB <- round( SignageSummary[1, 3], 2)
+sdA <- round( SignageSummary[2, 3], 2)
+SignageSummary[3, 3] <- round( sqrt( sdB^2/Speed.n[1] + 
+                                     sdA^2/Speed.n[2] ), 
+                               3)
+
+SignageSummary[3, 4] <- NA 
+SignageSummary[3, 2] <- NA
+                          
+
+
+if( knitr::is_latex_output() ) {
+  kable(SignageSummary,
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        align = c("r", "r", "r", "l"),
+        col.names = c("Mean", 
+                      "Std deviation", 
+                      "Sample size", 
+                      "Std error"),
+        caption = "The signage data summary (in km/h)"
+  ) %>%
+  row_spec(0, bold = TRUE) %>%
+  kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  out <- kable(SignageSummary,
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               align = c("r", "r", "r", "l"),
+               col.names = c("Mean", 
+                            "Std deviation", 
+                            "Std error",
+                            "Sample size"),
+    caption = "The signage data summary (in km/h)"
+  )
+  if ( knitr::is_html_output(excludes = "epub")) {
+    kable_styling(out, full_width = FALSE)
+  } else {
+    out
+  }
+}
+```
+
+
+
+
+
+The parameter is $\mu_{\text{Before}} - \mu_{\text{After}}$,
+the *reduction* in the mean speed.
+
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+The *standard error must given*; 
+you *cannot* easily calculate this from the other information.
+You are not expected to do so.
+:::
+
+
+A useful graphical summary of the data is a boxplot (Fig. \@ref(fig:SignageErrorBar), left panel); 
+likewise, an error bar chart can be produced by computing the CI for each group
+(Fig. \@ref(fig:SignageErrorBar), right panel).
+
+
+
+```{r SignageErrorBar, echo=FALSE, fig.cap="Boxplot (left); error bar chart (right) showing the mean speed before and after the addition of extra signage, and the 95\\% CIs", fig.align="center", fig.width=6, fig.height=3.5}
+
+par( mfrow = c(1, 2) )
+
+boxplot( Speed ~ When,
+         data = Speed,
+         ylab = "Vehicle speed (km/h)",
+         xlab = "When measured",
+         main = "Speed before and after\nextra signage added",
+         ylim = c(60, 130),
+         las = 1,
+         col = plot.colour)
+
+
+bit <- 0.05
+
+mns <- SignageSummary[1:2, 1]
+se <- SignageSummary[1:2, 3]
+
+ci.lo <- mns - 2 * se
+ci.hi <- mns + 2 * se
+
+plot( 1:2, 
+      mns,
+      pch = 19,
+      ylim = c(80, 110 ),
+      xlim = c(0.4, 2.6),
+      las = 1,
+      axes = FALSE,
+      xlab = "",
+      ylab = "Vehicle speed (km/h)",
+      main = "Mean vehicle speeds",
+      sub = "(Error bars are the 95% CI)",
+      type = "p")
+axis(side = 1, 
+     at = 1:2,
+     las=1,
+     labels = c("Before", 
+                "After"))
+axis(side = 2, 
+     las = 1)
+box()
+
+lines( c(1, 1),
+       c(ci.lo[1], ci.hi[1]))
+lines( c(2, 2),
+       c(ci.lo[2], ci.hi[2]))
+
+
+lines( c(1 - bit, 1 + bit), 
+       c( ci.hi[1], ci.hi[1]) )
+lines( c(1 - bit, 1 + bit), 
+       c( ci.lo[1], ci.lo[1]) )
+
+lines( c(2 - bit, 2 + bit), 
+       c( ci.hi[2], ci.hi[2]) )
+lines( c(2 - bit, 2 + bit), 
+       c( ci.lo[2], ci.lo[2]) )
+```
+
+
+
+
+
+
 ## Example: Health Promotion services {#BHADP}
 
 
@@ -1195,7 +1456,7 @@ if( knitr::is_html_output() ) {
                align = c("r", "r", "r", "l"),
                col.names = c("Sample mean", 
                             "Std deviation", 
-                            "Sampe size", 
+                            "Sample size", 
                             "Std error"),
     caption = "The BHADP data summary"
   )
@@ -1769,4 +2030,175 @@ write down and interpret the CI.
 ```{r DentaljamoviCI, echo=FALSE, fig.cap="jamovi output for the sugar-consumption data", fig.align="center", out.width="90%"}
 knitr::include_graphics("jamovi/Dental/WoodwardWalker1994-ttest.png")
 ```
+
+
+
+
+::: {.exercise #DecelerationCI}
+In an attempt to reduce vehicle speeds on freeway exit ramps,
+a Chinese study tried using additional signage [@ma2019impacts].
+
+At one site studied (Ningxuan Freeway), 
+speeds were recorded at various points on the freeway exit
+for vehicles before the extra signage was added,
+and then after the extra signage was added.
+
+From this data,
+the *deceleration* of each vehicle was determined
+(data below) as the vehicle left the 120 km/h speed zone and approached the 80 km/hr speed zone. 
+
+Use the data, and the summary in Table \@ref(tab:SignageSummaryDec), to address this RQ:
+
+> At this freeway exit,
+> what is the difference between the mean vehicle deceleration,
+> comparing the times before the extra signage is added
+> and after extra signage is added?
+
+:::
+
+
+```{r SignageDec, echo=FALSE}
+Decel <- structure(list(When = c("Before", "Before", "Before", "Before", 
+"Before", "Before", "Before", "Before", "Before", "Before", "Before", 
+"Before", "Before", "Before", "Before", "Before", "Before", "Before", 
+"Before", "Before", "Before", "Before", "Before", "Before", "Before", 
+"Before", "Before", "Before", "Before", "Before", "Before", "Before", 
+"Before", "Before", "Before", "Before", "Before", "Before", "After", 
+"After", "After", "After", "After", "After", "After", "After", 
+"After", "After", "After", "After", "After", "After", "After", 
+"After", "After", "After", "After", "After", "After", "After", 
+"After", "After", "After", "After", "After", "After", "After", 
+"After", "After", "After", "After", "After", "After", "After", 
+"After", "After", "After", "After", "After"), Deceleration = c(0.108, 
+0.064, 0.002, 0.029, 0.167, 0.042, 0.113, 0.053, 0.035, -0.062, 
+0.063, 0.107, 0.081, 0.102, 0.054, 0.003, 0.042, 0.07, 0.023, 
+0.028, 0.08, 0.061, 0.031, 0.071, 0.113, 0.126, 0.084, 0.043, 
+0.096, 0.151, 0.114, 0.154, 0.107, 0.173, 0.084, 0.126, 0.044, 
+0.048, 0.134, -0.113, -0.052, 0.093, 0.08, 0.044, 0.043, 0.064, 
+0.074, 0.093, 0.095, 0.054, 0.118, 0.154, 0.076, 0.113, 0.083, 
+0.064, 0.057, 0.076, 0.167, 0.076, 0.107, 0.044, 0.175, 0.085, 
+0.037, 0.147, 0.089, 0.074, 0.085, 0.079, 0.119, 0.014, 0.093, 
+0.095, 0.046, 0.007, 0.063, 0.087, 0.096)), class = "data.frame", row.names = c(NA, 
+-79L))
+
+
+Decel$When <- factor(Decel$When,
+                     levels = c("Before", "After"),
+                     ordered = TRUE)
+
+if( knitr::is_latex_output() ) {
+  
+  kable( Decel,
+         format = "latex",
+         longtable = FALSE,
+         booktabs = TRUE,
+         align = c("c", "c", "c"),
+         caption = "Vehicle deceleration before and after adding extra signage (negative values mean the vehicle has accelerated)") %>%
+    kable_styling(font_size = 10)
+}
+
+if( knitr::is_html_output() ) {
+  
+   out2 <-  DT::datatable( Decel,
+                 fillContainer = FALSE, # Make more room, so we don't just have ten values
+                 colnames = c("When measured", "Deceleration (m/s-squared)"),
+                 options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
+                 caption = "The observations from the signage data (negative values mean the vehicle has accelerated)")
+
+    out <- kable( Decel,
+                format = "html",
+                longtable = FALSE,
+                booktabs = TRUE,
+                align = c("c", "c"),
+                caption = "Vehicle deceleration before and after adding extra signage (negative values mean the vehicle has accelerated)")
+    
+ if ( knitr::is_html_output(excludes = "epub")) {
+    out2
+  } else {
+    out
+  }
+}
+```
+
+
+
+
+
+
+```{r SignageSummaryDec, echo=FALSE}
+SignageSummaryDec <- array(dim = c(3, 4))
+rownames(SignageSummaryDec) <- c("Before", 
+                            "After",
+                            "Change")
+colnames(SignageSummaryDec) <- c("Mean",
+                              "Std deviation",
+                              "Std error",
+                              "Sample size")
+
+Speed.n <- tapply(Decel$Decel, 
+                  list(Decel$When), 
+                  "length") 
+Speed.sd <- tapply(Decel$Decel, 
+                   list(Decel$When), 
+                   "sd") 
+
+SignageSummaryDec[1:2, 1] <- round( tapply(Decel$Decel, 
+                                        list(Decel$When), 
+                                        "mean"),
+                                 4)
+SignageSummaryDec[1:2, 2] <- round( Speed.sd, 4)
+SignageSummaryDec[1:2, 3] <- round( Speed.sd / sqrt(Speed.n), 5)
+SignageSummaryDec[1:2, 4] <- Speed.n 
+
+SignageSummaryDec[3, 1] <- SignageSummaryDec[1, 1] -  
+                           SignageSummaryDec[2, 1] 
+
+sdB <- round( SignageSummaryDec[1, 3], 4)
+sdA <- round( SignageSummaryDec[2, 3], 4)
+SignageSummaryDec[3, 3] <- round( sqrt( sdB^2/Speed.n[1] + 
+                                     sdA^2/Speed.n[2] ), 
+                               5)
+
+SignageSummaryDec[3, 4] <- NA 
+SignageSummaryDec[3, 2] <- NA
+                          
+
+
+if( knitr::is_latex_output() ) {
+  kable(SignageSummaryDec,
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        align = c("r", "r", "r", "l"),
+        col.names = c("Mean", 
+                      "Std deviation", 
+                      "Sample size", 
+                      "Std error"),
+        caption = "The signage data summary (in m/s-squared)"
+  ) %>%
+  row_spec(0, bold = TRUE) %>%
+  kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  out <- kable(SignageSummaryDec,
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               align = c("r", "r", "r", "l"),
+               col.names = c("Mean", 
+                            "Std deviation", 
+                            "Sample size", 
+                            "Std error"),
+    caption = "The signage data summary (in m/s-squared)"
+  )
+  if ( knitr::is_html_output(excludes = "epub")) {
+    kable_styling(out, full_width = FALSE)
+  } else {
+    out
+  }
+}
+```
+
+
+
 
