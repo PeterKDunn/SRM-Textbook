@@ -38,7 +38,7 @@ SixSteps(5, "Tests: Differences between means")
 
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/pexels-splitshire-2224.jpg" width="200px">
+<img src="Illustrations/pexels-splitshire-2224.jpg" width="200px"/>
 </div>
 
 
@@ -581,12 +581,273 @@ Since both sample sizes are large, the test is statistically valid.
 
 
 
+## Example: Speed signage {#SpeedSignageHT}
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-pixabay-315939.jpg" width="200px"/>
+</div>
+
+
+
+`r if (knitr::is_html_output()) '<!--'`
+\begin{wrapfigure}{R}{.25\textwidth}
+  \begin{center}
+    \includegraphics[width=.20\textwidth]{Illustrations/pexels-pixabay-315939.jpg}
+  \end{center}
+\end{wrapfigure}
+`r if (knitr::is_html_output()) '-->'`
+
+
+In an attempt to reduce vehicle speeds on freeway exit ramps,
+a Chinese study tried using additional signage [@ma2019impacts].
+
+At one site studied (Ningxuan Freeway), 
+speeds were recorded for 38 vehicles before the extra signage was added,
+and then for 41 vehicles after the extra signage was added.
+
+
+```{r SignageHT, echo=FALSE}
+
+Speed <- structure(list(When = c("Before", "Before", "Before", "Before", 
+"Before", "Before", "Before", "Before", "Before", "Before", "Before", 
+"Before", "Before", "Before", "Before", "Before", "Before", "Before", 
+"Before", "Before", "Before", "Before", "Before", "Before", "Before", 
+"Before", "Before", "Before", "Before", "Before", "Before", "Before", 
+"Before", "Before", "Before", "Before", "Before", "Before", "After", 
+"After", "After", "After", "After", "After", "After", "After", 
+"After", "After", "After", "After", "After", "After", "After", 
+"After", "After", "After", "After", "After", "After", "After", 
+"After", "After", "After", "After", "After", "After", "After", 
+"After", "After", "After", "After", "After", "After", "After", 
+"After", "After", "After", "After", "After"), Speed = c(90, 83.1, 
+93.9, 113.7, 120, 108, 98.2, 90, 90, 108, 102.9, 108, 83.1, 72, 
+98.2, 102.9, 108, 120, 127.1, 72, 80, 86.4, 80, 90, 98.2, 90, 
+102.9, 102.9, 113.7, 108, 93.9, 98.2, 108, 108, 102.9, 102.9, 
+86.4, 83.1, 98.2, 102.9, 93.9, 98.2, 80, 86.4, 102.9, 83.1, 98.2, 
+98.2, 93.9, 98.2, 67.5, 98.2, 93.9, 98.2, 63.5, 83.1, 93.9, 93.9, 
+120, 93.9, 77.1, 86.4, 98.2, 108, 74.5, 102.9, 90, 98.2, 108, 
+86.4, 113.7, 72, 98.2, 93.9, 69.7, 113.7, 102.9, 72, 80)), class = "data.frame", row.names = c(NA, 
+-79L))
+Speed$When <- factor(Speed$When,
+                     levels = c("Before", "After"),
+                     ordered = TRUE)
+
+if( knitr::is_latex_output() ) {
+  
+  kable( Speed,
+         format = "latex",
+         longtable = FALSE,
+         booktabs = TRUE,
+         align = c("c", "c", "c"),
+         caption = "Vehicle speeds before and after adding extra signage") %>%
+    kable_styling(font_size = 10)
+}
+
+if( knitr::is_html_output() ) {
+  
+   out2 <-  DT::datatable( Speed,
+                 fillContainer = FALSE, # Make more room, so we don't just have ten values
+                 colnames = c("When measured", "Speed (km/h)"),
+                 options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
+                 caption = "The observations from the signage data")
+
+    out <- kable( Speed,
+                format = "html",
+                longtable = FALSE,
+                booktabs = TRUE,
+                align = c("c", "c"),
+                caption = "Vehicle speeds before and after adding extra signage")
+    
+ if ( knitr::is_html_output(excludes = "epub")) {
+    out2
+  } else {
+    out
+  }
+}
+```
+
+The researchers are hoping that the addition of extra signage will *reduce* the mean speed of the vehicles.
+
+The RQ is:
+
+> At this freeway exit,
+> did the mean vehicle speed *reduce*
+> after extra signage was added?
+
+The data are *not* paired:
+different vehicles are measured before and after the extra signage is added.
+
+The data are summarised in Table \@ref(tab:SignageSummaryHT).
+
+
+
+
+```{r SignageSummaryHT, echo=FALSE}
+SignageSummary <- array(dim = c(3, 4))
+rownames(SignageSummary) <- c("Before", 
+                            "After",
+                            "Speed reduction")
+colnames(SignageSummary) <- c("Mean",
+                              "Std deviation",
+                            "Std error",
+                            "Sample size")
+
+Speed.n <- tapply(Speed$Speed, 
+                  list(Speed$When), 
+                  "length") 
+Speed.sd <- tapply(Speed$Speed, 
+                   list(Speed$When), 
+                   "sd") 
+
+SignageSummary[1:2, 1] <- round( tapply(Speed$Speed, 
+                                        list(Speed$When), 
+                                        "mean"),
+                                 2)
+SignageSummary[1:2, 2] <- round( Speed.sd, 2)
+SignageSummary[1:2, 3] <- round( Speed.sd / sqrt(Speed.n), 3)
+SignageSummary[1:2, 4] <- Speed.n 
+
+SignageSummary[3, 1] <- SignageSummary[1, 1] -  
+                        SignageSummary[2, 1] 
+
+sdB <- round( SignageSummary[1, 3], 2)
+sdA <- round( SignageSummary[2, 3], 2)
+SignageSummary[3, 3] <- round( sqrt( sdB^2/Speed.n[1] + 
+                                     sdA^2/Speed.n[2] ), 
+                               3)
+
+SignageSummary[3, 4] <- NA 
+SignageSummary[3, 2] <- NA
+                          
+
+
+if( knitr::is_latex_output() ) {
+  kable(SignageSummary,
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        align = c("r", "r", "r", "r"),
+        col.names = c("Mean", 
+                      "Std deviation", 
+                      "Sample size", 
+                      "Std error"),
+        caption = "The signage data summary (in km/h)"
+  ) %>%
+  row_spec(0, bold = TRUE) %>%
+  kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  out <- kable(SignageSummary,
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               align = c("r", "r", "r", "r"),
+               col.names = c("Mean", 
+                            "Std deviation", 
+                            "Std error",
+                            "Sample size"),
+    caption = "The signage data summary (in km/h)"
+  )
+  if ( knitr::is_html_output(excludes = "epub")) {
+    kable_styling(out, full_width = FALSE)
+  } else {
+    out
+  }
+}
+```
+
+
+
+
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+The *standard error must given*; 
+you *cannot* easily calculate this from the other information.
+You are not expected to do so.
+:::
+
+
+A useful graphical summary of the data is a boxplot (Fig. \@ref(fig:SignageErrorBar), left panel); 
+likewise, an error bar chart can be produced by computing the CI for each group
+(Fig. \@ref(fig:SignageErrorBar), right panel).
+
+The parameter is $\mu_{\text{Before}} - \mu_{\text{After}}$,
+the *reduction* in the mean speed.
+
+The hypotheses are:
+
+* $H_0$: $\mu_{\text{Before}} - \mu_{\text{After}} = 0$: There is no change in the mean speeds
+* $H_1$: $\mu_{\text{Before}} - \mu_{\text{After}} > 0$: The mean speed has *reduced*
+
+
+The best estimate of the difference in *population* means 
+is the difference between the *sample* means: 
+$(\mu_{\text{Before}} - \mu_{\text{After}}) = 5.68$.
+The table also gives
+the standard error for estimating this *difference* as
+$\text{s.e.}(\bar{x}_{\text{Before}} - \bar{x}_{\text{After}}) = 0.472$.
+
+Using the summary information in Table \@ref(tab:SignageSummaryHT),
+the $t$-score is computed using 
+Equation \@ref(eq:tscore):
+
+\[
+  t = \frac{5.68 - 0}{2.96} = 1.92.
+\]
+(Recall that $\mu_{\text{Before}} - \mu_{\text{After}} = 0$ from the null hypothesis.)
+
+Using the [68--95--99.7 rule](#def:EmpiricalRule),
+this $t$-score is not that small.
+
+Using Table \@ref(tab:PvaluesInterpretation)), this $P$-values only provides slight evidence of a recduction in mean speeds.
+
+We conclude:
+
+> Slight evidence exists in the sample 
+> ($t = 1.92$; two-tailed $P < 0.001$) 
+> that mean speeds have reduced after the addition of extra signage
+> (Before: mean speed: 98,02 km/h; $n = 38$; standard deviation: $13.18$ km/h; 
+>  After:  mean speed: 92.34 km/h; $n = 41$; standrad deviation: $13.13$ km/h;
+> 95% CI for the difference: -0.24 to 11.6 km/h).
+
+
+
+
+
+
+
+
+\[
+  5.68 \pm (2 \times 0.472),
+\]
+or from
+$4.74$ to $6.62$ km/h,
+higher before the addition of extra signage.
+   
+This means that,
+if many samples of size 38 and 41 were found,
+and the difference between the mean speeds were found,
+about 95% of the CIs would contain the population difference
+($\mu_{\text{Before}} - \mu_{\text{After}}$).
+Loosely speaking,
+there is a 95% chance that our CI straddles the difference in the population means ($\mu_{\text{Before}} - \mu_{\text{After}}$).
+
+Using the [validity conditions](#ValidityTwoMeans),
+the CI is statistically valid.
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+Remember: clearly state *which* mean is larger.
+:::
+
+
+
 ## Example: Health Promotion services {#BHADP-Test}
 
 
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/pexels-marcus-aurelius-4063510.jpg" width="200px">
+<img src="Illustrations/pexels-marcus-aurelius-4063510.jpg" width="200px"/>
 </div>
 
 
