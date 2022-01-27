@@ -58,13 +58,10 @@ makeTransparent <- function(someColor, alpha = 100){
 }
 
 # Environment defaults
-foldLaTeXText <- "The answer is given in the online book."
-
-
 knitr::opts_chunk$set(fig.pos = "hbtp")   # Place tables HERE and so on
 
 
-# Chunk options: Must be on one line
+# Chunk options: Options must all be on one line
 knitr::opts_chunk$set(
   cache = FALSE, echo = FALSE, warning = FALSE, message = FALSE
 )
