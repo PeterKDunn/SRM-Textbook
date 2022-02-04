@@ -63,7 +63,7 @@ knitr::opts_chunk$set(fig.pos = "hbtp")   # Place tables HERE and so on
 
 # Chunk options: Options must all be on one line
 knitr::opts_chunk$set(
-  cache = FALSE, echo = FALSE, warning = FALSE, message = FALSE
+  cache = TRUE, echo = FALSE, warning = FALSE, message = FALSE
 )
 
 options(knitr.kable.NA = '')
