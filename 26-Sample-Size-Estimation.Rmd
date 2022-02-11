@@ -26,21 +26,19 @@ SixSteps(5, "Estimating the sample size")
 A [confidence interval](AboutCIs) is an interval which gives a range of values of the population parameter that could plausibly have given rise to our observed value of the statistic.
 
 All other things being equal, it makes sense that a *larger* sample size would give a more precise estimate. 
-After all, that's why would like larger samples.
+After all, that's why we would like larger samples: to get better (more [*precise*](#PrecisionAccuracy)) estimates, and hence narrower CIs.
 
-In general, *larger* samples produce more [*precise*](#PrecisionAccuracy) estimates of the parameter (Sect.&nbsp;\@ref(PrecisionAccuracy)), and hence narrower CIs.
-
-If that was not the case, we could take the smallest possible sample of size one... which is clearly absurd.
+If that was not the case, we could take the smallest, cheapest and easiest possible sample of size one... which is clearly absurd.
 
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Remember that the sample size is the number of *units of analysis*.
+Remember that the sample size is the number of [*units of analysis*](UnitsObsAnalysis).
 :::
 
 If larger samples give better estimates, it might appear that we should take the largest possible sample that we can.
 
-But using large samples also have disadvantages: 
+But using large samples also has disadvantages: 
 
 * Larger samples take longer to conduct.
 * Larger samples can cost more money.
@@ -54,6 +52,10 @@ Determining what sample size to use is, therefore, a trade-off between cost, tim
 If cost, time and ethics were not limiting factors, the largest possible sample could (and probably should) be used.
 
 In addition, it sometimes is important to begin with a slightly larger sample than required to allow for drop-outs (for example, plants die, or people withdraw from the study).
+
+
+
+
 
 
 
@@ -90,6 +92,78 @@ All other things being equal,
 more [*precise*](#PrecisionAccuracy) estimates of the parameter
 (Sect.&nbsp;\@ref(PrecisionAccuracy)),
 and hence *narrower* CIs.
+
+Figure \@ref(fig:SampleSizeCIWidth) shows the approximate width of the CI for estimating a proportion
+when different sample sizes are used.
+From this graph, we can see that:
+
+* Greater precision (smaller CI widths) are obtained using larger sample sizes (as expected);
+* For *small* sample sizes (say, smaller than 15, precision is greatly increased with small increases in the sample size;
+* For *large* sample sizes (say, greater than 30), precision only improves slightly when the sample size is increased.
+
+
+```{r SampleSizeCIWidth, echo=FALSE, fig.align="center", out.width = "80%", fig.cap='The approximate width of a 95\\% CI when various size samples are used', fig.height = 5}
+ME <- function(n, p = 0.5){
+  1.96 * sqrt( p * (1 - p) / n)
+}
+
+n <- seq(5, 50, by = 1)
+
+par( mfrow = c(1, 1),
+     mar = c(4, 4, 5, 2), # LINES on each side of plot
+     oma = c(1, 1, 1, 1) ) # OUTER margins, between plots and edges of canvas
+
+
+plot( c( min(n), max(n) ), 
+     c(0, 1),
+     type = "n",
+     pch = 19,
+     las = 1,
+     xlim = c(0, 50),
+     ylim <- c(0, 1),
+     xlab = "Sample size",
+     ylab = "Approx. width of 95% CI",
+     main = "The width of CI by sample size\n(for estimating a proportion)")
+abline(h = 0.5,
+       lwd = 1,
+       col = "grey")
+lines(n,
+      0.5 + ME(n),
+      type = "b",
+      pch = 19,
+      cex = 0.75,
+      col = plot.colour,
+      lty = 1,
+      lwd = 2)
+lines(n,
+      0.5 - ME(n),
+      type = "b",
+      pch = 19,
+      cex = 0.75,
+      col = plot.colour,
+      lty = 1,
+      lwd = 2)
+text(10,
+     0.5,
+     pos = 4,
+     "Approximate width of 95% CI")
+
+n.example <- 10
+arrows(n.example,
+       0.5 + ME(n.example),
+       n.example,
+       0.5 - ME(n.example),
+       length = 0.1,
+       angle = 15,
+       lwd = 2,
+       code = 3, # Draw arrowhead at both ends
+       col = plot.colour2)
+
+```
+
+
+
+
 
 Suppose we want our 95% CI for the proportion of smokers 
 (Example \@ref(exm:NHANESSmokers))
@@ -136,7 +210,6 @@ to achieve this desired level of precision
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 Always **round up** the result of the sample size calculation.
 :::
-
 
 
 
