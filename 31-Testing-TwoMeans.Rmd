@@ -129,7 +129,7 @@ if( knitr::is_latex_output() ) {
    row_spec(0, bold = TRUE) %>%
     kable_styling(font_size = 10)
 }
-if( knitr::is_html_output() ) {
+if( knitr::is_html_output(exclude = "epub") ) {
   DT::datatable( RT.DataTable,
                  colnames = c("Using phone", 
                               "Not using phone"),
@@ -141,8 +141,15 @@ if( knitr::is_html_output() ) {
                  options = list(searching = FALSE) # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
   )
 }
-
-
+if( knitr::is_html_output() & knitr::pandoc_to("epub")) {
+  kable( RT.DataTable10,
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names = c("Using phone", 
+                       "Not using phone"),
+         caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones. The first ten observations are shown, but 32 students are in each group")
+}
 
 ```
 
@@ -644,26 +651,23 @@ if( knitr::is_latex_output() ) {
     kable_styling(font_size = 10)
 }
 
-if( knitr::is_html_output() ) {
+if( knitr::is_html_output(exclude = "epub") ) {
   
    out2 <-  DT::datatable( Speed,
                  fillContainer = FALSE, # Make more room, so we don't just have ten values
                  colnames = c("When measured", "Speed (km/h)"),
                  options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                  caption = "The observations from the signage data")
-
-    out <- kable( Speed,
-                format = "html",
-                longtable = FALSE,
-                booktabs = TRUE,
-                align = c("c", "c"),
-                caption = "Vehicle speeds before and after adding extra signage")
-    
- if ( knitr::is_html_output(excludes = "epub")) {
-    out2
-  } else {
-    out
-  }
+}    
+  
+if( knitr::is_html_output() & knitr::pandoc_to("epub") ) {
+  kable( Speed[1:10,],
+         format = "html",
+         longtable = FALSE,
+         booktabs = TRUE,
+         align = c("c", "c", "c"),
+         caption = "Vehicle speeds before and after adding extra signage. Only the first 10 observations are shown.") %>%
+    kable_styling(font_size = 10)
 }
 ```
 

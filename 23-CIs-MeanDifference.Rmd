@@ -206,11 +206,22 @@ if( knitr::is_latex_output() ) {
   kable_styling(font_size = 10) %>%
   row_spec(0, bold = TRUE)
 }
-if( knitr::is_html_output() ) {
+if( knitr::is_html_output(exclude = "epub") ) {
   DT::datatable( round(insulate, 1),
                  fillContainer = FALSE, # Make more room, so we don't just have ten values
                  options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                  caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)")
+}
+
+if( knitr::is_html_output() & pandoc_to("epub")) {
+  kable( insulate,
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names = c("Before", "After", "Energy savings"),
+         caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") %>%
+  kable_styling(font_size = 10) %>%
+  row_spec(0, bold = TRUE)
 }
 ```
 
@@ -1674,7 +1685,7 @@ if( knitr::is_latex_output() ) {
   row_spec(row = 0, bold = TRUE) %>%
   kable_styling(font_size = 10)
 }
-if( knitr::is_html_output() ) {
+if( knitr::is_html_output( excludes = "epub") ) {
   DT::datatable( diab[DiffExists, c("bp.1d", 
                                     "bp.2d", 
 				    "Diff")],
@@ -1682,6 +1693,18 @@ if( knitr::is_html_output() ) {
                  colnames = c("First", "Second", "Differences"),
                  options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                  caption = "The observations from the diabetes study for people with both measurements: Diastolic blood pressure (DBP) for the first and second visits, and the decrease in DBP, all in mm Hg")
+}
+if( knitr::is_html_output() & knitr::pandoc_to("epub") ) {
+  kable(head( diab[DiffExists, c("bp.1d", 
+                                 "bp.2d", 
+				 "Diff")]),
+        format = "html",
+        booktabs = TRUE,
+        longtable = FALSE,
+        linesep = c("", "", "\\addlinespace", "", "", ""),
+        row.names = FALSE,
+        col.names = c("DBP: First visit", "DBP: Second visit", "Reduction in DBP"),
+        caption = "The first six observations (from the $n=141$ available) from the diabetes study for people with both measurements: Diastolic blood pressure (DBP) for the first and second visits, and the decrease in DBP, all in mm Hg")
 }
 ```
 

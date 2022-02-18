@@ -91,12 +91,21 @@ if( knitr::is_latex_output() ) {
 ```
 
 ```{r deerDataDT, echo=FALSE, fig.cap="The male red deer data", fig.align="center"}
-if( knitr::is_html_output() ) {
+if( knitr::is_html_output(exclude = "epub") ) {
   DT::datatable(RD,
               list(scrollX = TRUE, 
 	            scrollY = TRUE, 
 		          ordering = FALSE),
               caption = "The male red deer data")
+}
+if( knitr::is_html_output() & knitr::pandoc_to("epub")) {
+  knitr::kable( head(RD, 10),
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names = c( "Age (in years)", 
+	                      "Molar weight (in g)"),
+         caption = "The first 10 observations of the male red deer data")
 }
 ```
 
@@ -198,13 +207,16 @@ see the example scatterplots in
 
 
 
-```{r, child = if (knitr::is_html_output()) './children/ScatterExampleCarousel.Rmd'}
+```{r, child = if (knitr::is_html_output(exclude = "epub")) './children/ScatterExampleCarousel.Rmd'}
 ```
 
 
 ```{r, child = if (knitr::is_latex_output()) './children/ScatterExampleImages.Rmd'}
 ```
 
+
+```{r, child = if (knitr::is_latex_output() & knitr::pandoc_to("epub")) './children/ScatterExampleImages.Rmd'}
+```
 
 
 ::: {.example #DescribeScatterplots name="Describing scatterplots"}

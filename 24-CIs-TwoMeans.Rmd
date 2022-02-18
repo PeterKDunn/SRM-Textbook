@@ -139,14 +139,25 @@ kable(RT.DataTable,
       align = c("r", "r")) %>%
       row_spec(0, bold = TRUE) %>%
       kable_styling(font_size = 10)
-} else {
+} 
+if( knitr::is_html_output(excludes = "epub") ) {
    DT::datatable(RT.DataTableHTML,
-                 fillContainer=FALSE, # Make more room, so we don't just have ten values
+                 fillContainer = FALSE, # Make more room, so we don't just have ten values
                  colnames = c("Using phone", 
                               "Not using phone"),
                  filter = "none",
                  options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                  caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones.")
+}
+if( knitr::is_html_output() & knitr::pandoc_to("epub")) {
+  kable(RT.DataTableHTML,
+        format = "html",
+        booktabs = TRUE,
+        longtable = FALSE,
+        col.names = c("Using phone", 
+                      "Not using phone"),
+        caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones. The first ten observations are shown, but 32 students are in each group",
+        align = c("r", "r"))
 }
 ```
 
@@ -206,15 +217,6 @@ boxplot(RT$Reaction ~ RT$Group,
         ylim = c(400, 1000),
         ylab = "Reaction time (in ms)",
         xlab = "Group")
-
-
-#stripchart(RT$Reaction ~ factor(RT$Group), 
-#	las=1, 
-#	ylim=c(400, 1000),
-#	pch=1, 
-#	vertical = TRUE,
-#	ylab="Reaction time (milliseconds)",
-#	xlab="Group")
 ```
 
 
@@ -1170,26 +1172,24 @@ if( knitr::is_latex_output() ) {
     kable_styling(font_size = 10)
 }
 
-if( knitr::is_html_output() ) {
+if( knitr::is_html_output(exclude = "epub") ) {
   
-   out2 <-  DT::datatable( Speed,
+   DT::datatable( Speed,
                  fillContainer = FALSE, # Make more room, so we don't just have ten values
                  colnames = c("When measured", "Speed (km/h)"),
                  options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                  caption = "The observations from the signage data")
+}
 
-    out <- kable( Speed,
-                format = "html",
-                longtable = FALSE,
-                booktabs = TRUE,
-                align = c("c", "c"),
-                caption = "Vehicle speeds before and after adding extra signage")
-    
- if ( knitr::is_html_output(excludes = "epub")) {
-    out2
-  } else {
-    out
-  }
+if ( knitr::is_html_output() & knitr::pandoc_to("epub")) {
+
+  kable( Speed[1:10,],
+         format = "html",
+         longtable = FALSE,
+         booktabs = TRUE,
+         align = c("c", "c", "c"),
+         caption = "Vehicle speeds before and after adding extra signage. Only the first 10 observations are shown.") %>%
+    kable_styling(font_size = 10)
 }
 ```
 
@@ -2148,26 +2148,22 @@ if( knitr::is_latex_output() ) {
     kable_styling(font_size = 10)
 }
 
-if( knitr::is_html_output() ) {
+if( knitr::is_html_output(exclude = "epub") ) {
   
-   out2 <-  DT::datatable( Decel,
+   DT::datatable( Decel,
                  fillContainer = FALSE, # Make more room, so we don't just have ten values
                  colnames = c("When measured", "Deceleration (m/s-squared)"),
                  options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                  caption = "The observations from the signage data (negative values mean the vehicle has accelerated)")
+}
 
-    out <- kable( Decel,
-                format = "html",
-                longtable = FALSE,
-                booktabs = TRUE,
-                align = c("c", "c"),
-                caption = "Vehicle deceleration before and after adding extra signage (negative values mean the vehicle has accelerated)")
-    
- if ( knitr::is_html_output(excludes = "epub")) {
-    out2
-  } else {
-    out
-  }
+ if ( knitr::is_html_output(excludes = "epub") & knitr::pandoc_to("epub")) {
+  kable( Decel[1:10,],
+         format = "html",
+         longtable = FALSE,
+         booktabs = TRUE,
+         align = c("c", "c", "c"),
+         caption = "Vehicle deceleration before and after adding extra signage (negative values mean the vehicle has accelerated). Only the first 10 observations are shown.")
 }
 ```
 

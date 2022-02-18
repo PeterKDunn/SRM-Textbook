@@ -282,7 +282,7 @@ if( knitr::is_latex_output() ) {
 	kable_styling(font_size = 10) %>%
 	row_spec(0, bold = TRUE)
 }
-if( knitr::is_html_output() ) {
+if( knitr::is_html_output(excludes = "epub") ) {
   DT::datatable( bodyt,
                  #fillContainer=FALSE, # Make more room, so we don't just have ten values
                  #filter="top", 
@@ -290,6 +290,15 @@ if( knitr::is_html_output() ) {
                  #escape=FALSE,
                  options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                  caption = "The body temperature data")
+}
+if( knitr::is_html_output() & knitr::pandoc_to("epub") ) {
+  kable( subBodyT[1:10, ],
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names = c("Gender", 
+                       "Body temp (deg. C)"),
+         caption = "The body temperature data: The first 5 and the last 5 of the 130 observations")
 }
 ```
 
@@ -1671,12 +1680,20 @@ if( knitr::is_latex_output() ) {
     kable_styling(font_size = 10)
 }
 
-if( knitr::is_html_output() ) {
+if( knitr::is_html_output(exclude = "epub") ) {
   DT::datatable(QC,
                caption = "The quality-control data: LH levels (in mIU/mL) for two instruments",
                colnames = colnames(DataAndTargets),
                options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                filter = "none")
+}
+if( knitr::is_html_output() & knitr::pandoc_to("epub")) {
+  kable( head(QC, 10),
+        format = "html",
+        caption = "The quality-control data: LH levels (in mIU/mL) for two instruments (only the first ten observations shown)",
+        col.names = colnames(DataAndTargets),
+        booktabs = TRUE,
+        longtable = FALSE)
 }
 ```
 

@@ -169,31 +169,35 @@ BB2 <- data.frame(Gender=factor(BB$Gender,
 ```
 
 ```{r BabyBoomDataLATEX}
+  out <- kable( head(BB2, 10),
+                format = "latex",
+                longtable = FALSE,
+                digits = c(0, 1, 0),
+                col.names = c("Gender", 
+                              "Weight (in kg)", 
+	  	                        "Minutes since midnight"),
+                caption = "The first ten observations (of 44) of the baby-births data",
+                booktabs = TRUE)
 if( knitr::is_latex_output() ) {
-  kable( head(BB2, 10),
-         format = "latex",
-         longtable = FALSE,
-	 
-         digits = c(0, 1, 0),
-         col.names = c("Gender", 
-                       "Weight (in kg)", 
-	  	                 "Minutes since midnight"),
-         caption = "The first ten observations (of 44) of the baby-births data",
-         booktabs = TRUE) %>%
-   kable_styling(font_size = 10) %>%
-   row_spec(0, bold = TRUE)
+   out %>%
+      kable_styling(font_size = 10) %>%
+      row_spec(0, bold = TRUE)
 }
 ```
 ```{r BabyBoomDataHTML, fig.cap="The baby-births data"}
 if( knitr::is_html_output() ) {
-  DT::datatable( BB2,
-        fillContainer = FALSE, # Make more room, so we don't just have ten values
-        options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
-        colnames = c("Gender", 
-	                   "Weight (in kg)", 
-		                 "Minutes since midnight"),
-        caption = "The baby-births data"
+   if( knitr::is_html_output(excludes = "epub") ) {
+      DT::datatable( BB2,
+                     fillContainer = FALSE, # Make more room, so we don't just have ten values
+                     options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
+                     colnames = c("Gender", 
+	                                "Weight (in kg)", 
+		                              "Minutes since midnight"),
+                     caption = "The baby-births data"
         )
+   } else { # Epub
+     out
+   }
 }
 ```
 
@@ -1385,7 +1389,7 @@ that 17 babies weighed 3.0kg or more, but under 3.5kg.
   
 
 ### BUILD A HISTOGRAM
-if (knitr::is_html_output()) {
+if (knitr::is_html_output(exclude = "epub")) {
   Wts <-sort( round(BB$Weight/100, 0) )
   Wtskg <- Wts/10
   DP2 <- function(x){format(round(x, 1), nsmall = 1) }
@@ -1464,6 +1468,81 @@ if (knitr::is_html_output()) {
           pch = 19,
           col = plot.colour,
           cex = 2)
+  }
+} else {
+    Wts <-sort( round(BB$Weight/100, 0) )
+  Wtskg <- Wts/10
+  DP2 <- function(x){format(round(x, 1), nsmall = 1) }
+  
+  #  par(width=5, height=5, mar=c(0, 0, 2, 0)+0.1, mfrow=c(2, 1))
+  par(mfrow = c(2, 1))
+  for (i in (6:6)){
+    # Plot the data
+    datagrid.x <- 11
+    datagrid.y <- 4
+    
+    plot( expand.grid(1:datagrid.x, 
+                      1:datagrid.y),
+          type = "n",
+          ylim = c(0.7, 4.3),
+          xlab = "",
+          ylab = "",
+          axes = FALSE)
+    text(  1:datagrid.x, 
+           rep(4, 11), 
+	   DP2(Wts[1:11]/10) )
+    text(  1:datagrid.x, 
+           rep(3, 11), 
+	   DP2(Wts[12:22]/10) )
+    text(  1:datagrid.x, 
+           rep(2, 11), 
+	   DP2(Wts[23:33]/10) )
+    text(  1:datagrid.x, 
+           rep(1, 11), 
+	   DP2(Wts[34:44]/10) )
+    
+    # Now highlight the observation being used
+    if (i <= 11) {
+      points(  i, 4, 
+               pch = 1, 
+	             col = "red", 
+	             lwd = 3, 
+	             cex = 4 )
+    }
+    if ( (i > 11) & (i <= 22)){
+      points(  i - 11, 3, 
+               pch = 1, 
+	             col = "red", 
+	             lwd = 3, 
+	             cex = 4 )
+    }
+    if ( (i > 22) & (i <= 233)){
+      points(  i - 22, 2, 
+               pch = 1, 
+		           col = "red", 
+		           lwd = 3, 
+		           cex = 4 )
+    }
+    if ( (i > 33) ){
+      points(  i - 33, 1, 
+               pch = 1, 
+	             col = "red", 
+	             lwd = 3, 
+	             cex = 4 )
+    }
+    
+    # Produce the histogram
+    
+    hist( Wtskg[1:i],
+          right = FALSE,
+          xlab = "Birthweight (in kg)",
+          ylab = "Number of babies",
+          main = "Histogram of birthweights of babies\non one day in Brisbane",
+          las = 1,
+          xlim = c(1.5, 4.5),
+          ylim = c(0, 20),
+          breaks = seq(1.5, 4.5, by = 0.5),
+          col = plot.colour)
   }
 }
 ```
@@ -1659,52 +1738,20 @@ Borders <- seq(0, 40, by=5)
 
 old.par <- par()
 
-if (knitr::is_latex_output()) {
-        barplot(Hts,
-                space = 0,
-                ylim = c(0, 12),
-                col = plot.colour,
-                main = "Duration of HICS (brain freeze) after drinking ice water",
-                ylab = "Number of volunteers",
-                xlab = "Duration (s)",
-                axes = FALSE)
-        axis(side = 2, 
-             las = 1)
-        axis(side = 1, 
-             at = 0:8, 
-             labels = Borders)
-        box()
-}
-if (knitr::is_html_output()) {
-  Mids <- seq(0, 40, by = 5)
-  set.seed(3000)
-  HICSdata <- data.frame(
-    HICS = c(
-      runif(Hts[1], Mids[1], Mids[2]),
-      runif(Hts[2], Mids[2], Mids[3]),
-      runif(Hts[3], Mids[3], Mids[4]),
-      runif(Hts[4], Mids[4], Mids[5]),
-      runif(Hts[5], Mids[5], Mids[6]),
-      runif(Hts[6], Mids[6], Mids[7]),
-      runif(Hts[7], Mids[7], Mids[8]),
-      runif(Hts[8], Mids[8], Mids[9])
-    )
-  )
-  HICSdata$HICS <- HICSdata$HICS + 0.5
-  p <- ggplot(HICSdata, 
-              aes(x = HICS)) +
-              geom_histogram(binwidth = 5, 
-                             color = "black", 
-                             fill = "blue", 
-                             alpha = 0.2, 
-                             breaks = seq(0, 40, by = 5)) +
-              scale_y_continuous(breaks = seq(0, 12, by = 2)) +
-              labs( x = "Duration (seconds)", 
-                    y = "Number of volunteers", 
-                    title = "Duration of HICS after drinking ice water") +
-              theme_light()
-  ggplotly(p)
-}
+barplot(Hts,
+        space = 0,
+        ylim = c(0, 12),
+        col = plot.colour,
+        main = "Duration of HICS (brain freeze) after drinking ice water",
+        ylab = "Number of volunteers",
+        xlab = "Duration (s)",
+        axes = FALSE)
+axis(side = 2, 
+     las = 1)
+axis(side = 1, 
+     at = 0:8, 
+     labels = Borders)
+box()
 ```
    
 
@@ -1725,8 +1772,7 @@ describe:
     How much variation is present in the bulk of the data?
 3.  *Shape*:
     How are the values distributed?
-    That is,
-    are most of the values smaller values, or larger values, 
+    That is, are most of the values smaller values, or larger values, 
 	 or about even distributed between smaller and larger values?
 4.  *Outliers* (observations unusually large or small) or unusual features:
     Are there any unusual observations, or anything else of interest?
@@ -1751,10 +1797,14 @@ Typical shapes are shown in
 Sometimes, no suitable short descriptions is suitable.
 
 
-```{r, child = if (knitr::is_html_output())  './children/ShapeExampleCarousel.Rmd'}
+
+```{r, child = if (knitr::is_html_output(excludes = "epub"))  './children/ShapeExampleCarousel.Rmd'}
 ```
 
 ```{r, child = if (knitr::is_latex_output()) './children/ShapeExampleImages.Rmd'}
+```
+
+```{r, child = if (knitr::is_html_output() & pandoc_to("epub")) './children/ShapeExampleImages.Rmd'}
 ```
 
 
@@ -1903,8 +1953,7 @@ erupts regularly
 [@hardle1991smoothing].
 
 The time between eruptions (Fig. \@ref(fig:BimodalFaithfulHisto))
-is clearly bimodal,
-with a peak near 55 minutes and another near 80 minutes.
+is clearly bimodal, with a peak near 55 minutes and another near 80 minutes.
 :::
 
 
@@ -1917,7 +1966,6 @@ hist(faithful$waiting,
      col = plot.colour,
      las = 1
      )
-
 ```
 
 
@@ -1931,8 +1979,7 @@ Fig. \@ref(fig:BabyBoomDot):
 * The *average* weight is somewhere between 2.5 to 3 kilograms.
 * The *variation* in weights is between 1.5 and 4.5 kilograms approximately.
 * The *shape* is slightly skewed to the left. 
-	That is,
-	occasional small birth weights appear (probably premature babies).
+	That is, occasional small birth weights appear (probably premature babies).
 * There doesn't appear to be any outliers or anything unusual.
 :::
 
@@ -1942,7 +1989,7 @@ Describe the histogram in
 Example \@ref(fig:BrainFreeze),
 the brain freeze durations.
 
-(Answer is here^[*Average*: Hard to be sure... maybe between 10 or 15. (More observations appear at the smaller values (as the bars are higher).) *Variation*: From about 0 to about 40. *Shape*: Slightly skewed right. *Outliers*: No outliers or unusual observations. The observation between 35 and 40 *may* be an outlier. I suspect it is *not* an outlier, as a larger sample may very well have observations between 30 and 35. Of course, I could be wrong.].)
+`(Answer is here^[*Average*: Hard to be sure... maybe between 10 or 15. (More observations appear at the smaller values (as the bars are higher).) *Variation*: From about 0 to about 40. *Shape*: Slightly skewed right. *Outliers*: No outliers or unusual observations. The observation between 35 and 40 *may* be an outlier. I suspect it is *not* an outlier, as a larger sample may very well have observations between 30 and 35. Of course, I could be wrong.].)
 :::
 
 
@@ -1956,17 +2003,15 @@ graphs show how often each level of the variable occurs in the data.
 The three options for graphing qualitative data are:
 
 * [*Dot chart*](#DotChartsOneQual):
-   Usually a good choice.
+  Usually a good choice.
 * [*Bar chart*](#BarCharts):
-   Usually a good choice.
+  Usually a good choice.
 * [*Pie chart*](#PieCharts):
-   Only useful in special circumstances, and
-   can be harder to interpret.
+  Only useful in special circumstances, and can be harder to interpret.
 
 [Comparing these graphs](#CompareBarPie)
 is useful too;
-indeed,
-sometimes
+indeed, sometimes
 [a graph may not even be needed](#GraphNeeded).
 
 For *nominal* data, 
@@ -2008,15 +2053,21 @@ show the most common social group has many females plus offspring
 
 ```{r SpiderMonkeys, fig.cap="Dot chart of spider monkey family groups", fig.align="center", fig.width=6}
 counts <- c(8, 3, 2, 15, 1, 23, 48)
-names <- c("Solitary", "All males", "Female + no young", "Mixed young", 
-           "Mixed + no young", "One female + offspring", "Many females + offspring")
+names <- c("Solitary", 
+           "All males", 
+           "Female + no young", 
+           "Mixed young", 
+           "Mixed + no young", 
+           "One female + offspring", 
+           "Many females + offspring")
 
-sort.order <- sort( counts, index.return=TRUE)
+sort.order <- sort( counts, 
+                    index.return = TRUE)
 
 old.mar = par()$mar
 new.mar <- old.mar
 new.mar[2] <- old.mar[2] * 2.75
-par(mar = new.mar  )
+par(mar = new.mar )
 
 dotchart( counts[sort.order$ix], 
           pch = 19,
@@ -2026,7 +2077,7 @@ dotchart( counts[sort.order$ix],
           ylab = "",
           main = "Spider monkey sub-groups")
 axis(side = 2, 
-     seq_along(counts[sort.order$ix]), 
+     seq_along(counts[ sort.order$ix ]), 
      names[sort.order$ix], 
      las = 1)
 abline(v = 0,
@@ -2061,15 +2112,15 @@ in Sect. \@ref(PieCharts).
 ```{r IndependenceBar, fig.cap="Diagnoses of participants", fig.align="center", fig.width=6}
 Number <- rev( c(11, 10, 9, 8, 5, 4, 3, 3, 2, 4) )
 Diag <- rev( c("Amputation-one leg",
-          "Neuromuscular disease",
-          "SCI-paraplegia",
-          "Rheum. dis. or multiple skeletal injury",
-          "SCI-tetraplegia",
-          "Cerebral vascular insult",
-          "Amputation-both legs",
-          "Amputation-arm",
-          "Cerebral palsy",
-          "Other") )
+               "Neuromuscular disease",
+              "SCI-paraplegia",
+              "Rheum. dis. or multiple skeletal injury",
+              "SCI-tetraplegia",
+              "Cerebral vascular insult",
+              "Amputation-both legs",
+              "Amputation-arm",
+              "Cerebral palsy",
+              "Other") )
 Diag.Cols <- rev( c( 
                 grey(0.8), 
                 grey(0.2), 
@@ -2080,7 +2131,7 @@ Diag.Cols <- rev( c(
                 grey(0.2),
                 rep( grey(0.8), 3) ) )
 
-par( mar=c(4, 16, 4, 2) + 0.1)
+par( mar = c(4, 16, 4, 2) + 0.1)
 barplot( Number, 
          names.arg = Diag,
          horiz = TRUE,
@@ -2138,8 +2189,10 @@ extra information into the bar chart.
 ```{r IndependencePie, fig.cap="Severity of diagnoses of participants", fig.align="center", fig.height=3.5}
 par( mar = c(0.5, 0.5, 0.5, 0.5) )
 pie( c(31, 69),
-     labels = c("More severe (31)", "Less severe (69%)"),
-     col = c( grey(0.2), grey(0.8)),
+     labels = c("More severe (31)", 
+                "Less severe (69%)"),
+     col = c( grey(0.2), 
+              grey(0.8)),
      init.angle = 90)
 ```
 
@@ -2215,12 +2268,12 @@ par( mfrow = c(2, 1),
      mar = c(5.5, 5, 4.1, 1))
 
 pie( danishlc$Cases[danishlc$City == "Fredericia"],
-	labels=c("40 to 54", 
-	         "55 to 59", 
-	         "60 to 64", 
-	         "65 to 69", 
-	         "70 to 74", 
-	         "Over 74"),
+	labels = c("40 to 54", 
+	           "55 to 59", 
+	           "60 to 64", 
+	           "65 to 69", 
+	           "70 to 74", 
+	           "Over 74"),
    col = viridis(6),
    main = "Pie chart of lung cancer deaths\nby age group")
    
@@ -2399,8 +2452,7 @@ Relationships between *one qualitative variable* and *one quantitative variable*
 can be displayed using: 
 
 * [**Back-to-back stem-and-leaf plot**](#BackToBackStem):
-  Best for small amounts of data
-  when the qualitative variable only has *two levels*; 
+  Best for small amounts of data when the qualitative variable only has *two levels*; 
 * [**2-D dot chart**](#TwoDDot): 
   Best choice for small to moderate amounts of data;
 * [**Boxplot**](#Boxplot):
@@ -2449,32 +2501,38 @@ if( knitr::is_latex_output() ) {
   kable( KrillEggs2,
          format = "latex",
          longtable = FALSE,
-       booktabs = TRUE,
-       align = c("c","c"),
-      #col.names = c("Treatment group", "Control group"),
-      caption = "The number of eggs laid by krill, for those in a treatment group and for those in a control group") %>%
-    add_header_above(header = c("Treatment group "=2, " Control group"=2), 
-                     bold = TRUE, 
-		     align = "c") %>%
-	kable_styling(font = 10)
-    
-}
-if( knitr::is_html_output() ) {
-  out <- kable( KrillEggs2,
-         format = "html",
-         longtable = FALSE,
          booktabs = TRUE,
          align = c("c","c"),
-         col.names = rep("",4),
-         caption = "The number of eggs laid by krill, for those in a treatment group and for those in a control group") 
-	 
- if ( knitr::is_html_output(excludes = "epub")) {
-    add_header_above(out, header = c("Treatment group" = 2, 
-                                     "Control group" = 2), 
-				     bold = TRUE, 
-				     align = "c")
-  } else {
-    out
+         #col.names = c("Treatment group", "Control group"),
+         caption = "The number of eggs laid by krill, for those in a treatment group and for those in a control group") %>%
+    add_header_above(header = c("Treatment group " = 2, 
+                                " Control group" = 2), 
+                     bold = TRUE, 
+                     align = "c") %>%
+    kable_styling(font = 10)
+  
+}
+if( knitr::is_html_output() ) {
+  if( knitr::is_html_output(exclude = "epub") ) {
+    kable( KrillEggs2,
+           format = "html",
+           longtable = FALSE,
+           booktabs = TRUE,
+           align = c("c", "c"),
+           col.names = rep("",4),
+           caption = "The number of eggs laid by krill, for those in a treatment group and for those in a control group") %>%
+    add_header_above(header = c("Treatment group " = 2, 
+                                " Control group" = 2), 
+                     bold = TRUE, 
+                     align = "c")
+  } else { # epub
+    kable( KrillEggs2,
+           format = "html",
+           longtable = FALSE,
+           booktabs = TRUE,
+           align = c("c", "c"),
+           #col.names = c("Treatment group", "Control group"),
+           caption = "The number of eggs laid by krill, for those in a treatment group and for those in a control group")
   }  
 }
 ```
@@ -2598,8 +2656,8 @@ points before plotting
 
 ```{r TwoDDotchart, fig.height=6, fig.cap="Two variations of a 2-D dot chart for the krill-egg data: stacking and jittering", fig.align="center", fig.width=5}
 old.par <- par()
-par(mar=c(5, 6, 4, 2) + 0.1)
-par(mfrow=c(2,1))
+par(mar = c(5, 6, 4, 2) + 0.1)
+par(mfrow = c(2,1))
 
 stripchart( list(Treatment = Eggs.T, 
                  Control = Eggs.C), 
@@ -2812,7 +2870,7 @@ Sect. \@ref(OutliersIQRrule)).
 Then the boxplot is constructed like this:
 
 ```{r}
-outC <- boxplot( list(Treatment=Eggs.C),
+outC <- boxplot( list(Treatment = Eggs.C),
                  plot = FALSE)
 Eggs.quantiles <- outC$stats
 ```
@@ -2841,30 +2899,30 @@ Eggs.quantiles <- outC$stats
 
 
 ```{r BoxplotKrillControl, fig.cap="A boxplot  for the krill-egg data; the boxplot just for the control group", fig.width=5, fig.align="center"}
-outC <- boxplot( list(Treatment=Eggs.C), 
-            main="A boxplot of the number of\neggs laid by krill: Control group",
-            las=1,
-            pch=19,
-            col=plot.colour,
-            ylim=c(-4, 35),
-            xlim=c(0.7, 1.75),
-            ylab="Number of eggs")
+outC <- boxplot( list(Treatment = Eggs.C), 
+            main = "A boxplot of the number of\neggs laid by krill: Control group",
+            las = 1,
+            pch = 19,
+            col = plot.colour,
+            ylim = c(-4, 35),
+            xlim = c(0.7, 1.75),
+            ylab = "Number of eggs")
 Eggs.quantiles <- outC$stats
 
 # Now, repeat without the outlier:
-outC2 <- boxplot( list(Treatment=Eggs.C[ -length(Eggs.C)]),
-                  plot=FALSE)
+outC2 <- boxplot( list(Treatment = Eggs.C[ -length(Eggs.C)]),
+                  plot = FALSE)
 Eggs2.quantiles <- outC2$stats
 
 
 abline( h = outC$stats[-3, 1], 
-        col="grey",
-        lty=2,
-        lwd=1)
+        col = "grey",
+        lty = 2,
+        lwd = 1)
 lines( c(0, 1), 
-       c(outC$stats[3,1], outC$stats[3,1]), 
-       lty=2, 
-       col="grey")
+       c(outC$stats[3, 1], outC$stats[3, 1]), 
+       lty = 2, 
+       col = "grey")
 
 bxp(outC, # Replot to put over the dashed lines
     las = 1, 
@@ -2872,18 +2930,41 @@ bxp(outC, # Replot to put over the dashed lines
     boxfill = plot.colour)
 
 
-text( 1.4, Eggs.quantiles[5, 1], "Max. value (apart from outlier)", pos=1, cex=0.75)
-text( 1.5, Eggs.quantiles[4, 1], "75% smaller than this", pos=3, cex=0.75)
-text( 1.0, Eggs.quantiles[3, 1], "Middle value", pos=3, cex=0.75)
-text( 1.5, Eggs.quantiles[2, 1], "25% smaller than this", pos=3, cex=0.75)
-text( 1.5, Eggs.quantiles[1, 1], "Min. value", pos=1, cex=0.75)
+text( 1.4, 
+      Eggs.quantiles[5, 1], 
+      "Max. value (apart from outlier)", 
+      pos = 1, 
+      cex = 0.75)
+text( 1.5, 
+      Eggs.quantiles[4, 1], 
+      "75% smaller than this", 
+      pos = 3, 
+      cex = 0.75)
+text( 1.0, 
+      Eggs.quantiles[3, 1], 
+      "Middle value", 
+      pos = 3, 
+      cex = 0.75)
+text( 1.5, 
+      Eggs.quantiles[2, 1], 
+      "25% smaller than this", 
+      pos = 3, 
+      cex = 0.75)
+text( 1.5, 
+      Eggs.quantiles[1, 1], 
+      "Min. value", 
+      pos = 1, 
+      cex = 0.75)
 
 arrows(1.2, max(Eggs.C), 1.03, 
        max(Eggs.C), 
-       col="grey", 
-       lty=1, 
-       angle=15)
-text(1.4, max(Eggs.C), "Unusually large value", cex=0.75)
+       col = "grey", 
+       lty = 1, 
+       angle = 15)
+text(1.4, 
+     max(Eggs.C), 
+     "Unusually large value", 
+     cex = 0.75)
 
 
 # Add values to right axis
@@ -2930,7 +3011,8 @@ and the ages range from almost zero to about 80 years of age.
 data(NHANES)
 
 # Grab some of the necessary stats
-Qs <- quantile(NHANES$Age, seq(0, 1, by = 0.25)) # See below for better way when there are outliers
+Qs <- quantile(NHANES$Age, 
+               seq(0, 1, by = 0.25)) # See below for better way when there are outliers
 
 left <- 0.75
 right <- 1.25
@@ -3318,14 +3400,15 @@ NA, 194, 151, 222, 181.2, 257.7, 335.2, 265.7, 165.4, 232, NA,
 -157L))
 
 
-plot(Lung.Wt ~ Age, data=mdx,
-     pch=19,
-     xlab="Age (in weeks)",
-     ylab="Lung weight (in grams)",
-     xlim=c(0, 110),
-     ylim=c(50, 350),
-     las=1,
-     main="Lung weight vs age for mice\nwith muscular dystrophy")
+plot(Lung.Wt ~ Age, 
+     data = mdx,
+     pch = 19,
+     xlab = "Age (in weeks)",
+     ylab = "Lung weight (in grams)",
+     xlim = c(0, 110),
+     ylim = c(50, 350),
+     las = 1,
+     main = "Lung weight vs age for mice\nwith muscular dystrophy")
 ```
 
 
@@ -3369,7 +3452,7 @@ plot( SSF ~ PBF,
       xlab = "Percentage body fat",
       ylab = "Sum of skin fold",
       pch = 19)
-title(sub="(Note: Units of measurement for skin folds not given)", 
+title(sub = "(Note: Units of measurement for skin folds not given)", 
       cex.sub = 0.85)
 ```
 
@@ -3394,8 +3477,7 @@ data in
 Table \@ref(tab:PossumRoadkillNumber).
 There are two qualitative variables:
 the season (ordinal, with four levels)
-and
-the sex (nominal, with three levels including 'Unknown').
+and the sex (nominal, with three levels including 'Unknown').
 
 
 
@@ -3553,10 +3635,10 @@ colnames(Counts) <- c("Unknown",
                       "Females")
 
 dotchart(Counts,
-   main = "Dot chart of possum road deaths\nby season and sex of possum",
-	xlim = c(0, 80),
-	xlab = "Number of possums",
-	pch = c(1, 2, 3, 4))
+         main = "Dot chart of possum road deaths\nby season and sex of possum",
+         xlim = c(0, 80),
+ 	       xlab = "Number of possums",
+	       pch = c(1, 2, 3, 4))
 ```
 
 
@@ -3594,7 +3676,7 @@ barplot( Counts2,
    xlim = c(0, 80),
    horiz = TRUE,
    axes = FALSE,
-   names.arg = c("","",""),
+   names.arg = c("", "", ""),
    las = 1)
 grid(ny = NA, 
      nx = 8)
@@ -4101,23 +4183,37 @@ insulate <- structure(list(Before = c(12.1, 11, 14.1, 13.8, 15.5, 12.2, 12.8,
 
 insulate$Diff <- insulate$Before - insulate$After
 
+kable( insulate,
+       format = "latex",
+       booktabs = TRUE,
+       longtable = FALSE,
+       col.names = c("Before", 
+                     "After", 
+                     "Energy savings"),
+       caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)")
+
 if( knitr::is_latex_output() ) {
-  kable( insulate,
-         format = "latex",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names = c("Before", 
-                       "After", 
-                       "Energy savings"),
-         caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") %>%
-    kable_styling(font = 10) %>%
-    row_spec(0, bold = TRUE)
+   out %>% 
+      kable_styling(font = 10) %>%
+      row_spec(0, bold = TRUE)
 }
 if( knitr::is_html_output() ) {
-  DT::datatable( round(insulate, 1),
-                 fillContainer = FALSE, # Make more room, so we don't just have ten values
-                 options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
-                 caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)")
+   if( knitr::is_html_output( exclude = "epub") ) {
+     DT::datatable( round(insulate, 1),
+                    fillContainer = FALSE, # Make more room, so we don't just have ten values
+                    options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
+                    caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)")
+   } else { # epub
+     kable( insulate,
+            format = "html",
+            booktabs = TRUE,
+            longtable = FALSE,
+            col.names = c("Before", 
+                          "After", 
+                          "Energy savings"),
+            caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)")
+
+  }
 }
 ```
 
@@ -4243,27 +4339,16 @@ A time plot shows how the weights varied over time
 
 
 ```{r BabyBoomTime, fig.cap="The weight of babies born on 21 December 1997 at a Brisbane hospital, plotted over time", fig.align="center", fig.height=4, fig.width=5}
-if (knitr::is_latex_output()) {
-  plot( (Weight/1000) ~ Minutes,
-        data = BB,
-        main = "Birthweight for babies born on\n21 December 1997",
-        type = "b",
-        pch = 19,
-        ylim = c(1.5, 4.5),
-        xlim = c(0, 1500),
-        xlab = "Minutes after midnight",
-        ylab = "Weight (in kg)",
-        las = 1)
-}
-if (knitr::is_html_output()) {
-  dygraphs::dygraph( data.frame(Time = BB$Minutes, 
-                      Weight = BB$Weight/1000), 
-           main = "Weights of babies", 
-           xlab = "Minutes after midnight", 
-           ylab = "Weights (in kg)") %>%
-     dygraphs::dyOptions(drawPoints = TRUE, 
-                        pointSize = 2)
-}
+plot( (Weight/1000) ~ Minutes,
+      data = BB,
+      main = "Birthweight for babies born on\n21 December 1997",
+      type = "b",
+      pch = 19,
+      ylim = c(1.5, 4.5),
+      xlim = c(0, 1500),
+      xlab = "Minutes after midnight",
+      ylab = "Weight (in kg)",
+      las = 1)
 ```
 
 
@@ -4294,7 +4379,6 @@ lynx <- structure(list(Year = 1821:1934, Trappings = c(269L, 321L, 585L,
 ```
 
 ```{r Lynx, fig.cap="The number of lynx trapped in the Mackenzie River district of north-west Canada, from 1821 to 1934", fig.align="center", fig.width=5, fig.height=4}
-if (knitr::is_latex_output()) {
   plot( Trappings ~ Year, 
         data = lynx,
         type = "b",
@@ -4304,14 +4388,7 @@ if (knitr::is_latex_output()) {
         xlim = c(1820, 1935),
         ylim = c(0, 7000),
         las = 1)
-}
-if (knitr::is_html_output()) {
-  dygraphs::dygraph(lynx, 
-          main = "Number of lynx trappings per year", 
-	        xlab = "Year", 
-	        ylab = "No. trappings") %>% 
-  dygraphs::dyRangeSelector(dateWindow = c("1860", "1930") )
-}
+
 ```
 
 
@@ -4355,17 +4432,19 @@ TwoDData <- data.frame(
   Counts = c(
     AgeD.Gender[, 1],  
     AgeD.Gender[, 2]),
-    Gender = c( rep("F", 7), rep("M", 7)),
+    Gender = c( rep("F", 7), 
+                rep("M", 7)),
     Age = levels(AgeD)
   
 )
 
-par(mar=c(0, 0, 0, 0) + 0.1)
+par(mar = c(0, 0, 0, 0) + 0.1)
 
 lattice::cloud(Counts ~ factor(Gender) + factor(Age), 
                data = TwoDData, 
                panel.3d.cloud = panel.3dbars, 
-               col.facet = c( rep('#FFFAF0', 7), rep('#5844ff', 7)),
+               col.facet = c( rep('#FFFAF0', 7), 
+                              rep('#5844ff', 7)),
                xbase = 0.4, 
                ybase = 0.4,
                scales = list(arrows = FALSE, 
@@ -4383,8 +4462,7 @@ lattice::cloud(Counts ~ factor(Gender) + factor(Age),
 
 The artificial third dimension makes quickly determining
 the heights of the bars hard.
-In contrast,
-a 2-D graph
+In contrast, a 2-D graph
 (a side-by-side bar graph; Fig. \@ref(fig:Bar2D))
 makes it clear whether each age group has more females or more males.
 
@@ -4413,7 +4491,7 @@ legend("top",
        xpd = TRUE, 
        ncol=2, 
        cex = 0.9, 
-       fill=c( '#FFFAF0', '#5844ff') )
+       fill = c( '#FFFAF0', '#5844ff') )
 
 ```
 
@@ -4465,6 +4543,7 @@ Ensure that you:
 One optical illusion often appearing in graphs is when
 the frequency (or percentage) axis on a bar chart 
 is truncated so that it doesn't start at zero.
+
 For example, 
 consider data recording the number of lung cancer cases in various Danish cities 
 [@data:andersen:1977].
@@ -4639,14 +4718,14 @@ The data available are equivalent to a
 In total,
 10\,000 observations on scores of variables are available
 (from the 2009/2010 and the 2011/2012 surveys).
-`r if (knitr::is_html_output()) {
+`r if (knitr::is_html_output(excludes = "epub")) {
    'Fig. \\@ref(fig:NHANESFullDataTable) shows the first 5000 observations on the first 40 variables only.'
 }`
 
 
 
 ```{r NHANESFullDataTable, fig.cap="The full NHANES data set", fig.align="center"}
-if( knitr::is_html_output() ) {
+if( knitr::is_html_output(excludes = "epub") ) {
   DT::datatable(NHANES[1:5000, 1:40 ],
               list(scrollX = TRUE, 
 	      scrollY = TRUE, 
@@ -4889,7 +4968,9 @@ plot( DirectChol ~ Gender,
 	    names = c("Female", "Male"),
 	    ylim = c(0, 4),
 	    las = 1)
-par(mar=c(5, 4, 4, 2) + 0.1)  # DEFAULT: c(5, 4, 4, 2) + 0.1.
+
+par(mar = c(5, 4, 4, 2) + 0.1)  # DEFAULT: c(5, 4, 4, 2) + 0.1.
+
 out <- barplot( prop.table( xtabs(~ SmokeNow + Gender, 
                                   data = NHANES),  
 				  margin = 2) * 100, 
@@ -5101,25 +5182,25 @@ data(mtcars)
 
 if( knitr::is_latex_output() ) {
   kable( table(mtcars$cyl),
-         format="latex",
-         longtable=FALSE,
-       caption="The number of cylinders in cars in a study",
-       col.names = c("Number of cylinders", "Number of cars"),
-       align=c("r", "r"),
-       booktabs=TRUE) %>%
-	kable_styling(font_size=10) %>%
-	row_spec(0, bold=TRUE)
+         format = "latex",
+         longtable = FALSE,
+         caption = "The number of cylinders in cars in a study",
+         col.names = c("Number of cylinders", "Number of cars"),
+         align = c("r", "r"),
+         booktabs = TRUE) %>%
+	kable_styling(font_size = 10) %>%
+	row_spec(0, bold = TRUE)
 }
 if( knitr::is_html_output() ) {
   out <- kable( table(mtcars$cyl),
-         format="html",
-         lomngtable=FALSE,
-       caption="The number of cylinders in cars in a study",
+         format = "html",
+         lomngtable = FALSE,
+       caption  ="The number of cylinders in cars in a study",
        col.names = c("Number of cylinders", "Number of cars"),
-       align=c("r", "r"),
-       booktabs=TRUE)
+       align = c("r", "r"),
+       booktabs = TRUE)
  if ( knitr::is_html_output(excludes = "epub")) {
-   kable_styling(out, full_width=FALSE)
+   kable_styling(out, full_width = FALSE)
   } else {
     out
   }   
