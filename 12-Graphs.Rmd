@@ -4176,44 +4176,43 @@ extra information.)
 :::
 
 ```{r DataInsulationGraph}
-insulate <- structure(list(Before = c(12.1, 11, 14.1, 13.8, 15.5, 12.2, 12.8, 
-9.9, 10.8, 12.7), After = c(12, 10.6, 13.4, 11.2, 15.3, 13.6, 
-12.6, 8.8, 9.6, 12.4)), .Names = c("Before", "After"), class = "data.frame", row.names = c(NA, 
--10L))
+insulate <- structure(list(
+  Before = c(12.1, 11, 14.1, 13.8, 15.5, 12.2, 12.8, 9.9, 10.8, 12.7), 
+  After = c(12, 10.6, 13.4, 11.2, 15.3, 13.6, 12.6, 8.8, 9.6, 12.4)), 
+  .Names = c("Before", "After"), 
+  class = "data.frame", 
+  row.names = c(NA, -10L))
 
 insulate$Diff <- insulate$Before - insulate$After
 
-kable( insulate,
-       format = "latex",
-       booktabs = TRUE,
-       longtable = FALSE,
-       col.names = c("Before", 
-                     "After", 
-                     "Energy savings"),
-       caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)")
-
 if( knitr::is_latex_output() ) {
-   out %>% 
+   kable( insulate,
+          format = "latex",
+          booktabs = TRUE,
+          longtable = FALSE,
+          col.names = c("Before", 
+                        "After", 
+                        "Energy savings"),
+          caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") %>% 
       kable_styling(font = 10) %>%
       row_spec(0, bold = TRUE)
 }
-if( knitr::is_html_output() ) {
-   if( knitr::is_html_output( exclude = "epub") ) {
+if( knitr::is_html_output(exclude = "epub") ) {
      DT::datatable( round(insulate, 1),
                     fillContainer = FALSE, # Make more room, so we don't just have ten values
                     options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                     caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)")
-   } else { # epub
-     kable( insulate,
-            format = "html",
-            booktabs = TRUE,
-            longtable = FALSE,
-            col.names = c("Before", 
-                          "After", 
-                          "Energy savings"),
-            caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)")
+}
 
-  }
+if (knitr::pandoc_to("epub3")){
+   kable( insulate,
+          format = "latex",
+          booktabs = TRUE,
+          longtable = FALSE,
+          col.names = c("Before", 
+                        "After", 
+                        "Energy savings"),
+          caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") 
 }
 ```
 
@@ -4363,7 +4362,9 @@ where the number trapped is very large.
 :::
 
 ```{r}
-lynx <- structure(list(Year = 1821:1934, Trappings = c(269L, 321L, 585L, 
+lynx <- structure(list(
+  Year = 1821:1934, 
+  Trappings = c(269L, 321L, 585L, 
 871L, 1475L, 2821L, 3928L, 5943L, 4950L, 2577L, 523L, 98L, 184L, 
 279L, 409L, 2285L, 2685L, 3409L, 1824L, 409L, 151L, 45L, 68L, 
 213L, 546L, 1033L, 2129L, 2536L, 957L, 361L, 377L, 225L, 360L, 
@@ -4375,7 +4376,9 @@ lynx <- structure(list(Year = 1821:1934, Trappings = c(269L, 321L, 585L,
 6313L, 3794L, 1836L, 345L, 382L, 808L, 1388L, 2713L, 3800L, 3091L, 
 2985L, 3790L, 374L, 81L, 80L, 108L, 229L, 399L, 1132L, 2432L, 
 3574L, 2935L, 1537L, 529L, 485L, 662L, 1000L, 1590L, 2657L, 3396L
-)), class = "data.frame", row.names = c(NA, -114L))
+)), 
+   class = "data.frame", 
+   row.names = c(NA, -114L))
 ```
 
 ```{r Lynx, fig.cap="The number of lynx trapped in the Mackenzie River district of north-west Canada, from 1821 to 1934", fig.align="center", fig.width=5, fig.height=4}
@@ -4394,7 +4397,6 @@ lynx <- structure(list(Year = 1821:1934, Trappings = c(269L, 321L, 585L,
 
 
 ## Notes on constructing graphs {#GraphsConstructing}
-
 
 ### Comparing 2-D and 3-D graphs {#Graphs3Dimensional}
 
@@ -4450,10 +4452,14 @@ lattice::cloud(Counts ~ factor(Gender) + factor(Age),
                scales = list(arrows = FALSE, 
                              col = 1), 
                zlim = c(0, 850),
-               zlab = list("Number", rot = 95),
-               ylab = list("Age group", rot = -50),
-               xlab = list("Gender", rot = 23),
-               screen = list(z = 30, x = -60), # The view; rotations about axes
+               zlab = list("Number", 
+                           rot = 95),
+               ylab = list("Age group", 
+                           rot = -50),
+               xlab = list("Gender", 
+                           rot = 23),
+               screen = list(z = 30, 
+                             x = -60), # The view; rotations about axes
                main = "Number per group",
                par.settings = list(axis.line = list(col = "transparent"))
       )
@@ -4476,7 +4482,7 @@ locatn <- barplot(t( AgeD.Gender ),
         ylim = c(0, 900),
         args.legend = list(x = "bottom", 
 	                         bg = "white", 
-			   cex = 0.75), 
+			  cex = 0.75), 
         ylab = "Number",
         xlab = "Age group",
         main = "Number per group",
@@ -4565,13 +4571,14 @@ data(danishlc)
 
 ylim.lower.vec <- c( rep(0, 10), 
                      rep(5, 10),
-		     rep(9.75, 10) )
+		                 rep(9.75, 10) )
 #                     seq(0, 9.75, by = 0.25) )
 ylim.lower.vec <- c( ylim.lower.vec, 
                      rep( max(ylim.lower.vec), 10))
 
 draw.bar <- function( ylim.lower) {
-  egdata <- subset( danishlc, City == "Fredericia")
+  egdata <- subset( danishlc, 
+                    City == "Fredericia")
   
   upperLimitYAxis <- 11 + (11 - ylim.lower) * 0.05 # Try to keep the gap between top bar and graph edge constant
   out <- barplot( egdata$Cases, 
@@ -4580,9 +4587,9 @@ draw.bar <- function( ylim.lower) {
                   xlab = "Age groups",
                   ylab = "Number of cases",
                   main = paste("Number of lung cancer cases in Fredericia\n",
-		               ifelse(ylim.lower == 0,
-		                      "Vertical axis NOT truncated", 
-				      paste("Vertical axis truncated at", ylim.lower) 
+		                           ifelse(ylim.lower == 0,
+		                                  "Vertical axis NOT truncated", 
+				                              paste("Vertical axis truncated at", ylim.lower) 
 				      )
 				),
                   xpd = FALSE, # BARS **DON'T** GO outside plotting region
@@ -4590,7 +4597,8 @@ draw.bar <- function( ylim.lower) {
                   axes = FALSE)
 		  
   # ADD WHITE DOT to ensure many plots are created...
-  points(2 + (i / 10), mean( upperLimitYAxis, 11),
+  points(2 + (i / 10), 
+         mean( upperLimitYAxis, 11),
          pch = 19,
 	 cex = 0.2,
 	 col = "white")
@@ -4617,7 +4625,7 @@ if (knitr::is_html_output()){
 
 ```{r BarchartTruncated1, fig.align="center", fig.width=5, fig.cap="The bar chart, without truncating the vertical axis" }
 if (knitr::is_latex_output()){
-  draw.bar( ylim.lower.vec[1])
+  draw.bar( ylim.lower.vec[1] )
 }
 ```
 
@@ -4727,10 +4735,10 @@ In total,
 ```{r NHANESFullDataTable, fig.cap="The full NHANES data set", fig.align="center"}
 if( knitr::is_html_output(excludes = "epub") ) {
   DT::datatable(NHANES[1:5000, 1:40 ],
-              list(scrollX = TRUE, 
-	      scrollY = TRUE, 
-	      ordering = FALSE),
-              caption = "Part of the large NHANES data set")
+               list(scrollX = TRUE, 
+	             scrollY = TRUE, 
+	             ordering = FALSE),
+               caption = "Part of the large NHANES data set")
 }
 ```
 
@@ -4822,12 +4830,12 @@ concentrations between the two smoking groups?
     
 ```{r NHANESboxplot, fig.cap="Boxplot of direct HDL cholesterol against current smoking status, for the NHANES data", fig.align="center", fig.height=4, fig.width=5}
 boxplot(NHANES$DirectChol ~ NHANES$SmokeNow, 
-	col = plot.colour, 
-	las = 1,
-	ylim = c(0, 4),
-	ylab = "Direct HDL cholesterol (mmol/L)",
-	xlab = "Does respondent smoke now?",
-	main = "Direct HDL cholesterol by smoking\nstatus, for the NHANES data"
+        col = plot.colour, 
+        las = 1,
+        ylim = c(0, 4),
+        ylab = "Direct HDL cholesterol (mmol/L)",
+        xlab = "Does respondent smoke now?",
+        main = "Direct HDL cholesterol by smoking\nstatus, for the NHANES data"
 )
 ```
 
@@ -5009,16 +5017,12 @@ What do these graphs suggest about possible confounding relationships?
 
 ## Summary {#Chap12-Summary}
 
-To summarise one variable, 
-these graphs can be used:
+To summarise one variable, these graphs can be used:
 
 * For *one quantitative variable*: Histogram; stem-and-leaf; dot chart.
 * For *one qualitative variable*: Bar chart; pie chart; dot chart.
 
-For two variables,
-the graphs shown in
-Table \@ref(tab:GraphsToUse)
-can be used.
+For two variables, the graphs shown in Table \@ref(tab:GraphsToUse) can be used.
 In general, the 'response' variable is on the vertical axis.
 
 
@@ -5098,38 +5102,71 @@ from the recorded the surface temperature (the *explanatory* variable)
 at the bruise location (an *extraneous* variable).
 
 1. Which one of the following could be used to graph the *response* variable?  
-`r if( knitr::is_html_output() ) {longmcq( c(
+`r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
 	"A bar chart",
 	answer = "A histogram",
 	"A boxplot",
 	"A scatterplot",
 	"A side-by-side bar chart"))}`
+`r if( !knitr::is_html_output(exclude = "epub") ) {
+'   * A bar chart\\
+   * A histogram\\
+   * A boxplot\\
+   * A scatterplot\\
+   * A side-by-side bar chart'
+}`
+
 1. Which one of the following could be used to graph the *explanatory* variable?  
-`r if( knitr::is_html_output() ) {longmcq( c(
+`r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
 	"A bar chart",
 	answer = "A histogram",
 	"A boxplot",
 	"A scatterplot",
 	"A side-by-side bar chart"))}`
+`r if( !knitr::is_html_output(exclude = "epub") ) {
+'   * A bar chart\\
+   * A histogram\\
+   * A boxplot\\
+   * A scatterplot\\
+   * A side-by-side bar chart'
+}`
+
 1. Which one of the following could be used to graph the *relationship* between the response and explanatory variables?  
-`r if( knitr::is_html_output() ) {longmcq( c(
+`r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
 	"A bar chart",
 	"A histogram",
 	"A boxplot",
 	answer = "A scatterplot",
 	"A side-by-side bar chart"))}`
+
+`r if( !knitr::is_html_output(exclude = "epub") ) {
+' 	 * A bar chart\\
+ 	 * A histogram\\
+ 	 * A boxplot\\
+ 	 * A scatterplot\\
+ 	 * A side-by-side bar chart'
+}`
+
 1. Which one of the following could be used to graph the *relationship* between the 'surface temperature' and 'bruise location'?  
-`r if( knitr::is_html_output() ) {longmcq( c(
+`r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
 	"A bar chart",
 	"A histogram",
 	answer = "A boxplot",
 	"A scatterplot",
 	"A side-by-side bar chart"))}`
+`r if( !knitr::is_html_output(exclude = "epub") ) {
+' 	 * A bar chart\\
+ 	 * A histogram\\
+ 	 * A boxplot\\
+ 	 * A scatterplot\\
+ 	 * A side-by-side bar chart'
+}`
 
 
+`r if (knitr::pandoc_to("epub3")) '<!--'`
 ::: {.progressBox .progress}
-`r if (knitr::is_html_output()) {"**Progress:**"}`
-`r webexercises::total_correct()`
+**Progress:**  webexercises::total_correct()
+}`
 :::
 
 `r webexercises::hide()`
@@ -5138,7 +5175,7 @@ at the bruise location (an *extraneous* variable).
 3. **Scatterplot**: Two quantitative variables.
 4. **Boxplot**: One quantitative and one qualitative variable.
 `r webexercises::unhide()`
-
+`r if (knitr::pandoc_to("epub3")) '-->'`
 
 
 
@@ -5194,11 +5231,11 @@ if( knitr::is_latex_output() ) {
 if( knitr::is_html_output() ) {
   out <- kable( table(mtcars$cyl),
          format = "html",
-         lomngtable = FALSE,
-       caption  ="The number of cylinders in cars in a study",
-       col.names = c("Number of cylinders", "Number of cars"),
-       align = c("r", "r"),
-       booktabs = TRUE)
+         longtable = FALSE,
+         caption  ="The number of cylinders in cars in a study",
+         col.names = c("Number of cylinders", "Number of cars"),
+         align = c("r", "r"),
+         booktabs = TRUE)
  if ( knitr::is_html_output(excludes = "epub")) {
    kable_styling(out, full_width = FALSE)
   } else {
@@ -5300,7 +5337,8 @@ the athletes in the two sports?
 ```{r}
 data(AIS) # From GLMsData
 
-subAIS <- subset(AIS, Sex=="F" & (Sport=="BBall" | Sport=="Netball"))
+subAIS <- subset(AIS, 
+                 Sex=="F" & (Sport=="BBall" | Sport=="Netball"))
 subAIS$Sport <- droplevels(subAIS$Sport)
 ```
 
@@ -5402,9 +5440,16 @@ What do we learn from this graph?
 
 
 ```{r OfficeTemps}
-OfficeTemps <- array( dim=c(6, 3) )
-colnames(OfficeTemps) <- c( "Office A", "Office B", "Office C")
-rownames(OfficeTemps) <- c("Mean", "Minimum", "$Q_1$", "Median", "$Q_3$", "Maximum")
+OfficeTemps <- array( dim = c(6, 3) )
+colnames(OfficeTemps) <- c( "Office A", 
+                            "Office B", 
+                            "Office C")
+rownames(OfficeTemps) <- c("Mean", 
+                           "Minimum", 
+                           "$Q_1$", 
+                           "Median", 
+                           "$Q_3$", 
+                           "Maximum")
 
 OfficeTemps[1, ] <- c(24.1, 25.3, 25.7)
 OfficeTemps[2, ] <- c(16.4, 15.9, 20.1)

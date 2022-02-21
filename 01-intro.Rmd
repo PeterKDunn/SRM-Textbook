@@ -448,22 +448,25 @@ if( knitr::is_latex_output() ) {
    row_spec(row = 2, 
             bold = TRUE) 
 }
-if( knitr::is_html_output() ) {
-  out <- kable(ResearchTypes,
+if( knitr::is_html_output(exclude = "epub") ) {
+  kable(ResearchTypes,
+               format = "html",
+               align = c("r", "c", "l"),
+               longtable = FALSE,
+               caption = "Comparing qualitative and quantitative research",
+               booktabs = TRUE) %>%
+         column_spec(column = 2, 
+                     bold = TRUE) %>%
+         row_spec(row = 2, 
+                  bold = TRUE)
+}
+if ( knitr::is_html_output(excludes = "epub3")) {
+ kable(ResearchTypes,
                format = "html",
                align = c("r", "c", "l"),
                longtable = FALSE,
                caption = "Comparing qualitative and quantitative research",
                booktabs = TRUE)
-  if ( knitr::is_html_output(excludes = "epub3")) {
-    column_spec(out, 
-                column = 2, 
-                bold = TRUE) %>%
-    row_spec(row = 2, 
-             bold = TRUE)
-  } else {
-    out
-  }
 }
 ```
 
@@ -574,17 +577,19 @@ Which are likely to be answered using *quantitative* research studies,
 and which are likely to be answered using *qualitative* research studies?
 
 1. What percentage of the population experiences minor side-effects from this medication?  
-`r if( knitr::is_html_output() ) {mcq( c("Qualitative", answer="Quantitative") )}`
+`r if( knitr::is_html_output(exclude = "epub") ) {mcq( c("Qualitative", answer="Quantitative") )}`
 1. What is the average number of roof-top solar panels installed on domestic properties?  
-`r if( knitr::is_html_output() ) {mcq( c("Qualitative", answer="Quantitative") )}`
+`r if( knitr::is_html_output(exclude = "epub") ) {mcq( c("Qualitative", answer="Quantitative") )}`
 1. Why do people opt to purchase an electric car?  
-`r if( knitr::is_html_output() ) {mcq( c( answer="Qualitative", "Quantitative") )}`
+`r if( knitr::is_html_output(exclude = "epub") ) {mcq( c( answer="Qualitative", "Quantitative") )}`
 
 
+`r if (knitr::pandoc_to("epub3")) '<!--'`
 ::: {.progressBox .progress}
-`r if (knitr::is_html_output()) {"**Progress:**"}`
-`r webexercises::total_correct()`
+**Progress:**  webexercises::total_correct()
+}`
 :::
+
 
 `r webexercises::hide()`
 1. The RQ requires numerical summaries of the data: 'What *percentage*...'
@@ -594,6 +599,7 @@ and which are likely to be answered using *qualitative* research studies?
 1. The RQ *does not* require numerical summaries of the data.
    This RQ would be answered using a **qual**itative RQ.
 `r webexercises::unhide()`
+`r if (knitr::pandoc_to("epub3")) '-->'`
 
 
 ## Exercises {#IntroExercises}

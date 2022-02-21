@@ -141,7 +141,7 @@ if( knitr::is_html_output(exclude = "epub") ) {
                  options = list(searching = FALSE) # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
   )
 }
-if( knitr::is_html_output() & knitr::pandoc_to("epub")) {
+if( knitr::pandoc_to("epub")) {
   kable( RT.DataTable10,
          format = "html",
          booktabs = TRUE,
@@ -212,7 +212,7 @@ if( knitr::is_latex_output() ) {
     row_spec(0, bold = TRUE) %>%
     kable_styling(font_size = 10)
 }
-if( knitr::is_html_output() ) {
+if( knitr::is_html_output(exclude = "epub") ) {
 
   Diff2Notation[1, ] <- c(	"$\\mu_A$", 	
                            "$\\mu_B$")
@@ -225,21 +225,37 @@ if( knitr::is_html_output() ) {
   Diff2Notation[5, ] <- c(	"$n_A$",
   							            "$n_B$")
 
-  out <- kable( Diff2Notation,
+  kable( Diff2Notation,
                 format = "html",
                 booktabs = TRUE,
                 longtable = FALSE,
                 align = c("c", "c"),
                 col.names = colnames(Diff2Notation),
-               caption = "Notation used to distinguish between the two independent groups")
-  if ( knitr::is_html_output(excludes = "epub")) {
-    row_spec(out, 
-             0, 
-	     bold = TRUE) 
-  } else {
-    out
-  }
-    
+               caption = "Notation used to distinguish between the two independent groups") %>%
+    row_spec(0, bold = TRUE) 
+}
+
+
+if( knitr::pandoc_to("epub3") ) {
+
+  Diff2Notation[1, ] <- c(	"$\\mu_A$", 	
+                           "$\\mu_B$")
+  Diff2Notation[2, ] <- c(	"$\\bar{x}_A$",		
+                           "$\\bar{x}_B$")
+  Diff2Notation[3, ] <- c(	"$s_A$", 			
+                           "$s_B$")
+  Diff2Notation[4, ] <- c(	"$\\displaystyle\\text{s.e.}(\\bar{x}_A) = \\frac{s_A}{\\sqrt{n_A}}$",
+  							            "$\\displaystyle\\text{s.e.}(\\bar{x}_B) = \\frac{s_B}{\\sqrt{n_B}}$")
+  Diff2Notation[5, ] <- c(	"$n_A$",
+  							            "$n_B$")
+
+  kable( Diff2Notation,
+                format = "html",
+                booktabs = TRUE,
+                longtable = FALSE,
+                align = c("c", "c"),
+                col.names = colnames(Diff2Notation),
+                caption = "Notation used to distinguish between the two independent groups") 
 }
 ```
 
@@ -403,7 +419,18 @@ if( knitr::is_latex_output() ) {
    row_spec(0, bold = TRUE) %>%
    kable_styling(font_size = 10) 
 }
-if( knitr::is_html_output() ) {
+if( knitr::is_html_output(exclude = "epub") ) {
+  kable(Phone.DataSummary,
+        format = "html",
+        booktabs = TRUE,
+        longtable = FALSE,
+        col.names = c("Mean", 
+                      "Sample size", 
+                      "Standard deviation", 
+                      "Standard error"),
+        caption = "Numerical summaries of the reaction-time data (in milliseconds)")  
+}
+if( knitr::pandoc_to("epub3") ) {
   kable(Phone.DataSummary,
         format = "html",
         booktabs = TRUE,
@@ -482,12 +509,9 @@ In conclusion we write:
 > and students *not* using a mobile phone (mean: 533.59ms; $n = 32$;
 > 95% CI for the difference: $12.4$ to $90.9$ms longer for phone users).
 
-Again,
-the conclusions contains 
-an *answer to the RQ*,
+Again, the conclusions contains an *answer to the RQ*,
 the *evidence* leading to this conclusion ($t=2.631$; two-tailed $P=0.011$),
-and
-some *sample summary statistics*, including a CI.
+and some *sample summary statistics*, including a CI.
 
 
 
@@ -641,7 +665,6 @@ Speed$When <- factor(Speed$When,
                      ordered = TRUE)
 
 if( knitr::is_latex_output() ) {
-  
   kable( Speed[1:10,],
          format = "latex",
          longtable = FALSE,
@@ -660,14 +683,13 @@ if( knitr::is_html_output(exclude = "epub") ) {
                  caption = "The observations from the signage data")
 }    
   
-if( knitr::is_html_output() & knitr::pandoc_to("epub") ) {
+if(knitr::pandoc_to("epub3") ) {
   kable( Speed[1:10,],
          format = "html",
          longtable = FALSE,
          booktabs = TRUE,
          align = c("c", "c", "c"),
-         caption = "Vehicle speeds before and after adding extra signage. Only the first 10 observations are shown.") %>%
-    kable_styling(font_size = 10)
+         caption = "Vehicle speeds before and after adding extra signage. Only the first 10 observations are shown.")
 }
 ```
 
@@ -675,9 +697,7 @@ The researchers are hoping that the addition of extra signage will *reduce* the 
 
 The RQ is:
 
-> At this freeway exit,
-> did the mean vehicle speed *reduce*
-> after extra signage was added?
+> At this freeway exit,did the mean vehicle speed *reduce* after extra signage was added?
 
 The data are *not* paired:
 different vehicles are measured before and after the extra signage is added.
@@ -741,8 +761,8 @@ if( knitr::is_latex_output() ) {
   row_spec(0, bold = TRUE) %>%
   kable_styling(font_size = 10)
 }
-if( knitr::is_html_output() ) {
-  out <- kable(SignageSummary,
+if( knitr::is_html_output(exclude = "epub") ) {
+  kable(SignageSummary,
                format = "html",
                longtable = FALSE,
                booktabs = TRUE,
@@ -751,13 +771,21 @@ if( knitr::is_html_output() ) {
                             "Std deviation", 
                             "Std error",
                             "Sample size"),
-    caption = "The signage data summary (in km/h)"
-  )
-  if ( knitr::is_html_output(excludes = "epub")) {
-    kable_styling(out, full_width = FALSE)
-  } else {
-    out
-  }
+    caption = "The signage data summary (in km/h)") %>%
+  kable_styling(full_width = FALSE)
+}
+
+if( knitr::pandoc_to("epub3") ) {
+  kable(SignageSummary,
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               align = c("r", "r", "r", "r"),
+               col.names = c("Mean", 
+                            "Std deviation", 
+                            "Std error",
+                            "Sample size"),
+               caption = "The signage data summary (in km/h)") 
 }
 ```
 
@@ -815,27 +843,6 @@ We conclude:
 >  After:  mean speed: 92.34 km/h; $n = 41$; standard deviation: $13.13$ km/h;
 > 95% CI for the difference: -0.24 to 11.6 km/h).
 
-
-
-
-
-
-
-
-\[
-  5.68 \pm (2 \times 0.472),
-\]
-or from
-$4.74$ to $6.62$ km/h,
-higher before the addition of extra signage.
-   
-This means that,
-if many samples of size 38 and 41 were found,
-and the difference between the mean speeds were found,
-about 95% of the CIs would contain the population difference
-($\mu_{\text{Before}} - \mu_{\text{After}}$).
-Loosely speaking,
-there is a 95% chance that our CI straddles the difference in the population means ($\mu_{\text{Before}} - \mu_{\text{After}}$).
 
 Using the [validity conditions](#ValidityTwoMeans),
 the CI is statistically valid.
@@ -939,8 +946,8 @@ if( knitr::is_latex_output() ) {
   row_spec(0, bold = TRUE) %>%
   kable_styling(font_size = 10)
 }
-if( knitr::is_html_output() ) {
-  out <- kable(BHADPSummary,
+if( knitr::is_html_output(exclude = "epub") ) {
+  kable(BHADPSummary,
                format = "html",
                longtable = FALSE,
                booktabs = TRUE,
@@ -949,15 +956,21 @@ if( knitr::is_html_output() ) {
                              "Std deviation", 
                              "Sample size", 
                              "Std error"),
-               caption = "The BHADP data summary"
-  )
-  if ( knitr::is_html_output(excludes = "epub")) {
-    kable_styling(out, 
-                  full_width = FALSE)
-  } else {
-    out
-  }
-   
+               caption = "The BHADP data summary") %>%
+    kable_styling(full_width = FALSE)
+}
+
+if( knitr::pandoc_to("epub3") ) {
+  kable(BHADPSummary,
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               align = c("r", "r", "r", "l"),
+               col.names = c("Sample mean", 
+                             "Std deviation", 
+                             "Sample size", 
+                             "Std error"),
+               caption = "The BHADP data summary")
 }
 ```
 
@@ -1064,19 +1077,17 @@ or manually:
   t = \frac{14.5-0}{2.167} = 6.691
 \]
 (**observation**).
-The two-tailed $P$-value is $0.001$,
-so the *one-tailed* $P$-value is $0.001\div 2 = 0.0005$.
-This is very small,
-so we **conclude**:
+The two-tailed $P$-value is $0.001$, so the *one-tailed* $P$-value is $0.001\div 2 = 0.0005$.
+This is very small, so we **conclude**:
 
 > Very strong evidence exists
 > in the sample
-> ($t=6.691$;  one-tailed $P=0.0005$)
+> ($t = 6.691$;  one-tailed $P = 0.0005$)
 > that the population mean one-step fall recovery angle for healthy women is 
 > *greater* for young women
-> (mean: $30.7^\circ$; std. dev.: $2.58^\circ$; $n=10$)
+> (mean: $30.7^\circ$; std. dev.: $2.58^\circ$; $n = 10$)
 > compared to older women
-> (mean: $16.20^\circ$; std. dev.: $4.44^\circ$; $n=5$;
+> (mean: $16.20^\circ$; std. dev.: $4.44^\circ$; $n = 5$;
 > 95% CI\ for the difference: $9.1^\circ$ to $19.9^\circ$).
 
 
@@ -1091,11 +1102,8 @@ knitr::include_graphics("SPSS/FallForward/FallForwardTTestOutput.png")
 ```
 
 
-The sample sizes are both small,
-so the test may not be statistical valid.
-However,
-since the $P$-value is so small,
-the conclusion is unlikely to change substantially.
+The sample sizes are both small, so the test may not be statistical valid.
+However, since the $P$-value is so small, the conclusion is unlikely to change substantially.
 
 
 
@@ -1162,14 +1170,14 @@ htmltools::tags$video(src = "./videos/TwoMeans.mp4",
 
 A study
 [@lee2016effect]
-compared using a vegan ($n=46$) and a conventional ($n=47$) diet for 12 weeks,
+compared using a vegan ($n = 46$) and a conventional ($n = 47$) diet for 12 weeks,
 for a group of Koreans with Type II diabetes.
 A summary of the data for iron levels are shown in
 Table \@ref(tab:VeganDiet).
 
 
 ```{r VeganDiet, echo=FALSE}
-VeganDiet <- array( dim=c(3, 3))
+VeganDiet <- array( dim = c(3, 3))
 
 rownames(VeganDiet) <- c("Vegan diet",
                          "Conventional diet", 
@@ -1193,41 +1201,52 @@ if( knitr::is_latex_output() ) {
    row_spec(0, bold = TRUE)
 }
 
-if( knitr::is_html_output() ) {
+if( knitr::is_html_output(exclude = "epub") ) {
   kable(VeganDiet,
         format = "html",
         longtable = FALSE,
         booktabs = TRUE,
         caption = "Comparing the iron levels (mg) for subjects using a vegan or conventional diet for 12 weeks")
 }
+
+if( knitr::pandoc_to("epub3") ) {
+  kable(VeganDiet,
+        format = "html",
+        longtable = FALSE,
+        booktabs = TRUE,
+        caption = "Comparing the iron levels (mg) for subjects using a vegan or conventional diet for 12 weeks") 
+}
 ```
 
 
 1. The sample size is missing from the 'Difference' row. What should the sample size in this row be?  
-`r if( knitr::is_html_output() ) {longmcq( c(
+`r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
   "46 + 47 = 93",
   "46 - 47 = -1",
   "47 - 46 = 1",
   answer = "A sample size makes no sense",
   "There is not enough information"
 )  )}`
+
 1. What is the *standard deviation* for the difference?  
-`r if( knitr::is_html_output() ) {mcq( c(
+`r if( knitr::is_html_output(exclude = "epub") ) {mcq( c(
   "0.3391",
   "0.3928",
   answer = "A standard deviation makes no sense",
   "There is not enough information"
 )  )}`
+
 1. What is the *standard error* for the difference?  
-`r if( knitr::is_html_output() ) {mcq( c(
+`r if( knitr::is_html_output(exclude = "epub") ) {mcq( c(
   "0.3391",
   "0.3928",
   "A standard error makes no sense",
   answer = "There is not enough information"
 )  )}`
+
 1. The two-tailed $P$-value for the comparison is given as $P=0.046$.
 What does this mean?  
-`r if( knitr::is_html_output() ) {longmcq( c(
+`r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
   "There is no evidence that the sample means are different",
   "There is some evidence that the sample means are different",
   "There is no evidence that the population means are different",
@@ -1237,10 +1256,13 @@ What does this mean?
 
 
 
+
+`r if (knitr::pandoc_to("epub3")) '<!--'`
 ::: {.progressBox .progress}
-`r if (knitr::is_html_output()) {"**Progress:**"}`
-`r webexercises::total_correct()`
+**Progress:**  webexercises::total_correct()
+}`
 :::
+`r if (knitr::pandoc_to("epub3")) '-->'`
 
 
 
@@ -1301,7 +1323,7 @@ Table \@ref(tab:ParamedicsTest).
 
 
 ```{r ParamedicsTest, echo=FALSE}
-ParaSummary <- array(dim=c(6, 2))
+ParaSummary <- array(dim = c(6, 2))
 rownames(ParaSummary) <- c("Mean", 
                             "Std deviation",
                             "Std error",
@@ -1334,22 +1356,28 @@ if( knitr::is_latex_output() ) {
   pack_rows("Grip strength (in kg)", 1, 3) %>%
   pack_rows("Push-ups (per minutes)", 4, 6)
 }
-if( knitr::is_html_output() ) {
-  out <- kable(ParaSummary,
+if( knitr::is_html_output(exclude = "epub") ) {
+  kable(ParaSummary,
         format = "html",
         longtable = FALSE,
         booktabs = TRUE,  
         align = c("r", "r"),
-        caption = "The physical profile of conventional ($n=18$) and special operation ($n=11$) paramedics in Western Australia"
-  )
-  if ( knitr::is_html_output(excludes = "epub")) {
-    kable_styling(out, full_width = FALSE) %>%
+        caption = "The physical profile of conventional ($n=18$) and special operation ($n=11$) paramedics in Western Australia") %>%
+    kable_styling(full_width = FALSE) %>%
     pack_rows("Grip strength (in kg)", 1, 3) %>%
     pack_rows("Push-ups (per minutes)", 4, 6)
-  } else {
-    out
-  }
-   
+}
+
+
+if( knitr::pandoc_to("epub3") ) {
+  kable(ParaSummary,
+        format = "html",
+        longtable = FALSE,
+        booktabs = TRUE,
+	 #linesep = c("", "", "", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), # Otherwise addes a space after five lines... 
+        align = c("r", "r"),
+        caption = "The physical profile of conventional ($n=18$) and special operation ($n=11$) paramedics in Western Australia"
+  ) 
 }
 ```
 
