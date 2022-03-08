@@ -1,14 +1,12 @@
-
-
-
-
-
 plot.norm <- function(mu, sd, 
                       xlab.name = "Variable",
                       new = TRUE,
-                      shade.lo.x = NA, shade.hi.x = NA,
-                      shade.lo.z = NA, shade.hi.z = NA,
-                      show.lo = NA, show.hi = NA,
+                      shade.lo.x = NA, 
+                      shade.hi.x = NA,
+                      shade.lo.z = NA, 
+                      shade.hi.z = NA,
+                      show.lo = NA, 
+                      show.hi = NA,
                       round.dec = 1,
                       shade.col = plot.colour,
                       main = "",
@@ -18,8 +16,10 @@ plot.norm <- function(mu, sd,
                       srt = 0,
                       cex.tickmarks = 1,
                       las = 1,
-                      xlim.hi = NA, xlim.lo = NA,
-                      zlim.hi = 3.5, zlim.lo = -zlim.hi,
+                      xlim.hi = NA, 
+                      xlim.lo = NA,
+                      zlim.hi = 3.5, 
+                      zlim.lo = -zlim.hi,
                       axis.labels = NULL){
   
   # mu  is the mean of the distn
