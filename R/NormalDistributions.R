@@ -14,6 +14,7 @@ plot.norm <- function(mu, sd,
                       height = width,
                       type = "z",
                       srt = 0,
+                      bg = "white", 
                       cex.tickmarks = 1,
                       las = 1,
                       xlim.hi = NA, 
@@ -53,22 +54,25 @@ plot.norm <- function(mu, sd,
   }
   
   if ( new ) {
-    par(mar=c(2,0,2,0) + 0.1  )
+    par(mar = c(2, 0, 2, 0) + 0.1  )
   }
   
   if (!is.na(xlim.hi) ){
-    zlim.hi <- (xlim.hi-mu)/sd
+    zlim.hi <- (xlim.hi - mu)/sd
   }
   if (!is.na(xlim.lo) ){
-    zlim.lo <- (xlim.lo-mu)/sd
+    zlim.lo <- (xlim.lo - mu)/sd
   }
   
-  hor <- seq(zlim.lo, zlim.hi, length=250) # z-scores
+  hor <- seq(zlim.lo, 
+             zlim.hi, 
+             length = 250) # z-scores
   nc <- dnorm(hor, 0, 1) # Normal curve
   extra <- 0.25 # extra space at ends
   spacer <- -0.05 # space to other x-axis
   text.loc.z <- c(-3, -2, -1, 0, 1, 2, 3) 		# Where to place x-axis labels: In terms of z
-  text.loc.x <- round(mu + text.loc.z * sd, round.dec) 		# Where to place x-axis labels: In terms of x 
+  text.loc.x <- round(mu + text.loc.z * sd, 
+                      round.dec) 		# Where to place x-axis labels: In terms of x 
   
   if ( is.na(shade.lo.z) ) {
     shade.lo.z <- (shade.lo.x - mu)/sd
@@ -85,89 +89,105 @@ plot.norm <- function(mu, sd,
   
   if (new) {
     plot( nc ~ hor, 
-          axes=FALSE,
-          ylim=c(-0.1, 0.4),
-          xlim=c(zlim.lo-2*extra , zlim.hi+2*extra),
-          lwd=2,
-          xlab="",
-          ylab="",
-          main=main,
-          type="l")
+          axes = FALSE,
+          bg = bg,
+          ylim = c(-0.1, 0.4),
+          xlim = c(zlim.lo - 2 * extra , 
+                   zlim.hi + 2 * extra),
+          lwd = 2,
+          xlab = "",
+          ylab = "",
+          main = main,
+          type = "l")
   }
   
   # Horizontal axis
-  lines( c(zlim.lo-extra, zlim.hi+extra), 
-         c(0,0),
-         lwd=2 )
+  lines( c(zlim.lo - extra, 
+           zlim.hi + extra), 
+         c(0, 0),
+         lwd = 2 )
   
   # Add arrow to axis
   arrows(0, 0, 3.75, 0, 
-         length=0.15, 
-         angle=20, 
-         lwd=2)
+         length = 0.15, 
+         angle = 20, 
+         lwd = 2)
   
   # Add line corresponding to the mean (z=0)
-  lines( c(0,0.4) ~ c(0, 0), 
-         lwd=2,
-         col="grey")
+  lines( c(0, 0.4) ~ c(0, 0), 
+         lwd = 2,
+         col = "grey")
   
   # Titles
-  title(sub=xlab.name, 
-        line=0)
+  title(sub = xlab.name, 
+        line = 0)
   
   # Label axis;  type  is usually "t" or "z" or is blank (i.e. type="")
-  text(zlim.hi+extra, 0, 
-       pos=3, 
-       adj=0, 
+  text(zlim.hi + extra, 0, 
+       pos  =3, 
+       adj = 0, 
        type)
   
   # Label horizontal axis
   if ( is.null(axis.labels)){
     text( text.loc.z, 0, 
-          pos=1, 
-          cex=cex.tickmarks,
-          srt=srt,
-          labels=as.character(text.loc.x) )
+          pos = 1, 
+          cex = cex.tickmarks,
+          srt = srt,
+          labels = as.character(text.loc.x) )
   } else {
     text( text.loc.z, 0, 
-          pos=1, 
-          cex=cex.tickmarks,
-          srt=srt,
-          labels=axis.labels )
+          pos = 1, 
+          cex = cex.tickmarks,
+          srt = srt,
+          labels = axis.labels )
   }
   
   # Add lines to demarcate shading
-  lines(c(shade.lo.z, shade.lo.z), c(0, dnorm(shade.lo.z,0,1)), lwd=2)
-  lines(c(shade.hi.z, shade.hi.z), c(0, dnorm(shade.hi.z,0,1)), lwd=2)
+  lines(c(shade.lo.z, shade.lo.z), 
+        c(0, dnorm(shade.lo.z, 0, 1)), 
+        lwd = 2)
+  lines(c(shade.hi.z, shade.hi.z), 
+        c(0, dnorm(shade.hi.z, 0, 1)), 
+        lwd = 2)
   
   # What to shade?
   if ( !is.na(show.lo) ) {
     if (is.logical(show.lo) ){
       if ( show.lo ) {
-        lines( c(shade.lo.z, shade.lo.z), c(spacer, dnorm(shade.lo.x,0,1)))
-        text(shade.lo.z, -0.11, as.character(shade.lo.x) )
+        lines( c(shade.lo.z, shade.lo.z), 
+               c(spacer, dnorm(shade.lo.x, 0, 1)))
+        text(shade.lo.z, -0.11, 
+             as.character(shade.lo.x) )
       }
     } else { # Not logical:  a value/character is supplied
-      lines( c(shade.lo.z, shade.lo.z), c(spacer, dnorm(shade.lo.x,0,1)))
-      text(shade.lo.z, -0.11, as.character(show.lo) )
+      lines( c(shade.lo.z, shade.lo.z), 
+             c(spacer, dnorm(shade.lo.x, 0, 1)))
+      text(shade.lo.z, -0.11, 
+           as.character(show.lo) )
     }
   }
   
   if ( !is.na(show.hi) ) {
     if (is.logical(show.hi) ){
       if( show.hi ) {
-        lines( c(shade.hi.z, shade.hi.z), c(spacer, dnorm(shade.hi.x,0,1)))
-        text(shade.hi.z, -0.11, as.character(shade.hi.x) )
+        lines( c(shade.hi.z, shade.hi.z), 
+               c(spacer, dnorm(shade.hi.x, 0, 1)))
+        text(shade.hi.z, -0.11, 
+             as.character(shade.hi.x) )
       }
     } else {
-      lines( c(shade.hi.z, shade.hi.z), c(spacer, dnorm(shade.hi.x,0,1)))
-      text(shade.hi.z, -0.11, as.character(show.hi) )
+      lines( c(shade.hi.z, shade.hi.z), 
+             c(spacer, dnorm(shade.hi.x, 0, 1)))
+      text(shade.hi.z, -0.11, 
+           as.character(show.hi) )
     }
   }
   
   # Add Shading
   x.poly <- seq( max(zlim.lo, shade.lo.z), 
-                 min(zlim.hi, shade.hi.z), length=100)
+                 min(zlim.hi, shade.hi.z), 
+                 length = 100)
   y.poly <- dnorm( x.poly, 0, 1)
   
   x.p <- c( x.poly, rev(x.poly) )
