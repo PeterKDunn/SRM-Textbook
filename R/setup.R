@@ -22,6 +22,7 @@ library("GLMsData")
 library("MASS")
 library("cowplot")
 library("dygraphs")
+library("slickR")
 #library("exams")
 
 
