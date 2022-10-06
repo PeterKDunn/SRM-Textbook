@@ -33,7 +33,7 @@ SixSteps(4, "Numerical summary (qual. data)")
 
 
 
-## Modes and medians {#QualIntro}
+## Modes, medians and means {#QualIntro}
 
 Because qualitative data has [**levels**](#def:Levels), both types of qualitative data (nominal; ordinal) can be numerically summarised by *counting* the number of observations in each level.
 
@@ -75,11 +75,7 @@ Hence the **median** age group is '20 to 24' (while the **mode** is '15 to 19').
 :::
 
 ```{r EarInfection}
-library(GLMsData)
-library(kableExtra)
-
 data(earinf)
-
 
 EarInfectionTable  <- array( dim = c(5, 4))
 
@@ -112,7 +108,7 @@ if( knitr::is_latex_output() ) {
       caption = "The ear infection data") %>%
    #kable_styling(font_size = 10) %>%
    row_spec(0, bold = TRUE) %>%
-   row_spec(5, bold = TRUE)
+   row_spec(5, bold = TRUE) %>%
    column_spec(5, bold = TRUE)
 }
 
@@ -133,12 +129,115 @@ if( knitr::is_html_output() ) {
 
 
 Means are not really suitable for numerically summarising qualitative data.
-However, sometimes *ordinal* data may be [numerically summarised like quantitative data](#NumericalQuant) in special circumstance (for example, when the categories are considered 'equally spaced').
+However, sometimes *ordinal* data **may be** [numerically summarised like quantitative data](#NumericalQuant) in special circumstance (for example, when the categories are considered 'equally spaced').
 
 
-::: {.example OrdinalMeans name="Means of ordinal data"}
-NEED EXAMPLE
+::: {.example #OrdinalMeans name="Means of ordinal data"}
+In a study of bread with varying salt and fibre content [@@gkebski2019impact], researchers recorded (Table \@ref(tab:Bread)), among other information from the 300 subjects:
+
+* The age group of the subject;
+* The subjects' place of residence; and
+* The subjects' response that to the statement 'Rolls with lower salt content taste worse than regular ones', on a five-point scale.
+
+All three variables are ordinal.
+
+For the modes:
+
+* Both age groups contain 150 subjects. 
+  This could be interpreted as having two modes, or having no mode, neither of which is very helpful.
+* The *mode* residence is 'City with > 100,000 residents' (130 responses).
+* The *mode* response to the statement is 'Agree' (84 responses).
+
+The medians are located at ordered observation $(300 + 1) / 2 = 150.5$, or half-way between ordered observations 150 and 151:
+
+* The *median* age group would be half-way between ordered observations 150 (age group 21 to 45) and 151 (age group 46 to 65); it is not clear what this means. Perhaps the median can be given as 45.5 years...
+* The *median* residence is 'City 20,000 to 100,000 residents'.
+* The *median* response to the statement is 'Neutral'.
+
+The mean response to the statement *may* be sensible (and is used in the article) if the categories are considered equally spaced (that is, the distances between each of the five points on the scale are considered equal).
+
+Then, assigning **1** to 'Strongly agree' up to **5** for 'Strongly disagree', the *mean* response is 3.02 (effectively 'Neutral').
+
+The categories for 'Place of residence' are not equally spaced, and the final category is open-ended, so using a mean is **not** appropriate.
 :::
+
+
+```{r Bread}
+BreadTable  <- array( dim = c(11, 3))
+
+colnames(BreadTable) <- c("",
+                          "Number",
+                          "Percentage")
+rownames(BreadTable) <- c("Age",
+                                 "",
+                                 "Place of residence",
+                                 "",
+                                 "",
+                                 "",
+                                 "Response to statement",
+                                 "",
+                                 "",
+                                 "",
+                                 ""
+)
+
+BreadTable[, 1] <- c("21 to 45",
+                     "46 - 65",
+                     "Rural",
+                     "City up to 20,000 residents",
+                     "City 20,000 to 100,000 residents",
+                     "City > 100,000 residents",
+                     "Strongly agree",
+                     "Agree",
+                     "Neutral",
+                     "Disagree","Strongly disagree"
+                     )
+BreadTable[, 2] <- c(150,
+                     150,
+                     49,
+                     38,
+                     83,
+                     130,
+                     30,
+                     84,
+                     78,
+                     66,
+                     42)
+BreadTable[, 3] <- c(50,
+                     50,
+                     16,
+                     13,
+                     28,
+                     43,
+                     10,
+                     28,
+                     26,
+                     22,
+                     14)
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(BreadTable,
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        align = "r",
+      caption = "The bread data") %>%
+   #kable_styling(font_size = 10) %>%
+   row_spec(0, bold = TRUE)
+}
+
+if( knitr::is_html_output() ) {
+  knitr::kable(BreadTable,
+        format = "html",
+        longtable = FALSE,
+        booktabs = TRUE,
+        align = "r",
+        caption = "The bread data")%>%
+   #kable_styling(font_size = 10) %>%
+   row_spec(0, bold = TRUE)
+}
+```
+
 
 
 
@@ -151,8 +250,6 @@ In a medical study [@data:Charig:stones], the aim was to:
 > ...compare (two) different methods of treating *renal calculi*... to establish which was the most [...] successful.
 >
 > --- @data:Charig:stones, p. 879
-
-
 
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
