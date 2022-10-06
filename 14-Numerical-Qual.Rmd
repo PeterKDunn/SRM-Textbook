@@ -44,131 +44,43 @@ Most commonly, qualitative data is numerically summarised using [**percentages**
 However, *ordinal* data can be numerically summarised in ways that nominal data cannot be, since *ordinal* data has levels with a natural order. 
 Ordinal qualitative data, but **not** nominal qualitative data, can be summarised using *medians*.
 
-
-```{r}
-data(earinf)
-
-earingAgeMedianLocation <- (sum(table(earinf$Age)) + 1) / 2
-earinfTotal <- sum(table(earinf$Age))
-```
-
-
 ::: {.example #OrdinalMedians name="Medians for ordinal data" }
-A study of ear infections [@data:hand:handbook] collected the data in Table \@ref(tab:EarInfection).
-Among the variables collected from each individual were:
+In a study of the taste of bread with varying salt and fibre content [@@gkebski2019impact], researchers recorded (Table \@ref(tab:Bread)), among other information from the 300 subjects:
 
-* whether the person recorded an ear infection, which is *nominal* qualitative;
-* the *sex* of the person, which is *nominal* qualitative; and
-* the age group of the person, which is *ordinal* qualitative.
-
-The *mode* sex is 'Male', since there are more males than females.
-The *mode* age group is '15 to 19', since there are more individuals in this age group than in either of the other two age groups.
-
-Since 'Age group' is *ordinal*, the *median* age group can also be found.
-The study includes `r earinfTotal` people, so the median age will be [the middle ordered observation](#Median): ordered observation `r earingAgeMedianLocation`.
-
-Consider ordering all the people in the study by age. 
-The youngest age group (people aged 15 to 19) contains 140 people.
-The next age group (people aged 20 to 24) contains the next-oldest 79 people, and so the `r earingAgeMedianLocation`th person will be in this age group.
-
-Hence the **median** age group is '20 to 24' (while the **mode** is '15 to 19').
-:::
-
-```{r EarInfection}
-data(earinf)
-
-EarInfectionTable  <- array( dim = c(5, 4))
-
-colnames(EarInfectionTable) <- c("15 to 19",
-                                 "20 to 24",
-                                 "25 to 29",
-                                 "Total")
-rownames(EarInfectionTable) <- c("Females: No ear infections",
-                                 "Females: Ear infections",
-                                 "Males: No ear infections",
-                                 "Males: Ear infections",
-                                 "Total")
-
-EarInfectionTable[1:2, 1:3] <- xtabs( ~ Infec + Age, 
-                                      data = subset(earinf, 
-                                                    Sex == "Female"))
-EarInfectionTable[3:4, 1:3] <- xtabs( ~ Infec + Age, 
-                                      data = subset(earinf, 
-                                                    Sex == "Male"))
-EarInfectionTable[5, 1:3] <- colSums(EarInfectionTable[1:4, 1:3])
-EarInfectionTable[, 4] <- rowSums(EarInfectionTable[, 1:3])
-
-  
-
-if( knitr::is_latex_output() ) {
-  knitr::kable(EarInfectionTable,
-        format = "latex",
-        longtable = FALSE,
-        booktabs = TRUE,
-      caption = "The ear infection data") %>%
-   #kable_styling(font_size = 10) %>%
-   row_spec(0, bold = TRUE) %>%
-   row_spec(5, bold = TRUE) %>%
-   column_spec(5, bold = TRUE)
-}
-
-if( knitr::is_html_output() ) {
-  knitr::kable(EarInfectionTable,
-        format = "html",
-        longtable = FALSE,
-        booktabs = TRUE,
-        caption = "The ear infection data")%>%
-   #kable_styling(font_size = 10) %>%
-   row_spec(0, bold = TRUE) %>%
-   row_spec(5, bold = TRUE) %>%
-   column_spec(5, bold = TRUE)
-}
-```
-
-
-
-
-Means are not really suitable for numerically summarising qualitative data.
-However, sometimes *ordinal* data **may be** [numerically summarised like quantitative data](#NumericalQuant) in special circumstance (for example, when the categories are considered 'equally spaced').
-
-
-::: {.example #OrdinalMeans name="Means of ordinal data"}
-In a study of bread with varying salt and fibre content [@@gkebski2019impact], researchers recorded (Table \@ref(tab:Bread)), among other information from the 300 subjects:
-
+* The gender of the subject;
 * The age group of the subject;
 * The subjects' place of residence; and
-* The subjects' response that to the statement 'Rolls with lower salt content taste worse than regular ones', on a five-point scale.
+* The subjects' response to the statement 'Rolls with lower salt content taste worse than regular ones', on a five-point ordinal scale from 'Strongly Agree' to 'Strongly Disagree'.
 
-All three variables are ordinal.
+'Gender' is nominal qualitative; all other variables are ordinal.
 
 For the modes:
 
-* Both age groups contain 150 subjects. 
+* Both listed genders contai 150 subjects. 
+  This could be interpreted as having two modes, or having no mode, neither of which is very helpful.
+* Likewise, both age groups contain 150 subjects. 
   This could be interpreted as having two modes, or having no mode, neither of which is very helpful.
 * The *mode* residence is 'City with > 100,000 residents' (130 responses).
 * The *mode* response to the statement is 'Agree' (84 responses).
 
-The medians are located at ordered observation $(300 + 1) / 2 = 150.5$, or half-way between ordered observations 150 and 151:
+Medians are not appropriate for 'Gender' (as it is nominal).
+For the other variables, the medians are located at ordered observation $(300 + 1) / 2 = 150.5$, or half-way between ordered observations 150 and 151:
 
 * The *median* age group would be half-way between ordered observations 150 (age group 21 to 45) and 151 (age group 46 to 65); it is not clear what this means. Perhaps the median can be given as 45.5 years...
 * The *median* residence is 'City 20,000 to 100,000 residents'.
 * The *median* response to the statement is 'Neutral'.
-
-The mean response to the statement *may* be sensible (and is used in the article) if the categories are considered equally spaced (that is, the distances between each of the five points on the scale are considered equal).
-
-Then, assigning **1** to 'Strongly agree' up to **5** for 'Strongly disagree', the *mean* response is 3.02 (effectively 'Neutral').
-
-The categories for 'Place of residence' are not equally spaced, and the final category is open-ended, so using a mean is **not** appropriate.
-:::
+```
 
 
 ```{r Bread}
-BreadTable  <- array( dim = c(11, 3))
+BreadTable  <- array( dim = c(13, 3))
 
 colnames(BreadTable) <- c("",
                           "Number",
                           "Percentage")
-rownames(BreadTable) <- c("Age",
+rownames(BreadTable) <- c("Gender",
+                          "",
+			  ,"Age",
                                  "",
                                  "Place of residence",
                                  "",
@@ -181,8 +93,10 @@ rownames(BreadTable) <- c("Age",
                                  ""
 )
 
-BreadTable[, 1] <- c("21 to 45",
-                     "46 - 65",
+BreadTable[, 1] <- c("Female',
+                     "Male",
+		     "21 to 45",
+                     "46 t0 65",
                      "Rural",
                      "City up to 20,000 residents",
                      "City 20,000 to 100,000 residents",
@@ -238,6 +152,19 @@ if( knitr::is_html_output() ) {
 }
 ```
 
+Means are not really suitable for numerically summarising qualitative data.
+However, *ordinal* data **may be** [numerically summarised like quantitative data](#NumericalQuant) in special circumstance (for example, when the categories are considered 'equally spaced' and a mid-point for each level is sensible).
+
+
+::: {.example #OrdinalMeans name="Means of ordinal data"}
+Consider again the data in Table \@ref(tab:Bread).
+Means are **not** sensible for 'Gender' as this variable is nominal.
+Means are **not** suitable for 'Place of residence' either, as the categories are not equally spaced, and the final category is open-ended (so a mid-point for that level is not appropriate).
+
+The mean response to the statement **may** be sensible (and is used in the article) if the levels are considered equally spaced (that is, the distances between each of the five points on the scale are considered equal).
+
+Then, assigning **1** to 'Strongly agree' up to **5** for 'Strongly disagree', the *mean* response is 3.02 (effectively 'Neutral').
+:::
 
 
 
