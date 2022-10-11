@@ -1,20 +1,3 @@
----
-title: "Untitled"
-output: html_document
-date: '2022-10-08'
----
-
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-## R Markdown
-
-
-
-
-
 # Tests for one proportion {#TestOneProportion}
 
 ::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
@@ -47,40 +30,33 @@ SixSteps(5, "Tests: One proportion")
 ## Introduction: Rolling dice
 
 In 1882, R. Wolf tossed a die 20,000 times (CITE) and recorded the number of times each face appeared...
-Of course, one would expect that each die face would appear about one-sixth of the time (LINK TO CLASSICAL PROB).
+So, would expect that each die face would appear about one-sixth of the time (based on [classical probability](#ProbClassical)),
+so a `r include_graphics("Dice/dice6.png", dpi=2000)` would be expected to appear about one-sixth of the time.
 
-In 20,000 rolls then, we'd expect to see a `r include_graphics("Dice/dice6.png", dpi=2000) about $20,000/6 = 3,333.3$ times;
-not *exactly* 3333.3 times each because of sampling variation, but *approximately* 3333.3 times each.
-And, of course, the number of times each face appears must be a whole number.
+Of course, we don't expect to see *exactly* one-sixth of the rolls turns up as a `r include_graphics("Dice/dice6.png", dpi=2000)`.
+Sometimes, when we rolls a die 20,000 times, the proportions of `r include_graphics("Dice/dice6.png", dpi=2000)`s will be a bit smaller than $1/6$, and sometimes it will be a bit larger than $1/6$.
 
-Nonetheless, we have some idea of how often each face should appear on average... but we also know that the actual number will vary, due to sampling variation.
-Sometimes the proportion of rolls that show a `r include_graphics("Dice/dice6.png", dpi=2000)` will be a bit higher than $1/6 = 0.1667$, and sometimes a bit lower than $1/6 = 0.1667$.
+What would be a reasonable for the proportion of `r include_graphics("Dice/dice6.png", dpi=2000)`s rolled, from a fair die?
+We could find a CI for the proportion, [as we did earlier](#SamplingDistributionKnownp), or use a simulation.
 
-(ANDD PROP COLUMN?)
+Using the [techniques from earlier](#SamplingDistributionKnownp), we would expect the sample proportions to vary from one set of 20,000 rolls to another set, but the average proportion would be $p = 1/6 = 0.166667$.
+The amount of variation in each set is described by the *standard error*:
 
- Die face | Number | | Die face | Number 
-----------+--------+-+----------+-------
-`r include_graphics("Dice/dice1.png", dpi=2000)` | 3407 | |`r include_graphics("Dice/dice4.png", dpi=2000)` | 2916
-`r include_graphics("Dice/dice2.png", dpi=2000)` | 3631 | |`r include_graphics("Dice/dice5.png", dpi=2000)` | 3448 
-`r include_graphics("Dice/dice3.png", dpi=2000)` | 3176 | |`r include_graphics("Dice/dice6.png", dpi=2000)` | 3422
+\[
+  \text{s.e.}(\hat{p}) = \sqrt{\frac{p\times(1 - p)}{n}} = \sqrt{\frac{0.166667\times(1 - 0.166667)}{20,000}} = 0.002635231.
+\]
+So 95% of the time, the sample proportion $\hat{p}$ will lie in the range $0.166667\pm (2\times 0.002635231)$; that is, from 0.161 to 0.172.
 
-But what spread of proportions would be likely?
-Would it be reasonably to see a proportion of 0.16?
-What about 0.15?
-Or even a proportion of 0.10?
-In other words, in $n = 20,000$ rolls, what proportion of rolls showing a `r include_graphics("Dice/dice6.png", dpi=2000)` could we expect to find just by chance (sampling variation)? 
+When Wolf tossed his die, he found 3422  `r include_graphics("Dice/dice6.png", dpi=2000)`s, which is a sample proportion of  $\hat{p} = 3422/20,000 = 0.1711$.
+This is just inside the range of proportions that we were expecting.
 
-We can use a computer to *simulate* rolling a 20,000 times (doing it for real would take a *long* time!).
-We can use the computer to pretend to roll a die 20,000 times, and count how many of those rolls were 6s.
-We can do this because we know that the actual proportion of 6s shoudl be $1/6 = 0.1666$.
-And we can do it again, and again...
-For each set of 20,000 rolls, we count the number of 6s that appear, and compute the *proportion* of rolls that were 6s.
-
+Alternatively, we can *simulate* what would happen:
+We cold use a computer to 'pretend' to roll a die 20,000 times and record the proportion of  `r include_graphics("Dice/dice6.png", dpi=2000)`s.
 If we do this many, many times, we have a list of *sample* proportions.
-We can plot a histogram of thhese sample proportions (XREF).
+We can plot a histogram of these sample proportions (Fig. \@ref(fig:RollsSixesHist)).
 
 
-```{r}
+```{r, RollsSixesHist, fig.cap="The proportion of sixes in 20,000 rolls of a fair die varies from one set of 20,000 rolls to another."}
 # SIMULATE dice rolls
 set.seed(309147) # For reproducibility
 
@@ -99,22 +75,69 @@ for (i in (1:numSims)){
   
 }
 
-hist( numSixes / n,
-      breaks = seq(0.155, 0.18, 
-                   by = 0.03/20),
-      xlab = "Proportion of 6s",
-      ylab = "How often",
-      main = "The proportion of 6s in 20,000 rolls",
-      las = 1,
-      col = "aliceblue")
+breaks <- seq(0.155, 0.18, 
+              by = 0.03/20)
+out <- hist( numSixes / n,
+             breaks = breaks,
+             xlab = "Proportion of 6s",
+             ylab = "How often",
+             main = "The proportion of 6s in 20,000 rolls",
+             las = 1,
+             col = "aliceblue")
+
+
+# Add "expected"
+xx <- seq( min(breaks),
+           max(breaks),
+           len= 1000)
+yy <- dnorm(xx, 
+            mean = 1/6,
+            sd = sep)
+yy <- yy / max(yy) * max(out$counts)
+lines( yy ~ xx,
+       col = "red",
+       lwd = 2)
+
+# Show Wolf
+p.Wolf <- 3422/20000
+arrows( p.Wolf + 0.005, 100,
+        p.Wolf, 0,
+        angle = 10,
+        length = 0.20,
+        col = "blue")
+points(p.Wolf,
+       0,
+       pch = 19,
+       col = "blue")
+text(p.Wolf + 0.005, 
+     100,
+     pos = 3, # Above
+     label = "Wolf's value")
 ```
 
 
-What we see is rather interesting--it looks like a normal distribution!
+
+ Die face | Number | | Die face | Number 
+----------+--------+-+----------+-------
+`r include_graphics("Dice/dice1.png", dpi=2000)` | 3407 | |`r include_graphics("Dice/dice4.png", dpi=2000)` | 2916
+`r include_graphics("Dice/dice2.png", dpi=2000)` | 3631 | |`r include_graphics("Dice/dice5.png", dpi=2000)` | 3448 
+`r include_graphics("Dice/dice3.png", dpi=2000)` | 3176 | |`r include_graphics("Dice/dice6.png", dpi=2000)` | 3422
+
+We can use a computer to *simulate* rolling a 20,000 times (doing it for real would take a *long* time!).
+We can use the computer to pretend to roll a die 20,000 times, and count how many of those rolls were 6s.
+We can do this because we know that the actual proportion of 6s should be $1/6 = 0.1666$.
+And we can do it again, and again, and again...
+For each set of 20,000 rolls, we count the number of 6s that appear, and compute the *proportion* of rolls that were 6s.
+
+
+
+
+
+What we see is rather interesting--it looks like a normal distribution.
 We also see that, in 20,000 rolls of a die, that a sample proportion of 6s as low as 0.165 is quite reasonable... but a sample proportion as low as 0.160 is starting to become quite rare.
 A sample proportion as low as 0.155 almost never occurs.
 
-So, if we did roll a die 20,000 time and saw the proportion of sixes was 0.155, we would have observed something 
+So, if we did roll a die 20,000 time and saw the proportion of sixes was 0.155, we would have observed something rather unusual.
 
 
 
@@ -123,22 +146,22 @@ He wondered if the proportion of `r include_graphics("Dice/dice6.png", dpi=2000)
 
 
 * Tossing the Euro and getting P(heads)
-* 
 
 
 
-::: {.example POnePropTestMeasles, name = "One sample proportion test"}
+
+::: {.example POnePropTestMeasles, name="One sample proportion test"}
 A study of the measles-rubella vaccination in Korea [@kim2004sero] compared the proportion of children with measles antibodies to the World Health Organization (WHO) target proportion.
 
 For children aged 5 to 9 years old, the WHO target for the measles antibody is 10%.
 In the study, 55 children out of 972 were found to have the antibody present; that is, $\hat{p} = 55/972 = 0.056584...$.
 
-Of course, every sample of 972 children would produce a different sample proportion, so the difference between this sample proportion and the target proportion (of 10%, or $p = 0.10) could be due to sampling variation.
+Of course, every sample of 972 children would produce a different sample proportion, so the difference between this sample proportion and the target proportion (of 10%, or $p = 0.10$) could be due to sampling variation.
 
-To test if the proportion of Korean children with the measles antibody in the *population* was at least 10%, the hypotheses are:
+To test if the proportion of Korean children with the measles antibody in the *population* was 10%, the hypotheses are:
 
 * $H_0$: $p = 0.10$ (assume the target is met and the difference between $p$ and $\hat{p}$ is due to sampling variation); and
-* $H_0$$ $p <0.10$ (one-tailed).
+* $H_0$: $p < 0.10$ (one-tailed).
 
 The *standard error* for the sample proportion is
 
@@ -158,25 +181,24 @@ Then, the *test statistic* is:
 \]
 This is a *very* large (and *negative*) $z$-score, so expect a very small $P$-value from using the 68--95--99.7 rule.
 
-CONCLUDE
+CONCLUDE CORECTLY
 :::
 
 
 
 ::: {.example}
-A study [@barve2017elevational] compared to types of birds (male green-backed tits; male cinereous tits) to see which was more behaviouralluy dominant over winter.
+A study [@barve2017elevational] compared to types of birds (male green-backed tits; male cinereous tits) to see which was more behaviourally dominant over winter.
 
 The researcher assumed that if the species were equally-dominant, then about 50% of the interactions would be won by each species.
 
-
 However, 45 interactions in the study were observed between the two species, and the green-backed tits won 37 of these interactions (i.e., $\hat{p} = 0.82222$).
 
-Of course, every sample of 45 interactions would produce a different sample proportion, so the difference between this sample proportion and $p= 0.5$ could be due to sampling variation.
+Of course, every sample of 45 interactions would produce a different sample proportion, so the difference between this sample proportion and $p = 0.5$ could be due to sampling variation.
 
 To test if the proportion of interactions were equally shared, the hypotheses are:
 
-* $H_0$: $p = 0.05$; and
-* $H_0$$ $p \ne 0.5$ (two-tailed).
+* $H_0$: $p = 0.5$; and
+* $H_0$: $p \ne 0.5$ (two-tailed).
 
 The *standard error* for the sample proportion is
 
@@ -203,15 +225,43 @@ CONCLUDE
 
 
 ::: {.example}
+A study of Magellanic penguins found dead or stranded on the southern Brazilian coast found 73 adult penguins.
+Of these, 47 were female,
+
+* Assuming female and male penguins were equally present in the population, is there evidence that female and male penguins were equally-likely to be found?
+:::
+
+
+
+
+
+
+
+## Exercises {#OneProportionTestExercises}
+
+Selected answers are available in Sect. XXXXXX
+
+
+
+::: {.exercise #OneProportionTestExercisesIguanas}
+A study of black spiny-tailed iguanas in Florida (an invasive species) compared the snout-vent length (SVL) for iguanas of various sizes [@avery2014invasive].
+
+275 iguanas with a SVL between 100 and 149mm were found in teh study, of which 146 were female.
+
+Assuming female and male iguanas were equally present in the population, is there evidence that female and male iguanas were equally-likely to found with SVL in this range?
+:::
+
+
+::: {.exercise #OneProportionTestExercisesPlacebos}
 The study of herbal medicines is complicated as *blinding* subjects is difficult: placebos are often easily-identifiable visually, by taste, or by small,
 
-A study [@lee2012dark] examined how subjects responded to potential placebos.
+A study [@loyeung2018experimental] examined how subjects responded to potential placebos.
 The aim was to:
 
-> evaluate whether a greater proportion of participants could correctly identify an authentic herbal substance when comparing to a sham substance using visual, odour and taste assessments.
+> ... evaluate whether a participant could distinguish a herbal intervention capsule [...] when compared to three types of capsules containing culinary materials following a visual, odour and taste evaluation.
 >
-> --- [@lee2012dark, p. viii]
-:::
+> --- @loyeung2018experimental, p. 93
+
 
 In one study, the 81 subjects were each presented with a choice of five different supplements, and asked to select which one was the legitimate herbal supplement based on the *taste*.
 Of these, 50 correctly selected the true herbal supplement.
@@ -219,33 +269,14 @@ Of these, 50 correctly selected the true herbal supplement.
 
 Is there evidence that subjects can detect the true herbal supplement?
 
-
 1. If the subjects were selecting the true substance randomly, what proportion of subjects would be expected to select the correct supplement as the true herbal medicine?
 2. Write the hypotheses for addressing the aims of the study.
 3. Sketch the *sampling distribution* of the sample proportion, assuming the null hypothesis is correct.
 4. Is there evidence to support the idea that people can identify the true supplement by taste?
+:::
 
 
-
-
-
-A study of Magellanic penguins found dead or stranded on the southern Brazilian coast found 73 aduts penguins.
-Of these, 47 were female,
-
-* Assuming female and male penguins were equally present in the population, is there evidence that female and male penguins were equally-likely to be found?
-
-
-
-A study of black spiny-tailed iguanas in Florida (an invasive species) compared the snout-vent length (SVL) for iguanas of various sizes [@avery2014invasive].
-
-275 iguanas with a SVL between 100 and 149mm were found in teh study, of which 146 were female.
-
-Assuming female and male iguanas were equally present in the population, is there evidence that female and male iguanas were equally-likely to found with SVL in this range?
-
-
-
-
-
+::: {.exercise #OneProportionTestExercisesCTS}
 Carpal Tunnel Syndrome (CTS) is a illness in the wrists.
 A study [@boltuch2020palmaris] was interested in whether 
 
@@ -257,26 +288,24 @@ The palmaris longus tendon is visually *present* (PLA) in about 15% of the popul
 
 The researchers found PLA in 33 of 516 CTS wrists (that 6.4%) in their sample.
 
-A one-proportion z -test was used as it compares an observed proportion to a theoretical one when two categories are being investigated. 
+A one-proportion $z$-test was used as it compares an observed proportion to a theoretical one when two categories are being investigated. 
 Thus, is was used to compare the 6.4% rate of PLA in the operative cohort compared to the expected 15% rate of PLA from the population matched cohort. 
+:::
 
 
-
-
-
-
+::: {.exercise #OneProportionTestExercisesStars}
 "B&CE Insurance, which analysed 458 personal accident claims, said Geminis accounted for 12 per cent of all the claims it received." [https://www.scotsman.com/arts-and-culture/geminis-branded-most-accident-prone-star-sign-2507417]
 
 (May 22 to June 31: 31 days out of 365 in 2003 when data reported)
 
 So, $n = 458$ and $\hat{p} = 0.12$.
 With $p = 1/12 = 0.08333$ we get sep =  0.01518446 and z = 2.41.
+:::
 
 
 
 
-
-
+::: {.exercise #OneProportionTestExercisesBorers}
 In a study of [@siegfried2014estimating] resistance of some commercial corn variety to the European corn borer, borers were collected from corn in Iowa and Nebraska.
 
 Researchers aimed to estimate the frequency of resistance to the toxin in the corn, by mating borers collected from the field with various resistant laboratory individuals.
@@ -288,128 +317,34 @@ The expectation was that 1-in-16 would be resistant if the field borers were res
 (NOT SURE ABOUT THAT!)
 
 Perform a hypothesis test to determine if the data suggest that the borers were resistant (that is, if the population proportion is $1/16$) as expected.
+:::
 
 
-
+::: {.exercise #OneProportionTestExercisesPedalMachines}
 In a study to increase activity in library users [@maeda2013introducing], pedal machine were introduced on the first floor of Joyner Library at East Carolina University.
-At the universitry, 60.2% of students were females.
+At the university, 60.2% of students were females.
 Students were observed using the machine on 589 occasions, of which 295 times were by females
 
 Is there evidence that the proportion of females users of the machines was lower than the overall female proportion at the university?
 What would you conclude?
+:::
 
 
----
+::: {.exercise #OneProportionTestExercisesLEDlights}
+In a study of streetlight preferences of drivers [@davidovic2019drivers], drivers were asked to conduct a series of manoeuvres under 3000K LED light and then under 4000K LED lights.
+They were then asked to decide which streetlight they preferred.
 
-
-@article{kim2004sero,
-  title={Sero-epidemiology of measles and mumps in Korea: impact of the catch-up campaign on measles immunity},
-  author={Kim, Sung-Soo and Han, Hyun Woo and Go, Unyeong and Chung, Hai Won},
-  journal={Vaccine},
-  volume={23},
-  number={3},
-  pages={290--297},
-  year={2004},
-  publisher={Elsevier}
-}
+Out of the 52 subjects, 29 preferred the 3000K LED lights.
+Is there evidence that the choice between the two streetlights is random, or is there evidence of a preference for one over the other? 
+:::
 
 
 
-@article{barve2017elevational,
-  title={Elevational replacement of two Himalayan titmice: interspecific competition or habitat preference?},
-  author={Barve, Sahas and Dhondt, Andr{\'e} A},
-  journal={Journal of Avian Biology},
-  volume={48},
-  number={9},
-  pages={1189--1194},
-  year={2017},
-  publisher={Wiley Online Library}
-}
-
-
-
-
-
-
-
-
-@phdthesis{lee2012dark,
-  title={In the dark: an experimental study in distinguishing an authentic herbal substance from a sham substance},
-  author={Lee, John Hung Yang},
-  puiblisher = {{U}niversity of {T}echnology {S}ydney},
-  year={2012}
-}
-@article{loyeung2018experimental,
-  title={An experimental study in distinguishing an authentic herbal substance from sham herbal substances},
-  author={Loyeung, Bertrand and Lee, John and Michaeil, Carolyn and Zaslawski, Christopher},
-  journal={Complementary Therapies in Medicine},
-  volume={39},
-  pages={92--96},
-  year={2018},
-  publisher={Elsevier}
-}
-
-
-
-
-
-
-@article{vanstreels2013female,
-  title={Female-biased mortality of Magellanic Penguins (Spheniscus magellanicus) on the wintering grounds},
-  author={Vanstreels, Ralph Eric Thijl and Adornes, Andr{\'e}a Corrado and Canabarro, Paula Lima and Ruoppolo, Valeria and Amaku, Marcos and da Silva-Filho, Rodolfo Pinho and Cat{\~a}o-Dias, Jos{\'e} Luiz},
-  journal={Emu-Austral Ornithology},
-  volume={113},
-  number={2},
-  pages={128--134},
-  year={2013},
-  publisher={Taylor \& Francis}
-}
-
-@article{avery2014invasive,
-  title={Invasive black spiny-tailed iguanas (Ctenosaura similis) on Gasparilla Island, Florida, USA},
-  author={Avery, Michael L and Tillman, Eric A and Spurfeld, Conny and Engeman, Richard M and Maciejewski, Kelin P and Brown, Jessica D and Fetzer, Emily A},
-  journal={Integrative zoology},
-  volume={9},
-  number={5},
-  pages={590--597},
-  year={2014},
-  publisher={Wiley Online Library}
-}
-
-
-@article{boltuch2020palmaris,
-  title={The Palmaris Longus and Its Association with Carpal Tunnel Syndrome},
-  author={Boltuch, Andrew D and Marcotte, Michael A and Treat, Christopher M and Marcotte, Anthony L},
-  journal={Journal of Wrist Surgery},
-  volume={9},
-  number={06},
-  pages={493--497},
-  year={2020},
-  publisher={Thieme Medical Publishers, Inc.}
-}
-
-
-
-@article{siegfried2014estimating,
-  title={Estimating the frequency of {Cry1F} resistance in field populations of the European corn borer ({L}epidoptera: {C}rambidae)},
-  author={Siegfried, Blair D and Rangasamy, Murugesan and Wang, Haichuan and Spencer, Terence and Haridas, Chirakkal V and Tenhumberg, Brigitte and Sumerford, Douglas V and Storer, Nicholas P},
-  journal={Pest Management Science},
-  volume={70},
-  number={5},
-  pages={725--733},
-  year={2014},
-  publisher={Wiley Online Library}
-}
-
-
-
-
-@book{maeda2013introducing,
-  title={Introducing portable pedal machines inside a university library to reduce sedentary behavior},
-  author={Maeda, Hotaka},
-  year={2013},
-  publisher={East Carolina University}
-}
+::: {.exercise #OneProportionTestExercisesEPL}
+In the 2019/2020 English Premier League (EPL), at full-time the home team had won 91 out of 208 games, while the away team won 67.
+(50 games were draws.)
+(Data from: https://sports-statistics.com/sports-data/soccer-datasets/)
+:::
 
 ---
 
