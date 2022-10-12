@@ -263,7 +263,7 @@ plot.normZ <- function(mu, sd, xlab.name="Variable",
   
   if ( new ) {
     #   quartz(width=width,height=height, bg="white")
-    par(mar=c(2,0,2,0) + 0.1  )
+    par(mar=c(2, 0, 2, 0) + 0.1  )
   }
   
   if ( is.na(shade.lo.z) ) {
