@@ -28,75 +28,147 @@ SixSteps(5, "Tests: One proportion")
 
 ## Introduction: Rolling dice
 
+Many board games use die... and rolling the number you need always seems hard... and (according to my kids anyway) especially rolling a `r include_graphics("Dice/dice6.png", dpi=2000)` when you need it.
 
-In 1882, R. Wolf tossed a die 20,000 times (@data:hand:handbook, Dataset 131; @wolf1882] and recorded the number of times each face appeared...
-So, we would expect that each die face would appear about one-sixth of the time (based on [classical probability](#ProbClassical)),
+In principle, we should be able to determine if a die is "fair" or not.
+(A die is "fair" if every face has the same chance of appearing after being rolled.)
+
+For instance, we would expect that each die face would appear about one-sixth of the time (using [classical probability](#ProbClassical)),
 so a `r include_graphics("Dice/dice6.png", dpi=2000)` would be expected to appear about one-sixth of the time.
 
-Of course, we don't expect to see *exactly* one-sixth of the rolls turns up as a `r include_graphics("Dice/dice6.png", dpi=2000)`.
-Sometimes, when we rolls a die 20,000 times, the proportions of `r include_graphics("Dice/dice6.png", dpi=2000)`s will be a bit smaller than $1/6$, and sometimes it will be a bit larger than $1/6$.
+We could then roll a die, and see how often a `r include_graphics("Dice/dice6.png", dpi=2000)` actually appeared in practice.
+And using the [decision-making process](#DecisionMaking) discussed earlier, we could make a decision about whether the die was not fair.
 
-What would be a reasonable for the proportion of `r include_graphics("Dice/dice6.png", dpi=2000)`s rolled, from a fair die?
-We could find a CI for the proportion, [as we did earlier](#SamplingDistributionKnownp), or use a simulation.
 
-Using the [techniques from earlier](#SamplingDistributionKnownp), we would expect the sample proportions to vary from one set of 20,000 rolls to another set, but the average proportion would be $p = 1/6 = 0.166667$.
-The amount of variation in each set is described by the *standard error*:
+
+## Statistical hypotheses and notation: One proportion
+
+The [decision-making process](#DecisionMaking) begins by making an assumption about the population; in this case, we need to assume that the die is fair, and hence that the *population* proportion is $p = 1/6 = 0.1666...$, as one would expect for a fair die.
+
+If we roll a die, we don't really expect to get a `r include_graphics("Dice/dice6.png", dpi=2000)` *exactly* one-sixth of the time, even if the die really is fair... 
+We know this from experience. 
+This is called [*sampling variation*](#SamplingVariation).
+
+So, when we see that the sample proportion of `r include_graphics("Dice/dice6.png", dpi=2000)`s is not *exactly* $0.1666...$ two possible explanations can be given:
+
+* The reason why the *sample* proportion is not exactly $p = 0.1666...$ is due to sampling variation; or
+* The reason why the *sample* proportion is not exactly $p = 0.1666...$ is because the die is not fair.
+
+These two possible explanations are called *statistical hypotheses*.
+More formally, the two statistical hypotheses above are:
+
+* $H_0$: $p = 0.1666...$; and
+* $H_1$: $p \ne 0.1666...$.
+
+Note that the alternative hypothesis asks if $p$ is $0.1666...$ or not: The value of $p$ may be smaller *or* larger than $0.1666...$.
+Two possibilities are considered: for this reason, this alternative hypothesis is called a *two-tailed* alternative hypothesis.
+
+
+
+## Sampling distribution: One proportion {#OnePropTestSamplingDist}
+
+So if the proportion of rolls that show a `r include_graphics("Dice/dice6.png", dpi=2000)` is $p = 0.1666...$, what values of the *sample* proportion are reasonable to expect?
+The answer depends on the sample size.
+
+For example, in *one* roll of a die, rolling a `r include_graphics("Dice/dice6.png", dpi=2000)`, and hence finding a sample proportion of $\hat{p} = 1$, is not unreasonable.
+However, if we rolled a die 20,000 times, rolling a `r include_graphics("Dice/dice6.png", dpi=2000)` with a sample proportion of $\hat{p} = 1$ would be *incredibly* unlikely.
+
+[Earlier](SamplingDistributionKnownp), we saw how to describe the [sampling distribution of a sample proportion](#def;SamplingDistProp).
+When the value of $p$ is *known*, the *sampling distribution of the sample proportion* is described by
+
+* an approximate normal distribution,
+* centred around a mean of $p$,
+* with a standard deviation (called the *standard error* of $\hat{p}$) of
 
 \[
-  \text{s.e.}(\hat{p}) = \sqrt{\frac{p\times(1 - p)}{n}} = \sqrt{\frac{0.166667\times(1 - 0.166667)}{20,000}} = 0.002635231.
+   \text{s.e.}(\hat{p}) = \sqrt{\frac{ p \times (1-p)}{n}},
 \]
-So 95% of the time, the sample proportion $\hat{p}$ will lie in the range $0.166667\pm (2\times 0.002635231)$; that is, from 0.161 to 0.172.
 
-When Wolf tossed his die, he found 3422  `r include_graphics("Dice/dice6.png", dpi=2000)`s, which is a sample proportion of  $\hat{p} = 3422/20,000 = 0.1711$.
-This is just inside the range of proportions that we were expecting.
+when [certain conditions are met](#LINK), where $n$ is the size of the sample, and $p$ is the population proportion.
 
-Alternatively, we can *simulate* what would happen:
-We could use a computer to 'pretend' to roll a die 20,000 times and record the proportion of  `r include_graphics("Dice/dice6.png", dpi=2000)`s.
-If we do this many, many times, we have a list of *sample* proportions.
-We can plot a histogram of these sample proportions (Fig. \@ref(fig:RollsSixesHist)).
+What size sample would be useful?
+That is, how many times are we prepared to roll the die and count how many times a `r include_graphics("Dice/dice6.png", dpi=2000)` shows?
 
+Rather than doing this ourselves, we can use data that someone else has collected.
+For example, in 1882 R. Wolf tossed a die 20,000 times (@data:hand:handbook, Dataset 131; @wolf1882) and recorded the number of times each face appeared...
+So rather tha *us* rolling a die 20,000 times, we can use his data, where $n = 20,000$.
 
-```{r, RollsSixesHist, fig.cap="The proportion of sixes in 20,000 rolls of a fair die varies from one set of 20,000 rolls to another."}
-# SIMULATE dice rolls
-set.seed(309147) # For reproducibility
+So, if $p$ really was $0.1666...$, and if certain conditions are true, the possible values of the sample proportion can be described using:
 
+* An approximate normal distribution;
+* With mean 0.16667;
+* With standard deviation of $\text{s.e.}(\hat{p}) = \sqrt{\frac{p\times (1 - p)}{n}} = \sqrt{\frac{0.1711 \times(1 - 0.1711)}{n}} = 0.002635231$.
+  This is the standard error of the sample proportions.
+
+A picture of this sampling distribution (Fig. \@ref(fig:RollsSixesSD)) shows how the *sample* proportion varies when $n = 20,000$, simply due to sampling variation, when $p = 0.16667$.
+
+```{r, RollsSixesSD, fig.cap="The sampling distribution, showing the distribution of the sample proportion when the *population* proportion is 0.1666..., in 20,000 die rolls"}
+    
+phat <- 1/6
 n <- 20000
-p <- 1/6
-sep <- sqrt( p * (1 - p) / n )
 
-numSims <- 1000
-
-numSixes <- array( dim = numSims)
-
-for (i in (1:numSims)){
-  
-  roll <- rbinom(n, 1, p) # ^ or not 6 (or any other number of course)
-  numSixes[i] <- sum(roll)
-  
-}
+sep <- sqrt( phat * (1 - phat) / n )
 
 breaks <- seq(0.155, 0.18, 
               by = 0.03/20)
-out <- hist( numSixes / n,
-             breaks = breaks,
-             xlab = "Proportion of 6s",
-             ylab = "How often",
-             main = "The proportion of 6s in 20,000 rolls",
-             las = 1,
-             xlim = c(0.155, 0.180), 
-             col = "aliceblue")
 
-
-# Add "expected"
 xx <- seq( min(breaks),
            max(breaks),
            len= 1000)
 yy <- dnorm(xx, 
             mean = 1/6,
             sd = sep)
-yy <- yy / max(yy) * max(out$counts)
-lines( yy ~ xx,
-       col = "red",
+plot( yy ~ xx,
+      type = "l",
+      xlim = range(breaks), 
+      col = plot.colour,
+      xlab = "Values of the sample proportion",
+      ylab = "",
+      main = "Sampling distribution of the sample proportion\nfor 20,000 rolls ",
+      lwd = 2,
+      axes = FALSE)
+axis(side = 1,
+     at = seq(0.155, 0.180, by = 0.005))
+abline(h = 0,
+       lwd = 2)
+```
+
+We can see that, in 20,000 rolls of a die, that a sample proportion of 6s as low as 0.165 is quite reasonable... but a sample proportion as low as 0.160 is starting to become quite unusual.
+
+
+## The test statistic
+
+When Wolf tossed his die, he found that a `r include_graphics("Dice/dice6.png", dpi=2000)` appeared on 3422 rolls, which is a sample proportion of  $\hat{p} = 3422/20,000 = 0.1711$.
+This is larger than the expected $p = 0.166...$... but not *highly* unusually so (Fig. \@ref(fig:RollsSixesSDWolf)).
+
+```{r, RollsSixesSDWolf, fig.cap="The sampling distribution, showing the distribution of the sample proportion when the *population* proportion is 0.1666..., in 20,000 die rolls"}
+    
+phat <- 1/6
+n <- 20000
+
+sep <- sqrt( phat * (1 - phat) / n )
+
+breaks <- seq(0.155, 0.18, 
+              by = 0.03/20)
+
+xx <- seq( min(breaks),
+           max(breaks),
+           len= 1000)
+yy <- dnorm(xx, 
+            mean = 1/6,
+            sd = sep)
+plot( yy ~ xx,
+      type = "l",
+      xlim = range(breaks), 
+      col = plot.colour,
+      xlab = "Values of the sample proportion",
+      ylab = "",
+      main = "Sampling distribution of the sample proportion\nfor 20,000 rolls ",
+      lwd = 2,
+      axes = FALSE)
+axis(side = 1,
+     at = seq(0.155, 0.180, by = 0.005))
+abline(h = 0,
        lwd = 2)
 
 # Show Wolf
@@ -117,113 +189,40 @@ text(p.Wolf + 0.0015,
      label = "Wolf's value")
 ```
 
-What we see is interesting--the distribution looks like a normal distribution.
-We also see that, in 20,000 rolls of a die, that a sample proportion of 6s as low as 0.165 is quite reasonable... but a sample proportion as low as 0.160 is starting to become quite rare.
-A sample proportion as low as 0.155 almost never occurs.
 
-So, if we did roll a die 20,000 time and saw the proportion of sixes was 0.155, we would have observed something rather unusual.
-
-He wondered if the proportion of `r include_graphics("Dice/dice6.png", dpi=2000)` was too low or too high
-
-A more formal approach to determining if the proportion of `r include_graphics("Dice/dice6.png", dpi=2000)`s was unusual is to perform a *hypothesis test*.
-
-## Statistical hypotheses and notation: One proportion
-
-The [decision-making process](#DecisionMaking) begins by assuming that the *population* proportion is $1/6 = 0.16667$, as one would expect for a fair die.
-In other words, the reason why the *sample* proportion $\hat{p} = 3422/20,000 = 0.1711$ is not exactly $p = 0.166667$ is due to sampling variation.
-
-The other explanation for why the *sample* proportion $\hat{p} = 3422/20,000 = 0.1711$ is not exactly $p = 0.166667$ is because the die is not fair.
-
-These two possible explanations are called *statistical hypotheses*.
-More formally, the two statistical hypotheses above are:
-
-* $H_0$: $p = 0.16667$; and
-* $H_1$: $p \ne 0.16667$.
-
-We always begin the hypothesis testing process by assuming the null hypothesis is true.
-
-Note that the alternative hypothesis asks if $p$ is $0.16667$ or not.
-The value of $p$ may be smaller *or* larger than $0.16667$.
-Two possibilities are considered: for this reason, this alternative hypothesis is called a *two-tailed* alternative hypothesis.
-
-
-## Sampling distribution: One proportion {#OnePropTestSamplingDist}
-
-The decision-making process assumes that the population proportion is $p = 0.1667$ (as stated in the null hypothesis); that is, that the die is fair.
-However, because of sampling variation, the value of $\hat{p}$ sometimes would be smaller than $0.16667$ and sometimes greater than $0.16667$.
-How much variation in the value of $\hat{p}$ could be expected, simply due to sampling variation, when $p = 0.16667$?
-This variation is described by the *sampling distribution*.
-
-The sampling distribution of $\hat{p}$ was discussed in Sect. ?? (and Def. ?? specifically). 
-From this, if $p$ really was 0.16667, and if certain conditions are true, the possible values of the sample proportion can be described using:
-
-* An approximate normal distribution;
-* With mean 0.16667;
-* With standard deviation of $\text{s.e.}(\hat{p}) = \sqrt{\frac{p\times (1 - p)}{n}} = \sqrt{\frac{0.1711 \times(1 - 0.1711)}{n}} = 0.002635231$.
-  This is the standard error of the sample proportions.
-
-A picture of this sampling distribution (Fig. \@ref(fig:RollsSixesSD)) shows how the *sample* proportion varies when $n = 20,000$, simply due to sampling variation, when $p = 0.16667$.
-This enables questions to be asked about the likely values of $\hat{p}$ that would be found in the sample, when the population proportion is 
-$p = 0.16667$.
-
-```{r, RollsSixesSD, fig.cap="The sampling distribution, showing the distribution of the sample proportion when the *population* prooportion is 0.16667, in 20,000 die rolls"}
-xx <- seq( min(breaks),
-           max(breaks),
-           len= 1000)
-yy <- dnorm(xx, 
-            mean = 1/6,
-            sd = sep)
-yy <- yy / max(yy) * max(out$counts)
-plot( yy ~ xx,
-      type = "l",
-      col = "black",
-      xlab = "Values of the sample proportion",
-      ylab = "Distribution",
-      main = "Sampling distribution of the sample proportion\nfor 20,000 rolls ",
-      lwd = 2)
-
-```
 
 ## The test statistic and $z$-scores: One proportion {#OnePropTestStatistic}
 
-The sampling distributions describes what to expect from the sample proportion, assuming $p = 0.16667$.
-The value of $\hat{p}$ that is observed, however, is $\hat{p} = 3422/20,000 = 0.1711$.
-How likely is it that such a value could occur by chance?
-
-The value of the observed sample proportion can be located the picture of the sampling distribution (Fig. ???). 
-The value $\hat{p}$ = 0.1711$ is large... but is it *unusually* large?
-More formally, about how many standard deviations is $\hat{p}$ away from $p$? 
+Since the sampling distribution is, under special circumstance, a normal distribution, we could compute how far Wolf's proportion is from what was expected using a $z$-score.
+That is, we could determine how many standard deviations $\hat{p}$ is away from $p$. 
 In other words, what is the $z$-score?
 
 The $z$-score is
 
-\[
-   z = \frac{\hat{p} - p}{\text{s.e.}(\text{sample estimate})} = \frac{0.1711 - 0.166667}{0.002635231} = 1.68.
-\]
+\begin{align*}
+   z 
+   &= \frac{\text{sample value} - \text{mean of the distribution}}{\text{std deviation of the distribution}}\\
+   &= \frac{\hat{p} - p}{\text{s.e.}(\hat{p})} \\
+   &= \frac{0.1711 - 0.1666...}{0.002635231} = 1.68.
+\end{align*}
+(Remember that the standard deviation of the distribution in Fig. \@ref(fig:RollsSixesSDWolf) is the the standard error: the amount of variation in the sample means.)
 
-The sample proportion of $\hat{p} = 0.1711$ is larger than expected... but not unusually so.
-
-(Remember that the standard deviation in Fig. 4.5 is the the standard error: the amount of variation in the sample means.)
+So Wolf's observation is about 1.68 standard deviation from what was expected by chance, if the true proportion was $p = 0.1666...$.
+It would be nice to be able to quantify how unusual this is.
 
 
 ## $P$-values: One proportion {#OnePropTestP}
 
-This is the decision-making process so far:
-
-1. **Assume** that the *population* proportion is $p = 0.16667$ (this is $H_0$).
-2. Based on this assumption, describe what to **expect** from the sample proportions (Fig. ???).
-3. The **observed statistic** is computed, relative to what is expected, using a $z$-score: $z = 1.68$.
-
 The value of the $z$-score shows that the value of $\hat{p}$ isn't very unusual...but how unusual?
-How unusual can be assessed more precisely using a $P$-value, which is used widely in scientific research. 
+Quantifying *how* unusual can be assessed more precisely using a $P$-value, which is used widely in scientific research. 
 The $P$-value is a way of measuring how unusual an observation is (when $H_0$ is true).
 
-$P$-values can be approximated using the 68--95--99.7 rule and a diagram (Sect. ???) but more commonly by using software (Sect. ???).
+$P$-values can be approximated using the 68--95--99.7 rule and a diagram (Sect. ???), but more commonly by using software (Sect. ???).
 
 
 ### Approximating $P$-values using the 68--95--99.7 rule
 
-The $P$-value is the area more extreme than the calculated $z$-score. 
+The $P$-value is the area **more extreme** than the calculated $z$-score. 
 For example:
 
 * *If* the calculated $z$-score was $z = 1$, the two-tailed $P$-value would be the shaded area in Fig. ??? (top panel): 
@@ -235,10 +234,61 @@ For example:
 
 Clearly, from what the $P$--value means, a $P$-value is always between 0 and 1.
 
+```{r, OnePropTestP,  fig.cap="The two-tailed P-value is the combined area in the two tails of the distribution", fig.height = 3}
+par(mfrow = c(1, 3))
+
+plot.normZ(mu = 0,
+           sd = 1,
+           shade.lo.z = -10, 
+           shade.hi.z = -1,
+           main = "The P-value when z is 1",
+           xlab = "z-score"
+           )
+plot.normZ(mu = 0,
+           sd = 1,
+           new = FALSE,
+           shade.lo.z = 1, 
+           shade.hi.z = 10
+           )
+
+
+
+plot.normZ(mu = 0,
+           sd = 1,
+           shade.lo.z = -10, 
+           shade.hi.z = -2,
+           main = "The P-value when z is 2",
+           xlab = "z-score"
+           )
+plot.normZ(mu = 0,
+           sd = 1,
+           new = FALSE,
+           shade.lo.z = 2, 
+           shade.hi.z = 10
+           )
+
+
+plot.normZ(mu = 0,
+           sd = 1,
+           shade.lo.z = -10, 
+           shade.hi.z = -1.68,
+           main = "The P-value when z is 1.68",
+           xlab = "z-score"
+           )
+plot.normZ(mu = 0,
+           sd = 1,
+           new = FALSE,
+           shade.lo.z = 1.68, 
+           shade.hi.z = 10
+           )
+```
+
+
 
 ### Using the $z$-tables {#OnePropZTables}
 
-sdddddd1341frgc
+Use the table *backwards*
+
 
 
 ## Making decisions with $P$-values {#OnePropTestDecisions}
@@ -262,15 +312,15 @@ Between the values of 1% and 10% is often a 'grey area'.
 
 
 
-```{r Pvalues, animation.hook="gifski",  interval=0.5, echo=FALSE, fig.cap="The strength of evidence: P-values", fig.height = 3, fig.align="center", dev=if (is_latex_output()){"pdf"}else{"png"}}
+```{r Pvalues, animation.hook="gifski",  interval=0.15, echo=FALSE, fig.cap="The strength of evidence: P-values", fig.height = 3, fig.align="center", dev=if (is_latex_output()){"pdf"}else{"png"}}
 if (knitr::is_html_output()) {
   par( mar = c(0.1, 0.1, 0.1, 0.1) ) # Number of margin lines on each side
 
   zList <- c( seq(0.5,
                   1,
-                  by = 0.2),
+                  by = 0.1),
               seq(1, 3.5, 
-                  by = 0.1) )
+                  by = 0.05) )
   pMeaning <- function(pValue){
     if (pValue > 0.10) Meaning <- "Insufficient"
     if ( (pValue >= 0.05) & (pValue < 0.10)) Meaning <- "Slight"
@@ -312,6 +362,11 @@ if (knitr::is_html_output()) {
                main = paste("Meaning:", 
                             pMeaning(pValue) ) 
                )
+    abline(v = zScore,
+           col = "grey")
+    abline(v = -zScore,
+           col = "grey")
+    
     polygon(x = c(-1.4, -1.4, 1.4, 1.4),
             y = c(0.02, 0.10, 0.10, 0.02),
             border = NA,
@@ -363,7 +418,8 @@ Let's recap the decision-making process seen earlier, in this context about roll
   Here, the $P$-value is $0.093$.
   The $P$-value can be computed by software, or approximated using the 68--95--99.7 rule.
 
-The **conclusion** is that there is very strong evidence that $p$ is likely to be $0.16667$ based oin this evidence.
+The **conclusion** is that there is very strong evidence that $p$ is likely to be $0.16667$ based on this evidence.
+
 
 ::: {.example POnePropTestMeasles, name="One sample proportion test"}
 A study of the measles-rubella vaccination in Korea [@kim2004sero] compared the proportion of children with measles antibodies to the World Health Organization (WHO) target proportion.
@@ -380,23 +436,25 @@ To test if the proportion of Korean children with the measles antibody in the *p
 
 The *standard error* for the sample proportion is
 
-\[
+\begin{align*}
    \text{s.e.}(\hat{p}) 
-   = \sqrt{\frac{p (1 - p)}{n}} 
-   = \sqrt{\frac{0.10 \times (1 - 0.10)}{972}} 
-   = 0.0096225...
-\]
+   &= \sqrt{\frac{p (1 - p)}{n}} 
+   &= \sqrt{\frac{0.10 \times (1 - 0.10)}{972}} 
+   &= 0.0096225...
+\end{align*}
 Then, the *test statistic* is:
 
-\[
+\begin{align*}
    z 
-   = \frac{\hat{p} - p}{\text{s.e.}(p)}
-   = \frac{0.056584 - 0.10}{0.0096225}
-   = -4.51.
-\]
-This is a *very* large (and *negative*) $z$-score, so expect a very small $P$-value from using the 68--95--99.7 rule.
+   &= \frac{\hat{p} - p}{\text{s.e.}(p)}
+   &= \frac{0.056584 - 0.10}{0.0096225}
+   &= -4.51.
+\end{align*}
+This is a *very* large (and *negative*) $z$-score, so expect a *very* small $P$-value from using the 68--95--99.7 rule.
+This means that there is very strong evidence to support the alternative hypothesis.
+We write:
 
-CONCLUDE CORECTLY
+> There is very strong evidence that the target is noit being met AND FIX UP!!
 
 :::
 
@@ -491,7 +549,8 @@ Of these, 47 were female,
 ## Summary {#Chapxx-Summary}
 
 weded
-## Quick review questions  {#Chap27-QuickReview}
+
+## Quick review questions  {#Chapxx-QuickReview}
 
 qwdqwdqdfg5g4
 
@@ -504,14 +563,14 @@ Selected answers are available in Sect. XXXXXX
 ::: {.exercise #OneProportionTestExercisesIguanas}
 A study of black spiny-tailed iguanas in Florida (an invasive species) compared the snout-vent length (SVL) for iguanas of various sizes [@avery2014invasive].
 
-275 iguanas with a SVL between 100 and 149mm were found in teh study, of which 146 were female.
+275 iguanas with a SVL between 100 and 149mm were found in the study, of which 146 were female.
 
 Assuming female and male iguanas were equally present in the population, is there evidence that female and male iguanas were equally-likely to found with SVL in this range?
 :::
 
 
 ::: {.exercise #OneProportionTestExercisesPlacebos}
-The study of herbal medicines is complicated as *blinding* subjects is difficult: placebos are often easily-identifiable visually, by taste, or by small,
+The study of herbal medicines is complicated as *blinding* subjects is difficult: placebos are often easily-identifiable visually, by taste, or by smell.
 
 A study [@loyeung2018experimental] examined how subjects responded to potential placebos.
 The aim was to:
@@ -542,7 +601,7 @@ A study [@boltuch2020palmaris] was interested in whether
 >
 > --- @boltuch2020palmaris, p. 493.
 
-The palmaris longus tendon is visually *present* (PLA) in about 15% of the population.
+The palmaris longus tendon is visually *present* (PLA: wrong!!! pla is "absent" so check) in about 15% of the population.
 
 The researchers found PLA in 33 of 516 CTS wrists (that 6.4%) in their sample.
 
