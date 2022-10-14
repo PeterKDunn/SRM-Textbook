@@ -45,7 +45,7 @@ And using the [decision-making process](#DecisionMaking) discussed earlier, we c
 
 The [decision-making process](#DecisionMaking) begins by making an assumption about the population; in this case, we need to assume that the die is fair, and hence that the *population* proportion is $p = 1/6 = 0.1666...$, as one would expect for a fair die.
 
-If we roll a die, we don't really expect to get a `r include_graphics("Dice/dice6.png", dpi=2000)` *exactly* one-sixth of the time, even if the die really is fair... 
+If we roll a die, we don't really expect to get a `r include_graphics("Dice/dice6.png", dpi=2000)`  *exactly* one-sixth of the time, even if the die really is fair... 
 We know this from experience. 
 This is called [*sampling variation*](#SamplingVariation).
 
@@ -80,25 +80,26 @@ When the value of $p$ is *known*, the *sampling distribution of the sample propo
 * centred around a mean of $p$,
 * with a standard deviation (called the *standard error* of $\hat{p}$) of
 
-\[
-   \text{s.e.}(\hat{p}) = \sqrt{\frac{ p \times (1-p)}{n}},
-\]
+\begin{equation}
+   \text{s.e.}(\hat{p}) = \sqrt{\frac{p \times (1 - p)}{n}},
+   (\#eq:StdErrorPknownTest)
+\end{equation}
 
-when [certain conditions are met](#LINK), where $n$ is the size of the sample, and $p$ is the population proportion.
+when [certain conditions are met](#ValidityProportionsTest), where $n$ is the size of the sample, and $p$ is the population proportion.
 
 What size sample would be useful?
 That is, how many times are we prepared to roll the die and count how many times a `r include_graphics("Dice/dice6.png", dpi=2000)` shows?
 
 Rather than doing this ourselves, we can use data that someone else has collected.
 For example, in 1882 R. Wolf tossed a die 20,000 times (@data:hand:handbook, Dataset 131; @wolf1882) and recorded the number of times each face appeared...
-So rather tha *us* rolling a die 20,000 times, we can use his data, where $n = 20,000$.
+So rather than *us* rolling a die 20,000 times, we can use his data, where $n = 20,000$.
 
-So, if $p$ really was $0.1666...$, and if certain conditions are true, the possible values of the sample proportion can be described using:
+So, if $p$ really was $0.1666...$, and if [certain conditions are met](#ValidityProportionsTest), the possible values of the sample proportion can be described using:
 
 * An approximate normal distribution;
-* With mean 0.16667;
+* With mean 0.1666...;
 * With standard deviation of $\text{s.e.}(\hat{p}) = \sqrt{\frac{p\times (1 - p)}{n}} = \sqrt{\frac{0.1711 \times(1 - 0.1711)}{n}} = 0.002635231$.
-  This is the standard error of the sample proportions.
+  This is the standard deviation of all possible sample proportions.
 
 A picture of this sampling distribution (Fig. \@ref(fig:RollsSixesSD)) shows how the *sample* proportion varies when $n = 20,000$, simply due to sampling variation, when $p = 0.16667$.
 
@@ -133,13 +134,14 @@ abline(h = 0,
        lwd = 2)
 ```
 
-We can see that, in 20,000 rolls of a die, that a sample proportion of 6s as low as 0.165 is quite reasonable... but a sample proportion as low as 0.160 is starting to become quite unusual.
+We can see that, in 20,000 rolls of a die, a sample proportion of 6s as low as 0.165 is quite reasonable... but a sample proportion as low as 0.160 is starting to become quite unusual.
+A sample proportion as low as 0.155 is looking most unlikely.
 
 
 ## The test statistic
 
 When Wolf tossed his die, he found that a `r include_graphics("Dice/dice6.png", dpi=2000)` appeared on 3422 rolls, which is a sample proportion of  $\hat{p} = 3422/20,000 = 0.1711$.
-This is larger than the expected $p = 0.166...$... but not *highly* unusually so (Fig. \@ref(fig:RollsSixesSDWolf)).
+This is larger than the expected $p = 0.166...$... but not *highly* unusually (Fig. \@ref(fig:RollsSixesSDWolf)).
 
 ```{r, RollsSixesSDWolf, fig.cap="The sampling distribution, showing the distribution of the sample proportion when the *population* proportion is 0.1666..., in 20,000 die rolls"}
     
@@ -208,7 +210,7 @@ The $z$-score is
 (Remember that the standard deviation of the distribution in Fig. \@ref(fig:RollsSixesSDWolf) is the the standard error: the amount of variation in the sample means.)
 
 So Wolf's observation is about 1.68 standard deviation from what was expected by chance, if the true proportion was $p = 0.1666...$.
-It would be nice to be able to quantify how unusual this is.
+It would be nice to be able to *quantify* how unusual this is.
 
 
 ## $P$-values: One proportion {#OnePropTestP}
@@ -242,7 +244,7 @@ plot.normZ(mu = 0,
            shade.lo.z = -10, 
            shade.hi.z = -1,
            main = "The P-value when z is 1",
-           xlab = "z-score"
+           xlab.name = "z-score"
            )
 plot.normZ(mu = 0,
            sd = 1,
@@ -258,7 +260,7 @@ plot.normZ(mu = 0,
            shade.lo.z = -10, 
            shade.hi.z = -2,
            main = "The P-value when z is 2",
-           xlab = "z-score"
+           xlab.name = "z-score"
            )
 plot.normZ(mu = 0,
            sd = 1,
@@ -273,7 +275,7 @@ plot.normZ(mu = 0,
            shade.lo.z = -10, 
            shade.hi.z = -1.68,
            main = "The P-value when z is 1.68",
-           xlab = "z-score"
+           xlab.name = "z-score"
            )
 plot.normZ(mu = 0,
            sd = 1,
@@ -391,18 +393,24 @@ In general, to communicate the results of any hypothesis test, report:
 
 So write:
 
-> The sample provides slight evidence ($z = 1.68$; two-tailed $P$: 0.093) that the proportion of sixes is unusual ($n = 20,000$ rolls; 3422 sixes).
+> The sample provides slight evidence ($z = 1.68$; two-tailed $P = 0.093$) that the proportion of sixes is unusual ($n = 20,000$ rolls; 3422 sixes).
 
 The components are:
 
-* The answer to the RQ: 'The sample provides little evidence... that the population proportion is not $1/6$.
-* The evidence used to reach the conclusion: 'z = 1.68; two-tailed $P$: 0.093)'.
+* An answer to the RQ: 'The sample provides little evidence... that the population proportion is not $1/6$'.
+* The evidence used to reach the conclusion: '$z = 1.68$; two-tailed $P$: 0.093)'.
 * Some sample summary information (including a CI):
 
 Notice how the conclusion is worded: There is little evidence to support the alternative hypothesis. 
 In fact, the alternative hypothesis may or may not be true... but the evidence (data) available supports the alternative hypothesis: FIX
 
 
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+When computing the standard error for a proportion, take care!
+
+* The formula for a confidence interval uses the sample proportion $\hat{p}$ (see Eq. \@ref(eq:StdErrorPknownTest)), since we only have sample information to work with when forming a confidence interval.
+* The formula for a confidence interval uses the population proportion $p$ from the null hypothesis (see Eq. \@ref(eq:StdErrorCI)), since hypothesis testing is based on *assuming that the null hypothesis is true*, and hence we assume we know the value of $p$.
+:::
 
 
 ## Hypothesis testing for one proportion: A summary {#OnePropTestSummary}
@@ -420,8 +428,7 @@ Let's recap the decision-making process seen earlier, in this context about roll
 
 The **conclusion** is that there is very strong evidence that $p$ is likely to be $0.16667$ based on this evidence.
 
-
-::: {.example POnePropTestMeasles, name="One sample proportion test"}
+::: {.example #POnePropTestMeasles name="One sample proportion test"}
 A study of the measles-rubella vaccination in Korea [@kim2004sero] compared the proportion of children with measles antibodies to the World Health Organization (WHO) target proportion.
 
 For children aged 5 to 9 years old, the WHO target for the measles antibody is 10%.
@@ -438,16 +445,16 @@ The *standard error* for the sample proportion is
 
 \begin{align*}
    \text{s.e.}(\hat{p}) 
-   &= \sqrt{\frac{p (1 - p)}{n}} 
-   &= \sqrt{\frac{0.10 \times (1 - 0.10)}{972}} 
+   &= \sqrt{\frac{p (1 - p)}{n}} \\
+   &= \sqrt{\frac{0.10 \times (1 - 0.10)}{972}} \\
    &= 0.0096225...
 \end{align*}
 Then, the *test statistic* is:
 
 \begin{align*}
    z 
-   &= \frac{\hat{p} - p}{\text{s.e.}(p)}
-   &= \frac{0.056584 - 0.10}{0.0096225}
+   &= \frac{\hat{p} - p}{\text{s.e.}(p)}\\
+   &= \frac{0.056584 - 0.10}{0.0096225}\\
    &= -4.51.
 \end{align*}
 This is a *very* large (and *negative*) $z$-score, so expect a *very* small $P$-value from using the 68--95--99.7 rule.
@@ -455,12 +462,12 @@ This means that there is very strong evidence to support the alternative hypothe
 We write:
 
 > There is very strong evidence that the target is not being met AND FIX UP!!
-
 :::
 
 
 
-## Statistical validity conditions: One proportion
+
+## Statistical validity conditions: One proportion {#ValidityProportionsTest}
 
 All inference procedure have necessary underlying [conditions to be met](#exm:StatisticalValidityAnalogy) so that the results are statistically valid.
 For a hypothesis test for one proportion, these conditions are the same as for the [CI for one proportion](#ValidityProportions).
@@ -479,17 +486,14 @@ so that the [68--95--99.7 rule](#def:EmpiricalRule) can be used.
 
 In addition to the statistical validity condition, the test will be
 
-* [**internally valid**](#def:InternalValidity)
-  if the study was well designed; and
-* [**externally valid**](#def:ExternalValidity) 
-  if the sample is a [simple random sample](#SRS)
-  and is internally valid.
+* [**internally valid**](#def:InternalValidity) if the study was well designed; and
+* [**externally valid**](#def:ExternalValidity) if the sample is a [simple random sample](#SRS) and is internally valid.
 
 
 
 
 ::: {.example #StatisticalValidityMeasles name="Statistical validity"}
-The hypothesis test regarding measles in Koprea is statistically valid since the number of...
+The hypothesis test regarding measles in Korea is statistically valid since the number of...
 
 FINISH WHEN SURE
 :::
