@@ -23,6 +23,7 @@ library("MASS")
 library("cowplot")
 library("dygraphs")
 library("slickR")
+library("qrcode")
 #library("exams")
 
 
