@@ -1,0 +1,72 @@
+The approximate width of the CI changes for different sample sizes (all else being equal).
+Try changing the sample size in the interaction below (Fig. \@ref(fig:SampleSizeCI)).
+From this graph, we can see that:
+
+* Greater precision (*smaller* CI widths) are obtained using *larger* sample sizes (as expected);
+* For *small* sample sizes (say, smaller than 15, precision is greatly increased with small increases in the sample size;
+* For *large* sample sizes (say, greater than 30), precision only improves slightly when the sample size is increased.
+
+
+```{r, SampleSizeCI, fig.align="center", fig.width=5.5, fig.height=2.5, fig.cap="The approximate 95% confidence interval for various sample sizes"}
+
+y <- c(1, 1, 1)
+
+# create data
+aval <- list()
+for (n in 5:50){ # The sample size
+  step <- n - 4 
+  aval[[step]] <- list(visible = FALSE,
+                       name = paste0('n: ', n),
+                       x = c(0.5 - 1 / sqrt(n), 
+                             0.5,
+                             0.5 + 1 / sqrt(n) ),
+                       y = y)
+}
+aval[1][[1]]$visible = TRUE # Begin with n =   visible
+
+# create steps and plot all traces
+steps <- list()
+fig <- plot_ly(width = 500, 
+               height = 300,
+               marker = list(color = "blue",
+                             size = 8))
+
+for (n in 5:50){ # Sample size
+  i <- n - 4
+  fig <- fig %>% add_lines(x = aval[i][[1]]$x,
+                           y = aval[i][[1]]$y,
+                           visible = aval[i][[1]]$visible, 
+                           name = aval[i][[1]]$name, 
+                           type = 'scatter', 
+                           mode = 'lines', 
+                           hoverinfo = 'name', 
+                           line = list(color = 'blue'), 
+                           showlegend = FALSE)
+  step <- list(args = list('visible', 
+                           rep(FALSE, length(aval))),
+               method = 'restyle',
+               label = n )
+  step$args[[2]][i] <- TRUE  
+  steps[[i]] <- step
+}
+
+fig <- fig %>% layout(title = "The effect of the sample size",
+                      showlegend = FALSE,
+                      autosize = FALSE,
+                      xaxis = list(title = "Confidence interval",
+                                   range = list(0, 1)),
+                      yaxis =  list(title = " ",
+                                    showticklabels = FALSE,
+                                    showline = FALSE,
+                                    showgrid = FALSE) )
+
+# add slider control to plot
+fig <- fig %>%
+  layout(sliders = list(list(#active = 3,
+    currentvalue = list(prefix = "Sample size: "),
+    x = 0,
+    y = -0.5,
+    steps = steps)))
+
+fig
+```
