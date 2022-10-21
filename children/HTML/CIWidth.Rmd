@@ -1,0 +1,88 @@
+In general, higher confidence means wider intervals (Fig. \@ref(fig:CIWidthsMany2)), since wider intervals are needed to be more certain that the interval contains $\hat{p}$.
+Try changing the confidence level for the CI in the interaction below.
+
+```{r, CIWidthsMany2, fig.align="center", fig.width=5.5, fig.height=2.5, fig.cap="Changing the confidence level of the CI changes the width"}
+phat <- 0.5
+n <- 25
+
+sep <- sqrt( phat*(1 - phat) / n )
+levels <- c(0.90, 0.95, 0.99, 0.997)
+zs <- qnorm( 1 - (1 - levels) / 2)
+mes <- sep * zs
+
+ciDF <- data.frame( x90 = c( phat - mes[1],
+                             phat,
+                             phat + mes[1]),
+                    x95 = c( phat - mes[2],
+                             phat,
+                             phat + mes[2]),
+                    x99 = c( phat - mes[3],
+                             phat,
+                             phat + mes[3]),
+                    x999 = c(phat - mes[4],
+                             phat,
+                             phat + mes[4]),
+                    y = c(1, 1, 1))
+ciDF <- round(ciDF, 3)
+
+fig <- ciDF %>% plot_ly(type = "scatter",
+                        mode = "lines",
+                        width = 500, 
+                        height = 200,
+                        marker = list(color = "blue",
+                                      size = 8))
+fig <- fig %>% add_lines(x = ~x90, 
+                         y = ~y, 
+                         visible = FALSE,
+                         name = "90% CI",
+                         line = list(color = "blue")) 
+fig <- fig %>% add_lines(x = ~x95, 
+                         y = ~y, 
+                         visible = TRUE,
+                         name = "95% CI",
+                         line = list(color = "blue")) 
+fig <- fig %>% add_lines(x = ~x99, 
+                         y = ~y, 
+                         visible = FALSE,
+                         name = "99% CI",
+                         line = list(color = "blue")) 
+fig <- fig %>% add_lines(x = ~x999, 
+                         y = ~y, 
+                         visible = FALSE,
+                         name = "99.9% CI",
+                         line = list(color = "blue")) 
+fig <- fig %>% layout(title = "95% confidence interval", # DEFAULT
+                      showlegend = FALSE,
+                      autosize = FALSE,
+                      xaxis = list(title = "Sample proportions",
+                                   range = list(0, 1)),
+                      yaxis =  list(title = " ",
+                                    showticklabels = FALSE,
+                                    showline = FALSE,
+                                    showgrid = FALSE),
+                      updatemenus = list(
+                        list(y = 1,
+                             type = "buttons",
+                             buttons = list(
+                               list( method = "update",
+                                     args = list(list(visible = c(FALSE, TRUE, FALSE, FALSE)),
+                                                 list(title = "90% confidence interval")),
+                                     label = "90% CI"),
+                               list( method = "update",
+                                     args = list(list(visible = c(FALSE, FALSE, TRUE, FALSE)),
+                                                 list(title = "95% confidence interval")),
+                                     label = "95% CI"),
+                               list( method = "update",
+                                     args = list(list(visible = c(FALSE, FALSE, FALSE, TRUE)),
+                                                 list(title = "99% confidence interval")),
+                                     label = "99% CI"),
+                               list( method = "restyle",
+                                     args = list( list(visible = c(TRUE, FALSE, FALSE, FALSE)),
+                                                  list(title = "99.9% confidence interval")),
+                                     label = "99.9% CI")
+                             ) )
+                      )
+)
+
+fig
+```
