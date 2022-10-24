@@ -1697,20 +1697,37 @@ So it is difficult to be certain.
 
 
 
+## Example: The stress of surgery {#StressSurgery}
 
+The concentration of beta-endorphins in the blood are a sign of stress.
+In one study, the beta-endorphin concentration was measured for 19 patients about to undergo surgery.
+Each patient had their beta-endorphin concentrations measures 12--14 hours before surgery (`BeforeHours`), and also 10 minutes before surgery (`BeforeMins`).
+The jamovi output in Fig. \@ref(fig:StressDescriptivesjamovi) can be used to construct an approximate 95% CI for the *increase* in stress as surgery gets closer.
 
+```{r StressDescriptivesjamovi, echo=FALSE, fig.cap="jamovi output for the surgery-stress data", fig.align="center", out.width='80%'}
+knitr::include_graphics("jamovi/Stress/StressDescriptives.png")
+```
 
+The mean *increase* in beta-endorphin concentration is 7.70 fmol/mol, and the *standard error for this increase* is 3.10 fmol/mol.
+The approximate 95% CI is
 
+\begin{align*}
+  \bar{d} &\pm (2\times \text{s.e.}(\bar{d}))\\
+  7.70 &\pm (2\times 3.10)\\
+  7.70 &\pm 6.20,
+\end{align*}
+or from $1.50$ to $13.90$fmol/m.
 
+Using jamovi, the *exact* 95% CI is from 1.62 to 13.78 fmol/mol, very similar to the *approximate* CI computed manually.
 
+Also note that the standard error in the output can be computed by hand as
 
+\[
+   \text{s.e.}(\bar{d}) = \frac{s_d}{\sqrt{n}} = \frac{13.52}{\sqrt{19}} = 3.1017...,
+\]
+the same as in the output.
 
-
-
-
-
-
-
+The sample size is $n = 19$, just less than 25, so the results may not be statistically valid (but shouldn't be too bad).
 
 
 
@@ -1927,5 +1944,40 @@ the mean intention to smoke after exercise *reduced* by
 :::
 
 
+::: {.exercise #PairedCIExercisesAnorexia}
 
+```{r}
+AN <- read.csv("/Users/pdunn2/Library/CloudStorage/OneDrive-UniversityoftheSunshineCoast/Documents/Teaching/Datasets/Books/Hand/Hand-R/anorexia.csv") ### HAND 285
+
+ANCB <- subset(AN, Treatment=="CB")
+
+hist( ANCB$After - ANCB$Before)
+
+plot( x = c(0.75, 2.25),
+      y = range( c(ANCB$Before, ANCB$After) ),
+      type = "n",
+      las = 1,
+      xlab = "When",
+      ylab = "Weight (lb)",
+      axes = FALSE)
+axis (side = 1,
+      at = 1:2,
+      labels = c("Before",
+                 "After"))
+axis(side = 2,
+     las = 1)
+box() 
+
+for (i in (1:length(ANCB$Before))){
+  lines( x = c(1, 2),
+         y = c(ANCB$Before[i], ANCB$After[i]),
+         pch = 19,
+         lty = 1,
+         col = ifelse(ANCB$After[i] - ANCB$Before[i] > 0, "blue", "red"))
+}
+t.test(ANCB$After, ANCB$Before, 
+       paired = TRUE, 
+       alternative = "two.sided")
+```
+:::
 

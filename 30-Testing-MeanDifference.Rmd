@@ -1613,8 +1613,7 @@ Table \@ref(tab:DiabSummTable2)):
          {\text{standard error of the statistic}}\\
   &= \frac{1.950 - 0}{0.676} = 2.885.
 \end{align*}
-Either way,
-the $t$-score is the same.
+Either way, the $t$-score is the same.
 
 
 ```{r DiabetesTestjamovi, echo=FALSE, fig.cap="jamovi output for the diabetes data", fig.align="center",  out.width="90%"}
@@ -1627,36 +1626,102 @@ knitr::include_graphics("SPSS/Diabetes/Diabetes-Test-All.png")
 ```
 
 
-A $P$-value is then needed to decide if the sample is **consistent**
-with the assumption.
-Using the  [68--95--99.7 rule](#def:EmpiricalRule),
-the approximate two-tailed $P$-value is much smaller than 0.05.
-Alternatively,
-the software output 
-(Fig. \@ref(fig:DiabetesTestjamovi);
-Fig. \@ref(fig:DiabetesTestSPSS))
-reports the two-tailed $P$-value as $P=0.005$.
+A $P$-value is then needed to decide if the sample is **consistent** with the assumption.
+Using the  [68--95--99.7 rule](#def:EmpiricalRule), the approximate two-tailed $P$-value is much smaller than 0.05.
+Alternatively, the software output (Fig. \@ref(fig:DiabetesTestjamovi); Fig. \@ref(fig:DiabetesTestSPSS)) reports the two-tailed $P$-value as $P=0.005$.
 
 We conclude:
 
-> Strong evidence exists in the sample
-> (paired $t = 2.855$; two-tailed $P = 0.005$)
-> of a population mean difference 
-> between the first and second DBP readings (mean difference $1.95$ mm Hg higher for first reading; 
-> 95% CI\ from $0.61$ to $3.3$ mm Hg; $n = 141$).
+> Strong evidence exists in the sample (paired $t = 2.855$; two-tailed $P = 0.005$) of a population mean difference between the first and second DBP readings (mean difference $1.95$ mm Hg higher for first reading; 95% CI\ from $0.61$ to $3.3$ mm Hg; $n = 141$).
 
-Since $n>25$,
-the results are statistically valid.
+Since $n>25$, the results are statistically valid.
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 Just saying 'there is evidence of a difference' is insufficient.
 
-You must state *which* measurement is, on average, higher
-(that is, what the differences *mean*).
+You must state *which* measurement is, on average, higher (that is, what the differences *mean*).
 :::
 
 
 <iframe src="https://learningapps.org/watch?v=pj3pt56fk22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+
+
+
+## Example: The stress of surgery {#StressSurgeryHT}
+
+The concentration of beta-endorphins in the blood are a sign of stress.
+In one study (@data:hand:handbook, Dataset 232; HOAGLIN), the beta-endorphin concentration was measured for 19 patients about to undergo surgery.
+The RQ was:
+
+> For patients approaching surgery, is there a mean increase in beta-endorphin concentrations?
+
+Each patient had their beta-endorphin concentrations measured 12--14 hours before surgery, and also 10 minutes before surgery.
+A numerical summary can be produced from jamovi output (Table \@ref(tab:StressDescriptivesjamovi)).
+
+
+```{r StressDescriptivesjamovi, echo=FALSE, fig.cap="jamovi output for the surgery-stress data. Means, standard deviation and standard errors are measured in fmol/mol", fig.align="center", out.width='80%'}
+
+ST <- read.csv("Data/stress.csv")
+
+StressTab <- data.frame(
+  "Means" = c( colMeans(ST),
+               mean(ST$BeforeMins - ST$BeforeHours) ),
+  "Std deviation" = c( apply(ST, 2, "sd"),
+                       sd(ST$BeforeMins - ST$BeforeHours) ),
+  "Std Error" = c( apply(ST, 2, function(x){sd(x)/sqrt(length(x))}),
+                   sd(ST$BeforeMins - ST$BeforeHours)/sqrt(19) ),
+  "Sample size" = c( apply(ST, 2, length),
+                     length(ST$BeforeMins - ST$BeforeHours) )
+)
+rownames(StressTab) <- c("12--14 hours before surgery",
+                         "10 minutes before surgery",
+                         "Increase")
+  
+knitr::kable(StressTab,
+  col.names = c("Sample mean",
+                "Std deviation",
+                "Std error",
+                "Sample size"),
+  row.names = TRUE,
+  digits = 2
+)
+```
+
+The hypotheses are:
+
+\[
+   H_0: \mu_D = 0;\qquad H_1: \mu_D > 0
+\]
+provided we DEFINE...
+
+The jamovi output in Fig. \@ref(fig:StressDescriptivesHTjamovi) can be used to test the hypotheses.
+
+```{r StressDescriptivesHTjamovi, echo=FALSE, fig.cap="jamovi output for the surgery-stress data", fig.align="center", out.width='80%'}
+knitr::include_graphics("jamovi/Stress/StressDescriptives.png")
+```
+
+Assuming the null hypothesis is true, the $t$-score is
+
+\[
+   t = \frac{\bar{d}- \mu_d}{\text{s.e.}(\bar{d})}
+\]
+where (from the output) the sample mean *increase* in beta-endorphin concentration is 7.70 fmol/mol, and the *standard error for this increase* is 3.10 fmol/mol.
+From the null hypothesis (which we assume to be true), $\mu_d = 0$.
+Hence:
+\[
+   t = \frac{7.70 - 0}{3.10} = 2.48,
+\]
+which is quite large.
+Using the 68--95-99.7 rule, we would expect a small **one-tailed** $P$-value (and certainly less than 0.025).
+
+jamovi reports a two-tailed $P$-value of 0.023, so a one-tailed $P%$-value of $0.023/2 = 0.0115$.
+
+We conclude (where the CI was [found earlier](#StressSurgery)):
+
+
+> Strong evidence exists in the sample (paired $t = 2.48; one-tailed $P = 0.0115$) of a population mean increase in beta-endorphin concentrations from 12--14 hours before surgery to 10 minutes before surgery (95% CI: 1.62 to 13.78 fmol/mol.)
+
+The sample size is $n = 19$, just less than 25, so the results may not be statistically valid (but shouldn't be too bad).
 
 
 
