@@ -9,7 +9,7 @@ library("webshot")     # screen shot of HTML animations
 library("plot3D")
 library("latticeExtra")
 library("leaflet")
-library("plotrix")     # Pie charts I think
+library("plotrix")     # Pie charts
 library("scales")
 library("png")
 library("plotly")
