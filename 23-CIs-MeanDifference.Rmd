@@ -1697,14 +1697,69 @@ So it is difficult to be certain.
 
 
 
+
 ## Example: The stress of surgery {#StressSurgery}
 
 The concentration of beta-endorphins in the blood are a sign of stress.
-In one study, the beta-endorphin concentration was measured for 19 patients about to undergo surgery.
-Each patient had their beta-endorphin concentrations measures 12--14 hours before surgery (`BeforeHours`), and also 10 minutes before surgery (`BeforeMins`).
+In one study (@data:hand:handbook, Dataset 232; @hoaglin2011exploring), the beta-endorphin concentration was measured for 19 patients about to undergo surgery.
+
+Each patient had their beta-endorphin concentrations measures 12--14 hours before surgery, and also 10 minutes before surgery.
+A numerical summary can be produced from jamovi output (Table \@ref(tab:StressTable)).
+
+
+```{r StressTable, echo=FALSE}
+ST <- read.csv("Data/stress.csv")
+
+ST$Diff <- ST$BeforeMins - ST$BeforeHours
+
+STtable <- array( dim = c(3, 4) )
+
+rownames(STtable) <- c("12--14 hours before surgery",
+                       "10 minutes before surgery",
+                       "Increase")
+colnames(STtable) <- c("Sample mean",
+                       "Std deviation",
+                       "Std error",
+                       "Sample size")
+
+STtable[, 1] <- c(mean(ST$BeforeHours),
+                  mean(ST$BeforeMins),
+                  mean(ST$Diff))
+STtable[, 2] <- c(sd(ST$BeforeHours),
+                  sd(ST$BeforeMins),
+                  sd(ST$Diff))
+STtable[, 4] <- c(length(ST$BeforeHours),
+                  length(ST$BeforeMins),
+                  length(ST$Diff))
+STtable[, 3] <- STtable[, 2] / sqrt( STtable[, 4])     
+
+
+if( knitr::is_latex_output() ) {
+kable(STtable,
+      format = "latex",
+      booktabs = TRUE,
+      longtable = FALSE,
+      col.names = c("Mean", "Std deviation", "Std error", "Sample size"),
+      digits = c(2, 2, 2, 0),
+      caption = "The numerical summary for the presurgical stress data") %>%
+  row_spec(0, bold = TRUE) %>%
+  kable_styling(font = 10)
+}
+if( knitr::is_html_output() ) {
+kable(STtable,
+      format = "html",
+      booktabs = TRUE,
+      longtable = FALSE,
+      col.names = c("Mean", "Std deviation", "Std error", "Sample size"),
+      digits = c(2, 3, 3, 0),
+      caption = "The numerical summary for the presurgical stress data")
+}
+
+```
+
 The jamovi output in Fig. \@ref(fig:StressDescriptivesjamovi) can be used to construct an approximate 95% CI for the *increase* in stress as surgery gets closer.
 
-```{r StressDescriptivesjamovi, echo=FALSE, fig.cap="jamovi output for the surgery-stress data", fig.align="center", out.width='80%'}
+```{r StressDescriptivesjamovi, echo=FALSE, fig.cap="jamovi output for the surgery-stress data", fig.align="center", out.width='70%'}
 knitr::include_graphics("jamovi/Stress/StressDescriptives.png")
 ```
 
@@ -1718,7 +1773,7 @@ The approximate 95% CI is
 \end{align*}
 or from $1.50$ to $13.90$fmol/m.
 
-Using jamovi, the *exact* 95% CI is from 1.62 to 13.78 fmol/mol, very similar to the *approximate* CI computed manually.
+Using jamovi, the *exact* 95% CI is from 1.18 to 14.22 fmol/mol, similar to the *approximate* CI computed manually.
 
 Also note that the standard error in the output can be computed by hand as
 
