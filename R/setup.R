@@ -68,6 +68,7 @@ knitr::opts_chunk$set(
   cache = TRUE, echo = FALSE, warning = FALSE, message = FALSE
 )
 
+# Set tables so that NA cells are not printed as NA, but left blank
 options(knitr.kable.NA = '')
 
 # knitr:::is_latex_output()
