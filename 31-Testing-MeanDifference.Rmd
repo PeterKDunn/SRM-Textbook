@@ -1659,7 +1659,7 @@ Each patient had their beta-endorphin concentrations measured 12--14 hours befor
 A numerical summary can be produced from jamovi output (Fig. \@ref(fig:StressDescriptivesjamovi)).
 
 
-```{r StressDescriptivesjamovi, echo=FALSE, fig.cap="jamovi output for the surgery-stress data. Means, standard deviation and standard errors are measured in fmol/mol", fig.align="center", out.width='80%'}
+```{r StressDescriptivesjamovi, echo=FALSE, fig.cap="", fig.align="center", out.width='80%'}
 
 ST <- read.csv("Data/stress.csv")
 
@@ -1677,14 +1677,33 @@ rownames(StressTab) <- c("12--14 hours before surgery",
                          "10 minutes before surgery",
                          "Increase")
   
-knitr::kable(StressTab,
-  col.names = c("Sample mean",
-                "Std deviation",
-                "Std error",
-                "Sample size"),
-  row.names = TRUE,
-  digits = 2
-)
+if( knitr::is_latex_output() ) {
+  knitr::kable(StressTab,
+               format = "latex",
+               booktabs = TRUE,
+               longtable = TRUE,
+               caption = "The surgery-stress data",
+               col.names = c("Sample mean",
+                             "Std deviation",
+                             "Std error",
+                             "Sample size"),
+               row.names = TRUE,
+               digits = 2)%>%
+     column_spec(1, bold = TRUE) %>%
+     row_spec(0, bold = TRUE) %>%
+     kable_styling(font_size = 10)
+} 
+
+if( knitr::is_html_output() ) {
+  out <- kable(StressTab,
+               format = "html",
+               booktabs = TRUE,
+               longtable = FALSE,
+               align = "r",
+               caption = "The surgery-stress data") %>%
+    column_spec(1, bold = TRUE) %>%
+     row_spec(1, bold = TRUE)
+}
 ```
 
 The hypotheses are:
@@ -1708,6 +1727,7 @@ Assuming the null hypothesis is true, the $t$-score is
 where (from the output) the sample mean *increase* in beta-endorphin concentration is 7.70 fmol/mol, and the *standard error for this increase* is 3.10 fmol/mol.
 From the null hypothesis (which we assume to be true), $\mu_d = 0$.
 Hence:
+
 \[
    t = \frac{7.70 - 0}{3.10} = 2.48,
 \]
