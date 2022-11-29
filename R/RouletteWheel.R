@@ -15,45 +15,48 @@ plotWheel <- function(wheelSize = c(10, 4), numberColours){
   DD <- wheelSize[1]
   dd <- wheelSize[2]
 
-  sectorAngle <- 360/37
+  sectorAngle <- 360/37 # Degrees
   
   numberLabels <-  c(0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 
                      11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 
                      22, 18, 29, 7, 28, 12, 35, 3, 26)
   
   # Colours on the segments
-  plot( x = cos( deg2rad(seq(0, 360, by=1))) * DD,
-        y = sin( deg2rad(seq(0, 360, by=1))) * DD,
+  plot( x = cos( deg2rad(seq(0, 360, 
+                             by = 1))) * DD,
+        y = sin( deg2rad(seq(0, 360, 
+                             by = 1))) * DD,
         axes = FALSE,
         xlab = "", 
         ylab = "",
         type = "n", # DO the outer lines later to define them properly
-        mar = c(0.5, 0.5, 0.5, 0.5),
+        mar = c(0.2, 0.2, 0.2, 0.2),
         asp = 1)
   
   for (i in (1:37)){ # For each wheel segment...
     
-    colAngle <- sectorAngle*(i-1)
+    colAngle <- sectorAngle*(i - 1)
 
     polygon(x = c(0, seq( cos( deg2rad( colAngle ) ) * DD, 
-                          cos( deg2rad( colAngle + sectorAngle) ) * DD, length=10), 0 ),
+                          cos( deg2rad( colAngle + sectorAngle) ) * DD, length = 10), 0 ),
             y = c(0, seq( sin( deg2rad( colAngle ) ) * DD, 
-                          sin( deg2rad( colAngle + sectorAngle) ) * DD, length=10), 0 ),
-            col = numberColours[i+1]) # Because the first one is for 0
+                          sin( deg2rad( colAngle + sectorAngle) ) * DD, length = 10), 0 ),
+            col = numberColours[i + 1]) # Because the first one is for 0
   }
   
   # Plot inner wheel2: Overwrites segment colours
-  polygon(x=cos( deg2rad(seq(0, 360, by=0.1))) * dd * 1.5,
-          y=sin( deg2rad(seq(0, 360, by=0.1))) * dd * 1.5,
-          col="white")
+  polygon(x = cos( deg2rad(seq(0, 360, by = 0.1))) * dd * 1.5,
+          y = sin( deg2rad(seq(0, 360, by = 0.1))) * dd * 1.5,
+          col = "white")
 
-  polygon(x=cos( deg2rad(seq(0, 360, by=0.1))) * dd,
-          y=sin( deg2rad(seq(0, 360, by=0.1))) * dd,
-          col="grey")
+  polygon(x = cos( deg2rad(seq(0, 360, by = 0.1))) * dd,
+          y = sin( deg2rad(seq(0, 360, by = 0.1))) * dd,
+          col = "grey")
   
   
   # Plot "spokes": Overwrite segment colours
-  spokes <- seq(0, 360, by=sectorAngle)
+  spokes <- seq(0, 360, 
+                by = sectorAngle) # Degrees
   for (i in (1:length(spokes))){
     segments( x0 = 0, 
               y0 = 0,
@@ -63,16 +66,20 @@ plotWheel <- function(wheelSize = c(10, 4), numberColours){
   }
   
   # Show numbers
-  textAngle <- spokes - (sectorAngle/2)
-  text(x = cos( deg2rad( textAngle)) * 0.9 * DD,
-       y = sin( deg2rad( textAngle)) * 0.9 * DD,
-       labels=numberLabels,
-       col="black")
-  
+  # To use  srt  to rotate text, we need to loop: srt  does not take vectors
+  for (i in (1:37)){ # For each wheel segment...
+    textAngle <- spokes - (sectorAngle/2) # Degrees
+    text(x = cos( deg2rad( textAngle[i])) * 0.9 * DD,
+         y = sin( deg2rad( textAngle[i])) * 0.9 * DD,
+         labels = numberLabels[i],
+         srt = textAngle[i] - 90,
+         cex = 0.7,
+         col = "black")
+  }  
   # Redo outside wheel outline
-  lines( x=cos( deg2rad(seq(0, 360, by=0.05))) * DD,
-         y=sin( deg2rad(seq(0, 360, by=0.05))) * DD,
-         lwd=2)
+  lines( x = cos( deg2rad(seq(0, 360, by = 0.05))) * DD,
+         y = sin( deg2rad(seq(0, 360, by = 0.05))) * DD,
+         lwd = 2)
 }       
 
 
@@ -93,7 +100,10 @@ plotBall <- function(angle, radius, wheelSize = c(10, 4), colour = "black"){
 
 
 # Plotting shadow ball function
-plotBallShadow <- function(angle, radius, wheelSize = c(10, 4), colour){
+plotBallShadow <- function(angle, 
+                           radius, 
+                           wheelSize = c(10, 4), 
+                           colour){
 
   DD <- wheelSize[1]
   dd <- wheelSize[2]
@@ -117,12 +127,17 @@ plotBallShadow <- function(angle, radius, wheelSize = c(10, 4), colour){
 ###########################################################################################################
 
 
-plotSpinningWheel <- function(angle, radius, wheelSize = c(10, 4), plotShadow = TRUE, 
-                              shadowColour =  rgb(255, 255, 255, max = 255, alpha = 55),
+plotSpinningWheel <- function(angle, 
+                              radius, 
+                              wheelSize = c(10, 4), 
+                              plotShadow = TRUE, 
+                              shadowColour =  rgb(255, 255, 255, 
+                                                  max = 255, 
+                                                  alpha = 55),
                               main = "Rolling...") {
   
   # angle is the *middle* of each segment, where the ball lies
-  # ange is in radians
+  # angle is in radians
 
   sectorAngle <- 360/37 # Angle of each of the 37 segments, IN DEGREES
 
@@ -207,8 +222,8 @@ plotSpinningWheel <- function(angle, radius, wheelSize = c(10, 4), plotShadow = 
   coloursInWords[numberLabels%in%0] <- "green"
   coloursInWords[38] <- "green"
   
-  roll <- numberLabels[ location+2  ]
-  colour <- coloursInWords[ location+2  ]
+  roll <- numberLabels[ location + 2  ]
+  colour <- coloursInWords[ location + 2  ]
 
   return( list(roll = roll,
                colour = colour) )
