@@ -47,12 +47,12 @@ And using the [decision-making process](#DecisionMaking) discussed earlier, I co
 
 ## Statistical hypotheses and notation: One proportion
 
-The [decision-making process](#DecisionMaking) begins by making an assumption about the population; in this case, we assume that the die is fair, and hence that the *population* proportion is $p = 1/6 = 0.1666...$.
-With this knowlegde, I can compare what I see in practice to what I expect if the die is fair. (I AND WE!!)
+The [decision-making process](#DecisionMaking) begins by making an assumption about the population; in this case, assume that the die is fair, and hence that the *population* proportion is $p = 1/6 = 0.1666...$.
+With this knowledge, I can compare what I see in practice to what I expect if the die is fair.
 
-On a fair die, rolling a `r include_graphics("Dice/die6.png", dpi=1250)` *exactly* one-sixth of the time is unlikely, but it probably should be close.
+On a fair die, rolling a `r include_graphics("Dice/die6.png", dpi=1250)` *exactly* one-sixth of the time is unlikely, but it should be c;ose to one-sixth.
 This is called [*sampling variation*](#SamplingVariation).
-So, when we see that the sample proportion of `r include_graphics("Dice/die6.png", dpi=1250)`s is not *exactly* $0.1666...$ two possible explanations are:
+So, when the sample proportion of rolls that are `r include_graphics("Dice/die6.png", dpi=1250)` is not *exactly* $0.1666...$, the two possibilities are:
 
 * The reason why the *sample* proportion is not exactly $p = 0.1666...$ is due to sampling variation; or
 * The reason why the *sample* proportion is not exactly $p = 0.1666...$ is because the die is not fair.
@@ -74,7 +74,7 @@ The answer depends on the sample size.
 For example, in *one* roll of a die, rolling a `r include_graphics("Dice/die6.png", dpi=1250)`, and hence finding a sample proportion of $\hat{p} = 1$, is not unreasonable.
 However, if we rolled a die 20,000 times, rolling a `r include_graphics("Dice/die6.png", dpi=1250)` with a sample proportion of $\hat{p} = 1$ would be *incredibly* unlikely.
 
-[Earlier](SamplingDistributionKnownp), we saw how to describe the [sampling distribution of a sample proportion](#def:SamplingDistProp).
+[Earlier](#SamplingDistributionKnownp), we saw how to describe the [sampling distribution of a sample proportion](#def:SamplingDistProp).
 For some value of $p$, the *sampling distribution of the sample proportion* is described by
 
 * an approximate normal distribution,
@@ -94,7 +94,7 @@ That is, how many times are we prepared to roll the die and count how many times
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
 Suppose I wanted to estimate the proportion of ones to within 0.01.
-Using the ideas in Chap. \@ref(EstimatingSampleSize), what size sample would I need (i.e., how many rolls of the die)?
+Using the ideas in Chap. \@ref(EstimatingSampleSize), what size sample would I need (i.e., how many die rolls)?
 
 `r webexercises::hide()`
 10,000... which was never going to happen!
@@ -114,7 +114,7 @@ A picture of this sampling distribution (Fig. \@ref(fig:RollsSixesSD)) shows how
 From this picture, a value of $\hat{p}$ larger than 0.25 looks unlikely; a value less than 0.10 also looks quite unlikley.
 A value above 0.3, or lower than 0.05, looks almost impossible.
 
-```{r, RollsSixesSD, fig.cap="The sampling distribution, showing the distribution of the sample proportion of 6s when the *population* proportion is 0.1666..., in 50 die rolls"}
+```{r, RollsSixesSD, fig.height=3, fig.cap="The sampling distribution, showing the distribution of the sample proportion of 6s when the *population* proportion is 0.1666..., in 50 die rolls"}
     
 p <- 1/6
 n <- 100
@@ -122,7 +122,7 @@ n <- 100
 sep <- sqrt( p * (1 - p) / n )
 
 xx <- seq( 0,
-           0.4,
+           0.35,
            len = 1000)
 yy <- dnorm(xx, 
             mean = p,
@@ -130,7 +130,7 @@ yy <- dnorm(xx,
 plot( yy ~ xx,
       type = "l",
       xlim = range(xx), 
-      col = plot.colour,
+      col = plotSolid,
       xlab = "Values of the sample proportion",
       ylab = "",
       main = "Sampling distribution of the sample proportion\nfor 100 rolls ",
@@ -180,44 +180,45 @@ In most cases, $P$-values are approximated using software (Sect. ???).
 The $P$-value is the area **more extreme** than the calculated $z$-score. 
 For example:
 
-* *If* the calculated $z$-score was $z = 1$, the two-tailed $P$-value would be the shaded area in Fig. ??? (top panel): 
-   About 32%, based on the 68--95--99.7 rule. 
+* *If* the calculated $z$-score was $z = 1$, the two-tailed $P$-value would be the shaded area in Fig. \@ref(fig:OnePropTestP) (left panel):    About 32%, based on the 68--95--99.7 rule. 
    Because the alternative hypothesis is two-tailed, both sides of the mean are considered: the $P$-value would be the same if $z = -1$.
-* *If* the calculated $z$-score was $z = 2$, the two-tailed $P$-value would be the shaded area shown in Fig. (bottom panel): 
+* *If* the calculated $z$-score was $z = 2$, the two-tailed $P$-value would be the shaded area shown in Fig. \@ref(fig:OnePropTestP) (middle panel): 
    About 5%, based on the 68--95--99.7 rule. 
    Because the alternative hypothesis is two-tailed, both sides of the mean are considered: the $P$-value would be the same if $z = -2$.
 
-Clearly, from what the $P$--value means, a $P$-value is always between 0 and 1.
+Clearly, from what the $P$-value means, a $P$-value is always between 0 and 1.
 
-```{r, OnePropTestP,  fig.cap="The two-tailed P-value is the combined area in the two tails of the distribution", fig.height = 3}
+```{r, OnePropTestP, fig.cap="The two-tailed P-value is the combined area in the two tails of the distribution", fig.height = 2, out.width='100%', fig.width=6}
 par(mfrow = c(1, 3))
 
 plot.normZ(mu = 0,
            sd = 1,
            shade.lo.z = -10, 
            shade.hi.z = -1,
-           main = "The P-value when z is 1",
+           main = expression(paste("The"~italic(P)*"-value when"~italic(z)==1)),
            xlab.name = "z-score"
            )
 plot.normZ(mu = 0,
            sd = 1,
            new = FALSE,
            shade.lo.z = 1, 
-           shade.hi.z = 10
+           shade.hi.z = 10,
+           xlab.name=""
            )
 
 plot.normZ(mu = 0,
            sd = 1,
            shade.lo.z = -10, 
            shade.hi.z = -2,
-           main = "The P-value when z is 2",
+           main = expression(paste("The"~italic(P)*"-value when"~italic(z)==2)),
            xlab.name = "z-score"
            )
 plot.normZ(mu = 0,
            sd = 1,
            new = FALSE,
            shade.lo.z = 2, 
-           shade.hi.z = 10
+           shade.hi.z = 10,
+           xlab.name=""
            )
 
 
@@ -225,14 +226,15 @@ plot.normZ(mu = 0,
            sd = 1,
            shade.lo.z = -10, 
            shade.hi.z = -1.68,
-           main = "The P-value when z is 1.68",
+           main = expression(paste("The"~italic(P)*"-value when"~italic(z)==1.68)),
            xlab.name = "z-score"
            )
 plot.normZ(mu = 0,
            sd = 1,
            new = FALSE,
            shade.lo.z = 1.68, 
-           shade.hi.z = 10
+           shade.hi.z = 10,
+           xlab.name=""
            )
 ```
 
@@ -240,7 +242,7 @@ plot.normZ(mu = 0,
 
 ### Using the $z$-tables {#OnePropZTables}
 
-Use the table *backwards*
+Use the table *backwards*...?
 
 
 
@@ -463,9 +465,9 @@ Of course, every sample of 45 interactions would produce a different sample prop
 
 To test if the proportion of interactions were equally shared, the hypotheses are:
 
-* $H_0$: $p = 0.5$; and
-* $H_1$: $p \ne 0.5$ (two-tailed).
-
+\[
+   \text{$H_0$: } p = 0.5\quad\text{and}\quad\text{$H_1$: } p \ne 0.5 \text{ (two-tailed)}.
+\]
 The *standard error* for the sample proportion is
 
 \[
@@ -496,12 +498,9 @@ So the approximate 95% CI is
   0.82222 \pm(2 \times 0.056999...),
 \]
 or from 0.708 to 0.936.
-
 We write:
 
 > There is *very* strong evidence ($P < 0.001$; $z = 5.65$) that the interactions were not won equally between each species ($\hat{p} = 0.8222$ won by green-backed tits; approximate 95% CI: 0.708 to 0.936).
-
-
 
 
 ## Example: Obesity
@@ -509,9 +508,9 @@ We write:
 @kolanska2010high compared the rate of obesity in $n = 143$ Polish patients with adrenal tumours (benign nonsecreting adrenal incidentaloma) to that of the general population of Poland ($p = 0.125$).
 The hypotheses are:
 
-* $H_0$: $p = 0.125$;
-* $H_1$: $p \ne 0.125$.
-
+\[
+   \text{$H_0$: } p = 0.125\quad\text{and}\quad\text{$H_1$: } p \ne 0.125.
+\]
 Under the assumption that the null hypothesis is true, the standard error is:
 
 \[
@@ -539,16 +538,13 @@ The 95% CI for the proportion requires the standard error computed from the *sam
    = \sqrt{\frac{0.3986 \times (1 - 0.3986)}{143}} 
    = 0.040943...
 \]
-So the approximate 95% CI is
-\[
-  0.3986 \pm(2 \times 0.040943...).
-\]
+So the approximate 95% CI is $0.3986 \pm(2 \times 0.040943...)$.
 We write:
 
 > There is *very* strong evidence ($P < 0.001$; $z = 9.89$) that the rate of obesity in patients with adrenal tumours ($\hat{p} = 0.3986$; approximate 95% CI: 0.317 to 0.480) is higher than the general Polish population.
 
 
-NEED EXAMOLE WHERE P is 'large'.
+NEED EXAMPLE WHERE P is 'large'.
 
 
 
