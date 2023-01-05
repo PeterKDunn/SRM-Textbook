@@ -53,7 +53,8 @@ plotNormal <- function(mu, sd,
           main = main,
           type = "l")
   axis(side = 1,
-       at = showX)
+       at = showX,
+       labels = round(showX, round.dec))
   arrows( x0 = xlim.lo, 
           x1 = xlim.hi,
           y0 = 0,
@@ -66,8 +67,8 @@ plotNormal <- function(mu, sd,
             col = "grey")
 
   
-  return( list(y = nc, 
-               x = hor))
+  invisible( return( list(y = nc, 
+                          x = hor)) )
 }
 
 
