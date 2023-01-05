@@ -1,21 +1,34 @@
 # Tests for one proportion {#TestOneProportion}
-
-::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
-So far, you have learnt to ask a RQ, design a study, describe and summarise the data, understand the decision-making process and to work with probabilities.
-You have also been introduced to the construction of confidence intervals.
-\smallskip
-
-**In this chapter**, you will learn about *hypothesis tests* for one proportion.
-You will learn to:
-  
-* conduct hypothesis tests for one sample proportion, using a $z$-test.
-* determine whether the conditions for using these methods apply in a given situation.
-:::
+.
 
 
-```{r echo=FALSE, fig.cap="", fig.align="center", fig.width=3, out.width="35%"}
-SixSteps(5, "Tests: One proportion")
+```{r, child = if (knitr::is_html_output()) {'./introductions/HT-OneProp-HTML.Rmd'} else {'./introductions/HT-OneProp-LaTeX.Rmd'}}
 ```
+
+
+
+
+
+<!-- ::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"} -->
+<!-- So far, you have learnt to ask a RQ, design a study, describe and summarise the data, understand the decision-making process and to work with probabilities. -->
+<!-- You have also been introduced to constructing confidence intervals. -->
+<!-- \smallskip -->
+
+<!-- **In this chapter**, you will learn about *hypothesis tests* for one proportion. -->
+<!-- You will learn to: -->
+
+<!-- * conduct hypothesis tests for one sample proportion, using a $z$-test. -->
+<!-- * determine whether the conditions for using these methods apply in a given situation. -->
+<!-- ::: -->
+
+
+<!-- ```{r echo=FALSE, fig.cap="", fig.align="center", fig.width=3, out.width="35%"} -->
+<!-- SixSteps(5, "Tests: One proportion") -->
+<!-- ``` -->
+
+
+
+
 
 ## Introduction: Rolling dice {#ProportionTestIntro}
 
@@ -32,86 +45,81 @@ SixSteps(5, "Tests: One proportion")
 `r if (knitr::is_html_output()) '-->'`
 
 
-Once when I was in a toy store (for my children, of course...) I saw 'loaded dice' for sale.
+Once when in a toy store (for my children, of course...) I saw 'loaded dice' for sale.
 The packaging claimed 'One loaded \& one normal'.
-
 I bought two packs!
-But when I got home, I didn't know *which* die was the 'loaded die', and which was the 'normal' die.
+When I got home, I didn't know *which* die was 'loaded', and which was 'normal'.
 How could I find out? 
 I guess had to roll the dice...
 
-On the fair die, I would expect each face to appear about one-sixth of the time (using [classical probability](#ProbClassical)).
-So I could roll both dice, and see how often a `r include_graphics("Dice/die1.png", dpi=1400)` (for example) actually appeared.
-And using the [decision-making process](#DecisionMaking) discussed earlier, I could  decide which die was fair.
+If I rolled the *fair* die, I know what to expect: each face would appear about one-sixth of the time (using [classical probability](#ProbClassical)).
+So I could roll both dice, and see how often a `r include_graphics("Dice/die1.png", dpi=1500)` (for example) actually appeared.
+Using the [decision-making process](#DecisionMaking) discussed earlier, I could  decide which die was fair.
 
 
 ## Statistical hypotheses and notation: One proportion
 
-The [decision-making process](#DecisionMaking) begins by making an assumption about the population; in this case, assume that the die is fair, and hence that the *population* proportion of rolling a `r include_graphics("Dice/die1.png", dpi=1400)` is $p = 1/6 = 0.1666...$.
-With this knowledge, I can compare what I see in practice to what I expect if the die is fair.
+The [decision-making process](#DecisionMaking) begins with making an assumption about the population; here, assume that the die is fair, and hence that the *population* proportion of rolling a `r include_graphics("Dice/die1.png", dpi=1500)` is $p = 1/6$, or approximately $p = 0.16667$.
+Now, I can compare what I see in practice (the sample proportion, $\hat{p}$) to this expectation to determine if the die is fair.
 
-On a fair die, rolling a `r include_graphics("Dice/die1.png", dpi=1400)` *exactly* one-sixth of the time is unlikely, but it should be close.
-This is called [*sampling variation*](#SamplingVariation).
-So, when the sample proportion of rolls that are `r include_graphics("Dice/die1.png", dpi=1400)` is not *exactly* $0.1666...$, two possibilities exist:
+However, even with a fair die, rolling a `r include_graphics("Dice/die1.png", dpi=1500)` *exactly* one-sixth of the time is unlikely. 
+The value of $\hat{p}$ may be slightly higher than $1/6$, or slightly lower.
+This variation in the sample proportion is [*sampling variation*](#SamplingVariation).
 
-* The reason why the *sample* proportion is not exactly $p = 0.1666...$ is due to sampling variation; or
-* The reason why the *sample* proportion is not exactly $p = 0.1666...$ is because the die is not fair.
+When the sample proportion of rolls that are `r include_graphics("Dice/die1.png", dpi=1500)` is not *exactly* $0.1666...$, two possibilities exist:
+
+* The *sample* proportion is not exactly $p = 0.1666...$ due to sampling variation; or
+* The *sample* proportion is not exactly $p = 0.1666...$ because the die is not fair.
 
 These two possible explanations are called *statistical hypotheses*.
-Formally, the two statistical hypotheses above are:
+Formally, the two statistical hypotheses above are written:
 
-* $H_0$: $p = 0.1666...$, called the *null hypothesis*; and
-* $H_1$: $p \ne 0.1666...$, called the *alternative hypothesis*.
+* $H_0$: $p = 0.1666...$, the *null hypothesis*; and
+* $H_1$: $p \ne 0.1666...$, the *alternative hypothesis*.
 
-The alternative hypothesis asks if $p$ is $0.1666...$ or *not*: The value of $p$ may be smaller *or* larger than $0.1666...$.
+The alternative hypothesis is open to the value of $p$ being smaller *or* larger than $0.1666...$.
 That is, two possibilities are considered: for this reason, this alternative hypothesis is called a *two-tailed* alternative hypothesis.
+(An alternative hypothesis like $p > 0.1666...$ or $p < 0.1666...$ is a *one-tailed* hypothesis.)
 
 
 ## Sampling distribution: One proportion {#OnePropTestSamplingDist}
 
-When the proportion of rolls that show a `r include_graphics("Dice/die1.png", dpi=1400)` is $p = 0.1666...$, what values of the *sample* proportion are reasonable to expect?
+When the proportion of rolls that show a `r include_graphics("Dice/die1.png", dpi=1500)` really is $p = 0.1666...$, what values of the *sample* proportion are reasonable to expect, given sampling variation?
 The answer depends on the sample size.
-For example, in *one* roll of a die, rolling a `r include_graphics("Dice/die1.png", dpi=1400)`, and hence finding a sample proportion of $\hat{p} = 1$, is not unreasonable.
-However, if we rolled a die 20,000 times, rolling a `r include_graphics("Dice/die1.png", dpi=1400)` with a sample proportion of $\hat{p} = 1$ would be *incredibly* unlikely.
+In *one* roll of a die, rolling a `r include_graphics("Dice/die1.png", dpi=1500)`, and hence finding a sample proportion of $\hat{p} = 1$, is not unreasonable.
+However, in 20,000 rolls, a sample proportion of $\hat{p} = 1$ would be *incredibly* unlikely for a fair die.
 
-[Earlier](#SamplingDistributionKnownp), we saw how to describe the [sampling distribution of a sample proportion](#def:SamplingDistProp).
-For an assumed value of $p$, the *sampling distribution of the sample proportion* is described by
+Earlier (Sect. \@ref(SamplingDistributionKnownp)), we saw how to describe the [sampling distribution of a sample proportion](#def:SamplingDistProp).
+For an assumed value of $p$, the sample proportion $\hat{p}$ is expected to vary from sample to sample, and this variation is described by
 
 * an approximate normal distribution,
 * centred around a mean of $p$,
 * with a standard deviation (called the *standard error* of $\hat{p}$) of
 
 \begin{equation}
-   \text{s.e.}(\hat{p}) = \sqrt{\frac{p \times (1 - p)}{n}},
+   \text{s.e.}(\hat{p}) 
+   = \sqrt{\frac{p \times (1 - p)}{n}},
    (\#eq:StdErrorPknownTest)
 \end{equation}
 when [certain conditions are met](#ValidityProportionsTest), where $n$ is the size of the sample.
-
-What size sample would be useful?
-That is, how many times are we prepared to roll the die and count how many times a `r include_graphics("Dice/die1.png", dpi=1400)` shows?
-
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Suppose I wanted to estimate the proportion of ones to within 0.01.
-Using the ideas in Chap. \@ref(EstimatingSampleSize), what size sample would I need (i.e., how many die rolls)?
-
-`r webexercises::hide()`
-10,000... which was never going to happen!
-`r webexercises::unhide()`
-:::
-
+This is the *sampling distribution of the sample proportion*.
 
 I decide to use 100 rolls.
-So, if $p$ really was $0.1666...$, and if [certain conditions are met](#ValidityProportionsTest), the possible values of the sample proportion can be described using:
+So, if $p$ really was $0.1666...$, and if [certain conditions are met](#ValidityProportionsTest), the possible values of the sample proportion that could be expected in practice can described using:
 
 * An approximate normal distribution;
 * With mean 0.1666...;
-* With standard deviation of $\displaystyle\text{s.e.}(\hat{p}) = \sqrt{\frac{p\times (1 - p)}{n}} = \sqrt{\frac{0.1666... \times(1 - 0.1666...)}{100}} = 0.037267$.
+* With a standard deviation of 
+  $\displaystyle
+  \text{s.e.}(\hat{p}) 
+  = \sqrt{\frac{p\times (1 - p)}{n}} 
+  = \sqrt{\frac{0.1666... \times(1 - 0.1666...)}{100}} = 0.037267$.
   This is the standard deviation of all possible sample proportions.
 
 A picture of this sampling distribution (Fig. \@ref(fig:RollsSixesSD)) shows how the *sample* proportion varies when $n = 100$, simply due to sampling variation, when $p = 0.1666...$.
-From this picture, a value of $\hat{p}$ larger than 0.25 looks unlikely; a value less than 0.10 also looks quite unlikely.
+A value of $\hat{p}$ larger than 0.25 looks unlikely; a value less than 0.10 also looks quite unlikely, but not impossible.
 A value above 0.3, or lower than 0.05, looks almost impossible.
+
 
 ```{r, RollsSixesSD, fig.height=3, fig.cap="The sampling distribution, showing the distribution of the sample proportion of 6s when the *population* proportion is 0.1666..., in 50 die rolls"}
     
@@ -144,15 +152,15 @@ abline(v = p,
        col = "grey")
 ```
 
-In 100 rolls of one of the dice, I actually observed 41 that showed a `r include_graphics("Dice/die1.png", dpi=1400)`, a sample proportion of $\hat{p} = 41/100 = 0.41$.
-From Fiug. \@ref(fig:RollsSixesSD), this is almost impossible *if the die was fair*.
+In my 100 rolls of one die, I observed 41 that showed a `r include_graphics("Dice/die1.png", dpi=1500)`, a sample proportion of $\hat{p} = 41/100 = 0.41$.
+From Fig. \@ref(fig:RollsSixesSD), this is practically impossible *if the die was fair*.
 What I observed was almost impossible... but I really did observe it.
 A reasonable conclusion is that the assumption I was making---that the die is fair---is not tenable.
 
 
 ## The test statistic: $z$-score {#OnePropTestStatistic}
 
-One way to quantify how unusual it is to observe a value of $\hat{p} = 0.41$ in 100 rolls is to use a $z$-score, since the sampling distribution (Fig. \@ref(fig:RollsSixesSD)) has a normal distribution.
+One way to measure how far the sample proportion $\hat{p} = 0.41$ is from the population proportion $p = 0.166\dots$ in 100 rolls is to use a $z$-score, since the sampling distribution (Fig. \@ref(fig:RollsSixesSD)) has a normal distribution.
 The $z$-score is
 
 \begin{align*}
