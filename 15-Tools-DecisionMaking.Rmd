@@ -1,10 +1,9 @@
-
 # (PART) Tools for answering RQs {-}
+
 
 ```{r echo=FALSE, cache = FALSE}
 source("R/showMakeDecisions.R")
 ```
-
 
 
 # Making decisions: An introduction {#MakingDecisions}
@@ -20,12 +19,13 @@ In Sect. \@ref(NHANESCaseStudyQual), the NHANES data [@data:NHANES3:Data] were n
 The *sample mean* direct HDL cholesterol concentration was different for smokers ($\bar{x} = 1.31$mmol/L) and for non-smokers ($\bar{x} = 1.39$mmol/L).
 What does this difference between the *sample* means imply about the *population* means?
 
-Two reasons could explain why the sample means are different:
+Two reasons could explain why the *sample* means are different:
 
-1. The *population* means are the *same*.
-   The *sample* means are different only because we have data from one of many possible samples, and every sample is likely to be different, so the sample means are different by chance.
-   This is called *sampling variation*.
+1. The *population* means are the *same*; the difference is due to sampling variation.
+   The *sample* means are different only because we have data from one of many possible samples, and every sample is likely to be different.
 2. Alternatively, the *population* means are *different*, and the sample means reflect this.
+
+How do we decide which of these explanations is supported by the data?
 
 Similarly, in Sect. \@ref(NHANESCaseStudyQual) the *odds* of being diabetic were different for smokers (0.181) and non-smokers (0.084).
 What does this difference between the *sample* odds imply about the *population* odds?
@@ -33,7 +33,7 @@ What does this difference between the *sample* odds imply about the *population*
 Again, two possible reasons could explain why the sample odds are different:
 
 1. The *population* odds are the same.
-   The *sample* odds are different only because we have data from one of many possible samples, and evry sample is likely to be different, so sometimes, the sample odds are different by chance.
+   The *sample* odds are different only because we have data from one of many possible samples, and every sample is likely to be different, so sometimes, the sample odds are different by chance.
    Again, this is called *sampling variation*.
 2. Alternatively, the odds are different in the *population*, and the sample odds reflect this.
 
@@ -44,8 +44,11 @@ In both situations (means; odds), the two possible explanations ('statistical hy
 2. There is *a difference* between the population parameters.
    This is the *alternative hypothesis*, or $H_1$.
 
-The decision-making process begins by assuming the null hypothesis is true, and then the data is examined to see if it contains evidence to support the alternative hypothesis.
-However, conclusions drawn about the *population* from the *sample* are never certain, since the sample studied is just one of many possible samples.
+How do we decide which of these explanations is supported by the data?
+
+The *decision-making process* begins by assuming the null hypothesis is true.
+Then the data are examined to see if it presents evidence to support the alternative hypothesis.
+However, conclusions drawn about the *population* from the *sample* can never be certain, since the sample studied is just one of many possible samples.
 
 
 ## The need for making decisions {#NeedForDecisionMaking}
@@ -61,8 +64,7 @@ This is called *sampling variation*.
 
 
 However, sensible decisions *can* be (and *are*) made about population parameters based on sample statistics.
-To do this though, the process of *how* decisions are made needs to be articulated.
-In this chapter, the logic of making decisions is discussed.
+To do this though, the process of *how* decisions are made needs to be articulated, which is the purpose of this chapter.
 
 To begin, consider the following scenario.
 Suppose I produce a standard pack of cards, and shuffle them well.
@@ -86,7 +88,7 @@ How likely is it that this would happen simply by chance?
 } else {
    'See the animation below.'
 }`
-Is that evidence that the pack of cards is somehow unfair, or rigged?
+Is this evidence that the pack of cards is somehow unfair, or rigged?
 
 
 ```{r echo = FALSE, animation.hook = "gifski", cache = FALSE, fig.width = 4, interval = 0.25, fig.align = "center", dev=if (is_latex_output()){"pdf"}else{"png"}}
@@ -94,7 +96,7 @@ Is that evidence that the pack of cards is somehow unfair, or rigged?
   asp.cards <- 726/500
   
   ### LOAD CARD IMAGES
-  
+
   im1  <- png::readPNG("Cards/queen_of_hearts.png")
   im2  <- png::readPNG("Cards/3_of_diamonds.png")
   im3  <- png::readPNG("Cards/4_of_diamonds.png")
@@ -111,6 +113,7 @@ Is that evidence that the pack of cards is somehow unfair, or rigged?
   im14 <- png::readPNG("Cards/5_of_diamonds.png")
   im15 <- png::readPNG("Cards/5_of_hearts.png")
   
+
 if (knitr::is_html_output()){
   for (i in (1:18)){ # Draw 15 cards
     
@@ -122,6 +125,7 @@ if (knitr::is_html_output()){
           asp = asp.cards,
           ylab = "",
           axes = FALSE)
+    
     
     if (i >= 1 )  rasterImage(im1,  1.20, 1.27, 1.80, 1.9)
     if (i >= 2 )  rasterImage(im2,  1.25, 1.27, 1.85, 1.9)
@@ -145,55 +149,53 @@ if (knitr::is_html_output()){
 
 
 
-```{r Draw15Cards, echo=FALSE, cache=FALSE, fig.align="center", fig.width=3.5, out.width = "20%",fig.cap="How likely is it that you would get 15 red cards in a row from a fair pack?" }
+```{r Draw15Cards, echo=FALSE, cache=FALSE, fig.align="center", fig.width=7, fig.height=4.5, out.width = "40%",fig.cap="How likely is it that you would get 15 red cards in a row from a fair pack?" }
 if (knitr::is_latex_output()){
     
     # Set up canvas
     par(mar = rep(0.05, 4)) 
     plot( x = c(1.2, 2.7), 
-          y = c(1.2, 1.8), 
+          y = c(1, 2), 
           type = "n",
           xlab = "",
           asp = asp.cards,
           ylab = "",
           axes = FALSE)
     
-   for (i in (1:18)){ # Draw 15 cards
-    if (i >= 1 )  rasterImage(im1,  1.20, 1.27, 1.80, 1.9)
-    if (i >= 2 )  rasterImage(im2,  1.25, 1.27, 1.85, 1.9)
-    if (i >= 3 )  rasterImage(im3,  1.30, 1.27, 1.90, 1.9)
-    if (i >= 4 )  rasterImage(im4,  1.35, 1.27, 1.95, 1.9)
-    if (i >= 5 )  rasterImage(im5,  1.40, 1.27, 2.00, 1.9)
-    if (i >= 6 )  rasterImage(im6,  1.45, 1.27, 2.05, 1.9)
-    if (i >= 7 )  rasterImage(im7,  1.50, 1.27, 2.10, 1.9)
-    if (i >= 8 )  rasterImage(im8,  1.55, 1.27, 2.15, 1.9)
-    if (i >= 9 )  rasterImage(im9,  1.60, 1.27, 2.20, 1.9)
-    if (i >= 10)  rasterImage(im10, 1.65, 1.27, 2.25, 1.9)
-    if (i >= 11)  rasterImage(im11, 1.70, 1.27, 2.30, 1.9)
-    if (i >= 12)  rasterImage(im12, 1.75, 1.27, 2.35, 1.9)
-    if (i >= 13)  rasterImage(im13, 1.80, 1.27, 2.40, 1.9)
-    if (i >= 14)  rasterImage(im14, 1.85, 1.27, 2.45, 1.9)
-    if (i >= 15)  rasterImage(im15, 1.90, 1.27, 2.50, 1.9)
-#    if (i > 15)  text(1.95, 1, "How likely is it that we get\n15 red cards in a row?")
+    rasterImage(im1,  1.20, 1.27, 1.80, 1.9)
+    rasterImage(im2,  1.25, 1.27, 1.85, 1.9)
+    rasterImage(im3,  1.30, 1.27, 1.90, 1.9)
+    rasterImage(im4,  1.35, 1.27, 1.95, 1.9)
+    rasterImage(im5,  1.40, 1.27, 2.00, 1.9)
+    rasterImage(im6,  1.45, 1.27, 2.05, 1.9)
+    rasterImage(im7,  1.50, 1.27, 2.10, 1.9)
+    rasterImage(im8,  1.55, 1.27, 2.15, 1.9)
+    rasterImage(im9,  1.60, 1.27, 2.20, 1.9)
+    rasterImage(im10, 1.65, 1.27, 2.25, 1.9)
+    rasterImage(im11, 1.70, 1.27, 2.30, 1.9)
+    rasterImage(im12, 1.75, 1.27, 2.35, 1.9)
+    rasterImage(im13, 1.80, 1.27, 2.40, 1.9)
+    rasterImage(im14, 1.85, 1.27, 2.45, 1.9)
+    rasterImage(im15, 1.90, 1.27, 2.50, 1.9)
+
   }
-}
 ```
 
 
-Getting 15 reds cards out of 15 seems very unlikely, so you probably conclude that the pack is unfair.
+Getting 15 reds cards out of 15 from a well-shuffled pack seems very unlikely, so you probably conclude that the pack is somehow unfair.
 But importantly, *how* did you reach that decision?
 Your unconscious decision-making process may have worked like this:
 
-1. You **assumed**, quite reasonably, that this is a standard, well-shuffled pack of cards, with half the cards red and half the cards black. 
+1. You **assumed**, quite reasonably, that I used a standard, well-shuffled pack of cards, where half the cards are red and half the cards are black.
 2. Based on that assumption, you **expected** about half the cards in the sample of 15 to be red, and about half to be black.
-   You wouldn't necessarily expect to see *exactly* half red and half black, but you'd probably expect something close to that.
+   You wouldn't necessarily expect *exactly* half red and half black, but you'd probably expect something close to that.
 3. But what you **observed** was nothing like that: *All* 15 cards were red.
-   Since what you observed ('all red cards') was not like what you were expecting ('about half red cards'), the 15 cards in my hand *contradict* what you were expecting, based on your assumption of a fair pack...  so your assumption of a fair pack is probably wrong.
+4. Since what you observed ('all red cards') was not like what you were expecting ('about half red cards'), the 15 cards in my hand *contradict* what you were expecting, based on your assumption of a fair pack...  so your assumption of a fair pack is probably wrong.
 
-Of course, getting 15 red cards in a row is *possible*... but very *unlikely*^[In fact, the probability of getting 15 cards *of the same colour* (either red *or* black) is about 0.00034%.].
+Of course, getting 15 red cards in a row is *possible*... but very *unlikely*.
 For this reason, you would probably conclude, based on the evidence, that the pack is not a fair pack.
 
-You probably didn't *consciously* go through this process, but it does seem reasonable.
+You probably didn't *consciously* go through this process, but it seems reasonable.
 This process of decision making is similar to the process used in research.
 
 
@@ -203,17 +205,17 @@ Based on the ideas in the last section, a formal process of decision making in r
 To expand:
 
 1. **Assumption**:
-   The initial assumption is that the *sampling variation* explains differences in the sample.
+   Initial assume that the *sampling variation* explains the discrepancy between the observed sample and population.
    For example: 
    
-   - the [*population* parameters](#StatisticsAndParameters) are the same in various groups, but sampling variation explains the difference between the [*sample* statistics](#StatisticsAndParameters);
-   - the  [*population* parameter](#StatisticsAndParameters) is some given value, but sampling variation explains why the [*sample* statistics](#StatisticsAndParameters) is not equal to this parameter value.
+   - the [*population* parameters](#StatisticsAndParameters) are the same in various groups; sampling variation explains the difference between the [*sample* statistics](#StatisticsAndParameters);
+   - the  [*population* parameter](#StatisticsAndParameters) is some given value; sampling variation explains why the [*sample* statistic](#StatisticsAndParameters) is not equal to this parameter value.
 
 2. **Expectation**:
-   Based on this assumption about the parameter, describe what values of the *sample [statistic](#StatisticsAndParameters)* might reasonably be observed from all possible samples through sampling variation.
+   Based on this assumption about the parameter, describe what values of the *sample [statistic](#StatisticsAndParameters)* might reasonably be observed from all possible samples that could be observed (due to sampling variation).
 
 3. **Observation**:
-   Then, if the observed *sample statistic* is:
+   After observing the data from one of the many possible samples, if the observed *sample statistic* is:
     - *unlikely* to happen by chance, it **contradicts** the assumption about the *population parameter*, and the assumption is probably **wrong**.
       The *evidence* suggests that the assumption is wrong (but it is not *certainly* wrong).
     - *likely* to happen by chance, it is **consistent with** the assumption about the *population parameter*, and the assumption may be **correct**.
@@ -236,10 +238,10 @@ if( knitr::is_latex_output() ) {
                 "\\textbf{Observation:\ }",
                 "\\textbf{Decision:\ }") 
 
-  DMP[1, 2] <- "Assume  that sampling  variation explains what is seen in the sample,  and hence assuming a value for the population parameter"
+  DMP[1, 2] <- "Assume  that sampling  variation explains the discrepancy between the sample statistic, and what is assumed about the population parameter"
   DMP[2, 2] <- "Based on this assumption, describe what might be observed in the sample, such as values of the sample statistic that might reasonably be observed from all possible samples."
   DMP[3, 2] <- "Observe the sample statistic. Then, if the observed sample statistic is..."
-  DMP[4, 2] <- "\\begin{minipage}[t]{51mm}...\\textit{unlikely} to happen by chance, it \\textbf{contradicts} the assumption.\\end{minipage} \\hfill \\hfill \\begin{minipage}[t]{51mm}...\\textit{likely} to happen by chance, it is \\textbf{consistent with} the assumption.\\end{minipage}"
+  DMP[4, 2] <- "\\begin{minipage}[t]{45mm}...\\textit{unlikely} to happen by chance, it \\textbf{contradicts} the assumption.\\end{minipage} \\hfill \\hfill \\begin{minipage}[t]{45mm}...\\textit{likely} to happen by chance, it is \\textbf{consistent with} the assumption.\\end{minipage}"
     kable(DMP, 
           format = "latex",
           linesep = "\\addlinespace",
@@ -461,25 +463,22 @@ if( knitr::is_html_output() ) {
 `r if (knitr::is_html_output()) '-->'`
 
 
-This approach is similar to what we unconsciously use every day.
+This approach is similar to how we unconsciously make decisions  every day.
 For example, suppose I ask my son to brush his teeth [@data:Budgett:RandomizationTest], and later I want to decide if he really did.
 
 1. **Assumption**: I *assume* my son brushed his teeth (because I told him to).
-2. **Expectation**: Based on that assumption, I *expect* to find a damp toothbrush when I check later.
+2. **Expectation**: Based on that assumption, I *expect* to find a damp toothbrush when I check.
 3. **Observation**: When I check later, I observe a *dry* toothbrush.
-   The evidence contradicts what I expected to find based on my assumption, so my assumption is probably *false*.
+   The evidence *contradicts* what I expected to find based on my assumption, so my assumption is probably *false*.
    He probably *didn't* brush his teeth.
 
 I may have made the wrong decision:  He may have brushed his teeth, but dried his brush with a hair dryer.
 However, based on the evidence, quite probably he has not brushed his teeth.
 
-The situation may have ended differently:
+The situation may have ended differently: When I check later, I observe a *damp* toothbrush.
 
-1. **Assumption**: I *assume* my son brushed his teeth (because I told him to).
-2. **Expectation**: Based on that assumption, I *expect* to find a damp toothbrush when I check later.
-3. **Observation**: When I check later, I observe a *damp* toothbrush.
-   The evidence seems consistent with what I expected to find based on my assumption, so my assumption is probably *true*.
-   He probably did brush his teeth.
+In this case, the evidence seems *consistent* with what I expected to find based on my assumption, so my assumption is probably *true*.
+He probably did brush his teeth.
 
 Again, I may be wrong:  He may have just ran his toothbrush under a tap.
 I don't have any evidence that he didn't brush his teeth, though.
@@ -510,94 +509,6 @@ Based on the evidence, concluding that a problem exists with the pack of cards s
 showMakeDecisions(arrowYes = FALSE,
                   assumptionText = "Assumption:\n Fair pack",
                   expectationText = "Expectation:\n Half red")
-# 
-# 
-# par( mar = c(0.15, 0.15, 0.15, 0.15))
-# openplotmat()
-# 
-# pos <- array(NA, dim = c(6, 2))
-# pos[1, ] <- c(0.10, 0.85) # Assumption
-# pos[2, ] <- c(0.40, 0.85) # Expectation
-# pos[3, ] <- c(0.40, 0.15) # Observation
-# pos[4, ] <- c(0.40, 0.50) # Consistency?
-# pos[5, ] <- c(0.80, 0.85) # YES
-# pos[6, ] <- c(0.80, 0.15) # NO
-# 
-# straightarrow(from = pos[1,], to = pos[2,], 
-#             #segment = c(0.4, 0.6),
-#             lty = 1, 
-#             lwd = 2)
-# straightarrow(from = pos[4,], to = pos[2,], 
-#             lcol = "black",
-#             lty = 2,
-#             lwd = 2)
-# straightarrow(from = pos[4,], to = pos[3,], 
-#             lcol = grey(0.4),
-# #            curve = 0.8,
-#             arr.pos = 0.5, # Then cover with box
-#            lty = 2)
-# curvedarrow(from = pos[4,] + c(0, 0.065), to = pos[5,], 
-#             lcol = grey(0.8),
-#             curve = 0.35,
-#             arr.pos = 0.5, # Then cover with box
-#             #segment = c(0.25, 0.75),
-#             lty = 2)
-# curvedarrow(from = pos[4,] - c(0, 0.065), to = pos[6,] , 
-#             lcol = grey(0.4),
-#             curve = -0.35,
-#             arr.pos = 0.5, # Then cover with box
-#             #segment = c(0.25, 0.75),
-#             lty = 2)
-# 
-# textrect( pos[4, ],
-#           radx = 0.11,
-#           rady = 0.1,
-#           shadow.size = 0,
-#           lcol = "snow2",
-#           box.col = "snow2",
-#           lab = "Consistency?",
-#           col = grey(0)) # CHECKMARK
-# textrect( pos[5, ], 
-#           radx = 0.11,
-#           rady = 0.1,
-#           shadow.size = 0,
-#           lcol = "darkseagreen2",
-#           box.col = "darkseagreen2",
-#           lab = "Yes: Supports\nassumption", 
-#           col = grey(0.5)) # CROSS
-# textrect( pos[6, ], 
-#           radx = 0.11,
-#           rady = 0.1,
-#           shadow.size = 0,
-#           lcol = "darksalmon",
-#           box.col = "darksalmon",
-#           lab = "No: Contradicts\nassumption", 
-#           col = grey(0)) # CROSS
-# 
-# textrect( pos[1,], 
-#           lab = "Assumption:\nFair pack",
-#           radx = 0.11,
-#           rady = 0.1,
-#           shadow.size = 0,
-#           lcol = "slategray1",
-#           box.col = "slategray1",
-#           cex = 1)
-# textrect( pos[2,], 
-#           lab = "Expectation:\nHalf red", 
-#           radx = 0.11,
-#           rady = 0.1,
-#           shadow.size = 0,
-#           lcol = "slategray2",
-#           box.col = "slategray2",
-#            cex=1)
-# textrect( pos[3,], 
-#           box.col = "slategray3",
-#           lcol = "slategray3",
-#           shadow.size = 0,
-#           radx = 0.11,
-#           rady = 0.1,
-#           lab = "Sample:\nObservation",
-#           cex = 1)
 ```
 
 
@@ -650,7 +561,7 @@ These assumptions about the population parameter are called *null hypotheses*.
 
 
 ::: {.example #Assumptions name="Assumptions about the population"}
-Most dental associations, such as the *American Dental Association* and the *Australian Dental Association*, recommend brushing teeth for two minutes.
+Many dental associations recommend brushing teeth for two minutes.
 One study [@data:Macgregor1979:BrushingDurationKids] recorded the tooth-brushing time for 85 uninstructed schoolchildren (11 to 13 years old) from England.
 
 We could *assume* the *population* mean tooth-brushing time in the population (11 to 13 year-old children from England) is two minutes, as recommended.
@@ -668,7 +579,8 @@ A sample can then be obtained to determine if the sample mean is consistent with
 
 
 Having assumed a value for the population parameter, the *second step* is to determine **what values to expect from the sample [statistic](#StatisticsAndParameters)**, based on this assumption.
-Since many samples are possible, and every sample is likely to be different (['sampling variation'](#def:SamplingVariation), the value of the sample statistic depends on which of the possible samples we end up with: the sample statistic is likely to be different for every sample.
+
+Since many samples are possible, and every sample is likely to be different (['sampling variation'](#def:SamplingVariation), the value of the sample statistic depends on which one of the possible samples we end up with: the sample statistic is likely to be different for every sample.
 
 Think about the cards in Sect. \@ref(NeedForDecisionMaking).
 Assuming a fair pack, then *half* the cards are red in the *population* (the pack of cards), so the *population* proportion is assumed to be $p = 0.5$.
@@ -751,7 +663,7 @@ if (knitr::is_html_output()){
 ```
 
 
-```{r RollDice10, echo = FALSE, fig.align = "center", fig.width = 5.5, fig.cap = "Ten hands of 15 cards: The sample proportion that is red varies from hand to hand (as shown on the right-hand side)" , cache = FALSE}
+```{r RollDice10, echo = FALSE, fig.align = "center", fig.width = 5.5, out.width='70%', fig.cap = "Ten hands of 15 cards: The sample proportion that is red varies from hand to hand (as shown on the right-hand side)" , cache = FALSE}
 if (knitr::is_latex_output()){
     set.seed(99999)
     num.in.hand <- 15
@@ -761,17 +673,18 @@ if (knitr::is_latex_output()){
     prop.red <- array(dim = num.sims)
     all.hands <- array( dim = c(num.sims, num.in.hand))
 
-          plot( c(1, (num.in.hand+2)), c(1, num.sims),
+          plot( x = c(1, (num.in.hand + 2)), 
+                y = c(1, num.sims),
             type = "n",
             las = 1,
             xlab = "",
             ylab = "",
-            main = paste("Hand number",i),
+            main = "Ten example hands of 15 cards",
             axes = FALSE)
-
           
     for (i in 1:num.sims){
-      par ( mar = c(5.1, 5.1, 4.1, 2.1)) # DEFAULT is 5.1, 4.1, 4.1, 2.1
+      par ( mar = c(0.1, 4.1, 4.1, 0.1)) # DEFAULT is 5.1, 4.1, 4.1, 2.1
+      
       hand <- sample( c("B", "R"), 
                       num.in.hand, 
 		      replace = TRUE)
@@ -782,7 +695,9 @@ if (knitr::is_latex_output()){
       for (j in 1:i){
         text(y = j, x = 1:num.in.hand,
              labels = all.hands[j, ],
-             col = ifelse( num.all.hands[j,]/2 == floor(num.all.hands[j,]/2), "black", "grey") )
+             col = ifelse( num.all.hands[j,]/2 == floor(num.all.hands[j,]/2),
+                           "black", 
+                           "grey") )
       }
       # Add p-hat heading
       mtext(expression(hat( italic(p) ) ), 
@@ -794,7 +709,7 @@ if (knitr::is_latex_output()){
            at = 1:i,
            las = 1,
            labels = paste("Hand ", 1:i, sep = "") )
-      
+
       # Add the sample proportion to right-hand side 
       text(num.in.hand+2, 1:i, 
            labels = format( round(prop.red[1:i], 2), nsmall = 2) )
@@ -806,6 +721,7 @@ if (knitr::is_latex_output()){
       abline(h = (1:i) - 0.5, 
              col = "grey")
     }
+
 }
 ```
 

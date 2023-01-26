@@ -46,18 +46,6 @@ BreadTable  <- array( dim = c(11, 3))
 colnames(BreadTable) <- c("",
                           "Number",
                           "Percentage")
-rownames(BreadTable) <- c("Gender",
-                          "",
-                                 "Place of residence",
-                                 "",
-                                 "",
-                                 "",
-                                 "Response to statement",
-                                 "",
-                                 "",
-                                 "",
-                                 ""
-)
 
 BreadTable[, 1] <- c("Female",
                      "Male",
@@ -102,6 +90,9 @@ if( knitr::is_latex_output() ) {
         linesep = c("", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), 
         caption = "The bread-tasting data") %>%
    kable_styling(font_size = 10) %>%
+   pack_rows("Gender", 1, 2) %>%
+   pack_rows("Place of residence", 3, 6) %>%
+   pack_rows("Response to statement", 7, 11) %>%
    row_spec(0, bold = TRUE)
 }
 
@@ -113,6 +104,9 @@ if( knitr::is_html_output() ) {
         align = "r",
         caption = "The bread-tasting data")%>%
    #kable_styling(font_size = 10) %>%
+   pack_rows("Gender", 1, 2) %>%
+   pack_rows("Place of residence", 3, 6) %>%
+   pack_rows("Response to statement", 7, 11) %>%
    row_spec(0, bold = TRUE)
 }
 ```
@@ -140,8 +134,8 @@ Then, assigning **1** to 'Strongly agree' up to **5** for 'Strongly disagree', t
 
 ### Introduction {#PropPercentages-Intro}
 
-Commonly, qualitative data is numerically summarised using [*percentages*](#def:Percentage) and [*odds*](#def:Odds), which we study using an example.
-The aim of a medical study [@data:Charig:stones] was to compare two treatments for kidney stones to determine which was better.
+Commonly, qualitative data is numerically summarised using [*percentages*](#def:Percentage) or [*odds*](#def:Odds), which we study using an example.
+A medical study [@data:Charig:stones] compared two treatments for kidney stones to determine which was better.
 Data were collected from 700 UK patients, on two qualitative variables:
 
 
@@ -151,7 +145,7 @@ Data were collected from 700 UK patients, on two qualitative variables:
 
 
 `r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}[7]{R}{.25\textwidth}
+\begin{wrapfigure}[6]{R}{.25\textwidth}
   \begin{center}
     \includegraphics[width=.20\textwidth]{Illustrations/surgery-3034133_640.jpg}
   \end{center}
@@ -160,16 +154,14 @@ Data were collected from 700 UK patients, on two qualitative variables:
 
 
 * The treatment method ('A' or 'B'): The explanatory variable.
-  Each treatment was used on 350 patients.
 * The result ('success' or 'failure' of the procedure): The response variable.
 
 Both variables are *qualitative* with two *levels*.
-Treatment A was used from 1972--1980, and Treatment B from 1980--1985; that is, treatments were not *randomly* allocated, and so *confounding* may be an issue.
-For this reason, the researchers also recorded the *size* of the kidney stone (as 'small' or 'large') as a possible confounding variable.
+Each treatment was used on 350 patients.
+Treatment A was used from 1972--1980, and Treatment B from 1980--1985; that is, treatments were not *randomly* allocated, and so *confounding* may be present.
+For this reason, the researchers also recorded the *size* of the kidney stone ('small' or 'large') as a possible confounding variable.
 
-Firstly, consider just the **small stones** [@julious1994confounding].
-The data can be displayed using a two-way table (Table \@ref(tab:KS-Small)), and a side-by-side or stacked bar chart, for example.
-
+Firstly, consider just the **small stones** [@julious1994confounding], displayed in Table \@ref(tab:KS-Small).
 
 
 ```{r}
@@ -245,8 +237,8 @@ if( knitr::is_html_output() ) {
 ```
 
 
-Qualitative data can be numerically summarised by computing *proportions* or *percentages*.
-These can be computed as parts of [the *table as a whole*](#OverallPercentage), [by *rows*](#RowPercentages), or [by *columns*](#ColumnPercentages).
+The data can be numerically summarised by computing *proportions* or *percentages*.
+These can be computed as parts of the [*total number*](#OverallPercentage), [by *row totals*](#RowPercentages), or [by *column totals*](#ColumnPercentages).
 These are demonstrated in sections below, and in a separate [Example](#ColumnPercentages).
 
 
@@ -300,10 +292,8 @@ In this context, percentages are numbers between 0% and 100%.
 
 ### Row proportions and percentages {#RowPercentages}
 
-For the *small* kidney stones (Table \@ref(tab:KS-Small)), *row proportions* (or percentages), and *column proportions* (or percentages), can be computed.
-
-The *row proportions* (Table \@ref(tab:KS-Small-rowPC)) give the proportion of successes for each *Method*, since the rows contain the counts for Method A and Method B.
-*Row* proportions allow the proportions within the *rows* to be compared:
+For the *small* kidney stones (Table \@ref(tab:KS-Small)), the *row proportions* (Table \@ref(tab:KS-Small-rowPC)) give the proportion of successes for each *Method*, since the rows represent the counts for Methods and B.
+*Row* proportions allow the proportions *within the rows* to be compared:
 
 * $81 \div 87 = 0.931$ (or 93.1%) of operations in the sample were successful for Method A; and
 * $0.867$ (or 86.7%) of operations were successful in the sample for Method B.
@@ -361,8 +351,7 @@ if( knitr::is_html_output() ) {
 
 ### Column proportions and percentages {#ColumnPercentages}
 
-For the *small* kidney stones (Table \@ref(tab:KS-Small)), *column proportions* can also be computed (Table \@ref(tab:KS-Small-colPC)).
-The *column proportions* give the proportion of successes within each method (since the columns contain the procedure results).
+For the *small* kidney stones (Table \@ref(tab:KS-Small)), the *column proportions* (Table \@ref(tab:KS-Small-colPC)) give the proportion of successes within each method, since the columns contain the procedure results.
 *Column* proportions allow the proportions (or percentages) within *columns* to be compared:
 
 * $81 \div (81 + 234) = 0.257$ (or 25.7%) of all *successful* operations came from using Method A; and
@@ -417,7 +406,7 @@ if( knitr::is_html_output() ) {
 ```
 
 
-While both row and column proportions (or percentages) can be computed, row percentages seems more intuitive here: they compare the success percentage for each treatment method.
+Row percentages seems more intuitive than column percentages here: they compare the success percentage for each treatment method.
 
 
 ### Example: Large kidney stones {#KidneyExample}
@@ -430,7 +419,7 @@ While both row and column proportions (or percentages) can be computed, row perc
 
 The data in Table \@ref(tab:KS-Small) are for *small* kidney stones.
 Data were also recorded for the *large* kidney stones (Table \@ref(tab:KS-Large)).
-For both small and large stones, the *success proportions* can be computed for Methods A and B (i.e., row percentages), and hence the better method (in the sample) can be identified.
+For both small and large stones, the *success proportions* can be computed for Methods A and B (i.e., row percentages).
    
 
 (ref:KStonesNumbersLarge) **Numbers** for **large** kidney stones
@@ -545,15 +534,15 @@ if( knitr::is_html_output() ) {
 
 In summary, the sample shows that:
 
-* For *small* stones (Table \@ref(tab:KS-Small)), **Method A has a higher success proportion**:
+* For *small* stones (Table \@ref(tab:KS-Small)), **Method A has a higher success proportion**:  
   Method A: 0.93;  Method B: 0.87
-* For *large* stones (Table \@ref(tab:KS-Large)), **Method A has a higher success proportion**:
+* For *large* stones (Table \@ref(tab:KS-Large)), **Method A has a higher success proportion**:  
   Method A: 0.73; Method B: 0.69
 * Combining *all* stones together (Table \@ref(tab:KSAll)), **Method B has a higher success proportion**:  
   Method A: 0.78; Method B: 0.83
 
 That seems strange...
-Method A performs better for small and for large kidney stones, but Method B performs better when combined (and size is ignored).
+Method A performs better for small, and for large kidney stones, but Method B performs better when all stones are combined (ignoring size).
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
@@ -571,13 +560,12 @@ In other words, Method A is used more often in situations where both methods per
 :::
 
 
-The *size of the stone* is a *confounding variable* (Fig. \@ref(fig:SimpsonRulesStones)).
-The size of the stone is related to success proportion (small stones have a greater success proportion) *and* the size of the stone is related to the method used (small stones are treated more often with Method B).
+The *size of the stone* is a *confounding variable* (Fig. \@ref(fig:SimpsonRulesStones)), as it is associated with the method (small stones are treated more often with Method B) *and* with the result (small stones have a greater success proportion).
 
-This confounding could have been avoided by randomly allocating a treatment methods to patients.
-However, random allocation was not possible in this study, so the researchers used a different method to manage confounding: *recording* the size of the kidney stones (and other variables also: the age and sex of the patient); see Sect. \@ref(ObsManagingConfoundingAnalysis).
+This confounding could have been avoided by randomly allocating a treatment method to patients.
+However, random allocation was not possible in this study, so the researchers used a different method to manage confounding: *recording* the size of the kidney stones (and also the age and sex of the patient); see Sect. \@ref(ObsManagingConfoundingAnalysis).
 
-In this example, incorporating the size of the kidney stone is important, otherwise the wrong (opposite) conclusion is reached: one would think that Method B is better if the size of the stones was ignored, when the better method really is Method A.
+In this example, incorporating a potential confounder (the size of the kidney stone) is important, otherwise the wrong (opposite) conclusion is reached: Method B would be considered better if the size of the stones was ignored, when the better method really is Method A.
 
 This is called
 `r if (knitr::is_latex_output()) {
@@ -588,8 +576,8 @@ This is called
 If the size of the kidney stone had not been recorded, size would be a *lurking variable*, and the incorrect conclusion would have been reached.
 
 
-```{r SimpsonRulesStones, fig.cap="The size of the stones is related to both the success percentage and the method", fig.align="center", fig.height=3}
-par( mar=c(0.05, 0.05, 0.05, 0.05))
+```{r SimpsonRulesStones, fig.cap="The size of the stones is related to both the success percentage and the method", fig.align="center", fig.height=3, out.width='70%'}
+par( mar = c(0.05, 0.05, 0.05, 0.05))
 openplotmat()
 
 pos <- array(NA, dim = c(3, 2))
@@ -638,14 +626,14 @@ textrect( pos[3,],
 
 Consider again the *small* kidney stone data (Table \@ref(tab:KS-Small)).
 For *Method A*, the sample contains 81 successes and 6 failures.
-Apart from proportions and percentages, another way to numerically summarise this information is to see that there are $81\div 6 = 13.5$ *times* as many successes than failures in the sample.
+Apart from proportions and percentages, another way to numerically summarise this information is to state that there are $81\div 6 = 13.5$ *times* as many successes than failures in the sample.
 
 In other words, for small kidney stones, the *odds* of success for Method A is 13.5 (in the sample).
-The sample odds is a *statistic*, and the population odds is a *parameter*.
+The sample odds is a *statistic*, and the unknown population odds is a *parameter*.
 
 
 ::: {.definition #Odds name="Odds"}
-The *0odds* are the proportion (or percentage, or number) of times that an event *happens*, divided by the proportion (or percentage, or number) of times that the event does *not happen*:
+The *odds* are the number (or proportion, or percentage) of times that an event *happens*, divided by the number (or proportion, or percentage) of times that the event does *not happen*:
 
 \[
          \text{Odds} = \frac{\text{Number of times event happens}}{\text{Number of times event doesn't happen}}
@@ -667,20 +655,20 @@ The *odds* show how many *times* an event *happens* compared to *not happening*.
 </div>
 
 
-When computing odds, the count of interest is divided by the *remaining number*, which is different than how percentages are computed.
-With percentages and proportions, the relevant number is divided by the *total number* relevant to the context.
+When computing odds, the count of interest is divided by the *remaining number*, whereas in proportions and percentages the relevant number is divided by the *total number* relevant to the context.
 
-Software usually works with odds rather than percentages (for good reasons that we will not delve into).
-However, understanding *how* software computes the odds is important.
+Software often works with odds rather than percentages (for good reasons that we will not delve into).
+Understanding *how* software computes the odds is important.
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-Software usually computes odds by comparing either
+In a two-by-two table, software usually computes odds by comparing either
 
-* Row 1 to Row 2; or
-* Column 1 to Column 2.
+* Row 1 counts to Row 2 counts; or
+* Column 1 counts to Column 2 counts.
 
-Both ways are correct.
+Both ways are correct, but one often makes more sense that the other.
+
 Based on Table \@ref(tab:KS-Small), the odds for the Methods computed by software will compare Method A compared to Method B (rather than Method B to Method A).
 :::
 
@@ -709,11 +697,12 @@ For every 100 successes, expect about $0.0741\times 100 = 7.4$ failures.
 
 
 ::: {.example #OddsEG name="Odds"}
-Suppose that about 67% of students at a particular university were female.
-The *population* odds of finding a female is about $67 / (100 - 67) = 2.03$: about twice as many females are students as non-females.
+Suppose that 67% of students at a particular university were female.
+The *population* odds of finding a female is $67 / (100 - 67) = 2.03$: about twice as many students are females compared to non-females.
 
-Suppose one tutorial had 18 females and 5 non-females.
+Suppose one specific class had 18 females and 5 non-females.
 The *sample* odds of finding a female in this class is $18/5 = 3.60$.
+
 Another class had 16 females and 9 non-females.
 The *sample* odds of finding a female in this class is $16/9 = 1.79$.
 :::
@@ -721,35 +710,20 @@ The *sample* odds of finding a female in this class is $16/9 = 1.79$.
 
 ::: {.example #ComputingOdds name="Computing odds"}
 Consider again the **small** kidney stone data (Table \@ref(tab:KS-Small)).
-The odds of a success using *Method B* can be found (Table \@ref(tab:KS-Small)):
+The odds of a success using *Method B* is (Table \@ref(tab:KS-Small)) $\frac{234}{36} = 6.52$.
 
-\begin{align*}
-  &\text{Odds}(\text{Success with Method B})\\
-  =
-  &\frac{\text{Number of successes for Method B}}{\text{Number of failures for Method B}}
-  =\frac{234}{36} = 6.52.
-\end{align*}
-Working with the proportions (or percentages) (Table \@ref(tab:KS-Small-rowPC)) rather than the numbers, the same value results:
-
-\begin{align*}
-  & \text{Odds}(\text{Success with Method B})\\
-  = 
-  &\frac{\text{Percentage of successes for Method B}}{\text{Percentage of failures for Method B}}
-  =\frac{86.7}{13.3} = 6.52.
-\end{align*}
+Working with the proportions (or percentages) (Table \@ref(tab:KS-Small-rowPC)) rather than the numbers, the same value results: $\frac{86.7}{13.3} = 6.52$.
 :::
 
 
 <iframe src="https://learningapps.org/watch?v=pxf5194ek22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
 
 
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 When interpreting odds:
   
 * When the odds are *greater* than one: the event is *more* likely to happen than to not happen.
 * When the odds are *equal to* one: the event is just as likely to happen as it is to not happen.
 * When the odds are *less* than one: the event is *less* likely to happen than to not happen.
-:::
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
@@ -773,9 +747,10 @@ To summarise the *small* kidney stone data:
 * For *Method B*, the odds of success are  6.5; there are  6.5 *times* as many successes as failures.
   (Alternatively, there are 650 successes for every 100 failures.)
 
-The odds of success for Method A and Method B are very different: in the sample, the odds of success for Method A is many *times* greater than for Method B.
+The odds of success for Method A and Method B are very different.
+In the sample, the odds of success for Method A is many *times* greater than for Method B.
 In fact, in the sample, the odds of success for Method A is $13.5\div 6.5 = 2.08$ *times* the odds of a success for Method B.
-This value is called the **odds ratio** (OR); see Fig. \@ref(fig:OddsRatioKS).
+This value is the **odds ratio** (OR); see Fig. \@ref(fig:OddsRatioKS).
 The sample odds ratio is a *statistic*, and the population odds ratio is a *parameter*.
 
 
@@ -793,21 +768,22 @@ The **odds ratio** is how many *times* greater the odds of an event are in one g
 Understanding how software computes the odds ratio is important for understanding the output. 
 jamovi and SPSS output can be interpreted in *either* of these ways:
 
-* The *odds* compare Row 1 to Row 2.  
-  Then the odds ratio compares the Row 1 odds to the Row 2 odds.
+* The *odds* compare Row 1 counts to Row 2 counts, for both columns.  
+  Then the odds ratio compares the odds for Column 1 to the odds for Column 2.
 
-* The *odds* compare Column 1 to Column 2.  
-  Then the odds ratio compares the Column 1 odds to the Column 2 odds.
+* The *odds* compare Column 1 counts to Column 2 counts.  
+  Then the odds ratio compares the odds for Row 1 to the odds for Row 2.
   
-The odds and odds ratios are relative to the **first row** or **first column**.
+Odds and odds ratios are computed with the **first row** and **first column** values on the *top* of the fraction.
 :::
+
 
 The OR compares the odds of an event in two groups.
 This means that a $2\times 2$ table can be summarised using one number: the odds ratio (OR).
 
 
 ```{r OddsRatioKS, fig.cap="The odds ratio for the small kidney stones data", fig.align="center", fig.height=3, fig.width=6.5, out.width='80%'}
-par( mar=c(0.15, 0.15, 0.15, 0.15))
+par( mar = c(0.05, 0.05, 0.05, 0.05))
 openplotmat()
 
 pos <- array(NA, 
@@ -853,7 +829,6 @@ textrect( c(0.5, 0.35),
 ```
 
 
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 When using odds ratios (or ORs):
   
 * Odds ratio is *greater* than one:  
@@ -862,7 +837,7 @@ When using odds ratios (or ORs):
   the odds of the event for the group in the top of the division is *equal to* the odds of the event for the group in the bottom of the division.
 * Odds ratio is *less* than one:  
   the odds of the event for the group in the top of the division is *less* than the odds of the event for the group in the bottom of the division.
-:::
+
 
 
 `r if (knitr::is_html_output()){
@@ -888,6 +863,8 @@ htmltools::tags$video(src ="./videos/oddsratios.mp4",
 ## Observing relationships {#OddsObserveRelationships}
 
 For the **small** kidney stone data, the odds of a success for Method A is different than the odds of a successes for Method B, in the *sample*.
+Is there a difference in the *population* though?
+
 Broadly, two possible reasons exist to explain the differences *in the sample*:
 
 * The **odds** in the **population** are the same for Method A and Method B, but a difference is observed in the *sample* odds simply because of who ended up in the sample.
@@ -895,13 +872,6 @@ Broadly, two possible reasons exist to explain the differences *in the sample*:
   *Sampling variation* explains the *difference in the sample odds*.
        
 * The **odds** in the **population** are different for Method A and Method B, and the difference in the sample odds simply reflects this difference between the *population* odds.
-
-Similarly, the proportion (or percentage) of successes for Method A and B are quite different in the *sample*, and two possible reasons exist to explain the differences *in the sample*:
-
-* **No difference exists between the proportion (or percentage)** in the **population**, but a difference is observed in the *sample* simply because of who ended up in the sample.
-  *Sampling variation* explains the *difference in the sample proportion (or percentage)*.
-       
-* **A difference does exist between the proportion (or percentage)** in the **population**, and this difference in the sample reflects this difference between the *population* proportion (or percentage).
 
 The difficulty, of course, is knowing which of these two reasons ('hypotheses') is the most likely reason for the difference between the sample odds.
 This question is of prime importance (after all, it answers the RQ), and is addressed at length later in this book.
@@ -916,7 +886,7 @@ This question is of prime importance (after all, it answers the RQ), and is addr
 
 
 `r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}[6]{R}{.25\textwidth}
+\begin{wrapfigure}[8]{R}{.25\textwidth}
   \begin{center}
     \includegraphics[width=.20\textwidth]{Illustrations/pexels-daria-shevtsova-949067.jpg}
   \end{center}
@@ -936,6 +906,7 @@ Also,
 * $\text{Odds}(\text{Skips breakfast, among F}) = 2\,383/4\,257 = 0.5598$;
 * $\text{Odds}(\text{Skips breakfast, among M}) = 1\,944/4\,902 = 0.3966$.
 
+(Notice that the number of top of the fraction in each case is from the *first* column.)
 So, about 55.98 females *skip* breakfast for every 100 females who *eat* breakfast.
 The *odds ratio* (OR) comparing the odds of skipping breakfast, comparing females to males, is
 
@@ -945,6 +916,7 @@ The *odds ratio* (OR) comparing the odds of skipping breakfast, comparing female
   &= \frac{0.5598}{0.3966} 
   = 1.41.
 \end{align*}
+(Notice that the number of top of the fraction is the odds computed from the *first* row.)
 The odds of females skipping breakfast are $1.41$ *times* the odds of males skipping breakfast.
 The information can be summarised numerically (Table \@ref(tab:BreakSum)).
 
@@ -1066,7 +1038,7 @@ if( knitr::is_html_output() ) {
 </div>
 
 
-In Sects. \@ref(NHANESGraphs) and \@ref(NHANESNumerical), the NHANES data were introduced (@data:NHANES3:Data; @data:NHANES3; @data:NHANES:Rpackage), and graphs and numerical summaries used to understand the data relevant to answering this RQ:
+In Sects. \@ref(NHANESGraphs) and \@ref(NHANESNumerical), the NHANES data were introduced (@data:NHANES3:Data; @data:NHANES3), and graphs and numerical summaries used to understand the data relevant to answering this RQ:
 
 > Among Americans, is the mean direct HDL cholesterol different for those who smoke now, and those who do not smoke now?
 
@@ -1074,7 +1046,7 @@ The data can be summarised numerically.
 Different summaries are needed for quantitative (means and standard deviations; medians and IQR) and qualitative (percentages; odds) variables (Table \@ref(tab:NHANESBigSummary)).
 
 
-```{r}
+```{r cache=FALSE}
 data(NHANES)
 NHANESSmoker <- subset(NHANES, 
                        SmokeNow == "Yes")
@@ -1084,7 +1056,7 @@ NHANESNonSmoker <- subset(NHANES,
 rowinfo <- function(variable, fn, dat = NHANES){
   one <- tapply(NHANES, )
 }
-NHANESdemogr <- array( dim = c(23, 5))
+NHANESdemogr <- array( dim = c(20, 5))
 colnames(NHANESdemogr) <- c("Quantity", 
                             "Statistic", 
                             "Overall", 
@@ -1199,25 +1171,10 @@ NHANESdemogr[20, ] <- c( " ",
                         round( sum(NHANESNonSmoker$Diabetes == "Yes", na.rm = TRUE) / sum( !is.na(NHANESNonSmoker$Diabetes) ) * 100, 1),
                         round( sum(NHANESSmoker$Diabetes == "Yes", na.rm = TRUE) / sum( !is.na(NHANESSmoker$Diabetes) ) * 100, 1) )
 
-NHANESdemogr[21, ] <- c( "Urine volume (mL)",
-                       "n",
-                        sum( !is.na(NHANES$UrineVol1) ),
-                        sum( !is.na(NHANES$UrineVol1[NHANES$SmokeNow == "No"]) ),
-                        sum( !is.na(NHANES$UrineVol1[NHANES$SmokeNow == "Yes"]) ) ) 
-NHANESdemogr[22, ] <- c( " ",
-                       "Median",
-                        round( median(NHANES$UrineVol1, na.rm = TRUE), 2),
-                        round( median( NHANES$UrineVol1[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
-                        round( median( NHANES$UrineVol1[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2) )
-NHANESdemogr[23, ] <- c( " ",
-                       "IQR",
-                        round( IQR(NHANES$UrineVol1, na.rm = TRUE), 2),
-                        round( IQR( NHANES$UrineVol1[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
-                        round( IQR( NHANES$UrineVol1[NHANES$SmokeNow == "Yes"], na.rm = TRUE),  2) )
 ```
 
 
-```{r NHANESBigSummary}
+```{r NHANESBigSummary, cache=FALSE}
 tab.cap <- paste("A summary of some variables in the NHANES data set,",
              "according to current smoking status",
              "(current smoking status was not reported for 6789 respondents,",
@@ -1277,15 +1234,7 @@ Interesting questions emerge from Table \@ref(tab:NHANESBigSummary):
 * How can the mean age of all respondents be 36.7 years, but the mean age for non-smokers and smokers *both* be much larger than this (54.3 and 42.7 years respectively)?
 * Similarly, the percentage of females in the whole sample is 50.2%, but the percentage of females is less than this for both non-smokers and smokers (43.8% and 43.5% respectively)?
 
-Table \@ref(tab:NHANESDiabSmoke) summarises the relationship between current smoking status and having a diabetes diagnosis.
-Again, questions emerge:
-
-* For current non-smokers, the *percentage* of diabetics is $15.32$%.
-* For current smokers, the *percentage* of diabetics is $7.23$%.
-
-The percentage of diabetics *in the sample* is different for non-smokers and smokers.
-Why?
-Similarly,
+Table \@ref(tab:NHANESDiabSmoke) summarises the relationship between current smoking status and having a diabetes diagnosis:
 
 * For current non-smokers, the *odds* of finding a diabetic is $0.181$.
 * For current smokers, the *odds* of finding a diabetic is $0.078$.
@@ -1349,13 +1298,7 @@ With two qualitative variables, data can be compiled into a two-way table of cou
 
 ## Quick revision questions {#Chap14-QuickReview}
 
-A study [@data:Alley2017:SocialMedia] examined social media (SM) use, using a
-
-> ... sample of Australian adults [...] randomly selected from a database with Queensland landline telephone numbers. 
-> To be eligible, participants must be aged 18 or more and reside in Queensland.
->
-> --- @data:Alley2017:SocialMedia, p. 92
-
+A study [@data:Alley2017:SocialMedia] examined social media (SM) use, using a representative sample of Queenslanders at least 18 years of age.
 Part of the data are summarised in Table \@ref(tab:SocialMedia).
 
 1. Compute the *sample proportion* of *urban* residents who use social media, $\hat{p}_U$.
@@ -1518,7 +1461,7 @@ In December 1993, 91 males and 188 female *adult* wallabies were recorded, and 1
 1. For *adult* wallabies, what are the *odds* that a female was observed?
 1. For *young* wallabies, what are the *odds* that a female was observed?
 1. For *young* wallabies, what *percentage* of  wallabies were males?
-1. What is the odds ratio of observing an adult wallaby to a young wallaby, for just the female wallabies?
+1. What is the odds ratio of observing an adult wallaby, comparing females to males?
 :::
 
 
@@ -1545,7 +1488,7 @@ rownames(SOI.tab) <- c("Non-positive SOI",
 ::: {.exercise #OddsAugustRainfall}
 The *Southern Oscillation Index* (SOI) is a standardised measure of the pressure difference between Tahiti and Darwin, and has been shown to be related to rainfall in some parts of the world [@climate:stone:1996], and especially Queensland, Australia [@climate:stone:1992; @mypapers:Dunn:bootstrap:2001].
 
-As an example [@mypapers:dunnsmyth:glms], the rainfall at Emerald (Queensland) was recorded for Augusts between 1889 to 2002 inclusive, for months when the monthly average SOI was positive, and for months when the SOI was non-positive (that is, zero or negative), as shown in Table \@ref(tab:SOItableCI).
+The rainfall at Emerald (Queensland) was recorded for Augusts between 1889 to 2002 inclusive [@mypapers:dunnsmyth:glms], for months when the monthly average SOI was positive, and for months when the monthly average SOI was non-positive (that is, zero or negative); see Table \@ref(tab:SOItableCI).
 
 1. Compute the *percentage* of Augusts with no rainfall.
 1. Compute the *percentage* of Augusts with no rainfall, in Augusts with a *non-positive SOI*.
@@ -1597,8 +1540,7 @@ Bags.tab[2,]<- c(280, 359)
 
 
 ::: {.exercise #OddsBackpacks}
-A study [@haselgrove2008perceived] asked boys and girls in Western Australia about back and pain from carrying school bags (Table \@ref(tab:BagsTable)).
-
+A study [@haselgrove2008perceived] asked boys and girls in Western Australia about back pain from carrying school bags (Table \@ref(tab:BagsTable)).
 
 1. Compute the *percentage* of boys reporting back pain from carrying school bags.
 1. Compute the *percentage* of girls reporting back pain from carrying school bags.
