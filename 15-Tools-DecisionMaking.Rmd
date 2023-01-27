@@ -587,14 +587,13 @@ Assuming a fair pack, then *half* the cards are red in the *population* (the pac
 In a *sample* of 15 cards, what values could be reasonably expected for the *sample* proportion $\hat{p}$ of red cards (the statistic)?
 If samples of size 15 were repeatedly taken, the sample proportion of red cards would vary from hand to hand, of course.
 
-*How much* would $\hat{p}$ vary from sample to sample? 
+*How* would $\hat{p}$ vary from sample to sample? 
 Perhaps 15 red cards out of 15 cards happens reasonably frequently... or perhaps it doesn't. 
 How could we find out?
-We could:
 
-* Use mathematical theory to determine how likely it is that we would get 15 red cards out of 15 cards.
-* We could repeatedly shuffle a pack of cards and deal 15 cards many hundreds or thousands of times, then compute how often we get 15 red cards of out 15 cards.
-* More reasonably, we could *simulate* (using a computer) dealing 15 cards many hundreds or thousands of times, and count how often we get 15 red cards of out 15 cards.
+* We could use mathematical theory.
+* We could shuffle a pack of cards and deal 15 cards many hundreds of times, then count how often we see 15 red cards of out 15 cards.
+* More reasonably, we could *simulate* (using a computer) dealing 15 cards many hundreds of times, and count how often we get 15 red cards of out 15 cards.
 
 The third option is the most practical...
 To begin, suppose we simulated only ten hands of 15 cards each;
@@ -617,7 +616,8 @@ if (knitr::is_html_output()){
     all.hands <- array( dim = c(num.sims, num.in.hand))
     for (i in 1:num.sims){
       par ( mar = c(5.1, 5.1, 4.1, 2.1)) # DEFAULT is 5.1, 4.1, 4.1, 2.1
-      plot( c(1, (num.in.hand + 2)), c(1, num.sims),
+      plot( x = c(1, (num.in.hand + 2)), 
+            y = c(1, num.sims),
             type = "n",
             las = 1,
             xlab = "",
@@ -642,7 +642,7 @@ if (knitr::is_html_output()){
             side = 3, 
 	    line = 0, 
 	    at = num.in.hand + 2 )
-      # Add the roll number to the left-hand side
+      # Add the hand number to the left-hand side
       axis(side = 2, 
            at = 1:i,
            las = 1,
@@ -655,7 +655,7 @@ if (knitr::is_html_output()){
       abline(v = num.in.hand + 1, 
              col = "grey")
       
-      # Divide each roll set
+      # Divide each hand set
       abline(h = (1 : i) - 0.5, 
              col = "grey")
     }
@@ -663,7 +663,7 @@ if (knitr::is_html_output()){
 ```
 
 
-```{r RollDice10, echo = FALSE, fig.align = "center", fig.width = 5.5, out.width='70%', fig.cap = "Ten hands of 15 cards: The sample proportion that is red varies from hand to hand (as shown on the right-hand side)" , cache = FALSE}
+```{r RollDice10, echo = FALSE, fig.align = "center", fig.width = 6.5, out.width='80%', fig.cap = "Ten hands of 15 cards: The sample proportion that is red varies from hand to hand (as shown on the right-hand side)" , cache = FALSE}
 if (knitr::is_latex_output()){
     set.seed(99999)
     num.in.hand <- 15
@@ -682,7 +682,7 @@ if (knitr::is_latex_output()){
             main = "Ten example hands of 15 cards",
             axes = FALSE)
           
-    for (i in 1:num.sims){
+   for (i in 1:num.sims){
       par ( mar = c(0.1, 4.1, 4.1, 0.1)) # DEFAULT is 5.1, 4.1, 4.1, 2.1
       
       hand <- sample( c("B", "R"), 
@@ -691,7 +691,7 @@ if (knitr::is_latex_output()){
       all.hands[i, ] <- hand
       prop.red[i] <- sum( (hand == "B")/2 == floor( (hand == "B")/2) ) / num.in.hand
       num.all.hands <- (all.hands == "B")
-      
+   }   
       for (j in 1:i){
         text(y = j, x = 1:num.in.hand,
              labels = all.hands[j, ],
@@ -704,7 +704,7 @@ if (knitr::is_latex_output()){
             side = 3, 
             line = 0, 
             at = num.in.hand + 2 )
-      # Add the roll number to the left-hand side
+      # Add the hand number to the left-hand side
       axis(side = 2, 
            at = 1:i,
            las = 1,
@@ -717,10 +717,10 @@ if (knitr::is_latex_output()){
       abline(v = num.in.hand + 1, 
              col = "grey")
       
-      # Divide each roll set
+      # Divide each hand set
       abline(h = (1:i) - 0.5, 
              col = "grey")
-    }
+#    }
 
 }
 ```
@@ -794,17 +794,14 @@ if (knitr::is_latex_output()){
     }
     
       out <- hist( prop.red,
-                   breaks = seq(0.05, 0.95, by = 0.1),
+#                   breaks = seq(0.05, 0.95, by = 0.1),
+                   breaks = seq(0, 1, by = 2/15),
                    las = 1,
-                   ylim = c(0, 400),
+                   ylim = c(0, 500),
                    xlim = c(0, 1),
                    col = plot.colour,
-                   main = paste("Histogram of sample proportions\nHand number:", i),
-                   xlab = "Proportion of the 15 cards that are red",
-                   sub = paste("(For this hand: proportion of cards red: ", 
-		               format(round(prop.red[i], 3), nsmall = 3), 
-			       ")", 
-			       sep = "" ),
+                   main = "Histogram of sample proportions\nfor 1000 hands",
+                   xlab = "Proportion of 15 cards that are red",
                    ylab = "Frequency",
                    right = FALSE,
                    axes = FALSE)
@@ -833,7 +830,7 @@ if (knitr::is_latex_output()){
 </div>
 
 
-From this histogram, based on simulationing one thousand hands, we could conclude that we would *almost never* find 15 red cards in 15 cards... *if the assumption of a fair pack was true*.
+From this histogram, based on simulating one thousand hands, we could conclude that we would *almost never* find 15 red cards in 15 cards... *if the assumption of a fair pack was true*.
 But we *did* find 15 red cards in 15 cards... so the assumption ('a fair pack') is probably wrong.
 
 What if we had observed 4 red cards in a hand of 15 cards (a sample proportion of $\hat{p} = 4/15 = 0.267$), rather than 15 red cards out of 15?
@@ -845,15 +842,14 @@ These special tools are discussed in the next chapter.
 
 
 ::: {.example #SamplingVariation name="Sampling variation"}
-Most dental associations, such as the *American Dental Association* and the *Australian Dental Association*, recommend brushing teeth for two minutes.
-One study [@data:Macgregor1979:BrushingDurationKids] recorded the tooth-brushing time for 85 uninstructed schoolchildren from England (11 to 13 years old).
+Many dental associations recommend brushing teeth for two minutes.
+One study [@data:Macgregor1979:BrushingDurationKids] recorded the tooth-brushing time for 85 uninstructed schoolchildren (11 to 13 years old) from England.
 
-The *sample* mean tooth-brushing time may or may not be two minutes.
 Of course, every possible sample of 85 children will include different children, and so produce a different sample mean $\bar{x}$.
 Even if the *population* mean toothbrushing time really is two minutes ($\mu = 2$), the *sample* mean probably won't be exactly two minutes, because of [sampling variation](#def:SamplingVariation).
 
 We could *assume* the population mean tooth-brushing time is two minutes ($\mu = 2$).
-*If* this assumption is true, we then could describe what values of the sample statistic $\bar{x}$ to *expect*.
+*If* this assumption is true, we then could describe what values of the sample statistic $\bar{x}$ to *expect* from all possible samples.
 Then, after obtaining a sample and computing the sample mean, we could determine if the sample mean seems *consistent* with the assumption of two minutes, or whether it seems to *contradict* this assumption.
 :::
 
@@ -861,8 +857,8 @@ Then, after obtaining a sample and computing the sample mean, we could determine
 
 ## Tools for describing sampling variation
 
-Making decisions about population [parameters](#StatisticsAndParameters) based on a sample statistic can be difficult:
-Only one of the many possible samples could be selected, and every sample is likely to be different, and can produce a different value of the sample [statistic](#StatisticsAndParameters).
+Making decisions about population [parameters](#StatisticsAndParameters) based on a sample statistic is difficult:
+Only one of the many possible samples is selected, and every sample is likely to be different, and can produce a different value of the sample [statistic](#StatisticsAndParameters).
 In this chapter, though, a process for making decisions has been studied
 `r if( knitr::is_html_output()){
   '(Fig. \\@ref(fig:DecisionFlow)).'
@@ -871,8 +867,8 @@ In this chapter, though, a process for making decisions has been studied
 
 }`
 
-To apply this process to research, we need to describe *how* sample statistics vary from sample to sample ([sampling variation](#def:SamplingVariation)).
-To do so, some of those tools are discussed in the following chapters:
+To apply this process to research, describe *how* sample statistics vary from sample to sample ([sampling variation](#def:SamplingVariation)) is necessary.
+Some of those tools are discussed in the following chapters:
 
 * Tools to describe the distribution of the population and the sample: Chap. \@ref(SamplingDistributions).
 * Tools to describe how sample statistics vary from sample to sample (sampling variation), and hence what to expect from the sample statistic:  Chap. \@ref(SamplingVariation).
@@ -881,7 +877,7 @@ To do so, some of those tools are discussed in the following chapters:
 
 ## Summary {#Chap15-Summary}
 
-Decisions are often made by first making an **assumption** about the population parameter, which leads to an **expectation** of what might occur in the sample statistics.
+Decisions are often made by making an **assumption** about the population parameter, which leads to an **expectation** of what might occur in the sample statistics.
 We can then make **observations** about our sample, to see if it seems to support or contradict the initial assumption.
 
 
@@ -903,7 +899,7 @@ We can then make **observations** about our sample, to see if it seems to suppor
 `r if( knitr::is_html_output(exclude = "epub") ) {torf(answer = FALSE )}`
 1. True or false: In the sample, we know exactly what to expect.  
 `r if( knitr::is_html_output(exclude = "epub") ) {torf(answer = FALSE )}`
-1. True or false:Hypotheses are made about the population.  
+1. True or false: Hypotheses are made about the population.  
 `r if( knitr::is_html_output(exclude = "epub") ) {torf(answer = TRUE )}`
 
 `r if (!knitr::is_html_output()) '<!--'`
@@ -921,7 +917,7 @@ Selected answers are available in Sect. \@ref(MakingDecisionsAnswer).
 
 
 ::: {.exercise #MakingDecisionsDice}
-Suppose you are playing a die-based game, and your opponent rolls a **6** ten times in a row.
+Suppose you are playing a die-based game, and your opponent rolls a `r include_graphics("Dice/die6.png", dpi=1250)` ten times in a row.
 
 1. Do you think there is a problem with the die?
 1. Explain how you came to this decision.
