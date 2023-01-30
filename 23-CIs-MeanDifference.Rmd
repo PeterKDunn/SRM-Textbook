@@ -75,7 +75,7 @@ Situations **1** and **3** are paired situations.
 
 ## Mean differences: An example {#CIMeanDiffExample}
 
-The *Electricity Council* in Bristol wanted to determine if a certain type of wall-cavity insulation reduced energy consumption in winter [@data:OpenUni:insulationBA].
+The *Electricity Council* in Bristol wanted to determine if a certain type of wall-cavity insulation reduced energy consumption in winter [@data:OpenUni:insulationBA, @data:hand:handbook].
 Their (Descriptive) RQ was:
 
 > What is the *mean reduction* in energy consumption after adding home insulation?
@@ -107,6 +107,8 @@ Here, discussing energy *savings* seems most natural, so we compute the differen
 
 ```{r DataInsulation, echo=FALSE}
 insulate <- read.csv("./Data/InsulationBeforeAfter.csv")
+insulate <- subset(insulate, 
+                   select = -1) # Remove first column
 
 insulate$Diff <- insulate$Before - insulate$After
 
@@ -127,7 +129,7 @@ if( knitr::is_html_output(exclude = "epub") ) {
                  caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)")
 }
 
-if( knitr::is_html_output() & pandoc_to("epub")) {
+if( knitr::is_html_output() ) {
   kable( insulate,
          format = "html",
          booktabs = TRUE,
@@ -241,14 +243,14 @@ if( knitr::is_html_output() ) {
 
 
 
-## Graphical summaries: Mean differences
+## Summaries: Mean differences
 
-Since the data are the differences (quantitative), the appropriate graph is *a histogram* (or a dot plot, or a stem-and-leaf plot) of the *differences* (Fig.&nbsp;\@ref(fig:InsulationHistogram)).
+An appropriate graph is *a histogram* of the *differences* (Fig.&nbsp;\@ref(fig:InsulationHistogram)).
 Graphing the *Before* and *After* data may also be useful too, but a graph of the differences is *crucial*, as the RQ is about the differences.
 A case-profile plot (Sect.&nbsp;\@ref(CaseProfilePlot)) is also useful, but is sometimes harder to produce in software, and difficult to read when the sample size is large (as the graph contains a line for each unit of analysis).
 
 
-```{r InsulationHistogram, echo=FALSE, fig.cap="A plot of the energy savings from the insulation data. Left panel: A histogram (the vertical grey line represents no energy saving). Right panel: Case-profile plot (a dashed line represents an energy increase)", fig.align="center", out.width='85%', fig.height = 3.5}
+```{r InsulationHistogram, echo=FALSE, fig.cap="A plot of the energy savings from the insulation data. Left panel: A histogram (the vertical grey line represents no energy saving). Right panel: Case-profile plot (a dashed line represents an energy increase)", fig.align="center", out.width='85%', fig.height = 3.0}
 par( mfrow = c(1, 2))
 
 hist( insulate$Diff,
@@ -299,8 +301,6 @@ for (i in 1:length(insulate$Before)){
 ```
 
 
-## Numerical summaries: Mean differences
-
 Since the data are differences, a *numerical* summary must summarise the *differences*.
 Summarising the *Before* and *After* data is useful too, but summarising the differences is *crucial* because the RQ is about the differences
 `r if (knitr::is_latex_output()) {
@@ -312,7 +312,7 @@ For the house insulation data, the appropriate *numerical summary* for paired da
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-A mean or a median may be appropriate for describing the *data*.  
+A mean or a median may be appropriate for describing the *data*.
 However, the CI is about the *mean* of the data, and *not* about the data itself.  
 Since the sampling distribution for the sample mean (under certain conditions) has a *normal distribution*, the mean *is* appropriate for describing the sampling distribution.
 :::
@@ -396,11 +396,11 @@ when [certain conditions are met](#ValidityPaired), where $n$ is the size of the
 :::
 
 
-For the home insulation data, the variation in the sample mean differences $\bar{d}$ can be described by 
+For the home insulation data, the variation in the sample mean differences $\bar{d}$ is described by 
 
 * approximate normal distribution;
 * centred around $\mu_d$;
-* with a standard deviation of $\displaystyle\text{s.e.}(\bar{d}) = \frac{1.015655}{\sqrt{10}} = 0.3211784$ called the *standard error of the differences*.
+* with a standard deviation of $\displaystyle\text{s.e.}(\bar{d}) = {1.015655}\div{\sqrt{10}} = 0.3211784$ called the *standard error of the differences*.
 
 Notice that many decimal places are used in the working here; results will be rounded when reported.
  
@@ -428,7 +428,7 @@ The negative number is *not* an energy consumption value; it is a negative *savi
 Saving a *negative* amount means using *more* energy.
 
 The 95% CI is saying that we are reasonably confident that, after adding the insulation, the mean energy-use difference is between using $0.10$MWh *more* energy to using $1.18$MWh *less* energy.
-Alternatively, the plausible values for the mean energy savings are between $-0.10$ to $1.18$MWh.
+Alternatively, the plausible values for the mean energy savings in the *population* are between $-0.10$ to $1.18$MWh.
 
 
 <iframe src="https://learningapps.org/watch?v=piue8vvyk22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
@@ -453,7 +453,7 @@ That is, when $n > 25$ the sample means generally have an approximate normal dis
 
 
 ::: {.example #StatisticalValidityInsulation name="Statistical validity"}
-For the insulation data, the sample size less tahn 25, so we require that the differences *in the population* follow a normal distribution.
+For the insulation data, the sample size less than 25, so we require that the differences *in the population* follow a normal distribution.
 We don't know the distribution of the *population*, but the *sample* data graphed in Fig.&nbsp;\@ref(fig:InsulationHistogram) don't seems to identify any obvious doubts.
 So the CI is possibly statistically valid, but we aren't sure.
 
@@ -818,10 +818,9 @@ knitr::include_graphics("jamovi/Stress/StressDescriptives.png")
 ```
 
 The mean *increase* in beta-endorphin concentration is 7.70 fmol/mol, and the *standard error for this increase* is 3.10 fmol/mol.
-The approximate 95% CI is
+The approximate 95% CI is $\bar{d} \pm (2\times \text{s.e.}(\bar{d}))$:
 
 \begin{align*}
-  \bar{d} &\pm (2\times \text{s.e.}(\bar{d}))\\
   7.70 &\pm (2\times 3.10)\\
   7.70 &\pm 6.20,
 \end{align*}
