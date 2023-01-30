@@ -31,9 +31,9 @@ library("qrcode")
 options(formatR.arrow = TRUE,
         width = 90)
 
-blueSolid <- rgb(0, 0, 1, 
+blueSolid <- rgb(204, 204, 251, 
                  alpha = 1, 
-                 maxColorValue = 1)
+                 maxColorValue = 255)
 plotSolid <- blueSolid
 
 blueTransparent <- rgb(0, 0, 1, 
