@@ -64,7 +64,6 @@ This RQ would be answered using a **qual**itative RQ.
 
 Answers to exercises in Sect. \@ref(RQsExercises).
 
-
 ::: {.answer data-latex=""}
 **Answer to Exercise \@ref(exr:RQsWaterDefinitions)**:
 See Table \@ref(tab:RQsWaterDefinitionsAnswer).
@@ -1709,6 +1708,81 @@ Probably not that important when a cold last for almost seven days.
 :::
 
 
+```{r echo=FALSE}
+FF <- read.csv("./Data/forwardfall.csv")
+```
+::: {.answer data-latex=""}
+**Answer to Exercise \@ref(exr:FacePlantCI)**
+
+**1.** Either direction is fine; we use $\mu_Y - \mu_O$: the amount by which younger women can lean further forward than older women.
+**2.** Quite a small dataset... a dot plot? (We would probably produce an error bar chart, too, but that does not display the *data*.)
+**3.** See Table \@ref(tab:FacePlantSummary).
+**4.** Approximate CI: . Exact CI: From the *second row* of the output: $9.10$ to $19.90$.
+   These are different, since the sample sizes are not large.
+**5.** Both sample sizes are less than 25, so probably not statistically valid.
+**6.** Based on the sample, a 95% CI  for the difference between population mean one-step fall-recovery angle for heathy women is between $9.1$ and $19.9$ degrees *greater* for younger women than for older women (two independent samples).
+:::
+
+
+```{r FacePlantSummary, echo=FALSE}
+FF.Summary <- array( NA, dim=c(3, 4))
+
+FF.Summary[1:2, 1] <- aggregate(FF$LeanAngle ~ FF$Group, 
+                                FUN = "mean")[, 2]
+FF.Summary[1:2, 2] <- aggregate(FF$LeanAngle ~ FF$Group, 
+                                FUN = "sd")[, 2]
+FF.Summary[1:2, 3] <- aggregate(FF$LeanAngle ~ FF$Group, 
+                                FUN = function(x){sd(x) / sqrt(length(x))})[, 2]
+FF.Summary[1:2, 4] <- aggregate(FF$LeanAngle ~ FF$Group, 
+                                FUN = "length")[, 2]
+
+FF.Summary[3, 1] <- FF.Summary[1, 1] - FF.Summary[2, 1] 
+FF.Summary[3, 3] <- sqrt( FF.Summary[1, 2]^2/FF.Summary[1, 4] + 
+                          FF.Summary[2, 2]^2/FF.Summary[2, 4] )
+row.names(FF.Summary) <- c("Younger women", 
+                           "Older women",
+                           "Difference")
+
+FF.Summary2 <- FF.Summary
+FF.Summary2[, 1] <- round(FF.Summary[, 1], 1) 
+FF.Summary2[, 2] <- round(FF.Summary[, 2], 2) 
+FF.Summary2[, 3] <- round(FF.Summary[, 3], 2) 
+FF.Summary2[, 4] <- round(FF.Summary[, 4], 0)
+FF.Summary2[3, 2] <- ""
+FF.Summary2[3, 4] <- ""
+  
+  
+if( knitr::is_latex_output() ) {
+  kable(FF.Summary2,
+      format = "latex",
+      booktabs = TRUE,
+      align = "r",
+      col.names = c("Mean", 
+                    "Standard deviation", 
+                    "Standard error", 
+                    "Sample size"),
+      caption = "Numerical summary for the face-plant data (means, standard deviations and standard errors are in degrees)"
+      ) %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  kable(FF.Summary2,
+      format = "html",
+      booktabs = TRUE,
+      align = "r",
+      col.names = c("Mean", 
+                    "Standard deviation", 
+                    "Standard error", 
+                    "Sample size"),
+      caption = "Numerical summary for the face-plant data (means, standard deviations and standard errors are in degrees)"
+      )
+}
+```
+
+
+
+
 
 ## Answers: CIs for odds ratios {#OddsRatiosCIAnswer}
 
@@ -2443,6 +2517,28 @@ The difference between the means, of 0.16 of a degree, is hardly of any *practic
 **3.** Very strong evidence in the sample ($P<0.001$) that the mean annual sugar consumption per person is different for industrialised (mean: 41.8 kg/person/year) and non-industrialised (mean: 24.6 kg/person/year) countries (95% CI for the difference 11.95 to 22.54).
 :::
 
+
+```{r echo=FALSE, message=FALSE}
+FF <- read.csv("./Data/forwardfall.csv")
+```
+::: {.answer data-latex=""}
+**Answer to Exercise \@ref(exr:FacePlantHT).
+
+**1.**
+A study [@data:Wojcik:ForwardFall] compared the lean-forward angle in younger and older women.
+(This study was seen in Exercise \@ref(exr:FacePlantCI).)
+An elaborate set-up was constructed to measure this lean-forward angle, using harnesses.
+Consider this RQ:
+
+> Among healthy women, is the mean lean-forward angle *greater* for younger women compared to older women?
+
+**1.** Either direction is fine: $\mu_Y - \mu_O$, the difference between the population mean lean-forward angle (younger women, minus older women).
+**2.** One-tailed according to the RQ.
+**3.** $H_0$: $\mu_{\text{Y}} - \mu_{\text{O}} = 0$ (or $\mu_{\text{Y}} = \mu_{\text{O}}$).
+       $H_1$: $\mu_{\text{Y}} - \mu_{\text{O}} > 0$ (or $\mu_{\text{Y}} > \mu_{\text{O}}$).
+4. $t = = 6.691$; the *two*-tailed $P$-value is $0.001$, so the *one-tailed* $P$-value is $0.001\div 2 = 0.0005$.
+5. Very strong evidence exists in the sample ($t = 6.691$;  one-tailed $P = 0.0005$) that the population mean one-step fall recovery angle for healthy women is  *greater* for young women (mean: $30.7^\circ$; std. dev.: $2.58^\circ$; $n = 10$) compared to older women (mean: $16.20^\circ$; std. dev.: $4.44^\circ$; $n = 5$; 95% CI for the difference: $9.1^\circ$ to $19.9^\circ$).
+:::
 
 
 

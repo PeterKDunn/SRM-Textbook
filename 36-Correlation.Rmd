@@ -2,23 +2,10 @@
 
 
 
-::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
-So far, you have learnt to ask a RQ, design a study, describe and summarise the data, understand the decision-making process and to work with probabilities.
-You have been introduced to the construction of confidence intervals, and began to study hypothesis testing.
-\smallskip
-
-**In this chapter**, you will learn about *correlation*.
-You will learn to:
-
-* produce correlation coefficients for exploring the relationship between two quantitative variables.
-* produce and interpret $R^2$.
-* conduct hypothesis tests for correlation coefficients.
-:::
-
-
-```{r echo=FALSE, fig.cap="", fig.align="center", fig.width=3, out.width="35%"}
-SixSteps(5, "Correlation")
+<!-- Introductions; easier to separate by format -->
+```{r, child = if (knitr::is_html_output()) {'./introductions/36-Correlation-HTML.Rmd'} else {'./introductions/36-Correlation-LaTeX.Rmd'}}
 ```
+
 
 ```{r echo=FALSE}
 RD <- read.csv("./Data/RedDeer.csv")
@@ -38,7 +25,7 @@ As usual, $r$ (the *statistic*) is an estimate of $\rho$ (the *parameter*), and 
 :::: {.pronounceBox .pronounce data-latex="{iconmonstr-microphone-7-240.png}"}
 
 ::: {style="display: flex;"}
-The symbol $\rho$ is the Greek letter 'rho', pronounced 'row', as in ['row your boat'](https://youtu.be/7otAJa3jui8).
+The symbol $\rho$ is the Greek letter 'rho', pronounced 'row', as in 'row your boat'.
 :::
 
 ::: {}
@@ -151,17 +138,32 @@ plot(Energy ~ DryMatterDigest,
 
 
 
-
-
-::: {.example #NHANESBPdiaCor name="Correlation coefficients"}
-Consider the plot in Fig. \@ref(fig:NHANESBPdiaPlot) from the NHANES data.
-This scatterplot of *diastolic* BP against age is not linear, so a correlation coefficient is *not appropriate*.
-:::
-
 ```{r NHANESBPdiaPlot, echo=FALSE, fig.cap="A scatterplot of the diastolic blood pressure against age for the NHANES data", fig.align="center", fig.width=5, fig.height=3.5}
 # Replace 0 DBP with NA
 NHANES$BPDia1[ NHANES$BPDia1 == 0 ] <- NA
+```
 
+
+::: {.example #NHANESBPdiaCor name="Correlation coefficients"}
+Consider the plot in Fig. \@ref(fig:NHANESBPPlot) (left panel) from the NHANES data.
+This scatterplot of *diastolic* BP against age is not linear, so a correlation coefficient is *not appropriate*.
+
+Consider the plot in Fig. \@ref(fig:NHANESBPPlot) (right panel) from the NHANES data.
+This scatterplot of *systolic* BP against age is approximately linear, so a correlation coefficient is *appropriate*.
+The correlation coefficient is $r = 0.532$. 
+:::
+
+
+```{r NHANESBPPlot, echo=FALSE, fig.cap="Two scatterplot from the NHANES data: diastolic blood pressure against age (left panel); of the systolic blood pressure against age (right panel)", fig.align="center", fig.width=8, fig.height=3.5, out.width='90%'}
+par(mfrow = c(1, 2))
+
+plot(BPSys1 ~ Age,
+     las = 1,
+     cex = 0.7,
+     ylim = c(50, 250),
+     ylab = "Systolic BP (in mm Hg)",
+     xlab = "Age (in years)", 
+     data = NHANES)
 
 plot(BPDia1 ~ Age,
 	   las = 1,
@@ -173,27 +175,9 @@ plot(BPDia1 ~ Age,
 ```
 
 
-::: {.example #NHANESBPsysCor name="Correlation coefficients"}
-Consider the plot in Fig. \@ref(fig:NHANESBPsysPlot) from the NHANES data.
-This scatterplot of *systolic* BP against age is approximately linear, so a correlation coefficient is *appropriate*.
-The correlation coefficient is $r = 0.532$. 
-:::
-
-
-```{r NHANESBPsysPlot, echo=FALSE, fig.cap="A scatterplot of the systolic blood pressure against age for the NHANES data", fig.align="center", fig.width=5, fig.height=3.5}
-plot(BPSys1 ~ Age,
-     las = 1,
-     cex = 0.7,
-     ylim = c(50, 250),
-     ylab = "Systolic BP (in mm Hg)",
-     xlab = "Age (in years)", 
-     data = NHANES)
-```
-
-
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
 A study evaluated various food mixtures for sheep [@data:Moir1961:RuminantDiet].
-One combination of variables that was assessed is shown in Fig. \@ref(fig:SheepScatter2).
+One combination assessed is shown in Fig. \@ref(fig:SheepScatter2).
 Estimate the value of $r$.
 
 `r if (knitr::is_latex_output()) '<!--'`
@@ -208,6 +192,7 @@ $r$ will be a positive number (since the scatterplot shows a positive linear rel
 Earlier, we looked at the NHANES data to explore the relationship between direct HDL cholesterol and current smoking status.
 The NHANES project is an observational study, so confounding is a potential issue.
 For this reason, relationships between the response and extraneous variables, and between explanatory and extraneous variables, should be examined.
+\smallskip
 
 For example, the relationship between Age (an extraneous variables) and direct HDL cholesterol (the response variable) is shown in Fig. \@ref(fig:NHANESCholAge).
 How would you describe the relationship?
@@ -231,6 +216,7 @@ par(mar = c(5, 5, 4, 2) + 0.1 )
 plot(DirectChol ~ Age,
      las = 1,
      cex = 0.7,
+     ylim = c(0, 4),
      xlab = "Age (in years)",
      ylab = "Direct HDL cholesterol\n(in mmol/L)", 
      data = NHANES)
@@ -491,30 +477,7 @@ abline( coef(LM.lm),
 
 
 ```{r echo = FALSE}
-dogs <- structure(list(Number = c("PQ33", "PQ34", "PQ35", "PQ36", "PQ37", 
-"PQ38", "PQ39", "PQ40", "PQ41", "PQ42", "PQ43", "PQ44", "PQ45", 
-"PQ46", "PQ47", "PQ51", "PQ52", "PQ53", "PQ54", "PQ55", "PQ57", 
-"PQ58", "PQ59", "PQ60", "PQ62", "PQ48", "PQ49", "PQ50", "PQ56", 
-"PQ61"), BL = c(47L, 48L, 50L, 50L, 51L, 53L, 52L, 57L, 50L, 
-52L, 48L, 57L, 57L, 50L, 52L, 58L, 62L, 50L, 53L, 46L, 48L, 55L, 
-53L, 54L, 45L, 50L, 50L, 60L, 53L, 55L), BH = c(45L, 44L, 45L, 
-48L, 50L, 45L, 45L, 50L, 46L, 47L, 45L, 52L, 51L, 48L, 47L, 57L, 
-55L, 40L, 50L, 43L, 45L, 48L, 49L, 52L, 37L, 47L, 49L, 55L, 52L, 
-50L), BH.BL = c(0.957, 0.917, 0.9, 0.96, 0.98, 0.849, 0.865, 
-0.877, 0.92, 0.904, 0.938, 0.912, 0.895, 0.96, 0.904, 0.983, 
-0.887, 0.8, 0.943, 0.935, 0.938, 0.873, 0.925, 0.963, 0.822, 
-0.94, 0.98, 0.917, 0.981, 0.909), Chest = c(56L, 48L, 50L, 57L, 
-60L, 54L, 43L, 60L, 61L, 52L, 57L, 70L, 57L, 60L, 58L, 60L, 64L, 
-46L, 58L, 60L, 50L, 53L, 58L, 58L, 50L, 54L, 59L, 63L, 52L, 60L
-), Waist = c(48L, 41L, 42L, 49L, 54L, 46L, 38L, 45L, 51L, 45L, 
-47L, 57L, 44L, 48L, 46L, 52L, 49L, 37L, 48L, 50L, 40L, 42L, 51L, 
-50L, 39L, 43L, 49L, 52L, 43L, 50L), CH.WA = c(1.167, 1.17, 1.19, 
-1.163, 1.111, 1.174, 1.132, 1.333, 1.196, 1.156, 1.213, 1.228, 
-1.295, 1.25, 1.26, 1.154, 1.306, 1.243, 1.208, 1.2, 1.25, 1.262, 
-1.137, 1.16, 1.282, 1.256, 1.204, 1.212, 1.209, 1.2), HaplotypeE = c(0L, 
-0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 
-0L, 0L, 0L, 0L, 0L, 0L, 0L, 0L, 1L, 1L, 1L, 1L, 1L)), class = "data.frame", row.names = c(NA, 
--30L))
+dogs <- read.csv("Data/Dogs.csv")
 ```
 
 ::: {.example #CorTestDogs name="Phu Quoc ridgeback dogs"}
@@ -583,15 +546,6 @@ We write:
 </div>
 
 
-`r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}{R}{.25\textwidth}
-  \begin{center}
-    \includegraphics[width=.20\textwidth]{Illustrations/pexels-lisa-fotios-3264779.jpg}
-  \end{center}
-\end{wrapfigure}
-`r if (knitr::is_html_output()) '-->'`
-
-
 In wastewater treatment facilities, air from biofiltration is passed through a membrane and dissolved in water, and is transformed into harmless byproducts.
 The removal efficiency $y$ (in %) may depend on the inlet temperature (in $^\circ$C; $x$).
 The RQ is
@@ -606,25 +560,21 @@ This means that about 79.4% of the variation in removal efficiency can be explai
 
 
 ```{r CorrelationRemovalEfficiency, echo=FALSE, fig.cap="The relationship between removal efficiency and inlet temperature", fig.align="center", fig.width=5, fig.height=3.5}
-RE <- structure(list(Removal = c(98.09, 98.25, 97.82, 97.82, 97.82, 
-97.93, 98.38, 98.89, 98.96, 98.9, 98.68, 98.69, 98.51, 98.09, 
-98.25, 98.36, 98.27, 98, 98.09, 98.25, 98.41, 98.51, 98.71, 98.79, 
-98.87, 98.76, 98.58, 98.73, 98.45, 98.37, 98.36, 98.45), Temp = c(7.68, 
-6.51, 6.43, 5.48, 6.57, 10.22, 15.69, 16.77, 17.13, 17.63, 16.72, 
-15.45, 12.06, 11.44, 10.17, 9.64, 8.55, 7.57, 6.94, 8.32, 10.5, 
-16.02, 17.83, 17.03, 16.18, 16.26, 14.44, 12.78, 12.25, 11.69, 
-11.34, 10.97)), class = "data.frame", row.names = c(NA, -32L))
+RE <- read.csv("Data/Removal.csv")
 
 plot(Removal ~ Temp, 
      data = RE,
      xlab = "Temperature (degrees C)",
      ylab = "Removal efficiency (%)",
      pch = 19,
+     ylim = c(97.5, 99.0),
+     xlim = c(5, 18),
      las = 1
      )
 ```
 
 To test if a relationship exists in the population, write:
+
 \[
    H_0: \rho = 0;\quad\text{and}\quad H_1: \rho \ne 0
 \]
@@ -677,29 +627,29 @@ Sometimes, $R^2$ is used to describe the relationship: it indicates what percent
 A study of Chinese paedatric patients [@wong2018correlation] studied the relationship between the 6-minute walk distance (6MWD) and maximum oxygen uptake (VO2~max~) for $n = 29$ patients.
 The correlation coefficient is reported as $r = 0.457$, and the corresponding $P$-value as $P = 0.013$.
 
-1. The $x$-variable is  
+1. The $x$-variable is
 `r if( knitr::is_html_output(exclude = "epub") ) {
    longmcq( c(
      answer = "6-minute walk distance",
      "Maximum oxygen uptake"
 ) )} else {"________________"}`
 
-1. True or false: Since the $P$-value is small, the correlation must be quite strong.  
+1. True or false: Since the $P$-value is small, the correlation must be quite strong.
 `r if( knitr::is_html_output(exclude = "epub") ) {
    torf(answer=FALSE)
 } else {"________________"}`
 
-1. The relationship is best described as  
+1. The relationship is best described as
 `r if( knitr::is_html_output(exclude = "epub") ) {
    longmcq( c(
       "Negative",
      answer = "Positive"
 ) )} else {"________________"}`
 
-1. The value of $R^2$ (to one decimal place, expressed as a percentage) is:  
+1. The value of $R^2$ (to one decimal place, expressed as a percentage) is:
 `r if( knitr::is_html_output(exclude = "epub") ) {fitb(answer = 20.9, num=TRUE, tol=0.1)} else {"________________"}`
 
-1. For statistical validity, we need to *assume* that:  
+1. For statistical validity, we need to *assume* that:
 `r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
   "The response variable has a normal distribution",
   "The explanatory variable has a normal distribution",
@@ -746,12 +696,7 @@ with( punting, cor.test(Punt, Right))
 
 
 ```{r PuntPlotCor, echo=FALSE, results='hide', fig.width=5, fig.height=3.5, fig.align="center", fig.cap="Punting distance and right leg strength", fig.width=5, fig.height=3.5}
-punting <- structure(list(Left = c(170L, 130L, 170L, 160L, 150L, 150L, 180L, 
-110L, 110L, 120L, 140L, 130L, 150L), Right = c(170L, 140L, 180L, 
-160L, 170L, 150L, 170L, 110L, 120L, 130L, 120L, 140L, 160L), 
-    Punt = c(162.5, 144, 174.5, 163.5, 192, 171.75, 162, 104.83, 
-    105.67, 117.58, 140.25, 150.17, 165.17)), class = "data.frame", row.names = c(NA, 
--13L))
+punting <- read.csv("Data/Punting.csv")
 
 plot(Punt ~ Right, 
      data = punting,
@@ -800,16 +745,7 @@ abline( coef( lm(Time ~ Cases,
 
 
 ```{r echo=FALSE}
-Bit <- structure(list(Bitumen = c(5.18, 5.26, 4.79, 5.3, 5.04, 5.08, 
-5.35, 5.14, 4.77, 4.88, 5.24, 5.24, 4.86, 4.79, 5.2, 5.23, 5.27, 
-5.15, 5.38, 5.25, 5.09, 5.14, 4.98, 5.13, 4.96, 5.21, 4.95, 4.96, 
-5.05, 4.99, 5, 4.97, 5.07, 4.98, 5.06, 4.92, 5.02, 4.89, 5.05, 
-5, 5.02, 5.17), AirVoids = c(4.01, 3.79, 5.04, 3.75, 4.4, 4.32, 
-3.59, 4.14, 5.09, 4.81, 3.9, 3.87, 4.85, 5.02, 3.96, 3.91, 3.78, 
-4.09, 3.54, 3.81, 4.21, 4.1, 4.51, 4.13, 4.56, 3.95, 4.58, 4.56, 
-4.41, 4.55, 4.53, 4.6, 4.35, 4.59, 4.37, 4.74, 4.49, 4.82, 4.41, 
-4.54, 4.47, 4.16)), .Names = c("Bitumen", "AirVoids"), class = "data.frame", row.names = c(NA, 
--42L))
+Bit <- read.csv("Data/Bitumen.csv")
 ```
 
 
@@ -846,39 +782,14 @@ The scatterplot from 16 different soil samples from Assam, India, is shown in  F
 1. Using the plot, estimate the value of $r$.
 1. The value of $R^2$ is 67.07%.
    What is the value of $r$? (Hint: Be careful!)
-1. Would you expect the $P$-value testing $H_0$: $\rho=0$ to be small or large? 
+1. Would you expect the $P$-value testing $H_0$: $\rho = 0$ to be small or large? 
    Explain.
 1. Would the test be statistically valid?
 :::
 
 
 ```{r SoilPlotCor, echo=FALSE, fig.cap="The relationship between CBR and PI in sixteen soil samples", fig.align="center", fig.width=5, fig.height=3.5}
-Soils <- structure(list(Sample = 1:16, Gravel = c(0, 2.35, 1.31, 0.64, 
-4.71, 2.39, 1.44, 0.35, 2.35, 1.87, 0, 2.65, 1.25, 3.81, 3.35, 
-2.38), Sand = c(27.15, 28.94, 28.94, 30.14, 36.52, 35.23, 35.01, 
-29.44, 28.94, 26.92, 25.94, 18.12, 27.64, 26.92, 13.44, 28.21
-), Clay = c(72.85, 68.71, 68.71, 69.22, 58.77, 62.38, 63.55, 
-70.21, 68.71, 71.21, 74.06, 79.23, 71.11, 69.27, 83.21, 69.41
-), Type = c("Fine grained ", "Fine grained ", "Fine grained", 
-"Fine grained", "Fine grained", "Fine grained", "Fine grained", 
-"Fine grained", "Fine grained", "Fine grained", "Fine grained", 
-"Fine grained", "Fine grained", "Fine grained", "Fine grained", 
-"Fine grained"), LL = c(28.46, 34.62, 34.92, 35.2, 34.42, 29.35, 
-30.34, 36.78, 32.21, 34.25, 35.69, 36.29, 35.23, 36.23, 34.56, 
-35.36), PL = c(20.24, 26.65, 27.4, 27.51, 27.47, 23.23, 23.78, 
-28.32, 25.69, 27.53, 28.54, 28.18, 27.88, 28.98, 26.44, 28.34
-), PI = c(8.22, 7.97, 7.52, 7.69, 6.95, 6.12, 6.56, 8.46, 6.52, 
-6.72, 7.15, 8.11, 7.35, 7.25, 8.12, 7.02), Type2 = c("ML", "ML", 
-"ML", "MI", "ML", "ML", "ML", "MI", "ML", "ML", "MI", "MI", "MI", 
-"MI", "ML", "MI"), MDD = c(1.65, 1.7, 1.71, 1.69, 1.72, 1.77, 
-1.76, 1.64, 1.75, 1.74, 1.73, 1.62, 1.66, 1.68, 1.71, 1.74), 
-    OMC = c(14.56, 15.11, 15.2, 15.35, 15.62, 14.39, 14.92, 15.82, 
-    14.42, 14.16, 15.62, 15.76, 15.52, 15.62, 15.4, 14.65), CBR = c(5.56, 
-    5.62, 5.77, 5.69, 5.81, 6.12, 6.1, 5.72, 6.2, 6.05, 5.95, 
-    5.67, 5.92, 5.88, 5.98, 6.02)), class = "data.frame", row.names = c(NA, 
--16L))
-
-
+Soils <- read.csv("Data/Soils.csv")
 
 plot(CBR ~ PI, 
      data = Soils,

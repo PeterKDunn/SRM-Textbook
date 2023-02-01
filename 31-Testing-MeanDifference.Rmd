@@ -822,7 +822,7 @@ In a study [@cressie1984use] conducted at the Adelaide Children's Hospital:
 Using the data (shown below), conduct a hypothesis test to determine if there is evidence that the treatment reduces the ferritin content, as intended.
 :::
 
-```{r FerritinTable, echo=FALSE}
+```{r FerritinTable, echo=FALSE, cache=FALSE}
 if( knitr::is_latex_output() ) {
   kable( head(FR, 10),
         format = "latex",
@@ -860,41 +860,39 @@ Use the data, and the summary in Table \@ref(tab:SignageSummaryDecHT), to test t
 :::
 
 
-```{r SignageDecHT, echo=FALSE}
+```{r SignageDecHT, echo=FALSE, cache=FALSE}
 Decel <- read.csv("./Data/Deceleration.csv")
 
 Decel$When <- factor(Decel$When,
                      levels = c("Before", 
                                 "After"),
                      ordered = TRUE)
+Decel2 <- data.frame( "Before" = head(Decel$Deceleration[Decel$When == "Before"], 
+                                      n = 5),
+                      "After" = head(Decel$Deceleration[Decel$When == "After"],
+                                     n = 5) )
 
 if( knitr::is_latex_output() ) {
   
-  kable( Decel[1:10,],
+  kable( Decel2,
          format = "latex",
          longtable = FALSE,
          booktabs = TRUE,
-         align = c("c", "c", "c"),
-         caption = "Vehicle deceleration before and after adding extra signage (negative values mean the vehicle has accelerated). Only the first 10 observations are shown.") %>%
+         align = c("c", "c"),
+         caption = "Vehicle deceleration before and after adding extra signage (negative values mean the vehicle has accelerated). Only the first five observations are shown.") %>%
     kable_styling(font_size = 10)
 }
 
 if( knitr::is_html_output(exclude = "epub") ) {
   
-   out2 <-  DT::datatable( Decel,
+   DT::datatable( Decel,
                  fillContainer = FALSE, # Make more room, so we don't just have ten values
                  colnames = c("When measured", "Deceleration (m/s-squared)"),
                  options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                  caption = "The observations from the signage data (negative values mean the vehicle has accelerated)")
-
-    out <- kable( Decel,
-                format = "html",
-                longtable = FALSE,
-                booktabs = TRUE,
-                align = c("c", "c"),
-                caption = "Vehicle deceleration before and after adding extra signage (negative values mean the vehicle has accelerated)")
 }
- if ( knitr::is_html_output() & knitr::pandoc_to("epub")) {
+
+ if ( knitr::is_html_output(excludes = "epub") & knitr::pandoc_to("epub")) {
   kable( Decel[1:10,],
          format = "html",
          longtable = FALSE,
