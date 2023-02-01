@@ -1,21 +1,9 @@
 
 # Tests for means of two independent groups {#TestTwoMeans}
 
-::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
-So far, you have learnt to ask a RQ, design a study, describe and summarise the data, understand the decision-making process and to work with probabilities.
-You have been introduced to the construction of confidence intervals, and have studied some hypothesis tests.
-\smallskip
 
-**In this chapter**, you will learn about *hypothesis tests* for the difference between two means.
-You will learn to:
-
-* conduct hypothesis tests for comparing two means.
-* determine whether the conditions for using these methods apply in a given situation.
-:::
-
-
-```{r echo=FALSE, fig.cap="", fig.align="center", fig.width=3, out.width="35%"}
-SixSteps(5, "Tests: Differences between means")
+<!-- Introductions; easier to separate by format -->
+```{r, child = if (knitr::is_html_output()) {'./introductions/32-Testing-TwoMeans-HTML.Rmd'} else {'./introductions/32-Testing-TwoMeans-LaTeX.Rmd'}}
 ```
 
 
@@ -265,6 +253,7 @@ The sampling variation (**expectation**) for the values of $\bar{x}_A - \bar{x}_
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
 jamovi and SPSS give results from *two* similar hypothesis tests.
 In this book, we will always use the second row of information: the "Welch's $t$" row in jamovi, and the "Equal variance not assumed" row in SPSS.
+\smallskip
 
 In both cases, this row of information does not assume that the population standard deviation are equal.
 The other row of information *does* assume the population standard deviation are equal.
@@ -405,11 +394,6 @@ The test above is statistically valid if *one* of these conditions is true:
 The sample size of 25 is a rough figure here, and some books give other values (such as 30).
 We can explore the histograms of the *samples* to determine if normality of the *populations* seems reasonable.
 
-In addition to the statistical validity condition, the test will be
-
-* [**internally valid**](#def:InternalValidity) if the study was well designed; and
-* [**externally valid**](#def:ExternalValidity) if the sample is a [simple random sample](#SRS) and is internally valid.
-
 
 ::: {.example #StatisticalValidityReactionHT name="Statistical validity"}
 For the reaction-time data, both samples sizes are $n = 32$, so the results will be statistically valid.
@@ -480,62 +464,47 @@ At one site studied (Ningxuan Freeway), speeds were recorded for 38 vehicles bef
 
 
 ```{r SignageHT, echo=FALSE}
+Speed <- read.csv("./Data/Speed.csv")
 
-Speed <- structure(list(When = c("Before", "Before", "Before", "Before", 
-"Before", "Before", "Before", "Before", "Before", "Before", "Before", 
-"Before", "Before", "Before", "Before", "Before", "Before", "Before", 
-"Before", "Before", "Before", "Before", "Before", "Before", "Before", 
-"Before", "Before", "Before", "Before", "Before", "Before", "Before", 
-"Before", "Before", "Before", "Before", "Before", "Before", "After", 
-"After", "After", "After", "After", "After", "After", "After", 
-"After", "After", "After", "After", "After", "After", "After", 
-"After", "After", "After", "After", "After", "After", "After", 
-"After", "After", "After", "After", "After", "After", "After", 
-"After", "After", "After", "After", "After", "After", "After", 
-"After", "After", "After", "After", "After"), Speed = c(90, 83.1, 
-93.9, 113.7, 120, 108, 98.2, 90, 90, 108, 102.9, 108, 83.1, 72, 
-98.2, 102.9, 108, 120, 127.1, 72, 80, 86.4, 80, 90, 98.2, 90, 
-102.9, 102.9, 113.7, 108, 93.9, 98.2, 108, 108, 102.9, 102.9, 
-86.4, 83.1, 98.2, 102.9, 93.9, 98.2, 80, 86.4, 102.9, 83.1, 98.2, 
-98.2, 93.9, 98.2, 67.5, 98.2, 93.9, 98.2, 63.5, 83.1, 93.9, 93.9, 
-120, 93.9, 77.1, 86.4, 98.2, 108, 74.5, 102.9, 90, 98.2, 108, 
-86.4, 113.7, 72, 98.2, 93.9, 69.7, 113.7, 102.9, 72, 80)), class = "data.frame", row.names = c(NA, 
--79L))
 Speed$When <- factor(Speed$When,
                      levels = c("Before", "After"),
                      ordered = TRUE)
+Speed2 <- data.frame( Before = Speed$Speed[ Speed$When == "Before" ][1:10],
+                      After = Speed$Speed[ Speed$When == "After" ][1:10])
 
 if( knitr::is_latex_output() ) {
-  kable( Speed[1:10,],
+  
+  kable( Speed2,
          format = "latex",
+         longtable = FALSE,
+         booktabs = TRUE,
+         align = c("c", "c"),
+         caption = "Vehicle speeds before and after adding extra signage. Only some observations are shown.") %>%
+    kable_styling(font_size = 10)
+}
+
+if( knitr::is_html_output(exclude = "epub") ) {
+  
+   DT::datatable( Speeds,
+                 fillContainer = FALSE, # Make more room, so we don't just have ten values
+                 colnames = c("When measured", "Speed (km/h)"),
+                 options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
+                 caption = "The observations from the signage data")
+}
+
+if ( knitr::is_html_output() & knitr::pandoc_to("epub")) {
+
+  kable( Speed[1:10,],
+         format = "html",
          longtable = FALSE,
          booktabs = TRUE,
          align = c("c", "c", "c"),
          caption = "Vehicle speeds before and after adding extra signage. Only the first 10 observations are shown.") %>%
     kable_styling(font_size = 10)
 }
-
-if( knitr::is_html_output(exclude = "epub") ) {
-  
-   out2 <-  DT::datatable( Speed,
-                 fillContainer = FALSE, # Make more room, so we don't just have ten values
-                 colnames = c("When measured", "Speed (km/h)"),
-                 options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
-                 caption = "The observations from the signage data")
-}    
-  
-if(knitr::pandoc_to("epub3") ) {
-  kable( Speed[1:10,],
-         format = "html",
-         longtable = FALSE,
-         booktabs = TRUE,
-         align = c("c", "c", "c"),
-         caption = "Vehicle speeds before and after adding extra signage. Only the first 10 observations are shown.")
-}
 ```
 
 The researchers are hoping that the addition of extra signage will *reduce* the mean speed of the vehicles.
-
 The RQ is:
 
 > At this freeway exit, is the mean vehicle speed the same *before* and *after* extra signage is added?
@@ -590,9 +559,9 @@ if( knitr::is_latex_output() ) {
         booktabs = TRUE,
         align = c("r", "r", "r", "r"),
         col.names = c("Mean", 
-                      "Std deviation", 
-                      "Sample size", 
-                      "Std error"),
+                      "Std deviation",
+                      "Std error",
+                      "Sample size"),
         caption = "The signage data summary (in km/h)"
   ) %>%
   row_spec(0, bold = TRUE) %>%
@@ -627,8 +596,8 @@ if( knitr::pandoc_to("epub3") ) {
 ```
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-You cannot *easily* calculate this from the other information.
-You are not expected to do so, so *standard error must given*.
+You cannot *easily* calculate the standard error of the difference (i.e., $\text{s.e.}(\bar{x}_{\text{Before}} - \bar{x}_{\text{After}})$) from the other information.
+You are not expected to do so; the *standard error must given* (e.g., from software output).
 :::
 
 
@@ -661,7 +630,6 @@ We conclude:
 > Moderate evidence exists in the sample ($t = 1.92$; two-tailed $P = 0.030$) that mean speeds have reduced after the addition of extra signage (Before: mean speed: $98.02$ km/h; $n = 38$; standard deviation: $13.18$ km/h; After:  mean speed: $92.34$ km/h; $n = 41$; standard deviation: $13.13$ km/h; 95% CI for the difference: -0.24 to 11.6 km/h).
 
 Whether the mean speed reduction of 5.68 has [*practical importance*](#PracticalSignificance) is a different issue.
-
 Using the [validity conditions](#ValidityTwoMeans), the CI is statistically valid.
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
@@ -676,14 +644,6 @@ Remember: *which* mean is larger must be clear!
 <img src="Illustrations/pexels-marcus-aurelius-4063510.jpg" width="200px"/>
 </div>
 
-
-`r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}{R}{.25\textwidth}
-  \begin{center}
-    \includegraphics[width=.20\textwidth]{Illustrations/pexels-marcus-aurelius-4063510.jpg}
-  \end{center}
-\end{wrapfigure}
-`r if (knitr::is_html_output()) '-->'`
 
 A study [@data:Becker1991:BHADP] compared the access to health promotion (HP) services for people with and without a disability.
 (This study was seen in  Sect. \@ref(BHADP).)
@@ -818,7 +778,6 @@ Denoting the younger and older women with subscrpts $Y$ and $O$ respectively, th
 
 The data (Table \@ref(tab:FacePlant)), numerical summary (Table \@ref(tab:FacePlantSummary)), and error bar chart (Fig.&nbsp;\@ref(fig:FacePlantPlots))
 were shown in Sect. \@ref(FacePlantCI).
-
 Using the sampling distribution (**expectation**), the $t$-score can be found on the the software output (jamovi: Fig. \@ref(fig:FallFowardTTestTestjamovi); SPSS: Fig. \@ref(fig:FallFowardTTestTestjamovi)), or manually:
 
 \[
@@ -948,8 +907,8 @@ if( knitr::pandoc_to("epub3") ) {
   answer = "There is not enough information"
 )  )}`
 
-1. The two-tailed $P$-value for the comparison is given as $P=0.046$.
-What does this mean?  
+1. The two-tailed $P$-value for the comparison is given as $P = 0.046$.
+   What does this mean?  
 `r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
   "There is no evidence that the sample means are different",
   "There is some evidence that the sample means are different",
@@ -974,7 +933,7 @@ Selected answers are available in Sect. \@ref(TestTwoMeansAnswer).
 ::: {.exercise #TestTwoMeansNHANES}
 Earlier, the NHANES study (Sect.&nbsp;\@ref(NHANESGraphs); Exercise \@ref(exr:MeansIndSamplesExercisesNHANES)) was used to address this RQ:
 
-> Among Americans, is the mean direct HDL  cholesterol different for current smokers and non-smokers?
+> Among Americans, is the mean direct HDL cholesterol different for current smokers and non-smokers?
 
 Use the SPSS output in Fig. \@ref(fig:NHANESTest) to perform a hypothesis test to answer the RQ.
 :::
@@ -991,18 +950,18 @@ Some information comparing their physical profiles is shown in Table \@ref(tab:P
 1. Compute the missing standard errors.
 1. Consider comparing the mean grip strength for the two groups of paramedics. 
    The *standard error for the difference between the means* is 3.3044. 
-   - Carefully write down the hypotheses.
-   - Compute the $t$-score for testing if a difference exists between the two types of paramedics.
-   - Approximate the $P$-value using the  [68--95--99.7 rule](#def:EmpiricalRule).
-   - Discuss the conditions required for statistical validity in this context.
-   - Make a conclusion.
+   a. Carefully write down the hypotheses.
+   b. Compute the $t$-score for testing if a difference exists between the two types of paramedics.
+   c. Approximate the $P$-value using the  [68--95--99.7 rule](#def:EmpiricalRule).
+   d. Discuss the conditions required for statistical validity in this context.
+   e. Make a conclusion.
 1. Consider comparing the mean number of push-ups completed in one minute. 
    The *standard error for the difference between the means* is 4.0689. 
-   - Carefully write down the hypotheses.
-   - Compute the $t$-score for testing if a difference exists between the two types of paramedics.
-   - Approximate the $P$-value using the  [68--95--99.7 rule](#def:EmpiricalRule).
-   - Discuss the conditions required for statistical validity in this context.
-   - Make a conclusion.
+   a. Carefully write down the hypotheses.
+   b. Compute the $t$-score for testing if a difference exists between the two types of paramedics.
+   c. Approximate the $P$-value using the  [68--95--99.7 rule](#def:EmpiricalRule).
+   d. Discuss the conditions required for statistical validity in this context.
+   e. Make a conclusion.
 :::
 
 
