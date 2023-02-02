@@ -15,9 +15,8 @@ RD <- read.csv("./Data/RedDeer.csv")
 
 ## Correlation coefficients {#CorrCoefficients}
 
-Describing the *linear* relationship between two *quantitative* variables, requires a description of the form, direction and variation.
+Describing the *linear* relationship between two *quantitative* variables requires describing the form, direction and variation.
 A *correlation coefficient* is a single number encapsulating all this information.
-
 In the *population*, the unknown value of the correlation coefficient is denoted $\rho$ ('rho'); in the *sample* the value of the correlation coefficient is denoted $r$.
 As usual, $r$ (the *statistic*) is an estimate of $\rho$ (the *parameter*), and the value of $r$ is likely to be different in every sample (that is, *sampling variation* exists).
 
@@ -42,8 +41,8 @@ htmltools::tags$video(src = "./Movies/rho.mp4",
 ::::
 
 
-Correlation coefficients only apply if the form is approximately *linear*, so checking if the relationship is linear first (using a scatterplot) is important.
-Here, the *Pearson* correlation coefficient is discussed, which is suitable for describing linear relationships between quantitative data^[Other types of correlation coefficients also exist, such as the *Spearman* correlation, which may be used for monotonic, non-linear relationships.].
+Here, the *Pearson* correlation coefficient is discussed, suitable for describing *linear* relationships between *quantitative* data^[Other types of correlation coefficients also exist, such as the *Spearman* correlation, which may be used for monotonic, non-linear relationships.].
+Pearson correlation coefficients only apply if the form is approximately *linear* (so checking with a scatterplot first).
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -52,14 +51,14 @@ The Pearson correlation coefficient only make sense if the relationship is appro
 
 
 The values of $\rho$ and $r$ are *always* between $-1$ and $+1$.
-The *sign* indicates whether the relationship has a positive or negative linear association, and the *value* of the correlation coefficient tells us the strength of the relationship:
+The *sign* indicates whether the relationship has a positive or negative linear association, and the *value* of the correlation coefficient describes the strength of the relationship:
 
-* $r = 0$ means *no linear relationship* between the two variables:
+* $r = 0$ means *no linear relationship* between the variables:
   Knowing how the value of $x$ changes tells us nothing about how the value of $y$ changes.
 * $r= +1$ means a *perfect, positive* relationship:
-  knowing the value of $x$ means we can perfectly predict the value of $y$ (and *larger* values of $y$ are associated with *larger* values of $x$, in general).
+  knowing the value of $x$ produces a perfect prediction of the value of $y$ (and *larger* values of $y$ are associated with *larger* values of $x$, in general).
 * $r = -1$ means a *perfect, negative* relationship:
-  knowing the value of $x$ means we can perfectly predict the value of $y$ (and *larger* values of $y$ are associated with *smaller* values of $x$, in general).
+  knowing the value of $x$ produces a perfect prediction of the value of $y$ (and *larger* values of $y$ are associated with *smaller* values of $x$, in general).
 
 `r if (knitr::is_html_output()) {
    'The animation below demonstrates how the values of the correlation coefficient work.'
@@ -109,6 +108,7 @@ Numerous example scatterplots were shown in Sect. \@ref(UnderstandingScatterplot
   'Plots C, D or E,'
 }`
 as those relationships are not linear.
+For the others:
 
 * In **Plot A**, the correlation coefficient will be *positive*, and reasonably close to one.
 * In **Plot B**, the correlation coefficient will be *negative*, but not that close to $-1$.
@@ -118,6 +118,59 @@ as those relationships are not linear.
 ::: {.example #Correlations name="Correlation coefficients"}
 For the red deer data (Fig. \@ref(fig:RedDeerScatter)), $r = -0.584$.
 The value of $r$ is *negative* because, in general, *older* deer ($x$) are associated with *smaller* weight molars ($y$).
+:::
+
+
+
+
+```{r NHANESBPdiaPlot, echo=FALSE, fig.cap="A scatterplot of the diastolic blood pressure against age for the NHANES data", fig.align="center", fig.width=5, fig.height=3.5}
+# Replace 0 DBP with NA
+NHANES$BPDia1[ NHANES$BPDia1 == 0 ] <- NA
+```
+
+
+::: {.example #NHANESBPCor name="Correlation coefficients"}
+Consider the plot in Fig. \@ref(fig:NHANESBPPlot) (left panel) from the NHANES data.
+This scatterplot of *diastolic* BP against age is not linear, so a correlation coefficient is *not appropriate*.
+
+Consider the plot in Fig. \@ref(fig:NHANESBPPlot) (right panel) from the NHANES data.
+This scatterplot of *systolic* BP against age is approximately linear, so a correlation coefficient is *appropriate*.
+The correlation coefficient is $r = 0.532$. 
+:::
+
+
+```{r NHANESBPPlot, echo=FALSE, fig.cap="Two scatterplot from the NHANES data: diastolic blood pressure against age (left panel); of the systolic blood pressure against age (right panel)", fig.align="center", fig.width=8, fig.height=3.5, out.width='90%'}
+par(mfrow = c(1, 2))
+
+plot(BPDia1 ~ Age,
+	   las = 1,
+     ylab = "Diastolic BP (in mm Hg)",
+     xlab = "Age (in years)",
+	   ylim = c(0, 120),
+	   cex = 0.7,
+     data = NHANES)
+
+plot(BPSys1 ~ Age,
+     las = 1,
+     cex = 0.7,
+     ylim = c(50, 250),
+     ylab = "Systolic BP (in mm Hg)",
+     xlab = "Age (in years)", 
+     data = NHANES)
+
+```
+
+
+::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
+A study evaluated various food mixtures for sheep [@data:Moir1961:RuminantDiet].
+One combination assessed is shown in Fig. \@ref(fig:SheepScatter2).
+Estimate the value of $r$.
+
+`r if (knitr::is_latex_output()) '<!--'`
+`r webexercises::hide()`
+$r$ will be a positive number (since the scatterplot shows a positive linear relationship), and its value will be close to 1 as the relationship looks very strong.
+`r webexercises::unhide()`
+`r if (knitr::is_latex_output()) '-->'`
 :::
 
 
@@ -138,89 +191,37 @@ plot(Energy ~ DryMatterDigest,
 
 
 
-```{r NHANESBPdiaPlot, echo=FALSE, fig.cap="A scatterplot of the diastolic blood pressure against age for the NHANES data", fig.align="center", fig.width=5, fig.height=3.5}
-# Replace 0 DBP with NA
-NHANES$BPDia1[ NHANES$BPDia1 == 0 ] <- NA
-```
+<!-- ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"} -->
+<!-- Earlier, we looked at the NHANES data to explore the relationship between direct HDL cholesterol and current smoking status. -->
+<!-- The NHANES project is an observational study, so confounding is a potential issue. -->
+<!-- For this reason, relationships between the response and extraneous variables, and between explanatory and extraneous variables, should be examined. -->
+<!-- \smallskip -->
+
+<!-- For example, the relationship between Age (an extraneous variables) and direct HDL cholesterol (the response variable) is shown in Fig. \@ref(fig:NHANESCholAge). -->
+<!-- How would you describe the relationship? -->
+<!-- What do you guess for the value of $r$? -->
+
+<!-- `r webexercises::hide()` -->
+<!-- Not much relationship: the mean of the direct HDL cholesterol concentration is similar for any age.  -->
+<!-- Perhaps describe the scatterplot as 'little relationship'.  -->
+<!-- We cannot make good guess about the value of $r$, but it will be near zero. -->
+<!-- `r webexercises::unhide()` -->
+<!-- ::: -->
 
 
-::: {.example #NHANESBPdiaCor name="Correlation coefficients"}
-Consider the plot in Fig. \@ref(fig:NHANESBPPlot) (left panel) from the NHANES data.
-This scatterplot of *diastolic* BP against age is not linear, so a correlation coefficient is *not appropriate*.
+<!-- ```{r NHANESCholAge, echo=FALSE, fig.cap="Direct HDL cholesterol plotted against age for the NHANES data", fig.align="center", fig.width=5, fig.height=3.5} -->
+<!-- #NHANES$BPDia1[ NHANES$BPDia1 == 0 ] <- NA -->
 
-Consider the plot in Fig. \@ref(fig:NHANESBPPlot) (right panel) from the NHANES data.
-This scatterplot of *systolic* BP against age is approximately linear, so a correlation coefficient is *appropriate*.
-The correlation coefficient is $r = 0.532$. 
-:::
+<!-- par(mar = c(5, 5, 4, 2) + 0.1 ) -->
 
-
-```{r NHANESBPPlot, echo=FALSE, fig.cap="Two scatterplot from the NHANES data: diastolic blood pressure against age (left panel); of the systolic blood pressure against age (right panel)", fig.align="center", fig.width=8, fig.height=3.5, out.width='90%'}
-par(mfrow = c(1, 2))
-
-plot(BPSys1 ~ Age,
-     las = 1,
-     cex = 0.7,
-     ylim = c(50, 250),
-     ylab = "Systolic BP (in mm Hg)",
-     xlab = "Age (in years)", 
-     data = NHANES)
-
-plot(BPDia1 ~ Age,
-	   las = 1,
-     ylab = "Diastolic BP (in mm Hg)",
-     xlab = "Age (in years)",
-	   ylim = c(0, 120),
-	   cex = 0.7,
-     data = NHANES)
-```
-
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-A study evaluated various food mixtures for sheep [@data:Moir1961:RuminantDiet].
-One combination assessed is shown in Fig. \@ref(fig:SheepScatter2).
-Estimate the value of $r$.
-
-`r if (knitr::is_latex_output()) '<!--'`
-`r webexercises::hide()`
-$r$ will be a positive number (since the scatterplot shows a positive linear relationship), and its value will be close to 1 as the relationship looks very strong.
-`r webexercises::unhide()`
-`r if (knitr::is_latex_output()) '-->'`
-:::
-
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Earlier, we looked at the NHANES data to explore the relationship between direct HDL cholesterol and current smoking status.
-The NHANES project is an observational study, so confounding is a potential issue.
-For this reason, relationships between the response and extraneous variables, and between explanatory and extraneous variables, should be examined.
-\smallskip
-
-For example, the relationship between Age (an extraneous variables) and direct HDL cholesterol (the response variable) is shown in Fig. \@ref(fig:NHANESCholAge).
-How would you describe the relationship?
-What do you guess for the value of $r$?
-
-`r if (knitr::is_latex_output()) '<!--'`
-`r webexercises::hide()`
-Not much relationship: the mean of the direct HDL cholesterol concentration is similar for any age. 
-Perhaps describe the scatterplot as 'little relationship'. 
-We cannot make good guess about the value of $r$, but it will be near zero.
-`r webexercises::unhide()`
-`r if (knitr::is_latex_output()) '-->'`
-:::
-
-
-```{r NHANESCholAge, echo=FALSE, fig.cap="Direct HDL cholesterol plotted against age for the NHANES data", fig.align="center", fig.width=5, fig.height=3.5}
-#NHANES$BPDia1[ NHANES$BPDia1 == 0 ] <- NA
-
-par(mar = c(5, 5, 4, 2) + 0.1 )
-
-plot(DirectChol ~ Age,
-     las = 1,
-     cex = 0.7,
-     ylim = c(0, 4),
-     xlab = "Age (in years)",
-     ylab = "Direct HDL cholesterol\n(in mmol/L)", 
-     data = NHANES)
-```
+<!-- plot(DirectChol ~ Age, -->
+<!--      las = 1, -->
+<!--      cex = 0.7, -->
+<!--      ylim = c(0, 4), -->
+<!--      xlab = "Age (in years)", -->
+<!--      ylab = "Direct HDL cholesterol\n(in mmol/L)",  -->
+<!--      data = NHANES) -->
+<!-- ``` -->
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
@@ -240,13 +241,10 @@ The web page [http://guessthecorrelation.com](http://guessthecorrelation.com) ma
 </div>
 
 
-Software is used to compute the value of $r$.
-For the red deer data (Fig. \@ref(fig:RedDeerScatter)), the relationship is approximately linear, and the jamovi output (Fig. \@ref(fig:RedDeerCorrelationjamovi)) and SPSS output (Fig. \@ref(fig:RedDeerCorrelationSPSS)) show that $r = -0.584$:
-
-* Direction: The *sign* of $r$ indicates the direction.
-  Here we see a *negative* relationship: Higher ages are associated with lighter molars (in general), which makes sense.
-* Variation: The *value* of $r$ indicates the strength of the relationship.
-  Here, perhaps we could describe the variation as "moderate".
+Software is used to compute the value of $r$ (formulas exist, but are tedious to use).
+For the red deer data (Fig. \@ref(fig:RedDeerScatter)), the relationship is approximately linear, and the jamovi output (Fig. \@ref(fig:RedDeerCorrelationjamovi)) and SPSS output (Fig. \@ref(fig:RedDeerCorrelationSPSS)) show that $r = -0.584$.
+The *sign* of $r$ is negative, indicating a *negative* relationship: Higher ages are associated with lighter molars (in general).
+The *value* of $r$ indicates that the strength of the relationship is, perhaps, "moderate".
 
 
 
@@ -261,28 +259,25 @@ knitr::include_graphics("SPSS/RedDeer/RedDeer-Correlation.png")
 
 ## R-squared ($R^2$) {#R2}
 
-While using $r$ tells us about the strength and direction of the linear relationship, knowing exactly what the value *means* is tricky.
+The value of $r$ describes the strength and direction of the linear relationship, but knowing exactly what the value *means* is tricky.
 Interpretation is easier using $R^2$, or 'R-squared': the square of the value of $r$.
-
 `r if (knitr::is_html_output()) {
    'The animation below shows some values of $R^2$.'
 }`
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-The value of $R^2$ is *never* negative, and is usually expressed as a percentage.
+The value of $R^2$ is *never* negative, and is usually multiplied by 100 and hence expressed as a percentage.
 :::
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The value of $R^2$ is never negative.
-However, you need to be careful when using your calculator!
-  
-With most calculators, entering `-0.5^2` will return `-0.25`.
-This is correct, because the calculator interprets your input as meaning `-(0.25^2)`.
+Even the value of $R^2$ is never negative, you need to be careful when using your calculator!
+With most calculators, entering `-0.5^2` returns `-0.25`.
+The calculator interprets your input as meaning `-(0.25^2)`.
+\smallskip
 
-You need to enter `(-0.5)^2`.
-This will give you the expected answer of `0.25`.
+You need to enter `(-0.5)^2`, which will give the expected answer of `0.25`.
 :::
 
 
@@ -327,12 +322,12 @@ if (knitr::is_html_output()){
 ```
 
 
-The value of $R^2$ is the percentage reduction in the unknown variation of $y$ because the value of $x$ is known.
-In other words, $R^2$ is the percentage of the variation in $y$ explained by using the linear relationship, rather than just the mean value of $y$.
+The value of $R^2$ is the reduction in the unexplained variation of $y$ because the value of $x$ is known.
+When expressed as a percentage, $R^2$ is the percentage of the variation in $y$ explained by using the linear relationship, rather than just the mean value of $y$.
 
 
 ::: {.example #R2Deer name="Values of R-squared"}
-For the red deer data (Fig. \@ref(fig:RedDeerScatter)), the value of $R^2$ from the software output (Fig. \@ref(fig:RedDeerCorrelationjamovi); Fig. \@ref(fig:RedDeerCorrelationSPSS)) is $R^2 = (-0.584)^2 = 0.341$, usually written as a percentage: 34.1%.
+For the red deer data (Fig. \@ref(fig:RedDeerScatter)), the value of $R^2$ is $R^2 = (-0.584)^2 = 0.341$, usually written as a percentage: 34.1%.
 The value of $R^2$ is positive, even though the value of $r$ is negative.
 :::
 
@@ -342,7 +337,7 @@ The rest of the variation in molar weights is due to extraneous variables, such 
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-From Example \@ref(exm:NHANESBPsysCor), the correlation coefficient between the systolic blood pressure and age in the NHANES data is $r = 0.532$.
+From Example \@ref(exm:NHANESBPCor), the correlation coefficient between the systolic blood pressure and age in the NHANES data is $r = 0.532$.
 What is the value of $R^2$?
 What does it mean?
 
@@ -364,19 +359,15 @@ $R^2 = (0.532)^2 = 0.283$: about 28.3% of the variation in systolic BP is due to
 </div>
 
 
-For the red deer data (Sect. \@ref(RedDeerData); Sect. \@ref(CorrCoefficients)), the population correlation coefficient between the weight of molars $y$ and age of the deer $x$ is unknown and denoted by $\rho$.
-The sample correlation coefficient is $r = `r round(cor(RD$Age, RD$Weight), 3)`$, but the value of $r$ varies from sample to sample (there is *sampling variation*).
-
+For the red deer data (Sect. \@ref(RedDeerData); Sect. \@ref(CorrCoefficients)), the population correlation coefficient between the weight of molars $y$ and age of the deer $x$ is unknown, and denoted by $\rho$.
+The sample correlation coefficient is $r = `r round(cor(RD$Age, RD$Weight), 3)`$, but the value of $r$ varies across all possible samples (*sampling variation* exists).
 The size of the sampling variation is measured with a *standard error*.
-However, there is a complication for correlation coefficients^[For those who want to know: the value of $r$ only varies between $-1$ and $1$, so the sampling distribution is not a normal distribution.
-
-Instead, a transformation of the correlation coefficient has an approximate normal distribution and *standard error*.
-Software automatically does this transforming.]; so we will not produce CIs for the correlation coefficient.
+However, the sampling distribution does not have a normal distribution^[For those interested: the value of $r$ only varies between $-1$ and $1$, so cannot have a normal distribution. A transformation of the sample correlation coefficient does have an approximate normal distribution and *standard error*.], so we will not discuss CIs for the correlation coefficient.
 
 
 ### Hypothesis testing details
 
-As usual, questions can be asked about the relationship between the variables, as measured by the unknown *population* correlation coefficient:
+As usual, questions can be asked about the relationship between the variables in the *population*, as measured by the unknown *population* correlation coefficient:
 
 > Is the *population* correlation coefficient zero, or not?
 
@@ -385,26 +376,24 @@ In the context of the red deer data:
 > In male red deer, is there a correlation between age and the weight of molars?
 
 The RQ is about the population parameter $\rho$.
-Clearly, the *sample* correlation coefficient $r$ is not zero, and the RQ is asking whether this could be attributed to sampling variation.
+Clearly, the *sample* correlation coefficient $r$ is not zero, and the RQ is asking if sampling variation if the reason for this.
 The null hypotheses is:
 
-* $H_0$: $\rho = 0$ 
+* $H_0$: $\rho = 0$.
 
-The parameter is $\rho$, the population correlation between the age and molar weight in the red deer.
-This is the usual 'no relationship' position, which proposes that the population correlation coefficient is zero.
+The parameter is $\rho$, the population correlation coefficient.
+This hypothesis is the 'no relationship' position, which proposes that the population correlation coefficient is zero, and the sample correlation coefficient is not zero due to sampling variation.
 The alternative hypothesis is:
 
-* $H_1$:  $\rho \ne 0$
+* $H_1$:  $\rho \ne 0$ (*two-tailed* test, based on the RQ).
 
-This is a *two-tailed* test here, based on the RQ.
+As usual, we *assume* that $\rho = 0$ (from $H_0$), then describe what values of $r$ could be *expected*, under that assumption, across all possible samples (sampling variation).
+Then the *observed* value of $r$ is compared to the expected values to determine if the value of $r$ supports or contradicts the assumption.
 
-The approach is to **assume** that $\rho = 0$ (from $H_0$), then describe what values of $r$ could be **expected**, under that assumption, just through sampling variation.
-Then the **observed** value of $r$ is compared to the expected values to determine if the valuew of $r$ supports or contradicts the assumption.
-
-Software is used to test the hypotheses;  the output in Figs. \@ref(fig:RedDeerCorrelationjamovi) (jamovi) and \@ref(fig:RedDeerCorrelationSPSS) (SPSS) contains the relevant $P$-value (twice in the SPSS output!).
+Software conducts the hypotheses test.
+The output (Figs. \@ref(fig:RedDeerCorrelationjamovi) (jamovi) and \@ref(fig:RedDeerCorrelationSPSS) (SPSS)) contains the relevant $P$-value (twice in the SPSS output!).
 The two-tailed $P$-value for the test (labelled `Sig.` by SPSS) is less than 0.001 (`0.000` in SPSS).
-That is, the $P$-value is zero *to three decimal places*, so there is *very strong evidence* to support $H_1$ (that the correlation in the population is not zero).
-
+The $P$-value is zero *to three decimal places*, so *very strong evidence* exists to support $H_1$, that the correlation in the population is not zero.
 We write:
 
 > The sample presents very strong evidence (two-tailed $P < 0.001$) of a correlation between molar weight and the age of the male red deer ($r = -0.584$; $n = 78$) in the population.
@@ -416,11 +405,8 @@ An *answer to the RQ*; evidence to support the conclusion ('two-tailed $P < 0.00
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 The evidence suggests that the correlation is not zero (in the population).
 However, a *non-zero* correlation doesn't necessarily mean a *strong* correlation.
-The correlation may be weak in the population (as estimated by the value of $r$), but there is evidence that it is not zero in the *population*.
+The correlation may be weak in the population (as estimated by the value of $r$), but there is evidence that it is *not zero* in the *population*.
 :::
-
-
-This may be a useful analogy: If a rain forecast says 'there is a very high chance of rain tomorrow', it doesn't mean there will be a *lot* of rain, just a high chance of *some* rain.
 
 
 ### Statistical validity conditions {#ValidityCorrelation}
@@ -483,8 +469,8 @@ dogs <- read.csv("Data/Dogs.csv")
 ::: {.example #CorTestDogs name="Phu Quoc ridgeback dogs"}
 A study of Phu Quoc Ridgeback dogs (*Canis familiaris*) recorded many measurements of the dogs, including body length and body height [@quan2017relation].
 The scatterplot (Fig. \@ref(fig:DogsScatter)) shows an approximate linear relationship.
-We know that each sample could produce a different sample correlation coefficient.
-We expect that taller dogs would also be longer, so we may ask:
+Each sample of dogs could produce a different value for $r$.
+Since taller dogs would also be expected to be longer, so we may ask:
 
 > For these dogs, are longer dogs also taller dogs, in general?
   
@@ -493,8 +479,7 @@ The hypotheses are:
 \[
     H_0: \rho = 0\quad\text{and}\quad H_1: \rho > 0\quad \text{(i.e., one-tailed)}
 \]
-The correlation co-efficient is $r = 0.837$ and software notes that the two-tailed $P < 0.001$, based on $n = 30$ dogs.
-
+The correlation co-efficient is $r = 0.837$ and, from software, the two-tailed $P < 0.001$, based on $n = 30$ dogs.
 We write:
 
 > There is very strong evidence that longer Phu Quoc ridgeback dogs are also taller ($r = 0.837$; one-tailed $P < 0.001$; $n = 30$).
@@ -504,7 +489,6 @@ Since (a) the sample size is larger than 25; (b) the relationship is approximate
 
 
 ```{r DogsScatter, echo=FALSE, fig.align = "center", fig.cap = "Scatterplot of the body height vs body length for Phu Quoc ridgeback dogs", fig.width=5, fig.height=3.5}
-
 plot( jitter(BL) ~ jitter(BH),
       data = dogs,
       xlab = "Body length (in cm)",
@@ -519,14 +503,12 @@ plot( jitter(BL) ~ jitter(BH),
 
 ::: {.example #CorTestDrug name="Drug calculations"}
 A study of $n = 30$ paramedicine students examined (among other things) the relationship between the amount of stress experienced (measured using the State–Trait Anxiety Inventory (STAI)) while performing drug-dose calculation, and length of work experience [@leblanc2005paramedic].
-
 The hypotheses are:
 \[
    H_0: \rho = 0\quad\text{and}\quad H_1: \rho \ne 0.
 \]
-The correlation co-efficient is given as  $r = 0.346$ and $P = 0.18$.
-
-No scatterplot is provided, so the test is statistically valid only if the relationship is approximately linear and that the variation in STAI scores does not vary for different levels of work experience.
+The correlation coefficient is given as $r = 0.346$ and $P = 0.18$ (from software).
+No scatterplot is provided, so the test is statistically valid only if the relationship is approximately linear, and if the variation in STAI scores does not vary for different levels of work experience.
 The sample size is larger than 25, however.
 
 We write:
@@ -579,13 +561,12 @@ To test if a relationship exists in the population, write:
    H_0: \rho = 0;\quad\text{and}\quad H_1: \rho \ne 0
 \]
 The alternative hypothesis is two-tailed (as implied by the RQ).
-
-The software output (jamovi: Fig. \@ref(fig:RemovalEfficiencyjamovi); SPSS: Fig. \@ref(fig:RemovalEfficiencySPSS)) shows that $P < 0.001$ (which is what $P = 0.000$ in SPSS means).
+The software output (jamovi: Fig. \@ref(fig:RemovalEfficiencyjamovi); SPSS: Fig. \@ref(fig:RemovalEfficiencySPSS)) shows that $P < 0.001$.
 We conclude:
 
 > The sample presents very strong evidence (two-tailed $P < 0.001$) that removal efficiency depends on the inlet temperature ($r = 0.891$; $n = 32$) in the population.
 
-The relationship is approximately linear and there is no obvious non-constant variance, and the sample size is larger than 25, so the hypothesis test results will be statistically valid.
+The relationship is approximately linear, there is no obvious non-constant variance, and the sample size is larger than 25, so the hypothesis test results will be statistically valid.
 
 
 
@@ -600,9 +581,9 @@ knitr::include_graphics("SPSS/Removal/RemovalCorrelation.png")
 
 ## Summary {#Chap34-Summary}
 
-In this chapter, **correlation** was used to describe the *strength* and direction of *linear* relationships between two *quantitative* variables.
+In this chapter, *correlation* was used to describe the *strength* and direction of *linear* relationships between two *quantitative* variables.
 
-**Correlation coefficients** (denoted $r$ in the sample; $\rho$ in the population) are always between $-1$ and $+1$.
+*Correlation coefficients* (denoted $r$ in the sample; $\rho$ in the population) are always between $-1$ and $+1$.
 *Positive* values denote *positive* relationships between the two variables: as one values gets larger, the other tends to get larger too.
 *Negative* values denote *negative* relationships between the two variables: as one values gets larger, the other tends to get *smaller*.
 Values close to $-1$ or $+1$ are very strong relationships; values near zero shows very little linear relationship between the variables.
@@ -674,20 +655,53 @@ Selected answers are available in Sect. \@ref(CorrelationAnswer).
 ::: {.exercise #CorrelationExerciseDrawNegR}
 Draw a scatterplot with:
 
-1. A negative correlation coefficient, with the value of $r$ very close to (but not equal to) $-1$. 
-1. A positive correlation coefficient, with the value of $r$ very close to (but not equal to) $+1$. 
+1. A negative correlation coefficient, with $r$ very close to (but not equal to) $-1$. 
+1. A positive correlation coefficient, with $r$ very close to (but not equal to) $+1$. 
 1. A correlation coefficient very close to $0$. 
 :::
 
 
 ::: {.exercise #CorrelationExercisePunting}
-A study (@MyersRegression, p. 75) of American footballers measured the right-leg strengths $x$ of 13 players (using a weight lifting test), and the distance $y$ they punted a football (with their right leg) (Fig. \@ref(fig:PuntPlotCor)).
+A study (@MyersRegression, p. 75) of American footballers measured the right-leg strengths $x$ of 13 players (using a weight lifting test), and the distance $y$ they punted a football with their right leg (Fig. \@ref(fig:PuntPlotCor)).
 
 1. The value of the correlation coefficient is 0.881. 
    Compute the value of $R^2$, and explain what this means.
-1. jamovi was used to study the correlation (Fig. \@ref(fig:Puntingjamovi)).
-   Using this output, perform a hypothesis test to determine if a correlation exists between punting distance and right-leg strength.
+1. Using the jamovi output (Fig. \@ref(fig:Puntingjamovi)), perform a hypothesis test to determine if a correlation exists between punting distance and right-leg strength.
 :::
+
+
+
+\begin{minipage}{0.45\textwidth}%
+\centering%
+```{r PuntPlotCor2, echo=FALSE, results='hide', fig.width=4.5, out.width='90%'}
+punting <- read.csv("Data/Punting.csv")
+
+plot(Punt ~ Right, 
+     data = punting,
+     las = 1,
+     xlab = "Right leg strength (in pounds)",
+     ylab = "Punting distance (in feet",
+     pch = 19,
+     xlim = c(110, 180),
+     ylim = c(100, 200)
+)
+abline( 
+  coef( 
+    Punt.lm <- lm( Punt ~ Right, data = punting)), 
+  lwd = 2, 
+  col = "grey")
+```
+\captionof{figure}{Scatterplot of punting distance and right leg strength\label{fig:PuntPlotCor}}
+\end{minipage}
+\hspace{0.1\textwidth}
+\begin{minipage}{0.45\textwidth}%
+```{r echo=FALSE, out.width='85%'}
+knitr::include_graphics("jamovi/Punting/Punting-Correlation.png")
+```
+\captionof{figure}{jamovi output for the punting data\label{fig:Puntingjamovi}}
+\end{minipage}
+
+
 
 ```{r PuntOutputRCor, echo=FALSE, results='hide'}
 data(punting)
@@ -695,6 +709,13 @@ with( punting, cor.test(Punt, Right))
 ```
 
 
+
+
+
+
+
+<!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
+`r if (knitr::is_latex_output()) '<!--'`
 ```{r PuntPlotCor, echo=FALSE, results='hide', fig.width=5, fig.height=3.5, fig.align="center", fig.cap="Punting distance and right leg strength", fig.width=5, fig.height=3.5}
 punting <- read.csv("Data/Punting.csv")
 
@@ -713,11 +734,14 @@ abline(
   lwd = 2, 
   col = "grey")
 ```
+`r if (knitr::is_latex_output()) '-->'`
 
 
+`r if (knitr::is_latex_output()) '<!--'`
 ```{r Puntingjamovi, echo=FALSE, fig.cap="jamovi output for the punting data", fig.align="center", out.width="45%"}
 knitr::include_graphics("jamovi/Punting/Punting-Correlation.png")
 ```
+`r if (knitr::is_latex_output()) '-->'`
 
 
 ::: {.exercise #CorrelationSoftdrink}

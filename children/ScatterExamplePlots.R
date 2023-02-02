@@ -21,15 +21,9 @@ abline( coef(lm( y ~ x )),
        lwd = 2, 
        col = 2)
 
-text(0, 25, 
-     "Form: linear", 
-     pos = 4)
-text(0, 23, 
-     "Direction: positive", 
-     pos = 4)
-text(0, 21, 
-     "Variation: small", 
-     pos = 4)
+text(0, 25,
+     pos = 4,
+     "Form: linear\nDirection: positive\nVariation: small")
 
 dev.print(png, 
           filename = "ScatterExampleA.png", 
@@ -59,14 +53,8 @@ abline( coef(lm( y ~ x )),
        col = 2)
 
 text(0, 10, 
-     "Form: linear", 
-     pos = 4)
-text(0, 8, 
-     "Direction: negative", 
-     pos = 4)
-text(0, 6, 
-     "Variation: fairly large", 
-     pos = 4)
+     pos = 4,
+     "Form: linear\nDirection: negative\nVariation: fairly large")
 
 dev.print(png, 
           filename = "ScatterExampleB.png", 
@@ -105,14 +93,8 @@ lines( ynew ~ xnew,
       col = 2)
 
 text(0.25, 40, 
-     "Form: non-linear (curved)", 
-     pos = 4)
-text(0.25, 35, 
-     "Direction: (not relevant)", 
-     pos = 4)
-text(0.25, 30, 
-     "Variation: small", 
-     pos = 4)
+     pos = 4,
+     "Form: non-linear (curved)\nDirection: (not relevant)\nVariation: small")
 
 dev.print(png, 
           filename = "ScatterExampleC.png",
@@ -153,14 +135,8 @@ lines( ynew ~ xnew,
       col = 2)
 
 text(0, 125, 
-     "Form: non-linear (curved)", 
-     pos = 4)
-text(0, 115, 
-     "Direction: (not relevant)", 
-     pos = 4)
-text(0, 105, 
-     "Variation: moderate", 
-     pos = 4)
+     pos = 4,
+     "Form: non-linear (curved)\nDirection: (not relevant)\nVariation: moderate") 
 
 dev.print(png, 
           filename = "ScatterExampleD.png", 
@@ -204,14 +180,8 @@ lines( ynew ~ xnew,
       col = 2)
 
 text(0, 450, 
-     "Form: non-linear (curved)", 
-     pos = 4)
-text(0, 420, 
-     "Direction: (not relevant)", 
-     pos = 4)
-text(0, 390, 
-     "Variation: small/moderate", 
-     pos = 4)
+     pos = 4,
+     "Form: non-linear (curved)\nDirection: (not relevant)\nVariation: small/moderate") 
 
 dev.print(png, 
           filename = "ScatterExampleE.png", 
@@ -297,15 +267,9 @@ lines( ynew ~ xnew,
       lwd = 2, 
       col = 2)
 
-text(0, 25, 
-     "Form: linear", 
-     pos = 4)
-text(0, 23, 
-     "Direction: positive", 
-     pos = 4)
-text(0, 21, 
-     "Variation: increase as x increases", 
-     pos = 4)
+text(0, 22, 
+     pos = 4,
+     "Form: linear\nDirection: positive\nVariation: increase as x increases") 
 
 dev.print(png, 
           filename = "ScatterExampleG.png", 
@@ -349,14 +313,8 @@ lines( ynew ~ xnew,
       col = 2)
 
 text(0, 18, 
-     "Form: non-linear (curved)", 
-     pos = 4)
-text(0, 15, 
-     "Direction: (not relevant)", 
-     pos = 4)
-text(0, 12, 
-     "Variation: increasing", 
-     pos = 4)
+     pos = 4,
+     "Form: non-linear (curved)\nDirection: (not relevant)\nVariation: increasing")
 
 dev.print(png, 
           filename = "ScatterExampleH.png", 
