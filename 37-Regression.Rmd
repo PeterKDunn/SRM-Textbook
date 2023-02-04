@@ -1,13 +1,9 @@
 # Regression {#Regression}
 
 
-
-
-
 <!-- Introductions; easier to separate by format -->
 ```{r, child = if (knitr::is_html_output()) {'./introductions/37-Regression-HTML.Rmd'} else {'./introductions/37-Regression-LaTeX.Rmd'}}
 ```
-
 
 
 ```{r echo=FALSE}
@@ -17,30 +13,37 @@ RD <- read.csv("./Data/RedDeer.csv")
 
 ## Introduction {#Chap35-Intro}
 
-The last chapter introduced *correlation*, which measures the *strength* of the *linear* relationship between two quantitative variables $x$ and $y$.
+The last chapter introduced *correlation*, which measures the *strength* of the *linear* relationship between two quantitative variables $x$ (an explanatory variable) and $y$ (a response variable).
 We now study **regression**, which describes *what* the linear relationship is between $x$ and $y$.
-The relationship is described using an *equation*, which allows us to:
+The relationship is described using an *equation*.
+This allows us to:
 
 1. **Predict** values of $y$ from given values of $x$ (Sect. \@ref(RegressionForPrediction)); and
 2. **Understand** the relationship between $x$ and $y$ (Sect. \@ref(RegressionForUnderstanding)).
 
 
-## Linear equations: A review
+## Linear equations: A review {#RegressionEquationsReview}
 
-An *example* of a liner regression equation is
+An *example* of a linear regression equation is
 
 \[
   \hat{y} = -4  + 2x.
 \]
-Here, $x$ refers to the value of the explanatory variable, $y$ refers to the *observed* value of the response variable, and $\hat{y}$ refers to the *predicted* value of the response variable.
+Here, $x$ refers to the value of the explanatory variable, $y$ refers to the *observed* value of the response variable, and $\hat{y}$ refers to the *mean predicted* value of the response variable a given value of $x$.
 More generally, the equation of a straight line is
 
 \[
-   \hat{y} = {b_0} + {b_1} x
+   \hat{y} = b_0 + b_1 x
 \]
-where $b_0$ and $b_1$ are just (unknown) numbers.
+where $b_0$ and $b_1$ are (unknown) numbers.
 Notice that $b_1$ is the number multiplied by $x$.
-Again, $\hat{y}$ refers to the *predicted* (not observed) values of $y$.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+$y$ refers to the observed data, whose values are known.
+$\hat{y}$ refers to *mean predicted* (not observed) values of $y$.
+:::
+
 
 
 :::: {.pronounceBox .pronounce data-latex="{iconmonstr-microphone-7-240.png}"}
@@ -54,17 +57,17 @@ If $\hat{y} = 15  - 102x$, then $b_0 = 15$ and $b_1 = -102$.
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Consider the regression equation $\hat{y} = -0.0047x + 2.1$.
+Consider the regression equation $\hat{y} = -0.0047x + 2.1$.\label{thinkBox:RegressionCoefs}
 What are the values of $b_0$ and $b_1$?
-(Look carefully!)
+(Be careful!)
 
 `r if (knitr::is_latex_output()) '<!--'`
 `r webexercises::hide()`
-In this case, $b_0 = 2.1$ and $b_1 = -0.0047$.
-Remember that $b_1$ is the number multiplied by the $x$, and that $b_0$ is the number by itself.
+$b_0 = 2.1$ and $b_1 = -0.0047$.
+Remember: $b_1$ is the number multiplied by the $x$, and that $b_0$ is the number by itself.
 
 Some software and some journal papers write regression equations with the value of $b_0$ first, and some with the value of $b_1$ first. 
-It's not the *order* that's important.
+The *order* is not important.
 `r webexercises::unhide()`
 `r if (knitr::is_latex_output()) '-->'`
 :::
@@ -73,12 +76,12 @@ It's not the *order* that's important.
 The numbers $b_0$ and $b_1$ are called *regression coefficients*, where
 
 * $b_0$ is a number called the **intercept**.
-  It is the *predicted* value of $y$ when $x = 0$.
+  It corresponds to the *predicted* value of $y$ when $x = 0$.
 * $b_1$ is a number called the **slope**.
   It is, on average, how much the value of $y$ changes when the value of $x$ increases by 1.
 
-We will use software to find the values of $b_0$ and $b_1$ (the formulas are complicated).
-However, roughly guess of the values of the *intercept* can be made by drawing what looks like a sensible straight line through the data, and determining what that line predicts for the value of $y$ when $x = 0$.
+We will use software to find the values of $b_0$ and $b_1$ (the formulas are tedious to use).
+However, a rough guess of the values of the *intercept* can be made by drawing a sensible-looking straight line through the data, and determining what that line predicts for the value of $y$ when $x = 0$.
 Also, a rough guess of the *slope* can be made by computing
 
 \[
@@ -114,14 +117,22 @@ The regression line is approximately $\hat{y} = 2 + (3\times x)$, usually writte
   \hat{y} = 2 + 3x.
 \]
 
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The equation uses $\hat{y}$ and not $y$ on the left-hand side.
+That is, the equation *predicts* value of $y$, which may not be equal to the observed values (which are denoted by $y$).
 
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+A 'good' regression equation would produce predicted values $\hat{y}$ close to the observed values $y$.
+:::
+
+
 The *intercept* has the same measurement units as the response variable.
-With the red-deer data, the intercept is measured in 'grams' (the measurement units of the molar weight).
-\smallskip
-
 The measurement unit for the *slope* is the 'measurement units of the response variable', per 'measurement units of the explanatory variable'.
-With the red-deer data the slope has the units of 'grams per year'.
+
+
+
+:::{.example name="Measurement units for intercept and slope"}
+For the red-deer data, explanatory variable is age (in years), and the response variable is molar weight (in g).
+In the regression equation, the intercept is measured in 'grams', and the *slope* is measured in 'grams per year'.
 :::
 
    
@@ -228,6 +239,7 @@ if (knitr::is_html_output()){
       arrows(x1, 2, 
              x2, 2,
              lwd = 2,
+             length = 0.15,
              col = "darkgrey",
              code = 2)
       text( mean( c(x1, x2)), 2.5, 
@@ -240,6 +252,7 @@ if (knitr::is_html_output()){
       arrows(0.5, y1, 
              0.5, y2,
              lwd = 2,
+             length = 0.15,
              col = "darkgrey",
              code = 2)
       text( 0.5, 
@@ -342,6 +355,7 @@ if (knitr::is_latex_output()){
       arrows(x1, 2, 
              x2, 2,
              lwd = 2,
+             length = 0.15,
              col = "darkgrey",
              code = 2)
       text( mean( c(x1, x2)), 
@@ -354,6 +368,7 @@ if (knitr::is_latex_output()){
       arrows(0.5, y1, 
              0.5, y2,
              lwd = 2,
+             length = 0.15,
              col = "darkgrey",
              code = 2)
       rise <- y2 - y1
@@ -368,13 +383,13 @@ if (knitr::is_latex_output()){
 
 
 `r if (knitr::is_html_output()){
-  'You may like to play with the following interactive activity, which explores slopes and intercepts.'}`
+  'You may like the following interactive activity, which explores slopes and intercepts.'}`
 
 <iframe src="https://phet.colorado.edu/sims/html/graphing-slope-intercept/latest/graphing-slope-intercept_en.html" width="600" height="450" scrolling="no" allowfullscreen="allowfullscreen"></iframe>
 
 
 ::: {.example #CycloneRegressionGuesses name="Estimating regression parameters"}
-The relationship between the number of cyclones $y$ in the Australian region each year from 1969 to 2005, and a climatological index called the *Ocean Nino Index* (ONI, $x$) is shown in Fig. \@ref(fig:ONIcyclones) [@mypapers:dunnsmyth:glms].
+The relationship between the number of cyclones $y$ in the Australian region each year from 1969 to 2005, and a climatological index called the *Ocean Nino Index* (ONI, $x$), is shown in Fig. \@ref(fig:ONIcyclones) [@mypapers:dunnsmyth:glms].
 
 When the value of $x$ is zero, the predicted value of $y$ is about 12; $b_0$ is about 12.
 (You may get something slightly different.)
@@ -413,7 +428,7 @@ grid(lty = 2)
 
 The above method gives a crude guess of the values of the intercept $b_0$ and the slope $b_1$.
 In practice, *many* reasonable lines could be drawn through a scatterplot of data.
-However, one of those lines is the 'best fitting line' in some sense^[For those interested: The 'line of best fit' has the sum of the *squared* vertical distances between the observations and the line is as small as possible.].
+However, one of those lines is the 'best' line in some sense^[For those interested: The 'line of best fit' has the sum of the *squared* vertical distances between the observations and the line is as small as possible.].
 Software calculates this 'line of best fit' for us.
 
 
@@ -462,13 +477,12 @@ htmltools::tags$video(src = "./Movies/beta.mp4",
 </div>
 
 
-
 The formulas for computing $b_0$ and $b_1$ are intimidating, so we will use software to do the calculations. 
 As usual, the values of these population parameters are unknown, and the values of the sample statistics will change from sample to sample (so they have *sampling variation*).
 
 For the red deer data again (Fig&nbsp;\@ref(fig:RedDeerScatter)), part of the relevant output is shown in Fig.&nbsp;\@ref(fig:RedDeerRegressionjamoviraw) (using jamovi) and Fig.&nbsp;\@ref(fig:RedDeerRegressionSPSSraw) (using SPSS).
-From the output, the *slope* (in the sample) is $b_1 = `r RD.b1`$, and the $y$-intercept is $b_0 = `r RD.b0`$: the values of $b_0$ and $b_1$ are in the column labelled  `Estimate` in jamovi, and the column labelled `B` in SPSS.
-These are the values of the two *regression coefficients*; then
+From the output, the sample *slope* is $b_1 = `r RD.b1`$, and the sample $y$-intercept is $b_0 = `r RD.b0`$: the values of $b_0$ and $b_1$ are in the column labelled  `Estimate` in jamovi, and the column labelled `B` in SPSS.
+These are the values of the two *regression coefficients*; so
 
 \[
 	\hat{y} = `r RD.b0` + (`r RD.b1`\times x),
@@ -503,10 +517,11 @@ cyclone.lm <- lm(Total ~ OND,
 
 ::: {.example #RegressionCoefficients name="Regression coefficients"}
 The regression equation for the cyclone data (Fig. \@ref(fig:ONIcyclones)) is found from the jamovi output (Fig. \@ref(fig:CyclonesRegressionjamovi)):
+
 \[
   \hat{y} = 12.14 - 2.23x,
 \]
-where $x$ is the ONI (averaged over October, November, December)  and $y$ is the number of cyclones.
+where $x$ is the ONI (averaged over October, November, December) and $y$ is the number of cyclones.
 These values are close the guesses made in Example \@ref(exm:CycloneRegressionGuesses) ($12$ and $-2.25$ respectively).
 :::
 
@@ -517,7 +532,7 @@ knitr::include_graphics( "jamovi/Cyclones/Cyclones-Regression.png")
 
 
 `r if (knitr::is_html_output()){
-  'You may like to play with the following interactive activity, which explores regression equations.'}`
+  'You may like the following interactive activity, which explores regression equations.'}`
 
 <div style="text-align:center;">
 <iframe src="https://phet.colorado.edu/sims/html/least-squares-regression/latest/least-squares-regression_en.html" width="600" height="450" scrolling="no" allowfullscreen="true"></iframe>
@@ -533,7 +548,7 @@ knitr::include_graphics( "jamovi/Cyclones/Cyclones-Regression.png")
 </div>
 
 
-The regression equation for the red deer data $\hat{y} = `r RD.b0` - `r abs(RD.b1)` x$ can be used to make *predictions*, such as predicting the *average* molar weight for deer $10$ years old.
+The regression equation for the red deer data $\hat{y} = `r RD.b0` - `r abs(RD.b1)` x$ can be used to make *predictions* of the mean value of $y$ for a given value of $x$; for example, predicting the *average* molar weight for deer $10$ years old.
 Since $x$ represents the age, use $x = 10$ in the regression equation:
 
 \begin{eqnarray*}
@@ -547,10 +562,10 @@ The model predicts that the *mean* molar weight for male red deer aged 10 will b
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-What is the predicted mean molar weight for:
+What is the predicted mean molar weight for:\label{thinkBox:Predictions}
 
-* For male red deer $12$ years of age. 
-* For male red deer $20$ years of age.
+* For male red deer $12$ years of age?
+* For male red deer $20$ years of age?
 
 `r if (knitr::is_latex_output()) '<!--'`
 `r webexercises::hide()`
@@ -835,7 +850,7 @@ Reporting the CI for the slope is also useful, which can be obtained from softwa
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Using the output (jamovi: Fig. \@ref(fig:RedDeerRegressionjamovi); SPSS: Fig. \@ref(fig:RedDeerRegressionSPSS)), can you determine the *approximate* 95% CI for $\beta_1$?
+Using the output (jamovi: Fig. \@ref(fig:RedDeerRegressionjamovi); SPSS: Fig. \@ref(fig:RedDeerRegressionSPSS)), can you determine the *approximate* 95% CI for $\beta_1$?\label{thinkBoxCI}
 :::
 
 
@@ -900,7 +915,7 @@ The results from the hypothesis test should be statistically valid.
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Are the conditions for statistically validity met for the cyclones data (Fig. \@ref(fig:ONIcyclones))?
+Are the conditions for statistically validity met for the cyclones data (Fig. \@ref(fig:ONIcyclones))?\label{thinkBoxRegressionConditions}
 
 `r if (knitr::is_latex_output()) '<!--'`
 `r webexercises::hide()`
@@ -951,6 +966,7 @@ Here, $x$ is the neck size (in cm), and $y$ is the REI value.
 
 
 \begin{figure}
+\centering
 \begin{minipage}{0.45\textwidth}%
 \captionof{table}{Part of the obstructive sleep apnoea data set\label{tab:OSAKable}}
 ```{r OSAKable, echo=FALSE}
@@ -976,7 +992,7 @@ knitr::kable( head(useOSA, 10),
 \hspace{0.05\textwidth}
 \begin{minipage}{0.45\textwidth}%
 \centering
-```{r OSAscatter, echo=FALSE, fig.width=5, out.width='95%'}
+```{r OSAscatter, echo=FALSE, fig.width=3.75, out.width='99%'}
 plot( REI ~ Neck,
       data = OSA,
       xlab = "Neck circumference (in cm)",
@@ -1542,8 +1558,15 @@ The correlation coefficient was $r = 0.8696$ with $P < 0.001$.
 
 <!-- QUICK REVIEW ANSWERS -->
 `r if (knitr::is_html_output()) '<!--'`
-::: {.QRanswerBox .QRanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
-\textbf{Answers to \textit{Quick Revision} questions:}
+::: {.EOCanswerBox .QRanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
+* Question in Sect. \ref{thinkBox:Predictions}: 12 and 19861283.
+* Question in Sect. \ref{thinkBox:RegressionCoefs}: $b_0 = 2.1$ and $b_1 = -0.0047$.
+  Remember: $b_1$ is the number multiplied by the $x$, and that $b_0$ is the number by itself.
+* Question in Sect. \ref{thinkBoxCI}: Recall that all CIs have the same general form.
+* Question in Sect. \ref{thinkBoxRegressionConditions}: The relationship looks approximately linear; the variations seems somewhat constant for all values of $x$ (the ONI), but it is a little hard to be sure. 
+  The sample size is larger than 25. 
+  The conditions for statistical validity appear to have been met.
+* \textbf{Answers to \textit{Quick Revision} questions:}
 **1.** 1.
 **2.** Weight.
 **3.** The height of the rowers.

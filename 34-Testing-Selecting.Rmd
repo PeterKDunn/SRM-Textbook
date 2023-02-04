@@ -1,42 +1,43 @@
 # Selecting a test {#SelectTest}
 
-Selecting the correct hypothesis test (or confidence interval) can be tricky... and in this book only a small number of hypothesis tests were described.
-(Literally hundreds of tests exist [@kanji2006100].)
-For the tests studied in this book, determining if the response and explanatory *variables* are qualitative or quantitative is important (Table \@ref(tab:InferenceTestCI)).
+Selecting the correct hypothesis test (or confidence interval) can be tricky... and in this book only a small number of possible scenarios are described.
+For the situations studied in this book, determining if the response and explanatory *variables* are qualitative or quantitative is important (Table \@ref(tab:InferenceTestCI)).
 
 So far, only situations with a *qualitative* explanatory variable have been considered.
-In the next chapters, cases where both the response and explanatory variables  are *quantitative* are studied.
-You might also find **Appendix \@ref(StatisticsAndParameters)** useful.
+In the next three chapters, cases where both the response and explanatory variables  are *quantitative* are studied.
+**Appendix \@ref(StatisticsAndParameters)** may also prove useful.
 
-ADD ONE PROPORTION
+
+
 
 
 ```{r InferenceTestCI, echo=FALSE}
-Scenarios <- array( dim = c(4, 4) )
+Scenarios <- array( dim = c(5, 4) )
 colnames(Scenarios) <- c("Graphical summary",
                          "Numerical summary",
                          "Hypothesis test",
                          "Confidence interval")
 
-                    
-                    
-                    
 if( knitr::is_latex_output() ) {
-
-  Scenarios[1, ] <- c("Histogram; stem-and-leaf plot; dot chart",
-                      "Means, medians; Std. dev., IQR; etc.",
-                      "One-sample $t$",
+  Scenarios[1, ] <- c("\\stackunder{Bar chart;}{pie chart}",
+                      "\\stackunder{Counts;}{\\stackunder{percentages;}{odds}}",
+                      "One-sample $z$-test",
+                      "CI for one proportion")
+  Scenarios[2, ] <- c("\\stackunder{Histogram;}{\\stackunder{stem-and-leaf plot;}{dot chart}}",
+                      "\\stackunder{Means, medians;}{\\stackunder{Std. dev., IQR;}{outliers, etc.}}",
+                      "One-sample $t$-test",
                       "CI for one mean")
-  Scenarios[2, ] <- c("Histogram of \\emph{differences}; case-profile",
-                      "Mean, std. dev. etc. of \\emph{differences}",
+  Scenarios[3, ] <- c("\\stackunder{Histogram of \\emph{differences};}{case-profile}",
+                      "\\stackunder{Mean, median of differences;}{\\stackunder{Std. dev., IQR of differencess;}{Outliers, etc.}}",
                       "$t$-test for mean differences",
                       "CI for mean difference")
-  Scenarios[3, ] <- c("Error bar chart",
-                      "Mean and std. error of the difference; mean, std. dev. etc. of \\emph{each} group",
+  Scenarios[4, ] <- c("\\stackunder{Boxplot;}{error bar chart}",
+                      "\\stackunder{Difference between means;}{\\stackunder{SE of difference;}{Summary of both groups}}",
+#                      "Mean and std. error of the difference; mean, std. dev. etc. of \\emph{each} group",
                       "$t$-test for the difference between two means",
                       "CI of the difference between two means")
-  Scenarios[4, ] <- c("Side-by-side bar chart; stacked bar chart",
-                      "Odds; OR; percentages",
+  Scenarios[5, ] <- c("\\stackunder{Side-by-side bar chart;}{stacked bar chart}",
+                      "\\stackunder{Odds;}{\\stackunder{OR;}{percentages}}",
                       "Chi-square test",
                       "CI for ORs")
 
@@ -44,52 +45,64 @@ if( knitr::is_latex_output() ) {
         booktabs = TRUE,
         longtable = FALSE,
         escape = FALSE,
-        caption = "Four different scenarios studied so far",
+        caption = "Five different scenarios studied so far",
         format = "latex") %>%
      kable_styling("striped", 
                    full_width = TRUE, 
                    font_size = 9) %>%
     
-     pack_rows("Mean of one sample",                         
+     pack_rows("Proportion in one sample",                         
                 start_row = 1, 
                 end_row = 1, 
                 bold = FALSE, 
                 italic = TRUE) %>%
+     pack_rows("Mean of one sample",                         
+                start_row = 2, 
+                end_row = 2, 
+                bold = FALSE, 
+                italic = TRUE,
+                hline_before = TRUE) %>%
      pack_rows("Mean of differences (paired data)",          
-               start_row = 2, 
-               end_row = 2, 
-               bold = FALSE, 
-               italic = TRUE, 
-               hline_before = TRUE) %>%
-     pack_rows("Comparing means in two groups",   
                start_row = 3, 
                end_row = 3, 
                bold = FALSE, 
                italic = TRUE, 
                hline_before = TRUE) %>%
-     pack_rows("Comparing odds/percentages in two groups",              
+     pack_rows("Comparing means in two groups",   
                start_row = 4, 
                end_row = 4, 
+               bold = FALSE, 
+               italic = TRUE, 
+               hline_before = TRUE) %>%
+     pack_rows("Comparing odds/percentages in two groups",              
+               start_row = 5, 
+               end_row = 5, 
                bold = FALSE,
                italic = TRUE,
-               hline_before = TRUE)
+               hline_before = TRUE) %>%
+     row_spec(0, bold = TRUE)
+
 }                 
                     
 if( knitr::is_html_output() ) {
   
-  Scenarios[1, ] <- c("[Histogram; stem-and-leaf plot; dot chart](#GraphsOneQuant)",
+  Scenarios[1, ] <- c("[Bar charts; pie chart](#GraphsOneQual)",
+                      "[Counts; percentages; odds](#NumericalQual)",
+                      "[One-sample $z$](#TestOneProportion)",
+                      "[CI for one mean](#CIOneProportion)")
+  Scenarios[2, ] <- c("[Histogram; stem-and-leaf plot; dot chart](#GraphsOneQuant)",
                       "[Means, medians; Std. dev., IQR; etc.](#NumericalQuant)",
                       "[One-sample $t$](#TestOneMean)",
                       "[CI for one mean](#OneMeanConfInterval)")
-  Scenarios[2, ] <- c("[Histogram of *differences*](#HistoDiffPlot); [case-profile](#CaseProfilePlot)",
+  Scenarios[3, ] <- c("[Histogram of *differences*](#HistoDiffPlot); [case-profile](#CaseProfilePlot)",
                       "[Mean, std. dev. etc. of *differences*](#NumericalQuant)",
                       "[$t$-test for mean differences](#TestPairedMeans)",
                       "[CI for mean difference](#PairedCI)")
-  Scenarios[3, ] <- c("[Error bar chart](#ErrorBarCharts)",
+  Scenarios[4, ] <- c("[Error bar chart](#ErrorBarCharts)",
                      "[Mean and std. error of the difference; mean, std. dev. etc. of *each* group](#NumericalQuant)",
                      "[$t$-test for the difference between two means](#TestTwoMeans)",
                      "[CI of the difference between two means](#CITwoMeans)")
-  Scenarios[4, ] <- c("[Side-by-side bar chart; stacked bar chart](#TwoQualVars)",
+  Scenarios[5, ] <- c("[Side-by-side bar chart; stacked bar chart](#TwoQualVars)",
                       "[Odds; OR; percentages](#NumericalQual)",
                       "[Chi-square test](#TestsOddsRatio)",
                       "[CI for ORs](#OddsRatiosCI)")
