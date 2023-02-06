@@ -24,7 +24,7 @@
 `r if (knitr::is_html_output()) '-->'`
 
 
-In Sect. \@ref(OddsRatioIntro), a study [@data:Mann12017:UniStudents] was introduced that examined the eating habits of university students.
+In Sect. \@ref(OddsRatioIntro), a study was introduced that examined the eating habits of university students [@data:Mann12017:UniStudents].
 Researchers classified $n = 183$ students into groups according to two qualitative variables (Table \@ref(tab:MealsDataTableHT)): Where they lived, and where they ate most of their meals.
 
 
@@ -72,7 +72,8 @@ if( knitr::is_latex_output() ) {
      column_spec(4, bold = TRUE)  %>%
      row_spec(3, bold = TRUE) %>%
      row_spec(0, bold = TRUE) %>%
-	kable_styling(font_size = 10)
+	kable_styling(font_size = 10) %>%
+  row_spec(2, hline_after = TRUE) 
  }
 
 
@@ -180,22 +181,27 @@ In a two-by-two table, jamovi and SPSS output can be interpreted in *either* of 
 * The *odds* compare Column 1 counts to Column 2 counts.  
   Then the odds ratio compares the odds for Row 1 to the odds for Row 2.
   
-Odds and odds ratios are computed with the **first row** and **first column** values on the *top* of the fraction.
+Odds and odds ratios are computed with the **last row** and **last column** values on the *bottom* of the fraction.
 :::
 
 
 :::{.example name="Odds and odds ratio in software"}
-For the data in Table \@ref(tab:MealsDataTableHT), the software output can be interpreted in *either* of these ways (i.e., both are correct):
+For the data in Table \@ref(tab:MealsDataTableHT), the software output can be interpreted in *either* of these ways (i.e., both are correct): 
 
-* The *odds* are the odds of eating most meals *off-campus* (Row 1).
-  Then, the odds ratio compares these odds for students living with their parents (Column 1) to those *not* living with their parents (Row 2).   
-  That is, the odds are $52/2 = 26$ (for those living with parents) and  $105/24 = 4.375$ (for those not living with parents), so the OR is then $26/4.375 = 5.943$, as in the output (jamovi: Fig. \@ref(fig:UniMealsTestOutputHTjamovi); SPSS: Fig. \@ref(fig:UniMealsTestOutputHTSPSS)).
-
-* The *odds* are the odds of living with parents (Column 1).
-  Then, the odds ratio compares these odds for students eating most meals off-campus (Row 1) to the odds of students eating most meals on-campus (Row 2).  
-  That is, the odds of living with parents are $52/105 = 0.49524$ (for those eating most meals off-campus) and $2/24 = 0.083333$ (for those eating most meals on-campus), so the OR is then $0.49524/0.083333 = 5.943$, as in the output (jamovi: Fig. \@ref(fig:UniMealsTestOutputHTjamovi); SPSS: Fig. \@ref(fig:UniMealsTestOutputHTSPSS)).
+* The *odds* are the odds of eating most meals *off-campus* (Row 1) compared to *on-campus* (Row 2; on the bottom of the fraction)
+  * for students living with their parents (Column 1): $52/2 = 26$;
+  * for students not living with their parents (Column 2): $105/24 = 4.375$. 
   
-In other words, the odds and odds ratios are relative to the first row or first column.
+  So the OR is $26/4.375 = 5.943$ (Column 2 on bottom of the fraction), as in the output (jamovi: Fig. \@ref(fig:UniMealsTestOutputHTjamovi); SPSS: Fig. \@ref(fig:UniMealsTestOutputHTSPSS)).
+
+* The *odds* are the odds of living with parents (Column 1) compared to not living with parents (Column 2; on the bottom of the fraction):
+
+  * for those eating most meals off-campus: $52/105 = 0.49524$;
+  * for those eating most meals on-campus: and $2/24 = 0.083333$.
+  
+  So the OR is $0.49524/0.083333 = 5.943$ (Row2  on bottom of the fraction), as in the output (jamovi: Fig. \@ref(fig:UniMealsTestOutputHTjamovi); SPSS: Fig. \@ref(fig:UniMealsTestOutputHTSPSS)).
+
+In other words, the odds and odds ratios use the last row or last column on the bottom of the fraction.
 :::
 
 
@@ -275,7 +281,7 @@ of the students in the entire sample  ate most of their meals off-campus.
 If the percentage of students who eat most of their meals off-campus is the *same* for those who live with their parents and those who don't, then we'd **expect** 85.79% of students in *both* groups to be eating most meals off-campus.
 That is, we would *expect*:
 
-* 85.79% of the 54 students who *live with their parents*  (i.e., 46.33)to eat most meals off-campus; and
+* 85.79% of the 54 students who *live with their parents*  (i.e., 46.33) to eat most meals off-campus; and
 * 85.79% of the 129 students who *don't live with their parents* (i.e., 110.67) to eat most meals off-campus.
 
 In other words, the percentage (and hence the odds) is the same in each group.
@@ -369,7 +375,7 @@ A $\chi^2$ statistic measures the overall size of the differences between the ex
 :::: {.pronounceBox .pronounce data-latex="{iconmonstr-microphone-7-240.png}"}
 
 ::: {style="display: flex;"}
-The Greek letter $\chi$ is pronounced 'ki', as in **ki**te (**not** as in **Chi**na).  
+The Greek letter $\chi$ is pronounced 'ki', as in **ki**te (**not** "chi" as in **Chi**na).  
 The test statistic $\chi^2$ is pronounced as 'chi-squared'.
 :::
 
@@ -393,16 +399,11 @@ From the software (jamovi: Fig. \@ref(fig:UniMealsTestOutputHTjamovi); SPSS: Fig
 In a $2\times 2$ table of counts (when the 'degrees of freedom', or `df`, is equal to 1, as in the computer output), the *square root* of the $\chi^2$ value is approximately equivalent to a $z$-score. 
 So here, the equivalent $z$-score is about $\sqrt{6.934} = 2.63$, which is fairly large for a $z$-score: a small $P$-value is expected.
 
-More generally, for two-way tables of any size,
-
-\[
-  \sqrt{\chi^2 \div \text{df}}
-\]
-is like a $z$-score, where df is the 'degrees of freedom' (related to the size of the table^[For those interested: the degrees of freedom in a two-way table is the number of rows of data less one, times the number of columns of data less one. So, for a $2\times 2$ table, $\text{df} = (2 - 1) \times (2 - 1) = 1$.]), as shown in the software output.
+More generally, for two-way tables of any size, $\sqrt{\chi^2 \div \text{df}}$ is like a $z$-score, where df is the 'degrees of freedom' (related to the size of the table^[For those interested: the degrees of freedom in a two-way table is the number of rows of data less one, times the number of columns of data less one. So, for a $2\times 2$ table, $\text{df} = (2 - 1) \times (2 - 1) = 1$.]), as shown in the software output.
 This allows a $P$-value to be estimated using the 68--95--99.7 rule from the value of the $\chi^2$ statistic.
 
 
-```{r UniMealsTestOutputHTjamovi, echo=FALSE, fig.show="hold", fig.cap="The jamovi output for computing a CI and conducting a test", fig.align="center", out.width="70%"}
+```{r UniMealsTestOutputHTjamovi, echo=FALSE, fig.show="hold", fig.cap="The jamovi output for computing a CI and conducting a test", fig.align="center", out.width="50%"}
 knitr::include_graphics( "jamovi/UniStudents/UniStudents-Chisq-All.png")
 ```
 
@@ -537,7 +538,7 @@ SPSS tells us if this condition is not satisfied, underneath the *first* output 
 In jamovi, the *expected* counts must be explicitly requested to see if this condition is satisfied (Fig. \@ref(fig:UniMealsTestExpectedjamovi)).
 
 
-```{r UniMealsTestExpectedjamovi, echo=FALSE, fig.cap="The expected values, as computed in jamovi", fig.align="center", out.width="65%"}
+```{r UniMealsTestExpectedjamovi, echo=FALSE, fig.cap="The expected values, as computed in jamovi", fig.align="center", out.width="70%"}
 knitr::include_graphics("jamovi/UniStudents/UniStudents-Expected.png")
 ```
 
@@ -590,6 +591,7 @@ if( knitr::is_latex_output() ) {
     column_spec(4, bold = TRUE) %>%
     row_spec(3, bold = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
+    row_spec(2, hline_after = TRUE) %>%
     kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
@@ -708,6 +710,7 @@ if( knitr::is_latex_output() ) {
         caption = "The expected counts for the pet bird data, if the proportion owning pet birds was the same for lung cancer cases and non-lung-cancer cases") %>%
    column_spec(4, bold = TRUE) %>%
    row_spec(3, bold = TRUE) %>%
+   row_spec(2, hline_after = TRUE) %>%
    kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
@@ -743,7 +746,7 @@ We write:
 > The *sample* provides very strong evidence ($\chi^2 = 22.374$; two-tailed  $P < 0.001$) that the odds in the *population* of having a pet bird is not the same for people with lung cancer (odds: 0.695) and for people without lung cancer (odds: 0.308; OR: $2.26$; 95% CI from $1.6$ to $3.2$).
 
 
-```{r PetBirdsjamovi, echo=FALSE, fig.show="hold", fig.cap="jamovi output for the pet-birds data", fig.align="center", out.width="80%"}
+```{r PetBirdsjamovi, echo=FALSE, fig.show="hold", fig.cap="jamovi output for the pet-birds data", fig.align="center", out.width="50%"}
 knitr::include_graphics("jamovi/PetBirds/Pets-All.png") 
 ```
 
@@ -953,11 +956,11 @@ The data (Table \@ref(tab:DumpingTable)) are given in a $2\times 3$ table of cou
 ```{r DumpingTable, echo=FALSE}
 DumpTab <- array( dim = c(2, 3))
 
-DumpTab[1, ] <- c(22, 18, 15)
-DumpTab[2, ] <- c(6, 36, 1)
+DumpTab[1, ] <- c(22, 15, 18)
+DumpTab[2, ] <- c(6, 1, 36)
 colnames(DumpTab) <- c("Acceptable", 
-                       "Not acceptable", 
-                       "Conditionally acceptable")
+                       "Conditionally acceptable", 
+                       "Not acceptable")
 rownames(DumpTab) <- c("Reuseable", 
                        "Non-reuseable")
 
@@ -1010,25 +1013,25 @@ colnames(DumpSummary) <- c( "Odds",
                            "Percentage",
                            "Sample size")
 rownames(DumpSummary) <- c("Acceptable:",
-                           "Not acceptable:",
-                           "Conditionally acceptable:")
+                           "Conditionally acceptable:",
+                           "Not acceptable:")
   
   
 DumpSummary[1, ] <- c( 3.667, 
-                       "(Reference)", 
+                       "7.333", 
                        "78.6%", 
                        28)
 DumpSummary[2, ] <- c( 0.500, 
-                       0.136, 
+                       "30.0", 
                        "33.3%", 
                        54)
 DumpSummary[3, ] <- c(15.000, 
-                      4.09, 
+                      "Reference level", 
                       "93.4%", 
                       16)
 
 
-cap.tab <- "Odds and percentage that the opinion listed is held for reuseable rubbish; the odds ratios are computed relative to the `Acceptable' opinion"
+cap.tab <- "Odds and percentage that the opinion listed is held for reuseable rubbish; the odds ratios are computed relative to the `Not acceptable' opinion"
 
 if( knitr::is_latex_output() ) {
   kable(DumpSummary,
@@ -1050,36 +1053,35 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-In Table \@ref(tab:KerbsideHTNumerical), the odds are that the given opinion refers to **Reusable** goods.
-Here are some details of the calculations:
+In Table \@ref(tab:KerbsideHTNumerical), the odds are that the given opinion refers to **Reusable** goods (i.e., Row 2 on bottom of the fraction).
+Here are some details of the calculations (notice that Column 3 is on the bottom of the fraction):
 
-* For *Acceptable* goods: the *odds* that these are reusable goods is $22/6 = 3.667$.
-* For *Not acceptable* goods: the *odds* that these are reusable goods is $18/36 = 0.5$.
+* For *Acceptable* goods: the *odds* that these are reusable goods is $22/6 = 3.6667$.
 * For *Conditionally acceptable* goods: the *odds* that these are reusable goods is $15/1 = 15$.
+* For *Not acceptable* goods: the *odds* that these are reusable goods is $18/36 = 0.5$.
 
 Then the *odds ratios* can be computed:
 
-* Comparing the odds of *Not acceptable* to *Acceptable*: $0.5/3.667 = 0.136$.
-* Comparing the odds of *Conditionally acceptable* to *Acceptable*: $15/3.667 = 4.09$.
+* Comparing the odds of the goods being reusable, for *Acceptable* to *Not acceptable*: $3.6667/0.5 = 7.333$.
+* Comparing the odds of the goods being reusable, for *Conditionally acceptable* to *Not acceptable*: $15/0.5 = 30$.
 
 Since Table \@ref(tab:KerbsideHTNumerical) has *three* groups to compare, three odds are needed.
 However, the summary has $3 - 1 = 2$ odds ratios, since odds *ratios* compare two odds.
 The level to which the other two are compared is called the *Reference level*.
-In Table \@ref(tab:KerbsideHTNumerical), the reference level is 'Acceptable'.
+In Table \@ref(tab:KerbsideHTNumerical), the reference level is *Not acceptable* (on the bottom of the fraction; the final column).
 (In a $2\times 2$ table, with *two* groups to compare, the summary has only $2 - 1 = 1$ odds ratio.)
 
-**NOT TOP-OF-FRACTION???**
+These odds ratios mean:
+
+* The odds that the goods are reusable is 7.333 times greater for acceptable rubbish compared to non-acceptable rubbish; and
+*  The odds that the goods are reusable is 50 times greater for conditionally acceptable rubbish compared to non-acceptable rubbish.
 
 For two-way tables larger than $2\times 2$, hypotheses are best worded in terms of *relationships* or *associations* between the two variables:
 
 * $H_0$: There *is no* association between the type of rubbish and the opinion of kerbside dumping.
 * $H_1$: There *is an* association between the type of rubbish and the opinion of kerbside dumping.
 
-From the software output, $\chi^2 = 26.318$ and $\text{df} = 2$, so this $\chi^2$ value is approximately equivalent to a $z$-score of 
-
-\[
-  \sqrt{{26.318\div}{2}} = 3.63.
-\]
+From the software output, $\chi^2 = 26.318$ and $\text{df} = 2$, so this $\chi^2$ value is approximately equivalent to a $z$-score of $\sqrt{{26.318\div}{2}} = 3.63$.
 This is a large $z$-score so, using the [68--95--99.7 rule](#def:EmpiricalRule), a very small $P$-value is expected; indeed, the software output reports $P < 0.001$.
 This suggests very strong evidence in the sample that opinions are not the same for reuseable and non-reuseable rubbish.
 
@@ -1159,40 +1161,40 @@ if( knitr::pandoc_to("epun3") ) {
 }
 ```
 
-1. The $\chi^2$ value is:  
+1. The $\chi^2$ value is:
 `r if( knitr::is_html_output(exclude = "epub") ) {mcq(
   c(answer=1.31,
     1,
     0.253,
     112)  )} else {"________________"}`
     
-1. The approximately-equivalent $z$-score (to two decimal places) is:  
+1. The approximately-equivalent $z$-score (to two decimal places) is:
 `r if( knitr::is_html_output(exclude = "epub") ) {fitb(answer = 1.144, tol = 0.01, num = TRUE)} else {"________________"}`
 
-1. Using the 68--95--99.5 rule, the approximate $P$-value is:  
+1. Using the 68--95--99.5 rule, the approximate $P$-value is:
 `r if( knitr::is_html_output(exclude = "epub") ) {longmcq(
   c("Smaller than 0.05",
     answer = "Larger than 0.05",
     "About 0.05",
     "There is not enough information") )} else {"________________"}`
     
-1. From the software output, the $P$-value is:  
+1. From the software output, the $P$-value is:
 `r if( knitr::is_html_output(exclude = "epub") ) {mcq(
   c("1.31",
     answer = "0.253",
     "1.71",
     "There is not enough information")  )} else {"________________"}`
     
-1. The alternative hypothesis will be:  
+1. The alternative hypothesis will be:
 `r if( knitr::is_html_output(exclude = "epub") ) {longmcq(
   c("One-tailed",
     answer = "Two-tailed",
     "There is not enough information")  )} else {"________________"}`
     
-1. True or false: 
+1. True or false:
 There is *no* evidence of a difference 
 in the odds of buying a car in the next 10 years, 
-between those with and without post-graduate study.  
+between those with and without post-graduate study.
 `r if( knitr::is_html_output(exclude = "epub") ) {torf(answer=TRUE)}`
 
 
@@ -1406,7 +1408,7 @@ Forty-two different turbines were run for about 3000 hours, and nine developed f
 
 
 ```{r TurbinesOutputHT, echo=FALSE, fig.show="hold", fig.cap="jamovi output for the turbine data", fig.align="center", out.width="50%"}
-knitr::include_graphics( "jamovi/Turbines/TurbinesOutput-jamovi.png" )
+knitr::include_graphics( "jamovi/Turbines/TurbinesCI-jamovi.png" )
 ```
 
 ```{r TurbinesOutputExpectedHT, echo=FALSE, fig.show="hold", fig.cap="jamovi output for the turbine data: expected counts", fig.align="center", out.width="45%"}
@@ -1592,21 +1594,18 @@ if( knitr::is_html_output() ) {
 
 
 
-
-
 <!-- QUICK REVIEW ANSWERS -->
 `r if (knitr::is_html_output()) '<!--'`
 ::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
-- Question in Sect. \ref{thinkBox:ExpectedOddsSame}: Living with parents: 46.333/7.667 = 6.043$; not living with parents: 110.667/18.333 = 6.036$.
+**Answers to in-chapter questions:**
+
+- Sect. \ref{thinkBox:ExpectedOddsSame}: Living with parents: $46.333/7.667 = 6.043$; not living with parents: $110.667/18.333 = 6.036$.
   The odds are the same (the small difference is because the expected counts are only given to three decimal places).
-- Question in Sect. \ref{thinkBox:NotCauseCancer}: Because the study *observational*. 
+- Sect. \ref{thinkBox:NotCauseCancer}: Because the study *observational*. 
   Confounders may explain the relationship (can you think of one?).
-  In addition, maybe having lung cancer means that people seek companionship in the form of a pet.
+  In addition, maybe having lung cancer means that people seek companionship in the form of a pet (i.e., having lung cancer often comes before having the pet bird).
 
-
-
-
-\textbf{Answers to \textit{Quick Revision} questions:}
+- \textbf{\textit{Quick Revision} questions:}
 **1.** 1.31.
 **2.** 1.144.
 **3.** Larger than 0.05.
@@ -1615,5 +1614,3 @@ if( knitr::is_html_output() ) {
 **6.** True.
 :::
 `r if (knitr::is_html_output()) '-->'`
-
-
