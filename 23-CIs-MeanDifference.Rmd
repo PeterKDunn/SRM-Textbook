@@ -59,7 +59,7 @@ In paired data, finding the difference between the two measurements for each ind
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Which of these are paired situations?
+Which of these are paired situations?\label{thinkBox:WhichPaired}
 
 1. The mean difference between blood pressure for 36 people, before and after taking a drug.
 1. The difference between the mean HDL cholesterol levels for 22 males and 19 females.
@@ -151,7 +151,7 @@ As always, begin by understanding the data, and produce appropriate graphical an
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-For this situation, what graphs would be suitable for displaying these data?
+For this situation, what graphs would be suitable for displaying these data?\label{thinkBox:WhichGraph}
 `r if (knitr::is_latex_output()) '<!--'`
 * Boxplot  
 `r if( knitr::is_html_output(exclude = "epub") ) {
@@ -522,6 +522,52 @@ As expected, this 95% CI is slightly different than the CI computed by hand, sin
 For our purposes, however, using the *approximate* multiplier of 2 is sufficient when not using software.
 
 
+## Example: Endangered species {#EndangeredCI}
+
+A study of endangered species [@harnish2020attitudes] examined 
+
+> ...whether perceived physical attractiveness of a species impacted participants' attitudes toward supporting and protecting the species...
+>
+> --- @harnish2020attitudes, p. 1703
+
+To do so, 210 undergraduate students were surveyed about 14 animals on various aspects of supporting and protecting them.
+Part of the data are summarised below, for two animals when asked about 'support to protect the animal from illicit trade'.
+*Larger* values means *greater* support for protecting the animal from illicit trade.
+
+
+| Species                            | Mean score      | Standard deviation
+|-----------------------------------:+:---------------:+:-------------------:
+| Bay Checkerspot Butterfly          | 3.10            | 1.06
+| Valley Elderberry Longhorn Beetle  | 2.33            | 1.13
+| **Difference**                     | 0.77            | 1.07
+
+(Notice that the standard deviation of the difference is **not** the difference between the two given values of the standard deviation.)
+
+The *difference* is defined as each student's score for the butterfly (deemed more attractive) *minus* their score for the beetle (deemed less attractive).
+A positive value therefore means more support (on average) for the butterfly.
+
+The researchers wished to test if
+
+> ...animals perceived as more physically attractive [i.e., the butterfly] compared to those which are perceived as less physically attractive [i.e., the beetle] will receive relatively more support to prevent the species from illicit trade
+>
+> --- @harnish2020attitudes, p. 1704
+
+The parameter is $\mu_d$, the population mean difference.
+The mean difference is $\bar{d} = 0.77$ and $s_d = 1.07$.
+The value of $\bar{d}$ will vary from sample to sample, so has a standard error:
+
+\[
+   \text{s.e.}(\bar{d}) = \frac{s_d}{\sqrt{n}} = \frac{1.07}{\sqrt{210}} = 0.073837.
+\]
+Using an approximate multiplier of 2, the margin of error is $2 \times 0.073837 = 0.147674$, so an approximate 95% CI for the difference in support is $0.77\pm 0.147674$, or from $0.62$ to $0.92$.
+We write:
+
+> From the sample, an approximate 95% CI for the difference in support for preventing illicit trade is between 0.62 and 0.92 higher for the Bay Checkerspot Butterfly compared to the Valley Elderberry Longhorn Beetle from illict trade (mean difference: 0.77; standard deviation: 1.07; $n = 210$ undergraduate students).
+
+
+
+
+
 ## Example: Blood pressure {#BloodPressure}
 
 ```{r echo=FALSE, cache=FALSE}
@@ -730,7 +776,7 @@ The CI is statistically valid as the sample size is larger than 25.
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Is there a mean difference in DBP *in the population*?
+Is there a mean difference in DBP *in the population*?\label{thinkBox:MeanDifferenceDBP}
 
 `r if (knitr::is_latex_output()) '<!--'`
 `r webexercises::hide()`
@@ -739,92 +785,6 @@ So it is difficult to be certain.
 `r webexercises::unhide()`
 `r if (knitr::is_latex_output()) '-->'`
 :::
-
-
-## Example: The stress of surgery {#StressSurgery}
-
-The concentration of beta-endorphins in the blood are a sign of stress.
-In one study (@data:hand:handbook, Dataset 232; @hoaglin2011exploring), the beta-endorphin concentration was measured for 19 patients about to undergo surgery.
-
-Each patient had their beta-endorphin concentrations measured 12--14 hours before surgery, and also 10 minutes before surgery.
-A numerical summary can be produced from jamovi output (Table \@ref(tab:StressTable)).
-
-
-```{r StressTable, echo=FALSE}
-ST <- read.csv("Data/stress.csv")
-
-ST$Diff <- ST$BeforeMins - ST$BeforeHours
-
-STtable <- array( dim = c(3, 4) )
-
-rownames(STtable) <- c("12--14 hours before surgery",
-                       "10 minutes before surgery",
-                       "Increase")
-colnames(STtable) <- c("Sample mean",
-                       "Std deviation",
-                       "Std error",
-                       "Sample size")
-
-STtable[, 1] <- c(mean(ST$BeforeHours),
-                  mean(ST$BeforeMins),
-                  mean(ST$Diff))
-STtable[, 2] <- c(sd(ST$BeforeHours),
-                  sd(ST$BeforeMins),
-                  sd(ST$Diff))
-STtable[, 4] <- c(length(ST$BeforeHours),
-                  length(ST$BeforeMins),
-                  length(ST$Diff))
-STtable[, 3] <- STtable[, 2] / sqrt( STtable[, 4])     
-
-
-if( knitr::is_latex_output() ) {
-kable(STtable,
-      format = "latex",
-      booktabs = TRUE,
-      longtable = FALSE,
-      col.names = c("Mean", "Std deviation", "Std error", "Sample size"),
-      digits = c(2, 2, 2, 0),
-      caption = "The numerical summary for the presurgical stress data") %>%
-  row_spec(0, bold = TRUE) %>%
-  kable_styling(font = 10)
-}
-if( knitr::is_html_output() ) {
-kable(STtable,
-      format = "html",
-      booktabs = TRUE,
-      longtable = FALSE,
-      col.names = c("Mean", "Std deviation", "Std error", "Sample size"),
-      digits = c(2, 3, 3, 0),
-      caption = "The numerical summary for the presurgical stress data")
-}
-
-```
-
-The jamovi output in Fig. \@ref(fig:StressDescriptivesjamovi) can be used to construct an approximate 95% CI for the *increase* in stress as surgery gets closer.
-
-```{r StressDescriptivesjamovi, echo=FALSE, fig.cap="jamovi output for the surgery-stress data", fig.align="center", out.width='70%'}
-knitr::include_graphics("jamovi/Stress/StressDescriptives.png")
-```
-
-The mean *increase* in beta-endorphin concentration is 7.70 fmol/mol, and the *standard error for this increase* is 3.10 fmol/mol.
-The approximate 95% CI is $\bar{d} \pm (2\times \text{s.e.}(\bar{d}))$:
-
-\[
-  7.70 \pm (2\times 3.10)\quad\text{or:}\quad 7.70 \pm 6.20,
-\]
-or from $1.50$ to $13.90$ fmol/m.
-
-Using jamovi, the *exact* 95% CI is from 1.18 to 14.22 fmol/mol, similar to the *approximate* CI computed manually.
-Also note that the standard error in the output can be computed by hand as
-
-\[
-   \text{s.e.}(\bar{d}) = \frac{s_d}{\sqrt{n}} = \frac{13.52}{\sqrt{19}} = 3.1017...,
-\]
-the same as in the output.
-
-The sample size is $n = 19$, just less than 25, so the results may not be statistically valid (but shouldn't be too bad).
-
-
 
 ## Quick review questions {#Chap23-QuickReview}
 
@@ -1029,12 +989,87 @@ Do you think the treatment had any impact on the mean weight of the girls?
 
 
 
+::: {.exercise #StressSurgeryCI}
+The concentration of beta-endorphins in the blood is a sign of stress.
+One study (@data:hand:handbook, Dataset 232; @hoaglin2011exploring) measured the beta-endorphin concentration for 19 patients about to undergo surgery.
+
+Each patient had their beta-endorphin concentrations measured 12--14 hours before surgery, and also 10 minutes before surgery.
+A numerical summary can be produced from jamovi output (Table \@ref(tab:StressTable)).
+
+
+```{r StressTable, echo=FALSE}
+ST <- read.csv("Data/stress.csv")
+
+ST$Diff <- ST$BeforeMins - ST$BeforeHours
+
+STtable <- array( dim = c(3, 4) )
+
+rownames(STtable) <- c("12--14 hours before surgery",
+                       "10 minutes before surgery",
+                       "Increase")
+colnames(STtable) <- c("Sample mean",
+                       "Std deviation",
+                       "Std error",
+                       "Sample size")
+
+STtable[, 1] <- c(mean(ST$BeforeHours),
+                  mean(ST$BeforeMins),
+                  mean(ST$Diff))
+STtable[, 2] <- c(sd(ST$BeforeHours),
+                  sd(ST$BeforeMins),
+                  sd(ST$Diff))
+STtable[, 4] <- c(length(ST$BeforeHours),
+                  length(ST$BeforeMins),
+                  length(ST$Diff))
+STtable[, 3] <- STtable[, 2] / sqrt( STtable[, 4])     
+
+
+if( knitr::is_latex_output() ) {
+kable(STtable,
+      format = "latex",
+      booktabs = TRUE,
+      longtable = FALSE,
+      col.names = c("Mean", "Std deviation", "Std error", "Sample size"),
+      digits = c(2, 2, 2, 0),
+      caption = "The numerical summary for the presurgical stress data") %>%
+  row_spec(0, bold = TRUE) %>%
+  kable_styling(font = 10)
+}
+if( knitr::is_html_output() ) {
+kable(STtable,
+      format = "html",
+      booktabs = TRUE,
+      longtable = FALSE,
+      col.names = c("Mean", "Std deviation", "Std error", "Sample size"),
+      digits = c(2, 3, 3, 0),
+      caption = "The numerical summary for the presurgical stress data")
+}
+
+```
+
+
+1. Use the jamovi output in Fig. \@ref(fig:StressDescriptivesjamovi) to construct an *approximate* 95% CI for the *increase* in stress as surgery gets closer.
+2. Use the jamovi output in Fig. \@ref(fig:StressDescriptivesjamovi) to write down the *exact* 95% CI for the *increase* in stress as surgery gets closer.
+3. Is the CI likely to be statistically valid?
+:::
+
+```{r StressDescriptivesjamovi, echo=FALSE, fig.cap="jamovi output for the surgery-stress data", fig.align="center", out.width='70%'}
+knitr::include_graphics("jamovi/Stress/StressDescriptives.png")
+```
 
 
 <!-- QUICK REVIEW ANSWERS -->
 `r if (knitr::is_html_output()) '<!--'`
+**Answers to in-chapter questions:**
+
 ::: {.QRanswerBox .QRanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
-\textbf{Answers to \textit{Quick Revision} questions:}
+**Answers to in-chapter questions:**
+
+- Sect. \ref{thinkBox:WhichPaired}: Situations **1** and **3** are paired.
+- Sect. \ref{thinkBox:WhichGraph}: Histogram of differences; case-profile plot.
+- Sect. \ref{thinkBox:MeanDifferenceDBP}: Be careful: The RQ is about the mean difference in the **population**... but we only have the mean difference from one of the many possible **samples**.
+  So it is difficult to be certain.
+- \textbf{\textit{Quick Revision} questions:}
 **1.** True
 **2.** True.
 **3.** True.
