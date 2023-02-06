@@ -17,7 +17,7 @@ RT <- read.csv("./Data/ReactionTimePhoneInd.csv")
 
 
 `r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}{R}{.25\textwidth}
+\begin{wrapfigure}[6]{R}{.25\textwidth}
   \begin{center}
     \includegraphics[width=.20\textwidth]{Illustrations/pexels-splitshire-2224.jpg}
   \end{center}
@@ -498,38 +498,6 @@ The plausible values for the difference between the two population means are bet
 Stating the CI alone is insufficient; the *direction* in which the differences were calculated must be given, so readers know which group had the higher mean.
 
 
-::: {.example #TwoSampleCIWhales name="Gray whales"}
-A study of gray whales (*Eschrichtius robustus*) measured (among other things) the length of whales at birth [@agbayani2020growth]:
-
-
-| Sex     |  Mean (in m)  |Standard deviation (in m) | Sample size 
-|--------:+:-------------:+:------------------------:+:-----------:
-| Female 	| 4.66          | 0.379 	                 | 26 	
-| Male 	  | 4.60 	        | 0.305 	                 | 30 
-
-How much longer are female gray whales than males, on average?
-
-Define the *difference* as the mean length of female gray whales *minus* the mean length of male gray whales.
-Then we wish to estimate the difference $\mu_F - \mu_M$ (where $F$ and $M$ represent female and male gray whales respectively); this is the *parameter* of interest.
-The best estimate of this difference is $\bar{x}_F - \bar{x}_M = 4.66 - 4.60 = 0.06$.
-
-This value is likely to vary from sample to sample, and hence it has a standard error.
-Since we do not provide a formula to compute this standard error, it must be *given*: $\text{s.e.}(\bar{x}_F - \bar{x}_M) = 0.0929$.
-Then the approximate 95% CI is from
-
-\[
-   0.06 - (2 \times 0.0929) \qquad \text{to}\qquad 0.06 + (2 \times 0.0929)
-\]
-so the CI is from $-0.12$&nbsp;m to $0.25$&nbsp;m.
-
-One of these limits is a *negative* value. 
-This does not mean a *negative* length for a whale; that would be silly.
-This CI is for the *difference* between the mean lengths, and a *negative* length just says the mean length for males is greater than the mean length for females.
-So we could say:
-
-> The population mean difference between the length of female and male gray whales at birth has a 95% chance of being between $0.12$&nbsp;m longer for male whales to $0.25$&nbsp;m longer for female whales.
-:::
-
 
 ## Using software: CIs for two independent means
 
@@ -577,9 +545,6 @@ The histograms of the *samples* could be used to determine if normality of the *
 
 ::: {.example #StatisticalValidity name="Statistical validity"}
 For the reaction-time data, both samples are larger than $25$, so the CI will be statistically valid.
-
-In the whales examples of Example \@ref(exm:TwoSampleCIWhales), the two sample sizes are 26 (for females) and 30 (for males).
-Since both samples are larger than 25, the CI will be statistically valid.
 :::
 
 
@@ -846,52 +811,6 @@ arrows(1:3, mns - 2 * ses,
        angle = 90, 
        code = 3)
 ```
-
-
-::: {.example #ErrorBarWhales name="Whales"}
-Using the data about gray whales from Example \@ref(exm:TwoSampleCIWhales), the error bar chart in Fig. \@ref(fig:WhalesErrorbar) can be constructed.
-The plot seems to suggest little difference between the mean length of female and male gray whales at birth.
-:::
-
-      
-```{r WhalesErrorbar, echo=FALSE, fig.cap="Error bar chart comparing the lengths of female and male gray whales", fig.align="center", fig.width=4.5, fig.height=3.5}
-
-ciF <- c(4.66 - 2 * (0.379 / sqrt(26)),
-         4.66 + 2 * (0.379 / sqrt(26)) )
-ciM <- c(4.60 - 2 * (0.305 / sqrt(30)),
-         4.60 + 2 * (0.305 / sqrt(30)) )
-
-
-plot( range( c( ciF, ciM) ) ~ c(1, 2), 
-      type = "n",
-      xlim = c(0.5, 2.5),
-      ylim = c(4.45, 4.85),
-      pch = 19,
-      axes = FALSE,
-      main = "Error bars chart:\n length of gray whales at birth",
-      xlab = "Sex", 
-      ylab = "Length (in metres)",
-      sub = "(Error bars are 95% confidence intervals)",
-      las = 1)
-axis(side = 1, 
-     at = 1:2, 
-     labels = c("Females", "Males"), 
-     las = 1) 
-axis(side = 2, 
-     las = 1)
-box()
-
-points( c(4.66, 4.60) ~ c(1:2), 
-        pch = 19,
-        col = plot.colour,
-        cex = 1.5)
-
-arrows(1:2, c(ciF[1], ciM[1]), 
-       1:2, c(ciF[2], ciM[2]), 
-       length = 0.05, 
-       angle = 90, 
-       code = 3)
-```    
 
 
 
@@ -1314,6 +1233,29 @@ Using the [validity conditions](#ValidityTwoMeans), the CI is statistically vali
 ## Exercises {#MeansIndSamplesExercises}
 
 Selected answers are available in Sect.&nbsp;\@ref(MeansIndSamplesAnswer).
+
+
+::: {.exercise #MeansIndSamplesExercisesWhalesCI}
+A study of gray whales (*Eschrichtius robustus*) measured (among other things) the length of whales at birth [@agbayani2020growth].
+How much longer are female gray whales than males, on average, in the population?
+Some summary data are given below; in addition, $\text{s.e.}(\bar{x}_F - \bar{x}_M) = 0.0929$.
+
+
+
+| Sex     |  Mean (in m)  |Standard deviation (in m) | Sample size 
+|--------:+:-------------:+:------------------------:+:-----------:
+| Female 	| 4.66          | 0.379 	                 | 26 	
+| Male 	  | 4.60 	        | 0.305 	                 | 30 
+
+
+1. Define the *difference*.
+1. Write down the parameter, and its estimate.]
+1. Sketch an error-bar chart.
+1. Compute the approximate 95% CI, and write a conclusion.
+1. Is the CI likely to be statistically valid?
+:::
+
+
 
 ::: {.exercise #MeansIndSamplesExercisesNHANES}
 Earlier, we used the NHANES study data (Sect.&nbsp;\@ref(NHANESGraphs)), and considered this RQ:

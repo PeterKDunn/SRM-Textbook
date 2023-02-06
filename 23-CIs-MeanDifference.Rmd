@@ -460,50 +460,6 @@ In this case then, the results may not be valid; that is, the CI  limits that we
 :::
 
 
-::: {.example #CIMeanDiffCOVID name="COVID lockdown"}
-A study of $n = 213$ Spanish health students [@romero2020physical] measured (among other things) the number of minutes of vigorous physical activity (PA) performed by students *before* and *during* the COVID-19 lockdown (from March to April 2020 in Spain).
-Since the *before* and *during* lockdown were both measured on *each* participant, the data are *paired* (within individuals).
-The data are summarised below.
-
-|                | **Mean (minutes)**  | **Standard deviation (minutes)**
-|---------------:+--------------------:+----------------------------:
-| Before         | $28.47$             | $54.13$     
-| During         | $30.66$             | $30.04$ 
-| **Increase**   | $2.68$              | $51.30$
-
-
-The *differences* are defined as *during* minus *before*, so that *positive* difference therefore means the *during* value is higher.
-Hence, the differences correspond to the *increase* in PA during lockdown (compared to before).
-Similarly, a *negative * value means that the *before* value is higher.
-The *parameter* of interest is the population mean difference $\mu_d$, the mean increase vigorous PA *during* lockdown compared to *during* the lockdown.
-
-Notice that the standard deviation of the difference ($\text{s.e.}(\bar{d}) = 51.30$) is **not** $54.13 - 30.04$, or $30.04 - 54.13$.
-Those calculations would find the difference between the two standard deviations... not the standard deviation of the list of differences.
-
-Every sample would contain different students, and hence would produce different pre- and during-COVID mean amounts of PA, so those means would have standard error.
-Likewise, the mean of each individuals' *difference* would vary from sample to sample, so the *mean difference* would vary and hence have a standard error:
-  
-\[
-   \text{s.e.}(\bar{d}) = \frac{s_d}{n} = \frac{51.30}{\sqrt{213}} = 3.515018.  
-\]
-The approximate 95% CI for the population mean *difference* is from
-
-\[
-  2.68 - (2 \times 3.515018) = -4.3500\qquad\text{to}\qquad 2.68 + (2 \times 3.515018) = 9.7100,
-\]
-so the approximate 95% CI for the population mean *difference* is from -4.35 to 9.71 minutes.
-
-Notice that one value is *negative*.
-This does **not** mean a negative amount of PA (which would make no sense); the CI is for the population mean *increase* during compared to before lockdown.
-So, a negative value means that the *before* values are higher than the *during* values on average.
-
-So, the CI means: 
-
-> In the population, the mean difference between the amount of vigorous PA by Spanish health students is between 4.35 minutes more *during* lockdown, and 9.71 minutes more *before* lockdown.
-:::
-
-
-
 ## Using software: CIs for mean differences
 
 Software (such as jamovi or SPSS) can produce *exact* 95% CIs, which may be slightly different than the *approximate* 95% CI (since the 68--95--99.7 rule produces *approximation* multipliers).
@@ -513,7 +469,7 @@ From the jamovi or SPSS output (Fig.&nbsp;\@ref(fig:InsulationTestOutput)):
 > Based on the sample, a 95% CI is for the population mean energy *saving* after adding wall cavity insulation is from $-0.19$ to $1.27$MWh.
 
 
-```{r InsulationTestOutput, echo=FALSE, fig.cap="The insulation data: jamovi output (top) and SPSS output(bottom)", fig.align="center", out.width="85%", fig.show="hold"}
+```{r InsulationTestOutput, echo=FALSE, fig.cap="The insulation data: jamovi output (top) and SPSS output(bottom)", fig.align="center", out.width=c("95%","85%"), fig.show="hold"}
 knitr::include_graphics("jamovi/InsulationBeforeAfter/InsulationBeforeAfterPairedTOutput.png")
 knitr::include_graphics( "SPSS/InsulationBeforeAfter/InsulationBeforeAfterPairedTOutput.png")
 ```
@@ -621,30 +577,79 @@ The differences could be computed as:
 
 Either way is fine, provided the order is used consistently.
 Here, the observation from the *second* visit will be used, so that the differences represent the *reduction* in DBP from the first to second visit.
-
 The parameter is $\mu_d$, the population mean *reduction* in DBP.
 
-```{r DiabetesDataTable, echo=FALSE}
+
+
+
+\begin{figure}
+\centering
+\begin{minipage}{0.45\textwidth}%
+\captionof{table}{The first six observations (from the $n=141$ available) from the diabetes study for people with both measurements: Diastolic blood pressure (DBP) for the first and second visits, and the decrease in DBP, all in mm Hg\label{tab:DiabetesDataTable}}
+```{r MARTHA, echo=FALSE}
+DiffExists <- complete.cases(diab[, c("bp.1d", 
+                                      "bp.2d", 
+                                      "Diff")])
+
+knitr::kable(head( diab[DiffExists, c("bp.1d", 
+                                      "bp.2d", 
+                                      "Diff")]),
+             format = "latex",
+             booktabs = TRUE,
+             align = c("p{18mm}","p{18mm}","p{18mm}"),
+             longtable = FALSE,
+             linesep = c("", "", 
+                         "\\addlinespace", 
+                         "", "", ""),
+             table.env = "@empty",
+             row.names = FALSE,
+             col.names = c("DBP: First visit", "DBP: Second visit", "Reduction in DBP") ) %>%
+  row_spec(row = 0, bold = TRUE)
+#kable_styling(font_size = 10) # CANNOT USE THIS IN THE MINIPAGE
+```
+\end{minipage}
+\hspace{0.06\textwidth}
+\begin{minipage}{0.43\textwidth}%
+\centering
+```{r DiabetesHIST, echo=FALSE, fig.width=3.75, out.width='95%'}
+hist(diab$Diff,
+	col = plot.colour,
+	xlab = "DBP decrease (in mm Hg)",
+	las = 2,
+	xlim = c(-30, 40),
+	ylim = c(0, 50),
+	ylab = "Frequency",
+	main = "")
+box()
+```
+\caption{Histogram of the decrease in DBP between the first and second visits\label{fig:DiabetesHIST}}
+\end{minipage}
+\end{figure}
+
+
+
+
+```{r DiabetesDataTable2, echo=FALSE}
 DiffExists <- complete.cases(diab[, c("bp.1d", 
                                       "bp.2d", 
 				      "Diff")])
 
-if( knitr::is_latex_output() ) {
-  kable(head( diab[DiffExists, c("bp.1d", 
-                                 "bp.2d", 
-				 "Diff")]),
-        format = "latex",
-        booktabs = TRUE,
-        longtable = FALSE,
-        linesep = c("", "", 
-                    "\\addlinespace", 
-                    "", "", ""),
-        row.names = FALSE,
-        col.names = c("DBP: First visit", "DBP: Second visit", "Reduction in DBP"),
-        caption = "The first six observations (from the $n=141$ available) from the diabetes study for people with both measurements: Diastolic blood pressure (DBP) for the first and second visits, and the decrease in DBP, all in mm Hg") %>%
-  row_spec(row = 0, bold = TRUE) %>%
-  kable_styling(font_size = 10)
-}
+# if( knitr::is_latex_output() ) {
+#   kable(head( diab[DiffExists, c("bp.1d", 
+#                                  "bp.2d", 
+# 				 "Diff")]),
+#         format = "latex",
+#         booktabs = TRUE,
+#         longtable = FALSE,
+#         linesep = c("", "", 
+#                     "\\addlinespace", 
+#                     "", "", ""),
+#         row.names = FALSE,
+#         col.names = c("DBP: First visit", "DBP: Second visit", "Reduction in DBP"),
+#         caption = "The first six observations (from the $n=141$ available) from the diabetes study for people with both measurements: Diastolic blood pressure (DBP) for the first and second visits, and the decrease in DBP, all in mm Hg") %>%
+#   row_spec(row = 0, bold = TRUE) %>%
+#   kable_styling(font_size = 10)
+# }
 if( knitr::is_html_output( excludes = "epub") ) {
   DT::datatable( diab[DiffExists, c("bp.1d", 
                                     "bp.2d", 
@@ -673,8 +678,9 @@ Since the data set is large, the appropriate graphical summary is a histogram of
 The numerical summary can summarise both the first and second visit observations, but *must* summarise the *differences*.
 Numerical summaries can be computed using software, then reported in a suitable table (Table \@ref(tab:DiabSummTable)).
 
-
-```{r DiabetesHIST, echo=FALSE, fig.cap="Histogram of the decrease in DBP between the first and second visits", fig.align="center", fig.width=5, fig.height=3.5}
+<!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r DiabetesHIST2, echo=FALSE, fig.cap="Histogram of the decrease in DBP between the first and second visits", fig.align="center", fig.width=5, fig.height=3.5}
 hist(diab$Diff,
 	col = plot.colour,
 	xlab = "DBP decrease (in mm Hg)",
@@ -685,6 +691,7 @@ hist(diab$Diff,
 	main = "")
 box()
 ```
+`r if (knitr::is_latex_output()) '-->'`
 
 
 
@@ -1053,9 +1060,63 @@ kable(STtable,
 3. Is the CI likely to be statistically valid?
 :::
 
+
 ```{r StressDescriptivesjamovi, echo=FALSE, fig.cap="jamovi output for the surgery-stress data", fig.align="center", out.width='70%'}
 knitr::include_graphics("jamovi/Stress/StressDescriptives.png")
 ```
+
+
+
+
+::: {.exercise #MeanDiffCOVIDCI}
+A study of $n = 213$ Spanish health students [@romero2020physical] measured (among other things) the number of minutes of vigorous physical activity (PA) performed by students *before* and *during* the COVID-19 lockdown (from March to April 2020 in Spain).
+Since the *before* and *during* lockdown were both measured on *each* participant, the data are *paired* (within individuals).
+The data are summarised in Table \@ref(tab:COVIDsummaryTable).
+
+1. Explain what the differences *mean*.
+1. Compute the standard error of the differences.
+1. Compute the approximate 95% CI, and interpret what it means.
+:::
+
+
+
+```{r COVIDsummaryTable, echo=FALSE}
+COVID.summary     <- array( dim = c(3, 2))
+colnames(COVID.summary) <- c("Mean (mins)", 
+                             "Std dev (mins)")
+rownames(COVID.summary) <- c("Before",
+                             "During",
+                             "Increase")
+
+
+COVID.summary[1, ] <- c(28.47,
+                        54.13)
+COVID.summary[2, ] <- c(30.66,
+                        30.04)
+COVID.summary[3, ] <- c(2.68,
+                        51.30)
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(COVID.summary,
+               format = "latex",
+               booktabs = TRUE,
+               longtable = FALSE,
+               caption = "Summary information for the COVID-lockdown data",
+               align = c("r", "r")) %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10)
+} 
+if( knitr::is_html_output(excludes = "epub") ) {
+   knitr::kable( COVID.summary,
+                 format = "html",
+                 caption = "Summary information for the COVID-lockdown data")
+}
+```
+
+
+
+
 
 
 <!-- QUICK REVIEW ANSWERS -->
