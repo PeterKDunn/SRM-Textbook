@@ -51,18 +51,86 @@ Suppose a *model* for the heights of Australian adult males is adopted that has:
 Then, the *distribution* of the heights of Australian adult males would look like Fig. \@ref(fig:HeightsModel).
 That is, most Australian adult males are between about 168 and 182cm, and very few are taller than 196cm or shorter than 154cm.
 
-```{r HeightsModel, echo=FALSE, results='hide', fig.cap="A model for the heights of Australian adult males", fig.align="center", fig.width=5, fig.height=2.5}
+```{r HeightsModel, echo=FALSE, out.width='100%', results='hide', fig.cap="A model for the heights of Australian adult males, showing 1, 2 qnd 3 standard deviations either side of the mean (left); the model for heights of Australian adult males, plus the histogram from one specific sample if size $n = 100$ of Australian adult males (right)", fig.align="center", fig.width=7.5, fig.height=2.5}
 HT.mn <- 175
 HT.sd <- 7
 
-plot.norm(HT.mn, HT.sd, 
-          xlab.name = "Height (in cm)",
-          main = "Hieght of Australian\nadult males",
-          zlim.lo = -4, 
-	  zlim.hi = 4, 
-          type = "",
-          shade.lo.x = -5, 
-	  shade.hi.x = 5 )
+par( mfrow = c(1, 2),
+     mar = c(5, 0.5, 4, 0.5))
+
+plotNormal(mu = HT.mn, 
+           sd = HT.sd, 
+           showZ = FALSE,
+           xlab = "Height (in cm)",
+           main = "Height of Australian\nadult males")
+
+
+set.seed(6000)
+
+  HT.mn <- 175
+  HT.sd <- 7
+  num.heights <- 100
+  
+  x <- seq( HT.mn - 4 * HT.sd, 
+            HT.mn + 4 * HT.sd, 
+	    length = 100)
+  y <- dnorm( x,  
+              mean = HT.mn, 
+	      sd = HT.sd)
+  
+  
+  NumSampleHists <- 10
+  
+  for (i in (5:5)){
+    # HISTOGRAMS
+    if ( i > 1 ){
+      HT.data <- rnorm( num.heights, mean=HT.mn, sd=HT.sd)
+      
+      out <- hist(HT.data, 
+                  breaks = seq(150, 200, by = 5),
+                  col = plot.colour,
+                  border = plot.colour,
+                  xlab = "Heights (in cm)",
+                  axes = FALSE,
+                  plot = TRUE,
+                  xlim = range(x),
+                  main = "Model for the heights of\nAustralian adult males",
+                  sub = "One sample of size 100",
+                  ylab = "")
+      axis(side = 1 )
+    }
+    
+    
+    # Plot the normal distribution
+    if ( i == 1 ) {
+      plot( range(x), c(0, 1),
+            axes = FALSE,
+            type = "n",
+            main = "Model for the heights of\nAustralian adult males",
+            xlab = "Height (in cm)",
+            ylab = "")
+      axis(side = 1)
+      
+      lines( (y / max(y)) ~ x,
+             lwd = 2,
+             col = "black")
+    } else {
+      y <- y / max(y) * max (out$counts)
+      
+      lines( y ~ x,
+             lwd = 2,
+             col = "black")
+    }
+    
+    # Plot x-xaxis
+    abline(v = 0,
+           col = "grey",
+           lwd = 2)
+    # Plot the mean
+    abline(h = 0,
+           col = "grey",
+           lwd = 2)
+  }
 ```
 
 This model represents an idealised, or *assumed*, picture of the histogram of the heights of all Australian adult males in the *population*.
@@ -157,75 +225,75 @@ For example,
 <!-- ``` -->
 
 ```{r HeightsModelFig, echo=FALSE, fig.align="center", fig.width=5.5, fig.height=3.0, fig.cap="The model for heights of Australian adult males, plus the histogram from one specific sample if size $n = 100$ of Australian adult males" }
-
-if (knitr::is_latex_output()) {
-   set.seed(6000)
-
-  HT.mn <- 175
-  HT.sd <- 7
-  num.heights <- 100
-  
-  x <- seq( HT.mn - 4 * HT.sd, 
-            HT.mn + 4 * HT.sd, 
-	    length = 100)
-  y <- dnorm( x,  
-              mean = HT.mn, 
-	      sd = HT.sd)
-  
-  
-  NumSampleHists <- 10
-  
-  for (i in (5:5)){
-    # HISTOGRAMS
-    if ( i > 1 ){
-      HT.data <- rnorm( num.heights, mean=HT.mn, sd=HT.sd)
-      
-      out <- hist(HT.data, 
-                  breaks = seq(150, 200, by = 5),
-                  col = plot.colour,
-                  border = plot.colour,
-                  xlab = "Heights (in cm)",
-                  axes = FALSE,
-                  plot = TRUE,
-                  xlim = range(x),
-                  main = "Model for the heights of\nAustralian adult males",
-                  sub = "One sample of size 100",
-                  ylab = "")
-      axis(side = 1 )
-    }
-    
-    
-    # Plot the normal distribution
-    if ( i == 1 ) {
-      plot( range(x), c(0, 1),
-            axes = FALSE,
-            type = "n",
-            main = "Model for the heights of\nAustralian adult males",
-            xlab = "Height (in cm)",
-            ylab = "")
-      axis(side = 1)
-      
-      lines( (y / max(y)) ~ x,
-             lwd = 2,
-             col = "black")
-    } else {
-      y <- y / max(y) * max (out$counts)
-      
-      lines( y ~ x,
-             lwd = 2,
-             col = "black")
-    }
-    
-    # Plot x-xaxis
-    abline(v = 0,
-           col = "grey",
-           lwd = 2)
-    # Plot the mean
-    abline(h = 0,
-           col = "grey",
-           lwd = 2)
-  }
-}
+# 
+# if (knitr::is_latex_output()) {
+#    set.seed(6000)
+# 
+#   HT.mn <- 175
+#   HT.sd <- 7
+#   num.heights <- 100
+#   
+#   x <- seq( HT.mn - 4 * HT.sd, 
+#             HT.mn + 4 * HT.sd, 
+# 	    length = 100)
+#   y <- dnorm( x,  
+#               mean = HT.mn, 
+# 	      sd = HT.sd)
+#   
+#   
+#   NumSampleHists <- 10
+#   
+#   for (i in (5:5)){
+#     # HISTOGRAMS
+#     if ( i > 1 ){
+#       HT.data <- rnorm( num.heights, mean=HT.mn, sd=HT.sd)
+#       
+#       out <- hist(HT.data, 
+#                   breaks = seq(150, 200, by = 5),
+#                   col = plot.colour,
+#                   border = plot.colour,
+#                   xlab = "Heights (in cm)",
+#                   axes = FALSE,
+#                   plot = TRUE,
+#                   xlim = range(x),
+#                   main = "Model for the heights of\nAustralian adult males",
+#                   sub = "One sample of size 100",
+#                   ylab = "")
+#       axis(side = 1 )
+#     }
+#     
+#     
+#     # Plot the normal distribution
+#     if ( i == 1 ) {
+#       plot( range(x), c(0, 1),
+#             axes = FALSE,
+#             type = "n",
+#             main = "Model for the heights of\nAustralian adult males",
+#             xlab = "Height (in cm)",
+#             ylab = "")
+#       axis(side = 1)
+#       
+#       lines( (y / max(y)) ~ x,
+#              lwd = 2,
+#              col = "black")
+#     } else {
+#       y <- y / max(y) * max (out$counts)
+#       
+#       lines( y ~ x,
+#              lwd = 2,
+#              col = "black")
+#     }
+#     
+#     # Plot x-xaxis
+#     abline(v = 0,
+#            col = "grey",
+#            lwd = 2)
+#     # Plot the mean
+#     abline(h = 0,
+#            col = "grey",
+#            lwd = 2)
+#   }
+# }
 ```
 
 
@@ -289,8 +357,8 @@ This information can be used to learn about how values are distributed.
 Suppose heights of Australian adult males have a mean of $\mu = 175$cm, and a standard deviation of $\sigma = 7$cm, and (approximately) follow a normal distribution.
 Using this model, what proportion of Australian adult men are *taller* than 182cm?
 
-From a picture of the situation (Fig. \@ref(fig:HtsExer1)), $175 + 7 = 182$cm is one standard deviation *above* the mean.
-Since 68% of values are within one standard deviation of the mean, 32% are outside that range, smaller or larger (Fig. \@ref(fig:HtsExer1)).
+From a picture of the situation (Fig. \@ref(fig:HtsExer1), left panel), $175 + 7 = 182$cm is one standard deviation *above* the mean.
+Since 68% of values are within one standard deviation of the mean, 32% are outside that range, smaller or larger (Fig. \@ref(fig:HtsExer1), left panel).
 Hence, 16% are taller than one standard deviation above the mean, so the answer is about 16%.
 (Another 16% are less than one standard deviation *below* the mean, or less than $175 - 7 = 168$cm in height.)
 
@@ -298,22 +366,24 @@ Again, the percentages only depend on how many standard deviations ($\sigma$) th
 :::
 
 
-```{r HtsExer1, echo=FALSE, fig.cap="What proportion of Australian adult males are taller than 182cm?", fig.align="center", fig.width=5, fig.height=2.25}
-plot.norm(HT.mn, HT.sd, 
-          xlab.name = "Height (in cm)", 
-          zlim.lo = -4, 
-	  zlim.hi = 4, 
-          type = "",
-          shade.lo.x = 182, 
-	  shade.hi.x = Inf )
-plot.norm(HT.mn, HT.sd, 
-          xlab.name = "Height (in cm)", 
-          zlim.lo = -4, 
-	  zlim.hi = 4, 
-          type = "",
-          shade.lo.x = -Inf, 
-	  shade.hi.x = 168, 
-          new=FALSE )
+```{r HtsExer1, echo=FALSE, fig.cap="Left: What proportion of Australian adult males are taller than 182cm? Right: What proportion of Australian adult males are shorter than 161cm?", fig.align="center", fig.width=7.5, fig.height=2.5, out.width='100%'}
+
+par( mfrow = c(1, 2),
+     mar = c(5, 0.5, 4, 0.5))
+
+out <- plotNormal(mu = HT.mn, 
+                  sd = HT.sd, 
+                  xlab = "Height (in cm)")
+shadeNormal(out$x,
+            out$y,
+            lo = 0,
+            hi = 168,
+            col = plot.colour)
+shadeNormal(out$x,
+            out$y,
+            lo = 182,
+            hi = 400,
+            col = plot.colour)
 text(2.5, 0.1, "16%")
 text(-2.5, 0.1, "16%")
 segments(-1, 0, -1, 
@@ -321,36 +391,23 @@ segments(-1, 0, -1,
          col = grey(0.5))
 text(0, 0.1, "68%")
 
-```
 
 
-::: {.example #HeightsExer2 name="The 68--95--99.7 rule"}
-Suppose heights of Australian adult males have a mean of $\mu = 175$cm, and a standard deviation of $\sigma = 7$cm, and (approximately) follow a normal distribution.
-Using this model, what proportion are *shorter* than 161cm?
 
-Again, drawing the situation is helpful (Fig. \@ref(fig:HtsExer2)).
-Since $175 - (2\times 7) = 161$, then 161cm is two standard deviation *below* the mean.
-Since 95% of values are within two standard deviation of the mean, 5% are outside that range (half smaller, half larger; see Fig. \@ref(fig:HtsExer2)), so that 2.5% are *shorter* than 161cm.
-(Another 2.5% are *taller* than $175 + 14 = 189$cm.)
-:::
+out <- plotNormal(mu = HT.mn, 
+                  sd = HT.sd, 
+                  xlab = "Height (in cm)")
+shadeNormal(out$x,
+            out$y,
+            lo = 0,
+            hi = 161,
+            col = plot.colour)
+shadeNormal(out$x,
+            out$y,
+            lo = 189,
+            hi = 400,
+            col = plot.colour)
 
-
-```{r HtsExer2, echo=FALSE, fig.cap="What proportion of Australian adult males are shorter than 161cm?", fig.align="center", fig.width=5, fig.height=2.25}
-plot.norm(HT.mn, HT.sd, 
-          xlab.name = "Height (in cm)", 
-          zlim.lo = -4, 
-	  zlim.hi = 4, 
-          type = "",
-          shade.lo.x = -Inf, 
-	  shade.hi.x = 161 )
-plot.norm(HT.mn, HT.sd, 
-          xlab.name = "Height (in cm)", 
-          zlim.lo = -4, 
-	  zlim.hi = 4, 
-          type = "",
-          shade.lo.x = 189, 
-	  shade.hi.x = Inf, 
-          new = FALSE )
 text(3, 0.1, "2.5%")
 text(-3, 0.1, "2.5%")
 segments(2, 0, 2, 
@@ -360,9 +417,24 @@ text(0, 0.1, "95%")
 
 ```
 
+
+
+
+::: {.example #HeightsExer2 name="The 68--95--99.7 rule"}
+Suppose heights of Australian adult males have a mean of $\mu = 175$cm, and a standard deviation of $\sigma = 7$cm, and (approximately) follow a normal distribution.
+Using this model, what proportion are *shorter* than 161cm?
+
+Again, drawing the situation is helpful (Fig. \@ref(fig:HtsExer1), right panel).
+Since $175 - (2\times 7) = 161$, then 161cm is two standard deviation *below* the mean.
+Since 95% of values are within two standard deviation of the mean, 5% are outside that range (half smaller, half larger; see Fig. \@ref(fig:HtsExer1), right panel), so that 2.5% are *shorter* than 161cm.
+(Another 2.5% are *taller* than $175 + 14 = 189$cm.)
+:::
+
+
+
+
 Again, the percentages only depend on how many standard deviations ($\sigma$) the value ($x$) is from the mean ($\mu$).
 The number of standard deviations that an observation is from the mean is called a *$z$-score*.
-
 A $z$-score is computed using
 
 \[
@@ -649,7 +721,7 @@ Remember: The *total* area under the normal distribution is one.
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Match the diagram in Fig. \@ref(fig:MatchDiagrams) with the meaning for the tree-diameter model (recall: $\mu=8.8$ inches):
+Match the diagram in Fig. \@ref(fig:MatchDiagrams) with the meaning for the tree-diameter model (recall: $\mu = 8.8$ inches):\label{thinkBox:MatchForward}
 
 1. Tree diameters greater than 11 inches.
 2. Tree diameters *between* 6 and 11 inches.
@@ -887,7 +959,7 @@ This time, the *probability* is known, and a tree diameter is sought.
 That is, working 'backwards' is needed (Fig. \@ref(fig:WorkingWithZ), bottom panel), so the $z$-tables need to be used 'backwards' too.
 
 
-```{r WorkingWithZ, echo=FALSE, fig.cap="Working with $z$-scores", fig.align="center"}
+```{r WorkingWithZ, echo=FALSE, fig.cap="Working with $z$-scores", fig.align="center", out.width='80%'}
 par( mar = c(0.5, 0.5, 0.5, 0.5))
 
 openplotmat()
@@ -1066,14 +1138,14 @@ This is called the *unstandardising formula*.
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
 Ball bearings labelled as "50mm bearings" actually have diameters that follow a normal distribution with mean 50mm and standard deviation 0.1mm.
 The *smallest* 15% of bearings are too small for sale.
-What size bearings cannot be sold?
+What size bearings cannot be sold?\label{thinkBox:NormaBearings}
 
 `r if (knitr::is_latex_output()) '<!--'`
 `r webexercises::hide()`
 The closest area from the tables is 0.1492, corresponding to $z = -1.04$.
 Using the unstandardising formula, $x = 50 + (-1.04\times 0.1) = 49.896$.
 
-This means that bearings less than about 49.9&nbsp;mm in diameter cannot be sold.
+Bearings less than about 49.9&nbsp;mm in diameter cannot be sold.
 `r webexercises::unhide()`
 `r if (knitr::is_latex_output()) '-->'`
 :::
@@ -1598,21 +1670,25 @@ For this model:
 
 <!-- QUICK REVIEW ANSWERS -->
 `r if (knitr::is_html_output()) '<!--'`
-::: {.QRanswerBox .QRanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
-\textbf{Answers to \textit{Quick Revision} questions:}
+::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
+**Answers to in-chapter questions:**
+
+- Sect. \ref{thinkBox:MatchForward}: **1:** matches B; **2:** matches C; **3:** matches D; **4:** matches A.
+- Sect. \ref{thinkBox:NormaBearings}: The closest area from the tables is 0.1492, corresponding to $z = -1.04$.
+Using the unstandardising formula, $x = 50 + (-1.04\times 0.1) = 49.896$.
+Bearings less than about 49.9&nbsp;mm in diameter cannot be sold.
+- \textbf{\textit{Quick Revision} questions:}
 **1a.** `r z1`. 
 **1b.** `r prob1`.
 **1c.** `r 1 - prob1`.
 **1d.** `r z2`
 **1e.** `r prob2`.
 **1f.** `r 1 - prob2`.
-
 **2a.** About 1.3%
 **2b.** About 3.8%
 **2c.** About 48.7%.
 **2d.** *Smaller* than about 7.38mm.
 **2e.** *Larger* than about 7.21mm
-
 **3.** False; False; True; True; False; True.
 :::
 `r if (knitr::is_html_output()) '-->'`

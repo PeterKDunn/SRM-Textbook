@@ -95,6 +95,27 @@ The parameter the [*odds ratio* (OR)](#OddsRatio); specifically, the odds ratio 
 Another sensible parameter would be the difference between the *proportions* (or *percentages*) in each group, but the odds ratio usually is used as the parameter (for reason beyond the scope of this book, though one reason is that software commonly produces output related to the sample OR).
 For this reason, writing the RQ in terms of odds ratios or odds is also most appropriate.
 
+::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
+What graphs would be best for displaying these data?\label{thinkBox:WhatGraph}
+
+`r if (knitr::is_latex_output()) '<!--'`
+* A bar chart.
+`r if( knitr::is_html_output(exclude = "epub") ) {
+	 mcq( c("Suitable", answer = "Not suitable"))}`   
+* A stacked bar chart.
+`r if( knitr::is_html_output(exclude = "epub") ) {
+	 mcq( c(answer = "Suitable", "Not suitable"))}`   
+* A side-by-side bar chart
+`r if( knitr::is_html_output(exclude = "epub") ) {
+	 mcq( c(answer = "Suitable", "Not suitable"))}`   
+* A scatterplot
+`r if( knitr::is_html_output(exclude = "epub") ) {
+	 mcq( c("Suitable", answer = "Not suitable"))}`   
+`r if (knitr::is_latex_output()) '-->'`
+:::
+
+
+
 Using the OR, the RQ could be written as
 
 > Among university students, what is the odds ratio of students eating most meals off-campus, comparing those who *do* and *do not* live with their parents?
@@ -116,27 +137,6 @@ Recall (Sect. \@ref(QualOdds): software usually compares Row 1 to Row 2, and Col
 What are P, O, C and I for this RQ?
 :::
 
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-
-A study [@data:Mann12017:UniStudents] examined the eating habits of university students. 
-What graphs would be best for displaying these data?
-
-`r if (knitr::is_latex_output()) '<!--'`
-* A bar chart.
-`r if( knitr::is_html_output(exclude = "epub") ) {
-	 mcq( c("Suitable", answer = "Not suitable"))}`   
-* A stacked bar chart.
-`r if( knitr::is_html_output(exclude = "epub") ) {
-	 mcq( c(answer = "Suitable", "Not suitable"))}`   
-* A side-by-side bar chart
-`r if( knitr::is_html_output(exclude = "epub") ) {
-	 mcq( c(answer = "Suitable", "Not suitable"))}`   
-* A scatterplot
-`r if( knitr::is_html_output(exclude = "epub") ) {
-	 mcq( c("Suitable", answer = "Not suitable"))}`   
-`r if (knitr::is_latex_output()) '-->'`
-:::
 
 
 ## Summaries: Comparing odds {#CIOddsRatiosSummaries}
@@ -198,7 +198,6 @@ if( knitr::is_latex_output() ) {
                       "Sample size"),
        caption = "The odds and percentage of university students eating most meals off-campus"
   ) %>%
-     row_spec(2, hline_after =TRUE) %>%
      kable_styling(font_size = 10) %>%
      column_spec(1, width = "35mm") %>%
      column_spec(2, width = "33mm") %>%
@@ -728,6 +727,46 @@ A study [@egbue2017mass] of the adoption of electric vehicle (EVs) by a certain 
 Output from using jamovi is shown in Fig. \@ref(fig:EVjamovi).
 
 
+```{r echo=FALSE}
+EV10 <- array(dim = c(2, 2))
+
+colnames(EV10) <- c("Yes", 
+                    "No")
+rownames(EV10) <- c("No post-grad", 
+                    "Post-grad study")
+
+EV10[1, ] <- c(24, 8)
+EV10[2, ] <- c(51, 29)
+```
+
+\begin{figure}
+\begin{minipage}{0.32\textwidth}
+\captionof{table}{Responses to the question 'Would you purchase an electric vehicle in the next 10 years?' by education\label{tab:EV10years}}
+```{r echo=FALSE}
+knitr::kable( EV10,
+         format = "latex",
+         booktabs = TRUE,
+         longtable = FALSE,
+         table.env = "@empty") %>%
+   row_spec(0, bold = TRUE)
+   #kable_styling(font_size = 10) %>% # CANNOT USE THIS IS THE MINIPAGE
+   #column_spec(1, width = "13mm") %>%
+   #column_spec(2, width = "22mm")
+```
+\end{minipage}
+\hspace{0.05\textwidth}
+\begin{minipage}{0.60\textwidth}%
+\centering
+```{r echo=FALSE, out.width='95%'}
+knitr::include_graphics( "jamovi/EVs/EVs-CI.png")
+```
+\caption{jamovi output for the EV study}\label{fig:EVjamovi}
+\end{minipage}
+\end{figure}
+
+
+
+
 ```{r EV10years, echo=FALSE}
 EV10 <- array(dim = c(2, 2))
 
@@ -740,15 +779,15 @@ EV10[1, ] <- c(24, 8)
 EV10[2, ] <- c(51, 29)
 
 
-if( knitr::is_latex_output() ) {
-  kable(EV10,
-        format = "latex",
-        longtable = FALSE,
-        booktabs = TRUE,
-        caption = "Responses to the question 'Would you purchase an electric vehicle in the next 10 years?' by education") %>%
-	kable_styling(font_size = 10) %>%
-	row_spec(0, bold = TRUE)
-}
+#if( knitr::is_latex_output() ) {
+#   kable(EV10,
+#         format = "latex",
+#         longtable = FALSE,
+#         booktabs = TRUE,
+#         caption = "Responses to the question 'Would you purchase an electric vehicle in the next 10 years?' by education") %>%
+# 	kable_styling(font_size = 10) %>%
+# 	row_spec(0, bold = TRUE)
+#}
 
 if( knitr::is_html_output(exclude = "epub") ) {
   kable(EV10,
@@ -766,10 +805,12 @@ if( knitr::pandoc_to("epub3") ) {
 }
 ```
 
-
+<!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
+`r if (knitr::is_latex_output()) '<!--'`
 ```{r EVjamovi, echo=FALSE, fig.show="hold", fig.cap="jamovi output for the EV study", fig.align="center", out.width="50%"}
 knitr::include_graphics( "jamovi/EVs/EVs-CI.png")
 ```
+`r if (knitr::is_latex_output()) '-->'`
 
 
 1. The *percentage* of people without post-grad study who would buy an EV in the next 10 years is `r if (knitr::is_html_output()) '(**do not** add the percentage symbol)'`:  
@@ -919,17 +960,20 @@ They also ran a different set of 42 turbines for about 3000 hours, and found tha
 1. Use the jamovi output (Fig. \@ref(fig:TurbinesOutputCI)) to construct a 95% CI for the odds ratio.
 1. Compute, then carefully interpret, the OR.
 1. Write down, then carefully interpret, the CI for the OR.
-1. Is the CI likely to be statistically valid (Fig. \@ref(fig:TurbinesOutputExpected))?
+1. Is the CI likely to be statistically valid (Fig. \@ref(fig:TurbinesOutputCI))?
 :::
 
 
-```{r TurbinesOutputCI, echo=FALSE, fig.show="hold", fig.cap="jamovi output for the turbine data: output", fig.align="center", out.width="49%"}
+```{r TurbinesOutputCI, echo=FALSE, fig.show="hold", fig.cap="jamovi output for the turbine data", fig.align="center", out.width=c("49%", "44%")}
 knitr::include_graphics( "jamovi/Turbines/TurbinesCI-jamovi.png" )
-```
-
-```{r TurbinesOutputExpected, echo=FALSE, fig.show="hold", fig.cap="jamovi output for the turbine data: expected counts", fig.align="center", out.width="44%"}
 knitr::include_graphics( "jamovi/Turbines/TurbinesExpected-jamovi.png" )
 ```
+
+
+
+<!-- ```{r TurbinesOutputExpected, echo=FALSE, fig.show="hold", fig.cap="jamovi output for the turbine data: expected counts", fig.align="center", out.width="44%"} -->
+<!-- knitr::include_graphics( "jamovi/Turbines/TurbinesExpected-jamovi.png" ) -->
+<!-- ``` -->
 
 
 
@@ -947,8 +991,8 @@ emeraldaug$SOIpos <- factor( emeraldaug$SOI>0 )
 SOI.tab <- xtabs( ~ (SOIpos) + (Rain>0), 
                   data = emeraldaug)
 
-colnames(SOI.tab) <- c("No rainfall recorded", 
-                       "Rainfall recorded")
+colnames(SOI.tab) <- c("No rain", 
+                       "Rain")
 rownames(SOI.tab) <- c("Non-positive SOI", 
                        "Positive SOI")
 
@@ -968,21 +1012,55 @@ The rainfall at Emerald (Queensland) was recorded for Augusts between 1889 to 20
 Using the jamovi output in Fig.&nbsp;\@ref(fig:EmeraldRainOutputCIjamovi):
 
 1. Find a 95% CI for the OR.
-1. Carefuly explain what this OR means.
+1. Carefully explain what this OR means.
 :::
 
 
-```{r SOItableCI, echo=FALSE}
-if( knitr::is_latex_output() ) {
-  kable( t(SOI.tab),
+
+
+\begin{figure}
+\begin{minipage}{0.37\textwidth}
+\captionof{table}{The SOI, and whether rainfall was recorded in Augusts between 1889 and 2002 inclusive\label{tab:SOItableCI}}
+```{r echo=FALSE}
+knitr::kable( t(SOI.tab),
          format = "latex",
          booktabs = TRUE,
          longtable = FALSE,
-         caption = "The SOI, and whether rainfall was recorded in Augusts between 1889 and 2002 inclusive") %>%
-  row_spec(0, bold = TRUE) %>%
-  kableExtra::kable_styling(latex_options = "hold_position") %>%
-  kable_styling(font_size = 10)
-}
+         #row.names = c("No rain", "Rain"),
+         align = c("P{15mm}", "P{15mm}"),
+         table.env = "@empty") %>%
+   row_spec(0, bold = TRUE)
+   #kable_styling(font_size = 10) %>% # CANNOT USE THIS IS THE MINIPAGE
+   #column_spec(1, width = "13mm") %>%
+   #column_spec(2, width = "22mm")
+```
+\end{minipage}
+\hspace{0.05\textwidth}
+\begin{minipage}{0.55\textwidth}%
+\centering
+```{r echo=FALSE, out.width='95%'}
+knitr::include_graphics( "jamovi/EmeraldRain/EmeraldRainOR.png")
+```
+\caption{jamovi output for the Emerald-rain data}\label{fig:EmeraldRainOutputCIjamovi}
+\end{minipage}
+\end{figure}
+
+
+
+
+
+
+```{r SOItableCI, echo=FALSE}
+# if( knitr::is_latex_output() ) {
+#   kable( t(SOI.tab),
+#          format = "latex",
+#          booktabs = TRUE,
+#          longtable = FALSE,
+#          caption = "The SOI, and whether rainfall was recorded in Augusts between 1889 and 2002 inclusive") %>%
+#   row_spec(0, bold = TRUE) %>%
+#   kableExtra::kable_styling(latex_options = "hold_position") %>%
+#   kable_styling(font_size = 10)
+# }
 if( knitr::is_html_output() ) {
   out <- kable( t(SOI.tab),
          format = "html",
@@ -999,10 +1077,12 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-
+<!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
+`r if (knitr::is_latex_output()) '<!--'`
 ```{r EmeraldRainOutputCIjamovi, echo=FALSE, fig.show="hold", fig.cap="jamovi output for the Emerald-rain data", fig.align="center", out.width="50%"}
 knitr::include_graphics( "jamovi/EmeraldRain/EmeraldRainOR.png" )
 ```
+`r if (knitr::is_latex_output()) '-->'`
 
 
 
@@ -1013,18 +1093,7 @@ knitr::include_graphics( "jamovi/EmeraldRain/EmeraldRainOR.png" )
 
 
 ```{r echo=FALSE}
-SG <- structure(list(Gender = structure(c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 
-1L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L), .Label = c("Male", "Female"
-), class = "factor"), Hat = structure(c(2L, 2L, 2L, 2L, 1L, 1L, 
-1L, 1L, 2L, 2L, 2L, 2L, 1L, 1L, 1L, 1L), .Label = c("No", "Yes"
-), class = "factor"), Sunglasses = structure(c(2L, 2L, 1L, 1L, 
-2L, 2L, 1L, 1L, 2L, 2L, 1L, 1L, 2L, 2L, 1L, 1L), .Label = c("No", 
-"Yes"), class = "factor"), Phone = structure(c(2L, 1L, 2L, 1L, 
-2L, 1L, 2L, 1L, 2L, 1L, 2L, 1L, 2L, 1L, 2L, 1L), .Label = c("Not easy", 
-"Easy"), class = "factor"), Count = c(6L, 15L, 14L, 44L, 21L, 
-81L, 51L, 154L, 2L, 7L, 3L, 10L, 40L, 77L, 94L, 133L)), .Names = c("Gender", 
-"Hat", "Sunglasses", "Phone", "Count"), row.names = c(NA, -16L
-), class = "data.frame")
+SG <- read.csv("Data/HatSunglasses.csv")
 
 SG.Table.GenderHat <- xtabs(Count~Hat+Gender, 
                             data = SG)
@@ -1032,7 +1101,7 @@ SG.Table.GenderHat <- xtabs(Count~Hat+Gender,
 
 ::: {.exercise #CIOddsRatioSunglasses}
 A research study conducted in Brisbane [@data:Dexter2019:SunProtection] recorded the number of people at the foot of the Goodwill Bridge, Southbank, who wore sunglasses and hats between 11:30am to 12:30pm.
-Table \@ref(tab:GenderHatTableCI) records the number of females and males wearing hats.
+Of the 386 males observed, 79 wore hats; of the 366 females observed, 22 wore hats.
 
 Using the SPSS output in Fig.&nbsp;\@ref(fig:SunglassesSPSSOutputCI), find a 95% CI for the OR, and carefully explain what OR this CI applies to.
 Also, construct the numerical summary table.
@@ -1040,36 +1109,6 @@ Also, construct the numerical summary table.
 
 
 
-
-```{r GenderHatTableCI, echo=FALSE}
-if( knitr::is_latex_output() ) {
-  kable( t(SG.Table.GenderHat),
-         format = "latex",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names = c("No hat", 
-                       "Hat"),
-         caption = "The number of people wearing hats, for males and females") %>%
-   row_spec(0, bold = TRUE) %>%
-   kableExtra::kable_styling(latex_options = "hold_position") %>%
-   kable_styling(font_size = 10)
-}
-if( knitr::is_html_output() ) {
-  out <- kable( t(SG.Table.GenderHat),
-                format = "html",
-                booktabs = TRUE,
-                longtable = FALSE,
-                col.names = c("No hat", 
-                              "Hat"),
-         caption = "The number of people wearing hats, for males and females")
-  if ( knitr::is_html_output(excludes = "epub")) {
-    row_spec(out, 0, bold=TRUE)
-  } else {
-    out
-  }
-    
-}
-```
 
 
 
@@ -1081,8 +1120,11 @@ knitr::include_graphics( c("SPSS/Sunglasses/SunglassesSPSS.png") )
 
 <!-- QUICK REVIEW ANSWERS -->
 `r if (knitr::is_html_output()) '<!--'`
-::: {.QRanswerBox .QRanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
-\textbf{Answers to \textit{Quick Revision} questions:}
+::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
+**Answers to in-chapter questions:**
+
+- Sect. \ref{thinkBox:WhatGraph}: Stacked bar chart; side-by-side bar chart.
+- \textbf{\textit{Quick Revision} questions:}
 **1.** 75.
 **2.** 3.
 **3.** 1.71.

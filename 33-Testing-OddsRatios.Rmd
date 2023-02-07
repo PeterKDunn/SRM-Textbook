@@ -990,7 +990,6 @@ knitr::include_graphics( "jamovi/Kerbside/Kerbside-All.png")
 ```
 
 ```{r KerbsideChisqSPSS, echo=FALSE, fig.show="hold", fig.cap="SPSS output for the kerbside-dumping data", fig.align="center", out.width="60%"}
-knitr::include_graphics( "SPSS/Kerbside/Kerbside-Chisq.png")
 ```
 
 ```{r KerbsideSidebysideBar, echo=FALSE, fig.cap="A side-by-side bar chart for the kerbside-dumping data", fig.align="center", out.width="55%", fig.height=3, fig.width=5}
@@ -1123,6 +1122,46 @@ A study [@egbue2017mass] of the adoption of electric vehicle (EVs) by a certain 
 Output from using jamovi is shown in Fig. \@ref(fig:EVjamoviHT).
 
 
+```{r echo=FALSE}
+EV10 <- array(dim = c(2, 2))
+
+colnames(EV10) <- c("Yes", 
+                    "No")
+rownames(EV10) <- c("No post-grad", 
+                    "Post-grad study")
+
+EV10[1, ] <- c(24, 8)
+EV10[2, ] <- c(51, 29)
+```
+
+\begin{figure}
+\begin{minipage}{0.32\textwidth}
+\captionof{table}{Responses to the question 'Would you purchase an electric vehicle in the next 10 years?' by education\label{tab:EV10yearsHT}}
+```{r echo=FALSE}
+knitr::kable( EV10,
+         format = "latex",
+         booktabs = TRUE,
+         longtable = FALSE,
+         table.env = "@empty") %>%
+   row_spec(0, bold = TRUE)
+   #kable_styling(font_size = 10) %>% # CANNOT USE THIS IS THE MINIPAGE
+   #column_spec(1, width = "13mm") %>%
+   #column_spec(2, width = "22mm")
+```
+\end{minipage}
+\hspace{0.05\textwidth}
+\begin{minipage}{0.60\textwidth}%
+\centering
+```{r echo=FALSE, out.width='95%'}
+knitr::include_graphics( "jamovi/EVs/EVs-CI.png")
+```
+\caption{jamovi output for the EV study}\label{fig:EVjamoviHT}
+\end{minipage}
+\end{figure}
+
+
+
+
 ```{r EV10yearsHT, echo=FALSE}
 EV10 <- array(dim = c(2, 2))
 
@@ -1135,15 +1174,15 @@ EV10[1, ] <- c(24, 8)
 EV10[2, ] <- c(51, 29)
 
 
-if( knitr::is_latex_output() ) {
-  kable(EV10,
-        format = "latex",
-        longtable = FALSE,
-        booktabs = TRUE,
-        caption = "Responses to the question 'Would you purchase an electric vehicle in the next 10 years?' by education") %>%
-	kable_styling(font_size = 10) %>%
-	row_spec(0, bold = TRUE)
-}
+#if( knitr::is_latex_output() ) {
+#   kable(EV10,
+#         format = "latex",
+#         longtable = FALSE,
+#         booktabs = TRUE,
+#         caption = "Responses to the question 'Would you purchase an electric vehicle in the next 10 years?' by education") %>%
+# 	kable_styling(font_size = 10) %>%
+# 	row_spec(0, bold = TRUE)
+#}
 
 if( knitr::is_html_output(exclude = "epub") ) {
   kable(EV10,
@@ -1152,7 +1191,7 @@ if( knitr::is_html_output(exclude = "epub") ) {
         booktabs = TRUE,
         caption = "Responses to the question 'Would you purchase an electric vehicle in the next 10 years?' by education")
 }
-if( knitr::pandoc_to("epun3") ) {
+if( knitr::pandoc_to("epub3") ) {
   kable(EV10,
         format = "html",
         longtable = FALSE,
@@ -1160,6 +1199,14 @@ if( knitr::pandoc_to("epun3") ) {
         caption = "Responses to the question 'Would you purchase an electric vehicle in the next 10 years?' by education") 
 }
 ```
+
+<!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r EVjamoviHT, echo=FALSE, fig.show="hold", fig.cap="jamovi output for the EV study", fig.align="center", out.width="50%"}
+knitr::include_graphics( "jamovi/EVs/EVs-CI.png")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
 
 1. The $\chi^2$ value is:
 `r if( knitr::is_html_output(exclude = "epub") ) {mcq(
@@ -1198,11 +1245,6 @@ between those with and without post-graduate study.
 `r if( knitr::is_html_output(exclude = "epub") ) {torf(answer=TRUE)}`
 
 
-```{r EVjamoviHT, echo=FALSE, fig.show="hold", fig.cap="jamovi output for the EV study", fig.align="center", out.width="50%"}
-knitr::include_graphics( "jamovi/EVs/EVs-Tests-CI.png")
-```
-
-
 `r if (!knitr::is_html_output()) '<!--'`
 ::: {.progressBox .progress}
 **Progress:**  `r webexercises::total_correct()`
@@ -1225,8 +1267,9 @@ The data are compiled into a table (Table \@ref(tab:SandfliesHT)), and summarise
 Use the jamovi output (Fig. \@ref(fig:Sandfliesjamovi)) to evaluate the evidence, complete Table \@ref(tab:SandfliesHTNumerical), and write a conclusion.
 :::
 
-  
-```{r SandfliesHT, echo=FALSE}
+
+
+```{r echo=FALSE}
 FliesData <- array( dim = c(2, 2))
 
 FliesData[1, ] <- c(173, 125)
@@ -1235,16 +1278,74 @@ colnames(FliesData) <- c("3 feet above ground",
                          "35 feet above ground")
 rownames(FliesData) <- c("Males", 
                          "Females")
+```
 
-if( knitr::is_latex_output() ) {
-  kable(FliesData,
-        format = "latex",
-        longtable = FALSE,
-        caption = "The sex of sandflies at two heights",
-        booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-    kable_styling(font_size = 10)
-}
+\begin{figure}
+\begin{minipage}{0.52\textwidth}
+\captionof{table}{The sex of sandflies at two heights\label{tab:SandfliesHT}}
+```{r echo=FALSE}
+knitr::kable( FliesData,
+         format = "latex",
+         booktabs = TRUE,
+         longtable = FALSE,
+         align = c("P{15mm}", "P{15mm}"),
+         table.env = "@empty") %>%
+   row_spec(0, bold = TRUE)
+   #kable_styling(font_size = 10) %>% # CANNOT USE THIS IS THE MINIPAGE
+   #column_spec(1, width = "13mm") %>%
+   #column_spec(2, width = "22mm")
+```
+\end{minipage}
+\hspace{0.05\textwidth}
+\begin{minipage}{0.40\textwidth}%
+\centering
+```{r echo=FALSE, fig.width=4,out.width='100%'}
+counts <- matrix( c(173, 125, 150, 73), 
+                  byrow = TRUE, 
+                  nrow = 2)
+rownames(counts) <- c("M", 
+                      "F")
+colnames(counts) <- c("3 ft", 
+                      "35 ft")
+
+mp <- barplot( counts,
+               las = 1,
+               ylim = c(0, 200),
+               col = c("lightblue", 
+                       "thistle3"),
+               ylab = "Number of sandflies",
+               main = "Number of female and male\nsandflies at different heights",
+               xlab = "Height above ground",
+               beside = TRUE)
+
+text(1.5, 50, "M")
+text(2.5, 50, "F")
+text(4.5, 50, "M")
+text(5.5, 50, "F")
+
+box()
+```
+\caption{A side-by-side bar chart of the sandflies data}\label{fig:SandfliesPlot}
+\end{minipage}
+\end{figure}
+
+
+
+
+
+
+
+  
+```{r SandfliesHT, echo=FALSE}
+# if( knitr::is_latex_output() ) {
+#   kable(FliesData,
+#         format = "latex",
+#         longtable = FALSE,
+#         caption = "The sex of sandflies at two heights",
+#         booktabs = TRUE) %>%
+#     row_spec(0, bold = TRUE) %>%
+#     kable_styling(font_size = 10)
+# }
 if( knitr::is_html_output() ) {
   out <- kable(FliesData,
                format = "html",
@@ -1259,7 +1360,6 @@ if( knitr::is_html_output() ) {
 
 }
 ```
-
 
 ```{r SandfliesHTNumerical,  echo=FALSE}
 FliesSummary <- array( dim = c(3, 3) )
@@ -1305,6 +1405,8 @@ if( knitr::is_html_output() ) {
 }
 ```
 
+<!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
+`r if (knitr::is_latex_output()) '<!--'`
 ```{r SandfliesPlot, echo=FALSE, fig.cap="A side-by-side barchart of the sandflies data", fig.align="center", fig.width=5.5, fig.height=3.5}
 counts <- matrix( c(173, 125, 150, 73), 
                   byrow = TRUE, 
@@ -1331,6 +1433,7 @@ text(5.5, 50, "F")
 
 box()
 ```
+`r if (knitr::is_latex_output()) '-->'`
 
 
 
@@ -1485,18 +1588,7 @@ knitr::include_graphics( "jamovi/EmeraldRain/EmeraldRain-All.png" )
 
 
 ```{r echo=FALSE}
-SG <- structure(list(Gender = structure(c(1L, 1L, 1L, 1L, 1L, 1L, 1L, 
-1L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L), .Label = c("Male", "Female"
-), class = "factor"), Hat = structure(c(2L, 2L, 2L, 2L, 1L, 1L, 
-1L, 1L, 2L, 2L, 2L, 2L, 1L, 1L, 1L, 1L), .Label = c("No", "Yes"
-), class = "factor"), Sunglasses = structure(c(2L, 2L, 1L, 1L, 
-2L, 2L, 1L, 1L, 2L, 2L, 1L, 1L, 2L, 2L, 1L, 1L), .Label = c("No", 
-"Yes"), class = "factor"), Phone = structure(c(2L, 1L, 2L, 1L, 
-2L, 1L, 2L, 1L, 2L, 1L, 2L, 1L, 2L, 1L, 2L, 1L), .Label = c("Not easy", 
-"Easy"), class = "factor"), Count = c(6L, 15L, 14L, 44L, 21L, 
-81L, 51L, 154L, 2L, 7L, 3L, 10L, 40L, 77L, 94L, 133L)), .Names = c("Gender", 
-"Hat", "Sunglasses", "Phone", "Count"), row.names = c(NA, -16L
-), class = "data.frame")
+SG <- read.csv("Data/HatSunglasses.csv")
 
 SG.Table.GenderHat <- xtabs(Count ~ Hat + Gender, 
                             data = SG)
@@ -1505,7 +1597,7 @@ SG.Table.GenderHat <- xtabs(Count ~ Hat + Gender,
 ::: {.exercise #TestOddsRatioSunglasses}
 A research study conducted in Brisbane [@data:Dexter2019:SunProtection] recorded the number of people at the foot of the Goodwill Bridge, Southbank, who wore sunglasses and hats.
 The data were recorded between 11:30am to 12:30pm. 
-Table \@ref(tab:GenderHatTable) records the number of females and males wearing hats.
+Of the 386 males observed, 79 wore hats; of the 366 females observed, 22 wore hats.
 
 1. Compute the percentages of females wearing a hat.
 1. Compute the percentages of males wearing a hat.
@@ -1520,26 +1612,27 @@ Table \@ref(tab:GenderHatTable) records the number of females and males wearing 
 :::
 
 
-```{r GenderHatTable, echo=FALSE}
-rownames(SG.Table.GenderHat) <- c("Not wearing hat", 
-                                  "Wearing hat")
 
-if( knitr::is_latex_output() ) {
-  kable( t(SG.Table.GenderHat), 
-         format = "latex",
-         booktabs = TRUE,
-         longtable = FALSE,
-         caption = "The number of people wearing hats, for males and females") %>%
-    kable_styling(font_size = 10)
-}
-if( knitr::is_html_output() ) {
-  kable( t(SG.Table.GenderHat),
-         format = "html",
-         booktabs = TRUE,
-         longtable = FALSE,
-         caption = "The number of people wearing hats, for males and females")
-}
-```
+<!-- ```{r GenderHatTable, echo=FALSE} -->
+<!-- rownames(SG.Table.GenderHat) <- c("Not wearing hat",  -->
+<!--                                   "Wearing hat") -->
+
+<!-- if( knitr::is_latex_output() ) { -->
+<!--   kable( t(SG.Table.GenderHat),  -->
+<!--          format = "latex", -->
+<!--          booktabs = TRUE, -->
+<!--          longtable = FALSE, -->
+<!--          caption = "The number of people wearing hats, for males and females") %>% -->
+<!--     kable_styling(font_size = 10) -->
+<!-- } -->
+<!-- if( knitr::is_html_output() ) { -->
+<!--   kable( t(SG.Table.GenderHat), -->
+<!--          format = "html", -->
+<!--          booktabs = TRUE, -->
+<!--          longtable = FALSE, -->
+<!--          caption = "The number of people wearing hats, for males and females") -->
+<!-- } -->
+<!-- ``` -->
 
 
 ```{r SunglassesSPSSOutput, echo=FALSE, fig.show="hold", fig.cap="SPSS output for the hats data", fig.align="center", out.width="80%"}

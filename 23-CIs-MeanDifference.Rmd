@@ -596,7 +596,7 @@ knitr::kable(head( diab[DiffExists, c("bp.1d",
                                       "Diff")]),
              format = "latex",
              booktabs = TRUE,
-             align = c("p{18mm}","p{18mm}","p{18mm}"),
+             align = c("P{18mm}","P{18mm}","P{18mm}"),
              longtable = FALSE,
              linesep = c("", "", 
                          "\\addlinespace", 
@@ -850,7 +850,6 @@ From this information:
 
 
 ```{r echo=FALSE, cache=FALSE}
-
 blood <- read.csv("./Data/Captopril.csv")
 
 blood$Differences <- blood$Before - blood$After
@@ -869,7 +868,7 @@ bloodS2 <- cbind( "Before" = bloodS$Before[1:8],
 
     
 ::: {.exercise #PairedCIExercisesCaptopril}
-In a study of hypertension [@data:hand:handbook; @data:macgregor:essential], 15 patients were given a drug (Captopril) and their systolic blood pressure measured immediately before and two hours after being given the drug.
+In a study of hypertension [@data:hand:handbook; @data:macgregor:essential], 15 patients were given a drug (Captopril) and their systolic blood pressure measured immediately before and two hours after being given the drug (Table \@ref(tab:CICaptoprilData)).
 
 1. Explain why it is sensible to compute differences as the *Before* minus the *After* measurements.
    What do the differences *mean* when computed this way?
@@ -879,16 +878,44 @@ In a study of hypertension [@data:hand:handbook; @data:macgregor:essential], 15 
 1. Why are the two CIs different?
 :::
 
-```{r CICaptoprilData, echo=FALSE}
+```{r echo=FALSE}
 if( knitr::is_latex_output() ) {
-  kable( bloodS2,
-         format = "latex",
-         booktabs = TRUE,
-         longtable = FALSE,
-         caption = "The Captopril data: before after after systolic blood pressures (in mm Hg)") %>%
-  row_spec(0, bold = TRUE) %>%
-  kable_styling(font_size = 10)
- }
+  d1 <- knitr::kable( bloodS[1:8, ],
+                      format = "latex",
+                      col.names = c("Before", 
+                                    "After",
+                                    "Difference"),
+                      valign = 't',
+                      linesep = c("","","","\\addlinespace"),
+                      row.names = FALSE,
+                      booktabs = TRUE,
+                      longtable = FALSE) %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10,
+#                  position = "left",
+                  full_width = FALSE)
+  
+  d2 <- knitr::kable( bloodS[9:15, ],
+                      format = "latex",
+                      col.names = c("Before", 
+                                    "After",
+                                    "Difference"),
+                      valign = 't',
+                      linesep = c("","","","\\addlinespace"),
+                      row.names = FALSE,
+                      booktabs = TRUE,
+                      longtable = FALSE) %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10,
+#                  position = "right",
+                  full_width = FALSE)
+  
+  knitr::kables(list(d1, d2),
+                #format = "latex",
+                label = "CICaptoprilData",
+                caption = "The Captopril data: before after after systolic blood pressures (in mm Hg)")
+    
+}
 if( knitr::is_html_output() ) {
   out <- kable( bloodS2,
          format = "html",
@@ -1121,9 +1148,7 @@ if( knitr::is_html_output(excludes = "epub") ) {
 
 <!-- QUICK REVIEW ANSWERS -->
 `r if (knitr::is_html_output()) '<!--'`
-**Answers to in-chapter questions:**
-
-::: {.QRanswerBox .QRanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
+::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
 **Answers to in-chapter questions:**
 
 - Sect. \ref{thinkBox:WhichPaired}: Situations **1** and **3** are paired.
