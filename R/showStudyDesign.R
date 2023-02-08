@@ -22,9 +22,10 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   if (studyType == "QuasiExp") left <- 0.40
   if (studyType == "Obs") left <- 0.80
   
-  top <- 0.85 
+  bottom <- 0.05 
+  top <- 0.85
   polygon( x = c(left, 1,   1, left),
-           y = c(top,  top, 0, 0),
+           y = c(top,  top, bottom, bottom),
            border = NA,
            col = viridis::viridis(10, alpha = 0.05)[1])
   
@@ -142,7 +143,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
         font = 2, # BOLD
         label = ifelse(studyType == "Obs", "Conditions", "Treatments"))
   text( x = mean(c (left, 1) ), 
-        y = ifelse(studyType == "Obs", 0.10, 0.05),
+        y = ifelse(studyType == "Obs", 0.15, 0.05),
         cex = 1.05,
         font = 2, # BOLD
         label = ifelse(studyType == "Obs", "By\nresearchers", "By researchers") )
