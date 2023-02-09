@@ -21,15 +21,20 @@ showYInfluences <- function (showY = TRUE,
                 lty = 3, 
                 lcol = "black",
                 lwd = 2)
-  straightarrow(from = pos[3, ], # Extranous 
+  straightarrow(from = pos[3, ], # Extraneous 
                 to = pos[1, ],   # Response
                 lwd = 2,
                 lcol = "black",
                 lty = 3)
+  arrowExplanatoryToResponseColour <- "grey"
+  if (showConfounding | showLurking ) {
+    arrowExplanatoryToResponseColour <- "grey"
+  }
+  
   straightarrow(from = pos[4, ], # Explanatory
                 to = pos[1, ],   # Response
                 lwd = 2,
-                lcol = "black",
+                lcol = arrowExplanatoryToResponseColour,
                 lty = 1)
   straightarrow(from = pos[5, ], # Design
                 to = pos[1, ],   # Response
@@ -37,12 +42,12 @@ showYInfluences <- function (showY = TRUE,
                 lcol = "black",
                 lty = 3)
   
-  if (showConfounding | showLurking ) {
-    straightarrow(from = pos[3, ], # Extraneous
-                  to = pos[4, ],   # Explanatory
-                  lwd = 2,
-                  lcol = "black",
-                  lty = 3)
+    if (showConfounding | showLurking ) {
+       straightarrow(from = pos[3, ], # Extraneous
+                     to = pos[4, ],   # Explanatory
+                     lwd = 2,
+                     lcol = "black",
+                     lty = 3)
   }
 
   textrect( pos[4,], 
