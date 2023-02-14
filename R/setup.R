@@ -39,7 +39,11 @@ plotSolid <- blueSolid
 blueTransparent <- rgb(0, 0, 1, 
                        alpha = 0.2, 
                        maxColorValue = 1)
-plot.colour <- blueTransparent
+
+plot.colour <- if( knitr::is_latex_output()) {
+  grey(0.5) } else {
+    blueTransparent
+  }
 
 blueTransparent2 <- rgb(0, 0, 0.25, 
                         alpha = 0.2, 
