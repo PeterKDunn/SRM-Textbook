@@ -653,16 +653,16 @@ Participants ($n = 34$) were assessed *before* and *after* treatment.
 
 The mean *change* in joint pain after 13 weeks was 1.27 (with a standard error of 0.57) using a standardised tool.
 
-1. True or false? Only 'before and after' studies can be paired.  
+1. True or false? Only 'before and after' studies can be paired.
 `r if( knitr::is_html_output(exclude = "epub") ) { torf( answer=FALSE )}`
 
-1. True or false? The null hypothesis is about the population mean *difference*.  
+1. True or false? The null hypothesis is about the population mean *difference*.
 `r if( knitr::is_html_output(exclude = "epub") ) { torf( answer=TRUE )}`
 
-1. The value of the test statistic (to two decimal places) is  
-`r if( knitr::is_html_output(exclude = "epub") ) { fitb( answer=2.23, num=TRUE, tol=0.01 )} else {"________________"}`
+1. The value of the test statistic (to two decimal places) is
+`r if( knitr::is_html_output(exclude = "epub") ) { fitb( answer = 2.23, num = TRUE, tol = 0.01 )} else {"________________"}`
 
-1. The two-tailed $P$-value will be  
+1. The two-tailed $P$-value will be
 `r if( knitr::is_html_output(exclude = "epub") ) {mcq( 
 	c(answer = "Very small",
 		"Small",
@@ -790,7 +790,19 @@ A study [@data:Allen2018:Smoking] examined the effect of exercise on smoking.
 Men and women were assessed on a range of measures, including the 'intention to smoke'.
 (This study was also seen in Exercise \@ref(exr:PairedCIExercisesSmokeExercise).)
 
-'Intention to smoke', and other measures, were assessed both before and after exercise for each subject, using the 10-item quantitative [*Questionnaire of Smoking Urges -- Brief*](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2527734/) scale [@cox2001evaluation], and the quantitative [*Minnesota Nicotine Withdrawal Scale*](http://www.med.uvm.edu/behaviorandhealth/research/minnesota-tobacco-withdrawal-scale) [@shiffman2004recommendation].
+'Intention to smoke', and other measures, were assessed both before and after exercise for each subject, using the 10-item quantitative
+`r if (knitr::is_latex_output()) {
+   '*Questionnaire of Smoking Urges -- Brief*'
+} else {
+   '[*Questionnaire of Smoking Urges -- Brief*](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2527734/)'
+}`
+scale [@cox2001evaluation], and the quantitative 
+`r if (knitr::is_latex_output()) {
+   '*Minnesota Nicotine Withdrawal Scale*'
+} else {
+   '[*Minnesota Nicotine Withdrawal Scale*](http://www.med.uvm.edu/behaviorandhealth/research/minnesota-tobacco-withdrawal-scale)'
+}`
+[@shiffman2004recommendation].
 
 Smokers (defined as people smoking at least five cigarettes per day) aged 18 to 40 were enrolled for the study.
 For the 23 women in the study, the mean intention to smoke after exercise *reduced* by 0.66 (with a standard error of 0.37).
@@ -839,148 +851,17 @@ if( knitr::is_html_output() & knitr::pandoc_to("epub")) {
 }
 ```
 
-::: {.exercise #DecelerationHT}
-In an attempt to reduce vehicle speeds on freeway exit ramps, a Chinese study tried using additional signage [@ma2019impacts].
-At one site studied (Ningxuan Freeway), speeds were recorded at various points on the freeway exit for vehicles *before* the extra signage was added, and then *after* the extra signage was added.
-
-NEEDW REWORDING! SOUNDS LIKE TWO-SAMPLE!!
-
-From this data, the *deceleration* of each vehicle was determined (data below) as the vehicle left the 120 km/h speed zone and approached the 80 km/hr speed zone. 
-Use the data, and the summary in Table \@ref(tab:SignageSummaryDecHT), to test the RQ:
-
-> At this freeway exit, is the mean vehicle deceleration the same before extra signage is added and after extra signage is added?
-:::
-
-
-```{r SignageDecHT, echo=FALSE, cache=FALSE}
-Decel <- read.csv("./Data/Deceleration.csv")
-
-Decel$When <- factor(Decel$When,
-                     levels = c("Before", 
-                                "After"),
-                     ordered = TRUE)
-Decel2 <- data.frame( "Before" = head(Decel$Deceleration[Decel$When == "Before"], 
-                                      n = 5),
-                      "After" = head(Decel$Deceleration[Decel$When == "After"],
-                                     n = 5) )
-
-if( knitr::is_latex_output() ) {
-  
-  kable( Decel2,
-         format = "latex",
-         longtable = FALSE,
-         booktabs = TRUE,
-         align = c("r", "r"),
-         caption = "Vehicle deceleration before and after adding extra signage (negative values mean the vehicle has accelerated). Only the first five observations are shown.") %>%
-    kable_styling(font_size = 10)
-}
-
-if( knitr::is_html_output(exclude = "epub") ) {
-  
-   DT::datatable( Decel,
-                 fillContainer = FALSE, # Make more room, so we don't just have ten values
-                 colnames = c("When measured", "Deceleration (m/s-squared)"),
-                 options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
-                 caption = "The observations from the signage data (negative values mean the vehicle has accelerated)")
-}
-
- if ( knitr::is_html_output(excludes = "epub") & knitr::pandoc_to("epub")) {
-  kable( Decel[1:10,],
-         format = "html",
-         longtable = FALSE,
-         booktabs = TRUE,
-         align = c("c", "c", "c"),
-         caption = "Vehicle deceleration before and after adding extra signage (negative values mean the vehicle has accelerated). Only the first 10 observations are shown.")
-}
-```
-
-
-```{r SignageSummaryDecHT, echo=FALSE}
-SignageSummaryDec <- array(dim = c(3, 4))
-rownames(SignageSummaryDec) <- c("Before", 
-                            "After",
-                            "Change")
-colnames(SignageSummaryDec) <- c("Mean",
-                              "Std deviation",
-                              "Std error",
-                              "Sample size")
-
-Speed.n <- tapply(Decel$Decel, 
-                  list(Decel$When), 
-                  "length") 
-Speed.sd <- tapply(Decel$Decel, 
-                   list(Decel$When), 
-                   "sd") 
-
-SignageSummaryDec[1:2, 1] <- round( tapply(Decel$Decel, 
-                                        list(Decel$When), 
-                                        "mean"),
-                                 4)
-SignageSummaryDec[1:2, 2] <- round( Speed.sd, 4)
-SignageSummaryDec[1:2, 3] <- round( Speed.sd / sqrt(Speed.n), 5)
-SignageSummaryDec[1:2, 4] <- Speed.n 
-
-SignageSummaryDec[3, 1] <- SignageSummaryDec[1, 1] -  
-                           SignageSummaryDec[2, 1] 
-
-sdB <- round( SignageSummaryDec[1, 3], 4)
-sdA <- round( SignageSummaryDec[2, 3], 4)
-SignageSummaryDec[3, 3] <- round( sqrt( sdB^2/Speed.n[1] + 
-                                     sdA^2/Speed.n[2] ), 
-                               5)
-
-SignageSummaryDec[3, 4] <- NA 
-SignageSummaryDec[3, 2] <- NA
-                          
-
-
-if( knitr::is_latex_output() ) {
-  kable(SignageSummaryDec,
-        format = "latex",
-        longtable = FALSE,
-        booktabs = TRUE,
-        align = c("r", "r", "r", "l"),
-        col.names = c("Mean", 
-                      "Std deviation", 
-                      "Sample size", 
-                      "Std error"),
-        caption = "The signage data summary (in m/s-squared)"
-  ) %>%
-  row_spec(0, bold = TRUE) %>%
-  kable_styling(font_size = 10)
-}
-if( knitr::is_html_output() ) {
-  out <- kable(SignageSummaryDec,
-               format = "html",
-               longtable = FALSE,
-               booktabs = TRUE,
-               align = c("r", "r", "r", "l"),
-               col.names = c("Mean", 
-                            "Std deviation", 
-                            "Sample size", 
-                            "Std error"),
-    caption = "The signage data summary (in m/s-squared)"
-  )
-  if ( knitr::is_html_output(excludes = "epub")) {
-    kable_styling(out, full_width = FALSE)
-  } else {
-    out
-  }
-}
-```
-
 
 ::: {.exercise #StressSurgeryHT}
 The concentration of beta-endorphins in the blood is a sign of stress.
 One study (@data:hand:handbook, Dataset 232; @hoaglin2011exploring) measured the beta-endorphin concentration for 19 patients about to undergo surgery.
 (This study was also seen in Exercise \@ref(exr:StressSurgeryHT).)
-The RQ was:
-
-> For patients approaching surgery, is there a mean increase in beta-endorphin concentrations?
+The RQ was: "For patients approaching surgery, is there a mean increase in beta-endorphin concentrations?"
 
 Each patient had their beta-endorphin concentrations measured 12--14 hours before surgery, and also 10 minutes before surgery.
 A numerical summary can be produced from jamovi output (Fig. \@ref(fig:StressDescriptivesjamovi)).
-
+Use the output to test the RQ.
+:::
 
 ```{r StressDescriptivesjamovi, echo=FALSE, fig.cap="", fig.align="center", out.width='80%'}
 
@@ -1029,41 +910,7 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-The hypotheses are:
 
-\[
-   H_0: \mu_D = 0;\quad\text{and}\quad H_1: \mu_D > 0
-\]
-provided we DEFINE...
-
-The jamovi output in Fig. \@ref(fig:StressDescriptivesHTjamovi) can be used to test the hypotheses.
-
-```{r StressDescriptivesHTjamovi, echo=FALSE, fig.cap="jamovi output for the surgery-stress data", fig.align="center", out.width='80%'}
-knitr::include_graphics("jamovi/Stress/StressDescriptives.png")
-```
-
-Assuming the null hypothesis is true, the $t$-score is
-
-\[
-   t = \frac{\bar{d}- \mu_d}{\text{s.e.}(\bar{d})}
-\]
-where (from the output) the sample mean *increase* in beta-endorphin concentration is 7.70 fmol/mol, and the *standard error for this increase* is 3.10 fmol/mol.
-From the null hypothesis (which we assume to be true), $\mu_d = 0$.
-Hence:
-
-\[
-   t = \frac{7.70 - 0}{3.10} = 2.48,
-\]
-which is quite large.
-Using the 68--95-99.7 rule, we would expect a small **one-tailed** $P$-value (and certainly less than 0.025).
-jamovi reports a two-tailed $P$-value of 0.023, so a one-tailed $P$-value of $0.023/2 = 0.0115$.
-We conclude (where the CI was [found earlier](#StressSurgery)):
-
-> Strong evidence exists in the sample (paired $t = 2.48$; one-tailed $P = 0.0115$) of a population mean increase in beta-endorphin concentrations from 12--14 hours before surgery to 10 minutes before surgery (95% CI: 1.62 to 13.78 fmol/mol.)
-
-The sample size is $n = 19$, just less than 25, so the results may not be statistically valid (but shouldn't be too bad).
-
-:::
 
 
 
