@@ -541,63 +541,77 @@ Give an example to show why he must be incorrect.
 :::
 
 
-::: {.exercise #PilotDeaths}
-The data in Table \@ref(tab:PilotDeathsTable) were obtained from an investigation into aviation deaths of private pilots in Australia [@mypapers:RuscoeDunn:AMSANZ].
+::: {.exercise #FirstNationStudents}
+The data in Table \@ref(tab:EdTable) tabulates information about school children in Queensland in 2019 [@mypaper:Dunn:GLM-IEE].
 
-1. What is the probability that a randomly chosen death in 1997 was of a pilot 50 or older?
-1. What proportion of deaths from 1997 to 1999 were of pilots aged under 30?
-1. What other information may be useful in studying the effect of age on pilot deaths?
+1. What is the probability that a randomly chosen students is a first-nations student?
+1. What is the probability that a randomly chosen students is in a government school?
+1. Is the sex of the student approximately independent of whether the student is a first nations student, for students in government schools?
+1. Is the sex of the student approximately independent of whether the student is a first nations student, for students in non-government schools?
+1. Is the sex of the student approximately independent of the type of school, for female students?
+1. Is the sex of the student approximately independent of the type of school, for male students?
+1. Based on the above, what can you conclude from the data?
 :::
 
+```{r EdTable, echo=FALSE}
+EdTable <- array( NA, dim = c(4, 2) )
+rownames(EdTable) <- c("Females",
+                       "Males",
+                       "Females",
+                       "Males")
+colnames(EdTable) <- c("Number first nations students",
+                       "Number non-first nation students")
 
-```{r PilotDeathsTable, echo=FALSE}
-Counts <- c(2, 1, 3,
-            5, 12, 5,
-            9, 11, 9)
-Age <- ordered( c(  rep(1, 3),
-                    rep(2, 3),
-                    rep(3, 3)),
-                levels = 1:3,
-                labels = c("Under 30", 
-                           "30 to 49", 
-                           "50 or over"))
-Year <- rep( c("1997", "1998", "1999"), 3)
+EdTable[, 1] <- c(2540, 2734, 391, 362)
+EdTable[, 2] <- c(21219, 22574, 9496, 9963)
 
-df.Pilots <- data.frame( Age = Age, 
-                         Year = Year, 
-			 Counts = Counts)
 
-Pilots <- xtabs( Counts ~ (Age) + Year, 
-                 data = df.Pilots)
-
-if (knitr::is_latex_output()){
-  kable(Pilots,
-        format = "latex",
-        longtable = FALSE,
-        booktabs = TRUE,
-        align = rep( "r", 3),
-        caption = "Aviation deaths of private pilots in Australia from 1997 to 1999 according to the pilot's age") %>%
-   column_spec(column = 1, 
-               bold = TRUE) %>%
-   row_spec(row = 0, 
-            bold = TRUE) 
+if( knitr::is_latex_output() ) {
+  knitr::kable(EdTable,
+               format = "latex",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,
+               format.args = list(big.mark = ","),
+               escape = FALSE,
+               caption = "The number of first nation and non-first nation students in various Queensland schools in 2019") %>%
+     kable_styling(font_size = 10) %>%
+    column_spec(column = 2, width = "30mm") %>%
+    column_spec(column = 3, width = "30mm") %>%
+     pack_rows("Government schools",                         
+                start_row = 1, 
+                end_row = 2, 
+                bold = FALSE, 
+                italic = TRUE) %>%
+     pack_rows("Non-government schools",                         
+                start_row = 3, 
+                end_row = 4, 
+                bold = FALSE, 
+                italic = TRUE) %>%
+    row_spec(0, bold = TRUE) 
 }
-if (knitr::is_html_output()){
-  out <- kable(Pilots,
-        format = "html",
-        longtable = FALSE,
-        booktabs = TRUE,
-        align = rep( "r", 3),
-        caption = "Aviation deaths of private pilots in Australia from 1997 to 1999 according to the pilot's age")
-   if ( knitr::is_html_output(excludes = "epub")) {
-      row_spec(out, 
-               row = 0, 
-	       bold = TRUE) 
-  } else {
-    out
-  }
+if( knitr::is_html_output() ) {
+  knitr::kable(EdTable,
+               escape = TRUE,
+               format = "html",
+               booktabs = TRUE,
+               align = "r",
+               longtable = FALSE,
+               caption = "The number of first nation and non-first nation students in various Queensland schools in 2019") %>%
+     pack_rows("Government schools",                         
+                start_row = 1, 
+                end_row = 2, 
+                bold = FALSE, 
+                italic = TRUE) %>%
+     pack_rows("Non-government schools",                         
+                start_row = 3, 
+                end_row = 4, 
+                bold = FALSE, 
+                italic = TRUE) %>%
+    row_spec(0, bold = TRUE) 
 }
 ```
+
 
 
 ::: {.exercise #IndependentEvents}
