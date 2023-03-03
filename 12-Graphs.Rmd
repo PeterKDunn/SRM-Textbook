@@ -24,13 +24,30 @@ The purpose of a graph is to display the information in the clearest, simplest p
 
 In this chapter, graphs are discussed for
 
+:::::: {.cols data-latex=""}
+
+::: {.col data-latex="{0.4\textwidth}"}
+
 * [One quantitative variable](#GraphsOneQuant);
 * [One qualitative variable](#GraphsOneQual);
 * [One qualitative and quantitative variable](#GraphOneQualOneQuant);
+
+:::
+
+::: {.col data-latex="{0.05\textwidth}"}
+\ 
+<!-- an empty Div (with a white space), serving as
+a column separator -->
+:::
+
+::: {.col data-latex="{0.5\textwidth}"}
+
 * [Two quantitative variables](#Scatterplots);
 * [Two qualitative variables](#TwoQualVars); and
 * [Other types of graphs](#GraphsOther).
 
+:::
+::::::
 
 
 ## One quantitative variable {#GraphsOneQuant}
@@ -1271,7 +1288,7 @@ Since we only consider histograms where the boxes are all the same width, this i
 Consider the weights (in kg) of babies born in a Brisbane hospital in one day [@mypapers:Dunn:dataset:1999].
 A histogram (below) can be constructed for these data.
 When an observation occurs on a boundary between the boxes, software usually (but not universally) places it in the *higher* box (so 2.5kg would be counted in the '2.5 to 3.0kg' box, not the '2.0 to 2.5kg' box).
-The histogram shows, for example, that 17 babies weighed 3.0kg or more, but under 3.5kg.
+The histogram shows, for example, that 17 babies weighed 3.0kg or more, but under 3.5kg.\smallskip
 
 `r if (knitr::is_latex_output()) {
    'Figure \\@ref(fig:BBHist1) shows the histogram starting to be built, and Fig. \\@ref(fig:BBHist44) shows the final histogram. (The online version has an animation.)'
@@ -1285,7 +1302,7 @@ The histogram shows, for example, that 17 babies weighed 3.0kg or more, but unde
 ### BUILD A HISTOGRAM
 if (knitr::is_html_output(exclude = "epub")) {
   #Wts <- sort( round(BB$Weight/100, 0) )
-  Wts <- BB$Weight
+  Wts <- sort(BB$Weight)
   DP2 <- function(x){format(round(x, 1), nsmall = 1) }
   
   #  par(width=5, height=5, mar=c(0, 0, 2, 0) + 0.1, mfrow=c(2, 1))
@@ -1304,16 +1321,16 @@ if (knitr::is_html_output(exclude = "epub")) {
           axes = FALSE)
     text(  1:datagrid.x, 
            rep(4, 11), 
-	   DP2(Wts[1:11]/10) )
+	   DP2(Wts[1:11]) )
     text(  1:datagrid.x, 
            rep(3, 11), 
-	   DP2(Wts[12:22]/10) )
+	   DP2(Wts[12:22]) )
     text(  1:datagrid.x, 
            rep(2, 11), 
-	   DP2(Wts[23:33]/10) )
+	   DP2(Wts[23:33]) )
     text(  1:datagrid.x, 
            rep(1, 11), 
-	   DP2(Wts[34:44]/10) )
+	   DP2(Wts[34:44]) )
     
     # Now highlight the observation being used
     if (i <= 11) {
@@ -1369,11 +1386,8 @@ if (knitr::is_html_output(exclude = "epub")) {
 
 ```{r BBHist1, fig.align="center", fig.width=10, fig.height=3, out.width='95%', fig.cap="Starting to make the histogram for the baby-birth data: the first 6 observations added" }
 if (knitr::is_latex_output()){
-#  Wts <- sort( round(BB$Weight/100, 0) )
-  Wtskg <- BB$Weight
-  DP2 <- function(x){format(round(x, 1), nsmall = 1) }
-  
-  #  par(width=5, height=5, mar=c(0, 0, 2, 0)+0.1, mfrow=c(2, 1))
+  Wts <- sort(BB$Weight)
+
   par(mfrow = c(1, 2))
   
   i <- 6
@@ -1391,16 +1405,16 @@ if (knitr::is_latex_output()){
           axes = FALSE)
     text(  1:datagrid.x, 
            rep(4, 11), 
-	   DP2(Wts[1:11]/10) )
+	   DP2(Wts[1:11]) )
     text(  1:datagrid.x, 
            rep(3, 11), 
-	   DP2(Wts[12:22]/10) )
+	   DP2(Wts[12:22]) )
     text(  1:datagrid.x, 
            rep(2, 11), 
-	   DP2(Wts[23:33]/10) )
+	   DP2(Wts[23:33]) )
     text(  1:datagrid.x, 
            rep(1, 11), 
-	   DP2(Wts[34:44]/10) )
+	   DP2(Wts[34:44]) )
     
     # Now highlight the observation being used
     if (i <= 11) {
@@ -1412,7 +1426,7 @@ if (knitr::is_latex_output()){
     }
     
     # Produce the histogram
-    hist( Wtskg[1:i],
+    hist( Wts[1:i],
           right = FALSE,
           xlab = "Birthweight (in kg)",
           ylab = "Number of babies",
@@ -1427,53 +1441,50 @@ if (knitr::is_latex_output()){
 ```
 
 
-```{r BBHist44, fig.align="center", fig.width=10, fig.height=3, out.width='95%', fig.cap="The final histogram for the baby-birth data" }
+```{r BBHist44, fig.align="center", fig.width=5, fig.height=3, out.width='45%', fig.cap="The final histogram for the baby-birth data" }
 if (knitr::is_latex_output()){
-  Wts <-sort( round(BB$Weight/100, 0) )
-  Wtskg <- Wts/10
-  DP2 <- function(x){format(round(x, 1), nsmall = 1) }
+  Wts <- sort( BB$Weight )
+
+#  par(mfrow = c(1, 2))
   
-  #  par(width=5, height=5, mar=c(0, 0, 2, 0)+0.1, mfrow=c(2, 1))
-  par(mfrow = c(1, 2))
-  i <- 44
-    # Plot the data
-    datagrid.x <- 11
-    datagrid.y <- 4
-    
-    plot( expand.grid(1:datagrid.x, 
-                      1:datagrid.y),
-          type = "n",
-          ylim = c(0.7, 4.3),
-          xlim = c(1, 13),
-          xlab = "",
-          ylab = "",
-          axes = FALSE)
-    text(  1:datagrid.x, 
-           rep(4, 11), 
-	   DP2(Wts[1:11]/10) )
-    text(  1:datagrid.x, 
-           rep(3, 11), 
-	   DP2(Wts[12:22]/10) )
-    text(  1:datagrid.x, 
-           rep(2, 11), 
-	   DP2(Wts[23:33]/10) )
-    text(  1:datagrid.x, 
-           rep(1, 11), 
-	   DP2(Wts[34:44]/10) )
-    
-    # Now highlight the observation being used
-    if ( (i > 33) ){
-      points(  i - 33, 1, 
-              pch = 1, 
-	            col = "red", 
-	            lwd = 3, 
-	            cex = 4 )
-    }
-    
+#     # Plot the data
+#     datagrid.x <- 11
+#     datagrid.y <- 4
+#     
+#     plot( expand.grid(1:datagrid.x, 
+#                       1:datagrid.y),
+#           type = "n",
+#           ylim = c(0.7, 4.3),
+#           xlim = c(1, 13),
+#           xlab = "",
+#           ylab = "",
+#           axes = FALSE)
+#     text(  1:datagrid.x, 
+#            rep(4, 11), 
+# 	   DP2(Wts[1:11]) )
+#     text(  1:datagrid.x, 
+#            rep(3, 11), 
+# 	   DP2(Wts[12:22]) )
+#     text(  1:datagrid.x, 
+#            rep(2, 11), 
+# 	   DP2(Wts[23:33]) )
+#     text(  1:datagrid.x, 
+#            rep(1, 11), 
+# 	   DP2(Wts[34:44]) )
+# #     
+# #     # Now highlight the observation being used
+# #     if ( (i > 33) ){
+# #       points(  i - 33, 1, 
+# #               pch = 1, 
+# # 	            col = "red", 
+# # 	            lwd = 3, 
+# # 	            cex = 4 )
+# #     }
+# #     
     # Produce the histogram
     
-    hist( Wtskg[1:i],
-          right = FALSE,
+    hist( Wts,
+          right = FALSE, # Right-closed and left-open (i.e., like 2.5 to under 3 kg)
           xlab = "Birthweight (in kg)",
           ylab = "Number of babies",
           main = "Histogram of birthweights of babies\non one day in Brisbane",
@@ -1887,7 +1898,7 @@ This is called *encoding* extra information into the bar chart.
 :::
 
    
-```{r IndependencePie, fig.cap="Severity of diagnoses of participants", fig.align="center", fig.height=2.5, out.width='65%'}
+```{r IndependencePie, fig.cap="Severity of diagnoses of participants", fig.align="center", fig.height=2.25, out.width='65%'}
 par( mar = c(0.5, 0.5, 3.5, 0.5) )
 pie( c(31, 69),
      labels = c("More severe (31)", 
@@ -2028,7 +2039,7 @@ barplot(danishlc$Cases[danishlc$City == "Fredericia"],
 ```
 
 
-Recall that the *purpose of a graph is to is to display information in the clearest, simplest possible way, to help the reader understand the message(s) in the data*.
+Recall that the *purpose of a graph is to display information in the clearest, simplest possible way, to help the reader understand the message(s) in the data*.
 Adding an artificial third dimension usually makes the message hard to see [@siegrist1996use].
 
 
@@ -2093,8 +2104,12 @@ dotchart( as.vector(table(AgeD)),
 ### Tabular summaries {#GraphNeeded}
  
 Graphs are generally excellent for summarising data.
-However, small amounts of qualitative data may not need a graphical summary; sometimes, the data can be collated in a table (Fig. \@ref(fig:IndependencePie)), or a *tabular summary*.
+However, sometimes data can be collated in a table (Fig. \@ref(fig:IndependencePie)), or a *tabular summary*.
+For qualitative data, the tabular summary records the numbers (or percentages) for each level of the variable (Example \@ref(exm:NHANESdata)).
+For quantitative data, the tabular summary effectively producs a histogram as a table (Example).
+
 With small amounts of information, sometimes just writing the information is better ('69% of diagnoses were less severe'; Example \@ref(exm:PieCharts)).
+
 
 
 ::: {.example #NHANESdata name="Tables for data"}
@@ -2116,7 +2131,7 @@ if( knitr::is_latex_output() ) {
         longtable = FALSE,
         align = c("r", "r", "r"),
         booktabs = TRUE,
-        linesep = c("","","\\addlinespace"),
+        linesep = c("","","", "\\addlinespace"),
         row.names = FALSE,
         caption = "The NHANES age distribution, displayed in a tabular summary") %>%
 	kable_styling(font_size = 10) %>%
@@ -2130,6 +2145,63 @@ if( knitr::is_html_output() ) {
                booktabs = TRUE,
                row.names = FALSE,
                caption = "The NHANES age distribution, displayed in a tabular summary") 
+      
+   if ( knitr::is_html_output(excludes = "epub")) {
+      kable_styling(out, full_width = FALSE)
+  } else {
+    out
+  }
+}
+```
+
+
+
+:::{.example #BabyBoomTable}
+In Example \@ref(exm:Histograms), a histogram was constructed for the weight of babies born in a Brisbane hospital in one day.
+The data can also be presented as the number of babies within each weight category, just as with the histogram (Table \@ref(tab:BabyBoomTable)).
+The histogram is essentially a picture of this table.
+:::
+
+
+
+```{r BabyBoomTable}
+#Wts <- sort( round(BB$Weight/100, 0) )
+Wts <- BB$Weight
+out <- hist(Wts,
+            plot = FALSE,
+            right = FALSE)
+
+BBtab <- array(dim = c(6, 2) )
+BBtab[, 2] <- out$counts 
+BBtab[, 1] <- c("1.5kg to under 2.0kg",
+                "2.0kg to under 2.5kg",
+                "2.5kg to under 3.0kg",
+                "3.0kg to under 3.5kg",
+                "3.5kg to under 4.0kg",
+                "4.0kg to under 4.5kg") 
+colnames(BBtab) <- c("Weight group", 
+                     "Number of babies")
+
+if( knitr::is_latex_output() ) {
+  kable(BBtab,
+        format = "latex",
+        longtable = FALSE,
+        align = c("c", "r"),
+        booktabs = TRUE,
+        linesep = c("","","\\addlinespace"),
+        row.names = FALSE,
+        caption = "The baby-weights data, displayed in a tabular summary") %>%
+	kable_styling(font_size = 10) %>%
+	row_spec(0, bold = TRUE)
+}
+if( knitr::is_html_output() ) {
+ out <-  kable(BBtab,
+               format = "html",
+               longtable = FALSE,
+               align = c("c", "r"),
+               booktabs = TRUE,
+               row.names = FALSE,
+               caption = "The baby-weights data, displayed in a tabular summary") 
       
    if ( knitr::is_html_output(excludes = "epub")) {
       kable_styling(out, full_width = FALSE)
@@ -2218,7 +2290,7 @@ if( knitr::is_html_output() ) {
 
 
  
-```{r KrillEggsDoubleStem, fig.cap="The number of eggs from krill, for control and treatment groups", fig.align="center", fig.width=6.5}
+```{r KrillEggsDoubleStem, fig.cap="The number of eggs from krill, for control and treatment groups", fig.align="center", fig.width=7.0}
 
   stemgrid.x <- 1
   stemgrid.y <- 6
@@ -3694,15 +3766,6 @@ abline(v = 0,
 <div style="float:right; width: 222x; border: 1px; padding:10px">
 <img src="Illustrations/cake-916253_640.jpg" width="200px"/>
 </div>
-
-
-`r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}[6]{R}{.25\textwidth}
-  \begin{center}
-    \includegraphics[width=.20\textwidth]{Illustrations/cake-916253_640.jpg}
-  \end{center}
-\end{wrapfigure}
-`r if (knitr::is_html_output()) '-->'`
 
 
 
