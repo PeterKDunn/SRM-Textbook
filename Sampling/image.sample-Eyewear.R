@@ -104,7 +104,7 @@ img.0p5 <- px.sample.SRS(0.5,
 
 AspectRatio <- Height/Width
 plotWidth <- 600
-img <- read.pnm(file="crazy-emotion-eyewear-2015-SMALLEST.ppm")   
+img <- read.pnm(file = "crazy-emotion-eyewear-2015-SMALLEST.ppm")   
 
 
 plot(img)   # Plot the image
@@ -276,7 +276,7 @@ img.05.sys <- px.sample.systematic(05,
 
 AspectRatio <- Height/Width
 
-img <- read.pnm(file="crazy-emotion-eyewear-2015-SMALLEST.ppm")   
+img <- read.pnm(file = "crazy-emotion-eyewear-2015-SMALLEST.ppm")   
 
 plot(img)   # Plot the image
 box(lwd = 3)
@@ -289,7 +289,7 @@ title("Systematic random sample: small number of pixels",
       col.main = blueTransparent, 
       cex.main = 4)
 dev.copy(png, 
-         file="crazy-emotion-eyewear-2015-SMALLEST-R05-systematic.png", 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R05-systematic.png", 
          width = Width, 
          height = Height, 
          units = "px")
@@ -386,9 +386,14 @@ px.sample.cluster <- function(pcent, fname, Height, Width){
 #  cat("% of ones:", sum(add)/(Height*Width)*100,"\n")
 #  cat("*** % of zeros:", sum(add==0)/(Height*Width)*100,"***\n---\n")
   
-  img <- array( dim=c(Height, Width), add) # This 0s and 1s, arranged as an array the same size as the image
-  img.pm <- pixmapIndexed(data = img, nrow=Height, ncol=Width) #, col=c(NA,"#FFFFFF") )
-  write.pnm(file=fname, object=img.pm, type="pgm")
+  img <- array( dim = c(Height, Width), 
+                add) # This 0s and 1s, arranged as an array the same size as the image
+  img.pm <- pixmapIndexed(data = img, 
+                          nrow = Height, 
+                          ncol = Width) #, col=c(NA,"#FFFFFF") )
+  write.pnm(file = fname, 
+            object = img.pm, 
+            type = "pgm")
   return(img)
 }
 
@@ -415,7 +420,7 @@ img.05.cluster <- px.sample.cluster(05,
 AspectRatio <- Height/Width
 #quartz() #width=7, height=7 * AspectRatio)      
 #par( mar=c(0,0,0,0))
-img <- read.pnm(file="crazy-emotion-eyewear-2015-SMALLEST.ppm")   
+img <- read.pnm(file = "crazy-emotion-eyewear-2015-SMALLEST.ppm")   
 
 plot(img)   # Plot the image
 box(lwd=3)
@@ -428,7 +433,7 @@ title("Cluster random sample: small number of pixels",
       col.main = blueTransparent, 
       cex.main = 4)
 dev.copy(png, 
-         file="crazy-emotion-eyewear-2015-SMALLEST-R05-cluster.png", 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R05-cluster.png", 
          width = Width, 
          height = Height, 
          units = "px")
@@ -446,7 +451,7 @@ title("Cluster random sample: medium-small number of pixels",
       col.main = blueTransparent, 
       cex.main = 4)
 dev.copy(png, 
-         file="crazy-emotion-eyewear-2015-SMALLEST-R10-cluster.png",
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R10-cluster.png",
          width = Width, 
          height = Height, 
          units = "px")
@@ -464,7 +469,7 @@ title("Cluster random sample: medium-large number of pixels",
       col.main = blueTransparent, 
       cex.main = 4)
 dev.copy(png, 
-         file="crazy-emotion-eyewear-2015-SMALLEST-R25-cluster.png", 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R25-cluster.png", 
          width = Width, 
          height = Height, 
          units = "px")
@@ -482,7 +487,7 @@ title("Cluster random sample: large number of pixels",
       col.main = blueTransparent, 
       cex.main = 4)
 dev.copy(png, 
-         file="crazy-emotion-eyewear-2015-SMALLEST-R50-cluster.png", 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R50-cluster.png", 
          width = Width, 
          height = Height, 
          units = "px")
@@ -606,7 +611,7 @@ img.05.ms <- px.sample.multistage(05,
 AspectRatio <- Height/Width
 #quartz() #width=7, height=7 * AspectRatio)      
 #par( mar=c(0,0,0,0))
-img <- read.pnm(file="crazy-emotion-eyewear-2015-SMALLEST.ppm")   
+img <- read.pnm(file = "crazy-emotion-eyewear-2015-SMALLEST.ppm")   
 
 plot(img)   # Plot the image
 box(lwd = 3)
@@ -637,7 +642,7 @@ title("Multi-stage random sample: medium-small number of pixels",
       col.main = blueTransparent, 
       cex.main = 4)
 dev.copy(png, 
-         file="crazy-emotion-eyewear-2015-SMALLEST-R10-multistage.png", 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R10-multistage.png", 
          width = Width, 
          height = Height, 
          units = "px")
@@ -695,39 +700,83 @@ cat(" --- Stratified --- \n")
 
 
 # Pre-read the two images: Greenery and non-Greenery, to identify where the bits are to be sampled
-img.Greenery <- read.pnm(file="crazy-emotion-eyewear-2015-SMALLEST-Greenery.ppm")   
-img.NONGreenery <- read.pnm(file="crazy-emotion-eyewear-2015-SMALLEST-NONGreenery.ppm")   
+img.Greenery <- read.pnm(file = "crazy-emotion-eyewear-2015-SMALLEST-Greenery.ppm")
+img.NONGreenery <- read.pnm(file = "crazy-emotion-eyewear-2015-SMALLEST-NONGreenery.ppm")   
 
 # Create the overlays
-img.50.str  <- px.sample.SRS(50, "img50.pgm", Height=Height, Width=Width)
-img.25.str <- px.sample.SRS(25, "img25.pgm", Height=Height, Width=Width)
-img.10.str <- px.sample.SRS(10, "img10.pgm", Height=Height, Width=Width)
-img.05.str <- px.sample.SRS(05,  "img5.pgm", Height=Height, Width=Width)
+img.50.str  <- px.sample.SRS(50, 
+                             "img50.pgm", 
+                             Height = Height, 
+                             Width = Width)
+img.25.str <- px.sample.SRS(25, 
+                            "img25.pgm", 
+                            Height = Height, 
+                            Width = Width)
+img.10.str <- px.sample.SRS(10, 
+                            "img10.pgm", 
+                            Height = Height, 
+                            Width = Width)
+img.05.str <- px.sample.SRS(05,  
+                            "img5.pgm", 
+                            Height = Height, 
+                            Width = Width)
 #img.01 <- px.sample(.01, "img1.pgm", Height=Height, Width=Width)
 
-AspectRatio <- Height/Width
+AspectRatio <- Height / Width
 
 
 plot(img.Greenery)   # Plot the image
-box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.50.str), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+box(lwd = 3)
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.50.str), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
 title("Stratified random sample: large number of pixels: Greenery", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R50-stratified-GREENERY.png", width=Width, height=Height, units="px")
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R50-stratified-GREENERY.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 plot(img.NONGreenery)   # Plot the imagetest <- image( 1:Width, 1:Height, t(img.50.str.G), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.50.str), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: large number of pixels: Person", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R50-stratified-NONGREENERY.png", width=Width, height=Height, units="px")
+box(lwd = 3)
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.50.str), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Stratified random sample: large number of pixels: Person", 
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R50-stratified-NONGREENERY.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 plot(img )   # Plot the image
 box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.50.str), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-test <- image( 1:Width, 1:Height, t(img.50.str), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: large number of pixels: Combined", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R50-stratified-COMBINED.png", width=Width, height=Height, units="px")
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.50.str), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.50.str), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Stratified random sample: large number of pixels: Combined", 
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R50-stratified-COMBINED.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 
@@ -735,50 +784,116 @@ dev.off()
 #quartz() #width=7, height=7 * AspectRatio)      
 #par( mar=c(0,0,0,0))
 plot(img.Greenery)   # Plot the image
-box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.25.str), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: medium-large number of pixels: Greenery", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R25-stratified-GREENERY.png", width=Width, height=Height, units="px")
+box(lwd = 3)
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.25.str), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Stratified random sample: medium-large number of pixels: Greenery", 
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R25-stratified-GREENERY.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 plot(img.NONGreenery)   # Plot the imagetest <- image( 1:Width, 1:Height, t(img.50.str.G), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.25.str), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+box(lwd = 3)
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.25.str), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
 title("Stratified random sample: medium-large number of pixels: Person", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R25-stratified-NONGREENERY.png", width=Width, height=Height, units="px")
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R25-stratified-NONGREENERY.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 plot(img )   # Plot the image
-box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.25.str), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-test <- image( 1:Width, 1:Height, t(img.25.str), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: medium-large number of pixels: Combined", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R25-stratified-COMBINED.png", width=Width, height=Height, units="px")
+box(lwd = 3)
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.25.str), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.25.str), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Stratified random sample: medium-large number of pixels: Combined",
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R25-stratified-COMBINED.png",
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 
 #quartz() #width=7, height=7 * AspectRatio)      
 #par( mar=c(0,0,0,0))
 plot(img.Greenery)   # Plot the image
-box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.10.str), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: medium-small number of pixels: Greenery", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R10-stratified-GREENERY.png", width=Width, height=Height, units="px")
+box(lwd = 3)
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.10.str), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Stratified random sample: medium-small number of pixels: Greenery",
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R10-stratified-GREENERY.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 plot(img.NONGreenery)   # Plot the imagetest <- image( 1:Width, 1:Height, t(img.50.str.G), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.10.str), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: medium-small number of pixels: Person", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R10-stratified-NONGREENERY.png", width=Width, height=Height, units="px")
+box(lwd = 3)
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.10.str), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Stratified random sample: medium-small number of pixels: Person", 
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R10-stratified-NONGREENERY.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 plot(img )   # Plot the image
-box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.10.str), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-test <- image( 1:Width, 1:Height, t(img.10.str), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: medium-small number of pixels: Combined", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R10-stratified-COMBINED.png", width=Width, height=Height, units="px")
+box(lwd = 3)
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.10.str), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.10.str), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Stratified random sample: medium-small number of pixels: Combined", 
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R10-stratified-COMBINED.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 
@@ -787,25 +902,59 @@ dev.off()
 #quartz() #width=7, height=7 * AspectRatio)      
 #par( mar=c(0,0,0,0))
 plot(img.Greenery)   # Plot the image
-box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.05.str), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: small number of pixels: Greenery", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R05-stratified-GREENERY.png", width=Width, height=Height, units="px")
+box(lwd = 3)
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.05.str), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Stratified random sample: small number of pixels: Greenery", 
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R05-stratified-GREENERY.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 plot(img.NONGreenery)   # Plot the imagetest <- image( 1:Width, 1:Height, t(img.50.str.G), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.05.str), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: small number of pixels: Person", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R05-stratified-NONGREENERY.png", width=Width, height=Height, units="px")
+box(lwd = 3)
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.05.str), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Stratified random sample: small number of pixels: Person", 
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R05-stratified-NONGREENERY.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 plot(img)   # Plot the image
-box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.05.str), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-test <- image( 1:Width, 1:Height, t(img.05.str), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: small number of pixels: Combined", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R05-stratified-COMBINED.png", width=Width, height=Height, units="px")
+box(lwd = 3)
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.05.str), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.05.str), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Stratified random sample: small number of pixels: Combined", 
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R05-stratified-COMBINED.png",
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 
@@ -825,30 +974,62 @@ cat(" --- Non-random --- \n")
 ### NOW, load the non-random samples, to add the borders
 img <- readPNG("crazy-emotion-eyewear-2015-SMALLER-NonR05.png")
 plot( as.raster(img))   # Plot the image
-box(lwd=3)
-text(dim(img)[2]/2, dim(img)[1]/2, "Non-random:\n small sample of pixels", cex=5, col=blueTransparent)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLER-NonR05-boxed.png", width=Width, height=Height, units="px")
+box(lwd = 3)
+text(dim(img)[2] / 2, 
+     dim(img)[1] / 2, 
+     "Non-random:\n small sample of pixels",
+     cex = 5, 
+     col = blueTransparent)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLER-NonR05-boxed.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 img <- readPNG("crazy-emotion-eyewear-2015-SMALLER-NonR10.png")
 plot( as.raster(img))   # Plot the image
-box(lwd=3)
-text(dim(img)[2]/2, dim(img)[1]/2, "Non-random:\n medium-small number of pixels", cex=5, col=blueTransparent)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLER-NonR10-boxed.png", width=Width, height=Height, units="px")
+box(lwd = 3)
+text(dim(img)[2] / 2, 
+     dim(img)[1] / 2, 
+     "Non-random:\n medium-small number of pixels",
+     cex = 5, 
+     col = blueTransparent)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLER-NonR10-boxed.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 img <- readPNG("crazy-emotion-eyewear-2015-SMALLER-NonR25-ALT.png")
 plot( as.raster(img))   # Plot the image
-box(lwd=3)
-text(dim(img)[2]/2, dim(img)[1]/2, "Non-random:\n medium-large\n number of pixels", cex=5, col=blueTransparent)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLER-NonR25-ALT-boxed.png", width=Width, height=Height, units="px")
+box(lwd = 3)
+text(dim(img)[2] / 2, 
+     dim(img)[1] / 2,
+     "Non-random:\n medium-large\n number of pixels",
+     cex = 5, 
+     col = blueTransparent)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLER-NonR25-ALT-boxed.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 img <- readPNG("crazy-emotion-eyewear-2015-SMALLER-NonR50.png")
 plot( as.raster(img))   # Plot the image
-box(lwd=3)
-text(dim(img)[2]/2, dim(img)[1]/2, "Non-random:\n large number\n of pixels", cex=5, col=blueTransparent)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLER-NonR50-boxed.png", width=Width, height=Height, units="px")
+box(lwd = 3)
+text(dim(img)[2] / 2, 
+     dim(img)[1] / 2, 
+     "Non-random:\n large number\n of pixels",
+     cex = 5, 
+     col = blueTransparent)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLER-NonR50-boxed.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 
