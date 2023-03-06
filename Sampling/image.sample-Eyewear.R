@@ -60,14 +60,8 @@ px.sample.SRS <- function(pcent, fname, Height, Width){
   
   num <- Width * Height # Image size: Number of pixels
                         # So we use a binomial: 0s and 1s randomly chosen from these pixels
-  add <- rbinom(num, 1, 1-pcent)  # Take a random sample of pcent% of pixels.
-                                  ### 1 means to select the pixel; 0 means to blank it out
-
-  #cat("Sum of ones:", 
-  #    sum(add),"\n")
-  #cat("% of ones:", 
-  #    sum(add) / (Height * Width) * 100,
-  #    "\n---\n")
+  add <- rbinom(num, 1, 1 - pcent)  # Take a random sample of pcent% of pixels.
+                                    ### 1 means to select the pixel; 0 means to blank it out
 
   img <- array( dim = c(Height, Width), 
                 add) # This 0s and 1s, arranged as an array the same size as the image
@@ -226,7 +220,6 @@ cat(" --- Systematic --- \n")
 
 # Create pixmap overlay, of white pixels and transparent pixels to overlay the image
 px.sample.systematic <- function(pcent, fname, Height, Width){
-  
   
   pcent <- pcent/100 # Convert % to a decimal
 
@@ -401,10 +394,22 @@ px.sample.cluster <- function(pcent, fname, Height, Width){
 
 
 # Create the overlays
-img.50.cluster <- px.sample.cluster(50, "img50.pgm", Height=Height, Width=Width)
-img.25.cluster <- px.sample.cluster(25, "img25.pgm", Height=Height, Width=Width)
-img.10.cluster <- px.sample.cluster(10, "img10.pgm", Height=Height, Width=Width)
-img.05.cluster <- px.sample.cluster(05, "img5.pgm", Height=Height, Width=Width)
+img.50.cluster <- px.sample.cluster(50, 
+                                    "img50.pgm", 
+                                    Height = Height, 
+                                    Width = Width)
+img.25.cluster <- px.sample.cluster(25, 
+                                    "img25.pgm", 
+                                    Height = Height, 
+                                    Width. =Width)
+img.10.cluster <- px.sample.cluster(10, 
+                                    "img10.pgm", 
+                                    Height = Height, 
+                                    Width = Width)
+img.05.cluster <- px.sample.cluster(05, 
+                                    "img5.pgm", 
+                                    Height = Height, 
+                                    Width = Width)
 #img.01 <- px.sample(.01, "img1.pgm", Height=Height, Width=Width)
 
 AspectRatio <- Height/Width
@@ -414,33 +419,73 @@ img <- read.pnm(file="crazy-emotion-eyewear-2015-SMALLEST.ppm")
 
 plot(img)   # Plot the image
 box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.05.cluster), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Cluster random sample: small number of pixels", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R05-cluster.png", width=Width, height=Height, units="px")
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.05.cluster), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Cluster random sample: small number of pixels", 
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file="crazy-emotion-eyewear-2015-SMALLEST-R05-cluster.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 
 plot(img)   # Plot the image
 box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.10.cluster), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Cluster random sample: medium-small number of pixels", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R10-cluster.png", width=Width, height=Height, units="px")
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.10.cluster), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Cluster random sample: medium-small number of pixels", 
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file="crazy-emotion-eyewear-2015-SMALLEST-R10-cluster.png",
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 
 plot(img)   # Plot the image
 box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.25.cluster), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Cluster random sample: medium-large number of pixels", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R25-cluster.png", width=Width, height=Height, units="px")
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.25.cluster), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Cluster random sample: medium-large number of pixels", 
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file="crazy-emotion-eyewear-2015-SMALLEST-R25-cluster.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 
 plot(img)   # Plot the image
 box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.50.cluster), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Cluster random sample: large number of pixels", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R50-cluster.png", width=Width, height=Height, units="px")
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.50.cluster), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Cluster random sample: large number of pixels", 
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file="crazy-emotion-eyewear-2015-SMALLEST-R50-cluster.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 
@@ -477,19 +522,23 @@ px.sample.multistage <- function(pcent, fname, Height, Width){
   
   pcent <- pcent/100 # Convert % to a decimal
   pcent.rows <- floor( sqrt(pcent)*100 ) / 100
-  pcent.withinrows <- pcent/pcent.rows
+  pcent.withinrows <- pcent / pcent.rows
   
   
   set.seed(10000)
   
   num <- Width * Height # Image size: Number of pixels
   
-  add <- array( 1, dim=c(Height, Width))
+  add <- array( 1, dim = c(Height, Width))
 
   
   # Select the cols to use
-  select.rows <- rbinom(Height, 1, 1-pcent.rows)  # Take a random sample of pcent% of pixels.
-  cat("Multistage: Selecting ", pcent.rows*100, "% of rows.\n")
+  select.rows <- rbinom(Height, 
+                        1, 
+                        1 - pcent.rows)  # Take a random sample of pcent% of pixels.
+  cat("Multistage: Selecting ", 
+      pcent.rows * 100, 
+      "% of rows.\n")
   
 #  cat("   These are the selected rows:", which(select.rows>0),"\n")
   
@@ -500,13 +549,13 @@ px.sample.multistage <- function(pcent, fname, Height, Width){
   
   # Then select pixels within each row, each row being done separately
   count <- 0
-  for (j in which(select.rows==0)){
+  for (j in which(select.rows == 0)){
     count <- count + 1
-    select.cols <- rbinom(Width, 1, 1-pcent.withinrows)
+    select.cols <- rbinom(Width, 1, 1 - pcent.withinrows)
 #    cat("            Selecting ", pcent.withinrows*100, "% of columns within row j=",j,".\n")
 #
-    add[j, which(select.cols==0)] <- 0
-    if (count==1) {
+    add[j, which(select.cols == 0)] <- 0
+    if (count == 1) {
 #      cat(sum(select.cols),"\n")
 #      cat(">>>>> j = ",j,"\n")
 #      cat("select.cols:",which(select.cols==0),"\n")
@@ -523,18 +572,35 @@ px.sample.multistage <- function(pcent, fname, Height, Width){
 #  cat("% of ones:", sum(add)/(Height*Width)*100,"\n")
 #  cat("*** % of zeros:", round(sum(add==0)/(Height*Width)*100),"***\n---\n")
  
-  img <- array( dim=c(Height, Width), add) # This 0s and 1s, arranged as an array the same size as the image
-  img.pm <- pixmapIndexed(data = img, nrow=Height, ncol=Width) #, col=c(NA,"#FFFFFF") )
-  write.pnm(file=fname, object=img.pm, type="pgm")
+  img <- array( dim = c(Height, Width), 
+                add) # This 0s and 1s, arranged as an array the same size as the image
+  img.pm <- pixmapIndexed(data = img, 
+                          nrow = Height, 
+                          ncol = Width) #, col=c(NA,"#FFFFFF") )
+  write.pnm(file = fname, 
+            object = img.pm, 
+            type = "pgm")
   return(img)
 }
 
 
 # Create the overlays
-img.50.ms <- px.sample.multistage(50, "img50.pgm", Height=Height, Width=Width)
-img.25.ms <- px.sample.multistage(25, "img25.pgm", Height=Height, Width=Width)
-img.10.ms <- px.sample.multistage(10, "img10.pgm", Height=Height, Width=Width)
-img.05.ms <- px.sample.multistage(05,  "img5.pgm", Height=Height, Width=Width)
+img.50.ms <- px.sample.multistage(50, 
+                                  "img50.pgm", 
+                                  Height = Height, 
+                                  Width = Width)
+img.25.ms <- px.sample.multistage(25, 
+                                  "img25.pgm", 
+                                  Height = Height, 
+                                  Width = Width)
+img.10.ms <- px.sample.multistage(10, 
+                                  "img10.pgm", 
+                                  Height = Height, 
+                                  Width = Width)
+img.05.ms <- px.sample.multistage(05,  
+                                  "img5.pgm", 
+                                  Height = Height, 
+                                  Width = Width)
 #img.01 <- px.sample(.01, "img1.pgm", Height=Height, Width=Width)
 
 AspectRatio <- Height/Width
@@ -543,34 +609,74 @@ AspectRatio <- Height/Width
 img <- read.pnm(file="crazy-emotion-eyewear-2015-SMALLEST.ppm")   
 
 plot(img)   # Plot the image
-box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.05.ms), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Multi-stage random sample: small number of pixels", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R05-multistage.png", width=Width, height=Height, units="px")
+box(lwd = 3)
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.05.ms), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Multi-stage random sample: small number of pixels", 
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R05-multistage.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
+dev.off()
+
+
+plot(img)   # Plot the image
+box(lwd = 3)
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.10.ms), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Multi-stage random sample: medium-small number of pixels", 
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file="crazy-emotion-eyewear-2015-SMALLEST-R10-multistage.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 
 plot(img)   # Plot the image
 box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.10.ms), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Multi-stage random sample: medium-small number of pixels", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R10-multistage.png", width=Width, height=Height, units="px")
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.25.ms), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Multi-stage random sample: medium-large number of pixels", 
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R25-multistage.png", 
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 
 plot(img)   # Plot the image
-box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.25.ms), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Multi-stage random sample: medium-large number of pixels", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R25-multistage.png", width=Width, height=Height, units="px")
-dev.off()
-
-
-plot(img)   # Plot the image
-box(lwd=3)
-test <- image( 1:Width, 1:Height, t(img.50.ms), add=TRUE, col=c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Multi-stage random sample: large number of pixels", col.main=blueTransparent, cex.main=4)
-dev.copy(png, file="crazy-emotion-eyewear-2015-SMALLEST-R50-multistage.png", width=Width, height=Height, units="px")
+box(lwd = 3)
+test <- image( 1:Width, 
+               1:Height, 
+               t(img.50.ms), 
+               add = TRUE, 
+               col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
+title("Multi-stage random sample: large number of pixels", 
+      col.main = blueTransparent, 
+      cex.main = 4)
+dev.copy(png, 
+         file = "crazy-emotion-eyewear-2015-SMALLEST-R50-multistage.png",
+         width = Width, 
+         height = Height, 
+         units = "px")
 dev.off()
 
 
