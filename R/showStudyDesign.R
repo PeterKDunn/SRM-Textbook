@@ -17,17 +17,17 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   pos[6, ] <- c(0.10, 0.50)     #Individuals
   
   
-  # BACKGROUD, designating what researchers control
+  # BACKGROUND, designating what researchers control
   if (studyType == "TrueExp") left <- 0
   if (studyType == "QuasiExp") left <- 0.40
   if (studyType == "Obs") left <- 0.80
   
-  bottom <- 0.05 
-  top <- 0.85
+  bottom <- 0.02 
+  top <- 0.88
   polygon( x = c(left, 1,   1, left),
            y = c(top,  top, bottom, bottom),
            border = NA,
-           col = viridis::viridis(10, alpha = 0.05)[1])
+           col = viridis::viridis(10, alpha = 0.10)[1])
   
 
   # ARROWS next, so boxes overplot
@@ -143,10 +143,10 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
         font = 2, # BOLD
         label = ifelse(studyType == "Obs", "Conditions", "Treatments"))
   text( x = mean(c (left, 1) ), 
-        y = ifelse(studyType == "Obs", 0.15, 0.05),
+        y = ifelse(studyType == "Obs", 0.17, 0.06),
         cex = 1.05,
         font = 2, # BOLD
-        label = ifelse(studyType == "Obs", "By\nresearchers", "By researchers") )
+        label = ifelse(studyType == "Obs", "Controlled\nby\nresearchers", "Controlled by researchers") )
   
   
   # Add images
