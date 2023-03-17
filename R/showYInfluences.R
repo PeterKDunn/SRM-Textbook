@@ -55,23 +55,23 @@ showYInfluences <- function (showY = TRUE,
              radx = 0.100, 
              rady = 0.075, 
              shadow.size = 0,
-             box.col = "antiquewhite",
-             lcol = "antiquewhite")
+             box.col = ExplanatoryColour,
+             lcol = ExplanatoryColour)
   textrect( pos[1,], 
              lab = "Response", 
              radx = 0.100, 
              rady = 0.075, 
              shadow.size = 0,
-             box.col = "darkseagreen1",
-             lcol = "darkseagreen1")
+             box.col = ResponseColour,
+             lcol = ResponseColour)
   
   textrect( pos[2,], 
             lab = "Chance",
             radx = 0.100,
             rady = 0.075,
             shadow.size = 0,
-            lcol = ifelse(showChance, "palegoldenrod", "grey"),
-            box.col = ifelse(showChance, "palegoldenrod", "white") )
+            lcol = ifelse(showChance, ChanceColour, "grey"),
+            box.col = ifelse(showChance, ChanceColour, "white") )
   
   ExtraneousText <- "Extraneous"
   if (showConfounding ) ExtraneousText <- "Confounding"
@@ -82,13 +82,13 @@ showYInfluences <- function (showY = TRUE,
             radx = 0.100,
             rady = 0.075,
             shadow.size = 0,
-            lcol = ifelse(showExtraneous | showConfounding | showLurking, "palegoldenrod", "grey"),
-            box.col = ifelse(showExtraneous | showConfounding | showLurking, "palegoldenrod", "white"),
+            lcol = ifelse(showExtraneous | showConfounding | showLurking, ExtraneousColour, "grey"),
+            box.col = ifelse(showExtraneous | showConfounding | showLurking, ExtraneousColour, "white"),
             col = ifelse(showLurking, grey(0.4), "black"))
   
   textrect( pos[5,], 
-            box.col = ifelse( showDesign, "mistyrose", "white"),
-            lcol = ifelse( showDesign, "mistyrose", "grey"),
+            box.col = ifelse( showDesign, DesignColour, "white"),
+            lcol = ifelse( showDesign, DesignColour, "grey"),
             shadow.size = 0,
             radx = 0.100,
             rady = 0.075,
