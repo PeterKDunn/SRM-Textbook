@@ -35,7 +35,7 @@ For this study, the *population* is 'Students in this course this semester' and 
 The *comparison* is between females and males, and since the sex of the student cannot be manipulated by the researchers, there is no *intervention*.
 The study will be *observational*.
 
-After measuring the typing speed (the *response variable*) of many individuals, the values of the response variable will vary: It is very unlikely that every student in the study will record the same typing speed.
+After measuring the typing speed (the *response variable*) of many individuals, the values of the response variable will vary (Fig. \@ref(fig:VariationPartitioned); left bars): It is very unlikely that every student in the study will record the same typing speed.
 The typing speeds can vary due to many reasons (Fig. \@ref(fig:Influences)):
 
 * *The explanatory variable* (Sect. \@ref(FactorYExplanatory)):
@@ -59,12 +59,222 @@ The typing speeds can vary due to many reasons (Fig. \@ref(fig:Influences)):
 
 
 The purpose of the study is to explore the relationship between the response variable and the explanatory variable... but other issues can obscure that relationship.
-An [*internally valid*](#def:InternalValidity) study is one designed to focus on the relationship between the response and explanatory variables, and eliminating other possibilities for the relationship (such as *extraneous variables*, *design issues*, and *chance*) by understanding these as far as possible.
+An [*internally valid*](#def:InternalValidity) study is one designed to focus on the relationship between the response and explanatory variables, and eliminating other possibilities for the relationship (such as *extraneous variables*, *design issues*, and *chance*) by understanding these as far as possible (Fig. \@ref(fig:VariationPartitioned)).
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 One goal of study design is to maximise internal validity: to isolate the relationship of interest, by eliminating, as far as possible, all other possible explanations.
 :::
+
+
+```{r VariationPartitioned, fig.width=5.75, fig.height=3.5, out.width='70%', fig.align="center", fig.cap="Focusing on the variation explained by the explanatory variable, relative to chance, is easier when the effect of design factors and extraneous variables have been elimiated"}
+
+par( mar = c(3.75, 0.5, 0.5, 0.5))
+diagram::openplotmat()
+
+xLoc <- c(0.10, 0.30, 0.55, 0.85) 
+barWidths <- 0.045
+
+yNames <- c("Explan.",   
+            "Chance",
+            "Design",
+            "Extraneous") # Bottom to top
+yRelative <- c(1, 0.9, 0.8, 1.3) / 4 # Bottom to top
+yHeights <- cumsum(yRelative)
+
+boxColours <- viridis::viridis(4,
+                               alpha = 0.4) # In order: Explanatory, Chance, Design, Extraneous
+
+
+#axis(side=1); axis(side=2)
+
+mtext(text = c("All\nchance", 
+               "Components\nseparated",
+               "Relatively\nsmall",
+               "Relatively\nlarge"),
+      side = 1,
+      line = 1,
+      padj = 1, # Top aligned
+      at = xLoc)
+
+
+###
+
+### All variation
+diagram::textrect( mid = c( xLoc[1], mean( yRelative ) ),
+          radx = barWidths,
+          rady = 1,
+          shadow.size = 0,
+          lcol = boxColours[2],
+          box.col = boxColours[2])
+
+          
+### Divided up in one tall box still
+
+diagram::textrect( mid = c( xLoc[2], mean( c(0, yRelative[1]) ) ),
+          radx = barWidths,
+          rady = yRelative[1] / 2,
+          shadow.size = 0,
+          lcol = boxColours[1],
+          box.col = boxColours[1])
+diagram::textrect( mid = c( xLoc[2], mean( yHeights[1:2] ) ),
+          radx = barWidths,
+          rady = yRelative[2] / 2,
+          shadow.size = 0,
+          lcol = boxColours[2],
+          box.col = boxColours[2])
+diagram::textrect( mid = c( xLoc[2], mean( yHeights[2:3] ) ),
+          radx = barWidths,
+          rady = yRelative[3] / 2,
+          shadow.size = 0,
+          lcol = boxColours[3],
+          box.col = boxColours[3])
+diagram::textrect( mid = c( xLoc[2], mean( yHeights[3:4] ) ),
+          radx = barWidths,
+          rady =  yRelative[4] / 2,
+          shadow.size = 0,
+          lcol = boxColours[4],
+          box.col = boxColours[4])
+
+# Text
+text(x = xLoc[1],
+     y = 0.5,
+     labels = c("Appears to be all chance"),
+     srt = 90,
+     cex = 0.90
+     )      
+
+
+#Outline
+polygon( x = c( xLoc[2] - barWidths,
+                xLoc[2] - barWidths,
+                xLoc[2] + barWidths,
+                xLoc[2] + barWidths),
+         y = c(0, 1, 1, 0),
+         lwd = 2)
+
+# Text
+text(x = xLoc[2],
+     y = mean( c(0, yHeights[1]) ),
+     labels = c("Explan."),
+     srt = 90,
+     cex = 0.90
+     )      
+text(x = xLoc[2],
+     y = mean( yHeights[1:2]),
+     labels = c("Chance"),
+     srt = 90,
+     cex = 0.90
+     )
+text(x = xLoc[2],
+     y = mean( yHeights[2:3]),
+     labels = c("Design"),
+     srt = 90,
+     cex = 0.90
+     )
+text(x = xLoc[2],
+     y = mean( yHeights[3:4]),
+     labels = c("Extraneous"),
+     srt = 90,
+     cex = 0.90
+     )
+
+
+### Side-by-side
+diagram::textrect( mid = c( xLoc[3] - barWidths, mean( c( 0, yRelative[1] ) ) ),
+          radx = barWidths,
+          rady = yRelative[1] / 2,
+          shadow.size = 0,
+          lcol = boxColours[1],
+          box.col = boxColours[1])
+          
+diagram::textrect( mid = c( xLoc[3] + barWidths, mean( yHeights[1:2] ) - yHeights[1]),
+          radx = barWidths,
+          rady = yRelative[2] / 2,
+          shadow.size = 0,
+          lcol = boxColours[2],
+          box.col = boxColours[2])
+          
+diagram::textrect( mid = c( xLoc[3] + barWidths, mean( yHeights[2:3] ) - yHeights[1]),
+          radx = barWidths,
+          rady = yRelative[3] / 2,
+          shadow.size = 0,
+          lcol = boxColours[3],
+          box.col = boxColours[3])
+diagram::textrect( mid = c( xLoc[3] + barWidths, mean( yHeights[3:4] )  - yHeights[1]),
+          radx = barWidths,
+          rady =  yRelative[4] / 2,
+          shadow.size = 0,
+          lcol = boxColours[4],
+          box.col = boxColours[4])
+
+#Outline
+polygon( x = c( xLoc[3],
+                xLoc[3],
+                xLoc[3] + 2 * barWidths,
+                xLoc[3] + 2 * barWidths),
+         y = c(0, 
+               1 - yHeights[1], 
+               1 - yHeights[1], 
+               0),
+         lwd = 2)
+
+# Text
+text(x = xLoc[3] - barWidths,
+     y = mean( c(0, yHeights[1]) ),
+     labels = c("Explan."),
+     srt = 90,
+     cex = 0.90
+     )      
+text(x = xLoc[3] + barWidths,
+     y = mean( yHeights[1:2]) - yHeights[1],
+     labels = c("Chance"),
+     srt = 90,
+     cex = 0.90
+     )
+text(x = xLoc[3] + barWidths,
+     y = mean( yHeights[2:3]) - yHeights[1],
+     labels = c("Design"),
+     srt = 90,
+     cex = 0.90
+     )
+text(x = xLoc[3] + barWidths,
+     y = mean( yHeights[3:4]) - yHeights[1],
+     labels = c("Extraneous"),
+     srt = 90,
+     cex = 0.90
+     )
+
+
+### Remove all but chance
+diagram::textrect( mid = c( xLoc[4] - barWidths, mean( c( 0, yRelative[1] ) ) ),
+          radx = barWidths,
+          rady = yRelative[1] / 2,
+          shadow.size = 0,
+          lcol = boxColours[1],
+          box.col = boxColours[1])
+          
+diagram::textrect( mid = c( xLoc[4] + barWidths, mean( yHeights[1:2] ) - yHeights[1]),
+          radx = barWidths,
+          rady = yRelative[2] / 2,
+          shadow.size = 0,
+          lcol = boxColours[2],
+          box.col = boxColours[2])
+          
+# Text
+text(x = xLoc[4] - barWidths,
+     y = mean( c(0, yHeights[1]) ),
+     labels = c("Explan."),
+     srt = 90,
+     cex = 0.90
+     )      
+text(x = xLoc[4] + barWidths,
+     y = mean( yHeights[1:2]) - yHeights[1],
+     labels = c("Chance"),
+     srt = 90,
+     cex = 0.90
+     )
+```
 
 
 Internal validity is one of the most important properties of scientific studies, and is important for reasoning about evidence more generally.
@@ -107,142 +317,6 @@ showYInfluences()
 ```
 
 
-
-
-
-```{r}
-
-par( mar = c(3.5, 0.5, 0.5, 0.5))
-openplotmat()
-
-xLoc <- c(0.10, 0.30, 0.55, 0.85) 
-barWidths <- 0.045
-
-yNames <- c("Explanatory",   
-            "Chance",
-            "Design",
-            "Extraneous") # Bottom to top
-yRelative <- c(1, 0.9, 0.8, 1.3) / 4 # Bottom to top
-yHeights <- cumsum(yRelative)
-
-boxColours <- viridis::viridis(4,
-                               alpha = 0.5) # In order: Explanatory, Chance, Design, Extraneous
-
-
-#axis(side=1); axis(side=2)
-
-mtext(text = c("All\nchance", 
-               "Separated",
-               "Relatively\nsmall",
-               "Relatively\nlarge"),
-      side = 1,
-      line = 1,
-      at = xLoc)
-
-text(x = xLoc[2],
-     y = mean( c(0, yHeights[1]) ),
-     labels = c("Explanatory"),
-     srt = 90
-     )      
-text(x = xLoc[2],
-    y = mean( yHeights[1:2]),
-     labels = c("Chance"),
-     srt = 90
-     )
-text(x = xLoc[2],
-     y = mean( yHeights[2:3]),
-     labels = c("Design"),
-     srt = 90
-     )
-text(x = xLoc[2],
-     y = mean( yHeights[3:4]),
-     labels = c("Extraneous"),
-     srt = 90
-     )
-
-###
-
-### All variation
-textrect( mid = c( xLoc[1], mean( yRelative ) ),
-          radx = barWidths,
-          rady = 1,
-          shadow.size = 0,
-          lcol = boxColours[2],
-          box.col = boxColours[2])
-
-          
-### Divided up in one tall box still
-textrect( mid = c( xLoc[2], mean( c(0, yRelative[1]) ) ),
-          radx = barWidths,
-          rady = yRelative[1] / 2,
-          shadow.size = 0,
-          lcol = boxColours[2],
-          box.col = boxColours[2])
-textrect( mid = c( xLoc[2], mean( yHeights[1:2] ) ),
-          radx = barWidths,
-          rady = yRelative[2] / 2,
-          shadow.size = 0,
-          lcol = boxColours[1],
-          box.col = boxColours[1])
-textrect( mid = c( xLoc[2], mean( yHeights[2:3] ) ),
-          radx = barWidths,
-          rady = yRelative[3] / 2,
-          shadow.size = 0,
-          lcol = boxColours[3],
-          box.col = boxColours[3])
-textrect( mid = c( xLoc[2], mean( yHeights[3:4] ) ),
-          radx = barWidths,
-          rady =  yRelative[4] / 2,
-          shadow.size = 0,
-          lcol = boxColours[4],
-          box.col = boxColours[4])
-
-### Side-by-side
-textrect( mid = c( xLoc[3] - barWidths, mean( c( 0, yRelative[1] ) ) ),
-          radx = barWidths,
-          rady = yRelative[1] / 2,
-          shadow.size = 0,
-          lcol = boxColours[2],
-          box.col = boxColours[2])
-          
-textrect( mid = c( xLoc[3] + barWidths, mean( yHeights[1:2] ) - yHeights[1]),
-          radx = barWidths,
-          rady = yRelative[2] / 2,
-          shadow.size = 0,
-          lcol = boxColours[1],
-          box.col = boxColours[1])
-          
-textrect( mid = c( xLoc[3] + barWidths, mean( yHeights[2:3] ) - yHeights[1]),
-          radx = barWidths,
-          rady = yRelative[3] / 2,
-          shadow.size = 0,
-          lcol = boxColours[3],
-          box.col = boxColours[3])
-textrect( mid = c( xLoc[3] + barWidths, mean( yHeights[3:4] )  - yHeights[1]),
-          radx = barWidths,
-          rady =  yRelative[4] / 2,
-          shadow.size = 0,
-          lcol = boxColours[4],
-          box.col = boxColours[4])
-
-
-### Remove all but chance
-textrect( mid = c( xLoc[4] - barWidths, mean( c( 0, yRelative[1] ) ) ),
-          radx = barWidths,
-          rady = yRelative[1] / 2,
-          shadow.size = 0,
-          lcol = boxColours[2],
-          box.col = boxColours[2])
-          
-textrect( mid = c( xLoc[4] + barWidths, mean( yHeights[1:2] ) - yHeights[1]),
-          radx = barWidths,
-          rady = yRelative[2] / 2,
-          shadow.size = 0,
-          lcol = boxColours[1],
-          box.col = boxColours[1])
-          
-
-```
 
 
 
