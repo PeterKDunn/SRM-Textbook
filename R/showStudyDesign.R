@@ -3,7 +3,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                             addGroupNames = c("Group 1", "Group 2"), # e.g. addGroupNames = c("Placebo", "10mg", "30mg")
                             addCNames = c("Treatment 1", "Treatment 2"),
                             addImages = FALSE,
-                            imageList = c(NA, NA),
+                            imageList = NULL,
                             addResearcherControl = TRUE,
                             addRandomAllocationText = FALSE, 
                             addRandomSamplingText = FALSE, 
@@ -68,8 +68,8 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     pos[6, ] <- c(0.85, 0.35)     # Treatment 3
   }
   pos[7, ] <- c(0.60, 0.05)     # Compare
-  pos[8, ] <- c(0.33, mean( pos[1:2, 2] ) )     # Individuals/Sample
-  pos[9, ] <- c(0.10, mean( pos[1:2, 2] ) )     # Population
+  pos[8, ] <- c(0.33, mean( pos[1:3, 2], na.rm = TRUE ) )     # Individuals/Sample
+  pos[9, ] <- c(0.10, mean( pos[1:2, 2], na.rm = TRUE ) )     # Population
   
   ### BACKGROUND, designating what researchers control
   # We do the calculations wheter the research-control info is meeded or not, 
@@ -140,6 +140,18 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                            lcol = ifelse(studyType == "TrueExp", "black", "grey"),
                            lty = ifelse(studyType == "TrueExp", 1, 2),  
                            lwd = 2)
+    if (length(addGroupNames) == 3) {
+      diagram::straightarrow(from = pos[8, ], # Individuals to Group i
+                             to = pos[3, ], 
+                             lcol = ifelse(studyType == "TrueExp", "black", "grey"),
+                             lty = ifelse(studyType == "TrueExp", 1, 2),  
+                             lwd = 2)
+    }
+    diagram::straightarrow(from = pos[8, ], # Individuals to Group i
+                           to = pos[2, ], 
+                           lcol = ifelse(studyType == "TrueExp", "black", "grey"),
+                           lty = ifelse(studyType == "TrueExp", 1, 2),  
+                           lwd = 2)
   }
   
   # Arrows from groups to treatments
@@ -152,6 +164,13 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                            to = pos[2, ], 
                            lcol = "grey",
                            lty = 2)
+    
+    if (length(addGroupNames) == 3) {
+      diagram::straightarrow(from = pos[6, ],  # Group 3 to Treatment 3
+                             to = pos[3, ], 
+                             lcol = "grey",
+                             lty = 2)
+    }
   } else { # studyType is  "QuasiExp" or "TrueExp"
     diagram::straightarrow(from = pos[4, ], # Group 1 to Treatment 1
                            to = pos[1, ], 
@@ -161,6 +180,12 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                            to = pos[2, ], 
                            lcol = ifelse(studyType == "Obs", "grey", "black"),
                            lty = ifelse(studyType == "Obs", 2, 1))
+    if (length(addGroupNames) == 3) {
+      diagram::straightarrow(from = pos[6, ],  # Group 3 to Treatment 3
+                             to = pos[3, ], 
+                             lcol = ifelse(studyType == "Obs", "grey", "black"),
+                             lty = ifelse(studyType == "Obs", 2, 1))
+    }
   }
   
   # Arrows from Population to Sample
@@ -189,20 +214,30 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   numGroups <- length(addGroupNames)
   # Only works for two at the moment!!
   
-  diagram::textrect( pos[1,], 
-                     lab = addGroupNames[2],
+  diagram::textrect( pos[1, ], 
+                     lab = addGroupNames[1],
                      radx = 0.075,
                      rady = 0.07,
                      shadow.size = 0,
                      lcol = "darkseagreen1",
                      box.col = "darkseagreen1")
-  diagram::textrect( pos[2,], 
-                     lab = addGroupNames[1], 
+  diagram::textrect( pos[2, ], 
+                     lab = addGroupNames[2], 
                      radx = 0.075,
                      rady = 0.07,
                      shadow.size = 0,
                      lcol = "darkseagreen1",
                      box.col = "darkseagreen1")
+  if (length(addGroupNames) == 3) {
+    diagram::textrect( pos[3, ], 
+                       lab = addGroupNames[3], 
+                       radx = 0.075,
+                       rady = 0.07,
+                       shadow.size = 0,
+                       lcol = "darkseagreen1",
+                       box.col = "darkseagreen1")
+  }
+
   
   # ADD INDIVIDUALS
   if (addIndividuals) {
@@ -251,7 +286,17 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                        radx = 0.08,
                        rady = 0.07,
                        lab = addCNames[2])
-  } else {
+    if (length(addGroupNames) == 3) {
+      diagram::textrect( pos[6, ], 
+                         box.col = "white",
+                         lcol = "white",
+                         shadow.size = 0,
+                         radx = 0.08,
+                         rady = 0.07,
+                         lab = addCNames[3])
+    }
+    
+    } else {
     BlindTreatmentx <- array( NA, 
                               dim = c(2, 2))
     BlindTreatmentx[1, ] <- c(1.4, pos[4, 2])
@@ -321,11 +366,11 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
 #        cex = 1.05,
 #        font = 2, # BOLD
 #        label = "Groups")
-  text( x = pos[3, 1], 
-        y = 0.95,
-        cex = 1.05,
-        font = 2, # BOLD
-        label = ifelse(studyType == "Obs", "Conditions", "Treatments"))
+#  text( x = pos[3, 1], 
+#        y = 0.95,
+#        cex = 1.05,
+#        font = 2, # BOLD
+#        label = ifelse(studyType == "Obs", "Conditions", "Treatments"))
 
   
   # Add the "Controlled by researchers" text
@@ -334,7 +379,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     # Decided to print nothing in this case
     
   } else { # TrueExp and QuasiExp
-    if (!addThirdParty) {
+    if ( !addThirdParty & !addInternalValidityText) {
       text( x = mean( c(left, right) ), 
             y = 0.925, # Mean of the top and bottom of the "Controlled by researchers" box
             cex = 1.05,
@@ -347,26 +392,26 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   ### ADD RANDOM ALLOCATION TEXT
   if (addRandomAllocationText){
     diagram::textrect( c( mean( pos[ c(1, 4), 1] ), 
-                          mean( pos[ c(1, 2), 2] ) ),
+                          mean( pos[ c(1, 2, 3), 2], na.rm = TRUE ) ),
                        radx = 0.001,
                        rady  = 0.001,
                        lcol = "white",
                        box.col = "white",
                        shadow.size = 0,
-                       cex = 1.5,
+                       cex = 1.4,
                        lab = "Random allocation",
                        col = "grey",
                        srt = 90)
     
     
     diagram::textrect( c( mean( pos[ c(1, 8), 1] ), 
-                          mean( pos[ c(1, 2), 2] ) ),
+                          mean( pos[ c(1, 2, 3), 2], na.rm = TRUE ) ),
                        radx = 0.001,
                        rady  = 0.001,
                        lcol = "white",
                        box.col = "white",
                        shadow.size = 0,
-                       cex = 1.5,
+                       cex = 1.4,
                        lab = "Random allocation",
                        col = "grey",
                        srt = 90)
@@ -376,13 +421,13 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   ### ADD RANDOM SAMPLING TEXT
   if (addRandomSamplingText){
     diagram::textrect( c( mean( pos[ c(8, 9), 1] ), 
-                          mean( pos[ c(1, 2), 2] ) ),
+                          mean( pos[ c(1, 2, 3), 2], na.rm = TRUE ) ),
                        radx = 0.001,
                        rady  = 0.001,
                        lcol = "white",
                        box.col = "white",
                        shadow.size = 0,
-                       cex = 1.5,
+                       cex = 1.4,
                        lab = "Random sampling",
                        col = "grey",
                        srt = 90)
@@ -478,3 +523,24 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
 }
 
 
+
+
+
+showStudyDesign(studyType = "TrueExp",  
+                addIndividuals = TRUE,    
+                addImages = FALSE,
+                addGroupNames = c("Group 1", "Group 2", "Group 3"), # e.g. addGroupNames = c("Placebo", "10mg", "30mg")
+                addCNames = c("Treatment 1", "Treatment 2", "Treatment 3"),
+                addRandomAllocationText = TRUE)
+
+
+
+showStudyDesign(studyType = "TrueExp",  
+                addIndividuals = TRUE, 
+                addCompareText = FALSE,
+                addResearcherControl = FALSE,
+                addInternalValidityText = TRUE,
+                addRandomAllocationText = TRUE, 
+                addRandomSamplingText = TRUE, 
+                addExternalValidityText = TRUE, 
+                addSampling = TRUE)
