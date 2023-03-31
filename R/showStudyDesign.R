@@ -17,8 +17,11 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   par( mar = c(0.5, 0.5, 0.5, 0.5))
   if ( addThirdParty ) {
      # Recommend no POPULATION box---too wide!
-    shape::emptyplot(ylim = c(0, 1), # No change
-                     xlim = c(0.55, 1.25) )  
+     shape::emptyplot(ylim = c(0, 1), # No change
+                     xlim = c(0.2, 1.5),
+                     asp = NULL) # ELSE  asp=1 or requested
+    #axis(side=1)
+    #axis(side=2)
   } else {
     diagram::openplotmat()
   }
@@ -32,16 +35,16 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     addCNames <- c("Condition 1", "Condition 2")
   }
   if ( addThirdParty ) {
+    addResearcherControl <- FALSE # We add other things instead, 
+                                  # and besides... it is the same for quasi- and true epxerimets, so it doesn't matter which we show
+    
     addBlindedTreatmentNames <- addCNames
-    addCNames <- c("A", "B")
+    addCNames <- c('"A"', '"B"')
   }
     ### SETUP
   pos <- array(NA, dim = c(14, 2))
   # pos[1:3, ] refer to the Groups; see below
   # pos[4:6, ] refer to the Treatments; see below
-  pos[7, ] <- c(0.60, 0.05)     # Compare
-  pos[8, ] <- c(0.33, 0.50)     # Individuals/Sample
-  pos[9, ] <- c(0.10, 0.50)     # Population
   
 
     ### SET OPTIONS 
@@ -64,6 +67,9 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     pos[5, ] <- c(0.85, 0.55)     # Treatment 2
     pos[6, ] <- c(0.85, 0.35)     # Treatment 3
   }
+  pos[7, ] <- c(0.60, 0.05)     # Compare
+  pos[8, ] <- c(0.33, mean( pos[1:2, 2] ) )     # Individuals/Sample
+  pos[9, ] <- c(0.10, mean( pos[1:2, 2] ) )     # Population
   
   ### BACKGROUND, designating what researchers control
   # We do the calculations wheter the research-control info is meeded or not, 
@@ -251,35 +257,34 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     BlindTreatmentx[1, ] <- c(1.4, pos[4, 2])
     BlindTreatmentx[2, ] <- c(1.4, pos[5, 2])
 
-    # ADD the question-mark allocation arrows
-    diagram::straightarrow(from = BlindTreatmentx[1, ], # Treatment 1 to A
-                           to = pos[4, ], 
-                           segment = c(0, 0.30), # Dot; draw whole line
-                           lcol = "grey",
-                           arr.pos = 0.30, # Position arrow at end of line
-                           lty = 1)
     diagram::straightarrow(from = BlindTreatmentx[1, ], # Treatment 1 to A
                            to = pos[5, ], 
-                           segment = c(0, 0.30),
+                           segment = c(0, 0.350),
                            arr.pos = 0.30, # Position arrow at end of line
                            lcol = "grey",
                            lty = 1)
 
     diagram::straightarrow(from = BlindTreatmentx[2, ], # Treatment 1 to A
                            to = pos[4, ], 
-                           segment = c(0, 0.30),
+                           segment = c(0, 0.350),
                            arr.pos = 0.30, # Position arrow at end of line
                            lcol = "grey",
                            lty = 1)
+
+    # ADD the question-mark allocation arrows: To blinded treatments
+    diagram::straightarrow(from = BlindTreatmentx[1, ], # Treatment 1 to A
+                           to = pos[5, ],
+                           segment = c(0.65, 1.00),
+                           arr.pos = 0.75, # Position arrow at end of line
+                           lcol = "grey",
+                           lty = 2)
+
     diagram::straightarrow(from = BlindTreatmentx[2, ], # Treatment 1 to A
-                           to = pos[5, ], 
-                           segment = c(0, 0.30),
-                           arr.pos = 0.30, # Position arrow at end of line
+                           to = pos[4, ],
+                           segment = c(0.65, 1.00),
+                           arr.pos = 0.75, # Position arrow at end of line
                            lcol = "grey",
-                           lty = 1)
-    text(x = rep(1.175, 4),
-         y = c(pos[1, 2], 0.5, 0.6, pos[2, 2] ),
-         labels = "?")
+                           lty = 2)
     
     
     # ADD the next boxes
@@ -325,26 +330,17 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   
   # Add the "Controlled by researchers" text
   if (studyType == "Obs") {
-#    text( x = mean( c(left + 0.2, 1) ), 
-#          y = 0.10,
-#          cex = 1.05,
-#          font = 2, # BOLD
-#          label = ifelse(studyType == "Obs", "Controlled\nby\nresearchers") )
-    # And and arrow
-
+    
+    # Decided to print nothing in this case
     
   } else { # TrueExp and QuasiExp
-#    text( x = 0.975, 
-#        y = mean( c(top, bottom) ), # Mean of the top and bottom of the "Controlled by researchers" box
-#        srt = 90,
-#        cex = 1.05,
-#        font = 2, # BOLD
-#        label = "Controlled by researchers")
-    text( x = mean( c(left, right) ), 
-          y = 0.925, # Mean of the top and bottom of the "Controlled by researchers" box
-          cex = 1.05,
-          font = 2, # BOLD
-          label = "Controlled by researchers")
+    if (!addThirdParty) {
+      text( x = mean( c(left, right) ), 
+            y = 0.925, # Mean of the top and bottom of the "Controlled by researchers" box
+            cex = 1.05,
+            font = 2, # BOLD
+            label = "Controlled by researchers")
+    }
   }
   
   
@@ -440,6 +436,21 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   
   ### ADD THIRD PARTY
   if ( addThirdParty ) {
+    # Add question mark
+    Deltax <- 0.075
+    Deltay <- 0.125
+
+    plotfunctions::plot_image(img =  "icons/iconmonstr-help-3-240.png",
+                              type = "png",
+                              keep.ratio = TRUE,
+                              xrange = c( mean(c(pos[4, 1], 1.4)) - Deltax, 
+                                          mean(c(pos[4, 1], 1.4)) + Deltax),
+                              yrange = c( pos[8, 2] - Deltay,
+                                          pos[8, 2] + Deltay),
+                              bty = "n", # Removes box
+                              add = TRUE)
+
+    # Add arrows
     diagram::textrect( c(pos[4, ], 1.2),
                        lab = addCNames[1], 
                        radx = 0.075,
@@ -455,9 +466,15 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                        shadow.size = 0,
                        lcol = "darkseagreen1",
                        box.col = "darkseagreen1")
+    
+    # Add text
+    text(x = pos[4, 1],
+         y = pos[7, 2] + 0.1,
+         labels = "As administered\nby assistant")
+    text(x = BlindTreatmentx[1, 1],
+         y = pos[7, 2] + 0.1,
+         labels = "Allocated by\n researchers")
   }
 }
 
 
-showStudyDesign(studyType = "QuasiExp",
-                addIndividuals = TRUE)
