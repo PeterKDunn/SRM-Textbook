@@ -224,23 +224,23 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                      radx = 0.075,
                      rady = 0.07,
                      shadow.size = 0,
-                     lcol = "darkseagreen1",
-                     box.col = "darkseagreen1")
+                     lcol = GroupColour,
+                     box.col = GroupColour)
   diagram::textrect( pos[2, ], 
                      lab = addGroupNames[2], 
                      radx = 0.075,
                      rady = 0.07,
                      shadow.size = 0,
-                     lcol = "darkseagreen1",
-                     box.col = "darkseagreen1")
+                     lcol = GroupColour,
+                     box.col = GroupColour)
   if (length(addGroupNames) == 3) {
     diagram::textrect( pos[3, ], 
                        lab = addGroupNames[3], 
                        radx = 0.075,
                        rady = 0.07,
                        shadow.size = 0,
-                       lcol = "darkseagreen1",
-                       box.col = "darkseagreen1")
+                       lcol = GroupColour,
+                       box.col = GroupColour)
   }
 
   
@@ -251,9 +251,8 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                        radx = 0.075,
                        rady = 0.07,
                        shadow.size = 0,
-                       lcol = "darkseagreen1",
-                       box.col = "darkseagreen1"
-    )
+                       lcol = IndividualColour,
+                       box.col = IndividualColour)
     
   }
   
@@ -264,8 +263,8 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                        radx = 0.075,
                        rady = 0.07,
                        shadow.size = 0,
-                       lcol = "darkseagreen1",
-                       box.col = "darkseagreen1" )
+                       lcol = IndividualColour,
+                       box.col = IndividualColour)
   }
   
   
@@ -278,23 +277,23 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   # Only works for two at the moment!!
   if ( !addThirdParty ) {
     diagram::textrect( pos[4, ], 
-                       box.col = "white",
-                       lcol = "white",
+                       box.col = ExplanatoryColour,
+                       lcol = ExplanatoryColour,
                        shadow.size = 0,
                        radx = 0.08,
                        rady = 0.07,
                        lab = addCNames[1])
     diagram::textrect( pos[5, ], 
-                       box.col = "white",
-                       lcol = "white",
+                       box.col = ExplanatoryColour,
+                       lcol = ExplanatoryColour,
                        shadow.size = 0,
                        radx = 0.08,
                        rady = 0.07,
                        lab = addCNames[2])
     if (length(addGroupNames) == 3) {
       diagram::textrect( pos[6, ], 
-                         box.col = "white",
-                         lcol = "white",
+                         box.col = ExplanatoryColour,
+                         lcol = ExplanatoryColour,
                          shadow.size = 0,
                          radx = 0.08,
                          rady = 0.07,

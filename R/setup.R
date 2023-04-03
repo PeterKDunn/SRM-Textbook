@@ -32,7 +32,7 @@ options(formatR.arrow = TRUE,
         width = 90)
 
 ### COLOURS
-someDefaultColoursTransparent <- viridis::viridis(6, 
+someDefaultColoursTransparent <- viridis::viridis(8, 
                                                   alpha = 0.4)
 # In order: NA, Explanatory, Chance, Design, Extraneous, NA
 ResponseColourTransparent <- someDefaultColoursTransparent[1]
@@ -40,34 +40,50 @@ ChanceColourTransparent <- someDefaultColoursTransparent[2]
 ExplanatoryColourTransparent <- someDefaultColoursTransparent[3]
 DesignColourTransparent <- someDefaultColoursTransparent[4]
 ExtraneousColourTransparent <- someDefaultColoursTransparent[5]
+GroupColourTransparent <- someDefaultColoursTransparent[6]
+IndividualColourTransparent <- someDefaultColoursTransparent[7]
 
 # Convert to equiv sold, manually...
-ResponseColour <- rgb(185, 171, 191, maxColorValue = 256)
-ChanceColour <- rgb(187, 188, 208, maxColorValue = 256)
-ExplanatoryColour <- rgb(186, 203, 211, maxColorValue = 256)
-DesignColour <- rgb(188, 220, 209, maxColorValue = 256)
-ExtraneousColour <- rgb(212, 235, 196, maxColorValue = 256)
+ResponseColour <- rgb(185, 171, 191, 
+                      maxColorValue = 256)
+ChanceColour <- rgb(187, 183, 205, 
+                    maxColorValue = 256)
+ExplanatoryColour <- rgb(186, 195, 210, 
+                         maxColorValue = 256)
+DesignColour <- rgb(185, 206, 211, 
+                    maxColorValue = 256)
+ExtraneousColour <- rgb(198, 230, 203, 
+                        maxColorValue = 256)
+GroupColour <- rgb(223, 240, 190, ### FIX!
+                   maxColorValue = 256)
+IndividualColour <- rgb(187, 217, 210, ### FIX!
+                        maxColorValue = 256)
 
 
 
-
-# plot( x = c(0, 1),
-#       y = c(0, 1) )
-# polygon( x = c(0, 0, 0.2, 0.2),
-#          y = c(0, 1, 1, 0),
-#          col = ResponseColourTransparent)
-# polygon( x = c(0, 0, 0.2, 0.2) + 0.2,
-#          y = c(0, 1, 1, 0),
-#          col = ChanceColourTransparent)
-# polygon( x = c(0, 0, 0.2, 0.2) + 0.4,
-#          y = c(0, 1, 1, 0),
-#          col = ExplanatoryColourTransparent)
-# polygon( x = c(0, 0, 0.2, 0.2) + 0.6,
-#          y = c(0, 1, 1, 0),
-#          col = DesignColourTransparent)
-# polygon( x = c(0, 0, 0.2, 0.2) + 0.8,
-#          y = c(0, 1, 1, 0),
-#          col = ExtraneousColourTransparent)
+plot( x = c(0, 1.4),
+      y = c(0, 1) )
+polygon( x = c(0, 0, 0.2, 0.2),
+         y = c(0, 1, 1, 0),
+         col = ResponseColourTransparent)
+polygon( x = c(0, 0, 0.2, 0.2) + 0.2,
+         y = c(0, 1, 1, 0),
+         col = ChanceColourTransparent)
+polygon( x = c(0, 0, 0.2, 0.2) + 0.4,
+         y = c(0, 1, 1, 0),
+         col = ExplanatoryColourTransparent)
+polygon( x = c(0, 0, 0.2, 0.2) + 0.6,
+         y = c(0, 1, 1, 0),
+         col = DesignColourTransparent)
+polygon( x = c(0, 0, 0.2, 0.2) + 0.8,
+         y = c(0, 1, 1, 0),
+         col = GroupColourTransparent)
+polygon( x = c(0, 0, 0.2, 0.2) + 1.0,
+         y = c(0, 1, 1, 0),
+         col = IndividualColourTransparent)
+polygon( x = c(0, 0, 0.2, 0.2) + 1.2,
+         y = c(0, 1, 1, 0),
+         col = ExtraneousColourTransparent)
 
 
 ### OTHER COOURS
