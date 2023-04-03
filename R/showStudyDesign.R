@@ -1,7 +1,7 @@
 showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                             addIndividuals = FALSE, # show the allocation of individuals?
-                            addGroupNames = c("Group 1", "Group 2"), # e.g. addGroupNames = c("Placebo", "10mg", "30mg")
-                            addCNames = c("Treatment 1", "Treatment 2"),
+                            addGroupNames = c("Group 1", "Group 2"), # e.g. addGroupNames = c("Group 1", "Group 2", "Group 3")
+                            addCNames = c("Treatment 1", "Treatment 2"), # e.g., addCNames = c("Placebo", "10mg", "30mg") 
                             addImages = FALSE,
                             imageList = NULL,
                             addResearcherControl = TRUE,
@@ -13,7 +13,12 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                             addBlocking = FALSE, # If  TRUE  then two block are shown 
                             addSampling = FALSE, # Show  "POP -> SAMPLE"
                             addThirdParty = FALSE) { 
-  ### CANVAS
+  
+  ### Makes a study design diagram, withOUT blocking.
+  ### Works for two groups/treatments; most things hsould work with three
+  
+  
+    ### CANVAS
   par( mar = c(0.5, 0.5, 0.5, 0.5))
   if ( addThirdParty ) {
      # Recommend no POPULATION box---too wide!
