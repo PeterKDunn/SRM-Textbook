@@ -229,15 +229,15 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
                      radx = 0.075,
                      rady = 0.14,
                      shadow.size = 0,
-                     lcol = "azure",
-                     box.col = "azure")
+                     lcol = BlockColour,
+                     box.col = BlockColour)
   diagram::textrect( pos[11, ], 
                      lab = "Block II:\nAged 30+", 
                      radx = 0.075,
                      rady = 0.14,
                      shadow.size = 0,
-                     lcol = "azure",
-                     box.col = "azure")
+                     lcol = BlockColour,
+                     box.col = BlockColour)
   
   
   
@@ -251,30 +251,30 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
                      radx = 0.075,
                      rady = 0.07,
                      shadow.size = 0,
-                     lcol = "darkseagreen1",
-                     box.col = "darkseagreen1")
+                     lcol = GroupColour,
+                     box.col = GroupColour)
   diagram::textrect( pos[2, ], 
                      lab = addGroupNames[2], 
                      radx = 0.075,
                      rady = 0.07,
                      shadow.size = 0,
-                     lcol = "darkseagreen1",
-                     box.col = "darkseagreen1")
+                     lcol = GroupColour,
+                     box.col = GroupColour)
 
   diagram::textrect( c( pos[1, 1], -pos[1, 2]), 
                      lab = addGroupNames[2],
                      radx = 0.075,
                      rady = 0.07,
                      shadow.size = 0,
-                     lcol = "darkseagreen1",
-                     box.col = "darkseagreen1")
+                     lcol = GroupColour,
+                     box.col = GroupColour)
   diagram::textrect( c( pos[2, 1], -pos[2, 2]), 
                      lab = addGroupNames[1], 
                      radx = 0.075,
                      rady = 0.07,
                      shadow.size = 0,
-                     lcol = "darkseagreen1",
-                     box.col = "darkseagreen1")
+                     lcol = GroupColour,
+                     box.col = GroupColour)
   
   # ADD INDIVIDUALS
   if (addIndividuals) {
@@ -283,8 +283,8 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
                        radx = 0.075,
                        rady = 0.07,
                        shadow.size = 0,
-                       lcol = "darkseagreen1",
-                       box.col = "darkseagreen1")
+                       lcol = IndividualColour,
+                       box.col = IndividualColour)
     
   }
   
@@ -295,8 +295,8 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
                        radx = 0.075,
                        rady = 0.07,
                        shadow.size = 0,
-                       lcol = "darkseagreen1",
-                       box.col = "darkseagreen1" )
+                       lcol = IndividualColour,
+                       box.col = IndividualColour )
   }
   
   
@@ -306,30 +306,30 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
   numC <- length(addCNames)
   if (numC != numGroups) error("Need as many conditions/treatments as groups!")
   diagram::textrect( pos[4, ], 
-                     box.col = "white",
-                     lcol = "white",
+                     box.col = ExplanatoryColour,
+                     lcol = ExplanatoryColour,
                      shadow.size = 0,
                      radx = 0.08,
                      rady = 0.07,
                      lab = addCNames[1])
   diagram::textrect( pos[5, ], 
-                     box.col = "white",
-                     lcol = "white",
+                     box.col = ExplanatoryColour,
+                     lcol = ExplanatoryColour,
                      shadow.size = 0,
                      radx = 0.08,
                      rady = 0.07,
                      lab = addCNames[2])
   
   diagram::textrect( c(pos[4, 1], -pos[4, 2]), 
-                     box.col = "white",
-                     lcol = "white",
+                     box.col = ExplanatoryColour,
+                     lcol = ExplanatoryColour,
                      shadow.size = 0,
                      radx = 0.08,
                      rady = 0.07,
                      lab = addCNames[2])
   diagram::textrect( c( pos[5, 1], -pos[5, 2]), 
-                     box.col = "white",
-                     lcol = "white",
+                     box.col = ExplanatoryColour,
+                     lcol = ExplanatoryColour,
                      shadow.size = 0,
                      radx = 0.08,
                      rady = 0.07,
@@ -428,8 +428,8 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
   plotfunctions::plot_image(img = "Pics/iconmonstr-candy-5-240.png", # HIMALAYA
                             type = "png",
                             keep.ratio = TRUE,
-                            xrange = c( pos[4, 1] + 0.09 - 0.025,
-                                        pos[4, 1] + 0.09 + 0.025),
+                            xrange = c( pos[4, 1] + 0.11 - 0.025,
+                                        pos[4, 1] + 0.11 + 0.025),
                             yrange = c( pos[4, 2] - 0.08,
                                         pos[4, 2] + 0.08),
                             bty = "n", # Removes box from around the plot 
@@ -438,8 +438,8 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
   plotfunctions::plot_image(img = "Pics/iconmonstr-candy-8-240.png", # REFINED
                             type = "png",
                             keep.ratio = TRUE,
-                            xrange = c( pos[5, 1] + 0.09 - 0.025,
-                                        pos[5, 1] + 0.09 + 0.025),
+                            xrange = c( pos[5, 1] + 0.11 - 0.025,
+                                        pos[5, 1] + 0.11 + 0.025),
                             yrange = c( pos[5, 2] - 0.08,
                                         pos[5, 2] + 0.08),
                             bty = "n", # Removes box from around the plot 
@@ -450,8 +450,8 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
   plotfunctions::plot_image(img = "Pics/iconmonstr-candy-5-240.png", # HIMALAYA
                             type = "png",
                             keep.ratio = TRUE,
-                            xrange = c( pos[5, 1] + 0.09 - 0.025,
-                                        pos[5, 1] + 0.09 + 0.025),
+                            xrange = c( pos[5, 1] + 0.11 - 0.025,
+                                        pos[5, 1] + 0.11 + 0.025),
                             yrange = c( -pos[5, 2] - 0.08,
                                         -pos[5, 2] + 0.08),
                             bty = "n", # Removes box from around the plot 
@@ -460,8 +460,8 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
   plotfunctions::plot_image(img = "Pics/iconmonstr-candy-8-240.png", # REFINED
                             type = "png",
                             keep.ratio = TRUE,
-                            xrange = c( pos[4, 1] + 0.09 - 0.025,
-                                        pos[4, 1] + 0.09 + 0.025),
+                            xrange = c( pos[4, 1] + 0.11 - 0.025,
+                                        pos[4, 1] + 0.11 + 0.025),
                             yrange = c( -pos[4, 2] - 0.08,
                                         -pos[4, 2] + 0.08),
                             bty = "n", # Removes box from around the plot 

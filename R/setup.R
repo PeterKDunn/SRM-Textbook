@@ -42,6 +42,7 @@ DesignColourTransparent <- someDefaultColoursTransparent[4]
 ExtraneousColourTransparent <- someDefaultColoursTransparent[5]
 GroupColourTransparent <- someDefaultColoursTransparent[6]
 IndividualColourTransparent <- someDefaultColoursTransparent[7]
+BlockColourTransparent <- someDefaultColoursTransparent[8]
 
 # Convert to equiv sold, manually...
 ResponseColour <- rgb(185, 171, 191, 
@@ -58,39 +59,46 @@ GroupColour <- rgb(223, 240, 190, ### FIX!
                    maxColorValue = 256)
 IndividualColour <- rgb(187, 217, 210, ### FIX!
                         maxColorValue = 256)
+BlockColour <- rgb(253, 245, 187, ### FIX!
+                        maxColorValue = 256)
 
 
 
-plot( x = c(0, 1.4),
-      y = c(0, 1) )
-polygon( x = c(0, 0, 0.2, 0.2),
-         y = c(0, 1, 1, 0),
-         col = ResponseColourTransparent)
-polygon( x = c(0, 0, 0.2, 0.2) + 0.2,
-         y = c(0, 1, 1, 0),
-         col = ChanceColourTransparent)
-polygon( x = c(0, 0, 0.2, 0.2) + 0.4,
-         y = c(0, 1, 1, 0),
-         col = ExplanatoryColourTransparent)
-polygon( x = c(0, 0, 0.2, 0.2) + 0.6,
-         y = c(0, 1, 1, 0),
-         col = DesignColourTransparent)
-polygon( x = c(0, 0, 0.2, 0.2) + 0.8,
-         y = c(0, 1, 1, 0),
-         col = GroupColourTransparent)
-polygon( x = c(0, 0, 0.2, 0.2) + 1.0,
-         y = c(0, 1, 1, 0),
-         col = IndividualColourTransparent)
-polygon( x = c(0, 0, 0.2, 0.2) + 1.2,
-         y = c(0, 1, 1, 0),
-         col = ExtraneousColourTransparent)
+# plot( x = c(0, 1.6),
+#       y = c(0, 1) )
+# polygon( x = c(0, 0, 0.2, 0.2),
+#          y = c(0, 1, 1, 0),
+#          col = ResponseColourTransparent)
+# polygon( x = c(0, 0, 0.2, 0.2) + 0.2,
+#          y = c(0, 1, 1, 0),
+#          col = ChanceColourTransparent)
+# polygon( x = c(0, 0, 0.2, 0.2) + 0.4,
+#          y = c(0, 1, 1, 0),
+#          col = ExplanatoryColourTransparent)
+# polygon( x = c(0, 0, 0.2, 0.2) + 0.6,
+#          y = c(0, 1, 1, 0),
+#          col = DesignColourTransparent)
+# polygon( x = c(0, 0, 0.2, 0.2) + 0.8,
+#          y = c(0, 1, 1, 0),
+#          col = GroupColourTransparent)
+# polygon( x = c(0, 0, 0.2, 0.2) + 1.0,
+#          y = c(0, 1, 1, 0),
+#          col = IndividualColourTransparent)
+# polygon( x = c(0, 0, 0.2, 0.2) + 1.2,
+#          y = c(0, 1, 1, 0),
+#          col = ExtraneousColourTransparent)
+# polygon( x = c(0, 0, 0.2, 0.2) + 1.4,
+#          y = c(0, 1, 1, 0),
+#          col = BlockColourTransparent)
 
 
 ### OTHER COOURS
-blueSolid <- rgb(204, 204, 251, 
-                 alpha = 1, 
-                 maxColorValue = 255)
+blueSolid <- rgb(214, 215, 252, 
+                 maxColorValue = 256)
 plotSolid <- blueSolid
+
+plotDark <- rgb(0, 0, 1,
+                maxColorValue = 1)
 
 blueTransparent <- rgb(0, 0, 1, 
                        alpha = 0.2, 

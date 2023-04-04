@@ -118,8 +118,8 @@ showPOCI <- function(addC = ifelse(addI, TRUE, FALSE), # Always have PO; add C?
                        radx = 0.10, 
                        rady = 0.15, 
                        shadow.size = 0,
-                       box.col = "antiquewhite",
-                       lcol = "antiquewhite")
+                       box.col = ExplanatoryColour,
+                       lcol = ExplanatoryColour)
   }
   if (addY){
     diagram::textrect( pos[5, ], 
@@ -127,7 +127,7 @@ showPOCI <- function(addC = ifelse(addI, TRUE, FALSE), # Always have PO; add C?
                        radx = 0.10, 
                        rady = 0.15, 
                        shadow.size = 0,
-                       box.col = "darkseagreen1",
-                       lcol = "darkseagreen1")
+                       box.col = IndividualColour,
+                       lcol = IndividualColour)
   }
 }

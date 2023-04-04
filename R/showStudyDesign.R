@@ -37,7 +37,9 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
 
   # NAMES
   if ( studyType == "Obs") {
-    addCNames <- c("Condition 1", "Condition 2")
+    if (addCNames[1] == "Treatment 1") {
+       addCNames <- c("Condition 1", "Condition 2")
+    }
   }
   if ( addThirdParty ) {
     addResearcherControl <- FALSE # We add other things instead, 
@@ -73,8 +75,10 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     pos[6, ] <- c(0.85, 0.35)     # Treatment 3
   }
   pos[7, ] <- c(0.60, 0.05)     # Compare
-  pos[8, ] <- c(0.33, mean( pos[1:3, 2], na.rm = TRUE ) )     # Individuals/Sample
-  pos[9, ] <- c(0.10, mean( pos[1:2, 2], na.rm = TRUE ) )     # Population
+  pos[8, ] <- c(0.33, mean( pos[1:3, 2], 
+                            na.rm = TRUE ) )     # Individuals/Sample
+  pos[9, ] <- c(0.10, mean( pos[1:2, 2], 
+                            na.rm = TRUE ) )     # Population
   
   ### BACKGROUND, designating what researchers control
   # We do the calculations wheter the research-control info is meeded or not, 
@@ -505,16 +509,16 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                        radx = 0.075,
                        rady = 0.07,
                        shadow.size = 0,
-                       lcol = "darkseagreen1",
-                       box.col = "darkseagreen1")
+                       lcol = ExplanatoryColour,
+                       box.col = ExplanatoryColour)
   
     diagram::textrect( c(pos[5, ], 1.2),
                        lab = addCNames[2], 
                        radx = 0.075,
                        rady = 0.07,
                        shadow.size = 0,
-                       lcol = "darkseagreen1",
-                       box.col = "darkseagreen1")
+                       lcol = ExplanatoryColour,
+                       box.col = ExplanatoryColour)
     
     # Add text
     text(x = pos[4, 1],
@@ -525,26 +529,3 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
          labels = "Allocated by\n researchers")
   }
 }
-
-
-
-
-
-showStudyDesign(studyType = "TrueExp",  
-                addIndividuals = TRUE,    
-                addImages = FALSE,
-                addGroupNames = c("Group 1", "Group 2", "Group 3"), # e.g. addGroupNames = c("Placebo", "10mg", "30mg")
-                addCNames = c("Treatment 1", "Treatment 2", "Treatment 3"),
-                addRandomAllocationText = TRUE)
-
-
-
-showStudyDesign(studyType = "TrueExp",  
-                addIndividuals = TRUE, 
-                addCompareText = FALSE,
-                addResearcherControl = FALSE,
-                addInternalValidityText = TRUE,
-                addRandomAllocationText = TRUE, 
-                addRandomSamplingText = TRUE, 
-                addExternalValidityText = TRUE, 
-                addSampling = TRUE)
