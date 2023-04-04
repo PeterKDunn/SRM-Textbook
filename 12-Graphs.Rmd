@@ -162,13 +162,12 @@ The plots shows that most birthweights are 3-point-something kilograms.
 
 
 ```{r animation.hook="gifski", interval=0.85, dev=if (is_latex_output()){"pdf"}else{"png"}}
-BB <- read.csv("./Data/BabyBoom.csv")
-
 # BABYBOOM
 if (knitr::is_html_output()){
   
-  Wts <- BB$Weight
-  
+  BB <- read.csv("./Data/BabyBoom.csv")
+  Wts <- sort(BB$Weight)
+    
   DP2 <- function(x){format(round(x, 1), nsmall = 1) }
   
   par(mfrow = c(2, 1), 
@@ -188,47 +187,47 @@ if (knitr::is_html_output()){
     cex.data <- 0.9
     text(  1:datagrid.x, 
            rep(4, 11), 
-	   DP2(Wts[1:11]/10),  
+	   DP2(Wts[1:11]),  
 	   cex = cex.data )
     text(  1:datagrid.x, 
            rep(3, 11), 
-	   DP2(Wts[12:22]/10), 
+	   DP2(Wts[12:22]), 
 	   cex = cex.data )
     text(  1:datagrid.x, 
            rep(2, 11), 
-	   DP2(Wts[23:33]/10), 
+	   DP2(Wts[23:33]), 
 	   cex = cex.data )
     text(  1:datagrid.x, 
            rep(1, 11), 
-	   DP2(Wts[34:44]/10), 
+	   DP2(Wts[34:44]), 
 	   cex = cex.data )
     
     # Now highlight the observation being used
     if (i <= 11) {
       points(  i, 4, 
                pch = 1, 
-	       col = "red", 
+	       col = plotDark, 
 	       lwd = 3, 
 	       cex = 4 )
     }
     if ( (i > 11) & (i <= 22)){
       points(  i - 11, 3, 
                pch = 1, 
-	       col = "red", 
+	       col = plotDark, 
 	       lwd = 3, 
 	       cex = 4 )
     }
     if ( (i > 22) & (i <= 233)){
       points(  i - 22, 2, 
                pch = 1, 
-	       col = "red", 
+	       col = plotDark, 
 	       lwd = 3, 
 	       cex = 4 )
     }
     if ( (i > 33) ){
       points(  i - 33, 1, 
                pch = 1, 
-	       col = "red", 
+	       col = plotDark, 
 	       lwd = 3, 
 	       cex = 4 )
     }
@@ -242,18 +241,18 @@ if (knitr::is_html_output()){
           type = "n",
           xlab = "",
           ylab = "",
-          main = "Stemplot of birthweights\n(2|6 means 2.6 kg)",
+          main = "Stemplot of birthweights\n(2 | 6 means 2.6 kg)",
           xlim = c(0, 34),
           ylim = c(0.8, 4.2),
           axes = FALSE)
     
-    if (Wts[i] < 20 ) {
+    if (Wts[i] < 2 ) {
       mtext("1", 
             side = 2, 
 	    line = 1, 
 	    las = 1, 
 	    at = 4, 
-	    col = "red", 
+	    col = plotDark, 
 	    font = 2, 
 	    cex = 1.5)
       mtext("2", 
@@ -272,7 +271,7 @@ if (knitr::is_html_output()){
 	    las = 1, 
 	    at = 1)
     }
-    if ( (Wts[i] >=20) & (Wts[i]<30) ){
+    if ( (Wts[i] >= 2) & (Wts[i] < 3) ){
       mtext("1", 
             side = 2, 
 	    line = 1, 
@@ -283,7 +282,7 @@ if (knitr::is_html_output()){
 	    line = 1, 
 	    las = 1, 
 	    at = 3, 
-	    col = "red", 
+	    col = plotDark, 
 	    font = 2, 
 	    cex = 1.5)
       mtext("3", 
@@ -297,7 +296,7 @@ if (knitr::is_html_output()){
 	     las = 1, 
 	     at = 1)
     }
-    if ( (Wts[i] >= 30) & (Wts[i] < 40) ){
+    if ( (Wts[i] >= 3) & (Wts[i] < 4) ){
       mtext("1", 
             side = 2, 
 	    line = 1, 
@@ -313,7 +312,7 @@ if (knitr::is_html_output()){
 	    line = 1, 
 	    las = 1, 
 	    at = 2, 
-	    col = "red", 
+	    col = plotDark, 
 	    font = 2, 
 	    cex = 1.5)
       mtext("4", 
@@ -322,7 +321,7 @@ if (knitr::is_html_output()){
 	    las = 1, 
 	    at = 1)
     }
-    if ( Wts[i] >= 40 ){
+    if ( Wts[i] >= 4 ){
       mtext("1", 
             side = 2, 
 	    line = 1, 
@@ -343,7 +342,7 @@ if (knitr::is_html_output()){
 	    line = 1, 
 	    las = 1, 
 	    at = 1, 
-	    col = "red", 
+	    col = plotDark, 
 	    font = 2, 
 	    cex = 1.5)
     }
@@ -354,45 +353,45 @@ if (knitr::is_html_output()){
     
     # Plot leaves
     for (j in (1:i) ){
-      if ( Wts[j] < 20) {
+      if ( Wts[j] < 2) {
         if (j != i) points( stemcounts[1], 4, 
-	                    pch = as.character(Wts[j] - 10))
+	                    pch = substr( sprintf("%1.1f", Wts[j]), 3, 3))
         if (j == i ) text( stemcounts[1], 4, 
-	                   as.character(Wts[j] - 10), 
-			   col = "red", 
+	                   substr( sprintf("%1.1f", Wts[j]), 3, 3), 
+			   col = plotDark, 
 			   cex = 1.5, 
 			   font = 2)
         stemcounts[1] <- stemcounts[1] + 1
       }
       
-      if ( (Wts[j] >= 20) & (Wts[j] < 30) ) {
+      if ( (Wts[j] >= 2) & (Wts[j] < 3) ) {
         if (j != i ) points( stemcounts[2], 3, 
-	                     pch = as.character(Wts[j] - 20) )
+	                     pch = substr( sprintf("%1.1f", Wts[j]), 3, 3) )
         if (j == i ) text( stemcounts[2], 3, 
-	                   as.character(Wts[j] - 20), 
-			   col = "red", 
+	                   substr( sprintf("%1.1f", Wts[j]), 3, 3), 
+			   col = plotDark, 
 			   cex = 1.5, 
 			   font = 2)
         stemcounts[2] <- stemcounts[2] + 1
       }
       
-      if ( (Wts[j] >= 30) & (Wts[j] < 40) ) {
+      if ( (Wts[j] >= 3) & (Wts[j] < 4) ) {
         if (j != i ) points( stemcounts[3], 2, 
-	                     pch = as.character(Wts[j] - 30))
+	                     pch = substr( sprintf("%1.1f", Wts[j]), 3, 3))
         if (j == i ) text( stemcounts[3], 2, 
-	                   as.character(Wts[j] - 30), 
-			   col = "red", 
+	                   substr( sprintf("%1.1f", Wts[j]), 3, 3), 
+			   col = plotDark, 
 			   cex = 1.5, 
 			   font = 2)
         stemcounts[3] <- stemcounts[3] + 1
       }
-      if ( Wts[j] >= 40 ) {
+      if ( Wts[j] >= 4 ) {
         if (j != i ) points( stemcounts[4], 1, 
-	                     pch = as.character(Wts[j] - 40))
+	                     pch = substr( sprintf("%1.1f", Wts[j]), 3, 3))
         if (j == i ) text( stemcounts[4], 1, 
-	                   as.character(Wts[j] - 40), 
-			   col = "red", 
-			   cex = 1.5, 
+	                   substr( sprintf("%1.1f", Wts[j]), 3, 3), 
+			   col = plotDark, 
+			   cex = 1.5,  
 			   font = 2)
         stemcounts[4] <- stemcounts[4] + 1
       }
@@ -405,7 +404,8 @@ if (knitr::is_html_output()){
 ```{r BBStem1, fig.align="center", fig.width=5, fig.cap="Starting to make the stemplot for the baby-weight data: the first 4 observations added. The data are on the left; the stemplot during construction on the right.", fig.width=10, fig.height=3, out.width='95%'}
 if (knitr::is_latex_output()){
   
-  Wts <- sort( round(BB$Weight/100, 0) )
+  BB <- read.csv("./Data/BabyBoom.csv")
+  Wts <- sort(BB$Weight)
   
   DP2 <- function(x){ format(round(x, 1), 
                              nsmall = 1) }
@@ -427,27 +427,27 @@ if (knitr::is_latex_output()){
           axes = FALSE)
     cex.data <- 0.9
     text(  1:datagrid.x, rep(4, 11), 
-           DP2(Wts[1:11]/10),  
+           DP2(Wts[1:11]),  
 	   cex = cex.data )
     text(  1:datagrid.x, rep(3, 11), 
-           DP2(Wts[12:22]/10), 
+           DP2(Wts[12:22]), 
 	   cex = cex.data )
     text(  1:datagrid.x, rep(2, 11), 
-           DP2(Wts[23:33]/10), 
+           DP2(Wts[23:33]), 
 	   cex = cex.data )
     text(  1:datagrid.x, rep(1, 11), 
-           DP2(Wts[34:44]/10), 
+           DP2(Wts[34:44]), 
 	   cex = cex.data )
     
     # Now highlight the observation being used
     if (i <= 11) {
       points(  i, 4, 
                pch = 1, 
-	       col = "red", 
-	       lwd = 3, 
-	       cex = 4 )
+               col = plotDark, 
+               lwd = 3, 
+               cex = 4 )
     }
-  
+
    
     # Produce the stemplot
     stemgrid.x <- 34
@@ -458,110 +458,110 @@ if (knitr::is_latex_output()){
           type = "n",
           xlab = "",
           ylab = "",
-          main = "Stemplot of birthweights\n(2|6 means 2.6 kg)",
-          xlim = c(0, 34),
+          main = "Stemplot of birthweights\n(2 | 6 means 2.6 kg)",
+          xlim = c(0, 34), 
           ylim = c(0.8, 4.2),
           axes = FALSE)
     
-    if (Wts[i] < 20 ) {
+    if (Wts[i] < 2 ) {
       mtext("1", 
             side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 4, 
-	    col = "red", 
-	    font = 2, 
-	    cex = 1.5)
+            line = 1, 
+            las = 1, 
+            at = 4, 
+            col = plotDark, 
+            font = 2, 
+            cex = 1.5)
       mtext("2", 
             side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 3)
+            line = 1, 
+            las = 1, 
+            at = 3)
       mtext("3", 
             side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 2)
+            line = 1, 
+            las = 1, 
+            at = 2)
       mtext("4", 
             side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 1)
+            line = 1, 
+            las = 1, 
+            at = 1)
     }
-    if ( (Wts[i] >= 20) & (Wts[i] < 30) ){
+    if ( (Wts[i] >= 2) & (Wts[i] < 3) ){
       mtext("1", 
             side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 4)
+            line = 1, 
+            las = 1, 
+            at = 4)
       mtext("2", 
             side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 3, 
-	    col = "red", 
-	    font = 2, 
-	    cex = 1.5)
+            line = 1, 
+            las = 1, 
+            at = 3, 
+            col = plotDark, 
+            font = 2, 
+            cex = 1.5)
       mtext("3", 
             side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 2)
+            line = 1, 
+            las = 1, 
+            at = 2)
       mtext("4", 
             side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 1)
+            line = 1, 
+            las = 1, 
+            at = 1)
     }
-    if ( (Wts[i] >= 30) & (Wts[i] < 40) ){
+    if ( (Wts[i] >= 3) & (Wts[i] < 4) ){
       mtext("1", 
             side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 4)
+            line = 1, 
+            las = 1, 
+            at = 4)
       mtext("2", 
             side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 3)
+            line = 1, 
+            las = 1, 
+            at = 3)
       mtext("3", 
             side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 2, 
-	    col = "red", 
-	    font = 2, 
-	    cex = 1.5)
+            line = 1, 
+            las = 1, 
+            at = 2, 
+            col = plotDark, 
+            font = 2, 
+            cex = 1.5)
       mtext("4", 
             side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 1)
+            line = 1, 
+            las = 1, 
+            at = 1)
     }
-    if ( Wts[i] >= 40 ){
+    if ( Wts[i] >= 4 ){
       mtext("1", 
             side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 4)
+            line = 1, 
+            las = 1, 
+            at = 4)
       mtext("2", 
             side = 2,
-	    line = 1, 
-	    las = 1, 
-	    at = 3)
+            line = 1, 
+            las = 1, 
+            at = 3)
       mtext("3", 
             side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 2)
+            line = 1, 
+            las = 1, 
+            at = 2)
       mtext("4", 
             side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 1, 
-	    col = "red", 
-	    font = 2, 
-	    cex = 1.5)
+            line = 1, 
+            las = 1, 
+            at = 1, 
+            col = plotDark, 
+            font = 2, 
+            cex = 1.5)
     }
     
     # Divide the stems and leaves
@@ -569,47 +569,50 @@ if (knitr::is_latex_output()){
            lwd = 2)
     
     # Plot leaves
+    stemcounts <- rep(1, 4)
+    
     for (j in (1:4) ){
-      if ( Wts[j] < 20) {
+      
+      if ( Wts[j] < 2) {
         if (j != i) points( stemcounts[1], 4, 
-	                    pch = as.character(Wts[j] - 10))
+                            pch = substr( as.character(Wts[j] - 1), 3, 3) )
         if (j == i ) text( stemcounts[1], 4, 
-	                   as.character(Wts[j] - 10), 
-			   col = "red", 
-			   cex = 1.5, 
-			   font = 2)
+                           substr( as.character(Wts[j] - 1), 3, 3),
+                           col = plotDark, 
+                           cex = 1.5, 
+                           font = 2)
         stemcounts[1] <- stemcounts[1] + 1
       }
       
-      if ( (Wts[j] >= 20) & (Wts[j] < 30) ) {
+      if ( (Wts[j] >= 2) & (Wts[j] < 3) ) {
         if (j != i ) points( stemcounts[2], 3, 
-	                     pch = as.character(Wts[j] - 20) )
+                             pch = substr( as.character(Wts[j] - 2), 3, 3) )
         if (j == i ) text( stemcounts[2], 3, 
-	                   as.character(Wts[j] - 20), 
-			   col = "red", 
-			   cex = 1.5, 
-			   font = 2)
+                           substr( as.character(Wts[j] - 2), 3, 3),
+                           col = plotDark, 
+                           cex = 1.5, 
+                           font = 2)
         stemcounts[2] <- stemcounts[2] + 1
       }
       
-      if ( (Wts[j] >= 30) & (Wts[j] < 40) ) {
+      if ( (Wts[j] >= 3) & (Wts[j] < 4) ) {
         if (j != i ) points( stemcounts[3], 2, 
-	                     pch = as.character(Wts[j] - 30))
+                             pch = substr( sprintf("%1.1f", Wts[j]), 3, 3) )
         if (j == i ) text( stemcounts[3], 2, 
-	                   as.character(Wts[j] - 30), 
-			   col = "red", 
-			   cex = 1.5, 
-			   font = 2)
+                           substr( sprintf("%1.1f", Wts[j]), 3, 3),
+                           col = plotDark, 
+                           cex = 1.5, 
+                           font = 2)
         stemcounts[3] <- stemcounts[3] + 1
       }
-      if ( Wts[j] >= 40 ) {
+      if ( Wts[j] >= 4 ) {
         if (j != i ) points( stemcounts[4], 1, 
-	                     pch = as.character(Wts[j] - 40))
+                             pch = substr( as.character(Wts[j] - 2), 3, 3) )
         if (j == i ) text( stemcounts[4], 1, 
-	                   as.character(Wts[j] - 40), 
-			   col = "red", 
-			   cex = 1.5, 
-			   font = 2)
+                           substr( as.character(Wts[j] - 4), 3, 3),
+                           col = plotDark, 
+                           cex = 1.5, 
+                           font = 2)
         stemcounts[4] <- stemcounts[4] + 1
       }
     }
@@ -620,7 +623,8 @@ if (knitr::is_latex_output()){
 ```{r BBStem44,  fig.align="center", fig.cap="The final stemplot for the baby-weight data. The data are on the left; the stemplot on the right.", fig.width=10, fig.height=3, out.width='95%' }
 if (knitr::is_latex_output()){
   
-  Wts <-sort( round(BB$Weight/100, 0) )
+  BB <- read.csv("./Data/BabyBoom.csv") 
+  Wts <- sort(BB$Weight)
   
   DP2 <- function(x){format(round(x, 1), nsmall = 1) }
   
@@ -641,97 +645,82 @@ if (knitr::is_latex_output()){
     cex.data <- 0.9
     text(  1:datagrid.x, 
            rep(4, 11), 
-	   DP2(Wts[1:11]/10),  
-	   cex = cex.data )
+           DP2(Wts[1:11]),  
+           cex = cex.data )
     text(  1:datagrid.x, 
            rep(3, 11), 
-	   DP2(Wts[12:22]/10), 
-	   cex = cex.data )
+           DP2(Wts[12:22]), 
+           cex = cex.data )
     text(  1:datagrid.x, 
            rep(2, 11), 
-	   DP2(Wts[23:33]/10), 
-	   cex = cex.data )
+           DP2(Wts[23:33]), 
+           cex = cex.data )
     text(  1:datagrid.x, 
            rep(1, 11), 
-	   DP2(Wts[34:44]/10), 
-	   cex = cex.data )
-        
+           DP2(Wts[34:44]), 
+           cex = cex.data )
+    
     # Produce the stemplot
     stemgrid.x <- 34
     stemgrid.y <- 4
-    stemcounts <- array(1, dim=stemgrid.y)
+    stemcounts <- array(1, dim = stemgrid.y)
     
     plot( expand.grid(1:stemgrid.x, 1:stemgrid.y), 
           type = "n",
           xlab = "",
           ylab = "",
-          main = "Stemplot of birthweights\n(2|6 means 2.6 kg)",
+          main = "Stemplot of birthweights\n(2 | 6 means 2.6 kg)",
           xlim = c(0, 34),
           ylim = c(0.8, 4.2),
           axes = FALSE)
     
-      mtext("1", 
-            side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 4)
-      mtext("2", 
-            side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 3)
-      mtext("3", 
-            side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 2)
-      mtext("4", 
-            side = 2, 
-	    line = 1, 
-	    las = 1, 
-	    at = 1)
-
+    mtext("1", 
+          side = 2, 
+          line = 1, 
+          las = 1, 
+          at = 4)
+    mtext("2", 
+          side = 2, 
+          line = 1, 
+          las = 1, 
+          at = 3)
+    mtext("3", 
+          side = 2, 
+          line = 1, 
+          las = 1, 
+          at = 2)
+    mtext("4", 
+          side = 2, 
+          line = 1, 
+          las = 1, 
+          at = 1)
+    
     # Divide the stems and leaves
     abline(v = 0, 
            lwd = 2)
     
     # Plot leaves
     for (j in (1:44) ){
-      if ( Wts[j] < 20) {
+      if ( Wts[j] < 2) {
         if (j != i) points( stemcounts[1], 4, 
-	                    pch = as.character(Wts[j] - 10))
-        if (j == i ) text( stemcounts[1], 4, 
-	                   as.character(Wts[j] - 10), 
-			   col = "red", 
-			   cex = 1.5, 
-			   font = 2)
+                            pch = substr( as.character(Wts[j] - 1), 3, 3) )
         stemcounts[1] <- stemcounts[1] + 1
-      }
+      } 
       
-      if ( (Wts[j] >= 20) & (Wts[j] < 30) ) {
+      if ( (Wts[j] >= 2) & (Wts[j] < 3) ) {
         if (j != i ) points( stemcounts[2], 3, 
-	                     pch = as.character(Wts[j] - 20) )
-        if (j == i ) text( stemcounts[2], 3, 
-	                   as.character(Wts[j] - 20), 
-			   col = "red", 
-			   cex = 1.5, 
-			   font = 2)
+                            pch = substr( as.character(Wts[j] - 2), 3, 3) )
         stemcounts[2] <- stemcounts[2] + 1
       }
       
-      if ( (Wts[j] >= 30) & (Wts[j] < 40) ) {
+      if ( (Wts[j] >= 3) & (Wts[j] < 4) ) { 
         if (j != i ) points( stemcounts[3], 2, 
-	                     pch = as.character(Wts[j] - 30))
-        if (j == i ) text( stemcounts[3], 2, 
-	                   as.character(Wts[j] - 30), 
-			   col = "red", 
-			   cex = 1.5, 
-			   font = 2)
+                            pch = substr( sprintf("%1.1f", Wts[j]), 3, 3) )
         stemcounts[3] <- stemcounts[3] + 1
       }
-      if ( Wts[j] >= 40 ) {
+      if ( Wts[j] >= 4 ) {
         points( stemcounts[4], 1, 
-	        pch = as.character(Wts[j] - 40))
+                            pch = substr( as.character(Wts[j] - 4), 3, 3) )
         stemcounts[4] <- stemcounts[4] + 1
       }
     }
@@ -772,7 +761,7 @@ if (knitr::is_html_output()){
   Eggs <- sort(Eggs)
   
   #  par(width=5, height=5, mar=c(0, 0, 2, 0)+0.1, mfrow=c(2, 1))
-  par(mfrow = c(2,1),
+  par(mfrow = c(2, 1),
       mar = c(2, 3, 4, 1) + 0.1)
   for (i in (1:length(Eggs))){
     # Plot the data
@@ -800,15 +789,23 @@ if (knitr::is_html_output()){
     if (i <= 5) {
       points(  i, 3, 
                pch = 1, 
-	       col = "red", 
+	       col = plotDark, 
 	       lwd = 3, 
 	       cex = 4 )
     }
-    if ( (i>5) & (i<=10)){
-      points(  i-5, 2, pch=1, col="red", lwd=3, cex=4 )
+    if ( (i > 5) & (i <= 10)){
+      points(  i - 5, 2, 
+               pch = 1, 
+               col = plotDark, 
+               lwd = 3, 
+               cex = 4 )
     }
-    if ( (i>10) ){
-      points(  i-10, 1, pch=1, col="red", lwd=3, cex=4 )
+    if ( (i > 10) ){
+      points(  i - 10, 1, 
+               pch = 1, 
+               col = plotDark, 
+               lwd = 3, 
+               cex = 4 )
     }
     
     # Produce the stemplot
@@ -832,7 +829,7 @@ if (knitr::is_html_output()){
 	    line = 1, 
 	    las = 1, 
 	    at = 3, 
-	    col = "red", 
+	    col = plotDark, 
 	    font = 2, 
 	    cex = 1.5)
       mtext("1", 
@@ -862,7 +859,7 @@ if (knitr::is_html_output()){
 	    line = 1, 
 	    las = 1, 
 	    at = 2, 
-	    col = "red", 
+	    col = plotDark, 
 	    font = 2, 
 	    cex = 1.5)
       mtext("2", 
@@ -892,7 +889,7 @@ if (knitr::is_html_output()){
 	    line = 1, 
 	    las = 1, 
 	    at = 1, 
-	    col = "red", 
+	    col = plotDark, 
 	    font = 2, 
 	    cex = 1.5)
       mtext("3",  
@@ -922,7 +919,7 @@ if (knitr::is_html_output()){
 	    line = 1, 
 	    las = 1, 
 	    at = 0, 
-	    col = "red", 
+	    col = plotDark, 
 	    font = 2, 
 	    cex = 1.5)
     }
@@ -938,7 +935,7 @@ if (knitr::is_html_output()){
                              pch = as.character(Eggs[j]))
         if (j == i ) text( stemcounts[1], 3, 
                            as.character(Eggs[j]), 
-                           col = "red", 
+                           col = plotDark, 
                            cex = 1.5, 
                            font = 2)
         stemcounts[1] <- stemcounts[1] + 1
@@ -951,7 +948,7 @@ if (knitr::is_html_output()){
         if (j == i ) text( stemcounts[2], 
                            2, 
                            as.character(Eggs[j] - 10), 
-                           col = "red", 
+                           col = plotDark, 
                            cex = 1.5, 
                            font = 2)
         stemcounts[2] <- stemcounts[2] + 1
@@ -964,7 +961,7 @@ if (knitr::is_html_output()){
         if (j == i ) text( stemcounts[3], 
                            1, 
                            as.character(Eggs[j] - 20), 
-                           col = "red", 
+                           col = plotDark, 
                            cex = 1.5, 
                            font = 2)
         stemcounts[3] <- stemcounts[3] + 1
@@ -976,7 +973,7 @@ if (knitr::is_html_output()){
         if (j == i ) text( stemcounts[4], 
                            0, 
                            as.character(Eggs[j] - 30), 
-                           col = "red", 
+                           col = plotDark, 
                            cex = 1.5, 
                            font = 2)
         stemcounts[4] <- stemcounts[4] + 1
@@ -1081,7 +1078,7 @@ if (knitr::is_latex_output()){
 	        pch = as.character(Eggs[j] - 20))
         stemcounts[3] <- stemcounts[3] + 1
       }
-      if ( Eggs[j]>=30 ) {
+      if ( Eggs[j] >= 30 ) {
         points( stemcounts[4], 0, 
 	        pch = as.character(Eggs[j] - 30))
         stemcounts[4] <- stemcounts[4] + 1
@@ -1336,28 +1333,28 @@ if (knitr::is_html_output(exclude = "epub")) {
     if (i <= 11) {
       points(  i, 4, 
                pch = 1, 
-	             col = "red", 
+	             col = plotDark, 
 	             lwd = 3, 
 	             cex = 4 )
     }
     if ( (i > 11) & (i <= 22)){
       points(  i - 11, 3, 
                pch = 1, 
-	             col = "red", 
+	             col = plotDark, 
 	             lwd = 3, 
 	             cex = 4 )
     }
     if ( (i > 22) & (i <= 233)){
       points(  i - 22, 2, 
                pch = 1, 
-	             col = "red", 
+	             col = plotDark, 
 	             lwd = 3, 
 	             cex = 4 )
     }
     if ( (i > 33) ){
       points(  i - 33, 1, 
                pch = 1, 
-	             col = "red", 
+	             col = plotDark, 
 	             lwd = 3, 
 	             cex = 4 )
     }
@@ -1420,7 +1417,7 @@ if (knitr::is_latex_output()){
     if (i <= 11) {
       points(  i, 4, 
                pch = 1, 
-	             col = "red", 
+	             col = plotDark, 
 	             lwd = 3, 
 	             cex = 4 )
     }
@@ -1476,7 +1473,7 @@ if (knitr::is_latex_output()){
 # #     if ( (i > 33) ){
 # #       points(  i - 33, 1, 
 # #               pch = 1, 
-# # 	            col = "red", 
+# # 	            col = plotDark, 
 # # 	            lwd = 3, 
 # # 	            cex = 4 )
 # #     }
@@ -1898,7 +1895,7 @@ This is called *encoding* extra information into the bar chart.
 :::
 
    
-```{r IndependencePie, fig.cap="Severity of diagnoses of participants", fig.align="center", fig.height=2.25, out.width='65%'}
+```{r IndependencePie, fig.cap="Severity of diagnoses of participants", fig.align="center", fig.height=2.25, out.width='60%'}
 par( mar = c(0.5, 0.5, 3.5, 0.5) )
 pie( c(31, 69),
      labels = c("More severe (31)", 
@@ -2944,7 +2941,7 @@ abline(h = 0,
 bxp(EngStats,
     las = 1,
     add = TRUE,
-    boxfill = "slategray1")
+    boxfill = plot.colour)
 ```
 
 <div style="text-align:center;">
@@ -3537,7 +3534,7 @@ plotB <- ggplot() + geom_polygon(data = ozdata,
   annotate("text", x = 150, y = -43, label = "Tas", col = grey(0.4)) +
   annotate("text", x = 133, y = -29, label = "SA", col = grey(0.4)) +
   scale_fill_manual(values = c("gold", 
-                               "red"))
+                               plotDark))
 
 
 grid.arrange(plotA, 

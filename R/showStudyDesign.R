@@ -342,15 +342,15 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     
     # ADD the next boxes
     diagram::textrect( BlindTreatmentx[1, ],
-                       box.col = "white",
-                       lcol = "white",
+                       box.col = ExplanatoryColour,
+                       lcol = ExplanatoryColour,
                        shadow.size = 0,
                        radx = 0.08,
                        rady = 0.07,
                        lab = addBlindedTreatmentNames[1])
     diagram::textrect( BlindTreatmentx[2, ],
-                       box.col = "white",
-                       lcol = "white",
+                       box.col = ExplanatoryColour,
+                       lcol = ExplanatoryColour,
                        shadow.size = 0,
                        radx = 0.08,
                        rady = 0.07,
