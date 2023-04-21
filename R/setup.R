@@ -105,7 +105,8 @@ blueTransparent <- rgb(0, 0, 1,
                        maxColorValue = 1)
 
 plot.colour <- if( knitr::is_latex_output()) {
-  grey(0.5) } else {
+  grey(0.5) 
+  } else {
     blueTransparent
   }
 
