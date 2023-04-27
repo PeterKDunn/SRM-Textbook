@@ -44,14 +44,14 @@ What does the histogram tell us?
 * **Shape**: The [distribution](#GraphsOneQuant) is slightly skewed right.
 * **Outliers**: Some large outliers are present (that are hard to see on the histogram).
 
-Describing some of these features more precisely, with *numbers*, can be helpful.
+Describing these features more precisely, with *numbers*, can be helpful.
 :::
 
 
 ```{r NHANESdirectHDLHisto, fig.cap="The histogram of the direct HDL cholesterol from the NHANES study", fig.align="center", fig.width=5, fig.height=3.5}
 hist(NHANES$DirectChol,
 	xlab = "Direct HDL cholesterol (mmol/L)",
-	ylab = "Frequency",
+	ylab = "Number of people",
 	las = 1,
 	ylim = c(0, 2500),
 	xlim = c(0, 4.5),
@@ -62,9 +62,9 @@ box()
 ```
 
 
-A number that describes a feature of a *population* is called a [*parameter*](#StatisticsAndParameters).
+A number that describes a feature of a *population* is called a *parameter* (Sect. \@ref(StatisticsAndParameters)).
 The values of parameters are usually unknown.
-In contrast, a number that describes a feature of a *sample* is called a  [*statistic*](#StatisticsAndParameters).
+In contrast, a number that describes a feature of a *sample* is called a  *statistic* (Sect. \@ref(StatisticsAndParameters)).
 That is:
 
 * **P**opulations are numerically described by [**p**arameters](#StatisticsAndParameters), and values of parameters are usually unknown.
@@ -72,17 +72,17 @@ That is:
 
 
 ::: {.definition #Parameter name="Parameter"}
-A [**parameter**](#StatisticsAndParameters) is a number describing some feature of a population.
+A [**parameter**](#StatisticsAndParameters) is a number, usually unknown, describing some feature of a population.
 :::
 
 
 ::: {.definition #Statistic name="Statistic"}
-A [**statistic**](#StatisticsAndParameters) is a number describing some feature of a sample (to estimate a population *parameter*).
+A [**statistic**](#StatisticsAndParameters) is a number describing some feature of a sample (to estimate an unknown population *parameter*).
 :::
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The RQ identifies the population, but in practice a sample is studied.
+The RQ identifies the population, but in practice only one of the many possible samples is  studied.
 *Statistics* are estimates of *parameters*, and the value of the *statistic* is not the same for every possible *sample*.
 :::
 
@@ -95,19 +95,19 @@ The RQ identifies the population, but in practice a sample is studied.
 </div>
 
 
-The average (or *location*, or *centre*, or *typical value*) for *quantitative sample data* can be described in many ways.
+The average (or *location*, or *central value*) for *quantitative sample data* can be described in many ways.
 The two most common ways are:
 
-* [the **sample mean** (or *sample arithmetic mean*)](#Mean), which estimates the population mean; and
-* [the **sample median**](#Median), which estimates the population median.
+* the *sample mean* (or *sample arithmetic mean*), which estimates the population mean (Sect. \@ref(Mean)); and
+* the *sample median*, which estimates the population median (Sect. \@ref(Median)).
 
 In both cases, the population [parameter](#StatisticsAndParameters) is *estimated* by a sample [statistic](#StatisticsAndParameters).
 Understanding [whether to use the mean or median is important](#CompareMeanMedian).
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-The word 'average' can refer to either means, median r other measures of centre.
-Use the precise terms 'mean' or 'median', rather than 'average', when possible!
+The word 'average' can refer to either means, medians or other measures of centre.
+Use the precise term 'mean' or 'median', rather than 'average', when possible!
 :::
 
 
@@ -126,10 +126,15 @@ Mdn <- aggregate(MR2$Mean,
 		             FUN = "median", 
 		             na.rm = TRUE, 
 		             simplify = TRUE)
+Number <- aggregate(MR2$Mean, 
+                    by = list(MR2$Month),
+                    FUN = function(x){length(x) - sum(is.na(x))},
+                    simplify = TRUE)
 
 MRsummary <- data.frame(Month = month.abb, 
                         "Mean" = Mn[, 2], 
-			                  "Median" = Mdn[, 2])
+			                  "Median" = Mdn[, 2],
+			                  "No." = Number[, 2])
 ```
 
 
@@ -146,18 +151,20 @@ Consider the *daily* river flow volume ('streamflow') at the Mary River from 01 
 } else {
    '(from [Queensland DNRM](http://watermonitoring.dnrm.qld.gov.au/cgi/webhyd.pl?rsdf_org=138110A&cat=rs&lvl=1&0)).'
 }`
-The 'average' daily streamflow in February could be given using either the mean or the median.
+The 'average' daily streamflow in February could be described using either the mean or the median.
 The two give *very* different values for the 'average':
 
 * the *mean* daily flow is 1123.2ML.
 * the *median* daily flow is 146.1ML.
 
 These are both measuring the same thing (the 'average' daily streamflow in February), yet give very different answers.
-Why?
+This implies they measure the 'average' in different ways', and have different meanings.
 Which is the best 'average' to use?
 To decide, both measures of average will need to be studied.
 :::
 
+
+(ref:MaryRiverStreamFlow) The **daily** streamflow at Mary River (Bellbird Creek), in ML, from 01 October 1959 to 17 January 2019; mean and median of the daily values for each month is shown, with the number of daily values available for that month
 
 ```{r MRtable}
 if( knitr::is_latex_output() ) {
@@ -175,19 +182,24 @@ if( knitr::is_latex_output() ) {
         booktabs = TRUE,
         digits = 1,
 	      linesep = c("", "", "", ""), # Otherwise adds a space after five lines... 
-        align = c("r", "r", "r", "c", "r", "r", "r", "c","r", "r", "r"),
+        align = c("r", "r", "r", "r", "c", 
+                  "r", "r", "r", "r", "c",
+                  "r", "r", "r", "r"),
         col.names = c("Month", 
                       "Mean",
                       "Median",
+                      "No.",
                       "",
                       "Month", 
                       "Mean",
                       "Median",
+                      "No.",
                       "",
                       "Month", 
                       "Mean",
-                      "Median"),
-        caption = "The daily streamflow at Mary River (Bellbird Creek), in ML, from 01 October 1959 to 17 January 2019; average for each month"
+                      "Median",
+                      "No."),
+        caption = "(ref:MaryRiverStreamFlow)"
   ) %>%
   kable_styling(font_size = 10) %>%
   row_spec(0, bold = TRUE)
@@ -198,11 +210,12 @@ if( knitr::is_html_output() ) {
         longtable = FALSE,
         booktabs = TRUE,
         digits = 1,
-        align = c("r", "r", "r"),
+        align = c("r", "r", "r", "r"),
         col.names = c("Month", 
                       "Mean", 
-                      "Median"),
-        caption = "The daily streamflow at Mary River (Bellbird Creek), in ML, from 01 October 1959 to 17 January 2019; average for each month"
+                      "Median",
+                      "Number"),
+        caption = "(ref:MaryRiverStreamFlow)"
   )
  if ( knitr::is_html_output(excludes = "epub")) {
    kable_styling(out, 
@@ -219,7 +232,7 @@ if( knitr::is_html_output() ) {
 The mean of the population is denoted by $\mu$, and its value is almost always unknown.
 Instead, the mean of the population is *estimated* by the mean of the sample, denoted by $\bar{x}$.
 In this context, the unknown [*parameter*](#StatisticsAndParameters) is $\mu$, and the [*statistic*](#StatisticsAndParameters) is $\bar{x}$.
-The sample mean *estimates* the population mean.
+The sample mean *estimates* the population mean, and every one of the possible samples is likely to have a different sample mean.
 
 
 :::: {.pronounceBox .pronounce data-latex="{iconmonstr-microphone-7-240.png}"}
@@ -250,9 +263,9 @@ htmltools::tags$video(src ="./Movies/mu.mp4",
 
 
 
-::: {.example #JerseyCows name="A small data set to work with"}
-To demonstrate ideas, consider a small data set for answering this descriptive RQ: "For mature Jersey cows, what is the average percentage butterfat in their milk?"
-The *population* is 'milk from Jersey cows', and an estimate of the population mean percentage butterfat is sought, denoted $\mu$.
+::: {.example #JerseyCows name="A small dataset to work with"}
+To demonstrate ideas, consider a small dataset for answering this descriptive RQ: 'For mature Jersey cows, what is the average percentage butterfat in their milk?'
+The *population* is 'Jersey cows', and an estimate of the population mean percentage butterfat from those cows is sought, denoted $\mu$.
 
 Clearly, milk from every Jersey cow cannot be studied; a *sample* is studied [@data:hand:handbook; @data:sokal:biometry].
 The unknown population mean is estimated using the sample mean ($\bar{x}$).
@@ -308,7 +321,7 @@ Alternatively, the mean is the value such that the positive and negative distanc
 } else {
    'zero, as in the animation below.'
 }`
-Both of these explanations seem reasonable for identifying the 'average' of the data.
+Both of these explanations seem reasonable for identifying an 'average' of the data.
 
 
 ```{r echo=FALSE, cache=FALSE}
@@ -691,7 +704,7 @@ if (knitr::is_html_output()){
 ```
 
 
-```{r PosNegDistMeansFig, cache=FALSE, fig.align="center", fig.width=5.5, fig.cap="The mean is the value such that the positive and negative distances sum to zero" }
+```{r PosNegDistMeansFig, cache=FALSE, fig.align="center", fig.width=5.5, out.width='50%', fig.cap="The mean is the value such that the positive and negative distances sum to zero" }
 if (knitr::is_latex_output()){
   FindMean( meanCandidates[43], 
             numberImages = length(meanCandidates), 43 )
@@ -725,7 +738,7 @@ then divide by the size of the sample (denoted by $n$).
 
 
 ::: {.example #ComputeMean name="Computing a sample mean"}
-For the Jersey cow data (Example \@ref(exm:JerseyCows)), an *estimate* of the population mean percentage butterfat is found by summing all $n = 10$ observations and dividing by $n$:
+For the Jersey cow data (Example \@ref(exm:JerseyCows)), an *estimate* of the population mean (i.e., the sample mean) percentage butterfat is found by summing all $n = 10$ observations and dividing by $n$:
 \begin{align*}
    \overline{x} 
    &= \frac{\sum x}{n} = \frac{4.8 + 6.5 + \cdots + 5.2}{10}\\
@@ -810,17 +823,17 @@ if( knitr::is_html_output() ) {
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 Software and calculators often produce numerical answers to many decimal places, some of which may not be meaningful or useful.
-A useful rule-of-thumb is to round to one or two more significant figures than the original data.
+A simple but useful rule-of-thumb is to round to one or two more significant figures than the original data.
 
 For example, the butterfat data are given to one decimal place.
 The *sample mean* weight can be given to two decimal places: $\bar{x} = 5.25$%.
 :::
 
 
-### Averages: The median {#Median}
+### Average: the median {#Median}
 
-The median is a value separating the larger half of the data from the smaller half of the data.
-In a data set with $n$ values, the median is *ordered* observation number $\displaystyle \frac{n + 1}{2}$.
+A median is a value separating the largest 50% of the data from the smallest 50% of the data.
+In a dataset with $n$ values, the median is *ordered* observation number $\displaystyle \frac{n + 1}{2}$.
 The median is:
 
 * **not** equal to $\displaystyle \frac{n + 1}{2}$.
@@ -829,14 +842,13 @@ The median is:
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 Many calculators cannot find the median.
-
 The median has no commonly-used symbol.
 :::
 
       
 ::: {.definition #Median name="Median"}
 The **median** is one way to measure the 'average' value of data.
-The *median* is a value such that half the values are larger than the median, and half the values are smaller than the median.
+A *median* is a value such that half the values are larger than the median, and half the values are smaller than the median.
 :::
 
 
@@ -845,17 +857,17 @@ The *median* is a value such that half the values are larger than the median, an
 </div>
 
 
-`r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}{R}{.25\textwidth}
-  \begin{center}
-    \includegraphics[width=.20\textwidth]{Illustrations/jersey-cow-4269262_640.jpg}
-  \end{center}
-\end{wrapfigure}
-`r if (knitr::is_html_output()) '-->'`
+<!-- `r if (knitr::is_html_output()) '<!--'` -->
+<!-- \begin{wrapfigure}{R}{.25\textwidth} -->
+<!--   \begin{center} -->
+<!--     \includegraphics[width=.20\textwidth]{Illustrations/jersey-cow-4269262_640.jpg} -->
+<!--   \end{center} -->
+<!-- \end{wrapfigure} -->
+<!-- `r if (knitr::is_html_output()) '-->'` -->
 
 
 ::: {.example #SampleMedian name="Find a sample median"}
-To find the sample median for the Jersey cow data (Example \@ref(exm:JerseyCows)), first arrange the data *in numerical order* (Table \@ref(tab:JerseyCowsSorted)).
+To find a sample median for the Jersey cow data (Example \@ref(exm:JerseyCows)), first arrange the data *in numerical order* (Table \@ref(tab:JerseyCowsSorted)).
 The median separates the larger 5 numbers from the smaller 5 numbers. 
 With $n = 10$ observations, the median is the ordered observation located between the fifth and sixth observations (i.e., at position $(10 + 1)/2 = 5.5$; the *median itself is not 5.5*).
 
@@ -940,7 +952,7 @@ To clarify:
 * If the sample size $n$ is *odd*, the median is the middle number when the observations are ordered. 
 * If the sample size $n$ is *even* (such as the glaucoma example), the median is halfway between the two middle numbers, when the observations are ordered. 
 
-Some software uses slightly different rules when $n$ is even.
+Some software uses slightly different rules when $n$ is even, producing slightly different values for the median.
 
 
 ### Which average to use? {#CompareMeanMedian}
@@ -955,7 +967,7 @@ Consider again estimating the average daily streamflow at the Mary River (Bellbi
 The *mean* daily streamflow is `r round(MRsummary[2, 2], 1)`ML, and the *median* daily streamflow is `r round(MRsummary[2, 3], 1)`ML.
 Which is the 'best' measure for the average streamflow?
 
-A dot chart of the daily stream flow (Fig. \@ref(fig:DailyStreamflow)) shows that the data are *very* highly right-skewed, with many *very* large outliers:
+A dot chart of the daily streamflow (Fig. \@ref(fig:DailyStreamflow)) shows that the data are *very* highly right-skewed, with many *very* large outliers (presumably during flood events):
 the maximum value is `r sprintf( "%.1f", max(MR2$Mean[MR2$Month == 2], na.rm = TRUE))`ML, more than *one hundred times* larger than the mean of `r round(MRsummary[2, 2], 1)`ML).
 In fact, about `r round(LessThanMean * 100)`% of the observations are *less* than the mean.
 
@@ -963,7 +975,7 @@ In contrast, about 50% the values are less than the median (by definition).
 For these data, the mean is hardly a *central* value...
 
 
-```{r DailyStreamflow, fig.cap="A dot plot of the daily streamflow at Mary River from 1960 to 2017, for February. The vertical grey line is the mean value. Many large outliers exist, so the data near zero are all squashed together", fig.align="center", fig.width=5, fig.height=3}
+```{r DailyStreamflow, fig.cap="A dot plot of the daily streamflow at Mary River from 1960 to 2017, for February. The vertical grey line is the mean value. Many large outliers exist, so the data near zero are all squashed together. Note: The values have been jittered in the vertical direction.", fig.align="center", out.width='45%', fig.width=5, fig.height=3}
 par(mfrow = c(1, 1))
 set.seed(183763286)
 stripchart(MR2$Mean[MR2$Month == 2], 
@@ -982,7 +994,7 @@ abline( v = Mn[2,2],
 ```
 
 
-The streamflow data are very highly right skewed, which is important here:
+The streamflow data are *very* highly right skewed, which is important here:
 
 * *Means* are best used for approximately symmetric data: the mean is influenced by outliers and skewness.
 * *Medians* are best used for data that are skewed or contain outliers: the median is *not* influenced by outliers and skewness.
@@ -1042,52 +1054,52 @@ axis(side = 2,
 
 
 For quantitative data, the amount of *variation* in the bulk of the data should be described.
-Many ways exist to measure the variation in a data set, including:
+Many ways exist to measure the variation in a dataset, including:
 
-* The [**range**](#VariationRange): very simple and simplistic, so not often used.
-* The [**standard deviation**](#VariationStdDev): commonly used.
-* The [**interquartile range (or IQR)**](#VariationIQR): commonly used.
-* [**Percentiles**](#VariationPercentiles): sometimes used.
+* The **range**: very simple and simplistic, so not often used (Sect. \@ref(VariationRange)).
+* The **standard deviation**: commonly used (Sect. \@ref(VariationStdDev)).
+* The **interquartile range (or IQR)**: commonly used (Sect. \@ref(VariationIQR)).
+* **Percentiles**: sometimes used in specific situations (Sect. \@ref(VariationPercentiles)).
 
 As always, a value computed from the *sample* (the [statistic](#StatisticsAndParameters)) estimates the unknown value in the *population* (the [parameter](#StatisticsAndParameters)).
 
 
-### Variation: The range {#VariationRange}
+### Variation: the range {#VariationRange}
 
-The range is the simplest measure of variation.
+The range is the simplest measure of variation, often too simple to be of much use.
 
 
 ::: {.definition #Range name="Range"}
 The range is the maximum value *minus* the minimum value.
 :::
 
-The range is not often used, because it uses only the two extreme observations, and so it is highly influenced by outliers.
+The range is not often used, as it is computed only using the two extreme observations, and so it is highly influenced by outliers.
 Sometimes, the *range* may be given by stating both the maximum and the minimum value in the data instead of giving the *difference* between the maximum and the minimum values.
 The range is measured in the same measurement units as the data. 
 
 
 ::: {.example #RangeEG name="The range"}
-For Jersey cow data (Example \@ref(exm:JerseyCows)), the range is:
+For Jersey cow data (Example \@ref(exm:JerseyCows)), the largest value is 6.5%, and the smallest value is 4.5%; hence
 \[
-   \text{Range} = \overbrace{6.5}^{\text{largest}} - \overbrace{4.5}^{\text{smallest}} = 2.0 \text{ percent}.
+   \text{Range} = 6.5 - 4.5 = 2.0 \text{ percent}.
 \]   
 So the sample median percentage butterfat is 5.20%, with a *range* of 2.00%.
 :::
 
 
-### Variation: The standard deviation {#VariationStdDev}
+### Variation: the standard deviation {#VariationStdDev}
 
-The population standard deviation is denoted by $\sigma$ ('sigma', the [parameter](#StatisticsAndParameters)) and is estimated by the sample standard deviation $s$ (the [statistic](#StatisticsAndParameters)).
+The population standard deviation is denoted by $\sigma$ (the [parameter](#StatisticsAndParameters)) and is estimated by the sample standard deviation $s$ (the [statistic](#StatisticsAndParameters)).
 The standard deviation is the most commonly-used measure of variation.
 It is tedious to compute manually, but you will almost always find the sample standard deviation $s$ using computer software (e.g., jamovi or SPSS) or a calculator (in *Statistics Mode*).
 
-The *standard deviation* is (roughly) the mean distance that observations are from the mean.
+The *standard deviation* is (approximately) the mean distance that observations are from the mean.
 This seems like a reasonable way to measure the amount of variation in data.
 
 
 :::: {.pronounceBox .pronounce data-latex="{iconmonstr-microphone-7-240.png}"}
 ::: {style="display: flex;"}
-The Greek letter $\sigma$ ('sigma') is pronounced as expected: 'sigma'.
+The Greek letter $\sigma$ is pronounced 'sigma'.
 :::
 
 
@@ -1107,7 +1119,7 @@ htmltools::tags$video(src ="./Movies/sigma.mp4",
 
 
 ::: {.definition #StandardDeviation name="Standard deviation"}
-The *standard deviation* is, approximately, the average distance of observations from the mean.
+The *standard deviation* is, approximately, the average distance of the observations from the mean.
 :::
 
 
@@ -1117,7 +1129,7 @@ The formula is:
 \[
 	s = \sqrt{ \frac{\sum(x - \bar{x})^2}{n - 1} },
 \]
-where $\bar{x}$ is the sample mean, $x$ represents the individual data values, and $n$ is the sample size.
+where $\bar{x}$ is the sample mean, $x$ represents the individual data values, $n$ is the sample size, and the symbol '$\sum$` means to 'add up'.
 Using the formula requires these steps:
 
 * Calculate the sample mean: $\overline{x}$;
@@ -1130,7 +1142,7 @@ Using the formula requires these steps:
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 **You do not need to use the formula!**
-You **must** know how to use software or a calculator to find the standard deviation.
+You **must** know how to use software or a calculator to find the standard deviation, what the standard deviation measures, and how to use it.
 :::
 
 
@@ -1141,7 +1153,7 @@ You **must** know how to use software or a calculator to find the standard devia
 
 ::: {.example #StdDev name="Standard deviation"}
 For the Jersey cow data (Example \@ref(exm:JerseyCows)), the squared *deviations* of each observation from the mean of $5.25$ are shown in Fig. \@ref(fig:ShowVar).
-From Fig. \@ref(fig:ShowVar), the sum of the squared distances is 2.7650.
+The sum of the squared distances is 2.7650.
 Then, the sample standard deviation is:
 
 \[ 
@@ -1153,7 +1165,7 @@ The sample mean percentage butterfat is 5.25%, with a sample *standard deviation
 :::
 
 
-```{r ShowVar, fig.cap="The standard deviation is related to the sum of the squared-distances from the mean", fig.align="center",fig.width=6, out.width='70%'}
+```{r ShowVar, fig.cap="The standard deviation is related to the sum of the squared-distances from the mean", fig.align="center",fig.width=6, out.width='60%'}
 
 ShowVar <- function(){
   
@@ -1232,12 +1244,14 @@ ShowVar <- function(){
 
 
   # Highlight the mean/mean guess
-  abline(v = locate.x, 
-         col = "grey")
+  lines(x = c(locate.x, locate.x),
+        y = c(0, jump + jump.extra ),
+        col = "grey")
   text(locate.x, jump + jump.extra, 
        sprintf("%.2f", locate.x),
        cex = 0.95)
-  text(locate.x, jump + 2*jump.extra, 
+  text(locate.x, 
+       jump + 2 *jump.extra, 
        "Mean:",
        cex = 0.95)
   
@@ -1316,7 +1330,7 @@ This suggests that the standard deviation for Dataset B will be **smaller** than
 :::
 
 
-```{r TwoDatasets, cache=FALSE, fig.height=2.0, fig.width=7.75, out.width='100%', fig.cap="Dotplots of two datasets", fig.align="center"}
+```{r TwoDatasets, cache=FALSE, fig.height=2.0, fig.width=7.75, out.width='90%', fig.cap="Dotplots of two datasets", fig.align="center"}
 ### DOT CHARTS of two samples with similar mean, range but diff sd
 
 set.seed(100010)
@@ -1348,7 +1362,7 @@ plot( y = y1.jitter,
                 1.05 * max(y1.jitter) ),
       ylab = "",
       xlab = "Observations",
-      main = "Data set A",
+      main = "Dataset A",
       axes = FALSE)
 axis(side = 1)
 
@@ -1367,7 +1381,7 @@ plot( y = y2.jitter,
                 1.05 * max(y2.jitter) ),
       ylab = "",
       xlab = "Observations",
-      main = "Data set B",
+      main = "Dataset B",
       axes = FALSE)
 axis(side = 1)
 
@@ -1386,7 +1400,7 @@ The sample standard deviation is:
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
 Consider again the Jersey cow data (Example \@ref(exm:JerseyCows)).
-Using your calculator's Statistics Mode, find the *population* standard deviation and the *sample* standard deviation.\label{thinkBox:MilkStats}
+Using your calculator's *Statistics Mode*, find the *population* standard deviation and the *sample* standard deviation.\label{thinkBox:MilkStats}
 
 `r if (knitr::is_latex_output()) '<!--'`
 `r webexercises::hide()`
@@ -1536,6 +1550,17 @@ text( 0.65, Eggs.quantiles[2],
       expression(italic(Q)[1]), 
       pos = 3, 
       cex = 0.75)
+
+axis(side = 4, # This places the tick marks
+     at = Eggs.quantiles,
+     labels = rep("", 5) )
+mtext(Eggs.quantiles,
+      side = 4,
+      at = Eggs.quantiles,
+      las = 1,
+      line = 1,
+      cex = 1)
+
 ```
 
 
@@ -1548,7 +1573,7 @@ For the **Treatment** group:
 *  25% of the observations are smaller than about `r KrillT.quantiles[2]`, represented by the line at the bottom of the central box.
    This is $Q_1$, the **first quartile**.
 
-The IQR is $Q_3 - Q_1$ = $`r KrillT.quantiles[4]` - `r KrillT.quantiles[2]`$: $\text{IQR} = `r KrillT.quantiles[4] - KrillT.quantiles[2]`$.
+The IQR is $Q_3 - Q_1$ = $`r KrillT.quantiles[4]` - `r KrillT.quantiles[2]` = `r KrillT.quantiles[4] - KrillT.quantiles[2]`$.
 `r if (knitr::is_latex_output()) {
    'Figure \\@ref(fig:IQRKrill) shows how the IQR is found. (The online version uses an animation.)'
 } else {
@@ -1663,6 +1688,15 @@ if (knitr::is_latex_output()){
             label = "IQR", 
 	    pos = 4)
 
+  axis(side = 4, # This places the tick marks
+       at = Eggs.quantiles[ c(2, 4)],
+       labels = rep("", 2) )
+  mtext(Eggs.quantiles[ c(2, 4)],
+        side = 4,
+        at = Eggs.quantiles[c(2, 4)],
+        las = 1,
+        line = 1,
+        cex = 1)
   }
 ```
 
@@ -1679,7 +1713,7 @@ Age.quantiles <- quantile(NHANES$Age)
 
 ::: {.example #BoxplotNHANES name="Boxplots"}
 Consider the NHANES data [@data:NHANES3:Data; @data:NHANES3].
-The boxplot for the age of respondents in the NHANES data set is
+The boxplot for the age of respondents in the NHANES dataset is
 `r if (knitr::is_latex_output()) {
    'shown in Fig. \\@ref(fig:IQRAge). (The online version has an animation.)'
 } else {
@@ -1690,7 +1724,7 @@ For these data:
 * No outliers are identified.
 * The oldest person is `r Age.quantiles[5]`.
 * 75% of the subjects are aged less than about `r Age.quantiles[4]` ($Q_3$): the third  quartile $Q_3 = `r Age.quantiles[4]`$, the median of the *largest half* of the data.
-* 50% of the subjects are aged less than about `r Age.quantiles[3]` ($Q_2$, the median): the second quartile $Q_2 = `r Age.quantiles[3]`$, the median of the data set.
+* 50% of the subjects are aged less than about `r Age.quantiles[3]` ($Q_2$, the median): the second quartile $Q_2 = `r Age.quantiles[3]`$, the median of the dataset.
 * 25% of the subjects are aged less than about `r Age.quantiles[2]` ($Q_1$): the first quartile $Q_1 = `r Age.quantiles[2]`$, the median of the *smallest half* of the data.
 * The youngest subject is aged `r Age.quantiles[1]`.
    
@@ -1786,7 +1820,7 @@ if (knitr::is_html_output()){
 ```
 
 
-```{r  IQRAge, fig.align="center", fig.width=6, fig.cap="Computing the IQR for the age in the NHANES data set" }
+```{r  IQRAge, fig.align="center", fig.width=6, fig.cap="Computing the IQR for the age in the NHANES dataset" }
 if (knitr::is_latex_output()){
     boxplot( NHANES$Age, 
              col = plot.colour,
@@ -1829,7 +1863,7 @@ if (knitr::is_latex_output()){
 
 
 
-### Variation: Percentiles {#VariationPercentiles}
+### Variation: percentiles {#VariationPercentiles}
 
 *Percentiles* are similar in principle to quantiles; for example:
 
@@ -1980,7 +2014,7 @@ ageBreaks2 <- seq(0, 110,
 </div>
 
 
-Outliers are 'unusual' observations: observation quite different (larger or smaller) than the bulk of the data.
+Outliers are 'unusual' observations: observations quite different (larger or smaller) than the bulk of the data.
 Rules for deciding whether or not an observation is 'unusual' are always arbitrary.
 
 
@@ -2005,6 +2039,73 @@ As an example, the heights of husbands in the UK [@data:hand:handbook; @data:Mar
 Most men are between 160 and 185cm; a few are shorter than 160cm and a few taller than 185cm.
 More formally, *bell-shaped distributions are called normal distributions*.
 
+
+
+```{r HusbandHistNormal, cache=FALSE, warning=FALSE, fig.cap="The heights of husbands have an approximate normal distribution", fig.align="center", fig.height=2.0, fig.width=6.5, out.width='100%'}
+
+hts <- read.csv("Data/HusbandWife.csv")
+
+x <- hh <- hts$Hht/10
+
+#Produce some output to use before we plot:
+out <- hist(x, 
+            plot = FALSE)
+   
+par( mfrow = c(1, 3),
+     mar = c(5, 2, 2, 1) )
+
+hist(x, 
+     prob = TRUE, 
+     axes = FALSE,
+     xlab = "Husbands heights (in cm)",
+     las = 1,
+     ylab = "",
+     xlim = c(150, 200),
+     main = "Histogram of husbands'\nheights (1980 OPCS)",
+     sub = expression(italic(n)==199),
+     col = plot.colour)
+axis(side = 1, 
+     at = seq(150, 200, by = 5), 
+     las = 2)
+   
+hist(x, 
+     prob = TRUE, 
+     axes = FALSE,
+     xlab = "Husbands heights (in cm)",
+     las = 1,
+     ylab = "",
+     xlim = c(150, 200),
+     main = "Histogram of husbands'\nheights (1980 OPCS)",
+     sub = expression(italic(n)==199),
+     col = plot.colour)
+axis(side = 1,
+     at = seq(150, 200, by = 5), 
+     las = 2)
+
+plot( function(y) dnorm(y, mean(x), sd(x)), 
+      from = 150, 
+      to = 200, 
+      col = "red", 
+      add = TRUE,
+      lwd = 2)
+
+plot( function(y) dnorm(y, mean(x), sd(x)), 
+      axes = FALSE,
+      xlab = "Husbands heights (in cm)",
+      las = 1,
+      ylab = "",
+      ylim = c(0, max(out$density)),
+      main = "Husbands' heights\nPopulation model",
+      from = 150, 
+      to = 200, 
+      col = "red", 
+      lwd = 2)
+axis(side = 1, 
+     at = seq(150, 200, by = 5), 
+     las = 2)
+```
+
+
 These data are from one of the many possible samples of married UK men.
 And since every sample is likely to contain different men, and every sample of men will produce a slightly different histogram.
 For convenience then, an 'average' of all these possible histogram could be constructed.
@@ -2017,6 +2118,9 @@ For example,
 
 The solid line represents the 'average histogram' from every possible sample from the population.
 And, in effect then, the solid line is an estimate of how the heights may be distributed in the *population*.
+
+The smoothed histogram represents 100% of the observations; *every* husband in the sample has a height, and so it must represented somewhere on the histogram.
+When we do this, the *areas* under the normal curve are theoretical percentages.
 
 
 ```{r HeightsModelQUANTMovie, animation.hook="gifski", cache=FALSE, dev=if (is_latex_output()){"pdf"}else{"png"}}
@@ -2167,73 +2271,12 @@ if (knitr::is_latex_output()) {
 ```
 
 
-The smoothed histogram represents 100% of the observations; *every* husband in the sample has a height, and so it must represented somewhere on the histogram.
-When we do this, the *areas* under the normal curve are theoretical percentages.
 
 
-```{r HusbandHistNormal, cache=FALSE, warning=FALSE, fig.cap="The heights of husbands have an approximate normal distribution", fig.align="center", fig.height=2.0, fig.width=6.5, out.width='100%'}
 
-hts <- read.csv("Data/HusbandWife.csv")
 
-x <- hh <- hts$Hht/10
 
-#Produce some output to use before we plot:
-out <- hist(x, 
-            plot = FALSE)
-   
-par( mfrow = c(1, 3),
-     mar = c(5, 2, 2, 1) )
 
-hist(x, 
-     prob = TRUE, 
-     axes = FALSE,
-     xlab = "Husbands heights (in cm)",
-     las = 1,
-     ylab = "",
-     xlim = c(150, 200),
-     main = "Histogram of husbands'\nheights (1980 OPCS)",
-     sub = expression(italic(n)==199),
-     col = plot.colour)
-axis(side = 1, 
-     at = seq(150, 200, by = 5), 
-     las = 2)
-   
-hist(x, 
-     prob = TRUE, 
-     axes = FALSE,
-     xlab = "Husbands heights (in cm)",
-     las = 1,
-     ylab = "",
-     xlim = c(150, 200),
-     main = "Histogram of husbands'\nheights (1980 OPCS)",
-     sub = expression(italic(n)==199),
-     col = plot.colour)
-axis(side = 1,
-     at = seq(150, 200, by = 5), 
-     las = 2)
-
-plot( function(y) dnorm(y, mean(x), sd(x)), 
-      from = 150, 
-      to = 200, 
-      col = "red", 
-      add = TRUE,
-      lwd = 2)
-
-plot( function(y) dnorm(y, mean(x), sd(x)), 
-      axes = FALSE,
-      xlab = "Husbands heights (in cm)",
-      las = 1,
-      ylab = "",
-      ylim = c(0, max(out$density)),
-      main = "Husbands' heights\nPopulation model",
-      from = 150, 
-      to = 200, 
-      col = "red", 
-      lwd = 2)
-axis(side = 1, 
-     at = seq(150, 200, by = 5), 
-     las = 2)
-```
 
 
 The smoothed histogram represents *all* of the husbands' heights (that is, 100%).
@@ -3445,8 +3488,8 @@ if( knitr::is_html_output() ) {
 The activity below contains histogram and boxplots.
 
 1. Match the histogram with the corresponding boxplot.
-1. For which data sets would the mean and standard deviation be the appropriate numerical summary?  
-   For which data sets would the median and IQR be the appropriate numerical summary?
+1. For which datasets would the mean and standard deviation be the appropriate numerical summary?  
+   For which datasets would the median and IQR be the appropriate numerical summary?
 :::
 
 
