@@ -1,4 +1,4 @@
-shadeNormal <- function(xx, yy, lo, hi, col="blue"){
+shadeNormal <- function(xx, yy, lo, hi, col="blue", outline = FALSE){
   
   xshade <- xx[ (xx >= lo) & ( xx <= hi ) ]
   yshade <- yy[ (xx >= lo) & ( xx <= hi ) ]
@@ -7,6 +7,16 @@ shadeNormal <- function(xx, yy, lo, hi, col="blue"){
   polygon( x = c(xshade, rev(xshade) ),
            y = c( yshade, y0),
            col = col)
+  
+  if (outline) { # Draw lines at each end of the shading region
+    lo.ShadeAt <- min(which(out1$x > lo))
+    hi.ShadeAt <- max(which(out1$x < hi))
+    
+    lines( x = c(lo, lo),
+           y = c(0, yy[lo.ShadeAt]))
+    lines( x = c(hi, hi),
+           y = c(0, yy[hi.ShadeAt]))
+  }
 }
 
 plotNormal <- function(mu, sd,
