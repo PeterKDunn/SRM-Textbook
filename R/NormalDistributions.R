@@ -19,13 +19,13 @@ shadeNormal <- function(xx, yy, lo, hi, col="blue", outline = FALSE){
   }
 }
 
-plotNormal <- function(mu, sd,
+plotNormal <- function(mu, 
+                       sd,
                        showX = seq(-3, 3, by = 1) * sd + mu,
                        round.dec = 1,
                        main = "", # Main title
                        xlab = "", # horizontal axis labels
                        showZ = TRUE, # Whether to show z = -3:3 or not
-                       srt = 0,
                        bg = "white", 
                        cex.tickmarks = 1,
                        las = 1,
@@ -64,6 +64,7 @@ plotNormal <- function(mu, sd,
           type = "l")
   axis(side = 1,
        at = showX,
+       las = las,
        labels = round(showX, round.dec))
   arrows( x0 = xlim.lo, 
           x1 = xlim.hi,
