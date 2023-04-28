@@ -22,10 +22,13 @@ shadeNormal <- function(xx, yy, lo, hi, col="blue", outline = FALSE){
 plotNormal <- function(mu, 
                        sd,
                        showX = seq(-3, 3, by = 1) * sd + mu,
+                       showXlabels = NULL, # if NULL, use the numbers in showX to place on the horizontal axis; otherwise, give the labels
+                       cex.axis = 1, # char expansion for axis text (i.e., labels)
                        round.dec = 1,
                        main = "", # Main title
                        xlab = "", # horizontal axis labels
-                       showZ = TRUE, # Whether to show z = -3:3 or not
+                       showZ = TRUE, # Whether to show z = -3:3 on the graph or not, using grey vertical lines
+                       showZtall = FALSE, # if TRUE, the lines go all the way to the top of the graohl if FALSE, to the normal curve
                        bg = "white", 
                        cex.tickmarks = 1,
                        las = 1,
@@ -62,20 +65,40 @@ plotNormal <- function(mu,
           ylab = "",
           main = main,
           type = "l")
-  axis(side = 1,
-       at = showX,
-       las = las,
-       labels = round(showX, round.dec))
+  if (is.null(showXlabels)) {
+    axis(side = 1,
+         at = showX,
+         las = las,
+         labels = round(showX, round.dec))
+  } else {
+    axis(side = 1,
+         at = showX,
+         las = las,
+         cex.axis = cex.axis,
+         labels = showXlabels)
+  }
+
   arrows( x0 = xlim.lo, 
           x1 = xlim.hi,
           y0 = 0,
           y1 = 0,
-          length = 0.15, 
+          length = 0.125, 
           angle = 20, 
           lwd = 2)
-  if (showZ)
-    abline( v = seq(-3, 3, by = 1) * sd + mu,
-            col = "grey")
+  if (showZ) {
+    if (showZtall) {
+      abline( v = seq(-3, 3, by = 1) * sd + mu,
+              col = "grey")
+    } else {
+      for (z in (-3:3)) { # Do one vertical line at a time
+         xVertLines <- z * sd + mu
+         yVertLines <- dnorm( xVertLines, mean = mu, sd = sd )
+         lines( x = c( xVertLines, xVertLines),
+                y = c(0, yVertLines),
+                col = "grey")
+      }
+    }
+  }
 
   
   invisible( return( list(y = nc, 

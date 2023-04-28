@@ -115,7 +115,7 @@ n <- 100
 
 sep <- sqrt( p * (1 - p) / n )
 
-out <- plotNormal(mu = p,
+out <- plotNormal(mu = p, 
                   sd = sep,
                   round.dec = 3,
                   xlab = "Values of the sample proportion",
@@ -175,7 +175,7 @@ For example:
 
 
 ```{r, OnePropTestP, fig.cap="The two-tailed P-value is the combined area in the two tails of the distribution; left panel: when $z = 1$; right panel: when $z = 2$", fig.width=10, fig.height=3, out.width='90%', fig.align="center"}
-par(mfrow = c(1, 2),
+par(mfrow = c(1, 2), 
     mar = c(4, 1, 4, 1) + 0.1)
 
 out <- plotNormal(mu = 0,
@@ -244,11 +244,11 @@ lines( x = c(1, 1),
        lwd = 2)
 text(x = -1, 
      y = 1.25 * dnorm(-1), 
-     pos = 3, 
+     pos = 2, 
      label = expression(italic(z) == -1))
 text(x = 1, 
      y = 1.25 * dnorm(1), 
-     pos = 3,
+     pos = 4,
      label = expression(italic(z) == 1))
 
 
@@ -274,7 +274,7 @@ lines( x = c(-2, -2),
 lines( x = c(2, 2), 
        y = c(0, 2 * dnorm(2)), 
        lwd = 2)
-text(x = -2, 
+text(x = -2,  
      y = 2 * dnorm(-2), 
      pos = 3, 
      label = expression(italic(z) == -2))
@@ -339,32 +339,29 @@ if (knitr::is_html_output()) {
                        "< 0.001",
                        round(pValue, 4) )
     
+    out <- plotNormal(mu = 0,
+                    sd = 1,
+                    xlab = expression(italic(z)~"-score"),
+                    main = paste("Evidence to support alternative hypothesis:\n", 
+                                 pMeaning(pValue)),
+                    round.dec = 0)
+    shadeNormal(out$x,
+                out$y,
+                col = pColours[i],
+                lo = zScore,
+                hi = 6)
+    shadeNormal(out$x,
+                out$y,
+                col = pColours[i],
+                lo = -zScore,
+                hi = -6)
     
-    plot.normZ(mu = 0,
-               sd = 0,
-               shade.lo.z = zScore,
-               shade.hi.z = 10,
-               shade.col = pColours[i],
-               xlab = expression(italic(z)~"-score"),
-               main = paste("Evidence to support alternative hypothesis:\n", 
-                            pMeaning(pValue) ) 
-               )
-    plot.normZ(mu = 0,
-               sd = 0,
-               new = FALSE,
-               shade.lo.z = -10,
-               shade.hi.z = -zScore,
-               shade.col = pColours[i],
-               xlab = expression(italic(z)~"-score"),
-               main = paste("Meaning:", 
-                            pMeaning(pValue) ) 
-               )
     abline(v = zScore,
            col = "grey")
     abline(v = -zScore,
            col = "grey")
     
-    polygon(x = c(-1.4, -1.4, 1.4, 1.4),
+    polygon(x = c(-1.4, -1.4, 1.4, 1.4), # White-ish background for above text
             y = c(0.02, 0.10, 0.10, 0.02),
             border = NA,
             col = "white")
@@ -378,7 +375,7 @@ if (knitr::is_html_output()) {
 ```
 
 
-```{r PvaluesBigSmall, echo=FALSE, fig.cap="The strength of evidence: P-values. As the $z$-score becomes larger, the $P$-value becomes smaller, and the evidence is greater to support the alternative hypothesis.", fig.height = 2.5, fig.width=7, out.width='80%', fig.align="center", dev=if (is_latex_output()){"pdf"}else{"png"}}
+```{r PvaluesBigSmall, echo=FALSE, fig.cap="The strength of evidence: P-values. As the $z$-score becomes larger, the $P$-value becomes smaller, and the evidence is greater to support the alternative hypothesis.", fig.height = 2.75, fig.width=10, out.width='100%', fig.align="center", dev=if (is_latex_output()){"pdf"}else{"png"}}
 if (knitr::is_latex_output()) {
   
   par(mfrow = c(1, 2) )
@@ -408,35 +405,33 @@ if (knitr::is_latex_output()) {
                        "< 0.001",
                        round(pValue, 4) )
     
+    out <- plotNormal(mu = 0,
+                      sd = 1,
+                      xlab = expression(italic(z)-score),
+                      round.dec = 0,
+                      main = paste("Evidence to support alternative\nhypothesis:", 
+                            pMeaning(pValue))
+                      )
+    shadeNormal(out$x,
+                out$y,
+                col = pColours[i],
+                lo = zScore,
+                hi = 10)
+    shadeNormal(out$x,
+                out$y,
+                col = pColours[i],
+                lo = -zScore,
+                hi = -10)
     
-    plot.normZ(mu = 0,
-               sd = 0,
-               shade.lo.z = zScore,
-               shade.hi.z = 10,
-               shade.col = pColours[i],
-               xlab = expression(italic(z)~"-score"),
-               main = paste("Evidence to support alternative\nhypothesis:", 
-                            pMeaning(pValue) ) 
-               )
-    plot.normZ(mu = 0,
-               sd = 0,
-               new = FALSE,
-               shade.lo.z = -10,
-               shade.hi.z = -zScore,
-               shade.col = pColours[i],
-               xlab = expression(italic(z)~"-score"),
-               main = paste("Meaning:", 
-                            pMeaning(pValue) ) 
-               )
     abline(v = zScore,
            col = "grey")
     abline(v = -zScore,
            col = "grey")
     
-    polygon(x = c(-3, -3, 3, 3),
-            y = c(0.12, 0.20, 0.20, 0.12),
-            border = NA,
-            col = rgb(255, 255, 255, max = 255, alpha = 200) ) # Translucent white
+    polygon(x = c(-2.3, -2.3, 2.3, 2.3), # White-ish background for the above text
+           y = c(0.11, 0.21, 0.21, 0.11),
+           border = NA,
+           col = rgb(255, 255, 255, max = 255, alpha = 200) ) # Translucent white
     text(0,
          y = 0.16,
          label = paste("Two-tailed P-value:", pValue2 ) )

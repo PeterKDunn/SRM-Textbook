@@ -363,17 +363,21 @@ Since the variation in the sample proportions can be described, a picture of thi
 We still don't know *exactly* what we'll find next roll... but we have some idea of *how* the sample proportion is likely to vary in sets of 25 rolls.
 
 
-```{r NormalDieTheory, echo=FALSE, fig.cap="The normal distribution, showing how the proportion of even rolls varies when a die is rolled 25 times", fig.align="center", fig.width=5.75, fig.height=2.5, out.width='75%'}
+```{r NormalDieTheory, echo=FALSE, fig.cap="The normal distribution, showing how the proportion of even rolls varies when a die is rolled 25 times", fig.align="center", fig.width=6.25, fig.height=2.75, out.width='60%'}
 pop.p <- 0.5
 n <- 25
 se.p <- sqrt( pop.p * (1 - pop.p) / n )
 
-plot.norm(mu = pop.p, 
-	  sd = se.die, 
-          xlab.name = "Sample proportion of even rolls out of 25", 
-          type = "",
-          shade.lo.x = -10, 
-          shade.hi.x = -10)
+out <- plotNormal(mu = pop.p, 
+                  sd = se.p, 
+                  xlab = "Sample proportion of even rolls out of 25", 
+                  round.dec = 2,
+                  showZ = FALSE) # No vertical lines at z = -3:3
+lines( x = c(0.5, 0.5),
+       y = c(0, dnorm(0.5, mean = pop.p, sd = se.p)),
+       col = "grey",
+       lwd = 2)
+
 ```
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -528,27 +532,21 @@ Then (from Definition \@ref(def:DEFSamplingDistributionPhat)),
 Hence, the sample proportions would vary with an approximate normal distribution (Fig.\@ref(fig:NormalDieTheoryUnknownp)), centred around the unknown value of $p$ with a standard deviation of $\text{s.e.}(\hat{p}) = 0.099277$.
 
 
-```{r NormalDieTheoryUnknownp, echo=FALSE, fig.cap="The normal distribution, showing how the proportion of even rolls varies when a die is rolled 25 times", fig.align="center", fig.width=5, fig.height=2.5, out.width='60%'}
+```{r NormalDieTheoryUnknownp, echo=FALSE, fig.cap="The normal distribution, showing how the proportion of even rolls varies when a die is rolled 25 times", fig.align="center", fig.width=8.5, fig.height=2.75, out.width='80%'}
 HT.mn <- 175
 HT.sd <- 7
 
-plot.normZ(HT.mn, HT.sd, 
-           xlab.name = "Sample proportion of even rolls out of 25", 
-           zlim.lo = -4, 
-	   zlim.hi = 4, 
-           shade.lo.z = -5, 
-  	   shade.hi.z = -5,
-           axis.labels = c( 	
-           expression( paste("  ", italic(p), " - 0.298")),
-	   expression( paste("  ", italic(p), " - 0.199")), 
-           expression( paste("  ", italic(p), " - 0.099")), 
-           expression( paste(" ", italic(p))),
-           expression( paste("  ", italic(p), " + 0.099")), 
-           expression( paste("  ", italic(p), " + 0.199")), 
-           expression( paste("  ", italic(p), " + 0.298")) ),
-           cex.tickmarks = 0.7, # Shrink the tick marks labels so they fit a bit better
-           srt = -25 # Rotate axis labels so they fit better
-)
+out <- plotNormal(HT.mn,
+                  HT.sd,
+                  xlab = "Sample proportion of even rolls out of 25",
+                  showXlabels = c( 	
+                    expression( paste("  ", italic(p), " - 0.298")),
+                    expression( paste("  ", italic(p), " - 0.199")), 
+                    expression( paste("  ", italic(p), " - 0.099")), 
+                    expression( paste(" ", italic(p))),
+                    expression( paste("  ", italic(p), " + 0.099")), 
+                    expression( paste("  ", italic(p), " + 0.199")), 
+                    expression( paste("  ", italic(p), " + 0.298")) ))
 ```
 
 Using the 68--95--99.7 rule again: About 95% of the values of $\hat{p}$ are expected to be between $p - 0.199$ and $p + 0.199$.
