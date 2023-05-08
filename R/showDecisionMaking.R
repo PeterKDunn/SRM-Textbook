@@ -3,6 +3,18 @@
    DMcolours <- viridis::viridis(5,
                                  alpha = 0.2)
    
+   PopulationColour <- rgb(216, 204, 220, 
+                         maxColorValue = 256)
+   SampleColour <- rgb(217, 220, 231, 
+                           maxColorValue = 256)
+   CompareColour <- rgb(215, 232, 232, 
+                       maxColorValue = 256)
+   SupportColour <- rgb(227, 243, 225, 
+                        maxColorValue = 256)
+   ContradictColour <- rgb(254, 250, 215, 
+                        maxColorValue = 256)
+   
+   
    pos <- array( dim = c(7, 2) )
    
    edgesX <- c(0.05, 0.35, 0.60, 0.75, 0.95)
@@ -29,6 +41,7 @@
    
    openplotmat()
    
+   # 'Background' squares delineating the steps
    polygon( x = edgesX[ c(1, 1, 2, 2)],
             y = edgesY[ c(2, 3, 3, 2)],
             border = "grey",
@@ -57,7 +70,7 @@
                  lcol = grey(0.8),
                  arr.pos = 0.6, # Then cover with box
                  lwd = 2,
-                 lty = 2)
+                 lty = 1)
    straightarrow(from = pos[3, ], 
                  to = pos[4, ], 
                  arr.pos = 0.5, # Then cover with box
@@ -80,7 +93,7 @@
           y = 0.5,
           pch = 19)
 
-    straightarrow(from = c( pos[2, 1], edgesY[2]), 
+   straightarrow(from = c( pos[2, 1], edgesY[2]), 
                  to = c( pos[5, 1], edgesY[2]),
                  arr.pos = 0.35, # Then cover with box
                  lwd = 2,
@@ -101,10 +114,10 @@
              radx = 0.12,
              rady = 0.15,
              shadow.size = 0,
-             lcol = DMcolours[1],
-             box.col = DMcolours[1],
+             lcol = PopulationColour,
+             box.col = PopulationColour,
              lab = expression( atop(bold(POPULATION)~"with",
-                                    italic(assumed)~parameter)),
+                                    bold(assumed)~parameter)),
              col = grey(0)) # CHECKMARK
    # text( x = pos[1, 1],
    #       y = pos[1, 2] + 0.07,
@@ -114,17 +127,17 @@
              radx = 0.11,
              rady = 0.1,
              shadow.size = 0,
-             lcol = DMcolours[1],
-             box.col = DMcolours[1],
-             lab = expression(atop(italic(Expectation)~"of", 
+             lcol = PopulationColour,
+             box.col = PopulationColour,
+             lab = expression(atop(bold(Expectation)~"of", 
                                    statistics) ),
              col = grey(0)) # CHECKMARK
    textrect( pos[3, ],
              radx = 0.08,
-             rady = 0.08,
+             rady = 0.09,
              shadow.size = 0,
-             lcol = DMcolours[2],
-             box.col = DMcolours[2],
+             lcol = SampleColour,
+             box.col = SampleColour,
              lab = expression( atop(One~possible,
                                     bold(SAMPLE)) ),
              col = grey(0)) # CHECKMARK
@@ -132,18 +145,18 @@
              radx = 0.11,
              rady = 0.1,
              shadow.size = 0,
-             lcol = DMcolours[2],
-             box.col = DMcolours[2],
+             lcol = SampleColour,
+             box.col = SampleColour,
              lab = expression( atop(One~possible,
-                                    italic(observed)~statistic)),
+                                    bold(observed)~statistic)),
              col = grey(0)) # CHECKMARK
    
    textrect( pos[5, ],
              radx = 0.11,
-             rady = 0.08,
+             rady = 0.09,
              shadow.size = 0,
-             lcol = DMcolours[3],
-             box.col = DMcolours[3],
+             lcol = CompareColour,
+             box.col = CompareColour,
              lab = expression( atop(bold(Compare)*":",
                                     "Consistency?") ),
              col = grey(0)) # CHECKMARK
@@ -151,8 +164,8 @@
              radx = 0.11,
              rady = 0.1,
              shadow.size = 0,
-             lcol = DMcolours[4],
-             box.col = DMcolours[4],
+             lcol = SupportColour,
+             box.col = SupportColour,
              lab = expression( atop(bold(Yes):~Supports,
                                     assumption) ),
              col = grey(0)) # CHECKMARK
@@ -160,11 +173,29 @@
              radx = 0.11,
              rady = 0.1,
              shadow.size = 0,
-             lcol = DMcolours[5],
-             box.col = DMcolours[5],
+             lcol = ContradictColour,
+             box.col = ContradictColour,
              lab = expression( atop(bold(No):~Contradicts,
                                     assumption) ),
              col = grey(0)) # CHECKMARK
+   
+   # STEPS
+   text(x = pos[1, 1],
+        y = 0.975,
+        cex = 0.90,
+        labels = "1. Make an asssumption")
+   text(x = pos[2, 1],
+        y = 0.975,
+        cex = 0.90,
+        labels = "2. Describe what is expected")
+   text(x = pos[3, 1],
+        y = 0.02,
+        cex = 0.90,
+        labels = "3. Observe sample statistic")
+   text(x = pos[5, 1],
+        y = 0.02,
+        cex = 0.90,
+        labels = "4. Make decision")
    
  }
  
