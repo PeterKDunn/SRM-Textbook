@@ -32,8 +32,9 @@ plotNormal <- function(mu,
                        bg = "white", 
                        cex.tickmarks = 1,
                        las = 1,
-                       xlim.hi = mu + 3.5*sd, 
-                       xlim.lo = mu - 3.5*sd,
+                       ylim = NA,
+                       xlim.hi = mu + 3.5*sd, # Upper x-axis limit
+                       xlim.lo = mu - 3.5*sd, # Lower x-axis limit
                        axis.labels = NULL){
   
   # mu  is the mean of the distn
@@ -54,11 +55,12 @@ plotNormal <- function(mu,
               sd = sd)
 
   extra <- 0.25 # extra space at ends
+  
 
   plot( nc ~ hor, 
           axes = FALSE,
           bg = bg,
-          ylim = c(0, max(nc) ),
+          ylim = switch( any(is.na(ylim)) + 1, ylim, c(0, max(nc))), # Since ifelse fails to return NULL
           xlim = c(xlim.lo, xlim.hi),
           lwd = 2,
           xlab = xlab,
