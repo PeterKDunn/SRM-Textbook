@@ -22,6 +22,7 @@ plotWheel <- function(wheelSize = c(10, 4), numberColours){
                      22, 18, 29, 7, 28, 12, 35, 3, 26)
   
   # Colours on the segments
+  par( mar = c(1, 1, 1, 1))
   plot( x = cos( deg2rad(seq(0, 360, 
                              by = 1))) * DD,
         y = sin( deg2rad(seq(0, 360, 
@@ -67,13 +68,14 @@ plotWheel <- function(wheelSize = c(10, 4), numberColours){
   
   # Show numbers
   # To use  srt  to rotate text, we need to loop: srt  does not take vectors
+  radiusForNumbers <- 0.92
   for (i in (1:37)){ # For each wheel segment...
     textAngle <- spokes - (sectorAngle/2) # Degrees
-    text(x = cos( deg2rad( textAngle[i])) * 0.9 * DD,
-         y = sin( deg2rad( textAngle[i])) * 0.9 * DD,
+    text(x = cos( deg2rad( textAngle[i])) * radiusForNumbers * DD,
+         y = sin( deg2rad( textAngle[i])) * radiusForNumbers * DD,
          labels = numberLabels[i],
          srt = textAngle[i] - 90,
-         cex = 0.7,
+         cex = 0.8,
          col = "black")
   }  
   # Redo outside wheel outline
