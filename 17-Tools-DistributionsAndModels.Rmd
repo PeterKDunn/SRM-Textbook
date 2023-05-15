@@ -1259,6 +1259,8 @@ Bearings less than about 49.9&nbsp;mm in diameter cannot be sold.
 ::: {.example #LargestPC name="Normal distributions backwards"}
 Using the model for tree diameters in Example \@ref(exm:NormalTrees) again, suppose now the diameters of the *largest* 25% of trees needs to be identified.
 What are these diameters?
+:::
+
 
 The tree diameters can be modelled with a normal distribution, with a mean of $\mu = 8.8$ inches and a standard deviation of $\sigma = 2.7$ inches.
 Since an area is given, we need to work 'backwards' (Fig. \@ref(fig:DBHBackwards2), bottom panel), so the $z$-tables need to be used 'backwards' too.
@@ -1272,7 +1274,7 @@ Then, the $z$-score can be converted to an observation value $x$ using the [*uns
 		&= 8.8 + (0.674 \times 2.7) = 10.621.
 \end{align*}
 That is, about 25% of trees have diameters larger than about 10.6&nbsp;inches.
-:::
+
 
 
 ```{r DBHBackwards2, echo=FALSE, fig.cap="Tree diameters: The largest 25\\% is the same as the smallest 75\\%", fig.align="center", fig.width=6.5, out.width='60%', fig.height=2.75}
@@ -1293,21 +1295,21 @@ shadeNormal(out$x,
 #             lo = 10.62,
 #             hi = 20)
 
-arrows(15, max(out$y) * 0.7, 
-       13, max(out$y) * 0.1, 
+arrows(15, max(out$y) * 0.6, 
+       12.5, max(out$y) * 0.1, 
        angle = 15, 
        length = 0.15, 
        lwd = 2) # Note: Locations in terms of z-scores
-text(15, max(out$y) * 0.7, 
+text(15, max(out$y) * 0.6, 
      "Largest 25%", 
      cex = 0.9,
      pos = 3)
 
 text(10.621,
-     max(out$y) * 0.75,
-     "?", 
-     pos = 3, 
-     cex = 1)
+     max(out$y) * 0.80,
+     expression(italic(z)*near*here), 
+     pos = 4, 
+     cex = 0.9)
 
 
 arrows(5, max(out$y) * 0.7,
@@ -1357,7 +1359,7 @@ A retention time of 40 hours corresponds to a $z$-score of:
    z = \frac{40 - 42.5}{3.68} = -0.68.
 \]
 This is a *negative* number, since 40 hours is *below* the mean.
-Using the normal distribution tables (that give the *area to the left* of the $z$-score), the area to the left of $z = -0.68$ is 0.2483, or about 24.8%.
+Using the normal distribution tables (that give the *area to the left* of the $z$-score), the area to the left of $z = -0.68$ is 0.2483, or about 24.8% (Fig \@ref(fig:RetentionPlots), top left panel).
 About 24.8% of sheep have a retention times *less* than 40 hours.
 
 
@@ -1366,25 +1368,128 @@ What proportion of sheep have a retention time *greater than* 48 hours (two days
 :::
 
 A retention time of 48 hours corresponds to a $z$-score of $1.49$.
-Using the normal distribution tables, the area to the *left* of this $z$-score is $0.9319$, so the area to the *right* of this $z$-score is $0.0681$.
+Using the normal distribution tables, the area to the *left* of this $z$-score is $0.9319$, so the area to the *right* of this $z$-score is $0.0681$ (Fig \@ref(fig:RetentionPlots), top left panel).
 
 
 ::: {.example #Methane3 name="Working with the normal distribution"}
-What proportion of sheep have a retention time *between* 36 and 48 hours?
+What proportion of sheep have a retention time *between* 40 and 48 hours?
 :::
 
-A retention time of 36 hours corresponds to $z = -1.77$, and, using the normal distribution tables, the area to the *left* of $z = -1.77$ is $0.0384$.
+
+
+
+
+```{r RetentionPlots, echo=FALSE, fig.cap="Plots for retention times",  fig.align="center", out.width="80%", fig.height=4.00}
+par( mfrow = c(2, 2))
+
+par( mar = c(5, 1, 1.5, 2) + 0.1)
+
+mu <- 42.5
+sigma <- 3.68
+
+out <- plotNormal(mu,
+                  sigma,
+                  main = "Less than 40 hours",
+                  xlab = "Retention times (hours)")
+shadeNormal(out$x,
+            out$y,
+            col = plot.colour,
+            lo = 25,
+            hi = 40)
+
+###
+
+out <- plotNormal(mu,
+                  sigma,
+                  main = "Greater than 48 hours",
+                  xlab = "Retention times (hours)")
+shadeNormal(out$x,
+            out$y,
+            col = plot.colour,
+            lo = 48,
+            hi = 60)
+
+###
+
+
+out <- plotNormal(mu,
+                  sigma,
+                  ylim = c(0, 0.135),
+                  main = "Between 40 and 48 hours",
+                  xlab = "Retention times (hours)")
+shadeNormal(out$x,
+            out$y,
+            col = NA,
+            density = 15,
+            angle = 45,
+            lo = 25,
+            hi = 40)
+shadeNormal(out$x,
+            out$y,
+            col = NA,
+            density = 15,
+            angle = -45,
+            lo = 25,
+            hi = 48)
+arrows(x0 = 34,
+       x1 = 40,
+       y0 = 0.11,
+       y1 = 0.11,
+       length = 0.10,
+       angle = 15,
+       lwd = 1)
+arrows(x0 = 34,
+       x1 = 48,
+       y0 = 0.130,
+       y1 = 0.130,
+       length = 0.10,
+       angle = 15,
+       lwd = 1)
+arrows(x0 = 40,
+       x1 = 48,
+       y0 = 0.12,
+       y1 = 0.12,
+       code = 3,
+       length = 0.10,
+       angle = 15,
+       lwd = 1)
+lines( x = c(25, 40),
+       y = c(0.11, 0.11),
+       lty = 2)
+lines( x = c(25, 40),
+       y = c(0.130, 0.130),
+       lty = 2)
+abline( v = c(40, 48),
+        col = "grey")
+
+ 
+out <- plotNormal(mu,
+                  sigma,
+                  main = "Smallest 35%",
+                  xlab = "Retention times (hours)")
+shadeNormal(out$x,
+            out$y,
+            col = plot.colour,
+            lo = 25,
+            hi = 41)
+```
+
+
+
+
+
+A retention time of 40 hours corresponds to $z = -0.68$, and, using the normal distribution tables, the area to the *left* of $z = -0.68$ is $0.2483$ (Fig. \@ref(fig:RetentionPlots), bottom left panel; bottom-left to top-right hatching).
 But this is not the area that we are seeking...
-From earlier, the area to the *left* of $z = 1.49$ is 0.9319.
+From earlier, the area to the *left* of $z = 1.49$ is 0.9319 (Fig. \@ref(fig:RetentionPlots), bottom left panel; top-left to bottom-right hatching).
 But this is not the area to that we are seeking either...
 
 From the two areas that we know, we *can* find the area that we are seeking:
 
 * 48 hours corresponds to $z = 1.49$. The area to the *left* of this $z$-score is 0.9319.
-* 36 hours corresponds to $z = -1.77$. The area to the *left* of this $z$-score is 0.0384.
-* The *difference* between these two *areas* is what we are seeking: $0.9319 - 0.0384 = 0.8935$.
+* 40 hours corresponds to $z = -0.68$. The area to the *left* of this $z$-score is 0.2483.
+* The *difference* between these two *areas* is what we are seeking: $0.9319 - 0.2483 = 0.6836$.
 
-So the proportion is about 0.894 (or 89.4%).
+So the proportion is about 0.684 (or 68.4%).
 
 
 ::: {.example #Methane4 name="Working with the normal distribution"}
@@ -1392,16 +1497,16 @@ Consider the 35% of sheep with the *shortest* retention times.
 What are these retention times?
 :::
 
-The time we seek must be *smaller* than the mean if it cuts off the *shortest* 35% of retention times.
-We don't know exactly where to draw the retention time that this corresponds to on the diagram; it's just somewhere to the left of the mean...
+The time we seek must be *smaller* than the mean if it defines the *shortest* 35% of retention times.
+We don't know exactly where to draw the retention time that this corresponds to on the diagram; it's just somewhere to the left of the mean (Fig \@ref(fig:RetentionPlots), bottom right panel).
 
 This time, *we know the area to the left*, but we do not know the value (or $z$-score).
 Previously, we knew the retention value (and hence the $z$-score), but not the area.
-This is like a 'backwards problem', ad we need to find the $z$-score 'backwards' (Sect. \@ref(Unstandardising)).
+This is like a 'backwards problem', and we need to find the $z$-score 'backwards' (Sect. \@ref(Unstandardising)).
 From the tables, a $z$-score of $z = -0.39$ has an area to the left of 0.3483... which is as close as we can get.
 
 We know the $z$-score, so we can find the retention value, using the unstandardising formula: $x = \mu + (z \times \sigma)$.
-The retention time $41.07$ hours.
+The retention time is $41.07$ hours.
 
 
 
@@ -1501,6 +1606,9 @@ Are the following statements **true** or **false**?
 * A $z$-score of zero is located at the mean value.  
    `r if( knitr::is_html_output(exclude = "epub") ) {
 	 mcq( c(answer = "True", "False"))}`
+* About 5% of observations are less than two standard deviations below the mean.  
+   `r if( knitr::is_html_output(exclude = "epub") ) {
+	 mcq( c("True", answer = "False"))}`
 :::
 
 
@@ -1593,7 +1701,6 @@ IQ scores are
    '[designed to have](https://en.wikipedia.org/wiki/IQ_classification)'
 }`
 a mean of 100 and a standard deviation of 15.
-
 `r if (knitr::is_latex_output()) {
    'Mensa'
 } else {
@@ -1617,7 +1724,7 @@ IQ scores are
    '[designed to have](https://en.wikipedia.org/wiki/IQ_classification)'
 }`
 a mean of 100 and a standard deviation of 15.
-@data:Zagorsky2016:Blondes reports that the Pentagon must "reject all military recruits whose IQ is in the bottom 10% of the population" [@data:Zagorsky2016:Blondes, p. 403].
+@data:Zagorsky2016:Blondes reports that the US Military must "reject all military recruits whose IQ is in the bottom 10% of the population" [@data:Zagorsky2016:Blondes, p. 403].
 
 What IQs scores lead to a rejection from the US military?
 :::
@@ -1640,9 +1747,9 @@ Match the diagram in Fig. \@ref(fig:IQMatchDiagramsForwards) with the meaning.
 :::
 
 
-```{r IQMatchDiagramsForwards, echo=FALSE, fig.cap="Match the diagram with the description", fig.align="center", out.width="90%", fig.height=3.75, fig.width=6.5}
+```{r IQMatchDiagramsForwards, echo=FALSE, fig.cap="Match the diagram with the description", fig.align="center", out.width="85%", fig.height=3.75, fig.width=6.5}
 par( mfrow = c(2, 2),
-     mar = c(4, 1, 1, 2) + 0.1)
+     mar = c(4, 1, 2, 2) + 0.1)
 
 mu <- 100 
 sigma <- 15
@@ -1711,9 +1818,9 @@ Match the diagram in Fig. \@ref(fig:IQMatchDiagramsBackwards) with the meaning.
 :::
 
 
-```{r IQMatchDiagramsBackwards, echo=FALSE, fig.cap="Match the diagram with the description", fig.align="center", out.width="90%", fig.height=3.75, fig.width=6.5}
+```{r IQMatchDiagramsBackwards, echo=FALSE, fig.cap="Match the diagram with the description", fig.align="center", out.width="85%", fig.height=3.75, fig.width=6.5}
 par( mfrow = c(2, 2),
-     mar = c(4, 1, 1, 2) + 0.1)
+     mar = c(4, 1, 2, 2) + 0.1)
 
 mu <- 100
 sigma <- 15
@@ -1804,7 +1911,7 @@ Bearings less than about 49.9&nbsp;mm in diameter cannot be sold.
 **2c.** About 48.7%.
 **2d.** *Smaller* than about 7.38mm.
 **2e.** *Larger* than about 7.21mm
-**3.** False; False; True; True; False; True.
+**3.** False; False; True; True; False; True; False.
 :::
 `r if (knitr::is_html_output()) '-->'`
 
