@@ -1,12 +1,25 @@
-shadeNormal <- function(xx, yy, lo, hi, col="blue", outline = FALSE){
+shadeNormal <- function(xx, yy, lo, hi, 
+                        col = "blue", #Shading colour
+                        density = NULL,
+                        angle = 45,
+                        outline = FALSE){
   
   xshade <- xx[ (xx >= lo) & ( xx <= hi ) ]
   yshade <- yy[ (xx >= lo) & ( xx <= hi ) ]
   y0 <- rep(0, length(yshade))
   
-  polygon( x = c(xshade, rev(xshade) ),
-           y = c( yshade, y0),
-           col = col)
+  if ( !is.na(col) ){
+    polygon( x = c(xshade, rev(xshade) ),
+             y = c( yshade, y0),
+             col = col)
+  }
+  if ( !is.null(density)){
+    polygon( x = c(xshade, rev(xshade) ),
+             y = c( yshade, y0),
+             col = NA,
+             density = density,
+             angle = angle)
+  }
   
   if (outline) { # Draw lines at each end of the shading region
     lo.ShadeAt <- min(which(out1$x > lo))
