@@ -36,19 +36,21 @@ plotNormal <- function(mu,
                        sd,
                        showX = seq(-3, 3, by = 1) * sd + mu,
                        showXlabels = NULL, # if NULL, use the numbers in showX to place on the horizontal axis; otherwise, give the labels
+                       showXaxis = TRUE, # If FALSE, then no bottom axis is shown at all 
                        cex.axis = 1, # char expansion for axis text (i.e., labels)
                        round.dec = 1,
                        main = "", # Main title
                        xlab = "", # horizontal axis labels
                        showZ = TRUE, # Whether to show z = -3:3 on the graph or not, using grey vertical lines
-                       showZtall = FALSE, # if TRUE, the lines go all the way to the top of the graohl if FALSE, to the normal curve
+                       showZtall = FALSE, # if TRUE, the lines go all the way to the top of the graph; if FALSE, to the normal curve
                        bg = "white", 
                        cex.tickmarks = 1,
                        las = 1,
                        ylim = NA,
                        xlim.hi = mu + 3.5*sd, # Upper x-axis limit
                        xlim.lo = mu - 3.5*sd, # Lower x-axis limit
-                       axis.labels = NULL){
+                       axis.labels = NULL,
+                       add = FALSE){
   
   # mu  is the mean of the distn
   # sd  is the std dev of the distn
@@ -69,28 +71,41 @@ plotNormal <- function(mu,
 
   extra <- 0.25 # extra space at ends
   
-
-  plot( nc ~ hor, 
-          axes = FALSE,
+  if (add) {
+    lines( nc ~ hor,
           bg = bg,
           ylim = switch( any(is.na(ylim)) + 1, ylim, c(0, max(nc))), # Since ifelse fails to return NULL
           xlim = c(xlim.lo, xlim.hi),
           lwd = 2,
           xlab = xlab,
           ylab = "",
-          main = main,
-          type = "l")
-  if (is.null(showXlabels)) {
-    axis(side = 1,
-         at = showX,
-         las = las,
-         labels = round(showX, round.dec))
+          main = main)
+    
   } else {
-    axis(side = 1,
-         at = showX,
-         las = las,
-         cex.axis = cex.axis,
-         labels = showXlabels)
+    plot( nc ~ hor, 
+            axes = FALSE,
+            bg = bg,
+            ylim = switch( any(is.na(ylim)) + 1, ylim, c(0, max(nc))), # Since ifelse fails to return NULL
+            xlim = c(xlim.lo, xlim.hi),
+            lwd = 2,
+            xlab = xlab,
+            ylab = "",
+            main = main,
+            type = "l")
+  }
+  if( showXaxis) {
+    if (is.null(showXlabels)) {
+      axis(side = 1,
+           at = showX,
+           las = las,
+           labels = round(showX, round.dec))
+    } else {
+      axis(side = 1,
+           at = showX,
+           las = las,
+           cex.axis = cex.axis,
+           labels = showXlabels)
+    }
   }
 
   arrows( x0 = xlim.lo, 

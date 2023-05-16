@@ -14,25 +14,27 @@
 </div>
 
 
-`r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}[7]{R}{.25\textwidth}
-  \begin{center}
-    \includegraphics[width=.20\textwidth]{Illustrations/pexels-skitterphoto-705171.jpg}
-  \end{center}
-\end{wrapfigure}
-`r if (knitr::is_html_output()) '-->'`
+<!-- `r if (knitr::is_html_output()) '<!--'` -->
+<!-- \begin{wrapfigure}[7]{R}{.25\textwidth} -->
+<!--   \begin{center} -->
+<!--     \includegraphics[width=.20\textwidth]{Illustrations/pexels-skitterphoto-705171.jpg} -->
+<!--   \end{center} -->
+<!-- \end{wrapfigure} -->
+<!-- `r if (knitr::is_html_output()) '-->'` -->
 
 
-Suppose a fair, six-sided die^[Note the language: two *dice*, but one *die*. *Dice* is plural.] is rolled 25 times.
+Suppose a fair, six-sided die is rolled 25 times (Fig. \@ref(fig:RouletteWheelHist), top-right panel).
 What proportion of the rolls will produce an even number?
 That is, what will be the *sample proportion* of even numbers?
 
 Of course, no-one knows exactly what will happen for *any* individual roll, so no-one knows what proportion will be even for any sample of 25 rolls.
 In addition, the proportion of the 25 rolls that will be even will not be the same for every sample of 25 rolls.
-The sample proportion will *vary*: *sampling variation* exists.
+The sample proportion will *vary* from sample to sample: *sampling variation* exists.
 
-This sampling variation can be described, which quantifies *how* the sample proportion varies from sample to sample (Sect. \@ref(ExpectationOf)).
-To do this, statistical theory could be used... or thousands of repetitions of a sample of 25 rolls could be performed... or a computer could *simulate* many sets of 25 rolls.
+We have seen that the sample statistic often varies with a normal distribution (whose standard deviation is called the *standard error*).
+However, it is useful to be more specific when describing the sampling distribution.
+
+To better understand the sampling distribution, statistical theory could be used... or thousands of repetitions of a sample of 25 rolls could be performed... or a computer could *simulate* many sets of 25 rolls.
 Let's simulate rolling a die 25 times, using just 10 sets of 25 rolls;
 `r if (knitr::is_latex_output()) {
    'see Fig. \\@ref(fig:RollDiceFig) (the online version has an animation).'
@@ -192,7 +194,7 @@ The proportion of even rolls varies from set to set.
 For these 10 sets of $n = 25$ rolls, the percentage of even rolls ranged from $\hat{p} = 0.32$ even rolls to $\hat{p} = 0.60$ even rolls.
 
 The sample proportion of even rolls would be expected to vary around $p = 0.5$, since three of the six faces of the die are even numbers (the *population proportion*), using the classical approach to probability.
-Of course, the sample proportion could be very small or very high by chance, but we wouldn't expect to see that very often.
+Of course, the sample proportion could be very small or very high by chance, but we wouldn't expect to see that very often (Fig. \@ref(fig:RouletteWheelHist), top-right panel).
 
 In this example, the *population proportion* of even rolls is known to be $p = 0.5$.
 Each sample of $n = 25$ rolls is a *sample* of all possible sets of $n = 25$ rolls, and the *sample* proportion of even rolls is denoted by $\hat{p}$.
@@ -260,12 +262,12 @@ if (knitr::is_html_output()){
                                  format(round(prop.even[i], 2), nsmall = 2),
                                  ")", 
                                  sep = "" ),
-                     ylab = "Frequency",
+                     ylab = "",
                      right = FALSE,
                      axes = FALSE)
         axis(side = 1)
-        axis(side = 2, 
-             las = 1)
+        #axis(side = 2, 
+        #     las = 1)
         
         points(prop.even[i], 0,
                pch = 19,
@@ -308,18 +310,16 @@ if (knitr::is_latex_output()){
                    ylim = c(0, 200),
                    xlim = c(0, 1),
                    col = plot.colour,
-                   main = paste("Histogram of sample proportions\nfrom",
-                              num.sims, 
-                              "simulations of",
+                   main = paste("Histogram of sample proportions\nfrom thousands of simulations of",
                               num.rolls,
                               "rolls"),
                    xlab = "Proportion of the 25 rolls showing an even number",
-                   ylab = "Frequency",
+                   ylab = "",
                    right = FALSE,
                    axes = FALSE)
       axis(side = 1)
-      axis(side = 2, 
-           las = 1)
+      #axis(side = 2, 
+      #     las = 1)
 
       xx <- seq(0, 1, 
 	        length = 500)
@@ -414,7 +414,7 @@ Instead, the best available estimate of $p$ is used, which is $\hat{p}$.
 This situation is studied from Sect.&nbsp;\@ref(SamplingDistributionUnknownp) onwards.
 
 
-::: {.definition #SamplingDistProp name="Sampling distribution of a sample proportion when p is known"}
+::: {.definition #SamplingDistProp name="Sampling distribution of a sample proportion when $p$ is known"}
 When the value of $p$ is *known*, the *sampling distribution of the sample proportion* is described by
 
 * an approximate normal distribution,
@@ -529,7 +529,7 @@ Then (from Definition \@ref(def:DEFSamplingDistributionPhat)),
 \]
 (This is very similar to the value of 0.1, the value of the standard error when the value of $p$ was known; see Eq.&nbsp;\@ref(eq:StdErrorExampleDie).)
 
-Hence, the sample proportions would vary with an approximate normal distribution (Fig.\@ref(fig:NormalDieTheoryUnknownp)), centred around the unknown value of $p$ with a standard deviation of $\text{s.e.}(\hat{p}) = 0.099277$.
+Hence, the sample proportions would vary with an approximate normal distribution (Fig. \@ref(fig:NormalDieTheoryUnknownp)), centred around the unknown value of $p$ with a standard deviation of $\text{s.e.}(\hat{p}) = 0.099277$.
 
 
 ```{r NormalDieTheoryUnknownp, echo=FALSE, fig.cap="The normal distribution, showing how the proportion of even rolls varies when a die is rolled 25 times", fig.align="center", fig.width=8.5, fig.height=2.75, out.width='80%'}
@@ -540,27 +540,35 @@ out <- plotNormal(HT.mn,
                   HT.sd,
                   xlab = "Sample proportion of even rolls out of 25",
                   showXlabels = c( 	
-                    expression( paste("  ", italic(p), " - 0.298")),
-                    expression( paste("  ", italic(p), " - 0.199")), 
-                    expression( paste("  ", italic(p), " - 0.099")), 
-                    expression( paste(" ", italic(p))),
-                    expression( paste("  ", italic(p), " + 0.099")), 
-                    expression( paste("  ", italic(p), " + 0.199")), 
-                    expression( paste("  ", italic(p), " + 0.298")) ))
+                    expression( italic(p)-0.298),
+                    expression( italic(p)-0.199), 
+                    expression( italic(p)- 0.099), 
+                    expression( italic(p)),
+                    expression( italic(p)+ 0.099), 
+                    expression( italic(p)+ 0.199), 
+                    expression( italic(p)+ 0.298)) )
 ```
 
-Using the 68--95--99.7 rule again: About 95% of the values of $\hat{p}$ are expected to be between $p - 0.199$ and $p + 0.199$.
+Using the 68--95--99.7 rule again: 
+about 95% of the values of $\hat{p}$ are expected to be between $p - 0.199$ and $p + 0.199$.
+That is, for some *known* value of $p$, the *unknown* value of $\hat{p}$ is expected to vary between $p - 0.199$ and $p + 0.199$ (Fig. \@ref(fig:CIrelationships), left panel).
 
-Though we are pretending the value of $p$ is unknown, the value really is known.
-What if the roles of $p$ and $\hat{p}$ were 'reversed'?
-Then, about 95% of the values of $p$ are expected to be between $\hat{p} - 0.199$ and $\hat{p} + 0.199$.
+However, we *know* the value of $\hat{p}$, but the value of $p$ is *unknown*.
+So, what if the roles of $p$ and $\hat{p}$ were 'reversed'?
+Then, the values of $p$ that could reasonably be expected to produce the observed value of $\hat{p}$ are between $\hat{p} - 0.199$ and $\hat{p} + 0.199$ (Fig. \@ref(fig:CIrelationships), right panel).
 
-Since $\hat{p} = 0.44$, this is equivalent to: About 95% of the values of $p$ are expected to be between $0.24$ and $0.64$.
-This interpretation is not quite correct, but the idea seems reasonable.
-This is called a *confidence interval* (or CI), based on ideas from  Sect.&nbsp;\@ref(CIpKnownp).
+```{r CIrelationships, echo=FALSE, out.width='100%', fig.align="center", fig.cap="Left: A known value of $p$ produces a range of $\\hat{p}$ values. Right: A known value of $\\hat{p}$ could reasonably have come from a variety of values of $p$.", fig.width = 10}
+par(mfrow = c(1, 2))
 
-In summary, using $\hat{p} = 0.44$ and $\text{s.e.}(\hat{p}) = 0.0993$, the (approximate) 95% CI is $0.44 \pm (2 \times 0.0993)$, or from 0.241 to 0.639.
-This CI straddles the population proportion of $p = 0.5$, though we would not know this if $p$ truly was unknown.
+source("R/showCIrelationships.R")
+```
+
+
+Since $\hat{p} = 0.44$, this is equivalent to saying that we are reasonably sure that a population with a value of $p$ between $0.24$ and $0.64$ could have produced the observed value of $\hat{p} = 0.44$.
+This interval is called a *confidence interval* (or CI), based on ideas from  Sect. \@ref(CIpKnownp).
+
+In summary, using $\hat{p} = 0.44$ and $\text{s.e.}(\hat{p}) = 0.0993$, the (approximate) 95% CI is $0.44 \pm (2 \times 0.0993)$, or from $0.241$ to $0.639$.
+This CI straddles the known population proportion of $p = 0.5$, though we would not know this if $p$ was unknown (which is not usually the case).
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 In this case, we know the value of the population parameter: $p = 0.5$.
@@ -577,13 +585,13 @@ After all, that's why we take a sample; to *estimate* the value of the populatio
 </div>
 
 
-`r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}[7]{R}{.25\textwidth}
-  \begin{center}
-    \includegraphics[width=.20\textwidth]{Illustrations/pexels-skitterphoto-705171.jpg}
-  \end{center}
-\end{wrapfigure}
-`r if (knitr::is_html_output()) '-->'`
+<!-- `r if (knitr::is_html_output()) '<!--'` -->
+<!-- \begin{wrapfigure}[7]{R}{.25\textwidth} -->
+<!--   \begin{center} -->
+<!--     \includegraphics[width=.20\textwidth]{Illustrations/pexels-skitterphoto-705171.jpg} -->
+<!--   \end{center} -->
+<!-- \end{wrapfigure} -->
+<!-- `r if (knitr::is_html_output()) '-->'` -->
 
 
 Suppose *thousands* of people rolled a die 25 times, and *each* person found $\hat{p}$ for their sample, and hence computed the CI for their sample of 25 rolls.
@@ -758,7 +766,7 @@ where the multiplier is 2 for an *approximate* 95% CI (based on the 68--95--99.7
 
 
 ::: {.definition #ConfidenceIntervalp name="Confidence interval for p"}
-A *confidence interval* (CI) for the unknown value of the parameter $p$ is
+A *confidence interval* (CI) for the unknown value of the population proportion $p$ is
 \begin{equation}
   \hat{p} \pm ( \text{multiplier} \times \text{s.e.}(\hat{p})), 
   (\#eq:CIp)
@@ -842,7 +850,7 @@ Computing the 'plus' and the 'minus' bits, the approximate 95% CI is from 0.219 
 The approximate 95% CI for the population proportion of koalas that crossed at least one road in the last 30 months is from 0.219 to 0.487. 
 That is, it is plausible that the sample proportion of $\hat{p} = 0.3529$ may have come from a population with a proportion somewhere between 0.219 and 0.487.
 
-The research article reports the exact 95% CI as from 22% to 48%, very clos to out approximate 95% CI.
+The research article reports the exact 95% CI as from 22% to 48%, very close to our approximate 95% CI.
 :::
 
 ::: {.example #CIParamedic name="CI"}
@@ -850,7 +858,7 @@ A study of how paramedics administer pain medication [@lord2009impact] found tha
 That is, $\hat{p} = 791/1766 = 0.4479049$ and $n = 1766$.
 Hence, $\text{s.e.}(\hat{p}) =  0.01183326$, so the *approximate* 95% CI is from
 \[
-   0.4479049 - (2\times 0.0118332) = 0.424238 \text{ to } 
+   0.4479049 - (2\times 0.0118332) = 0.424238 \text{\ \  to\ \   } 
    0.4479049 + (2\times 0.0118332) = 0.471571,
 \]
 or from $0.424$ to $0.472$.
@@ -865,8 +873,11 @@ The *correct* interpretation (Definition&nbsp;\@ref(def:ConfidenceInterval)) of 
 
 > *If* samples were repeatedly taken many times, and the 95% confidence interval computed for each sample, 95% of these confidence intervals formed would contain the population [*parameter*](#def:Parameter).
 
+In Sect. \@ref(ConfIntPUnknownP), the CI was interpreted as giving a range of values of $p$ that could reasonably be expected to produce the observed value of $\hat{p}$.
+This is close to the correct interpretation.
+
 However, commonly the CI is interpreted as having a 95% chance of containing the value of population [parameter](#StatisticsAndParameters) $p$.
-This is not strictly correct (our CI either *does* or *does not* contain the value of $p$), but is common.
+This is not strictly correct (since the CI either *does* or *does not* contain the value of $p$), but is common.
 More details on interpreting a CI are given in Sect. \@ref(CIInterpretation).
 
 
@@ -949,23 +960,23 @@ Externally: A random sample of koalas is unlikely to be obtained (though it may 
 
 
 ::: {.example #StatisticalValidityDieRolls name="Statistical validity"}
-Consider an artificial situation to estimate the proportion of die rolls that show as a **one**.
-The population proportion (using the classical approach to probability) is 1/6, or about 0.167.
+Consider a situation to estimate the proportion of die rolls that show as a `r include_graphics("Dice/die1.png", dpi=1250)` (clearly, this is contrived as we know the population proportion).
+The population proportion (using the classical approach to probability) is $1/6$, or about $0.167$.
 
-If we repeatedly rolled a die in sets of $n = 20$ rolls, say 5000 times, the proportion of rolls that showed as **one** could be recorded for each sample of 20 rolls.
+If we repeatedly rolled a die in sets of $n = 20$ rolls thousands of times, the proportion of rolls that showed as `r include_graphics("Dice/die1.png", dpi=1250)` could be recorded for each sample of 20 rolls.
 Then, a histogram of the sample proportions could be produced.
 Simulating this on a computer, a histogram of the sample proportions (Fig.&nbsp;\@ref(fig:HistoProportionsConditions), left panel) shows that the normal distribution does a poor job of describing the sampling distribution (the distribution is not even symmetric).
 The statistical validity conditions do *not* seem satisfied.
 
-Alternatively, we could repeatedly roll a die in sets of $n = 60$ rolls, say 5000 times, and record the proportion of rolls that show as **one** for each sample of 60 rolls.
+Alternatively, we could repeatedly roll a die in sets of $n = 60$ rolls thousands of times, and record the proportion of rolls that show as `r include_graphics("Dice/die1.png", dpi=1250)` for each sample of 60 rolls.
 
-Then, a histogram of the proportion of **ones** for those sets of 60 rolls could be produced.
+Then, a histogram of the proportion of `r include_graphics("Dice/die1.png", dpi=1250)` for those sets of 60 rolls could be produced.
 Again simulating on a computer, a histogram of these sample proportions (Fig.&nbsp;\@ref(fig:HistoProportionsConditions), right panel) shows that the normal distribution does a reasonable job of describing the sampling distribution.
 The statistical validity conditions seem satisfied.
 :::
 
 
-```{r HistoProportionsConditions, echo=FALSE, fig.width=7, fig.height=3.0, out.width = '85%', fig.align="center", fig.cap="The sampling distribution of the proportion of ones rolled, for sets of 20 rolls (left panel) and sets of 60 rolls (right panel)" }
+```{r HistoProportionsConditions, echo=FALSE, fig.width=7, fig.height=3.0, out.width = '80%', fig.align="center", fig.cap="The sampling distribution of the proportion of ones rolled, for sets of 20 rolls (left panel) and sets of 60 rolls (right panel)" }
 par( mfrow = c(1, 2),
      mar = c(5, 5, 4, 0.5) + 0.1)  # The default is c(5, 4, 4, 2) + 0.1.
 
@@ -1139,7 +1150,7 @@ The CI is approximately *externally* valid if the sample is somewhat representat
 
 ## Quick review questions {#Chap20-QuickReview}
 
-1. True or false: $p$ is called a *parameter*.  
+1. True or false: $p$ is called a *parameter*.\tightlist  
 `r if( knitr::is_html_output(exclude = "epub") ) {torf(answer = TRUE )}`
 1. True or false: The value of $p$ will vary from sample to sample.  
 `r if( knitr::is_html_output(exclude = "epub") ) {torf(answer = FALSE )}`
