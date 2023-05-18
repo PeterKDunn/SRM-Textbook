@@ -4,7 +4,7 @@ out1 <- plotNormal(mu = 0,
                    ylim = c(-0.50, 0.4),
                    showXaxis = FALSE,
                    main = expression(
-                     atop( SAMPLE*":"~Values~of~hat(italic(p))~likely~to~be,
+                     atop( bold(Sample)*":"~Values~of~hat(italic(p))~likely~to~be,
                            produced~with~the~given~value~of~italic(p) )
                    ) )
 text(3.1, 0, 
@@ -23,7 +23,7 @@ points( x = 0,
         pch = 19)
 text(x = 0,
      y = -0.40,
-     expression(POPULATION*":"~Value~of~italic(p)~known),
+     expression(bold(Population)*":"~Value~of~italic(p)~known),
      pos = 1)
 
 
@@ -100,7 +100,7 @@ out2 <- plotNormal(mu = 0,
                    ylim = c(-0.50, 0.4),
                    showXaxis = FALSE,
                    main = expression(
-                     atop( POPULATION*":"~Values~of~italic(p)~likely~to,
+                     atop( bold(Population)*":"~Values~of~italic(p)~likely~to,
                            have~produced~given~value~of~hat(italic(p)) )
                    ) )
 text(3.1, 0, 
@@ -119,7 +119,7 @@ points( x = 0,
         pch = 19)
 text(x = 0,
      y = -0.40,
-     expression(SAMPLE*":"~Value~of~hat(italic(p))~known),
+     expression(bold(Sample)*":"~Value~of~hat(italic(p))~known),
      pos = 1)
 
 
