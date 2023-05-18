@@ -15,18 +15,18 @@
 </div>
 
 
-`r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}{R}{.25\textwidth}
-  \begin{center}
-    \includegraphics[width=.20\textwidth]{Illustrations/pexels-skitterphoto-705171.jpg}
-  \end{center}
-\end{wrapfigure}
-`r if (knitr::is_html_output()) '-->'`
+<!-- `r if (knitr::is_html_output()) '<!--'` -->
+<!-- \begin{wrapfigure}{R}{.25\textwidth} -->
+<!--   \begin{center} -->
+<!--     \includegraphics[width=.20\textwidth]{Illustrations/pexels-skitterphoto-705171.jpg} -->
+<!--   \end{center} -->
+<!-- \end{wrapfigure} -->
+<!-- `r if (knitr::is_html_output()) '-->'` -->
 
 
 In this chapter, we study the situation where a population mean $\mu$ (the parameter) is estimated by a sample mean $\bar{x}$ (the statistic).
-Of course, many samples are possible, and every sample is likely to be different, and is likely to produce a different sample mean $\bar{x}$.
-That is, the value of the sample mean will vary from sample to sample and exhibit *sampling variation* (which can be quantified using the *standard error*).
+The sample mean comes from just one of the many possible samples, and each possible sample is likely to produce a different value $\bar{x}$.
+That is, the value of the sample mean varies from sample to sample, called *sampling variation* (which can be quantified using the *standard error*).
 
 Consider rolling dice again.
 Suppose a die is rolled $n = 25$ times, and the *mean* of the 25 numbers that are rolled is recorded.
@@ -43,13 +43,13 @@ die.se <- sqrt( die.vr / 25)
 ```
 
 
-An example of finding the mean after repeatedly rolling a die 25 times is
+Suppose we try rolling a die 25 times, to see how much the sample mean varies in 25 rolls
 `r if (knitr::is_latex_output()) {
-   'shown in Fig. \\@ref(fig:RollDiceMeanFig) for 10 sets of 25 rolls.  (The online version has an animation.)'
+   '(see Fig. \\@ref(fig:RollDiceMeanFig) for 10 sets of 25 rolls).  (The online version has an animation.)'
 } else {
-   'shown in the animation below for 10 sets of 25 rolls.'
+   'as shown in the animation below for 10 sets of 25 rolls.'
 }`
-The mean of the 25 rolls clearly varies.
+The mean of the 25 rolls clearly varies, as expected.
 In the simulation, the sample mean of 25 rolls was as low as 3.08 and as high as 3.76.
 
 
@@ -120,7 +120,7 @@ if (knitr::is_html_output()){
 
 
 
-```{r RollDiceMeanFig, echo=FALSE, fig.align="center", cache=FALSE, fig.width=7, fig.height=4, out.width="85%", fig.cap="Rolling dice: The average of 25 rolls, for 10 sets of 25 rolls" }
+```{r RollDiceMeanFig, echo=FALSE, fig.align="center", cache=FALSE, fig.width=7, fig.height=4, out.width="85%", fig.cap="Rolling dice: The average of 25 rolls, for some sets of 25 rolls" }
 if (knitr::is_latex_output()){
   set.seed(99999)
     num.rolls <- 25
@@ -163,7 +163,7 @@ if (knitr::is_latex_output()){
       
       # Add the sample mean to right-hand side 
       text(num.rolls + 2, 1:i, 
-           labels = format(round(mean.even[1:i], 1), nsmall = 1) )
+           labels = format(round(mean.even[1:i], 1), nsmall = 2) )
 
       #Add dividing line
       abline(v = num.rolls + 1, 
@@ -178,7 +178,7 @@ if (knitr::is_latex_output()){
 
 
 The mean for any single *sample* of $n = 25$ rolls will sometimes be higher than $\mu = 3.5$, and sometimes lower than $\mu = 3.5$, but most of the time the mean should be close to 3.5.
-If many people made a set of 25 rolls, and computed the mean for their set, every person would have a sample mean for their set of 25 rolls, and we could produce a histogram of all these sample means;
+If thousands of people made one set of 25 rolls each, and computed the mean for their set, every person would have a sample mean for their set of 25 rolls, and we could produce a histogram of all these sample means;
 `r if (knitr::is_latex_output()) {
    'see Fig. \\@ref(fig:RollDiceHistMeanFig).  (The online version has an animation.)'
 } else {
@@ -247,10 +247,10 @@ if (knitr::is_html_output()){
 ```
 
 
-```{r RollDiceHistMeanFig, echo=FALSE, fig.align="center", cache=FALSE, fig.width=5, fig.height=3.5, fig.cap="Rolling dice: The mean of 25 rolls, for 1000 repetitions" }
+```{r RollDiceHistMeanFig, echo=FALSE, fig.align="center", fig.width=5, fig.height=3.5, fig.cap="Rolling dice: The mean of 25 rolls, for thousands of repetitions" }
 if (knitr::is_latex_output()){
   set.seed(123456789)
-    num.sims <- 1000
+    num.sims <- 2000
     num.rolls <- 25
     
     die.mn <- sum( (1:6) * (1/6))  # 3.5 as expected
@@ -266,17 +266,21 @@ if (knitr::is_latex_output()){
     }
 
     out <- hist(meanList,
-                  xlab = "Mean of 25 rolls",
-                  ylab = "Number of times observed",
-                  main = paste("Histogram of the mean of 25 rolls:\nafter",
-                                num.sims, "simulations"),
-                  col = plot.colour,
-                  las = 1,
-                  xlim = c(1.5, 5.5), 
-		  right = FALSE,
-                  ylim = c(0, 300),
-                  breaks = seq(2, 5, by = 0.25)
+                xlab = "Mean of 25 rolls",
+                #ylab = "Number of times observed",
+                ylab = "",
+                main = "Histogram of the mean of 25 rolls:\nafter thousands of simulations",
+#                             num.sims, "simulations"),
+                col = plot.colour,
+                las = 1,
+                axes = FALSE,
+                #xlim = c(1.5, 5.5),
+                right = FALSE,
+                #ylim = c(0, 300),
+                breaks = seq(2, 5, by = 0.25) 
       )
+    axis(side = 1,
+         at = 1:6)
       xx <- seq(1, 6, 
                 length = 500)
       yy <- dnorm(xx, 
@@ -298,7 +302,7 @@ if (knitr::is_latex_output()){
 }`
 the sample means vary with an approximate normal distribution (as we saw with the sample proportions).
 This normal distribution is centred around the population mean $\mu$.
-The standard deviation of the normal distribution is the *standard error* of the sample mean $\bar{x}$, written as $\text{s.e.}(\bar{x})$.
+The standard deviation of this normal distribution is describing a sampling distribution, so is called a *standard error*: specifically, it is the standard error of the sample mean $\bar{x}$, written as $\text{s.e.}(\bar{x})$.
 
 When the *population* standard deviation $\sigma$ is *known*, then
 
@@ -311,7 +315,7 @@ So the possible values of the sample means have a *sampling distribution* descri
 * with mean $\mu$, and
 * a standard deviation, called the standard error, of $\text{s.e.}(\bar{x}) = \sigma/\sqrt{n}$.
 
-Usually the population mean and the population standard deviation are *unknown*.
+However, almost always the population mean, and the population standard deviation, are *unknown* (if they were known, we wouldn't need to take a sample to estimate them).
 Since the sampling distribution has an approximate normal distribution, the 68--95--99.7 rule can be applied: approximately 95% of the sample means are expected to be within two standard errors of $\mu$.
 
 
@@ -320,7 +324,7 @@ Since the sampling distribution has an approximate normal distribution, the 68--
 When a sample mean is used to estimate a population mean, the sample mean varies from sample to sample: sampling variation exists, as we saw in the previous section.
 
 When the *population* standard deviation $\sigma$ is unknown (which is almost always the case), it is estimated using the *sample* standard deviation $s$.
-Then, the best estimate of the *standard error* of the sample mean is $\displaystyle\text{s.e.}(\bar{x}) = \frac{s}{\sqrt{n}}$.
+Then, the best we can do is use the estimate of the *standard error* of the sample mean: $\displaystyle\text{s.e.}(\bar{x}) = \frac{s}{\sqrt{n}}$.
 With this information, we can describe the *sampling distribution of the sample mean*.
 
 
@@ -335,7 +339,7 @@ When the *population* standard deviation is unknown, the *sampling distribution 
    \text{s.e.}(\bar{x}) = \frac{s}{\sqrt{n}},
    (\#eq:stderrorxbar)
 \end{equation}
-when [certain conditions are met](#ValiditySampleMean), where $n$ is the size of the sample, and $s$ is the standard deviation of the individual observations in the sample (that is, the *sample* standard deviation). 
+when [certain conditions are met](#ValiditySampleMean), where $n$ is the size of the sample, and $s$ is the standard deviation describing the variation in the individual observations in the sample (that is, the *sample* standard deviation). 
 :::
 
 
@@ -353,7 +357,7 @@ An approximate 95% confidence interval (CI) for $\mu$ is $\bar{x}$ give-or-take 
 In general, an [confidence interval](#def:ConfidenceInterval) (CI) for $\mu$ is
 
 \[
-   \bar{x} \pm \overbrace{(\text{Multiplier}\times\text{s.e.}(\bar{x}))}^{\text{Called the `margin of error'}}.
+   \bar{x} \pm \overbrace{(\text{Multiplier}\times\text{s.e.}(\bar{x}))}^{\text{The `margin of error'}}.
 \]
 For an approximate 95% CI, the multiplier is, as usual, about $2$ (since about 95% of values are within two standard deviations of the mean from the [68--95--99.7 rule](#def:EmpiricalRule)).
 
@@ -363,10 +367,11 @@ Commonly, CIs are computed at 90%, 95% and 99% confidence levels.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-The multiplier of 2 is not a $z$-score here, since the *population* standard deviation is unknown.
-Since we don't know the *population* standard deviation, and use the *sample* standard deviation instead, the multiplier is a $t$-score.\smallskip
+The multiplier of 2 is not a $z$-score here.
+It *would* be a $z$-score if the value of the *population* standard deviation was known.
+Since we don't know the *population* standard deviation, and use the *sample* standard deviation instead, the multiplier is actually a $t$-score.\smallskip
 
-The $t$- and $z$-multipliers are very similar, and (except for very small sample sizes) using an approximate multiplier of 2 is reasonable for computing *approximate* 95% CIs in either case.
+However, $t$- and $z$-multipliers are *very* similar, and (except for small sample sizes) using an approximate multiplier of 2 is reasonable for computing *approximate* 95% CIs in either case.
 :::
 
 
@@ -387,9 +392,9 @@ The CI could also be interpreted as the range of plausible values of $\mu$ that 
 
 ::: {.example #BagsCI name="School bags"}
 A study of the school bags that 586 children (in Grades 6--8 in Tabriz, Iran) take to school found the mean weight was $\bar{x} = 2.8$&nbsp;kg with a standard deviation of $s = 0.94$&nbsp;kg [@data:Dianat2014:schoolbags].
-The parameter is the population mean weight of school bags for Iranian children in Grades 6--8.
+The parameter $\mu$ is the population mean weight of school bags for Iranian children in Grades 6--8.
 
-Another sample of 586 children would produce a different sample mean, so the sample mean varies from sample to sample.
+Another sample of 586 children would produce a different sample mean, so the sample mean varies from sample to sample; sampling variatin exists.
 The *standard error* of the sample mean is
 
 \[
@@ -403,7 +408,7 @@ The approximate 95% CI for the population mean school-bag weight is
 \]
 or $2.8\pm0.07766$.
 (The *margin of error* is 0.07766.)
-This is equivalent to an approximate 95% CI from 2.72&nbsp;kg to 2.88&nbsp;kg.
+This is an interval from 2.72&nbsp;kg to 2.88&nbsp;kg.
 This CI has a 95% chance of straddling the population mean bag weight.
 :::
 
@@ -420,7 +425,7 @@ A *wider* interval is needed to be *more* confident that the interval contains t
 :::
 
 
-```{r BagsNormal, echo=FALSE, fig.cap="The normal distribution, showing how the sample mean bag weight varies in samples of size $n = 586$", fig.align="center", fig.width=8.5, fig.height=2.5, out.width='90%'}
+```{r BagsNormal, echo=FALSE, fig.cap="The samoking distribution is a normal distribution; it shows how the sample mean bag weight varies in samples of size $n = 586$", fig.align="center", fig.width=8.5, fig.height=2.5, out.width='90%'}
 mn <- 2.8
 n <- 586
 stdd <- 0.94
@@ -432,13 +437,13 @@ out <- plotNormal(mn,
                   xlab = "Sample mean bag weight, in kg (sample size: 586)", 
                   cex.axis = 0.95,
                   showXlabels = c( 	
-                    expression( paste("    ", mu, " - 0.114")),
-                    expression( paste("    ", mu, " - 0.076")), 
-                    expression( paste("    ", mu, " - 0.038")), 
+                    expression( mu-0.114),
+                    expression( mu-0.076), 
+                    expression( mu-0.038), 
                     expression( mu ),
-                    expression( paste("    ", mu, " + 0.038")), 
-                    expression( paste("    ", mu, " + 0.076")), 
-                    expression( paste("    ", mu, " + 0.114")) ) )
+                    expression( mu+0.038), 
+                    expression( mu+0.076), 
+                    expression( mu+0.114) ) )
 ```
 
 
@@ -446,13 +451,13 @@ out <- plotNormal(mn,
 ## Statistical validity conditions: One mean {#ValiditySampleMean}
 
 As with any inference procedure, the underlying mathematics requires [certain conditions to be met](#exm:StatisticalValidityAnalogy) so that the results are statistically valid.
-The CI  for one mean, will be *statistical valid* if *one* of these is true:
+The CI for one mean will be *statistical valid* if *one* of these is true:
 
 1. The sample size is at least 25, *or*
 2. The sample size is smaller than 25 *and* the *population* data has an approximate normal distribution.
 
 The sample size of 25 is a rough figure here, and some books give other (similar) values (such as 30).
-This condition ensures that the *distribution of the sample means has an approximate normal distribution* so that the [68--95--99.7 rule](#def:EmpiricalRule) can be used.
+This condition ensures that the *sampling distribution of the sample means has an approximate normal distribution* so that the [68--95--99.7 rule](#def:EmpiricalRule) can be used.
 
 Provided the sample size is larger than about 25, this will be approximately true *even if* the distribution of the individuals in the
 population does not have a normal distribution.
@@ -551,13 +556,13 @@ ci.hi.S99 <- mean.S + t99 * se.S
 </div>
 
 
-`r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}[4]{R}{.25\textwidth}
-  \begin{center}
-    \includegraphics[width=.20\textwidth]{Illustrations/hamburger-2253349_640.jpg}
-  \end{center}
-\end{wrapfigure}
-`r if (knitr::is_html_output()) '-->'`
+<!-- `r if (knitr::is_html_output()) '<!--'` -->
+<!-- \begin{wrapfigure}[4]{R}{.25\textwidth} -->
+<!--   \begin{center} -->
+<!--     \includegraphics[width=.20\textwidth]{Illustrations/hamburger-2253349_640.jpg} -->
+<!--   \end{center} -->
+<!-- \end{wrapfigure} -->
+<!-- `r if (knitr::is_html_output()) '-->'` -->
 
 
 Previously, this RQ was asked about the [NHANES data](#NHANESGraphs):
@@ -650,7 +655,7 @@ LC.F11 <- subset(lungcap,
 
 ## Quick review questions {#Chap22-QuickReview}
 
-1. True or false: The value of $\bar{x}$ varies from sample to sample.  
+1. True or false: The value of $\bar{x}$ varies from sample to sample.\tightlist  
 `r if( knitr::is_html_output(exclude = "epub") ) {torf(answer = TRUE )}`
 
 1. True or false: A CI for $\mu$ is statistically valid only if the histogram of the *data* has an approximate normal distribution.  
@@ -658,13 +663,13 @@ LC.F11 <- subset(lungcap,
 
 1. Suppose $s = 8$ and $n=20$. Which *one* of the following is **true**?  
 `r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
-  answer = "The standard error is 1.7889",
-  "The standard error is 8",
-  "Since the sample size is less than 25, the standard error is invalid") )}`
+  answer = "The standard error is 1.7889.",
+  "The standard error is 8.",
+  "Since the sample size is less than 25, the standard error is invalid.") )}`
 `r if( !knitr::is_html_output(exclude = "epub") ) {
-'   * The standard error is 1.7889
-   * The standard error is 8
-   * Since the sample size is less than 25, the standard error is invalid'
+'   * The standard error is 1.7889.
+   * The standard error is 8.
+   * Since the sample size is less than 25, the standard error is invalid.'
 }`
 
 `r if (!knitr::is_html_output()) '<!--'`
