@@ -15,13 +15,13 @@
 </div>
 
 
-`r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}[11]{R}{.25\textwidth}
-  \begin{center}
-    \includegraphics[width=.20\textwidth]{Illustrations/pexels-taryn-elliott-4231477.jpg}
-  \end{center}
-\end{wrapfigure}
-`r if (knitr::is_html_output()) '-->'`
+<!-- `r if (knitr::is_html_output()) '<!--'` -->
+<!-- \begin{wrapfigure}[11]{R}{.25\textwidth} -->
+<!--   \begin{center} -->
+<!--     \includegraphics[width=.20\textwidth]{Illustrations/pexels-taryn-elliott-4231477.jpg} -->
+<!--   \end{center} -->
+<!-- \end{wrapfigure} -->
+<!-- `r if (knitr::is_html_output()) '-->'` -->
 
 
 House insulation is important for saving energy, particularly in cold climates.
@@ -41,10 +41,11 @@ This would be comparing [between individuals](#Comparison).
 This would be a *relational RQ*: the *Outcome* is the mean energy consumption, and the response variable is the energy consumption for each house.
 The Comparison is between units of analysis *with* the insulation, and units of analysis *without* the insulation.
 
-Either study is possible, and each has advantages and disadvantages [@data:Zimmerman1997:Pairedt].
+Either study is possible, and each has advantages and disadvantages. 
+<!-- [@data:Zimmerman1997:Pairedt]. -->
 Here the *first* (within-individuals) design would seem superior (why?).
 In the first design, each home gets a *pair* of energy consumption measurements, and produces *paired data*, which is the subject of this chapter.
-The second (between-individuals) design requires the means of two different groups of homes to be compared, which is the topic of the next chapter.
+The second (between-individuals) design requires the means of two different groups of homes to be compared, the topic of the next chapter.
 
 
 ::: {.definition #PairedData name="Paired data"}
@@ -55,15 +56,15 @@ Paired data come from [*within individual* comparisons](#Comparison).
 
 Since each unit of analysis has two observations about energy consumption, the *change* (or the *difference*, or the *reduction*) in energy consumption can be computed for each house.
 Then, questions can be asked about the *population mean difference*, which is not the same as *difference between two separate population means* (the subject of the next chapter).
-In paired data, finding the difference between the two measurements for each individual unit of analysis makes sense: each unit of analysis (each house) has two related observations.
+In paired data, finding the difference between the two measurements for each individual unit of analysis makes sense, since each unit of analysis (each house) has two related observations.
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
 Which of these are paired situations?\label{thinkBox:WhichPaired}
 
-1. The mean difference between blood pressure for 36 people, before and after taking a drug.
-1. The difference between the mean HDL cholesterol levels for 22 males and 19 females.
-1. The mean protein levels were compared in sea turtles before and after being rehabilitated [@data:March2018:turtles].
+1. The blood pressure is recorded for 36 people, before and after taking a drug, to determine how much the average blood pressure reduces.
+1. The mean HDL cholesterol concentration is recorded for 22 males and 19 females, and the mean compared.
+1. The mean protein concentrations were compared in sea turtles before and after being rehabilitated to identify any changes [@data:March2018:turtles].
 
 `r if (knitr::is_latex_output()) '<!--'`
 `r webexercises::hide()`
@@ -75,13 +76,13 @@ Situations **1** and **3** are paired situations.
 
 ## Mean differences: An example {#CIMeanDiffExample}
 
-The *Electricity Council* in Bristol wanted to determine if a certain type of wall-cavity insulation reduced energy consumption in winter [@data:OpenUni:insulationBA, @data:hand:handbook].
+The *Electricity Council* in Bristol wanted to determine if a certain type of wall-cavity insulation reduced energy consumption in winter (@data:OpenUni:insulationBA, @data:hand:handbook).
 Their (Descriptive) RQ was:
 
 > What is the *mean reduction* in energy consumption after adding home insulation?
 
 The parameter is $\mu_d$, the population mean *reduction* in energy consumption.
-The subscript $d$ is because we are working with *differences*.
+The subscript $d$ is because we are working with *differences* between the before and after measurements.
 For the collected data
 `r if (knitr::is_latex_output()) {
    '(Table \\@ref(tab:DataInsulation))'
@@ -111,11 +112,18 @@ insulate <- read.csv("./Data/InsulationBeforeAfter.csv")
 insulate$Diff <- insulate$Before - insulate$After
 
 if( knitr::is_latex_output() ) {
-  kable( insulate,
+  
+  insulate2 <- c( insulate[1:5,],
+                  " ", # Spacer
+                  insulate[6:10,])
+  insulate2 <- as.data.frame(insulate2)
+  kable( insulate2,
          format = "latex",
          booktabs = TRUE,
          longtable = FALSE,
-         col.names = c("Before", "After", "Energy savings"),
+         col.names = c("Before", "After", "Energy savings",
+                       "    ",
+                       "Before", "After", "Energy savings"),
          caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") %>%
   kable_styling(font_size = 10) %>%
   row_spec(0, bold = TRUE)
@@ -142,7 +150,7 @@ if( knitr::is_html_output() ) {
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 One energy saving value is *negative*.
-This does *not* mean negative energy usage: the values are *differences* (specifically, energy *reductions* or *savings*).
+This does *not* mean negative energy *usage*, since the values are *differences* (specifically, energy *reductions* or *savings*).
 The differences are computed as *Before* minus *After*, so a negative value means that the *After* value is greater than the *Before* value: an *increase* in energy consumption.
 :::
 
@@ -151,7 +159,7 @@ As always, begin by understanding the data, and produce appropriate graphical an
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-For this situation, what graphs would be suitable for displaying these data?\label{thinkBox:WhichGraph}
+What graphs would be suitable for displaying these data?\label{thinkBox:WhichGraph}
 `r if (knitr::is_latex_output()) '<!--'`
 * Boxplot  
 `r if( knitr::is_html_output(exclude = "epub") ) {
@@ -202,7 +210,7 @@ if( knitr::is_latex_output() ) {
   kable( DiffNotation,
          format = "latex",
          booktabs = TRUE,
-         align = c("r", "c", "c"),
+         align = c("c", "c"),
          longtable = FALSE,
          escape = FALSE,
          col.names = colnames(DiffNotation),
@@ -248,7 +256,7 @@ Graphing the *Before* and *After* data may also be useful too, but a graph of th
 A case-profile plot (Sect.&nbsp;\@ref(CaseProfilePlot)) is also useful, but is sometimes harder to produce in software, and difficult to read when the sample size is large (as the graph contains a line for each unit of analysis).
 
 
-```{r InsulationHistogram, echo=FALSE, fig.cap="A plot of the energy savings from the insulation data. Left panel: A histogram (the vertical grey line represents no energy saving). Right panel: Case-profile plot (a dashed line represents an energy increase)", fig.align="center", out.width='85%', fig.height = 3.0}
+```{r InsulationHistogram, echo=FALSE, fig.cap="A plot of the energy savings from the insulation data. Left panel: A histogram (the vertical grey line represents no energy saving). Right panel: Case-profile plot (a dashed line represents an energy increase)", fig.align="center", out.width='82%', fig.height = 3.0}
 par( mfrow = c(1, 2))
 
 hist( insulate$Diff,
@@ -286,14 +294,15 @@ axis(side = 2,
 box()
 
 for (i in 1:length(insulate$Before)){
-  lines( c(1, 2),
-         c(insulate$Before[i], insulate$After[i]),
-         col = ifelse( (insulate$Before[i] - insulate$After[i]) > 0, "green", "red"),
-         lty = ifelse( (insulate$Before[i] - insulate$After[i]) > 0, 1, 2)
+  lines( x = c(1, 2),
+         y = c(insulate$Before[i], insulate$After[i]),
+         col = ifelse( (insulate$Before[i] - insulate$After[i]) > 0, plotSolid, "black"),
+         lty = ifelse( (insulate$Before[i] - insulate$After[i]) > 0, 1, 2),
+         lwd = 2
   )
   points( c(1, 2),
          c(insulate$Before[i], insulate$After[i]),
-         pch=19
+         pch = 19
   )
 }
 ```
@@ -306,12 +315,13 @@ Summarising the *Before* and *After* data is useful too, but summarising the dif
 } else {
    '(see below).'
 }`
-For the house insulation data, the appropriate *numerical summary* for paired data *summarises the differences* using means, standard deviations, and so on, as appropriate.
+For the house insulation data, the appropriate *numerical summary* for paired quantitative data *summarises the differences* using means, standard deviations, and so on, as appropriate.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 A mean or a median may be appropriate for describing the *data*.
-However, the CI is about the *mean* of the data, and *not* about the data itself.  
+However, the CI is about the *mean* of the data, and *not* about the data itself.
+
 Since the sampling distribution for the sample mean (under certain conditions) has a *normal distribution*, the mean *is* appropriate for describing the sampling distribution.
 :::
 
@@ -345,25 +355,25 @@ rownames(Insulation.DataSummary) <- c("Before",
 
 
 if( knitr::is_latex_output() ) {
-kable(Insulation.DataSummary,
-      format = "latex",
-      booktabs = TRUE,
-      longtable = FALSE,
-      align = c("r", "r", "r", "r"),
-      col.names = c("Mean", "Median", "Std dev", "IQR"),
-      digits = 2,
-      caption = "The mean, median, standard deviation and IQR for the energy consumption data (in MWh)") %>%
-  row_spec(0, bold = TRUE) %>%
-  kable_styling(font_size = 10)
+  kable(Insulation.DataSummary,
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = c("r", "r", "r", "r"),
+        col.names = c("Mean", "Median", "Std dev", "IQR"),
+        digits = 2,
+        caption = "The mean, median, standard deviation and IQR for the energy consumption data (in MWh)") %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10)
 } else {
-out <- kable(Insulation.DataSummary,
-      format = "html",
-      booktabs = TRUE,
-      longtable = FALSE,
-      align = c("l", "r", "r", "r", "r"),
-      col.names = c("Mean", "Median", "Std dev", "IQR"),
-      digits = 2,
-      caption = "The mean, median, standard deviation and IQR for the energy consumption data (in MWh)")
+  out <- kable(Insulation.DataSummary,
+               format = "html",
+               booktabs = TRUE,
+               longtable = FALSE,
+               align = c("l", "r", "r", "r", "r"),
+               col.names = c("Mean", "Median", "Std dev", "IQR"),
+               digits = 2,
+               caption = "The mean, median, standard deviation and IQR for the energy consumption data (in MWh)")
   if ( knitr::is_html_output(excludes = "epub")) {
     row_spec(out, 0, bold = TRUE) 
   } else {
@@ -377,18 +387,18 @@ out <- kable(Insulation.DataSummary,
 ## Sampling distribution: Means differences 
 
 The study concerns the mean energy *saving* (the mean *difference*).
-Every sample of $n = 10$ houses comprises different houses, and hence produces different *before* and *after* energy consumptions, and hence different energy savings.
+Every sample of $n = 10$ houses comprises different houses, and hence produces different *Before* and *After* energy consumptions, and hence different energy savings.
 As a result, the *sample mean energy differences* will vary from sample to sample, so the mean differences have a *sampling distribution*, and a *standard error*.
 
 Since the differences are like a single sample of data (Chap.&nbsp;\@ref(OneMeanConfInterval)), the sampling distribution for the differences will have a similar sampling distribution to the mean of a single sample $\bar{x}$ (provided the conditions are met; Sect.&nbsp;\@ref(ValidityPaired)).
 
 
 ::: {.definition #DEFSamplingDistributionDbar name="Sampling distribution of a sample mean difference"}
-The *sampling distribution of a sample mean difference* is described by:
+The *sampling distribution of a sample mean differences* is described by:
 
 * an approximate normal distribution,
 * centred around $\mu_d$ (the population mean *difference*),
-* with a standard deviation of $\displaystyle\text{s.e.}(\bar{d}) = \frac{s_d}{\sqrt{n_d}}$,
+* with a standard deviation, called the standard error of the difference, of $\displaystyle\text{s.e.}(\bar{d}) = \frac{s_d}{\sqrt{n_d}}$,
 
 when [certain conditions are met](#ValidityPaired), where $n$ is the size of the sample, and $s_d$ is the standard deviation of the individual differences in the sample.
 :::
@@ -398,7 +408,7 @@ For the home insulation data, the variation in the sample mean differences $\bar
 
 * approximate normal distribution;
 * centred around $\mu_d$;
-* with a standard deviation of $\displaystyle\text{s.e.}(\bar{d}) = {1.015655}\div{\sqrt{10}} = 0.3211784$ called the *standard error of the differences*.
+* with a *standard error* of $\displaystyle\text{s.e.}(\bar{d}) = {1.015655}\div{\sqrt{10}} = 0.3211784$.
 
 Notice that many decimal places are used in the working here; results will be rounded when reported.
  
@@ -408,7 +418,7 @@ Notice that many decimal places are used in the working here; results will be ro
 The CI for the mean difference has the same form as for a single mean (Chap.&nbsp;\@ref(OneMeanConfInterval)), so an approximate 95% confidence interval (CI) for $\mu_d$ is
 
 \[
-	\bar{d} \pm 2 \times\text{s.e.}(\bar{d}).
+	\bar{d} \pm (2 \times\text{s.e.}(\bar{d})).
 \]
 This is the same as the CI for $\bar{x}$ if the differences are treated like the data.
 For the insulation data:
@@ -416,7 +426,7 @@ For the insulation data:
 \[
 	0.54 \pm (2 \times 0.3211784),
 \]
-or $0.54\pm 0.642$.
+or $0.54\pm 0.642$ (so the *margin of error* is $0.642$).
 Equivalently, the CI is from $0.54 - 0.642 = -0.102$, up to $0.54 + 0.642 = 1.182$.
 We write:
 
@@ -439,9 +449,9 @@ The conditions under which the CI is statistically valid for paired data are sim
 
 The CI computed above is statistically valid if *one* of these conditions is true:
 
-1. The sample size of differences is at least 25; **or**
+1. The sample size of differences is at least 25; *or*
 1. The sample size of differences is smaller than 25,
-   **and**
+   *and*
    the *population* of *differences* has an approximate normal distribution.
 
 The sample size of 25 is a rough figure here, and some books give other (similar) values (such as 30).
@@ -453,17 +463,15 @@ That is, when $n > 25$ the sample means generally have an approximate normal dis
 ::: {.example #StatisticalValidityInsulation name="Statistical validity"}
 For the insulation data, the sample size less than 25, so we require that the differences *in the population* follow a normal distribution.
 We don't know the distribution of the *population*, but the *sample* data graphed in Fig.&nbsp;\@ref(fig:InsulationHistogram) don't seems to identify any obvious doubts.
-So the CI is possibly statistically valid, but we aren't sure.
-
-In this case then, the results may not be valid; that is, the CI  limits that we calculated will be approximately correct only.
-(This doesn't mean the CI is useless!)
+So the CI is possibly statistically valid, but we can't be sure.
+(It does not mean the CI is useless!)
 :::
 
 
 ## Using software: CIs for mean differences
 
 Software (such as jamovi or SPSS) can produce *exact* 95% CIs, which may be slightly different than the *approximate* 95% CI (since the 68--95--99.7 rule produces *approximation* multipliers).
-The *approximate* and *exact* 95% CIs are similar when the sample size is not small (less than 25, fromn the statistical validity conditions); here the sample size *is* small ($n = 10$).
+The *approximate* and *exact* 95% CIs are similar when the sample size is not small (less than 25, from the statistical validity conditions); here the sample size *is* small ($n = 10$).
 From the jamovi or SPSS output (Fig.&nbsp;\@ref(fig:InsulationTestOutput)):
 
 > Based on the sample, a 95% CI is for the population mean energy *saving* after adding wall cavity insulation is from $-0.19$ to $1.27$MWh.
@@ -480,14 +488,12 @@ For our purposes, however, using the *approximate* multiplier of 2 is sufficient
 
 ## Example: Endangered species {#EndangeredCI}
 
-A study of endangered species [@harnish2020attitudes] examined 
+A study of endangered species [@harnish2020attitudes, p. 1703] examined 
 
 > ...whether perceived physical attractiveness of a species impacted participants' attitudes toward supporting and protecting the species...
->
-> --- @harnish2020attitudes, p. 1703
 
 To do so, 210 undergraduate students were surveyed about 14 animals on various aspects of supporting and protecting them.
-Part of the data are summarised below, for two animals when asked about 'support to protect the animal from illicit trade'.
+Part of the data are summarised below, for two animals, when asked about 'support to protect the animal from illicit trade'.
 *Larger* values means *greater* support for protecting the animal from illicit trade.
 
 
@@ -502,11 +508,9 @@ Part of the data are summarised below, for two animals when asked about 'support
 The *difference* is defined as each student's score for the butterfly (deemed more attractive) *minus* their score for the beetle (deemed less attractive).
 A positive value therefore means more support (on average) for the butterfly.
 
-The researchers wished to test if
+The researchers (p. 1704) wished to test if
 
 > ...animals perceived as more physically attractive [i.e., the butterfly] compared to those which are perceived as less physically attractive [i.e., the beetle] will receive relatively more support to prevent the species from illicit trade
->
-> --- @harnish2020attitudes, p. 1704
 
 The parameter is $\mu_d$, the population mean difference.
 The mean difference is $\bar{d} = 0.77$ and $s_d = 1.07$.
@@ -515,7 +519,7 @@ The value of $\bar{d}$ will vary from sample to sample, so has a standard error:
 \[
    \text{s.e.}(\bar{d}) = \frac{s_d}{\sqrt{n}} = \frac{1.07}{\sqrt{210}} = 0.073837.
 \]
-Using an approximate multiplier of 2, the margin of error is $2 \times 0.073837 = 0.147674$, so an approximate 95% CI for the difference in support is $0.77\pm 0.147674$, or from $0.62$ to $0.92$.
+Using an approximate multiplier of 2, the margin of error is $2 \times 0.073837 = 0.147674$, so an approximate 95% CI for the difference in support *in the population* is $0.77\pm 0.147674$, or from $0.62$ to $0.92$.
 We write:
 
 > From the sample, an approximate 95% CI for the difference in support for preventing illicit trade is between 0.62 and 0.92 higher for the Bay Checkerspot Butterfly compared to the Valley Elderberry Longhorn Beetle from illict trade (mean difference: 0.77; standard deviation: 1.07; $n = 210$ undergraduate students).
@@ -547,13 +551,13 @@ diab <- diab2[ c(which( diab.names %in% c("id", "bp.1d", "bp.2d")) ,
 </div>
 
 
-`r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}[6]{R}{.25\textwidth}
-  \begin{center}
-    \includegraphics[width=.20\textwidth]{Illustrations/hush-naidoo-pA0uoltkwao-unsplash.jpg}
-  \end{center}
-\end{wrapfigure}
-`r if (knitr::is_html_output()) '-->'`
+<!-- `r if (knitr::is_html_output()) '<!--'` -->
+<!-- \begin{wrapfigure}[6]{R}{.25\textwidth} -->
+<!--   \begin{center} -->
+<!--     \includegraphics[width=.20\textwidth]{Illustrations/hush-naidoo-pA0uoltkwao-unsplash.jpg} -->
+<!--   \end{center} -->
+<!-- \end{wrapfigure} -->
+<!-- `r if (knitr::is_html_output()) '-->'` -->
 
 
 A US study [@data:Willems1997:CHD; @data:Schorling1997:smoking] examined how CHD risk factors were assessed among parts of the population with diabetes.
@@ -596,14 +600,14 @@ knitr::kable(head( diab[DiffExists, c("bp.1d",
                                       "Diff")]),
              format = "latex",
              booktabs = TRUE,
-             align = c("P{18mm}","P{18mm}","P{18mm}"),
+             align = c("P{16mm}","P{16mm}","P{20mm}"),
              longtable = FALSE,
              linesep = c("", "", 
                          "\\addlinespace", 
                          "", "", ""),
              table.env = "@empty",
              row.names = FALSE,
-             col.names = c("DBP: First visit", "DBP: Second visit", "Reduction in DBP") ) %>%
+             col.names = c("DBP: 1st visit", "DBP: 2nd visit", "Reduction in DBP") ) %>%
   row_spec(row = 0, bold = TRUE)
 #kable_styling(font_size = 10) # CANNOT USE THIS IN THE MINIPAGE
 ```
@@ -731,10 +735,12 @@ kable(Diab.Table,
       format = "latex",
       booktabs = TRUE,
       longtable = FALSE,
+      linesep = c("","","\\addlinespace"),
       col.names = c("Mean", "Standard deviation", "Standard error", "Sample size"),
       digits = c(2, 3, 3, 0),
       caption = "The numerical summary for the diabetes data (in mm Hg). The differences are the second visit value minus the first visit value: the decreases in diastolic blood pressure from the first to second visit") %>%
   row_spec(0, bold = TRUE) %>%
+  row_spec(3, bold = TRUE) %>%
   kable_styling(font = 10)
 }
 if( knitr::is_html_output() ) {
@@ -795,7 +801,7 @@ So it is difficult to be certain.
 
 ## Quick review questions {#Chap23-QuickReview}
 
-1. True or false: For paired data, the mean of the *differences* is treated like the mean of a single variable.  
+1. True or false: For paired data, the mean of the *differences* is treated like the mean of a single variable.\tightlist  
 `r if( knitr::is_html_output(exclude = "epub") ) { torf( answer=TRUE )}`
 1. True or false: The appropriate graph for displaying paired data is often a histogram of the differences.  
 `r if( knitr::is_html_output(exclude = "epub") ) { torf( answer=TRUE )}`
@@ -886,14 +892,11 @@ if( knitr::is_latex_output() ) {
                                     "After",
                                     "Difference"),
                       valign = 't',
+                      #table.env = "@empty",
                       linesep = c("","","","\\addlinespace"),
                       row.names = FALSE,
-                      booktabs = TRUE,
-                      longtable = FALSE) %>%
-    row_spec(0, bold = TRUE) %>%
-    kable_styling(font_size = 10,
-#                  position = "left",
-                  full_width = FALSE)
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
   
   d2 <- knitr::kable( bloodS[9:15, ],
                       format = "latex",
@@ -901,17 +904,14 @@ if( knitr::is_latex_output() ) {
                                     "After",
                                     "Difference"),
                       valign = 't',
+                      #table.env = "@empty",
                       linesep = c("","","","\\addlinespace"),
                       row.names = FALSE,
-                      booktabs = TRUE,
-                      longtable = FALSE) %>%
-    row_spec(0, bold = TRUE) %>%
-    kable_styling(font_size = 10,
-#                  position = "right",
-                  full_width = FALSE)
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
   
   knitr::kables(list(d1, d2),
-                #format = "latex",
+                format = "latex",
                 label = "CICaptoprilData",
                 caption = "The Captopril data: before after after systolic blood pressures (in mm Hg)")
     
