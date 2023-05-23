@@ -70,34 +70,44 @@ What are P, O, C and I in this study?\label{thinkBox:PhonepOCI}
 
 
 ```{r PhoneDataTable, echo=FALSE}
-RT.DataTable     <- cbind( "Use phone" = head(RT$Reaction[RT$Group == "Phone"], 9), 
-                           "Not using phone" = head(RT$Reaction[RT$Group == "Control"], 9))
-RT.DataTable <- rbind(RT.DataTable, 
-                      c("$\\vdots$", "$\\vdots$"))
 
-RT.DataTableHTML <- cbind( "Use phone" = RT$Reaction[RT$Group == "Phone"], 
-                           "Not using phone" = RT$Reaction[RT$Group == "Control"])
 
 if( knitr::is_latex_output() ) {
   source("R/prepareSideBySideTable.R")
-
-  T1 <- knitr::kable( RT.DataTable[1:5, ],
-                      format = "latex",
-                      col.names = c("Using phone",
-                                    "Not using phone"),
-                      valign = 't',
-                      align = c("c", "c"),
-                      #table.env = "@empty",
-                      #linesep = c("","","","\\addlinespace"),
-                      row.names = FALSE,
-                      escape = FALSE,
-                      booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE)
   
-  T2 <- knitr::kable( RT.DataTable[6:10, ],
+  #RT.DataTable <- cbind( "Use phone" = head(RT$Reaction[RT$Group == "Phone"], 9), 
+  #                       "Not using phone" = head(RT$Reaction[RT$Group == "Control"], 9))
+  #RT.DataTable <- rbind(RT.DataTable, 
+  #                      c("$\\vdots$", "$\\vdots$"))
+
+  tb1 <- cbind( RT$Reaction[RT$Group == "Phone"][1:5],
+                RT$Reaction[RT$Group == "Phone"][6:10] )
+  tb1 <- rbind( tb1, 
+               c("$\\vdots$", "$\\vdots$"))
+  
+  T1 <- knitr::kable( tb1,
                       format = "latex",
-                      col.names = c("Using phone",
-                                    "Not using phone"),
+                      #col.names = c("Using phone",
+                      #              "Not using phone"),
+                      valign = 't',
+                      align = c("c", "c"),
+                      #table.env = "@empty",
+                      #linesep = c("","","","\\addlinespace"),
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Using phone" = 2) )
+
+  tb2 <- cbind( RT$Reaction[RT$Group == "Control"][1:5],
+                RT$Reaction[RT$Group == "Control"][6:10] )
+  tb2 <- rbind( tb2, 
+               c("$\\vdots$", "$\\vdots$"))
+  
+  T2 <- knitr::kable( tb2,
+                      format = "latex",
+                      #col.names = c("Using phone",
+                      #              "Not using phone"),
                       align = c("c", "c"),
                       valign = 't',
                       #table.env = "@empty",
@@ -105,11 +115,12 @@ if( knitr::is_latex_output() ) {
                       row.names = FALSE,
                       escape = FALSE,
                       booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE)
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Not using phone" = 2) )
   out <- knitr::kables(list(T1, T2),
                        format = "latex",
                        label = "PhoneDataTable",
-                       caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones. Only the first nine observations are shown, but 32 students are in each group") %>% 
+                       caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones. Only the first ten observations for each group are shown, but 32 students are in each group") %>% 
     kable_styling(font_size = 10)
   out2 <- prepareSideBySideTable(out)
   out2
@@ -127,13 +138,16 @@ if( knitr::is_latex_output() ) {
 #       kable_styling(font_size = 10)
 } 
 if( knitr::is_html_output(excludes = "epub") ) {
-   DT::datatable(RT.DataTableHTML,
-                 fillContainer = FALSE, # Make more room, so we don't just have ten values
-                 colnames = c("Using phone", 
-                              "Not using phone"),
-                 filter = "none",
-                 options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
-                 caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones.")
+  RT.DataTableHTML <- cbind( "Use phone" = RT$Reaction[RT$Group == "Phone"], 
+                           "Not using phone" = RT$Reaction[RT$Group == "Control"])
+
+  DT::datatable(RT.DataTableHTML,
+               fillContainer = FALSE, # Make more room, so we don't just have ten values
+               colnames = c("Using phone", 
+                            "Not using phone"),
+               filter = "none",
+               options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
+               caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones.")
 }
 if( knitr::is_html_output() & knitr::pandoc_to("epub")) {
   kable(RT.DataTableHTML,
@@ -334,7 +348,7 @@ if( knitr::is_latex_output() ) {
                       "Sample size", 
                       "Standard deviation", 
                       "Standard error"),
-    caption = "The mean, median, standard deviation and standard error for the driving data (in ms)") %>%
+    caption = "The mean, median, standard deviation and standard error for the reaction-time data (in ms)") %>%
 		row_spec(0, bold = TRUE)  %>%
     column_spec(3, width = "15mm") %>%
     column_spec(4, width = "18mm") %>%
@@ -468,7 +482,7 @@ For the reaction-time data, the differences between the sample means will have:
 * with a standard deviation, called the *standard error* of the difference, of $\text{s.e.}(\bar{x}_P - \bar{x}_C) = `r round(Phone.DataSummary[3, 4], 2)`$.
 
 
-```{r ReactionTimeSamplingDist, echo=FALSE, fig.cap="The sampling distribution of the difference between the reaction times in the phone and control groups (phone, minus control)", fig.align="center", fig.width=9.5, fig.height=2.75, out.width='90%'}
+```{r ReactionTimeSamplingDist, echo=FALSE, fig.cap="The sampling distribution of the difference between the reaction times in the phone and control groups (phone, minus control)", fig.align="center", fig.width=9.5, fig.height=2.75, out.width='95%'}
 mn <- Phone.DataSummary[3, 1]
 se <- Phone.DataSummary[3, 4] 
 
@@ -775,13 +789,13 @@ data(lime)
 
 
 ::: {.example #ErrorBarCharts2 name="Error bar charts"}
-A study [@data:ForestBiomass2017] examined  the foliage biomass of small-leaved lime trees from three sources were studied: coppices; natural; planted.
+A study [@data:ForestBiomass2017] examined  the foliage biomass of small-leaved lime trees from three sources: coppices; natural; planted.
 
 Three graphical summaries are shown in Fig.&nbsp;\@ref(fig:LimeTreesBoxErrorbar): a boxplot (showing the variation in *individual* trees; left), an error bar chart (showing the variation in the *sample means*; centre) on the same vertical scale as the boxplot, and the same error bar chart using a better scale for the error-bar plot  (right).
 :::
 
 
-```{r LimeTreesBoxErrorbar, echo=FALSE, fig.cap="Boxplot (left) and error bar charts (centre; right) comparing the mean foliage biomass for small-leaved lime trees from three sources (C: Coppice; N: Natural; P: Planted). The centre panel shows an error-bar chart using the same vertical scale as the boxplot; the right error-bar chart uses a different (better) scale. The solid dots in the boxplot are shown the mean of the distributions", fig.align="center", fig.width=7, fig.height=3.0, out.width='100%'}
+```{r LimeTreesBoxErrorbar, echo=FALSE, fig.cap="Boxplot (left) and error bar charts (centre; right) comparing the mean foliage biomass for small-leaved lime trees from three sources (C: Coppice; N: Natural; P: Planted). The centre panel shows an error-bar chart using the same vertical scale as the boxplot; the right error-bar chart uses a different (better) scale on the vertical axis. The solid dots in the boxplot show the mean of the distributions", fig.align="center", fig.width=7, fig.height=3.0, out.width='100%'}
 par( mfrow = c(1, 3))
 
 lime.mns <- tapply(lime$Foliage, 
@@ -794,13 +808,12 @@ boxplot(Foliage ~ Origin,
 	      ylab = "Foliage biomass (kg)",
 	      las = 1,
       	ylim = c(0, 14),
-	      main = "Boxplot: Foliage biomass",
+	      main = "Boxplot: Foliage biomass\nof individual trees",
         names = c("C", "N", "P"),
 	      col = "white")
 points(1:3, 
        lime.mns, 
-	     pch = 19,
-	     col = "red")
+	     pch = 19)
 
 mns <- with(lime, 
             tapply(Foliage, 
@@ -868,8 +881,7 @@ box()
 
 points( mns ~ c(1:3), 
         pch = 19,
-        cex = 1.5,
-        col = plot.colour)
+        cex = 1.5)
 
 arrows(1:3, mns - 2 * ses, 
        1:3, mns + 2 * ses, 
@@ -900,18 +912,39 @@ Speed <- read.csv("./Data/Speed.csv")
 Speed$When <- factor(Speed$When,
                      levels = c("Before", "After"),
                      ordered = TRUE)
-Speed2 <- data.frame( Before = Speed$Speed[ Speed$When == "Before" ][1:10],
-                      After = Speed$Speed[ Speed$When == "After" ][1:10])
 
 if( knitr::is_latex_output() ) {
   
-  kable( Speed2,
+  Speed1 <- cbind( Speed$Speed[ Speed$When == "Before" ][1:5],
+                   Speed$Speed[ Speed$When == "Before" ][6:10])
+  t1 <- knitr::kable( Speed1,
          format = "latex",
          longtable = FALSE,
          booktabs = TRUE,
-         align = c("c", "c"),
-         caption = "Vehicle speeds before and after adding extra signage. Only some observations are shown.") %>%
+         align = c("c", "c") )  %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Before signage" = 2),
+                      bold = TRUE)
+    
+    
+  Speed2 <- cbind( Speed$Speed[ Speed$When == "After" ][1:5],
+                   Speed$Speed[ Speed$When == "After" ][6:10])
+  t2 <- knitr::kable( Speed2,
+         format = "latex",
+         longtable = FALSE,
+         booktabs = TRUE,
+         align = c("c", "c") )  %>%
+    add_header_above( c("After signage" = 2), 
+                      bold = TRUE )
+  
+  out <- knitr::kables(list(t1, t2),
+                       format = "latex",
+                       label = "Signage",
+                       caption = "The first ten observations from the signage data for trhe before and after measurements. There are 38 before observations and 41 after observations in total.") %>% 
     kable_styling(font_size = 10)
+  
+  out2 <- prepareSideBySideTable(out)
+  out2
 }
 
 if( knitr::is_html_output(exclude = "epub") ) {
@@ -938,10 +971,11 @@ if ( knitr::is_html_output() & knitr::pandoc_to("epub")) {
 The researchers are hoping that the addition of extra signage will *reduce* the mean speed of the vehicles.
 The RQ is:
 
-> At this freeway exit, is the mean vehicle speed the same before extra signage is added and after extra signage is added?
+> At this freeway exit, how much is the mean vehicle speed reduced after extra signage is added?
 
 The data are *not* paired: different vehicles are measured before and after the extra signage is added.
 The data are summarised in Table \@ref(tab:SignageSummary).
+The parameter is $\mu_{\text{Before}} - \mu_{\text{After}}$, the *reduction* in the mean speed.
 
 
 ```{r SignageSummary, echo=FALSE}
@@ -1019,7 +1053,6 @@ if( knitr::is_html_output() ) {
 ```
 
 
-The parameter is $\mu_{\text{Before}} - \mu_{\text{After}}$, the *reduction* in the mean speed.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
@@ -1059,7 +1092,6 @@ plot( 1:2,
       pch = 19,
       ylim = c(80, 110 ),
       xlim = c(0.4, 2.6),
-      las = 1,
       axes = FALSE,
       xlab = "",
       ylab = "Vehicle speed (km/h)",
@@ -1068,7 +1100,7 @@ plot( 1:2,
       type = "p")
 axis(side = 1, 
      at = 1:2,
-     las=1,
+     las = 1,
      labels = c("Before", 
                 "After"))
 axis(side = 2, 
@@ -1093,8 +1125,8 @@ lines( c(2 - bit, 2 + bit),
 ```
 
 
-Based on the sample, an approximate 95% CI for the difference in mean speeds is $5.68 \pm (2 \times 2.964)$, or from $-0.24$ to $11.6$ km/h, higher before the addition of extra signage.
-(The negative value refers to a negative reduction; that is, an *increase* in speed of 0.24 km/h.) 
+Based on the sample, an approximate 95% CI for the *difference* in mean speeds is $5.68 \pm (2 \times 2.964)$, or from $-0.24$ to $11.6$ km/h, higher before the addition of extra signage.
+(The negative value refers to a *negative* reduction; that is, an *increase* in speed of 0.24 km/h.) 
 
 This means that, if many samples of size 38 and 41 were found, and the difference between the mean speeds were found, about 95% of the CIs would contain the population difference ($\mu_{\text{Before}} - \mu_{\text{After}}$).
 Loosely speaking, there is a 95% chance that our CI straddles the difference in the population means ($\mu_{\text{Before}} - \mu_{\text{After}}$).
@@ -1118,29 +1150,29 @@ Remember: clearly state *which* mean is larger.
 </div>
 
 
-`r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}{R}{.25\textwidth}
-  \begin{center}
-    \includegraphics[width=.20\textwidth]{Illustrations/pexels-marcus-aurelius-4063510.jpg}
-  \end{center}
-\end{wrapfigure}
-`r if (knitr::is_html_output()) '-->'`
+<!-- `r if (knitr::is_html_output()) '<!--'` -->
+<!-- \begin{wrapfigure}{R}{.25\textwidth} -->
+<!--   \begin{center} -->
+<!--     \includegraphics[width=.20\textwidth]{Illustrations/pexels-marcus-aurelius-4063510.jpg} -->
+<!--   \end{center} -->
+<!-- \end{wrapfigure} -->
+<!-- `r if (knitr::is_html_output()) '-->'` -->
 
 
-A study [@data:Becker1991:BHADP] compared the access to health promotion (HP) services for people with and without a disability.
-'Access' was measured using the quantitative 
-
+A study [@data:Becker1991:BHADP] compared the access to health promotion (HP) services for people with and without a disability in southwestern of the USA.
+'Access' was measured using the quantitative
 `r if (knitr::is_latex_output()) {
-   '*Barriers to Health Promoting Activities for Disabled Persons*  [(BHADP) scale.'
+   '*Barriers to Health Promoting Activities for Disabled Persons*  (BHADP) scale.'
 } else {
    '*Barriers to Health Promoting Activities for Disabled Persons*  [(BHADP) scale](http://www.utexas.edu/nursing/chpr/resources/bhadp.html).'
 }`
 *Higher* scores mean *greater* barriers to health promotion services.
 The RQ is:
 
-> What is the difference between the mean BHADP scores, for people with and without a disability?
+> What is the difference between the mean BHADP scores, for people with and without a disability, in southwestern USA?
 
 The parameter is $\mu_D - \mu_{ND}$, the difference between the two population means (disability, minus non-disability).
+The statistic is $\bar{x}_D - \bar{x}_{ND}$.
 
 In this case, only summary data are available (Table \@ref(tab:BHADPSummary)): the data are not available.
 Nonetheless, a useful graphical summary (an error bar chart) can be produced by computing the CI for each group manually (Fig.&nbsp;\@ref(fig:BHADPErrorBar)).
@@ -1200,6 +1232,7 @@ if( knitr::is_html_output() ) {
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 The *standard error is given*; you *cannot* easily calculate this from the other information.
+You are not expected to do so.
 :::
 
 
@@ -1231,8 +1264,8 @@ plot( 1:2,
 axis(side = 1, 
      at = 1:2,
      las=1,
-     labels = c("Disability", 
-                "No disability"))
+     labels = c(expression( atop(Disability, italic(n)==132)), 
+                expression( atop(No~disability, italic(n)==137))))
 axis(side = 2, 
      las = 1)
 box()
@@ -1275,7 +1308,7 @@ Using the [validity conditions](#ValidityTwoMeans), the CI is statistically vali
 
 ## Quick review questions {#Chap24-QuickReview}
 
-1. The appropriate graph for displaying quantitative *data* for two separate groups is a:  
+1. The appropriate graph for displaying quantitative *data* for two separate groups is a:\tightlist  
 `r if( knitr::is_html_output(exclude = "epub") ) { longmcq( c( 
   answer = "boxplot",
   "histogram",
@@ -1309,13 +1342,13 @@ Some summary data are given below; in addition, $\text{s.e.}(\bar{x}_F - \bar{x}
 
 
 | **Sex**     |  **Mean (in m)**  |**Standard deviation (in m)** | **Sample size** 
-|--------:+:-------------:+:------------------------:+:-----------:
-| Female 	| 4.66          | 0.379 	                 | 26 	
-| Male 	  | 4.60 	        | 0.305 	                 | 30 
+|------------:+:-----------------:+:----------------------------:+:-----------:
+| Female    	| 4.66              | 0.379 	                     | 26 	
+| Male 	      | 4.60 	            | 0.305 	                     | 30 
 
 
 1. Define the *difference*.
-1. Write down the parameter, and its estimate.]
+1. Write down the parameter, and its estimate.
 1. Sketch an error-bar chart.
 1. Compute the approximate 95% CI, and write a conclusion.
 1. Is the CI likely to be statistically valid?
