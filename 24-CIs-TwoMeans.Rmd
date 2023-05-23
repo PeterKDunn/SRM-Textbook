@@ -27,9 +27,9 @@ RT <- read.csv("./Data/ReactionTimePhoneInd.csv")
 
 A study examined the reaction times of students (from the University of Utah) while driving [@data:Strayer2001:phones; @agresti2007statistics].
 In one study, students were randomly allocated to one of two groups: one to *use* a mobile phone while driving, and one to *not use* a mobile phone while driving.
-This is a [*between individuals* comparison](#Comparison), since different students are in each group.
-
+This is a [*between-individuals* comparison](#Comparison), since different students are in each group.
 The reaction time for each student was measured in a driving simulator.
+
 The data are not paired; instead, the means of two separate (or independent) samples are being compared.
 (The data would be paired if *each* student's reaction time was measured twice: once using a phone, and once without using a phone.)
 
@@ -70,22 +70,61 @@ What are P, O, C and I in this study?\label{thinkBox:PhonepOCI}
 
 
 ```{r PhoneDataTable, echo=FALSE}
-RT.DataTable     <- cbind( "Use phone" = head(RT$Reaction[RT$Group == "Phone"], 10), 
-                           "Not using phone" = head(RT$Reaction[RT$Group == "Control"], 10))
+RT.DataTable     <- cbind( "Use phone" = head(RT$Reaction[RT$Group == "Phone"], 9), 
+                           "Not using phone" = head(RT$Reaction[RT$Group == "Control"], 9))
+RT.DataTable <- rbind(RT.DataTable, 
+                      c("$\\vdots$", "$\\vdots$"))
+
 RT.DataTableHTML <- cbind( "Use phone" = RT$Reaction[RT$Group == "Phone"], 
                            "Not using phone" = RT$Reaction[RT$Group == "Control"])
 
 if( knitr::is_latex_output() ) {
-kable(RT.DataTable,
-      format = "latex",
-      booktabs = TRUE,
-      longtable = FALSE,
-      col.names = c("Using phone", 
-                    "Not using phone"),
-      caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones. Only he first ten observations are shown, but 32 students are in each group",
-      align = c("r", "r")) %>%
-      row_spec(0, bold = TRUE) %>%
-      kable_styling(font_size = 10)
+  source("R/prepareSideBySideTable.R")
+
+  T1 <- knitr::kable( RT.DataTable[1:5, ],
+                      format = "latex",
+                      col.names = c("Using phone",
+                                    "Not using phone"),
+                      valign = 't',
+                      align = c("c", "c"),
+                      #table.env = "@empty",
+                      #linesep = c("","","","\\addlinespace"),
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+  
+  T2 <- knitr::kable( RT.DataTable[6:10, ],
+                      format = "latex",
+                      col.names = c("Using phone",
+                                    "Not using phone"),
+                      align = c("c", "c"),
+                      valign = 't',
+                      #table.env = "@empty",
+                      #linesep = c("","","","\\addlinespace"),
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "PhoneDataTable",
+                       caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones. Only the first nine observations are shown, but 32 students are in each group") %>% 
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out)
+  out2
+
+# kable(RT.DataTable,
+#       format = "latex",
+#       booktabs = TRUE,
+#       longtable = FALSE,
+#       escape = FALSE,
+#       col.names = c("Using phone", 
+#                     "Not using phone"),
+#       caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones. Only he first ten observations are shown, but 32 students are in each group",
+#       align = c("r", "r")) %>%
+#       row_spec(0, bold = TRUE) %>%
+#       kable_styling(font_size = 10)
 } 
 if( knitr::is_html_output(excludes = "epub") ) {
    DT::datatable(RT.DataTableHTML,
@@ -140,14 +179,12 @@ rownames(Phone.DataSummary) <- c("Using phone",
 
 ## Notation: Two independent means {#TwoMeansNotationCI}
 
-Since two groups are being compared, distinguishing between the statistics for the two groups (say, Group A and Group B) is important.
+Since two groups are being compared, distinguishing between the statistics for the two groups is important.
 One way is to use subscripts (Table \@ref(tab:IndSampleNotation)).
-Using this notation, the difference between population means (the parameter) is $\mu_A - \mu_B$.
-Since the population values are unknown, this parameter is estimated using the statistic $\bar{x}_A - \bar{x}_B$.
+For the reaction-time data, we use the subscript $P$ for the **p**hone-users group, and $C$ for the **c**ontrol (non-phone users) group.
 
-For the reaction-time data, we use the subscript $P$ is used for phone-users group, and $C$ for the control group.
-The sample means are denoted as $\bar{x}_P$ and $\bar{x}_C$, and the difference between them as $\bar{x}_P - \bar{x}_C$.
-
+Using this notation, the difference between population means (the parameter) is $\mu_P - \mu_C$.
+Since the population values are unknown, this parameter is estimated using the statistic $\bar{x}_P - \bar{x}_C$.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
@@ -165,32 +202,38 @@ The meaning of any conclusions will be the same.
 
 
 ```{r IndSampleNotation, echo=FALSE}
-Diff2Notation <- array(dim = c(5, 2))
-colnames(Diff2Notation) <- c(	"Group A", 
-                              "Group B")
+Diff2Notation <- array(dim = c(5, 3))
+colnames(Diff2Notation) <- c(	"Phone users: Group $P$", 
+                              "Non-phone users: Group $C$",
+                              "Difference ($P - C$)")
 rownames(Diff2Notation) <- c(	"Population means:",
 								              "Sample means:",
 								              "Standard deviations:",
-								              "Standard errors:",
-								              "Sample sizes:")
+								              "Sample sizes:",
+								              "Standard errors:")
 
 
 if( knitr::is_latex_output() ) {
-  Diff2Notation[1, ] <- c( "$\\mu_A$", 	
-                           "$\\mu_B$")
-  Diff2Notation[2, ] <- c( "$\\bar{x}_A$",		
-                           "$\\bar{x}_B$")
-  Diff2Notation[3, ] <- c( "$s_A$", 			
-                           "$s_B$")
-  Diff2Notation[4, ] <- c( "$\\displaystyle\\text{s.e.}(\\bar{x}_A) = \\frac{s_A}{\\sqrt{n_A}}$",
-  							           "$\\displaystyle\\text{s.e.}(\\bar{x}_B) = \\frac{s_B}{\\sqrt{n_B}}$")
-  Diff2Notation[5, ] <- c( "$n_A$",
-  							           "$n_B$")
+  Diff2Notation[1, ] <- c( "$\\mu_P$", 	
+                           "$\\mu_C$",
+                           "$\\mu_P - \\mu_C$")
+  Diff2Notation[2, ] <- c( "$\\bar{x}_P$",		
+                           "$\\bar{x}_C$",
+                           "$\\bar{x}_P - \\bar{x}_C$")
+  Diff2Notation[3, ] <- c( "$s_P$", 			
+                           "$s_C$",
+                           NA)
+  Diff2Notation[4, ] <- c( "$n_P$",
+  							           "$n_C$",
+  							           NA)
+  Diff2Notation[5, ] <- c( "$\\displaystyle\\text{s.e.}(\\bar{x}_P) = \\frac{s_P}{\\sqrt{n_P}}$",
+  							           "$\\displaystyle\\text{s.e.}(\\bar{x}_C) = \\frac{s_C}{\\sqrt{n_C}}$",
+  							           "$\\displaystyle\\text{s.e.}(\\bar{x}_P - \\bar{x}_C)$")
 
   kable( Diff2Notation,
          format = "latex",
          booktabs = TRUE,
-         align = c("c", "c"),
+         align = c("c", "c", "c"),
          longtable = FALSE,
          escape = FALSE,
          col.names = colnames(Diff2Notation),
@@ -200,22 +243,27 @@ if( knitr::is_latex_output() ) {
 }
 if( knitr::is_html_output() ) {
 
-  Diff2Notation[1, ] <- c( "$\\mu_A$", 	
-                           "$\\mu_B$")
-  Diff2Notation[2, ] <- c( "$\\bar{x}_A$",		
-                           "$\\bar{x}_B$")
-  Diff2Notation[3, ] <- c( "$s_A$", 			
-                           "$s_B$")
-  Diff2Notation[4, ] <- c( "$\\displaystyle\\text{s.e.}(\\bar{x}_A) = \\frac{s_A}{\\sqrt{n_A}}$",
-  							           "$\\displaystyle\\text{s.e.}(\\bar{x}_B) = \\frac{s_B}{\\sqrt{n_B}}$")
-  Diff2Notation[5, ] <- c( "$n_A$",
-  							           "$n_B$")
+  Diff2Notation[1, ] <- c( "$\\mu_P$", 	
+                           "$\\mu_C$",
+                           "$\\mu_P - \\mu_C$")
+  Diff2Notation[2, ] <- c( "$\\bar{x}_P$",		
+                           "$\\bar{x}_C$",
+                           "$\\bar{x}_P - \\bar{x}_C$")
+  Diff2Notation[3, ] <- c( "$s_P$", 			
+                           "$s_C$",
+                           NA)
+  Diff2Notation[4, ] <- c( "$n_P$",
+  							           "$n_C$",
+  							           NA)
+  Diff2Notation[5, ] <- c( "$\\displaystyle\\text{s.e.}(\\bar{x}_P) = \\frac{s_P}{\\sqrt{n_P}}$",
+  							           "$\\displaystyle\\text{s.e.}(\\bar{x}_C) = \\frac{s_C}{\\sqrt{n_C}}$",
+  							           "$\\displaystyle\\text{s.e.}(\\bar{x}_P - \\bar{x}_C)$")
 
   out <- kable( Diff2Notation,
          format = "html",
          booktabs = TRUE,
          longtable = FALSE,
-         align = c("c", "c"),
+         align = c("c", "c", "c"),
          col.names = colnames(Diff2Notation),
          caption = "Notation used to distinguish between the two independent groups. Any two subscripts can be used.")
   if ( knitr::is_html_output(excludes = "epub")) {
@@ -229,19 +277,16 @@ if( knitr::is_html_output() ) {
 
 
 Table \@ref(tab:IndSampleNotation) does not include a standard deviation or a sample size for the *difference between means*; these make no sense in this context.
-For example, suppose Group A has 15 individuals, and Group B has 45 individuals, and we wish to study the difference $\mu_A - \mu_B$.
-The sample size is not $45 - 15 = 30$... and certainly not $15 - 45 = -30$.
-There are just two samples with given sizes.
-
+For example, Group $P$ has 32 individuals, and Group $C$ has 32 individuals, and we wish to study the difference $\mu_P - \mu_C$.
+The sample size is not $32 - 32 = 0$.
+There are just two samples of given sizes.
 However, the *standard error* of the difference between the means does make sense:
-it measures how much the value of  $\bar{x}_A - \bar{x}_B$ varies for all possible samples.
-Each time the study is repeated, the means for each group are likely to be different (so have a standard error), and so the difference between the means is likely to be different.
-That is, the difference between the means has *sampling variation* and hence a *standard error*, since it varies from sample to sample.
+it measures how much the value of  $\bar{x}_P - \bar{x}_C$ varies for all possible samples.
 
 
 ## Summaries: Two independent means
 
-A suitable graphical summary is a boxplot (Fig.&nbsp;\@ref(fig:PhonePlots)), which shows that the *sample* medians are slightly different, but the IQR about the same; one large outlier is present for the phone-using group. 
+A suitable graphical summary of the data is a boxplot (Fig.&nbsp;\@ref(fig:PhonePlots)), which shows that the *sample* medians are slightly different, but the IQR about the same; one large outlier is present for the phone-using group. 
 
 
 ```{r PhonePlots, echo=FALSE, fig.width=4.5, fig.height=3.5, out.width='45%', fig.alt="Boxplot of the two groups in the reaction-time data", fig.align="center", fig.cap="A boxplot of the reaction-time data"}
@@ -293,7 +338,8 @@ if( knitr::is_latex_output() ) {
 		row_spec(0, bold = TRUE)  %>%
     column_spec(3, width = "15mm") %>%
     column_spec(4, width = "18mm") %>%
-    column_spec(5, width = "15mm")
+    column_spec(5, width = "15mm") %>%
+    kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
 kable(Phone.DataSummary2,
@@ -306,7 +352,7 @@ kable(Phone.DataSummary2,
                     "Std dev", 
                     "Standard error"),
       digits = 2,
-      caption = "The mean, median, standard deviation and standard error for the driving data (in ms)")
+      caption = "The mean, median, standard deviation and standard error for the reaction-time data (in ms)")
 }
 
 ```
@@ -385,7 +431,7 @@ The *standard error* quantifies how much the *difference between sample mean rea
 ## Sampling distribution: Two independent means
 
 Since the difference between the *population* means is unknown, the difference is estimated using the *sample* means.
-For the reaction time data, we use subscripts such as $P$ for phone-users group, and $C$ for the control group.
+For the reaction-time data, we use subscripts such as $P$ for phone-users group, and $C$ for the control group.
 Then the difference between the two sample means (the *statistic*) is $\bar{x}_P - \bar{x}_C$.
 The parameter is $\mu_P - \mu_C$, the difference between the two population means (using a phone, minus *not* using a phone).
 
