@@ -61,7 +61,7 @@ What are P, O, C and I in this study?\label{thinkBox:PhonepOCI}
 
 **O**: Mean reaction time. 
 
-**C**: Between two groups: those using and not using a mobile phone while driving. 
+**C**: Between two groups: those using and not sing a mobile phone while driving. 
 
 **I**: Yes; the use of a phone (or not) was decided by the researchers.
 `r webexercises::unhide()`
@@ -73,7 +73,6 @@ What are P, O, C and I in this study?\label{thinkBox:PhonepOCI}
 
 
 if( knitr::is_latex_output() ) {
-  source("R/prepareSideBySideTable.R")
   
   #RT.DataTable <- cbind( "Use phone" = head(RT$Reaction[RT$Group == "Phone"], 9), 
   #                       "Not using phone" = head(RT$Reaction[RT$Group == "Control"], 9))
@@ -92,12 +91,13 @@ if( knitr::is_latex_output() ) {
                       valign = 't',
                       align = c("c", "c"),
                       #table.env = "@empty",
-                      #linesep = c("","","","\\addlinespace"),
+                      linesep = "",
                       row.names = FALSE,
                       escape = FALSE,
                       booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Using phone" = 2) )
+    add_header_above( c("Using phone" = 2),
+                      bold = TRUE)
 
   tb2 <- cbind( RT$Reaction[RT$Group == "Control"][1:5],
                 RT$Reaction[RT$Group == "Control"][6:10] )
@@ -111,12 +111,14 @@ if( knitr::is_latex_output() ) {
                       align = c("c", "c"),
                       valign = 't',
                       #table.env = "@empty",
-                      #linesep = c("","","","\\addlinespace"),
+                      linesep = "",
                       row.names = FALSE,
                       escape = FALSE,
                       booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Not using phone" = 2) )
+    add_header_above( c("Not using phone" = 2),
+                      bold = TRUE)
+  
   out <- knitr::kables(list(T1, T2),
                        format = "latex",
                        label = "PhoneDataTable",
@@ -125,17 +127,6 @@ if( knitr::is_latex_output() ) {
   out2 <- prepareSideBySideTable(out)
   out2
 
-# kable(RT.DataTable,
-#       format = "latex",
-#       booktabs = TRUE,
-#       longtable = FALSE,
-#       escape = FALSE,
-#       col.names = c("Using phone", 
-#                     "Not using phone"),
-#       caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones. Only he first ten observations are shown, but 32 students are in each group",
-#       align = c("r", "r")) %>%
-#       row_spec(0, bold = TRUE) %>%
-#       kable_styling(font_size = 10)
 } 
 if( knitr::is_html_output(excludes = "epub") ) {
   RT.DataTableHTML <- cbind( "Use phone" = RT$Reaction[RT$Group == "Phone"], 
@@ -917,10 +908,14 @@ if( knitr::is_latex_output() ) {
   
   Speed1 <- cbind( Speed$Speed[ Speed$When == "Before" ][1:5],
                    Speed$Speed[ Speed$When == "Before" ][6:10])
+  Speed1 <- rbind( Speed1,
+                   c("$\\vdots$", "$\\vdots$"))
   t1 <- knitr::kable( Speed1,
          format = "latex",
          longtable = FALSE,
          booktabs = TRUE,
+         linesep = "",
+         escape = FALSE,
          align = c("c", "c") )  %>%
     row_spec(0, bold = TRUE) %>%
     add_header_above( c("Before signage" = 2),
@@ -929,10 +924,14 @@ if( knitr::is_latex_output() ) {
     
   Speed2 <- cbind( Speed$Speed[ Speed$When == "After" ][1:5],
                    Speed$Speed[ Speed$When == "After" ][6:10])
+  Speed2 <- rbind( Speed2,
+                   c("$\\vdots$", "$\\vdots$"))
   t2 <- knitr::kable( Speed2,
          format = "latex",
          longtable = FALSE,
          booktabs = TRUE,
+         linesep = "",
+         escape = FALSE,
          align = c("c", "c") )  %>%
     add_header_above( c("After signage" = 2), 
                       bold = TRUE )
@@ -1095,7 +1094,7 @@ plot( 1:2,
       axes = FALSE,
       xlab = "",
       ylab = "Vehicle speed (km/h)",
-      main = "Mean vehicle speeds",
+      main = "Mean speed before, after\nextra signage added",
       sub = "(Error bars are the 95% CI)",
       type = "p")
 axis(side = 1, 
@@ -1236,7 +1235,7 @@ You are not expected to do so.
 :::
 
 
-```{r BHADPErrorBar, echo=FALSE, fig.cap="Error bar chart showing the mean BHADP score for people with and without a disability, and the 95\\% CIs", fig.align="center", fig.width=5, fig.height=3.5}
+```{r BHADPErrorBar, echo=FALSE, fig.cap="Error bar chart showing the mean BHADP score for people with and without a disability, and the 95\\% CIs", fig.align="center", fig.width=5.5, fig.height=3.5, out.width="55%"}
 ### Disability example
 bit <- 0.05
 
@@ -1258,14 +1257,14 @@ plot( 1:2,
       axes = FALSE,
       xlab = "",
       ylab = "BHADP score",
-      main = "Access to health promotion\nservices for two groups ",
+      main = "Access to health promotion services for\ntwo groups: Mean BHADP scores",
       sub = "(Error bars are the 95% CI)",
       type = "p")
 axis(side = 1, 
      at = 1:2,
-     las=1,
-     labels = c(expression( atop(Disability, italic(n)==132)), 
-                expression( atop(No~disability, italic(n)==137))))
+     las = 1,
+     labels = c(expression( Disability~"("*italic(n)==132*")"), 
+                expression( No~disability~"("*italic(n)==137*")")) )
 axis(side = 2, 
      las = 1)
 box()
@@ -1308,7 +1307,7 @@ Using the [validity conditions](#ValidityTwoMeans), the CI is statistically vali
 
 ## Quick review questions {#Chap24-QuickReview}
 
-1. The appropriate graph for displaying quantitative *data* for two separate groups is a:\tightlist  
+1. The appropriate graph for displaying quantitative *data* for two separate groups is a: \tightlist  
 `r if( knitr::is_html_output(exclude = "epub") ) { longmcq( c( 
   answer = "boxplot",
   "histogram",
@@ -1337,14 +1336,52 @@ Selected answers are available in Sect.&nbsp;\@ref(MeansIndSamplesAnswer).
 ::: {.exercise #MeansIndSamplesExercisesWhalesCI}
 A study of gray whales (*Eschrichtius robustus*) measured (among other things) the length of whales at birth [@agbayani2020growth].
 How much longer are female gray whales than males, on average, in the population?
-Some summary data are given below; in addition, $\text{s.e.}(\bar{x}_F - \bar{x}_M) = 0.0929$.
+Some summary data are given in Table \@ref(tab:WhaleInfo); in addition, $\text{s.e.}(\bar{x}_F - \bar{x}_M) = 0.0929$.
 
 
 
-| **Sex**     |  **Mean (in m)**  |**Standard deviation (in m)** | **Sample size** 
-|------------:+:-----------------:+:----------------------------:+:-----------:
-| Female    	| 4.66              | 0.379 	                     | 26 	
-| Male 	      | 4.60 	            | 0.305 	                     | 30 
+
+```{r WhaleInfo, echo=FALSE}
+WhaleInfo <- array( dim = c(2, 3))
+colnames(WhaleInfo) <- c("Mean",
+                         "Std deviation",
+                         "Sample size")
+rownames(WhaleInfo) <- c("Female",
+                                      "Male")
+
+WhaleInfo[1, ] <- c("4.66", 
+                    0.379, 
+                    26)
+WhaleInfo[2, ] <- c("4.60", 
+                    0.305,
+                    30)
+
+if( knitr::is_latex_output() ) {
+  kable( WhaleInfo,
+         format = "latex",
+         longtable = FALSE,
+         booktabs = TRUE,
+         align = c("c", "c", "c"),
+         col.names = colnames(WhaleInfo),
+         caption = "Numerical summary of length of whales at birth (in m)") %>%
+    row_spec(0, 
+             bold = TRUE) %>%
+    kable_styling(font_size = 10)
+    
+}
+if( knitr::is_html_output() ) {
+  out <- kable( WhaleInfo,
+                format = "html",
+                longtable = FALSE,
+                booktabs = TRUE,
+                align = c("c", "c", "c"),
+                col.names = colnames(WhaleInfo),
+                caption = "Numerical summary of length of whales at birth (in m)") %>%
+    kable_styling(out, 
+                  full_width = FALSE)
+}
+```
+
 
 
 1. Define the *difference*.
@@ -1378,6 +1415,7 @@ Participants were blinded to the treatment, and allocated to the groups randomly
 A summary of the data is given in Table \@ref(tab:Echinacea).
 
 1. Compute the standard error for the mean duration of symptoms for each group.
+1. Sketch an error-bar chart.
 1. Compute an approximate 95% CI for the *difference* between the mean durations for the two groups.
 1. In which direction is the difference computed? 
    What does it *mean* when the difference is calculated in this way?
@@ -1537,17 +1575,20 @@ Decel <- read.csv("./Data/Deceleration.csv")
 Decel$When <- factor(Decel$When,
                      levels = c("Before", "After"),
                      ordered = TRUE)
-Decel2 <- data.frame( "Before" = head(Decel$Deceleration[Decel$When == "Before"], 
-                                      n = 5),
-                      "After" = head(Decel$Deceleration[Decel$When == "After"],
-                                     n = 5) )
-
 if( knitr::is_latex_output() ) {
   
+  Decel2 <- data.frame( "Before" = head(Decel$Deceleration[Decel$When == "Before"], 
+                                        n = 5),
+                        "After" = head(Decel$Deceleration[Decel$When == "After"],
+                                       n = 5) )
+  Decel2 <- rbind( Decel2, 
+                   c("$\\vdots$", "$\\vdots$"))
   kable( Decel2,
          format = "latex",
          longtable = FALSE,
          booktabs = TRUE,
+         linesep = "",
+         escape = FALSE,
          align = c("c", "c"),
          caption = "Vehicle deceleration before and after adding extra signage (negative values mean the vehicle has accelerated). Only the first five observations are shown.") %>%
     kable_styling(font_size = 10) %>%
@@ -1693,7 +1734,7 @@ if( knitr::is_latex_output() ) {
          longtable = FALSE,
          booktabs = TRUE,
          align = c("c", "c", "c"),
-         caption = "Lean-forward angles for older and younger women") %>%
+         caption = "Lean-forward angles for older women ($n = 10$) and younger women ($n = 5$)") %>%
     add_header_above(header = c("Younger women " = 2, "Older women " = 1), 
                      bold = TRUE, 
 		     align = "c") %>%
@@ -1723,7 +1764,7 @@ if( knitr::is_html_output() ) {
 
 
 
-```{r FallFowardTTestjamovi, echo=FALSE, fig.cap="jamovi output for the face-plant data", fig.align="center", out.width='95%'}
+```{r FallFowardTTestjamovi, echo=FALSE, fig.cap="jamovi output for the lean-forward angles data", fig.align="center", out.width='95%'}
 knitr::include_graphics("jamovi/FallForward/FallForwardTTestOutput.png")
 ```
 

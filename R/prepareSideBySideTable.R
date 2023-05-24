@@ -1,6 +1,7 @@
 
 
-prepareSideBySideTable <- function(twoTables) {
+prepareSideBySideTable <- function(twoTables, 
+                                   gap = "\\quad\\quad") { # The gap between teh two side-by-side tables
 
   # Takes two tables tgat are joiuned using  kables
   # and adds a space between them, and centres them, 
@@ -20,7 +21,7 @@ prepareSideBySideTable <- function(twoTables) {
                                     fixed = TRUE))    # ... taking the curly brackets literally
   findEndTabular <- findEndTabular[1] + 11 # Need to move to the *end* of the \end{tabular} string to add the spacing
   out <- paste( substr(out, 1, findEndTabular),
-                 "\\quad\\quad",
+                 gap,
                  substr(out, findEndTabular + 1, nchar(out) ) )
   structure(out,
             format = "latex",

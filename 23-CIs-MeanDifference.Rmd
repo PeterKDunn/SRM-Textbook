@@ -113,20 +113,37 @@ insulate$Diff <- insulate$Before - insulate$After
 
 if( knitr::is_latex_output() ) {
   
-  insulate2 <- c( insulate[1:5,],
-                  " ", # Spacer
-                  insulate[6:10,])
-  insulate2 <- as.data.frame(insulate2)
-  kable( insulate2,
-         format = "latex",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names = c("Before", "After", "Energy savings",
-                       "    ",
-                       "Before", "After", "Energy savings"),
-         caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") %>%
-  kable_styling(font_size = 10) %>%
-  row_spec(0, bold = TRUE)
+  tb1 <- insulate[1:5, ]
+  T1 <- knitr::kable(tb1,
+                     format = "latex",
+                     valign = 't',
+                     align = c("c", "c", "c"),
+                     linesep = "",
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+
+  tb2 <- insulate[6:10, ]
+  T2 <- knitr::kable(tb1,
+                     format = "latex",
+                     valign = 't',
+                     align = c("c", "c", "c"),
+                     linesep = "",
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+
+    out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "DataInsulation",
+                       caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") %>% 
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out) 
+  out2
+
+
 }
 if( knitr::is_html_output(exclude = "epub") ) {
   DT::datatable( round(insulate, 1),
@@ -264,7 +281,7 @@ hist( insulate$Diff,
 	ylab = "Frequency",
 	las = 1,
 	ylim = c(0, 7),
-	main = "A histogram of energy savings",
+	main = "Histogram of energy savings",
 	col = plot.colour)
 box()
 abline(v = 0, 
@@ -283,7 +300,7 @@ plot( range(c(insulate$Before, insulate$After)) ~ c(1, 2),
       ylim = c(8, 16),
       axes = FALSE,
       type = "n",
-      main = "Energy consumption before and\nafter installing insulation",
+      main = "Energy consumption before,\nafter installing insulation",
       xlab = "Time",
       ylab = "Energy saving (in MWh)")
 axis(side = 1, 
@@ -493,17 +510,54 @@ A study of endangered species [@harnish2020attitudes, p. 1703] examined
 > ...whether perceived physical attractiveness of a species impacted participants' attitudes toward supporting and protecting the species...
 
 To do so, 210 undergraduate students were surveyed about 14 animals on various aspects of supporting and protecting them.
-Part of the data are summarised below, for two animals, when asked about 'support to protect the animal from illicit trade'.
+Part of the data are summarised in Table \@ref(tab:SpeciesSummary), for two animals, when asked about 'support to protect the animal from illicit trade'.
 *Larger* values means *greater* support for protecting the animal from illicit trade.
-
-
-| Species                            | Mean score      | Standard deviation
-|-----------------------------------:+:---------------:+:-------------------:
-| Bay Checkerspot Butterfly          | 3.10            | 1.06
-| Valley Elderberry Longhorn Beetle  | 2.33            | 1.13
-| **Difference**                     | 0.77            | 1.07
-
 (Notice that the standard deviation of the difference is **not** the difference between the two given values of the standard deviation.)
+
+
+```{r SpeciesSummary, echo=FALSE}
+SpeciesSummary <- array(dim=c(3, 2))
+rownames(SpeciesSummary) <- c("Bay Checkerspot Butterfly", 
+                            "Valley Elderberry Longhorn Beetle",
+                            "Difference")
+
+SpeciesSummary[1, ] <- c(3.10, 1.06)
+SpeciesSummary[2, ] <- c(2.33, 1.13)
+SpeciesSummary[3, ] <- c(0.77, 1.07)
+  
+
+if( knitr::is_latex_output() ) {
+  kable(SpeciesSummary,
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        #linesep = c("", "", "", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), # Otherwise addes a space after five lines... 
+        align = c("c", "c"),
+        col.names = c("Mean score", 
+                      "Standard deviation"),
+        caption = "The endangered-species data summary"
+  ) %>%
+  row_spec(0, bold = TRUE) %>%
+  row_spec(3, bold = TRUE) %>%
+  kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  out <- kable(SpeciesSummary,
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+        align = c("c", "c"),
+        col.names = c("Mean score", 
+                      "Standard deviation"),
+        caption = "The endangered-species data summary"
+  ) %>%
+  row_spec(3, bold = TRUE) %>%
+  kable_styling(out, full_width = FALSE)
+}
+```
+
+
+
 
 The *difference* is defined as each student's score for the butterfly (deemed more attractive) *minus* their score for the beetle (deemed less attractive).
 A positive value therefore means more support (on average) for the butterfly.
@@ -589,7 +643,8 @@ The parameter is $\mu_d$, the population mean *reduction* in DBP.
 \begin{figure}
 \centering
 \begin{minipage}{0.45\textwidth}%
-\captionof{table}{The first six observations (from the $n=141$ available) from the diabetes study for people with both measurements: Diastolic blood pressure (DBP) for the first and second visits, and the decrease in DBP, all in mm Hg\label{tab:DiabetesDataTable}}
+\captionof{table}{The first six observations (from the $n = 141$ available) from the diabetes study for people with both measurements: Diastolic blood pressure (DBP) for the first and second visits, and the decrease in DBP, all in mm Hg\label{tab:DiabetesDataTable}}
+\fontsize{10}{12}\selectfont
 ```{r MARTHA, echo=FALSE}
 DiffExists <- complete.cases(diab[, c("bp.1d", 
                                       "bp.2d", 
@@ -609,7 +664,7 @@ knitr::kable(head( diab[DiffExists, c("bp.1d",
              row.names = FALSE,
              col.names = c("DBP: 1st visit", "DBP: 2nd visit", "Reduction in DBP") ) %>%
   row_spec(row = 0, bold = TRUE)
-#kable_styling(font_size = 10) # CANNOT USE THIS IN THE MINIPAGE
+#kable_styling(font_size = 10) # CANNOT USE THIS IN THE MINIPAGE, hence the font-changing command above
 ```
 \end{minipage}
 \hspace{0.06\textwidth}
@@ -888,8 +943,6 @@ In a study of hypertension [@data:hand:handbook; @data:macgregor:essential], 15 
 
 ```{r echo=FALSE}
 if( knitr::is_latex_output() ) {
-  source("R/prepareSideBySideTable.R")
-  
   d1 <- knitr::kable( bloodS[1:8, ],
                       format = "latex",
                       col.names = c("Before", 
