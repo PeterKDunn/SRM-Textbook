@@ -1,7 +1,7 @@
 
 
 prepareSideBySideTable <- function(twoTables, 
-                                   gap = "\\quad\\quad") { # The gap between teh two side-by-side tables
+                                   gap = "\\quad\\quad") { # The gap between the two side-by-side tables
 
   # Takes two tables tgat are joiuned using  kables
   # and adds a space between them, and centres them, 
