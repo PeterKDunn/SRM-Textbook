@@ -61,6 +61,7 @@ if( knitr::is_latex_output() ) {
         align = "r",
         caption = "Where university students live and eat") %>%
      column_spec(4, bold = TRUE) %>%
+     column_spec(1, bold = TRUE) %>%
      row_spec(0, bold = TRUE) %>%
      row_spec(3, bold = TRUE) %>%
      row_spec(2, hline_after = TRUE) %>%
@@ -165,7 +166,7 @@ In jamovi and SPSS, the odds ratio can be interpreted in *either* of these two w
 
   Then, the *odds ratio* compares these odds for students eating most meals off-campus (Row 1 of Table \@ref(tab:MealsDataTable)) to the odds of students eating most meals on-campus (Row 2): the OR is $0.49524/0.083333 = 5.943$, as in the output (Fig.&nbsp;\@ref(fig:UniMealsTestOutputjamovi)).
   
-That is, the odds and odds ratios are relative to the **first row** or **first column**.
+That is, the odds and odds ratios are relative to the *second row* or *second column*.
 :::
 
 
@@ -200,6 +201,8 @@ if( knitr::is_latex_output() ) {
     row_spec(2, hline_after = TRUE) %>%
     kable_styling(font_size = 10) %>%
     row_spec(3, bold = TRUE) %>%
+    #row_spec(0, bold = TRUE) %>% Because the headings span two rows, the bolding is wonky
+    column_spec(1, bold = TRUE) %>%
     column_spec(1, width = "35mm") %>%
     column_spec(2, width = "33mm") %>%
     column_spec(3, width = "38mm") %>%
@@ -233,23 +236,23 @@ For comparing the *odds*, the side-by-side bar chart is better.
 (A *stacked* bar chart is better for comparing *proportions*, but either is correct.)
 
 
-```{r EatingGraphs, echo=FALSE, fig.cap="A plot of the uni-student eating data: A side-by-side bar chart", fig.align="center", fig.height=4, fig.width=7.7, out.width="85%"}
+```{r EatingGraphs, echo=FALSE, fig.cap="A plot of the uni-student eating data: A side-by-side bar chart", fig.align="center", fig.height=4, fig.width=7.7, out.width="80%"}
 par( xpd = TRUE,
      mar = c(7, 4, 4, 2) + 0.1) # DEFAULT: c(5, 4, 4, 2) + 0.1
 
 barplot( t(prop.table(Eating.tab.Counts, margin = 1)) * 100,
-	col = c(plot.colour, "steelblue"),
+	col = viridis::viridis(10)[c(3, 8)],     #plot.colour, "steelblue"),
 	ylab = "Percentage",
 	beside = TRUE,
 	main = "Side-by-side bar chart of where\nstudents live and eat", 
 	ylim = c(0, 100),
 	las = 1,
 	legend.text = TRUE,
-	args.legend = list(x = 5.5,
-	                   y = -20,
+	args.legend = list(x = 4.5,
+	                   y = 100,
 	                   bty = "n",
 	                   cex = 0.9,
-	                   ncol = 2,
+	                   ncol = 1,
 	                   horiz = FALSE))
 ```
 
@@ -290,8 +293,10 @@ knitr::include_graphics( "SPSS/UniStudents/UniStudents-Chisq-CI.png")
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 Recall that the jamovi and SPSS output can be interpreted in one of these ways:
 
-* Odds are Row 1 divided by Row 2; then odds ratio is computed as Column 1 odds divided by Columns 2 odds (i.e., *comparing* Column 1 odds to Column 2 odds); or
-* Odds are Column 1 divided by Column 2; then the odds ratio is computed as Row 1 odds divided by Row 2 odds (i.e., *comparing* Row 1 odds to Row 2 odds).
+* Odds are Row 1 divided by Row 2.  
+  Then the odds ratio is computed as Column 1 odds divided by Columns 2 odds (i.e., *comparing* Column 1 odds to Column 2 odds); or
+* Odds are Column 1 divided by Column 2.  
+  Then the odds ratio is computed as Row 1 odds divided by Row 2 odds (i.e., *comparing* Row 1 odds to Row 2 odds).
 
 Both are correct, but one is usually easier to understand.
 :::
@@ -303,8 +308,8 @@ We write:
 There is a 95% chance that this CI straddles the population OR.
 Notice that the *meaning* of the OR is explained in the conclusions: the odds of eating most meals *off*-campus, and comparing students living with parents to *not* living with parents.
 
-**The CI for an OR is not symmetrical**, like the others we have seen^[This is because the OR has no upper limit, but the lower limit is zero. 
-(The *logarithm* of the limits of the CI form a symmetric interval.)].
+*The CI for an OR is not symmetrical*, like the others we have seen^[For those interested (this is *optional*): This is because the OR has no upper limit, but the lower limit is zero. 
+The *logarithm* of the limits of the CI form a symmetric interval.].
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
@@ -316,27 +321,12 @@ Interpreting ORs can be challenging, so care is needed!
 
 
 ::: {.example #CIORcrashes name="Crashes in China"}
-A study of car crashes in a rural, mountainous county in western China [@wang2020driver] recorded the data in the table below.
-
-
-| **Type of crash**            | **2011**   | **2015**    
-|-------------------------:+:------:+:-------:
-| Involving pedestrians    | 15     | 37      
-| Involving vehicles       | 35     | 85      
-
-  
+A study of car crashes in a rural, mountainous county in western China [@wang2020driver] recorded the data in Table \@ref(tab:CrashDataTable).
 Clearly the *number* of crashes is larger in 2015, in the *sample*.
 However, the interest is in comparing the *odds* (or percentage) of crashes involving pedestrians in 2011 and 2015, in the *population*.
 (Of course, comparing the odds (or percentages) involving *vehicles* is also possible.)
 
-The data can be summarised as shown below.
-
-|  Year           | Percentage involving pedestrians | Odds involving pedestrians | Sample size
-|----------------:+:--------------------------------:+:--------------------------:+------------:
-| In 2011         | 30.0                             | 0.429                      | 50
-| In 2015         | 30.3                             | 0.435                      | 122
-|                 | **Odds ratio:**                  | **0.985**                  |
-
+The data can be summarised as shown in Table \@ref(tab:CrashDataSummary).
 For consistency with software output, the odds calculation uses the vehicle data on the bottom of the fraction (Row 2), and the odds ratio is computed using the 2015 data on bottom of the fraction (i.e., Column 2).
 Hence, the parameter of interest is the odds of a crash involving pedestrians in 2011, compared to the odds of a crash involving pedestrians in 2015.
 
@@ -347,6 +337,97 @@ We would write
 
 > The population odds ratio for a crash involving pedestrians (comparing 2011 to 2015) has a 95% chance of being between 0.480 and 2.018.
 :::
+
+
+```{r CrashDataTable, echo=FALSE}
+Counts <- c(15, 37, 35, 85)
+Year <- rep( c(1, 2), 2)
+Year <- ordered(Year,
+                levels = 1:2,
+                labels = c("In 2011", 
+                           "In 2015") )
+Type <- c( rep(1, 2), 
+            rep(2, 2))
+Type <- ordered(Type, 
+                 levels = 1:2,
+                 labels = c("Involving pedestrians", 
+                            "Involving vehicles"))
+
+Crashes <- data.frame(Counts = Counts,
+                     Year = Year,
+                     Type = Type)
+
+Crash.tab <- xtabs(Counts ~ Type + Year, 
+                   data = Crashes)
+
+if( knitr::is_latex_output() ) {
+  kable(Crash.tab,
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = "r",
+        caption = "Types of crashes in different years") %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  out <- kable(Crash.tab,
+               format = "html",
+               booktabs = TRUE,
+               longtable = FALSE,
+               align = "r",
+        caption = "Types of crashes in different years") %>%
+    row_spec(0, bold = TRUE)
+}
+```
+
+
+
+
+```{r CrashDataSummary, echo=FALSE}
+CrashSum <- array( dim = c(3, 3) )
+colnames(CrashSum) <- c("Percentage involving pedestrians",
+                        "Odds involving pedestrians",
+                        "Sample size")
+rownames(CrashSum) <- c("In 2011",
+                        "In 2015",
+                        NA)
+CrashSum[1, ] <- c("30.0", 
+                   "0.429", 
+                   "50")
+CrashSum[2, ] <- c("30.3", 
+                   "0.435", 
+                   "122")
+CrashSum[3, ] <- c("Odds ratio:",
+                   0.985,
+                   NA)
+
+if( knitr::is_latex_output() ) {
+  kable(CrashSum,
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = "r",
+        caption = "Numerical summary of crashes in different years") %>%
+    column_spec(1, width = "13mm") %>%
+    column_spec(2, width = "32mm") %>%
+    column_spec(3, width = "32mm") %>%
+    column_spec(4, width = "17mm") %>%
+     row_spec(0, bold = TRUE) %>%
+     row_spec(3, bold = TRUE) %>%
+     kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  out <- kable(CrashSum,
+               format = "html",
+               booktabs = TRUE,
+               longtable = FALSE,
+               align = "r",
+        caption = "Numerical summary of crashes in different years") %>%
+    row_spec(0, bold = TRUE) %>%
+     row_spec(3, bold = TRUE) 
+}
+```
 
 
 ## Statistical validity conditions: Comparing odds {#ValidityConditionsORCI}
@@ -398,18 +479,59 @@ PB2 <- xtabs( Counts ~ Pets + LC,
 
 ::: {.example #CIORcrashesValidity name="Car crashes in China"}
 In Example \@ref(exm:CIORcrashes), all the *observed* counts are larger than five.
-The *expected* counts are shown below.
+The *expected* counts are shown in Table \@ref(tab:ExpCrashDataTable).
 Since all *expected* counts are larger than five, the CI will be statistically valid:
 
-
-| Type of crash            | 2011   | 2015    
-|-------------------------:+:------:+:-------:
-| Involving pedestrians    | 15.11  | 36.88   
-| Involving vehicles       | 34.88  | 85.12   
-  
 These counts are what we would *expected* to find if there was no relationship between the type of crash in 2011 and 2015; that is, if the proportion of crashes involving pedestrians was the same in 2011 and 2015.
 The observed counts are *very* close to these *expected* counts, meaning that what we observe is very close to what we expected if there was no relationship.
 :::
+
+
+
+
+```{r ExpCrashDataTable, echo=FALSE}
+ExpCounts <- c(15.11, 36.88, 34.88, 85.12)
+Year <- rep( c(1, 2), 2)
+Year <- ordered(Year,
+                levels = 1:2,
+                labels = c("In 2011", 
+                           "In 2015") )
+Type <- c( rep(1, 2), 
+            rep(2, 2))
+Type <- ordered(Type, 
+                 levels = 1:2,
+                 labels = c("Involving pedestrians", 
+                            "Involving vehicles"))
+
+ExpCrashes <- data.frame(ExpCounts = ExpCounts,
+                     Year = Year,
+                     Type = Type)
+
+ExpCrash.tab <- xtabs(ExpCounts ~ Type + Year, 
+                   data = ExpCrashes)
+
+if( knitr::is_latex_output() ) {
+  kable(ExpCrash.tab,
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = "r",
+        caption = "Expected counts of types of crashes in different years") %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  out <- kable(ExpCrash.tab,
+               format = "html",
+               booktabs = TRUE,
+               longtable = FALSE,
+               align = "r",
+        caption = "Expected counts of types of crashes in different years") %>%
+    row_spec(0, bold = TRUE)
+}
+```
+
+
 
 
 ## Example: Pet birds {#PetBirdsOR}
@@ -518,15 +640,13 @@ barplot(PB2,
 	names.arg = c("With lung\ncancer", 
 	              "Without lung\ncancer"),
 	ylim = c(0, 400),
-	col = c("blue", 
-	        "green")
+	col =  viridis::viridis(10)[c(3, 8)]
 )
 box()
 
 legend(6.2, 
        400, 
-	     fill = c("blue", 
-	              "green"),
+	     fill =  viridis::viridis(10)[c(3, 8)],
 	     title = "Kept pets?",
 	     legend = c("Kept pet birds", 
 	                "Did not keep\npet birds"), 
@@ -630,7 +750,7 @@ colnames(counts) <- c("B12 def.",
 mp <- barplot(t(counts),
         las = 1,
         ylab = "Number of women",
-        col = c("blue", plot.colour),
+        col =  viridis::viridis(10)[c(3, 8)], 
         legend.text = TRUE,
         ylim = c(0, 100),
         args.legend = list(x = "topleft", 
