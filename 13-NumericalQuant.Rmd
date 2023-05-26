@@ -8,6 +8,9 @@
 ```{r, child = if (knitr::is_html_output()) {'./introductions/13-NumericalQuant-HTML.Rmd'} else {'./introductions/13-NumericalQuant-LaTeX.Rmd'}}
 ```
 
+```{r}
+source("R/prepareSideBySideTable.R")
+```
 
 
 ## Introduction {#Chap13-Intro}
@@ -25,6 +28,14 @@ The purpose of this chapter is to learn how to numerically summarise *quantitati
 <img src="Illustrations/hamburger-2253349_640.jpg" height=140px width="200px"/>
 </div>
 
+
+<!-- `r if (knitr::is_html_output()) '<!--'` -->
+<!-- \begin{wrapfigure}[6]{R}{.25\textwidth} -->
+<!--   \begin{center} -->
+<!--     \includegraphics[width=.20\textwidth]{Illustrations/hamburger-2253349_640.jpg} -->
+<!--   \end{center} -->
+<!-- \end{wrapfigure} -->
+<!-- `r if (knitr::is_html_output()) '-->'` -->
 
 
 ::: {.example #DescribeQuantDataHDL name="Describing quantitative data"}
@@ -126,7 +137,7 @@ Number <- aggregate(MR2$Mean,
 MRsummary <- data.frame(Month = month.abb, 
                         "Mean" = Mn[, 2], 
 			                  "Median" = Mdn[, 2],
-			                  "No." = Number[, 2])
+			                  "Number of days" = Number[, 2])
 ```
 
 
@@ -160,41 +171,85 @@ To decide, both measures of average will need to be studied.
 
 ```{r MRtable}
 if( knitr::is_latex_output() ) {
+
+  T1 <- knitr::kable( MRsummary[1:6, ],
+                      format = "latex",
+                      valign = 't',
+                      align = c("c", "c"),
+                      #table.env = "@empty",
+                      linesep = "",
+                      col.names = c("Month",
+                                    "Mean",
+                                    "Median",
+                                    "Number of days"),
+                      digits = 1,
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+  T2 <- knitr::kable( MRsummary[7:12, ],
+                      format = "latex",
+                      valign = 't',
+                      align = c("c", "c"),
+                      #table.env = "@empty",
+                      linesep = "",
+                      col.names = c("Month",
+                                    "Mean",
+                                    "Median",
+                                    "Number of days"),
+                      digits = 1,
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+
   
-  spacer <- array( rep(" ", 4), 
-                   dim = c(4, 1) )
-  MRsummary2 <- cbind(MRsummary[1:4, ],
-                      spacer,
-                      MRsummary[5:8, ],
-                      spacer,
-                      MRsummary[9:12, ])
-  kable(MRsummary2,
-        format = "latex",
-        longtable = FALSE,
-        booktabs = TRUE,
-        digits = 1,
-	      linesep = c("", "", "", ""), # Otherwise adds a space after five lines... 
-        align = c("r", "r", "r", "r", "c", 
-                  "r", "r", "r", "r", "c",
-                  "r", "r", "r", "r"),
-        col.names = c("Month", 
-                      "Mean",
-                      "Median",
-                      "No.",
-                      "",
-                      "Month", 
-                      "Mean",
-                      "Median",
-                      "No.",
-                      "",
-                      "Month", 
-                      "Mean",
-                      "Median",
-                      "No."),
-        caption = "(ref:MaryRiverStreamFlow)"
-  ) %>%
-  kable_styling(font_size = 10) %>%
-  row_spec(0, bold = TRUE)
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "MRtable",
+                       caption = "(ref:MaryRiverStreamFlow)") %>% 
+    kable_styling(font_size = 10)
+  prepareSideBySideTable(out)
+
+#   
+#   
+#   
+#   
+#   
+#   spacer <- array( rep(" ", 4), 
+#                    dim = c(4, 1) )
+#   MRsummary2 <- cbind(MRsummary[1:4, ],
+#                       spacer,
+#                       MRsummary[5:8, ],
+#                       spacer,
+#                       MRsummary[9:12, ])
+#   kable(MRsummary2,
+#         format = "latex",
+#         longtable = FALSE,
+#         booktabs = TRUE,
+#         digits = 1,
+# 	      linesep = c("", "", "", ""), # Otherwise adds a space after five lines... 
+#         align = c("r", "r", "r", "r", "c", 
+#                   "r", "r", "r", "r", "c",
+#                   "r", "r", "r", "r"),
+#         col.names = c("Month", 
+#                       "Mean",
+#                       "Median",
+#                       "No.",
+#                       "",
+#                       "Month", 
+#                       "Mean",
+#                       "Median",
+#                       "No.",
+#                       "",
+#                       "Month", 
+#                       "Mean",
+#                       "Median",
+#                       "No."),
+#         caption = "(ref:MaryRiverStreamFlow)"
+#   ) %>%
+#   kable_styling(font_size = 10) %>%
+#   row_spec(0, bold = TRUE)
 }
 if( knitr::is_html_output() ) {
   out <- kable(MRsummary,
@@ -696,7 +751,7 @@ if (knitr::is_html_output()){
 ```
 
 
-```{r PosNegDistMeansFig, cache=FALSE, fig.align="center", fig.width=5.5, out.width='45%', fig.cap="The mean is the value such that the positive and negative distances sum to zero" }
+```{r PosNegDistMeansFig, cache=FALSE, fig.align="center", fig.width=5.5, out.width='50%', fig.cap="The mean is the value such that the positive and negative distances sum to zero" }
 if (knitr::is_latex_output()){
   FindMean( meanCandidates[43], 
             numberImages = length(meanCandidates), 43 )
@@ -846,6 +901,14 @@ A *median* is a value such that half the values are larger than the median, and 
 </div>
 
 
+<!-- `r if (knitr::is_html_output()) '<!--'` -->
+<!-- \begin{wrapfigure}{R}{.25\textwidth} -->
+<!--   \begin{center} -->
+<!--     \includegraphics[width=.20\textwidth]{Illustrations/jersey-cow-4269262_640.jpg} -->
+<!--   \end{center} -->
+<!-- \end{wrapfigure} -->
+<!-- `r if (knitr::is_html_output()) '-->'` -->
+
 
 ::: {.example #SampleMedian name="Find a sample median"}
 To find a sample median for the Jersey cow data (Example \@ref(exm:JerseyCows)), first arrange the data *in numerical order* (Table \@ref(tab:JerseyCowsSorted)).
@@ -879,12 +942,18 @@ if( knitr::is_html_output() ) {
   out <- kable(BFat.sort,
               format = "html",
               longtable = FALSE,
-              col.names = rep(" ", 10),
+              col.names = rep(" ", 5),
               booktabs = TRUE,
-              caption = "The butterfat percentage from a sample of milk from 10 Jersey cows, in increasing order") %>%
-   add_header_above(header = c("Butterfat percentages" = 10), 
+              caption = "The butterfat percentage from a sample of milk from 10 Jersey cows, in increasing order")
+  if ( knitr::is_html_output(excludes = "epub")) {
+   add_header_above(out,
+                    header = c("Butterfat percentages" = 5), 
                     bold = TRUE, 
 		    align = "c")
+  } else {
+    out
+  }
+  
 }
 ```
 
@@ -965,6 +1034,45 @@ box()
 
 abline( v = Mn[2,2], 
         col = "grey")
+
+```
+
+
+```{r}
+out <- hist(MR2$Mean[MR2$Month == 2],
+            breaks = seq(0, 160000,
+                         by = 20000),
+            right = FALSE,
+            plot = FALSE)
+lowerLim <- out$breaks[ -length(out$breaks)]
+upperLim <- out$breaks[ -1 ]
+Intervals <- paste(format(lowerLim,
+                          big.mark = ",",
+                          scientific = FALSE),
+                   "to under", 
+                   format(upperLim,
+                          big.mark = ",",
+                          scientific = FALSE) )
+MaryRiverTable <- cbind(Intervals = Intervals, 
+                        Counts = out$counts)
+
+T1 <- knitr::kable(MaryRiverTable[1:4, ],
+                   format = "latex",
+                   colnames = c("Range of daily streamflow (ML)",
+                                "Number of days"),
+                   booktabs = TRUE)
+T2 <- knitr::kable(MaryRiverTable[2:8, ],
+                   format = "latex",
+                   col.names = c("Range of daily streamflow (ML)",
+                                 "Number of days"),
+                   booktabs = TRUE)
+
+out2 <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "Mary River daily streamflow for February (in ML)") %>% 
+    kable_styling(font_size = 10)
+  
+prepareSideBySideTable(out2)
 
 ```
 
@@ -2933,6 +3041,14 @@ Remember to:
 <img src="Illustrations/raspberries-1925178_640.jpg" width="200px"/>
 </div>
 
+
+<!-- `r if (knitr::is_html_output()) '<!--'` -->
+<!-- \begin{wrapfigure}{R}{.25\textwidth} -->
+<!--   \begin{center} -->
+<!--     \includegraphics[width=.20\textwidth]{Illustrations/raspberries-1925178_640.jpg} -->
+<!--   \end{center} -->
+<!-- \end{wrapfigure} -->
+<!-- `r if (knitr::is_html_output()) '-->'` -->
 
 
 ::: {.example #DataSummaryTable name="Tables for summarising data"}

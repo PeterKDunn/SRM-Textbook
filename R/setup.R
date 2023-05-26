@@ -27,9 +27,6 @@ library("qrcode")
 #library("exams")
 
 
-### SOURCE some R-files
-source("R/prepareSideBySideTable.R")
-
 # set global chunk options
 options(formatR.arrow = TRUE,
         width = 90)
