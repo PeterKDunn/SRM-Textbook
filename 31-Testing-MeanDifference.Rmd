@@ -11,7 +11,7 @@
 
 
 ```{r echo=FALSE}
-insulate <- read.csv("./Data/InsulationBeforeAfter.csv")
+insulate <- read.csv("./Data/InsulationBeforeAfter.csv") 
 
 colnames(insulate) <- c("Before", "After")
 insulate$Diff <- insulate$Before - insulate$After
@@ -75,39 +75,61 @@ In this case, discussing energy *savings* seems most natural, so we compute the 
 
 
 ```{r DataInsulationTest, echo=FALSE}
-insulate <- read.csv("./Data/InsulationBeforeAfter.csv")
-
 insulate$Diff <- insulate$Before - insulate$After
-
+insulate$Home <- paste("Home", 
+                       LETTERS[1:10])
+insulate <- insulate[, c(4, 1:3)] # Reorder with HOME first column
+  
 if( knitr::is_latex_output() ) {
-  kable( insulate,
-         format = "latex",
-         booktabs = TRUE,
-         col.names = c("Before", 
-                       "After", 
-                       "Energy savings"),
-         caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") %>%
-	row_spec(0, bold = TRUE) %>%
+  
+  tb1 <- insulate[1:5, ]
+  T1 <- knitr::kable(tb1,
+                     format = "latex",
+                     valign = 't',
+                     align = c("r", "c", "c", "c"),
+                     linesep = "",
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+
+  tb2 <- insulate[6:10, ]
+  T2 <- knitr::kable(tb2,
+                     format = "latex",
+                     valign = 't',
+                     align = c("r", "c", "c", "c"),
+                     linesep = "",
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+
+    out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "DataInsulation",
+                       caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") %>% 
     kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out) 
+  out2
+
+
 }
 if( knitr::is_html_output(exclude = "epub") ) {
   DT::datatable( round(insulate, 1),
                  fillContainer = FALSE, # Make more room, so we don't just have ten values
-                 #filter="top", 
-                 #selection="multiple", 
-                 #escape=FALSE,
                  options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                  caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)")
 }
-if( knitr::is_html_output() & knitr::pandoc_to("epub")) {
+
+if( knitr::is_html_output() ) {
   kable( insulate,
          format = "html",
          booktabs = TRUE,
-         col.names = c("Before", 
-                       "After", 
-                       "Energy savings"),
+         longtable = FALSE,
+         col.names = c("Home", "Before", "After", "Energy savings"),
          caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") %>%
-	row_spec(0, bold = TRUE)
+  kable_styling(font_size = 10) %>%
+  row_spec(0, bold = TRUE)
 }
 ```
 
@@ -462,22 +484,29 @@ from the first to second measurement.
 
 
 ```{r DiabetesDataTable2, echo=FALSE}
-DiffExists <- complete.cases(diab[, c("bp.1d", "bp.2d", "Diff")])
-
-DiffExists <- complete.cases(diab[, c("bp.1d", "bp.2d", "Diff")])
+DiffExists <- complete.cases(diab[, c("bp.1d", 
+                                      "bp.2d", 
+                                      "Diff")])
 
 if( knitr::is_latex_output() ) {
-  kable( head( diab[DiffExists, 
-                    c("bp.1d", "bp.2d", "Diff")], 
-               10),
-         format = "latex",
-         booktabs = TRUE,
-         longtable = FALSE,
-         row.names = FALSE,
-         col.names = c("DBP: First visit", "DBP: Second visit", "Reduction in DBP"),
-         caption = "The first ten observations (from the $n=141$ available) from the diabetes study for people with both measurements: Diastolic blood pressure (DBP) for the first and second visits, and the decrease in DBP, all in mm Hg") %>%
-  	row_spec(0, bold = TRUE) %>%
-    kable_styling(font_size = 10)
+diabData <- diab[DiffExists, c("bp.1d", 
+                               "bp.2d", 
+                               "Diff")]
+diabData <- rbind( head(diabData),
+                   c("$\\vdots$", "$\\vdots$", "$\\vdots$") )
+
+knitr::kable(diabData,
+             format = "latex",
+             booktabs = TRUE,
+             longtable = FALSE,
+             escape = FALSE,
+             linesep = "",
+             row.names = FALSE,
+             label = "DiabetesDataTable2",
+             caption = "The diastolic blood pressure data; the first six patients only",
+             col.names = c("DBP: 1st visit", "DBP: 2nd visit", "Reduction in DBP") ) %>%
+  row_spec(row = 0, bold = TRUE) %>%
+  kable_styling(font = 10)
 }
 if( knitr::is_html_output(exclude = "epub") ) {
   DT::datatable( diab[DiffExists, 

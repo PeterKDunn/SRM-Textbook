@@ -939,12 +939,12 @@ if( knitr::is_html_output() ) {
   out <- kable(BFat.sort,
               format = "html",
               longtable = FALSE,
-              col.names = rep(" ", 5),
+              col.names = rep(" ", 10),
               booktabs = TRUE,
               caption = "The butterfat percentage from a sample of milk from 10 Jersey cows, in increasing order")
   if ( knitr::is_html_output(excludes = "epub")) {
    add_header_above(out,
-                    header = c("Butterfat percentages" = 5), 
+                    header = c("Butterfat percentages" = 10), 
                     bold = TRUE, 
 		    align = "c")
   } else {
@@ -1037,23 +1037,24 @@ abline( v = Mn[2,2],
 
 
 ```{r}
+out <- hist(MR2$Mean[MR2$Month == 2],
+            breaks = seq(0, 160000,
+                         by = 20000),
+            right = FALSE,
+            plot = FALSE)
+lowerLim <- out$breaks[ -length(out$breaks)]
+upperLim <- out$breaks[ -1 ]
+Intervals <- paste(format(lowerLim,
+                          big.mark = ",",
+                          scientific = FALSE),
+                   "to under", 
+                   format(upperLim,
+                          big.mark = ",",
+                          scientific = FALSE) )
+MaryRiverTable <- cbind(Intervals = Intervals, 
+                        Counts = out$counts)
+
 if( knitr::is_latex_output() ) {
-  out <- hist(MR2$Mean[MR2$Month == 2],
-              breaks = seq(0, 160000,
-                           by = 20000),
-              right = FALSE,
-              plot = FALSE)
-  lowerLim <- out$breaks[ -length(out$breaks)]
-  upperLim <- out$breaks[ -1 ]
-  Intervals <- paste(format(lowerLim,
-                            big.mark = ",",
-                            scientific = FALSE),
-                     "to under", 
-                     format(upperLim,
-                            big.mark = ",",
-                            scientific = FALSE) )
-  MaryRiverTable <- cbind(Intervals = Intervals, 
-                          Counts = out$counts)
   
   T1 <- knitr::kable(MaryRiverTable[1:4, ],
                      format = "latex",
@@ -1080,11 +1081,14 @@ if( knitr::is_latex_output() ) {
 }
 
 if( knitr::is_html_output() ) {
-  out <- kable( bloodS2,
-                format = "html",
-                booktabs = TRUE,
-                longtable = FALSE,
-                caption = "The Captopril data: before after after systolic blood pressures (in mm Hg)") %>%
+  kable( MaryRiverTable,
+         format = "html",
+         col.names = c("Daily streamflow (ML)",
+                       "Number of days"),
+         align = "c",
+         booktabs = TRUE,
+         longtable = FALSE,
+         caption = "Mary River daily streamflow for February (in ML). The mean value is 1,123ML.") %>%
     row_spec(0, bold = TRUE)
 }
 
