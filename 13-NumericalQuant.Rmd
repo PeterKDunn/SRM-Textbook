@@ -8,9 +8,6 @@
 ```{r, child = if (knitr::is_html_output()) {'./introductions/13-NumericalQuant-HTML.Rmd'} else {'./introductions/13-NumericalQuant-LaTeX.Rmd'}}
 ```
 
-```{r}
-source("R/prepareSideBySideTable.R")
-```
 
 
 ## Introduction {#Chap13-Intro}
@@ -1005,6 +1002,7 @@ Which is the 'best' measure for the average streamflow?
 A dot chart of the daily streamflow (Fig. \@ref(fig:DailyStreamflow)) shows that the data are *very* highly right-skewed, with many *very* large outliers (presumably during flood events):
 the maximum value is `r formatC( round(max(MR2$Mean[MR2$Month == 2], na.rm = TRUE), 0), format="fg", big.mark=',')`ML, more than *one hundred times* larger than the mean of `r formatC(round(MRsummary[2, 2], 1), big.mark=',')`ML).
 In fact, about `r round(LessThanMean * 100)`% of the observations are *less* than the mean.
+The extreme outliers are clear in the tabular summary too (Table \@ref(DailyStreamflow)).
 
 In contrast, about 50% the values are less than the median (by definition).
 For these data, the mean is hardly a *central* value...
@@ -1039,40 +1037,56 @@ abline( v = Mn[2,2],
 
 
 ```{r}
-out <- hist(MR2$Mean[MR2$Month == 2],
-            breaks = seq(0, 160000,
-                         by = 20000),
-            right = FALSE,
-            plot = FALSE)
-lowerLim <- out$breaks[ -length(out$breaks)]
-upperLim <- out$breaks[ -1 ]
-Intervals <- paste(format(lowerLim,
-                          big.mark = ",",
-                          scientific = FALSE),
-                   "to under", 
-                   format(upperLim,
-                          big.mark = ",",
-                          scientific = FALSE) )
-MaryRiverTable <- cbind(Intervals = Intervals, 
-                        Counts = out$counts)
-
-T1 <- knitr::kable(MaryRiverTable[1:4, ],
-                   format = "latex",
-                   colnames = c("Range of daily streamflow (ML)",
-                                "Number of days"),
-                   booktabs = TRUE)
-T2 <- knitr::kable(MaryRiverTable[2:8, ],
-                   format = "latex",
-                   col.names = c("Range of daily streamflow (ML)",
-                                 "Number of days"),
-                   booktabs = TRUE)
-
-out2 <- knitr::kables(list(T1, T2),
-                       format = "latex",
-                       label = "Mary River daily streamflow for February (in ML)") %>% 
+if( knitr::is_latex_output() ) {
+  out <- hist(MR2$Mean[MR2$Month == 2],
+              breaks = seq(0, 160000,
+                           by = 20000),
+              right = FALSE,
+              plot = FALSE)
+  lowerLim <- out$breaks[ -length(out$breaks)]
+  upperLim <- out$breaks[ -1 ]
+  Intervals <- paste(format(lowerLim,
+                            big.mark = ",",
+                            scientific = FALSE),
+                     "to under", 
+                     format(upperLim,
+                            big.mark = ",",
+                            scientific = FALSE) )
+  MaryRiverTable <- cbind(Intervals = Intervals, 
+                          Counts = out$counts)
+  
+  T1 <- knitr::kable(MaryRiverTable[1:4, ],
+                     format = "latex",
+                     col.names = c("Daily streamflow (ML)",
+                                   "Number of days"),
+                     align = "c",
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+  T2 <- knitr::kable(MaryRiverTable[5:8, ],
+                     format = "latex",
+                     col.names = c("Daily streamflow (ML)",
+                                   "Number of days"),
+                     align = "c",
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+  
+  out2 <- knitr::kables(list(T1, T2),
+                        format = "latex",
+                        caption = "Mary River daily streamflow for February (in ML). The mean value is 1,123ML.",
+                        label = "DailyStreamflow") %>% 
     kable_styling(font_size = 10)
   
-prepareSideBySideTable(out2)
+  prepareSideBySideTable(out2)
+}
+
+if( knitr::is_html_output() ) {
+  out <- kable( bloodS2,
+                format = "html",
+                booktabs = TRUE,
+                longtable = FALSE,
+                caption = "The Captopril data: before after after systolic blood pressures (in mm Hg)") %>%
+    row_spec(0, bold = TRUE)
+}
 
 ```
 
