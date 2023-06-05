@@ -20,7 +20,7 @@ Remember that the sample size is the number of [*units of analysis*](#UnitsObsAn
 
 
 If larger samples give more precise estimates, should we use the largest sample possible?
-Using large samples also has disadvantages: 
+Not necessarily: using large samples also has disadvantages: 
 
 * Studies with larger samples take longer to conduct.
 * Studies with larger samples can cost more money.
@@ -28,7 +28,7 @@ Using large samples also has disadvantages:
   - As little (potential) harm as possible is done to the environment.
   - As little (potential) harm as possible is done to as few animals as possible. 
   - As little (potential) harm as possible is done to as few people as possible. 
-  - Resources and time are not wasted.
+  - Resources, time and money are not wasted.
 
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
@@ -40,8 +40,8 @@ Determining the sample size to use is a trade-off between cost, time, ethics and
 
 
 ::: {.example #Biochar}
-Consider a project studying the residual effect of organic biochar compound fertilizers (BCFs) two years after application [@farrar2021biochar].
-This study requires planting tumeric in pots using soil previously treated with BCFs.
+Consider a project studying the residual effect of organic biochar compound fertilizers (BCFs) *two years* after application [@farrar2021biochar].
+This study requires planting turmeric in pots using soil previously treated with BCFs.
 
 After the turmeric was grown, the concentration of potassium, phosphorus and nitrogen---as well as many trace minerals---was determined from the soil in *every* pot.
 In addition, *every* turmeric plant was analysed for the number of shoots, the leaf mass fraction, and foliar nutrient information.
@@ -51,13 +51,19 @@ Clearly, every pot that is used comes with a substantial cost, both in terms of 
 
 
 In this chapter, we learn how to compute the (approximate) minimum sample size needed to obtain a given precision for a confidence interval.
+We only study estimating sample sizes for descriptive RQs:
+
+* Estimating sample size for estimating a proportion: Sect \@ref(SampleSizeProportions).
+* Estimating sample size for estimating a mean: Sect \@ref(SampleSizeOneMean).
+* Estimating sample size for estimating a mean difference: Sect \@ref(SampleSizeMeanDifferences).
+
 
 
 <iframe src="https://learningapps.org/watch?v=pfduds6kt22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
 
 
 
-## Estimating sample sizes: one proportion
+## Estimating sample sizes: one proportion {#SampleSizeProportions}
 
 For a given level of confidence, the width of a CI depends on the size of the sample.
 All other things being equal, *larger* samples produce more [*precise*](#PrecisionAccuracy) estimates of the parameter (Sect.&nbsp;\@ref(PrecisionAccuracy)), and hence *narrower* CIs.
@@ -70,23 +76,34 @@ All other things being equal, *larger* samples produce more [*precise*](#Precisi
 ```{r, child = if (knitr::is_latex_output()) './children/LaTeX/SampleSizeCI.Rmd'}
 ```
 
-
-
+In other words, improving precision gets more difficult as sample sizes get larger.
+Large gains in precision are made by moderately increasing small sample sizes, but only small gains in precision are made by large increases in already-large sample sizes. 
 
 For the NHANES data, first seen in Sect.&nbsp;\@ref(NHANESGraphs), the unknown parameter is $p$, the *population* proportion of Americans that currently smoke.
 In the study, 1466 out of the 3211 respondents who reported their smoking status said they currently smoked: $\hat{p} =  1466\div 3211 = 0.4566$ where $n = 1466$.
 The standard  error is $\text{s.e.}(\hat{p}) = 0.00879$, so the approximate 95% CI for $p$ is $0.456\pm 0.018$, or from 0.439 to 0.474.
 
-Suppose we want our 95% CI for the proportion of smokers to be precise to give-or-take $0.01$ (rather than the $\pm 0.018$ found from the sample).
+Suppose we want our 95% CI for the proportion of smokers to be precise to give-or-take $0.01$ (that is, $\pm 0.01$, rather than the $\pm 0.018$ found from the sample).
 What size sample is needed?
-
 Since we seek a *more* precise estimate, a *larger* sample is needed... but how much larger?
-Conservatively, the size of the [*simple random sample*](#SRS) needed **for a 95% CI** is *at least*
+
+
+:::{.definition #SampleSizeProportion name="Sample size (proportion)"}
+Conservatively, the size of the [*simple random sample*](#SRS) needed *for a 95% CI for a proportion* with a specified margin-of error is *at least*
 
 \[
    \frac{1}{(\text{Margin of error})^2}.
 \]
-That is, a sample size of at least  $\displaystyle \frac{1}{0.01^2} = 10\,000$  Americans is needed.
+We say "conservatively", since the sample may be a little too large, but that's better than being too small.
+:::
+
+For the NHANES example, then, a sample size of at least $\displaystyle 1\div (0.01^2) = 10\,000$ Americans is needed.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Always **round up** the result of the sample size calculation.
+:::
+
 
 
 ::: {.example #SampleSizep name="Sample size calculations for one proportion"}
@@ -101,10 +118,6 @@ In practice, *at least* 205 people are needed to achieve this desired level of p
 :::
 
 
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Always **round up** the result of the sample size calculation.
-:::
-
 
 `r if (knitr::is_html_output()){
   'The following short video may help explain some of these concepts:'
@@ -117,13 +130,85 @@ Always **round up** the result of the sample size calculation.
 ## Estimating sample sizes: one mean {#SampleSizeOneMean}
 
 As with proportions, estimating a population *mean* is more *precise* with a larger sample.
-All other things being equal, *larger* samples produce more [*precise*](#PrecisionAccuracy) estimates of the parameter (Sect.&nbsp;\@ref(PrecisionAccuracy)), and hence *narrower* CIs.
+All other things being equal, *larger* samples produce more [*precise*](#PrecisionAccuracy) estimates of the parameter (Sect.&nbsp;\@ref(PrecisionAccuracy)), and hence *narrower* CIs (Fig. \@ref(figSampleSizeCIWidthMean)).
+Again, large gains in precision are made by moderately increasing small sample sizes, but only small gains in precision are made by large increases in already-large sample sizes. 
 
-Conservatively, the size of the [*simple random sample*](#SRS) needed **for a 95% CI** is *at least*
+
+```{r SampleSizeCIWidthMean, echo=FALSE, fig.align="center", out.width = "65%", fig.cap='The approximate width of a 95\\% CI for a mean, when various size samples are used. No values are given on the vertical axis, as the actual values depend on the value of the standard deviation, $s$', fig.height = 4.5}
+ME <- function(n, s = 1){
+  1.96 * 2 * s / sqrt( n )
+}
+n <- seq(5, 50, by = 1)
+
+par( mfrow = c(1, 1),
+     mar = c(4, 5, 5, 3), # LINES on each side of plot
+     oma = c(1, 1, 1, 1) ) # OUTER margins, between plots and edges of canvas
+
+
+plot( x = c( min(n), max(n) ), 
+      y = c(-2, 2),
+      type = "n",
+      pch = 19,
+      las = 1,
+      axes = FALSE,
+      xlim = c(0, 50),
+      ylim <- c(-1.9, 1.9),
+      xlab = "Sample size",
+      ylab = "Estimates",
+      main = "The width of CI by sample size\n(for estimating a mean)")
+axis(side = 1)
+box()
+abline(h = 0,
+       lwd = 1,
+       col = "grey")
+lines(n,
+      0 + ME(n),
+      type = "b",
+      pch = 19,
+      cex = 0.75,
+      col = plot.colour,
+      lty = 1,
+      lwd = 2)
+lines(n,
+      0.0 - ME(n),
+      type = "b",
+      pch = 19,
+      cex = 0.75,
+      col = plot.colour,
+      lty = 1,
+      lwd = 2)
+text(10,
+     0.0,
+     srt = 90,
+     "Approximate width\nof 95% CI")
+
+n.example <- 10
+arrows(n.example,
+       0.0 + ME(n.example),
+       n.example,
+       0.0 - ME(n.example),
+       length = 0.1,
+       angle = 15,
+       lwd = 2,
+       code = 3, # Draw arrowhead at both ends
+       col = "black")
+mtext(expression(" "*Mean*","~bar(italic(x))),
+      side = 4,
+      las = 1)
+```
+      
+
+
+:::{.definition #SampleSizeProportion name="Sample size (proportion)"}
+Conservatively, the size of the [*simple random sample*](#SRS) needed *for a 95% CI for the mean* with a specified margin-of error is *at least*
 
 \[
    \left( \frac{2 \times s}{\text{Margin of error}}\right)^2.
 \]
+We say "conservatively", since the sample may be a little too large, but that's better than being too small.
+:::
+
+
 
 Notice that the formula requires an estimate of the population standard deviation (that is, the sample standard deviation, $s$).
 But if we don't have a sample yet... how can we have a value for the *sample* standard deviation?
@@ -188,7 +273,7 @@ ci.hi <-  mean(diab$Diff) + 2 * se.D.diff
 In Sect. \@ref(BloodPressure), the mean *reduction* in diastolic blood pressure from the first to the second visit to a clinic was estimated [@data:Willems1997:CHD; @data:Schorling1997:smoking], using a sample of size $n = `r n.D.diff`$.
 The computed approximate 95% CI was $`r round( mean(diab$Diff, na.rm=TRUE), 3)`$, give-or-take $`r round(2 * se.D.diff, 3)`$, and the standard deviation *of the differences* was $s_d = `r round(sd(diab$Diff, na.rm = TRUE), 3)`$.
 
-Suppose we wanted the 95% CI to have a margin of error of only $1.00$ (rather than $`r round(2 * se.D.diff, 3)`$), the size sample needed would be
+Suppose we wanted the 95% CI to have a margin of error of only $1.00$ (that is,rather than $`r round(2 * se.D.diff, 3)`$), the size sample needed would be
 \[
       \left( \frac{2 \times s_d}{\text{Margin of error}}\right)^2 = \left( \frac{2 \times 8.026}{1.00}\right)^2 = 257.66;
 \]
@@ -201,12 +286,14 @@ we would need about 258 patients (recall we always *round up* in sample size cal
 
 The above calculations form just one part of the information needed to make the final decision about the necessary sample size.
 For example, the *cost* (time and money) of taking sample of this size has not been factored in.
-In addition, this calculation assumes a [*simple random sample*](#SRS) will be used, which is often unreasonable.
+
+The calculations in this chapter assume a [*simple random sample*](#SRS) will be used, which is often unreasonable.
 Other, more complex, formulas are available for computing sample sizes for other random-sampling schemes (such as [stratified samples](#StratifiedSampling)).
 However, 
 the above calculations do give an *estimate* of the sample size that would be required.
+In addition, the calculations in this chapter are only for producing 95% confidence intervals. 
 
-In addition, starting with a slightly larger sample than required to allow for drop-outs (for example, plants die, or people withdraw from the study).
+In practice, researchers often start with a slightly larger sample than required to allow for drop-outs (for example, plants die, or people withdraw from the study).
 
 
 
@@ -225,14 +312,14 @@ The necessary sample size is
          \right)^2 
        = 16.
 \]
-A sample size of 16 paramedics was required (and used).
+A sample size of 16 paramedics was required (and was used).
 
 
 
 
 ## Quick review questions {#Chap26-QuickReview}
 
-1. True or false: A *larger* sample size produces a *more* precise estimate of the parameter, all other things being equal.  
+1. True or false: A *larger* sample size produces a *more* precise estimate of the parameter, all other things being equal.\tightlist  
 `r if( knitr::is_html_output(exclude = "epub") ) {torf(answer = TRUE )}`
 1. True or false: A *larger* sample size produces a *more random* sample.  
 `r if( knitr::is_html_output(exclude = "epub") ) {torf(answer = FALSE )}`
@@ -281,7 +368,7 @@ Suppose we have a situation where we need to estimate a population *proportion* 
 Sect. \@ref(exr:CIOneProportionSnacking) discusses a study of the eating habits of university students in Canada [@data:Mann12017:UniStudents].
 In that study, they estimated the proportion of Canadian students that ate a sufficient number of servings of grains each day.
 
-Suppose we wished to repeat the study but for *Australian* university students; that is, we seek an estimate of the population proportion of Australian students that ate a sufficient number of servings of grains each day (with 95% confidence).
+Suppose we wished to repeat the study but for *New Zealand* university students; that is, we seek an estimate of the population proportion of New Zealand students that ate a sufficient number of servings of grains each day (with 95% confidence).
 
 1. What size sample would be needed if we wished to estimate the proportion to give-or-take 0.01? 
 2. What size sample would be needed if we wished to estimate the proportion to give-or-take 0.02? 

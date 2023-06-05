@@ -21,15 +21,6 @@ bodyt <- read.csv("Data/BodyTemp.csv")
 </div>
 
 
-`r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}[9]{R}{.20\textwidth}
-  \begin{center}
-    \includegraphics[width=.15\textwidth]{Illustrations/pexels-anna-shvets-3987141.jpg}
-  \end{center}
-\end{wrapfigure}
-`r if (knitr::is_html_output()) '-->'`
-
-
 The average internal body temperature is commonly believed to be $\mu = 37.0^\circ\text{C}$, based on data over 150 years old [@data:Wunderlich:BodyTemp].
 More recently, researchers wanted to re-examine this claim [@data:mackowiak:bodytemp] to see if this benchmark is still appropriate. 
 That is, a decision is sought about the value of the *population* mean body temperature $\mu$.
@@ -92,15 +83,34 @@ subBodyT <- round(cbind(bodyt$BodyTempC[1:10],
                         bodyt$BodyTempC[121:130] ), 2)
 
 if( knitr::is_latex_output() ) {
-  kable( subBodyT[1:10, ],
+  T1 <- kable( subBodyT[1:5, 1],
          format = "latex",
          booktabs = TRUE,
          longtable = FALSE,
-         col.names = c("Body temp (deg. C) First ten", 
-                       "Body temp (deg. C): Last ten"),
-         caption = "The body temperature data: The first ten and the last ten of the 130 observations") %>%
-	kable_styling(font_size = 10) %>%
+         linesep = "",
+         align = "c",
+         col.names = "Body temp (deg. C)") %>%
 	row_spec(0, bold = TRUE)
+
+  T2 <- kable( subBodyT[6:10, 1],
+         format = "latex",
+         booktabs = TRUE,
+         escape = FALSE,
+         longtable = FALSE,
+         linesep = "",
+         align = "c",
+         col.names = "Body temp (deg. C)") %>%
+	row_spec(0, bold = TRUE)
+  
+
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "DataBodyTemp",
+                       caption = "The body temperature data: Ten of the 130 observations") %>% 
+    kable_styling(font_size = 10)
+  prepareSideBySideTable(out)
+  
+  
 }
 if( knitr::is_html_output(excludes = "epub") ) {
   DT::datatable( bodyt,
@@ -110,15 +120,6 @@ if( knitr::is_html_output(excludes = "epub") ) {
                  #escape=FALSE,
                  options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                  caption = "The body temperature data")
-}
-if( knitr::is_html_output() & knitr::pandoc_to("epub") ) {
-  kable( subBodyT[1:10, ],
-         format = "html",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names = c("Body temp (deg. C) First ten", 
-                       "Body temp (deg. C): Last ten"),
-         caption = "The body temperature data: The first te and the last ten of the 130 observations")
 }
 ```
 
@@ -502,11 +503,14 @@ options(knitr.kable.NA = '')
 if( knitr::is_latex_output() ) {
   kable(RTimeArray,
         format = "latex",
-        col.names = rep(" ", 9),
+        #col.names = rep(" ", 9),
         booktabs = TRUE,
         longtable = FALSE,
         caption = "The recovery times (in days) for a new treatment") %>%
-    kable_styling(font_size = 10)
+    kable_styling(font_size = 10) %>%
+  add_header_above(header = c("Recovery times" = 9), 
+                   bold = TRUE, 
+		   align = "c")
 }
 
 if( knitr::is_html_output() ) {
@@ -905,10 +909,10 @@ DataAndTargets[3, ]<- c(64.22, 19.01, 65.05, 19.45)
 rownames(DataAndTargets) <- c("Mean of data", 
                               "Std. dev. of data", 
                               "Pre-determined target")
-colnames(DataAndTargets) <- c("High level (Inst. 1)", 
-                              "Mid level (Inst. 1)", 
-                              "High level (Inst. 2)", 
-                              "Mid level (Inst. 2)")
+colnames(DataAndTargets) <- c("High level", 
+                              "Mid level", 
+                              "High level", 
+                              "Mid level")
 ```
 
 ::: {.exercise #TestOneMeanQualityControl}
@@ -920,14 +924,43 @@ Perform a series of tests to determine how well the two instruments perform, for
 
 ```{r QualityControlData, echo=FALSE}
 if( knitr::is_latex_output() ) {
-  kable( head(QC, 10),
+  T1 <- kable( rbind( head(QC[1:2], 5),
+                      c("$\\vdots$", "$\\vdots$") ),
         format = "latex",
-        caption = "The quality-control data: LH levels (in mIU/mL) for two instruments (only the first ten observations shown)",
-        col.names = colnames(DataAndTargets),
+        align = "c",
+        linesep = "",
+        col.names = c("High level", 
+                      "Mid level"),
         booktabs = TRUE,
+        escape = FALSE,
         longtable = FALSE) %>%
+    add_header_above(header = c("Instrument 1" = 2), 
+                   bold = TRUE, 
+                   align = "c")
+
+    T2 <- kable( rbind( head(QC[, 3:4], 5),
+                         c("$\\vdots$", "$\\vdots$") ),
+        format = "latex",
+        align = "c",
+        linesep = "",
+        col.names = c("High level", 
+                      "Mid level"),
+        booktabs = TRUE,
+        escape = FALSE,
+        longtable = FALSE) %>%
+    add_header_above(header = c("Instrument 2" = 2), 
+                   bold = TRUE, 
+                   align = "c")
+
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "QualityControlData",
+                       caption = "The quality-control data: LH levels (in mIU/mL) for two instruments (only the first five observations shown)") %>% 
     kable_styling(font_size = 10)
-}
+  
+  prepareSideBySideTable(out)
+
+} 
 
 if( knitr::is_html_output(exclude = "epub") ) {
   DT::datatable(QC,
@@ -937,7 +970,7 @@ if( knitr::is_html_output(exclude = "epub") ) {
                filter = "none")
 }
 if( knitr::is_html_output() & knitr::pandoc_to("epub")) {
-  kable( head(QC, 10),
+  kable( head(QC, 10), 
         format = "html",
         caption = "The quality-control data: LH levels (in mIU/mL) for two instruments (only the first ten observations shown)",
         col.names = colnames(DataAndTargets),
@@ -945,6 +978,7 @@ if( knitr::is_html_output() & knitr::pandoc_to("epub")) {
         longtable = FALSE)
 }
 ```
+
 
 ```{r QualityControlDataSummary, echo=FALSE}
 if( knitr::is_latex_output() ) {
@@ -954,10 +988,15 @@ if( knitr::is_latex_output() ) {
         booktabs = TRUE,
         #align = c("p{17mm}", "p{17mm}","p{17mm}","p{17mm}"),
         longtable = FALSE) %>%
-    row_spec(row = 0, 
+    row_spec(row = 0,  
              bold = TRUE) %>%
-    kable_styling(font_size = 10)
-}
+    kable_styling(font_size = 10) %>%
+    add_header_above(header = c("", 
+                                "Instrument 1" = 2, 
+                                "Instrument 2" = 2), 
+                   bold = TRUE, 
+                   align = "c")
+        }
 if( knitr::is_html_output() ) {
   kable(DataAndTargets,
         format = "html",
