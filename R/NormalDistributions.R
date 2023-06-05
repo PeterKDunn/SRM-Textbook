@@ -34,9 +34,11 @@ shadeNormal <- function(xx, yy, lo, hi,
 
 plotNormal <- function(mu, 
                        sd,
-                       showX = seq(-3, 3, by = 1) * sd + mu,
+                       showX = seq(-3, 3, by = 1) * sd + mu, # The tick marks
                        showXlabels = NULL, # if NULL, use the numbers in showX to place on the horizontal axis; otherwise, give the labels
                        showXaxis = TRUE, # If FALSE, then no bottom axis is shown at all 
+                       xlim.hi = mu + 3.5*sd, # Upper x-axis limit
+                       xlim.lo = mu - 3.5*sd, # Lower x-axis limit
                        cex.axis = 1, # char expansion for axis text (i.e., labels)
                        round.dec = 1,
                        main = "", # Main title
@@ -47,8 +49,6 @@ plotNormal <- function(mu,
                        cex.tickmarks = 1,
                        las = 1,
                        ylim = NA,
-                       xlim.hi = mu + 3.5*sd, # Upper x-axis limit
-                       xlim.lo = mu - 3.5*sd, # Lower x-axis limit
                        axis.labels = NULL,
                        add = FALSE){
   
