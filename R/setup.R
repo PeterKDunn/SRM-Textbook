@@ -25,6 +25,7 @@ library("dygraphs")
 library("slickR")
 library("qrcode")
 #library("exams")
+library("readr") # For "El Nino" 
 
 
 # set global chunk options
