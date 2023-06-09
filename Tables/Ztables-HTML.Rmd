@@ -1,0 +1,83 @@
+## When the $z$-score is known, and the area is sought {#ZTablesOnline}
+
+```{r echo=FALSE, fig.width=2.25, fig.height=1.25, fig.align="center"}
+par(mar = c(2.1, 0.5, 0.5, 0.5))
+delta <- 0.01
+z <- seq(-3.5, 3.5, 
+         by = delta)
+zy <- dnorm(z)
+
+zval <- -1.385 # Add the last digit 5 so shading works. Really, z = -1.38
+
+
+plot( zy ~ z,
+      lwd = 2,
+      type = "l",
+      xlab = "",
+      ylab = "",
+      axes = FALSE)
+#axis(side=1, at=-3:3)
+axis(side = 1, 
+     at = zval, 
+     label = expression( italic(z) ) )
+abline(h = 0, 
+       lwd = 2)
+
+abline(v = zval, 
+       lwd = 2, 
+       col = "grey")
+
+xshade <- c(  seq(min(z), zval, 
+                  by =  delta),
+              seq(zval, min(z), 
+                  by = -delta) )
+yshade <- c( rep(0, length(xshade)/2),
+             rev(zy[ z<zval]) )
+            
+polygon( xshade, yshade, 
+         col = plot.colour)
+
+arrows(x0 = -2.5, 
+       y0 = max(zy)/2,
+       x1 = -1.8, 
+       y1 = 0.05, 
+       angle = 15,
+       length = 0.1)
+text(-2.5, max(zy)/2, 
+     "Area",
+     pos = 3)
+```
+
+The table gives the probability (area) that a $z$-score is **less** than the $z$-score looked up.
+For example: 
+Look up $z = -1.38$; the area *less than* $z = -1.87$ is about 0.0838, or about 8.4%.
+
+To use this table, enter the $z$-score in the search box *under* the `z.score` column. 
+The area will be shown.
+The table includes $z$-values between -4 and 4.
+(Alternatively, you can search through the table manually.)
+
+
+```{r echo=FALSE, fig.width=2.5, fig.height=1.5, fig.align="center"}
+zall <- round(seq(-7, 7, 
+                  by = 0.01) , 2) # As zero gets two rows: pos and neg
+znorm <- round( pnorm(zall), 4)
+
+ZtabAll <- data.frame(
+  "z score" = sprintf("%.2f", zall),
+  "Area to left" = as.numeric(format( round(znorm, 4), 
+                                      nsmall = 4) )
+)
+
+#colnames(ZtabAll) <- c("z-score", "Area to the *left*")
+#rownames(ZtabAll) <- as.character( round(zall, 2) )
+
+datatable(ZtabAll, 
+          filter = 'top', 
+          rownames = FALSE,
+          options = list( pageLength = 10, 
+                          autoWidth = FALSE
+          )
+)
+```
+
