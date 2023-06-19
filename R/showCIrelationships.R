@@ -1,7 +1,7 @@
 ### ADD FIRST NORMAL
 out1 <- plotNormal(mu = 0, 
                    sd = 1,
-                   ylim = c(-0.50, 0.4),
+                   ylim = c(-0.50, 0.45),
                    showXaxis = FALSE,
                    main = expression(
                      atop( bold(Sample)*":"~Values~of~hat(italic(p))~likely~to~be,
@@ -97,12 +97,16 @@ text( x = 0,
 ### ADD SECOND NORMAL
 out2 <- plotNormal(mu = 0, 
                    sd = 1,
-                   ylim = c(-0.50, 0.4),
+                   ylim = c(-0.50, 0.45),
                    showXaxis = FALSE,
                    main = expression(
-                     atop( bold(Population)*":"~Values~of~italic(p)~likely~to,
+                     atop( bold(Population)*":"~Values~of~italic(p)~that~may,
                            have~produced~given~value~of~hat(italic(p)) )
                    ) )
+text(0, 0.44, 
+     cex = 1.0,
+     expression(Any~one~bold(could)~be~the~actual~value~of~italic(p)*ldots) )
+
 text(3.1, 0, 
      expression( italic(p) ),
      cex = 0.95,
@@ -175,7 +179,7 @@ polygon( x = c(-4, 4, 4, -4),
          col =  "#FFFFFFD9")
 text(x = 0,
      y = -0.2,
-     expression(Various~populations~may~give~this~value~of~hat(italic(p))) )
+     expression(Various~populations~could~give~this~value~of~hat(italic(p))) )
 
 
 # ADD CI
