@@ -6,7 +6,7 @@ shadeNormal <- function(xx, yy, lo, hi,
   
   xshade <- xx[ (xx >= lo) & ( xx <= hi ) ]
   yshade <- yy[ (xx >= lo) & ( xx <= hi ) ]
-  y0 <- rep(0, length(yshade))
+  y0 <- rep(min(yy), length(yshade))
   
   if ( !is.na(col) ){
     polygon( x = c(xshade, rev(xshade) ),
@@ -50,7 +50,9 @@ plotNormal <- function(mu,
                        las = 1,
                        ylim = NA,
                        axis.labels = NULL,
-                       add = FALSE){
+                       add = FALSE,
+                       showHorizontalArrow = TRUE, # If TRUE, shows horizontal axis as arrow; if FALSE, as a line
+                       verticalOffset = 0){ # Add a value to lower or raise the y-values AND axes
   
   # mu  is the mean of the distn
   # sd  is the std dev of the distn
@@ -67,7 +69,7 @@ plotNormal <- function(mu,
 
   nc <- dnorm(hor, 
               mean = mu,
-              sd = sd)
+              sd = sd) + verticalOffset
 
   extra <- 0.25 # extra space at ends
   
@@ -107,14 +109,20 @@ plotNormal <- function(mu,
            labels = showXlabels)
     }
   }
-
-  arrows( x0 = xlim.lo, 
-          x1 = xlim.hi,
-          y0 = 0,
-          y1 = 0,
-          length = 0.125, 
-          angle = 20, 
-          lwd = 2)
+  if (showHorizontalArrow){
+    arrows( x0 = xlim.lo, 
+            x1 = xlim.hi,
+            y0 = 0 + verticalOffset,
+            y1 = 0 + verticalOffset,
+            length = 0.125, 
+            angle = 20, 
+            lwd = 2)
+  } else {
+    lines( x = c(xlim.lo, xlim.hi),
+           y = c(0 + verticalOffset,
+                 0 + verticalOffset),
+           lwd = 2)
+  }
   if (showZ) {
     if (showZtall) {
       abline( v = seq(-3, 3, by = 1) * sd + mu,
@@ -124,7 +132,7 @@ plotNormal <- function(mu,
          xVertLines <- z * sd + mu
          yVertLines <- dnorm( xVertLines, mean = mu, sd = sd )
          lines( x = c( xVertLines, xVertLines),
-                y = c(0, yVertLines),
+                y = c(0, yVertLines) + verticalOffset,
                 col = "grey")
       }
     }
