@@ -15,7 +15,6 @@
 </div>
 
 
-
 In this chapter, we study the situation where a population mean $\mu$ (the parameter) is estimated by a sample mean $\bar{x}$ (the statistic).
 The sample mean comes from just one of the many possible samples, and each possible sample is likely to produce a different value $\bar{x}$.
 That is, the value of the sample mean varies from sample to sample, called *sampling variation* (which can be quantified using the *standard error*).
@@ -25,7 +24,7 @@ Suppose a die is rolled $n = 25$ times, and the *mean* of the 25 numbers that ar
 Since every face of the die is equally likely to appear on any one roll, the population mean of all possible rolls is $\mu = 3.5$ (in the middle of the numbers on the faces of the die, which is also the *median*).
 
 What will be the sample mean of the numbers in the 25 rolls?
-We cannot be sure: the sample mean will vary from sample to sample (*sampling variation*).
+We cannot be sure, as the sample mean will vary from sample to sample (*sampling variation*).
 
 
 ```{r echo=FALSE}
@@ -293,10 +292,12 @@ if (knitr::is_latex_output()){
    'From the animation above,'
 }`
 the sample means vary with an approximate normal distribution (as we saw with the sample proportions).
-This normal distribution is centred around the population mean $\mu$.
-The standard deviation of this normal distribution is describing a sampling distribution, so is called a *standard error*: specifically, it is the standard error of the sample mean $\bar{x}$, written as $\text{s.e.}(\bar{x})$.
+This normal distribution is *not* describing the data; it is describing how the *bvalues of sample means vary across all possible samples*.
+Under certain conditions, the values of the sample means can vary with a normal distribution, and this normal distribution has a mean and a standard deviation.
 
-When the *population* standard deviation $\sigma$ is *known*, then
+Since this distribution is describing how *sample means* vary, the mean is denoted $\mu_{\bar{x}}$; it so happens that this is equal to the value of $\mu$.
+The standard deviation is called the *standard error of the sample means*, denoted $\text{s.e.}(\bar{x})$.
+When the *population* standard deviation $\sigma$ is *known*, the standard error happens to be
 
 \[
   \text{s.e.}(\bar{x}) = \frac{\sigma}{\sqrt{n}}.
@@ -304,7 +305,7 @@ When the *population* standard deviation $\sigma$ is *known*, then
 So the possible values of the sample means have a *sampling distribution* described by:
 
 * an approximate normal distribution,
-* with mean $\mu$, and
+* with mean $\mu_{\bar{x}} = \mu$, and
 * a standard deviation, called the standard error, of $\text{s.e.}(\bar{x}) = \sigma/\sqrt{n}$.
 
 However, almost always the population mean, and the population standard deviation, are *unknown* (if they were known, we wouldn't need to take a sample to estimate them).
@@ -317,14 +318,14 @@ When a sample mean is used to estimate a population mean, the sample mean varies
 
 When the *population* standard deviation $\sigma$ is unknown (which is almost always the case), it is estimated using the *sample* standard deviation $s$.
 Then, the best we can do is use the estimate of the *standard error* of the sample mean: $\displaystyle\text{s.e.}(\bar{x}) = \frac{s}{\sqrt{n}}$.
-With this information, we can describe the *sampling distribution of the sample mean*.
+With this information, we can describe the *sampling distribution of the sample mean* (see Table \@ref(tab:NotationOneMeanCI)).
 
 
 ::: {.definition #DEFSamplingDistributionXbar name="Sampling distribution of a sample mean"}
 When the *population* standard deviation is unknown, the *sampling distribution of the sample mean* is described by:
   
 * an approximate a normal distribution,
-* centred around $\mu$,
+* centred around $\mu_{\bar{x}} = \mu$,
 * with a standard deviation (called the *standard error of the mean*) of 
 
 \begin{equation}
@@ -333,6 +334,65 @@ When the *population* standard deviation is unknown, the *sampling distribution 
 \end{equation}
 when certain conditions are met (Sect. \@ref(ValiditySampleMean)), where $n$ is the size of the sample, and $s$ is the standard deviation describing the variation in the individual observations in the sample (that is, the *sample* standard deviation). 
 :::
+
+
+
+
+```{r NotationOneMeanCI, echo=FALSE}
+
+OneMeanNotation <- array( dim = c(4, 2))
+
+OneMeanNotation[1, ] <- c("Individual values in the population",
+                          "Vary with mean $\\mu$ and standard deviation $\\sigma$")
+OneMeanNotation[2, ] <- c("Individual values in a sample",
+                          "Vary with mean $\\bar{x}$ and standard deviation $s$")
+OneMeanNotation[3, ] <- c("Sample means ($\\bar{x}$) across",
+                          "Vary with approx. normal distribution (under certain conditions)")
+OneMeanNotation[4, ] <- c("all possible samples",
+                          "with mean $\\mu_{\\bar{x}}$ and standard deviation $\\text{s.e.}(\\bar{x})$")
+
+
+if( knitr::is_latex_output() ) {
+  kable( OneMeanNotation,
+         format = "latex",
+         booktabs = TRUE,
+         longtable = FALSE,
+         escape = FALSE,
+         caption = "The notation used for describing means, and the sampling distribution of the sample means",
+         align = c("r", "l"),
+         linesep = c("\\addlinespace",
+                     "\\addlinespace",
+                     ""),
+         col.names = c("Quantity",
+                       "Description") ) %>%
+	row_spec(0, bold = TRUE) %>%
+  kable_styling(font_size = 10)
+} else {
+  OneMeanNotation[3, 1] <- paste(OneMeanNotation[3, 1], 
+                                 OneMeanNotation[4, 1])
+  OneMeanNotation[3, 2] <- paste(OneMeanNotation[3, 2], 
+                                 OneMeanNotation[4, 2])
+  OneMeanNotation[3, 3] <- paste(OneMeanNotation[3, 3], 
+                                 OneMeanNotation[4, 3])
+  OneMeanNotation[3, 4] <- paste(OneMeanNotation[3, 4], 
+                                 OneMeanNotation[4, 4])
+  OneMeanNotation[4, ] <- NA
+  
+    kable( OneMeanNotation,
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         escape = FALSE,
+         caption = "The notation used for describing means, and the sampling distribution of the sample means",
+         align = c("r", "l"),
+         linesep = c("\\addlinespace",
+                     "\\addlinespace",
+                     ""),
+         col.names = c("Quantity",
+                       "Description") ) %>%
+	row_spec(0, bold = TRUE) 
+}
+```
 
 
 ## Confidence intervals: One mean {#OneMeanCI}
@@ -376,6 +436,12 @@ For a CI computed from a single sample, we don't know if our CI includes the val
 The CI could also be interpreted as the range of plausible values of $\mu$ that could have produced the observed value of $\bar{x}$.
 
 
+```{r CIrelationshipsMean, echo=FALSE, out.width='85%', fig.align="center", fig.cap="A CI gives a range of possible values of $\\mu$ for which it is reasonable to produce the observed value of $\\bar{x}$. The shaded regions represent the regions containing 95\\% of the values of $\\bar{x}$ for each value of $p$.", fig.width=9, fig.height=6.5}
+source("R/showCIForVariousMeans.R")                
+```
+
+
+
 <div style="float:right; width: 222x; border: 1px; padding:10px">
 <img src="Illustrations/pexels-pixabay-207697.jpg" width="200px"/>
 </div>
@@ -386,7 +452,7 @@ The CI could also be interpreted as the range of plausible values of $\mu$ that 
 A study of the school bags that 586 children (in Grades 6--8 in Tabriz, Iran) take to school found the mean weight was $\bar{x} = 2.8$&nbsp;kg with a standard deviation of $s = 0.94$&nbsp;kg [@data:Dianat2014:schoolbags].
 The parameter $\mu$ is the population mean weight of school bags for Iranian children in Grades 6--8.
 
-Another sample of 586 children would produce a different sample mean, so the sample mean varies from sample to sample; sampling variatin exists.
+Another sample of 586 children would produce a different sample mean, so the sample mean varies from sample to sample; sampling variation exists.
 The *standard error* of the sample mean is
 
 \[
