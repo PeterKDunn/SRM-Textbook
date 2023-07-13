@@ -1,4 +1,12 @@
- showDecisionMaking <- function(Decision = NA){
+ showDecisionMaking <- function(populationText = expression( atop(bold(POPULATION)~"with",
+                                                                  bold(assumed)~parameter)),
+                                expectationText = expression(atop(bold(Expectation)~"of", 
+                                                                  statistics) ),
+                                oneSampleText = expression( atop(One~possible,
+                                                                 bold(SAMPLE)) ),
+                                oneStatisticText =  expression( atop(One~possible,
+                                                                     bold(observed)~statistic)),
+                                Decision = "Neither"){ # "Neither", "Reject" or "Accept"
    
    DMcolours <- viridis::viridis(5,
                                  alpha = 0.2)
@@ -99,15 +107,21 @@
                  lwd = 2,
                  lty = 1)
    straightarrow(from = pos[5, ],  
-                 to = pos[6, ],
+                 to = pos[6, ], ### SUPPORTS
                  arr.pos = 0.5, # Then cover with box
                  lwd = 2,
+                 lcol = ifelse( Decision == "Reject", 
+                                "grey", 
+                                "black"),
                  lty = 1)
    straightarrow(from = pos[5, ],  
-                 to = pos[7, ],
+                 to = pos[7, ], ### CONTRADICTS
+                 lcol = ifelse( Decision == "Accept", 
+                                "grey", 
+                                "black"),
                  arr.pos = 0.5, # Then cover with box
                  lwd = 2,
-                 lty = 1)
+                 lty = 1) 
    
    
    textrect( pos[1, ],
@@ -116,8 +130,7 @@
              shadow.size = 0,
              lcol = PopulationColour,
              box.col = PopulationColour,
-             lab = expression( atop(bold(POPULATION)~"with",
-                                    bold(assumed)~parameter)),
+             lab = populationText,
              col = grey(0)) # CHECKMARK
    # text( x = pos[1, 1],
    #       y = pos[1, 2] + 0.07,
@@ -129,8 +142,7 @@
              shadow.size = 0,
              lcol = PopulationColour,
              box.col = PopulationColour,
-             lab = expression(atop(bold(Expectation)~"of", 
-                                   statistics) ),
+             lab = expectationText,
              col = grey(0)) # CHECKMARK
    textrect( pos[3, ],
              radx = 0.08,
@@ -138,8 +150,7 @@
              shadow.size = 0,
              lcol = SampleColour,
              box.col = SampleColour,
-             lab = expression( atop(One~possible,
-                                    bold(SAMPLE)) ),
+             lab = oneSampleText,
              col = grey(0)) # CHECKMARK
    textrect( pos[4, ],
              radx = 0.11,
@@ -147,8 +158,7 @@
              shadow.size = 0,
              lcol = SampleColour,
              box.col = SampleColour,
-             lab = expression( atop(One~possible,
-                                    bold(observed)~statistic)),
+             lab = oneStatisticText,
              col = grey(0)) # CHECKMARK
    
    textrect( pos[5, ],
@@ -168,7 +178,9 @@
              box.col = SupportColour,
              lab = expression( atop(bold(Yes):~Supports,
                                     assumption) ),
-             col = grey(0)) # CHECKMARK
+             col = ifelse( Decision == "Reject", 
+                           grey(0.75), 
+                           "black")) # CHECKMARK
    textrect( pos[7, ],
              radx = 0.11,
              rady = 0.1,
@@ -177,7 +189,9 @@
              box.col = ContradictColour,
              lab = expression( atop(bold(No):~Contradicts,
                                     assumption) ),
-             col = grey(0)) # CHECKMARK
+             col = ifelse( Decision == "Accept", 
+                           grey(0.75), 
+                           "black")) # CHECKMARK
    
    # STEPS
    text(x = pos[1, 1],
