@@ -2,8 +2,10 @@ showSampleSystematic <- function(sizeHorizontal = 21,
                                  sizeVertical = 21,
                                  sampleSize = 40,
                                  static = TRUE,
-                                 plotDark = "blue"){ 
-
+                                 plotDark = "blue",
+                                 seed = 91827391){ 
+  set.seed(seed)
+  
   populationSize <- sizeHorizontal * sizeVertical
   population <- 1:(populationSize)
   

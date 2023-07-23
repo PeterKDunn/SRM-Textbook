@@ -2,8 +2,11 @@ showSampleSRS <- function(sizeHorizontal = 21,
                           sizeVertical = 21,
                           sampleSize = 40,
                           static = TRUE,
-                          plotDark = "blue"){ 
-
+                          plotDark = "blue",
+                          seed = 91827391){ 
+  
+  set.seed(seed)
+  
   populationSize <- sizeHorizontal * sizeVertical
   population <- 1:(populationSize)
 
@@ -33,7 +36,7 @@ showSampleSRS <- function(sizeHorizontal = 21,
     sample.col[selected[1:i]] <- plotDark
     
     sample.cex <- rep(1, length = populationSize)
-    sample.cex[selected[1:i]] <- 1.5
+    sample.cex[selected[1:i]] <- 1.3
     
     points( expand.grid(1:sizeHorizontal, 1:sizeVertical), 
             pch = sample.pch, 
