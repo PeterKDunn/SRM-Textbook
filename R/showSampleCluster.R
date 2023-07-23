@@ -68,8 +68,11 @@ showSampleCluster <- function(sizeHorizontal = 21,
              cex = sample.cex,
              lwd = sample.lwd)
     }
-	  title(xlab = paste("Selected classes:", paste( sort(selectedTutorials), collapse = ", ")))
-
+    mtext(paste("Selected classes:", paste( sort(selectedTutorials), collapse = ", ")),   
+          side = 1, 
+          cex = 0.9,
+          at = (1 + maxTutorial) / 2 )
+    
   } else { #NOT static
       plotBackground()
       # Seem to need to force the background to print... ?
@@ -93,7 +96,9 @@ showSampleCluster <- function(sizeHorizontal = 21,
 			   cex = sample.cex,
 			   lwd = sample.lwd)
 	  }
-      title(xlab = paste("Select all students in classes:", paste( sort(selectedTutorials), collapse = ", ")))
-
+      mtext(paste("Select all students in classes:", paste( sort(selectedTutorials), collapse = ", ")),   
+            side = 1, 
+            cex = 0.9,
+            at = (1 + maxTutorial) / 2 )
 	}
 }

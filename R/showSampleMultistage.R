@@ -87,7 +87,10 @@ showSampleMultistage <- function(sizeHorizontal = 21,
              cex = sample.cex,
              lwd = sample.lwd)
     }
-    title(xlab = paste("Selected classes:", paste( sort(selectedTutorials), collapse = ", ")))
+    mtext(paste("Selected classes:", paste( sort(selectedTutorials), collapse = ", ")),
+          side = 1,
+          cex = 0.9,
+          at = (1 + maxTutorial) / 2 )
   } else { #################################### NOT STATIC (static = FALSE)
     # Step 1
     plotBackground()
@@ -117,7 +120,10 @@ showSampleMultistage <- function(sizeHorizontal = 21,
              cex = sample.cex,
              lwd = sample.lwd)
     }
-    title(xlab = paste("Selected classes:", paste( sort(selectedTutorials), collapse = ", ")))
+    mtext(paste("Selected classes:", paste( sort(selectedTutorials), collapse = ", ")),   
+          side = 1, 
+          cex = 0.9,
+          at = (1 + maxTutorial) / 2 )
 
     # Step 3: Selected students in chosen classes (so initially repeat Step 2)      
     plotBackground()
@@ -145,7 +151,10 @@ showSampleMultistage <- function(sizeHorizontal = 21,
       }    
       
     }
-    title(xlab = paste("Selected some students in classes:", paste( sort(selectedTutorials), collapse = ", ")))
+    mtext(paste("Selected some students in classes:", paste( sort(selectedTutorials), collapse = ", ")),   
+          side = 1, 
+          cex = 0.9,
+          at = (1 + maxTutorial) / 2 )
   }
 }
 

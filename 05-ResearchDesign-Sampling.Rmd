@@ -151,78 +151,11 @@ par( mfrow = c(2,2),
      mar = c(1, 1, 1, 1),
      oma = c(0.5, 0.5, 0.5, 0.5) ) 
 
-addShots <- function(x = 0, y = 0, radius = 1, n = 20, seed = 27469){
-  set.seed(seed)
-  
-  xx <- runif(n, 
-              min = x - radius, 
-              max = x + radius)
-  yy <- runif(n, 
-              min = -sqrt( radius^2 - (xx - x)^2) + y, 
-              max =  sqrt( radius^2 - (xx - x)^2) + y ) 
-  
-  points( xx, 
-          yy,
-          cex = 1,
-          pch = 21, 
-          col = blueTransparent, 
-          bg = blueSolid)
-  
-  list(x = xx, y = yy)
-  
-}
-
-drawTarget <- function(){
-  plot( x = c(-1.01, 1.01),
-        y = c(-1.01, 1.01),
-        xlab = "",
-        ylab = "",
-        type = "n",
-        axes = FALSE,
-        asp = 1)        #asp = 1 means "aspect ratio = 1", so circles look like circles
-  
-  plotrix::draw.circle(x = 0, 
-                       y = 0,
-                       radius  =  1,
-                       lwd = 2,
-                       col = "transparent",
-                       border = "black")
-  plotrix::draw.circle(x = 0, 
-                       y = 0,
-                       radius  =  0.8,
-                       lwd = 2,
-                       col = "transparent",
-                       border = "grey")
-  plotrix::draw.circle(x = 0, 
-                       y = 0,
-                       radius  =  0.6,
-                       lwd = 2,
-                       col = "transparent",
-                       border = "grey")
-  plotrix::draw.circle(x = 0, 
-                       y = 0,
-                       radius  =  0.4,
-                       lwd = 2,
-                       col = "transparent",
-                       border = "grey")
-  plotrix::draw.circle(x = 0, 
-                       y = 0,
-                       radius  =  0.2,
-                       lwd = 2,
-                       col = "transparent",
-                       border = "grey")
-}
-
-drawBullsEye <- function(){
-  points(0, 0,
-         pch = 19, 
-         col = "black")
-}
+source("R/drawTargets.R")
 
 ### PRECISE + ACCURATE
 drawTarget()
 title(main = "Precise and accurate")
-
 shots <- addShots(x = 0, 
                   y = 0, 
                   radius = 0.15, 
@@ -259,7 +192,7 @@ drawBullsEye()
 drawTarget()
 title(main = "Imprecise and inaccurate")
 shots <- addShots(x = 0.4, 
-                  y = 0.3, 
+                  y = 0.3,  
                   radius = 0.5, 
                   n = 20, 
                   seed = 985421)
@@ -551,7 +484,7 @@ if (knitr::is_latex_output()){
 
   source("R/showSampleSRS.R")  
   source("R/showSampleSystematic.R")    
-  source("R/showSampleStratified.R") 
+  source("R/showSampleStratified.R")  
 
   showSampleSRS(static = TRUE)
   showSampleSystematic(static = TRUE) 
@@ -721,10 +654,10 @@ To select students in a large course at a particular university again, a simple 
 if (knitr::is_latex_output()){
   
   par( mfrow = c(1, 2),
-       mar = c(1, 4, 2, 1))    
+       mar = c(2, 4, 2, 1))  
 
   source("R/showSampleCluster.R")
-  source("R/showSampleMultistage.R") 
+  source("R/showSampleMultistage.R")  
 
   showSampleCluster()   
   showSampleMultistage() 
@@ -908,11 +841,7 @@ For example, the sex and age of a sample of university students may be recorded;
 A study of the adoption of electric vehicles (EVs) by Americans [@egbue2017mass] used a sample of $121$ people found through social media (such as Facebook) and professional engineering channels.
 This is *not* a random sample.
 The authors compared some characteristics of the sample with the American population from the 2010 census (Table \@ref(tab:EVAsdoptCompare)); they found the sample contained a higher proportion of males than the US population, a higher proportion of people aged 18--44 than the US population, and a higher proportion of wealthy individuals compared to the US population [@egbue2017mass].
-In interpreting the results of this study, the authors say:
-
-> ...the results of this study are more applicable to people with an engineering or technical background... 
->
-> --- @egbue2017mass, p. 1931
+In interpreting the results of this study, the authors deduce that the results "... are more applicable to people with an engineering or technical background..." [@egbue2017mass, p. 1931].
 :::
 
 
@@ -1024,7 +953,7 @@ One (true) survey in 2001 concluded (@data:Heiger:Homebuyer, cited in @bock2010s
 > All but 2% of the home buyers have at least one computer at home, and 62% have two or more.
 > Of those with a computer, 99% are connected to the internet.
 
-The article later reveals the survey was conducted *online* (and recall the survey was done in 2001...).
+The article later reveals the survey was conducted *online* (and recall the survey was conducted in 2001...).
 What type of bias is apparent?
 
 `r if (!knitr::is_html_output()) '<!--'`
@@ -1269,10 +1198,7 @@ Suppose you need to estimate the average number of pages in a book in a universi
 ::: {.exercise #SamplingApartments}
 Suppose you need a sample of 20 residents from apartments in a large residential complex, comprising 20 floors with 30 apartments on each floor.
 You plan to survey the residents of these apartments.
-For each of the possible sampling schemes given below:
-
-1. Describe the sampling scheme.
-2. Determine which methods are good, and which are poor (explaining your answers).
+For each of the possible sampling schemes given below, (1) describe the sampling scheme; and (2) determine which methods are good, and which are poor (explaining your answers).
 
 The four possible sampling schemes are:
 
@@ -1285,12 +1211,9 @@ d. Randomly select five floors, then wait by the elevator and interview resident
 
 ::: {.exercise #SamplingShoppingCentre}
 Suppose a researcher needs a sample of customers who shop at a large, local shopping centre to complete a questionnaire.
-Four possible sampling schemes are listed below.
-For each:
+Four possible sampling schemes are listed below, describe these sampling methods.
 
-1. Describe these sampling methods:
-1. Which would the best sampling method?
-1. Which (if any) of the methods produce a random sample?
+Then, determine which would be the best sampling method (explain why), and determine Which (if any) of the methods produce a random sample.
 
 The four possible sampling schemes are:
 
