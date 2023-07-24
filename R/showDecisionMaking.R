@@ -47,7 +47,7 @@
    
    
    
-   openplotmat()
+   openplotmat(mar = c(0.25, 0.25, 0.25, 0.25))
    
    # 'Background' squares delineating the steps
    polygon( x = edgesX[ c(1, 1, 2, 2)],
@@ -195,11 +195,11 @@
    
    # STEPS
    text(x = pos[1, 1],
-        y = 0.975,
+        y = 0.965,
         cex = 0.90,
         labels = "1. Make an asssumption")
    text(x = pos[2, 1],
-        y = 0.975,
+        y = 0.965,
         cex = 0.90,
         labels = "2. Describe what is expected")
    text(x = pos[3, 1],

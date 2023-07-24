@@ -256,7 +256,7 @@ This is one way to describe the formal process of decision making in science
 }`
 
 
-```{r DecisionFlow2, echo = FALSE, fig.cap = "A way to make decisions", fig.align="center", out.width='100%', fig.width = 9.5, fig.height = 4.95}
+```{r DecisionFlow2, echo = FALSE, fig.cap = "A way to make decisions", fig.align="center", out.width='100%', fig.width = 9.5, fig.height = 5}
 showDecisionMaking()
 ```
 
@@ -537,7 +537,7 @@ showDecisionMaking(populationText = expression( atop(I~bold(assume)~the,
                                                     of~15~cards) ),
                    oneStatisticText =  expression( atop(bold(All)~cards,
                                                         are~red)),
-                   Decision = "Reject"    
+                   Decision = "Reject"     
 )
 
 ```
@@ -701,63 +701,68 @@ if (knitr::is_html_output()){
 
 ```{r RollDice10, echo = FALSE, fig.align = "center", fig.width = 6.5, out.width='75%', fig.cap = "Ten hands of 15 cards: The sample proportion that is red varies from hand to hand (as shown on the right-hand side)" , cache = FALSE}
 if (knitr::is_latex_output()){
-    set.seed(99999)
-    num.in.hand <- 15
-    num.sims <- 10
-    x.loc <- 1:(num.in.hand)
-    y.loc <- 1
-    prop.red <- array(dim = num.sims)
-    all.hands <- array( dim = c(num.sims, num.in.hand))
-
-          plot( x = c(1, (num.in.hand + 2)), 
-                y = c(1, num.sims),
-            type = "n",
-            las = 1,
-            xlab = "",
-            ylab = "",
-            main = "Ten example hands of 15 cards",
-            axes = FALSE)
-          
-   for (i in 1:num.sims){
-      par ( mar = c(0.1, 4.1, 4.1, 0.1)) # DEFAULT is 5.1, 4.1, 4.1, 2.1
-      
-      hand <- sample( c("B", "R"), 
-                      num.in.hand, 
-		      replace = TRUE)
-      all.hands[i, ] <- hand
-      prop.red[i] <- sum( (hand == "B")/2 == floor( (hand == "B")/2) ) / num.in.hand
-      num.all.hands <- (all.hands == "B")
-   }   
-      for (j in 1:i){
-        text(y = j, x = 1:num.in.hand,
-             labels = all.hands[j, ],
-             col = ifelse( num.all.hands[j,]/2 == floor(num.all.hands[j,]/2),
-                           "black", 
-                           "grey") )
-      }
-      # Add p-hat heading
-      mtext(expression(hat( italic(p) ) ), 
-            side = 3, 
-            line = 0, 
-            at = num.in.hand + 2 )
-      # Add the hand number to the left-hand side
-      axis(side = 2, 
-           at = 1:i,
-           las = 1,
-           labels = paste("Hand ", 1:i, sep = "") )
-
-      # Add the sample proportion to right-hand side 
-      text(num.in.hand+2, 1:i, 
-           labels = format( round(prop.red[1:i], 2), nsmall = 2) )
-      #Add dividing line
-      abline(v = num.in.hand + 1, 
-             col = "grey")
-      
-      # Divide each hand set
-      abline(h = (1:i) - 0.5, 
-             col = "grey")
-#    }
-
+  set.seed(99999)
+  num.in.hand <- 15
+  num.sims <- 10
+  x.loc <- 1:(num.in.hand)
+  y.loc <- 1
+  prop.red <- array(dim = num.sims)
+  all.hands <- array( dim = c(num.sims, num.in.hand))
+  
+  plot( x = c(1, (num.in.hand + 2)), 
+        y = c(1, num.sims),
+        type = "n",
+        las = 1,
+        xlab = "",
+        ylab = "",
+        main = "Ten example hands of 15 cards",
+        axes = FALSE)
+  
+  for (i in 1:num.sims){
+    par ( mar = c(0.1, 4.3, 4.1, 0.1)) # DEFAULT is 5.1, 4.1, 4.1, 2.1
+    
+    hand <- sample( c("B", "R"), 
+                    num.in.hand, 
+                    replace = TRUE)
+    all.hands[i, ] <- hand
+    prop.red[i] <- sum( (hand == "B")/2 == floor( (hand == "B")/2) ) / num.in.hand
+    num.all.hands <- (all.hands == "B")
+  }   
+  for (j in 1:i){
+    text(y = j, 
+         x = 1:num.in.hand,
+         labels = all.hands[j, ],
+         col = ifelse( num.all.hands[j,]/2 == floor(num.all.hands[j,]/2),
+                       "black", 
+                       grey(0.7)),
+         font = ifelse( num.all.hands[j,]/2 == floor(num.all.hands[j,]/2),
+                       2, # BOLD 
+                       1) # NORMAL FONT
+         )
+  }
+  # Add p-hat heading
+  mtext(expression(hat( italic(p) ) ), 
+        side = 3, 
+        line = 0, 
+        at = num.in.hand + 2 )
+  # Add the hand number to the left-hand side
+  axis(side = 2, 
+       at = 1:i,
+       las = 1,
+       labels = paste("Hand ", 1:i, sep = "") )
+  
+  # Add the sample proportion to right-hand side 
+  text(num.in.hand+2, 1:i, 
+       labels = format( round(prop.red[1:i], 2), nsmall = 2) )
+  #Add dividing line
+  abline(v = num.in.hand + 1, 
+         col = "grey")
+  
+  # Divide each hand set
+  abline(h = (1:i) - 0.5, 
+         col = "grey")
+  #    }
+  
 }
 ```
 
