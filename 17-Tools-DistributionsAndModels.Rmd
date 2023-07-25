@@ -14,7 +14,7 @@ And, of course, many different samples could be drawn from this population, and 
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Studying a sample leads to the following observations:
+Remember: Studying a sample leads to the following observations:
 
 * Each sample is likely to be different.
 * Our sample is just one of countless possible samples from the population.
@@ -34,7 +34,7 @@ A *model* is used to describe this *sampling* [*distribution*](#GraphsOneQuant).
 For example, if I deal 15 cards, the *statistic* could be 'the proportion of red cards in a hand of 15'.
 The *model* would describe how often we would see a proportion of 0/15 red cards, 1/15 red cards, 2/15 red cards... up to 15/15 red cards (Sect. \@ref(MakingDecisionsInResearch)).
 
-Under [certain circumstances](#ValidityProportions), many sample statistics have a similar-shaped distribution: a [*bell-shaped (or normal) distribution*](#NormalDistributions).
+Under [certain circumstances](#ValidityProportions), many sample statistics have a similar-shaped distribution: a *bell-shaped (or normal) distribution* (Sect. \@ref(NormalDistributions)).
 We now study this distribution, as it often is the basis for describing what values the statistic can be *expected* to take, based on the initial *assumption* about the population.
 
 
@@ -55,13 +55,13 @@ The
 } else {
    '[Australian Bureau of Statistics (ABS)](http://www.abs.gov.au/ausstats/abs@.nsf/Lookup/4338.0main+features212011-13),'
 }`
-however, takes samples of Australians to compute estimates of the heights and other measurements.
+however, takes samples of Australians to finds heights and other measurements.
 
-A model could be **assumed** for the heights of the population of Australian adult males.
+A model could be *assumed* for the heights of the population of Australian adult males.
 A model is a *theoretical* idea that might be a useful description of the heights of Australian adult males in the *population*.
 Suppose a *model* for the heights of Australian adult males is adopted that describes the heights as:
 
-* having a symmetric distribution,
+* having a bell-shaped (normal) distribution,
 * with a *mean height* of 175cm, and 
 * a *standard deviation* of 7cm. 
 
@@ -75,79 +75,57 @@ HT.sd <- 7
 par( mfrow = c(1, 2),
      mar = c(5, 0.5, 4, 0.5))
 
-plotNormal(mu = HT.mn, 
-           sd = HT.sd, 
-           showZ = TRUE,
-           xlab = "Height (in cm)",
-           main = "Heights of Australian\nadult males")
+hide <- plotNormal(mu = HT.mn, 
+                   sd = HT.sd, 
+                   showZ = TRUE,
+                   xlab = "Height (in cm)",
+                   main = "Heights of Australian\nadult males")
 
 
-set.seed(6000)
+set.seed(14040)
 
-  HT.mn <- 175
-  HT.sd <- 7
-  num.heights <- 100
-  
-  x <- seq( HT.mn - 4 * HT.sd, 
-            HT.mn + 4 * HT.sd, 
-	    length = 100)
-  y <- dnorm( x,  
-              mean = HT.mn, 
-	      sd = HT.sd)
-  
-  
-  NumSampleHists <- 10
-  
-  for (i in (5:5)){
-    # HISTOGRAMS
-    if ( i > 1 ){
-      HT.data <- rnorm( num.heights, mean=HT.mn, sd=HT.sd)
-      
-      out <- hist(HT.data, 
-                  breaks = seq(150, 200, by = 5),
-                  col = plot.colour,
-                  border = plot.colour,
-                  xlab = "Heights (in cm)",
-                  axes = FALSE,
-                  plot = TRUE,
-                  xlim = range(x),
-            main = "Heights of Australian adult\nmales: model, and one sample",
-                  sub = "One sample of size 100",
-                  ylab = "")
-      axis(side = 1 )
-    }
-    
-    
-    # Plot the normal distribution
-    if ( i == 1 ) {
-      plot( range(x), c(0, 1),
+HT.mn <- 175
+HT.sd <- 7
+num.heights <- 100
+
+x <- seq( HT.mn - 4 * HT.sd, 
+          HT.mn + 4 * HT.sd, 
+          length = 100)
+y <- dnorm( x,  
+            mean = HT.mn, 
+            sd = HT.sd)
+
+# HISTOGRAM
+HT.data <- rnorm( num.heights, 
+                  mean = HT.mn, 
+                  sd = HT.sd)
+
+out <- hist(HT.data, 
+            breaks = seq(150, 200, by = 5),
+            col = plot.colour,
+            border = plot.colour,
+            xlab = "Heights (in cm)",
             axes = FALSE,
-            type = "n",
+            plot = TRUE,
+            xlim = range(x),
             main = "Heights of Australian adult\nmales: model, and one sample",
-            xlab = "Height (in cm)",
+            sub = "One sample of size 100",
             ylab = "")
-      axis(side = 1)
-      
-      lines( (y / max(y)) ~ x,
-             lwd = 2,
-             col = "black")
-    } else {
-      y <- y / max(y) * max (out$counts)
-      
-      lines( y ~ x,
-             lwd = 2,
-             col = "black")
-    }
-    
-    # Plot x-xaxis
-    abline(v = 0,
-           col = "grey",
-           lwd = 2)
-    # Plot the mean
-    abline(h = 0,
-           col = "grey",
-           lwd = 2)
-  }
+axis(side = 1 )
+y <- y / max(y) * max (out$counts)
+
+lines( y ~ x,
+       lwd = 2,
+       col = "black")
+
+# Plot x-axis
+abline(v = 0,
+       col = "grey",
+       lwd = 2)
+# Plot the mean
+abline(h = 0,
+       col = "grey",
+       lwd = 2)
 ```
 
 Since we do not know the heights of all Australian men, this model represents an idealised, or *assumed*, picture of the histogram of the heights of all Australian adult males in the *population*.
@@ -164,19 +142,19 @@ For example,
 
 
 ```{r HeightsModelMovie, echo=FALSE, animation.hook="gifski", cache=FALSE, dev=if (is_latex_output()){"pdf"}else{"png"}}
- if (knitr::is_html_output()) {
-   set.seed(6000)
-
+if (knitr::is_html_output()) {
+  set.seed(14040)
+  
   HT.mn <- 175
   HT.sd <- 7
   num.heights <- 100
   
   x <- seq( HT.mn - 4 * HT.sd, 
             HT.mn + 4 * HT.sd, 
-	    length = 100)
+            length = 100)
   y <- dnorm( x,  
               mean = HT.mn, 
-	      sd = HT.sd)
+              sd = HT.sd)
   
   NumSampleHists <- 20
   
@@ -185,7 +163,7 @@ For example,
     if ( i > 1 ){
       HT.data <- rnorm( num.heights, 
                         mean = HT.mn, 
-			sd = HT.sd)
+                        sd = HT.sd)
       
       out <- hist(HT.data, 
                   breaks = seq(150, 200, by = 5),
@@ -255,7 +233,7 @@ Likewise, no variable has *exactly* a normal distribution, but the model is stil
 The model is a *theoretical* way of describing the distribution in the population; it does not represent any particular sample of data.
 The model can be thought of as an 'average' of the histograms of the data from many samples.
 
-Indeed, if this model turns out to be poor at describing what appears in these many samples, the [*parameters*](#StatisticsAndParameters) of the model (the values of $\mu$ and $\sigma$) can be adjusted so the model *does* describe the sample data well.
+Indeed, if this model turns out to be poor at describing what appears in samples, the [*parameters*](#StatisticsAndParameters) of the model (the values of $\mu$ and $\sigma$) can be adjusted so the model *does* describe the sample data well.
 In fact, evidence suggests that the average height of Australians has been increasing [@loesch2000secular] and so the mean of the model may need to be changed to  remain a good model.
 
 A model is like an educated guess of the unknown population, based on sample information.
@@ -268,7 +246,7 @@ All normal distributions have these properties:
 
 * Normal distributions are symmetric about the mean.\tightlist
 * No upper limit or lower limit exists, in theory, for the variable.
-  Of course, the chance that some of these values occur is essentially zero (such as a male taller than 550cm).
+  Of course, the chance that some of these values occur is essentially zero (such as a male taller than 350cm).
 * The [68--95--99.7 rule](#def:EmpiricalRule) applies:
 
   * approximately 68% of values lie within 1 standard deviation of the mean;
@@ -283,7 +261,7 @@ These properties are true for *all* normal distributions, whatever the mean $\mu
 ## Standardising ($z$-scores) {#z-scores}
 
 <!-- Since many statistics have a normal distribution (under certain circumstances), the [68--95--99.7 rule](#def:EmpiricalRule) can be used to understand the distribution of sample statistics. -->
-Since the [68--95--99.7 rule](#def:EmpiricalRule) applies for all normal distributions, the percentages only depend on how many standard deviations ($\sigma$) a value ($x$) is from the mean ($\mu$).
+Since the 68--95--99.7 rule (Sect. \@ref(def:EmpiricalRule)) applies for all normal distributions, the percentages only depend on how many standard deviations ($\sigma$) a value ($x$) is from the mean ($\mu$).
 This information can be used to learn more about how values are distributed.
 
 

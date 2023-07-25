@@ -62,38 +62,38 @@ plotNormal <- function(mu,
   # srt: String rotation of the x-axis labels.
   # cex.tickmarks: The value of  cex  for the tickmark labels
   # main  is the main title to use
-
+  
   hor <- seq(xlim.lo, 
              xlim.hi, 
              length = 500)
-
+  
   nc <- dnorm(hor, 
               mean = mu,
               sd = sd) + verticalOffset
-
+  
   extra <- 0.25 # extra space at ends
   
   if (add) {
     lines( nc ~ hor,
+           bg = bg,
+           ylim = switch( any(is.na(ylim)) + 1, ylim, c(0, max(nc))), # Since ifelse fails to return NULL
+           xlim = c(xlim.lo, xlim.hi),
+           lwd = 2,
+           xlab = xlab,
+           ylab = "",
+           main = main)
+    
+  } else {
+    plot( nc ~ hor, 
+          axes = FALSE,
           bg = bg,
           ylim = switch( any(is.na(ylim)) + 1, ylim, c(0, max(nc))), # Since ifelse fails to return NULL
           xlim = c(xlim.lo, xlim.hi),
           lwd = 2,
           xlab = xlab,
           ylab = "",
-          main = main)
-    
-  } else {
-    plot( nc ~ hor, 
-            axes = FALSE,
-            bg = bg,
-            ylim = switch( any(is.na(ylim)) + 1, ylim, c(0, max(nc))), # Since ifelse fails to return NULL
-            xlim = c(xlim.lo, xlim.hi),
-            lwd = 2,
-            xlab = xlab,
-            ylab = "",
-            main = main,
-            type = "l")
+          main = main,
+          type = "l")
   }
   if( showXaxis) {
     if (is.null(showXlabels)) {
@@ -129,15 +129,15 @@ plotNormal <- function(mu,
               col = "grey")
     } else {
       for (z in (-3:3)) { # Do one vertical line at a time
-         xVertLines <- z * sd + mu
-         yVertLines <- dnorm( xVertLines, mean = mu, sd = sd )
-         lines( x = c( xVertLines, xVertLines),
-                y = c(0, yVertLines) + verticalOffset,
-                col = "grey")
+        xVertLines <- z * sd + mu
+        yVertLines <- dnorm( xVertLines, mean = mu, sd = sd )
+        lines( x = c( xVertLines, xVertLines),
+               y = c(0, yVertLines) + verticalOffset,
+               col = "grey")
       }
     }
   }
-
+  
   
   invisible( return( list(y = nc, 
                           x = hor)) )
