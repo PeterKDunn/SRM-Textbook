@@ -59,8 +59,6 @@ Consider a European roulette wheel
 a ball is spun and can land on any number on the wheel from 0 to 36 (inclusive).
 
 
-
-
 <!-- Show Roulette wheel, and some text: -->
 ```{r, child = if (knitr::is_html_output() ) {'./children/HTML/RouletteWheel-HTML.Rmd'} else { './children/LaTeX/RouletteWheel-LaTeX.Rmd'}}
 ```
@@ -72,7 +70,7 @@ set.seed(8723064)
 ```
 
 
-Computer simulation can be used to demonstrate what happens if the wheel was spun for $n = 15$ spins, over and over and over again, and the proportion of odd-spins was recorded for each repetition.
+Computer simulation can be used to demonstrate what happens if the wheel was spun, over and over again, for $n = 15$ spins each time, and the proportion of odd-spins was recorded for each repetition.
 Clearly, the proportion of odd spins $\hat{p}$ can vary from sample to sample (sampling variation) for one sample of $n = 15$ spins, as shown by the histogram (Fig. \@ref(fig:RouletteWheelHist), top left panel).
 We can see that, for many repetitions, $\hat{p}$ is rarely smaller than 0.2, and rarely larger than 0.8.
 
@@ -80,7 +78,7 @@ If the wheel was spun (say) $n = 25$ times (rather than $15$ times), $\hat{p}$ a
 The same process can be repeated for many repetitions of (say) $n = 100$ and $n = 200$ spins (Fig. \@ref(fig:RouletteWheelHist), bottom panels).
 
 Notice that as the sample size $n$ gets larger, the *distribution* of the values of $\hat{p}$ look more like a normal distribution, and the variation gets smaller.
-With $200$ spins, for instance, observing a sample proportion smaller than 0.4 or greater than 0.6 seems highly unusual, but these are not uncommon at all for $15$ spins.
+With $200$ spins, for instance, observing a sample proportion smaller than $0.4$ or greater than $0.6$ seems highly unusual, but these are not uncommon at all for $15$ spins.
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
 Suppose we spun a roulette wheel 100 times, and observed 31 even numbers.
@@ -105,7 +103,7 @@ xNorm <- seq(0, 1,
              length = 100)
 
 propOdd <- function(x){
-	sum( (x%%2 != 0 ) ) / length(x)
+  sum( (x%%2 != 0 ) ) / length(x)
 }
 
 set.seed(37945000)
@@ -131,11 +129,11 @@ out <- hist( sampleP,
              main = paste("From", spins[1], "spins\nof the wheel") )
 yNorm <- dnorm(xNorm, 
                mean = p, 
-	       sd = se[1]) 
+               sd = se[1]) 
 lines( xNorm,
-      (yNorm) / max(yNorm) * max(out$count),
-      col = "black",
-      lwd = 2)
+       (yNorm) / max(yNorm) * max(out$count),
+       col = "black",
+       lwd = 2)
 axis(side = 1)
 
 
@@ -162,7 +160,7 @@ out <- hist( sampleP,
              main = paste("From", spins[2], "spins\nof the wheel") )
 yNorm <- dnorm(xNorm, 
                mean = p, 
-	       sd = se[2]) 
+               sd = se[2]) 
 lines( xNorm,
        (yNorm) / max(yNorm) * max(out$count),
        col = "black",
@@ -175,7 +173,7 @@ axis(side = 1)
 
 spinNumbersAll <- sample( 0:36,
                           spins[3] * num.sims, 
-			  replace = TRUE)
+                          replace = TRUE)
 spinNumbers <- array( spinNumbersAll, 
                       dim = c(spins[3], num.sims) )
 sampleP <- apply( spinNumbers, 2, propOdd )
@@ -192,17 +190,17 @@ out <- hist( sampleP,
              main = paste("From", spins[3], "spins\nof the wheel") )
 yNorm <- dnorm(xNorm, 
                mean = p, 
-	       sd = se[3]) 
+               sd = se[3]) 
 lines( xNorm,
        (yNorm) / max(yNorm) * max(out$count),
-        col = "black",
-        lwd = 2)
+       col = "black",
+       lwd = 2)
 axis(side = 1)
 
 
 spinNumbersAll <- sample( 0:36, 
                           spins[4] * num.sims, 
-			  replace = TRUE)
+                          replace = TRUE)
 spinNumbers <- array( spinNumbersAll, 
                       dim = c(spins[4], num.sims) )
 sampleP <- apply( spinNumbers, 2, propOdd )
@@ -219,7 +217,7 @@ out <- hist( sampleP,
              main = paste("From", spins[4], "spins\nof the wheel") )
 yNorm <- dnorm(xNorm, 
                mean = p, 
-	       sd = se[4])
+               sd = se[4])
 lines( xNorm,
        (yNorm) / max(yNorm) * max(out$count),
        col = "black",
@@ -234,9 +232,8 @@ The values of the sample proportion vary from sample to sample.
 The distribution of the possible values of the sample statistic (in this case the *sample* proportion) from sample to sample is called a *sampling distribution*.
 
 Under certain conditions, the sampling distribution of a sample proportion is described by an approximate a normal distribution.
-In general, the approximation gets better as the sample size gets larger.
+In general, the approximation gets better as the sample size gets larger, and the possible values of $\hat{p}$ vary less as the sample size gets larger.
 :::
-
 
 
 ## Sample means have a distribution {#SamplingDistributionMeans}
@@ -250,22 +247,17 @@ Like all sample statistics, the sample mean varies from sample to sample (Sect. 
 
 
 
-Consider a European roulette wheel again
-`r if (knitr::is_latex_output()) {
-   '(Fig. \\@ref(fig:RouletteWheel)).'
-} else {
-   '(Sect. \\@ref(SamplingDistributionProportions)).'
-}`
+Consider a European roulette wheel again (Sect. \@ref(SamplingDistributionProportions)).
 Rather than recording the sample proportion of odd-spins, suppose the *sample mean* of the numbers spun was recorded.
-So, for example, if the wheel is spun (say) 15 times, the *sample* mean of the spins $\bar{x}$ will vary.
-Of course, spinning the wheel 30, 50 or 100 times also shows that the *sample* mean $\bar{x}$ can vary too.
-How much can it vary?
+If the wheel is spun (say) $15$ times, the *sample* mean of the spins $\bar{x}$ will vary from one set of $15$ spins to another.
+Of course, spinning the wheel $30$, $50$ or $100$ times also shows that the *sample* mean $\bar{x}$ can vary too.
+How much does it vary?
 
-Again, computer simulation can be used to demonstrate what could happen if the wheel was spun 15 times, over and over and over again, and the mean of the spun numbers was recorded for each repetition.
+Again, computer simulation can be used to demonstrate what could happen if the wheel was spun $15$ times, over and over and over again, and the mean of the spun numbers was recorded for each repetition.
 Clearly, the sample mean spin $\bar{x}$ can vary from sample to sample (sampling variation) for $n = 15$ spins (Fig. \@ref(fig:RouletteWheelHistx), top left panel).
 
 When $n = 15$, the sample mean $\bar{x}$ indeed varies from sample to sample, and the *distribution* of the values of $\bar{x}$ have an approximate normal distribution.
-If the wheel was spun more than 15 times (say, $n = 50$ times) something similar occurs (Fig. \@ref(fig:RouletteWheelHistx), top right panel): the values of $\bar{x}$ vary from sample to sample, and the values have an approximate normal distribution.
+If the wheel was spun more than $15$ times (say, $n = 50$ times) something similar occurs (Fig. \@ref(fig:RouletteWheelHistx), top right panel): the values of $\bar{x}$ vary from sample to sample, and the values have an approximate normal distribution.
 In fact, the values of $\bar{x}$ have a normal distribution for other numbers of spins also (Fig. \@ref(fig:RouletteWheelHistx), bottom panels).
 
 
@@ -292,7 +284,7 @@ xNorm <- seq(0, 37,
 
 spinNumbersAll <- sample( 0:36, 
                           spins[1] * num.sims, 
-			  replace = TRUE)
+                          replace = TRUE)
 spinNumbers <- array( spinNumbersAll, 
                       dim = c(spins[1], num.sims) )
 sampleMeans <- colMeans(spinNumbers)
@@ -309,17 +301,17 @@ out <- hist( sampleMeans,
              main = paste("From", spins[1], "spins\nof the wheel") )
 yNorm <- dnorm(xNorm, 
                mean = mu, 
-	       sd = se[1]) 
+               sd = se[1]) 
 lines( xNorm,
-      (yNorm) / max(yNorm) * max(out$count),
-      col = "black",
-      lwd = 2)
+       (yNorm) / max(yNorm) * max(out$count),
+       col = "black",
+       lwd = 2)
 axis(side = 1)
 
 
 spinNumbersAll <- sample( 0:36, 
                           spins[2] * num.sims, 
-			  replace = TRUE)
+                          replace = TRUE)
 spinNumbers <- array( spinNumbersAll, 
                       dim = c(spins[2], num.sims) )
 sampleMeans <- colMeans(spinNumbers)
@@ -336,7 +328,7 @@ out <- hist( sampleMeans,
              main = paste("From", spins[2], "spins\nof the wheel") )
 yNorm <- dnorm(xNorm, 
                mean = mu, 
-	       sd = se[2])
+               sd = se[2])
 lines( xNorm,
        (yNorm) / max(yNorm) * max(out$count),
        col = "black",
@@ -346,7 +338,7 @@ axis(side = 1)
 
 spinNumbersAll <- sample( 0:36, 
                           spins[3] * num.sims, 
-			  replace = TRUE)
+                          replace = TRUE)
 spinNumbers <- array( spinNumbersAll, 
                       dim = c(spins[3], num.sims) )
 sampleMeans <- colMeans(spinNumbers)
@@ -363,7 +355,7 @@ out <- hist( sampleMeans,
              main = paste("From", spins[3], "spins\nof the wheel") )
 yNorm <- dnorm(xNorm, 
                mean = mu, 
-	       sd = se[3]) 
+               sd = se[3]) 
 lines( xNorm,
        (yNorm) / max(yNorm) * max(out$count),
        col = "black",
@@ -373,7 +365,7 @@ axis(side = 1)
 
 spinNumbersAll <- sample( 0:36, 
                           spins[4] * num.sims, 
-			  replace = TRUE)
+                          replace = TRUE)
 spinNumbers <- array( spinNumbersAll, 
                       dim = c(spins[4], num.sims) )
 sampleMeans <- colMeans(spinNumbers)
@@ -390,30 +382,39 @@ out <- hist( sampleMeans,
              main = paste("From", spins[4], "spins\nof the wheel") )
 yNorm <- dnorm(xNorm, 
                mean = mu, 
-	       sd = se[4]) 
+               sd = se[4]) 
 lines( xNorm,
        (yNorm) / max(yNorm) * max(out$count),  
        col = "black",
        lwd = 2)
 axis(side = 1)
-
 ```
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 The values of the sample mean vary from sample to sample.
 The distribution of the possible values of a sample statistic, in this case the *sample* mean, is called a *sampling distribution*.
-Under certain conditions, the sampling distribution of a sample mean is a normal distribution.
+
+Under certain conditions, the sampling distribution of a sample mean is described by an approximate a normal distribution.
+In general, the approximation gets better as the sample size gets larger, and the possible values of $\bar{x}$ vary less as the sample size gets larger.
 :::
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Suppose we spun a roulette wheel 100 times, and the mean of the observed numbers was 24.5.
+Suppose we spun a roulette wheel $100$ times, and the mean of the observed numbers was $24.5$.
 What would you conclude?\label{thinkBox:SpinMean}
+
+`r if (!knitr::is_html_output()) '<!--'`
+`r webexercises::hide()`
+From Fig. \ref{fig:RouletteWheelHist} (bottom-left), highly unlikely from a fair wheel.
+Or perhaps you were very lucky...
+`r webexercises::unhide()`
+`r if (!knitr::is_html_output()) '-->'`
 :::
 
 
-As we have seen, each sample is likely to be different, so *any* statistic estimated from the sample is likely to be different for each sample.
+As we have seen, each sample is likely to be different, so *any* statistic is likely to be vary from sample to sample.
+(Recall that the value of the *population* parameter does not change.)
 This variation in the possible values of the observed sampling statistic is called *sampling variation*.
 
 
@@ -422,17 +423,17 @@ This variation in the possible values of the observed sampling statistic is call
 :::
 
 
-
-
 ## Standard errors {#StandardErrors}
 
-The value of a sample statistic can vary for every possible sample that we could select.
-However, we only observe the sample statistic from one sample.
-The actual value of the sample statistic that we observe depends on which one of those countless samples we have.
+The value of a sample statistic can vary from sample to sample, depending on which sample is selected.
+However, only one sample is taken and hence one value of the sample statistic is observed.
+The specific value of the sample statistic that is observed depends on which one of those countless samples is selected.
 
 This means that all the possible values of sample statistics that we could potentially observe have a *distribution* (specifically, a *sampling distribution*).
-Perhaps surprisingly, under certain conditions, the sampling distribution is often a *normal distribution*.
-If the sampling distribution is a normal distribution, it is reasonable to ask what the value of the *standard deviation*  of that normal distribution is; that is, how much the value of the sample statistic might vary across all of the possible samples.
+Perhaps surprisingly, under certain conditions, the sampling distribution is often a *normal distribution*, as we have seen.
+If the sampling distribution is a normal distribution, it is reasonable to ask what the value of the *standard deviation*  of that normal distribution is.
+(Even if the sampling distribution is *not* a normal distribution, the question is still valid.)
+In other words, how much does the value of the sample statistic vary across all of the possible samples?
 
 Figs. \@ref(fig:RouletteWheelHist) and \@ref(fig:RouletteWheelHistx) show that the variation in the values of the sample statistic get smaller for larger sample sizes.
 In other words, the standard deviation appears to get *smaller* as the sample sizes get *larger*: the sample statistics show less variation for larger $n$.
@@ -442,7 +443,7 @@ This makes sense: *larger* samples generally produce more precise estimates.
 
 The standard deviation of a sampling distribution is given a special name: a *standard error*.
 The standard error is a measure of how precisely the *sample* [statistic](#StatisticsAndParameters) estimates the *population* [parameter](#StatisticsAndParameters).
-If every possible sample (of a given size) was found, and the statistic computed from each sample, the standard deviation of these estimates is the *standard error*.
+If every possible sample (of a given size) was found, and the statistic computed from each sample, the standard deviation of all these estimates is the *standard error*.
 
 
 ::: {.definition #StandardError name="Standard error"}
@@ -451,11 +452,11 @@ A *standard error* is the standard deviation of the sampling distribution of a s
 
 
 ::: {.example #StandardErrors name="Standard errors"}
-In Fig. \@ref(fig:RouletteWheelHistx), a sample of 250 (i.e., 250 spins) is unlikely to produce a sample mean larger than 20, or smaller than 15. 
-However, in a sample of size 15 (i.e., 15 spins) sample means near 15 and 20 are quite commonplace.
+In Fig. \@ref(fig:RouletteWheelHistx), a sample of $250$ (i.e., $250$ spins) is unlikely to produce a sample mean larger than $20$, or smaller than $15$. 
+However, in a sample of size $15$ (i.e., $15$ spins) sample means near $15$ and $20$ are quite commonplace.
 
-In samples of size 100, the variation is smaller than in samples of size 15.
-Hence, the *standard error* (the deviation of the sampling normal distributions) will be smaller for sample of size 250 than for sample of size 15.
+In samples of size $100$, the variation is smaller than in samples of size $15$.
+Hence, the *standard error* (the deviation of the sampling normal distributions) will be smaller for sample of size $250$ than for sample of size $15$.
 :::
 
 
@@ -470,7 +471,6 @@ The standard error is an unfortunate term: It is not an *error* or *mistake*, or
 :::
 
 
-
 ## Standard deviation vs standard error
 
 Even
@@ -482,14 +482,15 @@ Even
 *standard deviation* and *standard error* [@ko2014inappropriate].
 Understanding the difference is important.
 
-The [*standard deviation*](#VariationStdDev), in general, quantifies the amount of variation in any variable.
+The [*standard deviation*](#VariationStdDev), in general, quantifies the amount of variation in any quantity that varies.
 The *standard error* is a name specifically given to the standard deviation that describes a sampling distribution.
 
-In research studies, *standard deviations* are used to describe the variation in individual observations (for *quantitative* data): how observations vary from *individual to individual*.
+In research, *standard deviations* are used to describe the variation in the values of a variable for individual observations (for *quantitative* data): how observations vary from *individual to individual*.
 The *standard error* is used to describe how *sample estimates* are likely to vary from sample to sample (i.e., to describe the precision of sample estimates).
 
 Crucially, the standard error *is* a standard deviation, but is used specifically to describe the variation in sampling distributions.
 *Any* numerical quantity estimated from a sample (a *statistic*) can vary from sample to sample, and so has sampling variation, a sampling distribution, and hence a standard error.
+(Not all statistics have a *normal* distribution, however.)
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -500,7 +501,7 @@ Equivalently: *all* statistics vary from sample to sample and have a standard er
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 The *standard error* is often abbreviated to 'SE' or 's.e.'.
-For example, the '[standard error of the sample mean](#SamplingDistributionMeans)' is often written as $\text{s.e.}(\bar{x})$, and the '[standard error of the sample proportion](#SamplingDistributionProportions)' is often written as $\text{s.e.}(\hat{p})$.
+For example, the '[standard error of the sample mean](#SamplingDistributionMeans)' is often written $\text{s.e.}(\bar{x})$, and the '[standard error of the sample proportion](#SamplingDistributionProportions)' is often written $\text{s.e.}(\hat{p})$.
 :::
 
 
@@ -509,7 +510,7 @@ For example, the '[standard error of the sample mean](#SamplingDistributionMeans
 
 ## Summary {#Chap18-Summary}
 
-A **sampling distribution** describes how the value of all possible sample statistic is likely to vary from sample to sample.
+A **sampling distribution** describes how all possible values of a sample statistic is likely to vary from sample to sample.
 Under certain circumstances, the sampling distribution often can be described by a **normal distribution**.
 The standard deviation of this normal distribution is called a **standard error**.
 The standard error is the name specifically given to the standard deviation that describes the variation in the sample statistic *across all possible samples*.
@@ -521,17 +522,16 @@ The standard error is the name specifically given to the standard deviation that
 1. *Why* is the phrase 'the standard error of the population proportion' inappropriate?\tightlist  
 `r if( knitr::is_html_output(exclude = "epub") ) {
 	longmcq( c(
-		answer = "Because only sample statistics vary from sample to sample",
+		answer = "Because only sample statistics have values that vary from sample to sample",
 		"Because proportions do not have a standard error",
 		"Because proportions only have a standard deviation",
 		"Because proportions come from qualitative data"
-		))}`
-	
+		))}`  
 `r if( !knitr::is_html_output(exclude = "epub") ) {
-' 	 * Because only sample statistics vary from sample to sample
+' 	 * Because only sample statistics have values that vary from sample to sample
  	 * Because proportions do not have a standard error
  	 * Because proportions only have a standard deviation
- 	* Because proportions come from qualitative data'
+   * Because proportions come from qualitative data'
 }`
 
 1. Which *one* the following *does not* have a standard error?  
@@ -542,8 +542,7 @@ The standard error is the name specifically given to the standard deviation that
 		"The sample proportion",
 		"The sample odds ratio",
 		answer = "The sample size"
-		))}`
-		
+		))}`  
 `r if( !knitr::is_html_output(exclude = "epub") ) {
 ' 	 * The sample mean
  	 * The difference between two sample means
@@ -551,60 +550,46 @@ The standard error is the name specifically given to the standard deviation that
    * The sample odds ratio
    * The sample size'
 }`
-
-
 1. True or false: Sampling variation refers to how sample sizes vary.
 `r if( knitr::is_html_output(exclude = "epub") ) {
 	torf( answer=FALSE )}`
-
 1. True or false: Sampling distributions describe parameters.
 `r if( knitr::is_html_output(exclude = "epub") ) {
 	torf( answer=FALSE )}`
-
 1. True or false: Statistics do not vary from sample to sample.
 `r if( knitr::is_html_output(exclude = "epub") ) {
 	torf( answer=FALSE )}`
-
 1. True or false: Populations are numerically summarised using parameters
 `r if( knitr::is_html_output(exclude = "epub") ) {
 	torf( answer=TRUE )}`
-
-1. True of false: The *standard deviation* is a *standard error* of something quite specific.  
+1. True of false: The *standard deviation* is a *standard error* of something quite specific.
 `r if( knitr::is_html_output(exclude = "epub") ) {
 	torf( answer=FALSE )}`
-	
 1. True or false: 
 Sampling distributions are always *normal* distributions.  
 `r if( knitr::is_html_output(exclude = "epub") ) {
 	torf( answer=FALSE )}`
-
 1. True or false: 
 Sampling variation measures the amount of variation in the individuals in the sample (for the variable of interest).  
 `r if( knitr::is_html_output(exclude = "epub") ) {
 	torf( answer = FALSE )}`
-
 1. True or false: 
 The standard error measures the size of the error when we use a sample to estimate a population.  
 `r if( knitr::is_html_output(exclude = "epub") ) {
 	torf( answer = FALSE )}`
-
 1. True or false: 
 In general terms, a standard deviation measures the amount of variation.   
 `r if( knitr::is_html_output(exclude = "epub") ) {
 	torf( answer = TRUE )}`
-
 1. True or false: 
 The standard error is a standard deviation, of something quite specific.  
 `r if( knitr::is_html_output(exclude = "epub") ) {
 	torf( answer = TRUE )}`
-
 1. True or false: 
 Sampling variation measures the size of the sample.   
 `r if( knitr::is_html_output(exclude = "epub") ) {
 	torf( answer = FALSE )}`
 :::
-
-
 
 
 ## Exercises {#SamplingVariationExercises}
@@ -630,11 +615,27 @@ Explain.
 ::: {.exercise #HasStandardError}
 Which of the following have a *standard error*?
 
+:::::: {.cols data-latex=""}
+
+:::: {.col data-latex="{0.4\textwidth}"}
+
 1. The population proportion.
 1. The sample median.
 1. The sample IQR.
+::::
+
+:::: {.col data-latex="{0.05\textwidth}"}
+\ 
+<!-- an empty Div (with a white space), serving as
+a column separator -->
+::::
+
+:::: {.col data-latex="{0.5\textwidth}"}
 1. The sample standard deviation.
 1. The population odds.
+::::
+::::::
+
 :::
 
 
@@ -661,8 +662,10 @@ How would you explain the difference between the *standard error* and the *stand
 **Answers to in-chapter questions:**
 
 
-- Sect. \ref{thinkBox:SpinMean}: From Fig. \ref{fig:RouletteWheelHist} (bottom-left), highly unlikely from a fair wheel.
+- Sect. \ref{thinkBox:SpinProportion}: From Fig. \ref{fig:RouletteWheelHist} (bottom-left), highly unlikely from a fair wheel. 
+  Or perhaps you were very unlucky...
 - Sect. \ref{thinkBox:SpinMean} From Fig. \ref{fig:RouletteWheelHistx} (bottom-left), highly unlikely from a fair wheel.
+  Or perhaps you were very lucky...
 
 - \textbf{\textit{Quick Revision} questions:}
 **1a.** Because only *sample statistics* vary from sample to sample. 
