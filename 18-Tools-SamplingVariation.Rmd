@@ -36,7 +36,7 @@ As a result, the expected behaviour of these statistics can be *described*, so w
 
 We saw this in Sect. \@ref(MakingDecisionsInResearch): the sample proportion of red cards in a sample of 15 varied from hand to hand, and was approximately distributed as a normal distribution.
 This is no accident: *Many sample statistics vary from sample to sample with an approximate normal distribution* if certain conditions are met.
-This is called the *Central Limit Theorem*.
+<!--This is called the *Central Limit Theorem*.-->
 
 Any distribution that describes how a sample statistic varies for all possible samples is called a *sampling distribution*: how the value of the sample statistic varies from sample to sample for all possible samples.
 The *sampling distribution* often has a normal distribution shape.
@@ -52,105 +52,17 @@ A **sampling distribution** is the distribution of some sample statistic, showin
 As with any sample statistic, sample proportions vary from sample to sample (Sect. \@ref(MakingDecisionsInResearch)); that is, *sampling variation* exists, so sample proportions have a *sampling distribution*.
 Consider a European roulette wheel
 `r if (knitr::is_latex_output()) {
-   '(Fig. \\@ref(fig:RouletteWheel); the online version has an animation):'
+   'shown below (the online version has an animation):'
 } else {
    'shown below in the animation:'
 }`
 a ball is spun and can land on any number on the wheel from 0 to 36 (inclusive).
 
-Using the [classical approach to probability](#ProbClassical), the probability of the ball landing on an *odd* number 
-(an '*odd-spin*') is $p = 18/37 =  0.486$.
-This is the *population proportion*.
-
-If the wheel is spun (say) 15 times, the *sample* proportion of odd-spins in those 15 spins, denoted $\hat{p}$, will vary.
-Of course, the *sample* proportion $\hat{p}$ of odd-spins can vary after spinning the wheel 30, 50 or 100 times also.
-How does $\hat{p}$ vary from one set of 15 spins to another set of 15 spins?
 
 
-```{r echo=FALSE, results='hide', cache = FALSE}
-date.str <- date()
-seed <- as.numeric( paste( substr(date.str, 18, 19), # Second
-                           substr(date.str, 15, 16),
-                           sep = "") # Minutes
-                       )
-# For Roulette wheel
-```
 
-
-```{r SpinningWheel, echo=FALSE, animation.hook="gifski", interval=0.05, progress=TRUE, dev=if (is_latex_output()){"pdf"}else{"png"}}
-if (knitr::is_html_output()){
-  
-  set.seed(seed) # Set a random seed based on current time
-
-  # Wheel
-  DD <- 10
-  dd <- 4
-  
-  StartOffset <- sample( seq(-10, 10, 
-                             by = 1), 
-                         size = 1)
-  Turns <- runif(n = 1, 
-                 min = 2, 
-                 max = 3)
-
-  sectorAngle <- 360/37 # Angle of each of the 37 segments, IN DEGREES
-
-  phi <- seq( from = (StartOffset * sectorAngle), # All of this is in degrees
-              to   = (StartOffset * sectorAngle) + (Turns * 360),
-              by   = sectorAngle) - sectorAngle/2 #So ball rests in the *middle* of each segment
-
-  phir <- deg2rad(phi) # Convert to radians
-
-  # Radius that changes
-  radius <- seq(0.85 * DD, dd, 
-                length = length(phi) )
-
-  # Grey that colours, to show "moving" ball
-  greyBall <- rgb(100, 100, 100,    
-                  max = 255, 
-                  alpha = seq(125, 0, length = length(phi)))
-
-  Delay <- 75
-  Stop <- length(phir) + Delay
-
-  for (i in 1:Stop){ 
-    if ( i <= length(phir)){
-
-      spin <- plotSpinningWheel( angle = phir[i], 
-                                 radius = radius[i], 
-                                 wheelSize = c(DD, dd),
-                                 plotShadow = ifelse( (i == length(phir)) | (i == 1), FALSE, TRUE),
-                                 main = "Spinning..." )
-    } else {
-      spin <- plotSpinningWheel( angle = phir[length(phir)],
-                                 radius = radius[length(phir)], 
-                                 wheelSize = c(DD, dd),
-                                 plotShadow = FALSE,
-                                 main = paste("Spun a", spin$roll, "on", spin$colour) )
-      # Plot stuff to make things stick
-      points( x = runif(1, 0.8, 0.9) * DD,
-              y = runif(1, 0.8, 0.9) * DD,
-              col = "white")
-    }
-
-  }
-}
-
-```
-
-```{r RouletteWheel, echo=FALSE, fig.cap="A European roulette wheel", cache=FALSE, out.width = "25%", fig.align="center", fig.height=2.5,fig.width=2.25}
-if (knitr::is_latex_output()){
-
-  # Wheel  
-  DD <- 10
-  dd <- 4
-  
-  spin <- plotSpinningWheel( angle = deg2rad(360/37)/2, 
-                             radius = dd, 
-                             wheelSize = c(DD, dd),
-                             plotShadow = FALSE,  
-                             main = "")
-}
+<!-- Show Roulette wheel, and some text: -->
+```{r, child = if (knitr::is_html_output() ) {'./children/HTML/RouletteWheel-HTML.Rmd'} else { './children/LaTeX/RouletteWheel-LaTeX.Rmd'}}
 ```
 
 
@@ -158,7 +70,6 @@ if (knitr::is_latex_output()){
 # Reset seed
 set.seed(8723064)
 ```
-
 
 
 Computer simulation can be used to demonstrate what happens if the wheel was spun for $n = 15$ spins, over and over and over again, and the proportion of odd-spins was recorded for each repetition.
