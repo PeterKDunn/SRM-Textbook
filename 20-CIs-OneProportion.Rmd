@@ -50,151 +50,162 @@ Let's simulate rolling a die 25 times, using just 10 sets of 25 rolls;
 if (knitr::is_html_output()){
   
   set.seed(99999)
-    num.rolls <- 25
-    num.sims <- 10
-    x.loc <- 1:(num.rolls)
-    y.loc <- 1
-    prop.even <- array(dim = num.sims)
-    all.rolls <- array( dim = c(num.sims, num.rolls))
-    for (i in 1:num.sims){
+  num.rolls <- 25
+  num.sims <- 10
+  x.loc <- 1:(num.rolls)
+  y.loc <- 1
+  prop.even <- array(dim = num.sims)
+  all.rolls <- array( dim = c(num.sims, num.rolls))
+  for (i in 1:num.sims){
+    
+    plot( c(1, (num.rolls+2)), c(1, num.sims),
+          type = "n",
+          las = 1,
+          xlab = "",
+          ylab = "",
+          main= paste("Set number",i),
+          axes = FALSE)
+    roll <- sample(1:6, 
+                   num.rolls, 
+                   replace = TRUE)
+    all.rolls[i, ] <- roll
+    prop.even[i] <- sum(roll/2 == floor(roll/2)) / num.rolls
+    
+    col1 <- col2rgb("darkolivegreen2")
+    col2 <- col2rgb("indianred2")
+    
+    for (j in 1:i){
       
-      plot( c(1, (num.rolls+2)), c(1, num.sims),
-            type = "n",
-            las = 1,
-            xlab = "",
-            ylab = "",
-            main= paste("Set number",i),
-            axes = FALSE)
-      roll <- sample(1:6, 
-                     num.rolls, 
-		     replace = TRUE)
-      all.rolls[i, ] <- roll
-      prop.even[i] <- sum(roll/2 == floor(roll/2)) / num.rolls
+      text(y = j, x = 1:num.rolls,
+           labels = all.rolls[j, ],
+           col = ifelse( all.rolls[j,]/2 == floor(all.rolls[j,]/2), "black", "grey") )
       
-      col1 <- col2rgb("darkolivegreen2")
-      col2 <- col2rgb("indianred2")
-      
-      for (j in 1:i){
-        
-        text(y = j, x = 1:num.rolls,
-             labels = all.rolls[j, ],
-             col = ifelse( all.rolls[j,]/2 == floor(all.rolls[j,]/2), "black", "grey") )
-
-              # Add some slight background colour under the sample proportions
-              polygon( c(num.rolls + 1, num.rolls + 1, num.rolls + 3, num.rolls + 3),
-                       c(j - 0.5, j + 0.5, j + 0.5, j - 0.5),
-                       border = NA,
-                       col = ifelse( prop.even[j] > 0.5, rgb( col1[1], col1[2], col1[3], alpha = 75, max = 255), 
-                                                         rgb( col2[1], col2[2], col2[3], alpha = 75, max = 255) ) )
-      }
-      # Add p-hat heading
-      mtext(expression(hat( italic(p) ) ), 
-            side = 3, 
-            line = 0, 
-            at = num.rolls + 2 )
-      # Add the roll number to the left-hand side
-      axis(side = 2, 
-           at = 1:i,
-           las = 1,
-           labels = paste("Set #", 1:i, sep="") )
-      
-      # Add the sample proportion to right-hand side 
-      text(num.rolls+2, 1:i, 
-           labels = format(round(prop.even[1:i], 2), 
-                           nsmall = 2) )
-      
-      
-      #Add dividing line
-      abline(v = num.rolls + 1, 
-             col = "grey")
-      
-      # Divide each roll set
-      abline(h = (1:i) - 0.5, 
-             col = "grey")
+      # Add some slight background colour under the sample proportions
+      polygon( c(num.rolls + 1, num.rolls + 1, num.rolls + 3, num.rolls + 3),
+               c(j - 0.5, j + 0.5, j + 0.5, j - 0.5),
+               border = NA,
+               col = ifelse( prop.even[j] > 0.5, rgb( col1[1], col1[2], col1[3], alpha = 75, max = 255), 
+                             rgb( col2[1], col2[2], col2[3], alpha = 75, max = 255) ) )
     }
+    # Add p-hat heading
+    mtext(expression(hat( italic(p) ) ), 
+          side = 3, 
+          line = 0, 
+          at = num.rolls + 2 )
+    # Add the roll number to the left-hand side
+    axis(side = 2, 
+         at = 1:i,
+         las = 1,
+         labels = paste("Set #", 1:i, sep="") )
+    
+    # Add the sample proportion to right-hand side 
+    text(num.rolls+2, 1:i, 
+         labels = format(round(prop.even[1:i], 2), 
+                         nsmall = 2) )
+    
+    
+    #Add dividing line
+    abline(v = num.rolls + 1, 
+           col = "grey")
+    
+    # Divide each roll set
+    abline(h = (1:i) - 0.5, 
+           col = "grey")
   }
+}
 ```
 
 
 ```{r RollDiceFig, echo=FALSE, fig.align="center", out.width="90%", fig.width=7, fig.height=4, fig.cap="The proportion of rolls that are even is not the same for every sample of 25 rolls" }
 if (knitr::is_latex_output()){
   set.seed(99999)
-    num.rolls <- 25
-    num.sims <- 10
-    x.loc <- 1:(num.rolls)
-    y.loc <- 1
-    prop.even <- array(dim = num.sims)
-    all.rolls <- array( dim = c(num.sims, num.rolls))
+  num.rolls <- 25
+  num.sims <- 10
+  x.loc <- 1:(num.rolls)
+  y.loc <- 1
+  prop.even <- array(dim = num.sims)
+  all.rolls <- array( dim = c(num.sims, num.rolls))
+  
+  par( mar = c(0.5, 4, 3, 0.5))
+  
+  plot( c(1, (num.rolls + 2)), 
+        c(1, num.sims),
+        type = "n",
+        las = 1,
+        xlab = "",
+        ylab = "",
+        main = paste("The results from", num.sims, "sets of", num.rolls, "rolls each"),
+        axes = FALSE)
+  
+  col1 <- col2rgb("darkolivegreen2")
+  col2 <- col2rgb("indianred2")
+  
+  for (i in 1:num.sims){
     
-    plot( c(1, (num.rolls + 2)), 
-          c(1, num.sims),
-          type = "n",
-	  las = 1,
-	  xlab = "",
-	  ylab = "",
-	  main = "",
-	  axes = FALSE)
-
-    col1 <- col2rgb("darkolivegreen2")
-    col2 <- col2rgb("indianred2")
-      
-    for (i in 1:num.sims){
-      
-      roll <- sample(1:6, 
-                     num.rolls, 
-                     replace = TRUE)
-      all.rolls[i, ] <- roll
-      prop.even[i] <- sum(roll/2 == floor(roll/2)) / num.rolls
-    }
-      for (j in 1:i){
-        text(y = j, 
-	     x = 1:num.rolls,
-             labels = all.rolls[j, ],
-             col = ifelse( all.rolls[j, ]/2 == floor(all.rolls[j, ]/2), "black", "grey") )
-              
-              # Add some slight background colour under the sample proportions
-              polygon( c(num.rolls + 1, 
-	                 num.rolls + 1, 
-			 num.rolls + 3, 
-			 num.rolls + 3),
-                       c(j - 0.5, 
-		         j + 0.5, 
-			 j + 0.5, 
-			 j - 0.5),
-                       border = NA,
-                       col = ifelse( prop.even[j] > 0.5, 
-		                     rgb( col1[1], col1[2], col1[3], alpha = 75, max = 255), 
-                                     rgb( col2[1], col2[2], col2[3], alpha = 75, max = 255) ) )
-
-      }
-      # Add p-hat heading
-      mtext(expression(hat( italic(p) ) ), 
-            side = 3, 
-            line = 0, 
-            at = num.rolls + 2 )
-      # Add the roll number to the left-hand side
-      axis(side = 2, 
-           at = 1:i,
-           las = 1,
-           labels = paste("Set #", 1:i, sep = "") )
-      
-      # Add the sample proportion to right-hand side 
-      text(num.rolls + 2, 
-           1:i, 
-           labels = format(round(prop.even[1:i], 2), nsmall = 2) )
-      #Add dividing line
-      abline(v = num.rolls + 1, 
-             col = "grey")
-      
-      # Divide each roll set
-      abline(h = (1:i) - 0.5, 
-             col = "grey")
-    #}
+    roll <- sample(1:6, 
+                   num.rolls, 
+                   replace = TRUE)
+    all.rolls[i, ] <- roll
+    prop.even[i] <- sum(roll/2 == floor(roll/2)) / num.rolls
+  }
+  for (j in 1:i){
+    # The value of each roll
+    text(y = j, 
+         x = 1:num.rolls,
+         labels = all.rolls[j, ],
+         font = ifelse( all.rolls[j, ]/2 == floor(all.rolls[j, ]/2), 
+                        2, 
+                        1 ),
+         col = ifelse( all.rolls[j, ]/2 == floor(all.rolls[j, ]/2), 
+                       "black", 
+                       grey(0.7)) )
+    
+    # Overall P(even): Add some slight background colour under the sample proportions
+    polygon( c(num.rolls + 1, 
+               num.rolls + 1, 
+               num.rolls + 3, 
+               num.rolls + 3),
+             c(j - 0.5, 
+               j + 0.5, 
+               j + 0.5, 
+               j - 0.5),
+             border = NA,
+             col = ifelse( prop.even[j] > 0.5, 
+                           rgb( col1[1], col1[2], col1[3], alpha = 75, max = 255), 
+                           rgb( col2[1], col2[2], col2[3], alpha = 75, max = 255) ) )
+    
+  }
+  # Add p-hat heading
+  mtext(expression(hat( italic(p) ) ), 
+        side = 3, 
+        line = 0, 
+        at = num.rolls + 2 )
+  # Add the roll number to the left-hand side
+  axis(side = 2, 
+       at = 1:i,
+       las = 1,
+       labels = paste("Set #", 1:i, sep = "") )
+  
+  # Add the sample proportion to right-hand side 
+  text(num.rolls + 2, 
+       1:i, 
+       font = ifelse( prop.even[j] > 0.5, 
+                      2, 
+                      1 ),
+       labels = format(round(prop.even[1:i], 2), nsmall = 2) )
+  #Add dividing line
+  abline(v = num.rolls + 1, 
+         col = "grey")
+  
+  # Divide each roll set
+  abline(h = (1:i) - 0.5, 
+         col = "grey")
+  #}
 }
 ```
 
 The proportion of even rolls varies from set to set.
-For these 10 sets of $n = 25$ rolls, the percentage of even rolls ranged from $\hat{p} = 0.32$ even rolls to $\hat{p} = 0.60$ even rolls.
+For these $10$ sets of $n = 25$ rolls, the percentage of even rolls ranged from $\hat{p} = 0.32$ even rolls to $\hat{p} = 0.60$ even rolls.
 
 The sample proportion of even rolls would be expected to vary around $p = 0.5$, since three of the six faces of the die are even numbers (the *population proportion*), using the classical approach to probability.
 Of course, the sample proportion could be very small or very high by chance, but we wouldn't expect to see that very often (Fig. \@ref(fig:RouletteWheelHist), top-right panel).
@@ -202,7 +213,7 @@ Of course, the sample proportion could be very small or very high by chance, but
 In this example, the *population proportion* of even rolls is known to be $p = 0.5$.
 Each sample of $n = 25$ rolls is a *sample* of all possible sets of $n = 25$ rolls, and the *sample* proportion of even rolls is denoted by $\hat{p}$.
 
-For any sample of 25 rolls, the value of $\hat{p}$ will be unknown until we roll the die.
+For any sample of $25$ rolls, the value of $\hat{p}$ will be unknown until we roll the die.
 The proportion of even rolls is likely to vary from sample to sample; that is, the sample proportions exhibit sampling variation, and the *amount* of sampling variation is quantified using a *standard error*.
 
 
@@ -216,14 +227,14 @@ The symbol $\hat{p}$ is pronounced 'pee-hat'.
 :::
 
 
-Suppose a fair die was rolled 25 times, and this was repeated *thousands* of times (not just 10 times as in 
+Suppose a fair die was rolled $25$ times, and this was repeated *thousands* of times (not just $10$ times as in 
 `r if (knitr::is_latex_output()) {
-   'Fig. \\@ref(fig:RollDiceFig)'
+   'Fig. \\@ref(fig:RollDiceFig),'
 } else {
-   'the animation'
+   'the animation above),'
 }`
-above), and the proportion of even rolls was recorded for every one of those thousands of sets of 25 rolls.
-These thousands of sample proportions $\hat{p}$, one from every sample of 25 rolls, could be graphed using a histogram;
+and the proportion of even rolls was recorded for every one of those thousands of sets of $25$ rolls.
+These thousands of sample proportions $\hat{p}$, one from every sample of $25$ rolls, could be graphed using a histogram;
 `r if (knitr::is_latex_output()) {
    'see Fig. \\@ref(fig:RollDiceHistFig) (the online version has an animation).'
 } else {
@@ -235,106 +246,106 @@ These thousands of sample proportions $\hat{p}$, one from every sample of 25 rol
 ```{r fig.show="animate", RollDiceHistHTML, echo=FALSE, animation.hook="gifski", interval=0.4, loop=FALSE, dev=if (is_latex_output()){"pdf"}else{"png"}}
 if (knitr::is_html_output()){
   set.seed(990099)
-    num.rolls <- 25
-    num.sims <- 1000
+  num.rolls <- 25
+  num.sims <- 1000
+  
+  print_Histo <- rep(FALSE, num.sims)
+  print_Histo[ c( 1:10,
+                  seq(24, num.sims, 25) + 1,
+                  num.sims) ] <- TRUE
+  
+  prop.even <- array(dim = num.sims)
+  
+  for (i in 1:num.sims){
     
-    print_Histo <- rep(FALSE, num.sims)
-    print_Histo[ c( 1:10,
-                    seq(24, num.sims, 25) + 1,
-                    num.sims) ] <- TRUE
+    roll <- sample(1:6, num.rolls, 
+                   replace = TRUE)
+    prop.even[i] <- sum( (roll %% 2) )/num.rolls ### sum( roll/2 == floor(roll/2)) / num.rolls
     
-    prop.even <- array(dim = num.sims)
-    
-    for (i in 1:num.sims){
-      
-      roll <- sample(1:6, num.rolls, 
-                     replace = TRUE)
-      prop.even[i] <- sum( (roll %% 2) )/num.rolls ### sum( roll/2 == floor(roll/2)) / num.rolls
-      
-      #Print every nth histogram only
-      if (print_Histo[i]){
-        out <- hist( prop.even,
-                     breaks = seq(0.05, 0.95, by = 0.04) - 0.03,
-                     las = 1,
-                     ylim = c(0, 200),
-                     xlim = c(0, 1),
-                     col = plot.colour,
-                     main = paste("Histogram of sample proportions\nSet number:", i),
-                     xlab = "Proportion of the 25 rolls showing an even number",
-                     sub = paste("(For this sample: proportion of rolls even is ", 
-                                 format(round(prop.even[i], 2), nsmall = 2),
-                                 ")", 
-                                 sep = "" ),
-                     ylab = "",
-                     right = FALSE,
-                     axes = FALSE)
-        axis(side = 1)
-        #axis(side = 2, 
-        #     las = 1)
-        
-        points(prop.even[i], 0,
-               pch = 19,
-               col = plot.colour0)
-        
-        xx <- seq(0, 1, 
-                  length = 500)
-        yy <- dnorm(xx, 
-                    mean = 0.5, 
-                    sd = 0.1 )
-        yy <- yy/max(yy) * max(out$count)
-        
-        lines(yy ~ xx, 
-              col = "grey", 
-              lwd = 2)  
-      }
-    }
-  }
-```
-</center>
-
-
-```{r RollDiceHistFig, echo=FALSE, fig.align="center", fig.height=3, fig.width=6.5, out.width='65%', fig.cap="The proportion of rolls that are even change from one sample of 25 rolls to the next sample of 25 rolls" }
-if (knitr::is_latex_output()){
-  set.seed(990099)
-    num.rolls <- 25
-    num.sims <- 1000
-    prop.even <- array(dim = num.sims)
-    
-    for (i in 1:num.sims){
-      
-      roll <- sample(1:6, num.rolls,  
-                     replace = TRUE)
-      prop.even[i] <- sum(roll/2 == floor(roll/2)) / num.rolls
-    }
-    
+    #Print every nth histogram only
+    if (print_Histo[i]){
       out <- hist( prop.even,
                    breaks = seq(0.05, 0.95, by = 0.04) - 0.03,
                    las = 1,
                    ylim = c(0, 200),
                    xlim = c(0, 1),
                    col = plot.colour,
-                   main = paste("Histogram of sample proportions\nfrom thousands of simulations of",
-                              num.rolls,
-                              "rolls"),
+                   main = paste("Histogram of sample proportions\nSet number:", i),
                    xlab = "Proportion of the 25 rolls showing an even number",
+                   sub = paste("(For this sample: proportion of rolls even is ", 
+                               format(round(prop.even[i], 2), nsmall = 2),
+                               ")", 
+                               sep = "" ),
                    ylab = "",
                    right = FALSE,
                    axes = FALSE)
       axis(side = 1)
       #axis(side = 2, 
       #     las = 1)
-
+      
+      points(prop.even[i], 0,
+             pch = 19,
+             col = plot.colour0)
+      
       xx <- seq(0, 1, 
-	        length = 500)
+                length = 500)
       yy <- dnorm(xx, 
-	          mean = 0.5, 
-	          sd = 0.1 )
+                  mean = 0.5, 
+                  sd = 0.1 )
       yy <- yy/max(yy) * max(out$count)
       
       lines(yy ~ xx, 
             col = "grey", 
             lwd = 2)  
     }
+  }
+}
+```
+</center>
+
+
+```{r RollDiceHistFig, echo=FALSE, fig.align="center", fig.height=3, fig.width=6.5, out.width='70%', fig.cap="The proportion of rolls that are even change from one sample of 25 rolls to the next sample of 25 rolls" }
+if (knitr::is_latex_output()){
+  set.seed(990099)
+  num.rolls <- 25
+  num.sims <- 1000
+  prop.even <- array(dim = num.sims)
+  
+  for (i in 1:num.sims){
+    
+    roll <- sample(1:6, num.rolls,  
+                   replace = TRUE)
+    prop.even[i] <- sum(roll/2 == floor(roll/2)) / num.rolls
+  }
+  
+  out <- hist( prop.even,
+               breaks = seq(0.05, 0.95, by = 0.04) - 0.03,
+               las = 1,
+               ylim = c(0, 200),
+               xlim = c(0, 1),
+               col = plot.colour,
+               main = paste("Histogram of sample proportions\nfrom thousands of simulations of",
+                            num.rolls,
+                            "rolls"),
+               xlab = "Proportion of the 25 rolls showing an even number",
+               ylab = "",
+               right = FALSE,
+               axes = FALSE)
+  axis(side = 1)
+  #axis(side = 2, 
+  #     las = 1)
+  
+  xx <- seq(0, 1, 
+            length = 500)
+  yy <- dnorm(xx, 
+              mean = 0.5, 
+              sd = 0.1 )
+  yy <- yy/max(yy) * max(out$count)
+  
+  lines(yy ~ xx, 
+        col = "grey", 
+        lwd = 2)  
+}
 ```
 
 
@@ -357,13 +368,13 @@ The possible values of the *sample* proportion $\hat{p}$ will have a *sampling d
 
 * an approximate normal distribution;
 * centred around a mean of $p = 0.5$;
-* with a standard deviation of `r round(se.die, 3)` (where this number comes from will be [revealed soon](#def:SamplingDistProp)).
+* with a standard deviation of $`r round(se.die, 3)`$ (where this number comes from will be [revealed soon](#def:SamplingDistProp)).
 
-This distribution is called a [*sampling distribution*](#def:SamplingDistribution), as discussed in Sect.&nbsp;\@ref(SamplingVariationIntro).
+This distribution is called a [*sampling distribution*](#def:SamplingDistribution), as discussed in Sect. \@ref(SamplingVariationIntro).
 The standard deviation of the sampling distribution is called a *standard error*, since it measures how much a sample statistic (in this case, a sample proportion $\hat{p}$) varies from sample to sample.
 
 Since the variation in the sample proportions can be described, a picture of this normal distribution can be drawn (Fig.&nbsp;\@ref(fig:NormalDieTheory)).
-We still don't know *exactly* what we'll find next roll... but we have some idea of *how* the sample proportion is likely to vary in sets of 25 rolls.
+We still don't know *exactly* what we'll find next roll... but we have some idea of *how* the sample proportion is likely to vary in sets of $25$ rolls.
 
 
 ```{r NormalDieTheory, echo=FALSE, fig.cap="The normal distribution, showing how the proportion of even rolls varies when a die is rolled 25 times", fig.align="center", fig.width=6.25, fig.height=2.75, out.width='60%'}
@@ -380,11 +391,13 @@ lines( x = c(0.5, 0.5),
        y = c(0, dnorm(0.5, mean = pop.p, sd = se.p)),
        col = "grey",
        lwd = 2)
-
 ```
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The [parameter](#StatisticsAndParameters) $p$ and the [statistic](#StatisticsAndParameters) $\hat{p}$ are both *proportions*, but a *mean* and *standard deviation* are used to describe the *sampling distribution*.
+The [parameter](#StatisticsAndParameters) $p$ and the [statistic](#StatisticsAndParameters) $\hat{p}$ are both *proportions*.
+
+However, the *average value* of the sample proportion can be described by a *mean*, and the amount of variation in the sample proportions can be described by a *standard deviation* (called a *standard error* in this context).
+
 For example, the mean of the sampling distribution is the 'average' value of all possible sample proportions, $\hat{p}$.
 :::
 
@@ -393,16 +406,14 @@ The value of $p$ (the *population* proportion: the proportion of even numbers on
 That is, $\hat{p}$ varies, and exhibits *sampling variation*.
 The variation in $\hat{p}$ from sample to sample is measured by the *standard error of the sample proportion*, written as $\text{s.e.}(\hat{p})$.
 
-In general, the **standard error for a sample proportion** when the value of $p$ is known is
-
+In general, the **standard error for a sample proportion** when the value of $p$ is known is  
 \begin{equation}
    \text{s.e.}(\hat{p}) = \sqrt{\frac{p \times (1-p)}{n}},
    (\#eq:StdErrorPknown)
 \end{equation}
 where $n$ is the number of rolls, and $p$ is the population proportion.
 For this example, there are $n = 25$ rolls of a die, and the population proportion of even rolls is $p = 0.5$.
-Then, the standard error of the sample proportion is
-
+Then, the standard error of the sample proportion is  
 \begin{equation}
 	\text{s.e.} (\hat{p}) = \sqrt{\frac{0.5 \times (1-0.5)}{25}} = 0.1.
    (\#eq:StdErrorExampleDie)
