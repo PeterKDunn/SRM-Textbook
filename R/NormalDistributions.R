@@ -1,36 +1,3 @@
-shadeNormal <- function(xx, yy, lo, hi, 
-                        col = "blue", #Shading colour
-                        density = NULL,
-                        angle = 45,
-                        outline = FALSE){
-  
-  xshade <- xx[ (xx >= lo) & ( xx <= hi ) ]
-  yshade <- yy[ (xx >= lo) & ( xx <= hi ) ]
-  y0 <- rep(min(yy), length(yshade))
-  
-  if ( !is.na(col) ){
-    polygon( x = c(xshade, rev(xshade) ),
-             y = c( yshade, y0),
-             col = col)
-  }
-  if ( !is.null(density)){
-    polygon( x = c(xshade, rev(xshade) ),
-             y = c( yshade, y0),
-             col = NA,
-             density = density,
-             angle = angle)
-  }
-  
-  if (outline) { # Draw lines at each end of the shading region
-    lo.ShadeAt <- min(which(out1$x > lo))
-    hi.ShadeAt <- max(which(out1$x < hi))
-    
-    lines( x = c(lo, lo),
-           y = c(0, yy[lo.ShadeAt]))
-    lines( x = c(hi, hi),
-           y = c(0, yy[hi.ShadeAt]))
-  }
-}
 
 plotNormal <- function(mu, 
                        sd,
@@ -76,7 +43,9 @@ plotNormal <- function(mu,
   if (add) {
     lines( nc ~ hor,
            bg = bg,
-           ylim = switch( any(is.na(ylim)) + 1, ylim, c(0, max(nc))), # Since ifelse fails to return NULL
+           ylim = switch( any(is.na(ylim)) + 1, 
+                          ylim, 
+                          c(0, max(nc))), # Since ifelse fails to return NULL
            xlim = c(xlim.lo, xlim.hi),
            lwd = 2,
            xlab = xlab,
@@ -87,7 +56,9 @@ plotNormal <- function(mu,
     plot( nc ~ hor, 
           axes = FALSE,
           bg = bg,
-          ylim = switch( any(is.na(ylim)) + 1, ylim, c(0, max(nc))), # Since ifelse fails to return NULL
+          ylim = switch( any(is.na(ylim)) + 1, 
+                         ylim, 
+                         c(0, max(nc))), # Since ifelse fails to return NULL
           xlim = c(xlim.lo, xlim.hi),
           lwd = 2,
           xlab = xlab,
@@ -114,8 +85,8 @@ plotNormal <- function(mu,
             x1 = xlim.hi,
             y0 = 0 + verticalOffset,
             y1 = 0 + verticalOffset,
-            length = 0.125, 
-            angle = 20, 
+            length = 0.15, 
+            angle = 8, 
             lwd = 2)
   } else {
     lines( x = c(xlim.lo, xlim.hi),
@@ -144,4 +115,40 @@ plotNormal <- function(mu,
 }
 
 
+####################################
+
+
+shadeNormal <- function(xx, yy, lo, hi, 
+                        col = "blue", #Shading colour
+                        density = NULL,
+                        angle = 45,
+                        outline = FALSE){
+  
+  xshade <- xx[ (xx >= lo) & ( xx <= hi ) ]
+  yshade <- yy[ (xx >= lo) & ( xx <= hi ) ]
+  y0 <- rep(min(yy), length(yshade))
+  
+  if ( !is.na(col) ){
+    polygon( x = c(xshade, rev(xshade) ),
+             y = c( yshade, y0),
+             col = col)
+  }
+  if ( !is.null(density)){
+    polygon( x = c(xshade, rev(xshade) ),
+             y = c( yshade, y0),
+             col = NA,
+             density = density,
+             angle = angle)
+  }
+  
+  if (outline) { # Draw lines at each end of the shading region
+    lo.ShadeAt <- min(which(out1$x > lo))
+    hi.ShadeAt <- max(which(out1$x < hi))
+    
+    lines( x = c(lo, lo),
+           y = c(0, yy[lo.ShadeAt]))
+    lines( x = c(hi, hi),
+           y = c(0, yy[hi.ShadeAt]))
+  }
+}
 
