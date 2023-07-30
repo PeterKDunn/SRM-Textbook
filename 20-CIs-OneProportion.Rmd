@@ -17,7 +17,7 @@ Suppose a fair, six-sided die is rolled 25 times (Fig. \@ref(fig:RouletteWheelHi
 What proportion of the rolls will produce an even number?
 That is, what will be the *sample proportion* of even numbers?
 
-Of course, no-one knows exactly what will happen for *any* individual roll, so no-one knows what proportion will be even for any sample of 25 rolls.
+Of course, since no-one knows exactly what will happen for *any* individual roll, no-one knows what proportion will be even for any sample of 25 rolls.
 In addition, the proportion of the 25 rolls that will be even will not be the same for every sample of 25 rolls.
 The sample proportion will *vary* from sample to sample: *sampling variation* exists.
 
@@ -356,19 +356,20 @@ se.die <- sqrt(0.5 * (1 - 0.5) / 25)
 
 The shape of the histogram is roughly a normal distribution.
 This is no accident: statistical theory says this will happen (when certain conditions are met: see Sect.&nbsp;\@ref(ValidityProportions)).
+The mean of this distribution is the *sampling mean*, denoted $\mu_{\hat{p}}$; the standard deviation for this distribution is the *standard error*, denoted $\text{s.e.}(\hat{p})$.
 
-The possible values of the *sample* proportion $\hat{p}$ have a [*sampling distribution*](#def:SamplingDistribution) which is roughly a normal distribution; the mean and standard deviation of the normal distribution
+The *values* of the mean and standard deviation of the normal distribution
 `r if (knitr::is_latex_output()) {
    'in Fig. \\@ref(fig:RollDiceHistFig)'
 } else {
    'the animation above'
 }`
-can even be determined. 
-The possible values of the *sample* proportion $\hat{p}$ will have a *sampling distribution*, described by:
+can even be determined (Fig. \@ref(fig:StatisticVariesAcrossSamples)).
+The sampling distribution for $\hat{p}$ is:
 
 * an approximate normal distribution;
-* centred around a mean of $p = 0.5$;
-* with a standard deviation of $`r round(se.die, 3)`$ (where this number comes from will be [revealed soon](#def:SamplingDistProp)).
+* centred around a *sampling mean* $\mu_{\hat{p}}$, whose value is $p = 0.5$ (the population proportion);
+* with a standard deviation (called the *standard error* $\text{s.e.}(\hat{p})$) whose value is $`r round(se.die, 3)`$ (where this number comes from will be [revealed soon](#def:SamplingDistProp)).
 
 This distribution is called a [*sampling distribution*](#def:SamplingDistribution), as discussed in Sect. \@ref(SamplingVariationIntro).
 The standard deviation of the sampling distribution is called a *standard error*, since it measures how much a sample statistic (in this case, a sample proportion $\hat{p}$) varies from sample to sample.
@@ -377,28 +378,59 @@ Since the variation in the sample proportions can be described, a picture of thi
 We still don't know *exactly* what we'll find next roll... but we have some idea of *how* the sample proportion is likely to vary in sets of $25$ rolls.
 
 
-```{r NormalDieTheory, echo=FALSE, fig.cap="The normal distribution, showing how the proportion of even rolls varies when a die is rolled 25 times", fig.align="center", fig.width=6.25, fig.height=2.75, out.width='60%'}
+```{r NormalDieTheory, echo=FALSE, fig.cap="The normal distribution, showing how the proportion of even rolls varies when a die is rolled 25 times", fig.align="center", fig.width=8.25, fig.height=3.5, out.width='100%'}
 pop.p <- 0.5
 n <- 25
 se.p <- sqrt( pop.p * (1 - pop.p) / n )
 
+par( mar = c(5, 0.5, 0.5, 0.5)) 
 out <- plotNormal(mu = pop.p, 
                   sd = se.p, 
                   xlab = "Sample proportion of even rolls out of 25", 
                   round.dec = 2,
-                  showZ = FALSE) # No vertical lines at z = -3:3
-lines( x = c(0.5, 0.5),
-       y = c(0, dnorm(0.5, mean = pop.p, sd = se.p)),
-       col = "grey",
-       lwd = 2)
+                  ylim = c(0, 8.5), # To allow room for "Sampling mean"
+                  showZ = TRUE) # Vertical lines at z = -3:3
+# lines( x = c(0.5, 0.5),
+#        y = c(0, dnorm(0.5, mean = pop.p, sd = se.p)),
+#        col = "grey",
+#        lwd = 2)
+# lines( x = c(0.6, 0.6),
+#        y = c(0, max(out$y)),
+#        col = "grey",
+#        lwd = 2)
+
+arrows(x0 = 0.5,
+       x1 = 0.5,
+       y0 = 1.65 * max(out$y),
+       y1 = max(out$y),
+       lwd = 2,
+       length = 0.15,
+       angle = 15)
+text(x = 0.5,
+     y = 1.65 * max(out$y),
+     pos = 3,
+     labels = expression(Sampling~mean*":"~mu[hat(italic(p))]) )
+
+arrows(x0 = 0.5,
+       x1 = 0.6,
+       y0 = 0.3 * max(out$y),
+       y1 = 0.3 * max(out$y),
+       lwd = 2,
+       code = 3,
+       length = 0.15,
+       angle = 15)
+text(x = 0.55,
+     y = 0.25 * max(out$y),
+     pos = 3,
+     labels = expression(Std~error*":"~plain(s.e.)(hat(italic(p)))))
 ```
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 The [parameter](#StatisticsAndParameters) $p$ and the [statistic](#StatisticsAndParameters) $\hat{p}$ are both *proportions*.
 
-However, the *average value* of the sample proportion can be described by a *mean*, and the amount of variation in the sample proportions can be described by a *standard deviation* (called a *standard error* in this context).
+However, the *average value* of the sample proportion can be described by a *sampling mean* $\mu_{\hat{p}}$, and the amount of variation in the sample proportions can be described by a *standard deviation* (called a *standard error* in this context) $\text{s.e.}(\hat{p})$.
 
-For example, the mean of the sampling distribution is the 'average' value of all possible sample proportions, $\hat{p}$.
+For example, the sampling mean of the sampling distribution is the 'average' value of all possible sample proportions, $\hat{p}$.
 :::
 
 
@@ -406,9 +438,10 @@ The value of $p$ (the *population* proportion: the proportion of even numbers on
 That is, $\hat{p}$ varies, and exhibits *sampling variation*.
 The variation in $\hat{p}$ from sample to sample is measured by the *standard error of the sample proportion*, written as $\text{s.e.}(\hat{p})$.
 
-In general, the **standard error for a sample proportion** when the value of $p$ is known is  
+The value of the sampling mean is $p$.
+The value of the **standard error for a sample proportion**, when the value of $p$ is known, is
 \begin{equation}
-   \text{s.e.}(\hat{p}) = \sqrt{\frac{p \times (1-p)}{n}},
+   \text{s.e.}(\hat{p}) = \sqrt{\frac{p \times (1 - p)}{n}},
    (\#eq:StdErrorPknown)
 \end{equation}
 where $n$ is the number of rolls, and $p$ is the population proportion.
@@ -418,13 +451,12 @@ Then, the standard error of the sample proportion is
 	\text{s.e.} (\hat{p}) = \sqrt{\frac{0.5 \times (1-0.5)}{25}} = 0.1.
    (\#eq:StdErrorExampleDie)
 \end{equation}
-This standard error is the standard deviation of the normal distribution in Fig.&nbsp;\@ref(fig:NormalDieTheory).
+This standard error is the standard deviation of the normal distribution in Fig. \@ref(fig:NormalDieTheory).
 
 Recall that the *the standard error is the standard deviation of the distribution of a sample statistic*, that measures how much a sample estimate is varies across all possible samples.
 In that sense, the standard error of the proportion measures how precisely $\hat{p}$ estimates the population proportion $p$ in samples of size $n$.
 
-Almost always, the value of $p$ is unknown, so when $\text{s.e.}(\hat{p})$ is computed, the value of $p$ can't be used.
-Instead, the best available estimate of $p$ is used, which is $\hat{p}$.
+Almost always, the value of $p$ is unknown.
 This situation is studied from Sect.&nbsp;\@ref(SamplingDistributionUnknownp) onwards.
 
 
@@ -432,13 +464,11 @@ This situation is studied from Sect.&nbsp;\@ref(SamplingDistributionUnknownp) on
 When the value of $p$ is *known*, the *sampling distribution of the sample proportion* is described by
 
 * an approximate normal distribution,
-* centred around a mean of $p$,
-* with a standard deviation (called the *standard error* of $\hat{p}$) of
-
+* centred around the sampling mean $\mu_{\hat{p}}$, whose value is $p$,
+* with a standard deviation (called the *standard error* of $\hat{p}$) $\text{s.e.}(\hat{p})$, whose value is  
 \[
    \text{s.e.}(\hat{p}) = \sqrt{\frac{ p \times (1-p)}{n}},
 \]
-
 when certain conditions are met (Sect. \@ref(ValidityProportions)), where $n$ is the size of the sample, and $p$ is the population proportion.
 In general, the approximation gets better as the sample size gets larger.
 :::
@@ -446,7 +476,7 @@ In general, the approximation gets better as the sample size gets larger.
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-From the die example, the values of $\hat{p}$ will vary with an approximate normal distribution, centred around $p = 0.5$, and with a standard error of approximately $\text{s.e.}({\hat{p}}) = 0.1$.
+From the die example, the values of $\hat{p}$ will vary with an approximate normal distribution, centred around $p = 0.5$, and with a standard error of $\text{s.e.}({\hat{p}}) = 0.1$.
 This distribution is shown in Fig.&nbsp;\@ref(fig:NormalDieTheory).
 Based on this picture, how often would a value of $\hat{p}$ larger than 0.80 be expected?\label{thinkBox:HowOftenp}
 
@@ -461,8 +491,8 @@ Figure \@ref(fig:NormalDieTheory) suggests that, while not impossible, 0.80 or g
 
 ## Sampling intervals: known proportion {#CIpKnownp}
 
-The possible values of the sample proportions $\hat{p}$ can be described by an approximate *normal distribution*, as just discussed.
-This enables the [68--95--99.7 rule](#def:EmpiricalRule) to be applied; for example, about 68% of the time with sets of 25 rolls, the sample proportion of even rolls will be between $0.5$ give-or-take *one* standard deviation (that is, give-or-take `r round(se.die, 3)`).
+Since the possible values of the sample proportions $\hat{p}$ can be described by an approximate *normal distribution*, the [68--95--99.7 rule](#def:EmpiricalRule) can be applied\.
+For example (see Fig. \@ref(fig:NormalDieTheory)), about 68% of the time, a set of 25 rolls will have between $0.5$ give-or-take *one* standard deviation (that is, give-or-take `r round(se.die, 3)`) rolls that are even.
 So, about 68% of the time, the proportion of even rolls in a set of 25 rolls will be between $0.5 - `r round(se.die, 3)` =  `r round(0.5 - se.die, 3)`$ and $0.5 + `r round(se.die, 3)` =  `r round(0.5 + se.die, 3)`$.
 
 Similarly, about 95% of the time, the proportion of even rolls will be between $0.5$ give-or-take *two* standard deviations, or between $0.5 - (2\times`r round(se.die, 3)`) =  `r round(0.5 - 2*se.die, 3)`$ and $0.5 + (2\times`r round(se.die, 3)`) =  `r round(0.5 + 2*se.die, 3)`$.
@@ -473,10 +503,9 @@ Most of the time (i.e., approximately 95% of the time), the value of $\hat{p}$ i
 } else {
    'In the animation above,'
 }`
-all ten sets of 25 rolls (or 100%) had a sample proportion betweeen 0.30 and 0.70.)
+all ten sets of 25 rolls (or 100%) had a sample proportion between 0.30 and 0.70.)
 
-Formally, the sample proportion $\hat{p}$ is likely to lie within the interval
-
+Formally, the sample proportion $\hat{p}$ is likely to lie within the interval  
 \[
    p \pm (\text{multiplier} \times \text{s.e.}(\hat{p})),
 \]
@@ -504,7 +533,7 @@ Software can be used for any other percentage interval (or for an *exact* 95% in
 
 ## Sampling distribution: unknown proportion  {#SamplingDistributionUnknownp}
 
-In the die example (Sect.&nbsp;\@ref(SamplingDistributionKnownp)), an equation was given for computing the standard error for the sample proportion for samples of size $n$, *when the value of $p$ was known*.
+In the die example (Sect.&nbsp;\@ref(SamplingDistributionKnownp)), the sampling distribution for the sample proportion was given, including an equation for computing the standard error for the sample proportion for samples of size $n$, *when the value of $p$ was known*.
 
 However, usually the value of $p$ (the *parameter*) is unknown; after all, the reason for taking a sample is to *estimate* the unknown value of $p$.
 When $p$ is unknown, the best available estimate can be used, which is $\hat{p}$.
@@ -532,8 +561,6 @@ In general, the approximation gets better as the sample size gets larger.
 :::
 
 
-
-
 ```{r NotationOnePropCI, echo=FALSE}
 
 OneProportionNotation <- array( dim = c(4, 2))
@@ -545,7 +572,7 @@ OneProportionNotation[2, ] <- c("Describing a sample",
 OneProportionNotation[3, ] <- c("Describing sample proportions ($\\hat{p}$)",
                           "Vary with approx. normal distribution (under certain conditions)")
 OneProportionNotation[4, ] <- c("across all possible samples",
-                          "with mean $\\mu_{\\hat{p}}$ and standard deviation $\\text{s.e.}(\\hat{p})$")
+                          "with sampling mean $\\mu_{\\hat{p}}$ and standard deviation $\\text{s.e.}(\\hat{p})$")
 
 
 if( knitr::is_latex_output() ) {
@@ -589,29 +616,29 @@ if( knitr::is_latex_output() ) {
 ```
 
 
-
-
 Let's *pretend* for the moment that the proportion of even rolls of a fair die is *unknown* (to demonstrate ideas).
 In this case, an *estimate* of the proportion of even rolls can be found by rolling a die $n = 25$ times and computing $\hat{p}$.
 
 Suppose 11 of the $n = 25$ rolls produced an even number, so that $\hat{p} = 11/25 = 0.44$.
-Then (from Definition \@ref(def:DEFSamplingDistributionPhat)),
-
+Then (from Definition \@ref(def:DEFSamplingDistributionPhat)),  
 \[
    \text{s.e.}(\hat{p}) = \sqrt{ \frac{ 0.44 \times (1 - 0.44)}{25}} = 0.099277.
 \]
-(This is very similar to the value of 0.1, the value of the standard error when the value of $p$ was known; see Eq.&nbsp;\@ref(eq:StdErrorExampleDie).)
+(This is very similar to the value of 0.1, the value of the standard error when the value of $p$ was known; see Sect. \@ref(SamplingDistributionKnownp).)
 
-Hence, the sample proportions would vary with an approximate normal distribution (Fig. \@ref(fig:NormalDieTheoryUnknownp)), centred around the unknown value of $p$ with a standard deviation of $\text{s.e.}(\hat{p}) = 0.099277$.
+Hence, the sample proportions will vary with an approximate normal distribution (Fig. \@ref(fig:NormalDieTheoryUnknownp)), centred around the unknown value of $p$ with a standard deviation of $\text{s.e.}(\hat{p}) = 0.099277$.
 
 
-```{r NormalDieTheoryUnknownp, echo=FALSE, fig.cap="The normal distribution, showing how the proportion of even rolls varies when a die is rolled 25 times", fig.align="center", fig.width=8.5, fig.height=2.75, out.width='80%'}
-HT.mn <- 175
-HT.sd <- 7
+```{r NormalDieTheoryUnknownp, echo=FALSE, fig.cap="The normal distribution, showing how the proportion of even rolls varies when a die is rolled 25 times, assuming the value of $p$ is unknown", fig.align="center", fig.width=8.25, fig.height=3.5, out.width='100%'}
+die.mn <- 0.5
+die.sd <- 0.099277
 
-out <- plotNormal(HT.mn,
-                  HT.sd,
+par( mar = c(5, 0.5, 0.5, 0.5)) 
+
+out <- plotNormal(die.mn,
+                  die.sd,
                   xlab = "Sample proportion of even rolls out of 25",
+                  ylim = c(0, 8.5),
                   showXlabels = c( 	
                     expression( italic(p)-0.298),
                     expression( italic(p)-0.199), 
@@ -620,6 +647,32 @@ out <- plotNormal(HT.mn,
                     expression( italic(p)+ 0.099), 
                     expression( italic(p)+ 0.199), 
                     expression( italic(p)+ 0.298)) )
+
+arrows(x0 = 0.5,
+       x1 = 0.5,
+       y0 = 1.65 * max(out$y),
+       y1 = max(out$y),
+       lwd = 2,
+       length = 0.15,
+       angle = 15)
+text(x = 0.5,
+     y = 1.65 * max(out$y),
+     pos = 3,
+     labels = expression(Sampling~mean*":"~mu[hat(italic(p))]) )
+
+arrows(x0 = 0.5,
+       x1 = 0.6,
+       y0 = 0.3 * max(out$y),
+       y1 = 0.3 * max(out$y),
+       lwd = 2,
+       code = 3,
+       length = 0.15,
+       angle = 15)
+text(x = 0.55,
+     y = 0.25 * max(out$y),
+     pos = 3,
+     labels = expression(Std~error*":"~plain(s.e.)(hat(italic(p)))))
+
 ```
 
 Using the 68--95--99.7 rule again: 
@@ -627,7 +680,7 @@ about 95% of the values of $\hat{p}$ are expected to be between $p - 0.199$ and 
 That is, for some *known* value of $p$, the *unknown* value of $\hat{p}$ is expected to vary between $p - 0.199$ and $p + 0.199$ (Fig. \@ref(fig:CIrelationships)).
 
 
-```{r CIrelationships, echo=FALSE, out.width='60%', fig.align="center", fig.cap="A known value of $p$ produces a range of $\\hat{p}$ values.", fig.width = 6, fig.height=4}
+```{r CIrelationships, echo=FALSE, out.width='60%', fig.align="center", fig.cap="A known value of $p$ produces a range of $\\hat{p}$ values.", fig.width = 5.5, fig.height=4}
 par(mar = c(1, 1, 5.5, 1) + 0.5 )   
 
 source("R/showCIrelationships.R")       
@@ -640,7 +693,7 @@ More precisely, a value of $p$ between $0.44 - 0.199$ and $0.44 + 0.199$  could 
 
 
 
-```{r CIrelationshipsP, echo=FALSE, out.width='75%', fig.align="center", fig.cap="A CI gives a range of possible values of $p$ for which it is reasonable to produce the observed value of $\\hat{p}$. The shaded regions represent the regions containing 95\\% of the values of $\\hat{p}$ for each value of $p$.", fig.width=7, fig.height=8}
+```{r CIrelationshipsP, echo=FALSE, out.width='75%', fig.align="center", fig.cap="A CI gives a range of possible values of $p$ for which it is reasonable to produce the observed value of $\\hat{p}$. The shaded regions represent the regions containing 95\\% of the values of $\\hat{p}$ for each value of $p$.", fig.width=6.5, fig.height=8}
 source("R/showCIForVariousp.R")              
 ```
 
@@ -748,7 +801,7 @@ if (knitr::is_html_output()){
 ```
 
 
-```{r RollDiceCIFig, echo=FALSE, fig.align="center", fig.width=8.5, out.width="100%", fig.cap="About 95\\% of CIs contain the population proportion"}
+```{r RollDiceCIFig, echo=FALSE, fig.align="center", fig.width=8.5, out.width="100%", fig.cap="About 95\\% of CIs contain the population proportion. We only have one sample."}
 if (knitr::is_latex_output()){
   set.seed(99999)
     num.rolls <- 25
@@ -806,11 +859,12 @@ if (knitr::is_latex_output()){
         pch.ty  <- ifelse( (ci.lower[j] < 0.5) & (ci.upper[j] > 0.5), 20, 4)
         lines( c(j, j), 
 	       c(ci.lower[j], ci.upper[j]),
-               lwd = 2,
+               lwd = 3,
                lty = l.ty,
                col = p.col)
         points(j, 
 	       ci.est[j], 
+	       cex = 1.5,
 	       pch = pch.ty)
       }
     }
@@ -829,8 +883,7 @@ This interval is called a *confidence interval*.
 :::
 
 
-In general, a CI for the population proportion $p$ is found using
-
+In general, a CI for the population proportion $p$ is found using  
 \[
   \hat{p} \pm ( \text{multiplier} \times \text{s.e.}(\hat{p})),
 \]
@@ -843,8 +896,7 @@ A *confidence interval* (CI) for the unknown value of the population proportion 
   \hat{p} \pm ( \text{multiplier} \times \text{s.e.}(\hat{p})), 
   (\#eq:CIp)
 \end{equation}
-where
-
+where  
 \[
    \text{s.e.}(\hat{p}) 
    =
@@ -879,7 +931,6 @@ The unknown parameter is $p$, the *population* proportion of young Canadians rep
 The sample proportion reporting sleeping difficulties after consuming energy drinks is $\hat{p} = 365/1516 = 0.241$.
 As usual, the sample proportion would vary from one sample of size $n = 1516$ to another; *sampling variation* exists.
 The *standard error* (Definition&nbsp;\@ref(def:ConfidenceIntervalp)) quantifies how much the sample proportion is likely to vary from sample to sample:
-
 \begin{align*}
   \text{s.e.}(\hat{p}) 
   &= \sqrt{\frac{\hat{p}\times(1 - \hat{p})}{n}}\\
@@ -910,7 +961,6 @@ The unknown parameter is $p$, the *population* proportion of koalas that had cro
 
 The sample proportion having crossed a road is $\hat{p} = 18/51 = 0.3529$.
 The standard error (Definition&nbsp;\@ref(def:ConfidenceIntervalp)) is
-
 \[
 \text{s.e.}(\hat{p})
  = \sqrt{ \frac{0.3529 \times (1 - 0.3529)}{51} } = 0.06692.
@@ -928,7 +978,7 @@ The research article reports the exact 95% CI as from 22% to 48%, very close to 
 ::: {.example #CIParamedic name="CI"}
 A study of how paramedics administer pain medication [@lord2009impact] found that 791 of patients reporting pain did *not* receive pain relief, out of 1766 patients studied who reported pain.
 That is, $\hat{p} = 791/1766 = 0.4479049$ and $n = 1766$.
-Hence, $\text{s.e.}(\hat{p}) =  0.01183326$, so the *approximate* 95% CI is from
+Hence, $\text{s.e.}(\hat{p}) =  0.01183326$, so the *approximate* 95% CI is from  
 \[
    0.4479049 - (2\times 0.0118332) = 0.424238 \text{\ \  to\ \   } 
    0.4479049 + (2\times 0.0118332) = 0.471571,

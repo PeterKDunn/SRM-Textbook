@@ -126,56 +126,58 @@ if (knitr::is_html_output()){
 ```{r RollDiceMeanFig, echo=FALSE, fig.align="center", cache=FALSE, fig.width=7, fig.height=4, out.width="85%", fig.cap="Rolling dice: The average of 25 rolls, for some sets of 25 rolls" }
 if (knitr::is_latex_output()){
   set.seed(99999)
-    num.rolls <- 25
-    num.sims <- 10
-    x.loc <- 1:(num.rolls)
-    y.loc <- 1
-    mean.even <- array(dim = num.sims)
-    all.rolls <- array( dim = c(num.sims, num.rolls))
-
-      plot( c(1, (num.rolls + 2)), c(1, num.sims),
-            type = "n",
-            las = 1,
-            xlab = "",
-            ylab = "",
-            main = "The sample mean from 25 rolls\nover 10 simulations",
-            axes = FALSE)
-
-    for (i in 1:num.sims){
-      roll <- sample(1:6, 
-                     num.rolls, 
-		     replace = TRUE)
-      all.rolls[i, ] <- roll
-      mean.even[i] <- mean(roll)
-    }
-     for (j in 1:num.sims){
-        text(y = j, 
-	     x = 1:num.rolls,
-             labels = all.rolls[j, ])
-      }
-      # Add x-bar heading
-      mtext(expression(bar( italic(x) ) ), 
-            side = 3, 
-	    line = 0, 
-	    at = num.rolls + 2 )
-      # Add the roll number to the left-hand side
-      axis(side = 2, 
-           at = 1:i,
-           las = 1,
-           labels = paste("Set #", 1:i, sep = "") )
-      
-      # Add the sample mean to right-hand side 
-      text(num.rolls + 2, 1:i, 
-           labels = format(round(mean.even[1:i], 1), nsmall = 2) )
-
-      #Add dividing line
-      abline(v = num.rolls + 1, 
-             col = "grey")
-	     
-      # Add line dividing roll sets
-      abline(h = seq(0.5, 10.5, by = 1), 
-             col = "gray")
-    #}
+  num.rolls <- 25
+  num.sims <- 10
+  x.loc <- 1:(num.rolls)
+  y.loc <- 1
+  mean.even <- array(dim = num.sims)
+  all.rolls <- array( dim = c(num.sims, num.rolls))
+  
+  par(mar = c(0.5, 4, 5, 0.5) )
+  plot( c(1, (num.rolls + 2)), c(1, num.sims),
+        type = "n",
+        las = 1,
+        xlab = "",
+        ylab = "",
+        main = "The sample mean from 25 rolls\nover 10 simulations",
+        axes = FALSE)
+  
+  for (i in 1:num.sims){
+    roll <- sample(1:6, 
+                   num.rolls, 
+                   replace = TRUE)
+    all.rolls[i, ] <- roll
+    mean.even[i] <- mean(roll)
+  }
+  for (j in 1:num.sims){
+    text(y = j, 
+         x = 1:num.rolls,
+         labels = all.rolls[j, ])
+  }
+  # Add x-bar heading
+  mtext(expression(bar( italic(x) ) ), 
+        side = 3, 
+        line = 0, 
+        at = num.rolls + 2 )
+  # Add the roll number to the left-hand side
+  axis(side = 2, 
+       at = 1:i,
+       las = 1,
+       labels = paste("Set #", 1:i, sep = "") )
+  
+  # Add the sample mean to right-hand side 
+  text(num.rolls + 2, 1:i, 
+       font = ifelse( mean.even > 3.5, 2, 1),
+       labels = format(round(mean.even[1:i], 2), nsmall = 2) )
+  
+  #Add dividing line
+  abline(v = num.rolls + 1, 
+         col = "grey")
+  
+  # Add line dividing roll sets
+  abline(h = seq(0.5, 10.5, by = 1), 
+         col = "gray")
+  #}
 }
 ```
 
@@ -192,108 +194,108 @@ If thousands of people made one set of 25 rolls each, and computed the mean for 
 ```{r RollDiceHistMeanHTML, cache=FALSE, echo=FALSE, animation.hook="gifski", interval=0.4, dev=if (is_latex_output()){"pdf"}else{"png"}}
 if (knitr::is_html_output()){
   set.seed(123456789)
-    num.sims <- 1000
-    num.rolls <- 25
+  num.sims <- 1000
+  num.rolls <- 25
+  
+  
+  print_Histo <- rep(FALSE, num.sims)
+  print_Histo[ c( 1:10,
+                  seq(24, num.sims, 25) + 1,
+                  num.sims) ] <- TRUE
+  
+  die.mn <- sum( (1:6) * (1/6))  # 3.5 as expected
+  die.vr <-  sum( ((1:6) - 3.5)^2 * (1/6))
+  
+  meanList <- array( dim = num.sims)
+  
+  for (i in 1:num.sims){
+    meanSingleRoll <- mean(sample(1:6, 
+                                  num.rolls, 
+                                  replace = TRUE))
+    meanList[i] <- meanSingleRoll
     
     
-    print_Histo <- rep(FALSE, num.sims)
-    print_Histo[ c( 1:10,
-                    seq(24, num.sims, 25) + 1,
-                    num.sims) ] <- TRUE
-    
-    die.mn <- sum( (1:6) * (1/6))  # 3.5 as expected
-    die.vr <-  sum( ((1:6) - 3.5)^2 * (1/6))
-    
-    meanList <- array( dim = num.sims)
-    
-    for (i in 1:num.sims){
-      meanSingleRoll <- mean(sample(1:6, 
-                                    num.rolls, 
-			            replace = TRUE))
-      meanList[i] <- meanSingleRoll
+    #Print every nth histogram only
+    if (print_Histo[i]){
+      out <- hist(meanList,
+                  xlab = "Mean of 25 rolls",
+                  ylab = "Number of times observed",
+                  main = paste("Histogram of the mean of 25 rolls:\nSimulation number:", i),
+                  sub = paste("(For this set: mean roll is ", 
+                              format(round(meanList[i], 2), nsmall = 2), 
+                              ")", 
+                              sep = "" ),
+                  col = plot.colour,
+                  las = 1,
+                  xlim = c(1.5, 5.5), 
+                  right = FALSE,
+                  ylim = c(0, 300),
+                  breaks = seq(2, 5, by = 0.25)
+      )
       
+      points(meanList[i], 0,
+             pch = 19,
+             col = plot.colour0)
       
-      #Print every nth histogram only
-      if (print_Histo[i]){
-        out <- hist(meanList,
-                    xlab = "Mean of 25 rolls",
-                    ylab = "Number of times observed",
-                    main = paste("Histogram of the mean of 25 rolls:\nSimulation number:", i),
-                    sub = paste("(For this set: mean roll is ", 
-                                format(round(meanList[i], 2), nsmall = 2), 
-                                ")", 
-                                sep = "" ),
-                    col = plot.colour,
-                    las = 1,
-                    xlim = c(1.5, 5.5), 
-                    right = FALSE,
-                    ylim = c(0, 300),
-                    breaks = seq(2, 5, by = 0.25)
-        )
-        
-        points(meanList[i], 0,
-               pch = 19,
-               col = plot.colour0)
-        
-        xx <- seq(1, 6, length=500)
-        yy <- dnorm(xx, 
-                    mean = die.mn, 
-                    sd = sqrt(die.vr/num.rolls) )
-        yy <- yy/max(yy) * max(out$count)
-        
-        lines(yy ~ xx, 
-              col = "grey", 
-              lwd = 2)  
-      }
+      xx <- seq(1, 6, length=500)
+      yy <- dnorm(xx, 
+                  mean = die.mn, 
+                  sd = sqrt(die.vr/num.rolls) )
+      yy <- yy/max(yy) * max(out$count)
+      
+      lines(yy ~ xx, 
+            col = "grey", 
+            lwd = 2)  
     }
   }
+}
 ```
 
 
 ```{r RollDiceHistMeanFig, echo=FALSE, fig.align="center", fig.width=5, fig.height=3.5, fig.cap="Rolling dice: The mean of 25 rolls, for thousands of repetitions" }
 if (knitr::is_latex_output()){
   set.seed(123456789)
-    num.sims <- 2000
-    num.rolls <- 25
-    
-    die.mn <- sum( (1:6) * (1/6))  # 3.5 as expected
-    die.vr <-  sum( ((1:6) - 3.5)^2 * (1/6))
-    
-    meanList <- array( dim=num.sims)
-    
-    for (i in 1:num.sims){
-      meanSingleRoll <- mean(sample(1:6, 
-                                    num.rolls, 
-				    replace = TRUE))
-      meanList[i] <- meanSingleRoll
-    }
-
-    out <- hist(meanList,
-                xlab = "Mean of 25 rolls",
-                #ylab = "Number of times observed",
-                ylab = "",
-                main = "Histogram of the mean of 25 rolls:\nafter thousands of simulations",
-#                             num.sims, "simulations"),
-                col = plot.colour,
-                las = 1,
-                axes = FALSE,
-                #xlim = c(1.5, 5.5),
-                right = FALSE,
-                #ylim = c(0, 300),
-                breaks = seq(2, 5, by = 0.25) 
-      )
-    axis(side = 1,
-         at = 1:6)
-      xx <- seq(1, 6, 
-                length = 500)
-      yy <- dnorm(xx, 
-                  mean = die.mn, 
-		  sd = sqrt(die.vr/num.rolls) )
-      yy <- yy/max(yy) * max(out$count)
-
-      lines(yy ~ xx, 
-            col = "grey", 
-	    lwd = 2)  
+  num.sims <- 2000
+  num.rolls <- 25
+  
+  die.mn <- sum( (1:6) * (1/6))  # 3.5 as expected
+  die.vr <-  sum( ((1:6) - 3.5)^2 * (1/6))
+  
+  meanList <- array( dim=num.sims)
+  
+  for (i in 1:num.sims){
+    meanSingleRoll <- mean(sample(1:6, 
+                                  num.rolls, 
+                                  replace = TRUE))
+    meanList[i] <- meanSingleRoll
+  }
+  
+  out <- hist(meanList,
+              xlab = "Mean of 25 rolls",
+              #ylab = "Number of times observed",
+              ylab = "",
+              main = "Histogram of the mean of 25 rolls:\nafter thousands of simulations",
+              #                             num.sims, "simulations"),
+              col = plot.colour,
+              las = 1,
+              axes = FALSE,
+              #xlim = c(1.5, 5.5),
+              right = FALSE,
+              #ylim = c(0, 300),
+              breaks = seq(2, 5, by = 0.25) 
+  )
+  axis(side = 1,
+       at = 1:6)
+  xx <- seq(1, 6, 
+            length = 500)
+  yy <- dnorm(xx, 
+              mean = die.mn, 
+              sd = sqrt(die.vr/num.rolls) )
+  yy <- yy/max(yy) * max(out$count)
+  
+  lines(yy ~ xx, 
+        col = "grey", 
+        lwd = 2)  
 }      
 ```
 
@@ -304,10 +306,10 @@ if (knitr::is_latex_output()){
    'From the animation above,'
 }`
 the sample means vary with an approximate normal distribution (as we saw with the sample proportions).
-This normal distribution is *not* describing the data; it is describing how the *bvalues of sample means vary across all possible samples*.
+This normal distribution is *not* describing the data; it is describing how the *values of sample means vary across all possible samples*.
 Under certain conditions, the values of the sample means can vary with a normal distribution, and this normal distribution has a mean and a standard deviation.
 
-Since this distribution is describing how *sample means* vary, the mean is denoted $\mu_{\bar{x}}$; it so happens that this is equal to the value of $\mu$.
+Since this distribution is describing how *sample means* vary, the *sampling mean* is denoted $\mu_{\bar{x}}$; it so happens that this is equal to the value of $\mu$.
 The standard deviation is called the *standard error of the sample means*, denoted $\text{s.e.}(\bar{x})$.
 When the *population* standard deviation $\sigma$ is *known*, the standard error happens to be
 
@@ -337,17 +339,14 @@ With this information, we can describe the *sampling distribution of the sample 
 When the *population* standard deviation is unknown, the *sampling distribution of the sample mean* is described by:
   
 * an approximate a normal distribution,
-* centred around $\mu_{\bar{x}} = \mu$,
-* with a standard deviation (called the *standard error of the mean*) of 
-
+* centred around a sampling mean of $\mu_{\bar{x}}$, whose value is $\mu$,
+* with a standard deviation (called the *standard error of the mean*) $\text{s.e.}(\bar{x}$, whose value is
 \begin{equation}
    \text{s.e.}(\bar{x}) = \frac{s}{\sqrt{n}},
    (\#eq:stderrorxbar)
 \end{equation}
 when certain conditions are met (Sect. \@ref(ValiditySampleMean)), where $n$ is the size of the sample, and $s$ is the standard deviation describing the variation in the individual observations in the sample (that is, the *sample* standard deviation). 
 :::
-
-
 
 
 ```{r NotationOneMeanCI, echo=FALSE}
@@ -361,7 +360,7 @@ OneMeanNotation[2, ] <- c("Individual values in a sample",
 OneMeanNotation[3, ] <- c("Sample means ($\\bar{x}$) across",
                           "Vary with approx. normal distribution (under certain conditions)")
 OneMeanNotation[4, ] <- c("all possible samples",
-                          "with mean $\\mu_{\\bar{x}}$ and standard deviation $\\text{s.e.}(\\bar{x})$")
+                          "with sampling mean $\\mu_{\\bar{x}}$ and standard deviation $\\text{s.e.}(\\bar{x})$")
 
 
 if( knitr::is_latex_output() ) {
@@ -491,13 +490,14 @@ A *wider* interval is needed to be *more* confident that the interval contains t
 :::
 
 
-```{r BagsNormal, echo=FALSE, fig.cap="The samoking distribution is a normal distribution; it shows how the sample mean bag weight varies in samples of size $n = 586$", fig.align="center", fig.width=8.5, fig.height=2.5, out.width='90%'}
+```{r BagsNormal, echo=FALSE, fig.cap="The sampling distribution is a normal distribution; it shows how the sample mean bag weight varies in samples of size $n = 586$", fig.align="center", fig.width=8.5, fig.height = 4, out.width='90%'}
 mn <- 2.8
 n <- 586
 stdd <- 0.94
 
 se <- stdd/sqrt(n)
 
+par( mar = c(4, 0.5, 0.5, 0.5) )
 out <- plotNormal(mn,
                   se,
                   xlab = "Sample mean bag weight, in kg (sample size: 586)", 
