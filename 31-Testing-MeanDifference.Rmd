@@ -10,117 +10,123 @@
 
 
 
-```{r echo=FALSE}
-insulate <- read.csv("./Data/InsulationBeforeAfter.csv") 
+<!-- ```{r echo=FALSE} -->
+<!-- insulate <- read.csv("./Data/InsulationBeforeAfter.csv")  -->
 
-colnames(insulate) <- c("Before", "After")
-insulate$Diff <- insulate$Before - insulate$After
+<!-- colnames(insulate) <- c("Before", "After") -->
+<!-- insulate$Diff <- insulate$Before - insulate$After -->
 
-mn.I <- mean(insulate$Diff)
-sd.I <- sd(insulate$Diff)
-n.I <- length(insulate$Diff)
-se.I <- sd.I / sqrt(n.I)
-```
+<!-- mn.I <- mean(insulate$Diff) -->
+<!-- sd.I <- sd(insulate$Diff) -->
+<!-- n.I <- length(insulate$Diff) -->
+<!-- se.I <- sd.I / sqrt(n.I) -->
+<!-- ``` -->
 
 
-## Introduction: insulation {#Chap29-Intro}
+## Introduction: weight gain {#Chap29-Intro}
 
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/pexels-taryn-elliott-4231477.jpg" width="200px"/>
+<img src="Illustrations/meal-3236971_1280.jpg" width="200px"/>
 </div>
 
 
-The Electricity Council in Bristol wanted to determine if a certain type of wall-cavity insulation reduced energy consumption in winter, on average [@data:OpenUni:insulationBA].
-Their RQ was:
+In Chap. \@ref(PairedIntro), data were introduced that studied the mean amount of weight gained between Week 1 and Week 12 when they began university.
+We could also ask:
 
-> Is there a *mean saving* in energy consumption due to adding insulation?
+> For Cornell University students, does the *mean weight* of students *increase* after 12 weeks at university?
+
 
 The data collected are shown in
 `r if( knitr::is_latex_output() ) {
-    'Table \\@ref(tab:DataInsulationHT).'
+    'Table \\@ref(tab:DataWeightChange2).'
 } else {
     'the table below.'
 }`
-These data were used in Sect. \@ref(PairedCI), where a CI was constructed for the mean energy saving.
 
-For these data, finding the *difference* (or *change*) in energy consumption for each house seems sensible.
-The data are *paired* (Sect. \@ref(PairedInsulation)): the same unit of analysis is measured twice on the same variable (*before* and *after*), and the *mean* change is of interest.
+
+For these data, finding the *difference* (or *gain*) in weight between Weeks 1 and 12 seems sensible.
+The data are *paired* (Sect. \@ref(PairedIntro)): the same unit of analysis is measured twice on the same variable (weight in *Week 1* and *Week 12*), and the *mean* change is of interest.
 That is, the comparison is *within* individuals (Sect. \@ref(Comparison)), and *not* between two different groups of individuals.
-
-Pairing the values for each house makes sense; hence finding the *difference* in energy consumption at each house makes sense.
-The parameter is $\mu_d$, the population mean *saving*  (or *reduction*) in energy consumption.
+The parameter is $\mu_d$, the population mean *gain* in weight.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 Explaining *how* the differences are computed is important.  
 
-Here, the differences could be computed as the  *Before* minus *After* (the energy consumption *saving*), or the *After* minus *Before* (the energy consumption *increase*).
+Here, the differences could be computed as the *Week 1 weight* minus *Week 12 weight* (the weight *loss*), or the *Week 12 weight* minus the *Week 1 weight* (the weight *gain*).
 Either is fine, as long as you are consistent throughout.
 The meaning of any conclusions will be the same.  
 
-In this case, discussing energy *savings* seems most natural, so we compute the differences as *Before* minus *After*.
+Here we will discuss weight *gain* as mentioned in the RQ.
 :::
 
 
-```{r DataInsulation2, echo=FALSE}
-insulate$Diff <- insulate$Before - insulate$After
-insulate$Home <- paste("Home", 
-                       LETTERS[1:10])
-insulate <- insulate[, c(4, 1:3)] # Reorder with HOME first column
-  
+```{r DataWeightChange2, echo=FALSE}
+SW <- read.csv("./Data/StudentWt.csv")
+
+SWlen <- length(SW$Week1)
+
+SW$Student <- paste("Student", 
+                    seq(1, SWlen))
+
 if( knitr::is_latex_output() ) {
   
-  tb1 <- insulate[1:5, ]
+  tb1 <- SW[1:5, ]
+  
   T1 <- knitr::kable(tb1,
                      format = "latex",
                      valign = 't',
                      align = c("r", "c", "c", "c"),
                      linesep = "",
+                     col.names = c("Student", "Week 1", "Week 12", "Weight gain"),
                      row.names = FALSE,
                      escape = FALSE,
                      booktabs = TRUE) %>%
     row_spec(0, bold = TRUE)
-
-  tb2 <- insulate[6:10, ]
+  
+  tb2 <- SW[(SWlen - 4):SWlen, ]
   T2 <- knitr::kable(tb2,
                      format = "latex",
                      valign = 't',
                      align = c("r", "c", "c", "c"),
                      linesep = "",
+                     col.names = c("Student", "Week 1", "Week 12", "Weight gain"),
                      row.names = FALSE,
                      escape = FALSE,
                      booktabs = TRUE) %>%
     row_spec(0, bold = TRUE)
-
-    out <- knitr::kables(list(T1, T2),
+  
+  out <- knitr::kables(list(T1, T2),
                        format = "latex",
-                       label = "DataInsulationHT",
-                       caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") %>% 
+                       label = "DataWeightChange",
+                       caption = "The student weight-change data: The weight of students in Week 1 at university, in Week 12, and the weight gain (all in kg). These are the first five and the last five of the 68 observations.") %>% 
     kable_styling(font_size = 10)
   out2 <- prepareSideBySideTable(out) 
   out2
-
-
+  
+  
 }
+
 if( knitr::is_html_output() ) {
-  kable( insulate,
+  kable( SW,
          format = "html",
          booktabs = TRUE,
          longtable = FALSE,
-         col.names = c("Home", "Before", "After", "Energy savings"),
-         caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") %>%
-  kable_styling(font_size = 10) %>%
-  row_spec(0, bold = TRUE)
+         col.names = c("Student", "Week 1", "After 12 weeks", "Weight gain"),
+         caption = "The student weight-change data: The weight of students in Week 1 at university, in Week 12, and the weight gain (all in kg)") %>% 
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
 }
 ```
 
-The data should be summarised numerically using your calculator or software, such as jamovi or SPSS (Table \@ref(tab:InsulationData)), and graphically (Fig. \@ref(fig:InsulationHistogram)).
+
+The data should be summarised numerically using software, such as jamovi or SPSS (Table \@ref(tab:WeightGainSummary)), and graphically (Fig. \@ref(fig:WeightGainHistogram)).
 
 
 ## Statistical hypotheses and notation
 
-The RQ asks if the mean energy saving *in the population* is zero, or not.
+The RQ asks if the mean weight *in the population* increases; that is, is the mean difference is zero, or greater than zero.
 The *parameter* is the *population mean difference*. 
 To make things clear, notation is needed (recapping Sect. \@ref(PairedNotationCI)) to describe the *data*:
 
@@ -130,29 +136,29 @@ To make things clear, notation is needed (recapping Sect. \@ref(PairedNotationCI
 * $n$: The number of *differences*.
 
 The hypotheses, therefore, can be written in terms of the parameter $\mu_d$.
-The *null* hypothesis is 'there is *no change* in the energy consumption, in the population':
+The *null* hypothesis is 'there is *no change* in weight, in the population':
 
 * $H_0$: $\mu_d = 0$.
 
 As noted in Sect. \@ref(AboutHypotheses), the null hypothesis states that there is 'no difference, no change, no relationship', as measured by a parameter value.
-This hypothesis, the initial *assumption*, postulates that the mean difference may not be zero in the *sample* due to sampling variation.
+This hypothesis, the initial *assumption*, postulates that the mean weight difference may not be zero in the *sample* due to sampling variation.
 
-Since the RQ asks specifically if the insulation *saves* energy, the alternative hypothesis will be a [*one-tailed* hypothesis](#AboutHypotheses):
+Since the RQ asks specifically if weight *increase*, the alternative hypothesis will be a [*one-tailed* hypothesis](#AboutHypotheses):
 
 * $H_1$: $\mu_d > 0$ (one-tailed).
 
-This hypothesis says that the mean energy saving in the population is *greater than* zero.
+This hypothesis says that the mean weight change in the population is *greater than* zero.
 The alternative hypothesis is *one*-tailed because of the wording of the RQ.
-Recall that the differences are defined as energy *savings*.
+Recall that the differences are defined as weight *gains*.
 
 
 ##  Describing the sampling distribution
 
 Initially, assume that $\mu_d = 0$.
-However, the *sample* mean energy saving will vary depending on which one of the many possible samples is randomly obtained, *even if* the mean saving in the population is zero.
+However, the *sample* mean weight gain will vary depending on which one of the many possible samples is randomly obtained, *even if* the mean weight gain in the population is zero.
 That is, the value of $\bar{d}$ will vary across all possible samples even if $\mu_d = 0$.
 
-The possible values of the sample mean differences can, [under certain conditions](#ValiditySampleMeanDiffTest), be described using an approximate normal distribution.
+The possible values of the sample mean differences can, under certain conditions (Sect. \@ref(ValiditySampleMeanDiffTest)), be described using an approximate normal distribution.
 The mean of all the possible values of $\bar{d}$ is denoted $\mu(\bar{d})$.
 Since we assume the average value of the mean difference in the population is $0$ (from the null hypothesis), here $\mu(\bar{d}) = 0$.
 
@@ -160,85 +166,51 @@ The standard deviation of all the possible values of $\bar{d}$ (called the *stan
 \[
   \text{s.e.}(\bar{d}) = s_d/\sqrt{n} = 0.3212.
 \]
-This describes what can be *expected* from the possible values of $\bar{d}$ (Fig. \@ref(fig:EnergySamplingDist)), just through sampling variation if $\mu_d = 0$.
+This describes what can be *expected* from the possible values of $\bar{d}$ (Fig. \@ref(fig:WeightGainNormal2)), just through sampling variation if $\mu_d = 0$.
 
 
-```{r EnergySamplingDist, echo=FALSE, fig.cap="The sampling distribution of sample means, if the energy saving in the population really was zero. The mean of the distribution is $\\text{mean}(\\bar{d}) = 0$ and the starnard deviation $\\text{s.e.}(\\bar{d}) = 0.3212$ ", fig.align="center", fig.width=10, fig.height=3, out.width='90%'}
-par( mfrow = c(1, 2))
 
-mn0 <- 0
-mn <- 0.54
-se <- 0.3212
+```{r WeightGainNormal2, echo=FALSE, fig.cap="The sampling distribution is a normal distribution; it shows how the sample mean weight gain varies in samples of size $n = 68$ when the population mean gain is $0$", fig.align="center", fig.width=9.0, fig.height=2.75, out.width='95%'}
+mn <- mean(SW$GainWt)
+n <- length(SW$GainWt)
+stdd <- sd(SW$GainWt)
 
-out <- plotNormal(mu = mn0, 
-                  sd = se,
-                  las = 2,
-                  round.dec = 2,
-                  main = "", # Main title
-                  xlab = "Enery savings") # horizontal axis labels
-shadeNormal(out$x, 
-            out$y,
-            col = plot.colour,
-            lo = mn,
-            hi = 2)
-                 
-arrows(mn, 
-       0.8 * max(out$y), 
-       mn, 
-       dnorm(0.54),
-       length = 0.2,
-       angle = 15)
-text(mn, 
-     0.8 * max(out$y),
-     pos = 3,
-     expression(bar(italic(d)) == 0.54))
+se <- stdd/sqrt(n)
 
-
-out <- plotNormal(mu = 0, 
-                  sd = 1,
-                  round.dec = 0,
-                  main = "", # Main title
-                  xlab = expression(Enery~savings:~italic(t)-scores)) # horizontal axis labels
-shadeNormal(out$x, 
-            out$y,
-            col = plot.colour,
-            lo = 1.68,
-            hi = 4)
-               
-
-
-arrows(1.68, 
-       0.8 * max(out$y), 
-       1.68, 
-       dnorm(1.68),
-       length = 0.2,
-       angle = 15)
-text(1.68, 
-     0.8 * max(out$y),
-     pos = 3,
-     expression( italic(t) == 1.68))
+par( mar = c(4, 0.5, 0.5, 0.5) )
+out <- plotNormal(mn,
+                  se,
+                  xlab = "Weight gain (kg)", 
+                  cex.axis = 0.95,
+                  showXlabels = c( 	
+                    expression( -0.348),
+                    expression( -0.232), 
+                    expression( -0.116), 
+                    expression( 0 ),
+                    expression( 0.116), 
+                    expression( 0.232), 
+                    expression( 0.348) ) )
 ```
 
 
 ## Computing the test statistic
 
-The sample mean difference can be located on the sampling distribution (Fig. \@ref(fig:EnergySamplingDist)) by computing the $t$-score:  
+The sample mean difference can be located on the sampling distribution (Fig. \@ref(fig:WeightGainNormal2)) by computing the $t$-score:  
 \[
 	t
-	= \frac{\bar{d} - \text{mean}(\bar{d})}{\text{s.e.}(\bar{d})}
-	= \frac{0.54 - 0}{0.3212} = 1.681,
+	= \frac{\bar{d} - \mu_{\bar{d}}}{\text{s.e.}(\bar{d})}
+	= \frac{0.8618 - 0}{0.1160} = 7.43,
 \]
 following the ideas in Equation \@ref(eq:tscore).
-Software computes the $t$-score too (jamovi: Fig. \@ref(fig:InsulationTestNumericaljamovi); SPSS: Fig. \@ref(fig:InsulationTestNumericalSPSS)).
+Software computes the $t$-score too (jamovi: Fig. \@ref(fig:WeightGainTestNumericaljamovi); SPSS: Fig. \@ref(fig:WeightGainTestNumericalSPSS)).
 The $t$-score locates the *observed* sample statistic on the sampling distribution.
 
 
-
-```{r InsulationTestNumericaljamovi, echo=FALSE, fig.cap="jamovi output for the insulation data", fig.align="center", out.width="80%"}
-knitr::include_graphics("jamovi/InsulationBeforeAfter/InsulationBeforeAfterPairedTOutput.png")
+```{r WeightGainTestNumericaljamovi, echo=FALSE, fig.cap="jamovi output for the insulation data", fig.align="center", out.width="80%"}
+knitr::include_graphics("jamovi/WeightGain/WeightGain-PairedTOutput.jpg")
 ```
 
-```{r InsulationTestNumericalSPSS, echo=FALSE, fig.cap="SPSS output for the insulation data", fig.align="center", out.width="80%"}
+```{r WeightGainTestNumericalSPSS, echo=FALSE, fig.cap="SPSS output for the insulation data", fig.align="center", out.width="80%"}
 knitr::include_graphics("SPSS/InsulationBeforeAfter/InsulationBeforeAfterPairedTOutput.png")
 ```
 
@@ -246,19 +218,17 @@ knitr::include_graphics("SPSS/InsulationBeforeAfter/InsulationBeforeAfterPairedT
 ## Determining $P$-values
 
 A $P$-value determines if the sample data are consistent with the assumption (Table \@ref(tab:PvaluesInterpretation)).
-Since $t = 1.681$, and since $t$-scores are like $z$-scores, the *one-tailed* $P$-value is between 2.5% and 16% based on the [68--95--99.7 rule](#def:EmpiricalRule).
-This is a wide, and inconclusive, interval for the $P$-value. 
-Using the Tables, the *approximate* *one-tailed* $P$-value is $0.465$... but since the sample size is small, this is probably not a good estimate.
-
-Software gives a more precise $P$-value (jamovi: Fig. \@ref(fig:InsulationTestNumericaljamovi); SPSS: Fig. \@ref(fig:InsulationTestNumericalSPSS)): the *two-tailed* $P$-value is $0.127$, so the *one-tailed* $P$-value is $0.127/2 = 0.0635$.
-
+Since $t = 7.43$, and since $t$-scores are like $z$-scores, the *one-tailed* $P$-value is *very* small, based on the [68--95--99.7 rule](#def:EmpiricalRule).
+Using Tables also shows that the one-tailed $P$-value is very small.
+Software (jamovi: Fig. \@ref(fig:WeightGainTestNumericaljamovi); SPSS: Fig. \@ref(fig:WeightGainTestNumericalSPSS)) reports that the *two-tailed* $P$-value is less than $0.001$.
+Hence, the one-tailed $P$-value will be smaller than $0.001/2 = 0.0005$; small indeed.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 The software clarifies *how* the differences have been computed:
 
 * **jamovi**: 
-  At the left of the output (Fig. \@ref(fig:InsulationTestNumericaljamovi)), the order implies the differences are found as `Before` minus `After`.
+  At the left of the output (Fig. \@ref(fig:WeightGainTestNumericaljamovi)), the order implies the differences are found as `Week12` minus `Week1`.
 
 * **SPSS**: 
   At the left of the output (Fig. \@ref(fig:InsulationTestNumericalSPSS)), the difference is described as `Before - After`.
