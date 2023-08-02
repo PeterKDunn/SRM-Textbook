@@ -95,52 +95,50 @@ Here, we use weight *gain* since it is explicitly mentioned in the RQ.
 
 
 
-```{r DataWeightChange, echo=FALSE}
+```{r echo=FALSE}
 SW <- read.csv("./Data/StudentWt.csv") 
 
 SWlen <- length(SW$Week1)  
+```
 
-SW$Student <- paste("Student", 
-                    seq(1, SWlen))
+```{r DataWeightChange, echo=FALSE}
 
-if( knitr::is_latex_output() ) {
-  
-  tb1 <- SW[1:5, ]
-  
-  T1 <- knitr::kable(tb1,
+tb1 <- SW[1:5, ]  
+
+T1 <- knitr::kable(tb1,
+                   format = "latex",
+                   valign = 't',
+                   align = c("r", "c", "c", "c"),
+                   linesep = "",
+                   col.names = c("Student", "Week 1", "Week 12", "Weight gain"),
+                   row.names = FALSE,
+                   escape = FALSE,
+                   booktabs = TRUE) %>%
+  row_spec(0, bold = TRUE)
+
+tb2 <- SW[(SWlen - 4):SWlen, ]
+T2 <- knitr::kable(tb2,
+                   format = "latex",
+                   valign = 't',
+                   align = c("r", "c", "c", "c"),
+                   linesep = "",
+                   col.names = c("Student", "Week 1", "Week 12", "Weight gain"),
+                   row.names = FALSE,
+                   escape = FALSE,
+                   booktabs = TRUE) %>%
+  row_spec(0, bold = TRUE)
+
+out <- knitr::kables(list(T1, T2),
                      format = "latex",
-                     valign = 't',
-                     align = c("r", "c", "c", "c"),
-                     linesep = "",
-                     col.names = c("Student", "Week 1", "Week 12", "Weight gain"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE)
-  
-  tb2 <- SW[(SWlen - 4):SWlen, ]
-  T2 <- knitr::kable(tb2,
-                     format = "latex",
-                     valign = 't',
-                     align = c("r", "c", "c", "c"),
-                     linesep = "",
-                     col.names = c("Student", "Week 1", "Week 12", "Weight gain"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE)
-  
-  out <- knitr::kables(list(T1, T2),
-                       format = "latex",
-                       label = "DataWeightChange",
-                       caption = "The student weight-change data: The weight of students in Week 1 at university, in Week 12, and the weight gain (all in kg). These are the first five and the last five of the 68 observations.") %>% 
-    kable_styling(font_size = 10)
-  out2 <- prepareSideBySideTable(out) 
-  out2
-  
-  
-}
+                     label = "DataWeightChange",
+                     caption = "The student weight-change data: The weight of students in Week 1 at university, in Week 12, and the weight gain (all in kg). These are the first five and the last five of the 68 observations.") %>% 
+  kable_styling(font_size = 10)
+out2 <- prepareSideBySideTable(out) 
+out2
 
+```
+
+```{r}
 if( knitr::is_html_output() ) {
   kable( SW,
          format = "html",
@@ -262,7 +260,12 @@ Graphing the *Week 1* and *Week 12* data may also be useful too, but a graph of 
 A case-profile plot (Sect.&nbsp;\@ref(CaseProfilePlot)) is also useful, but is difficult to read here as the sample size is large (recall, a case-profile plot contains a line for each unit of analysis).
 
 
-```{r WeightGainHistogram, echo=FALSE, fig.cap="A plot of weight changes. Left panel: A histogram (the vertical grey line represents no weight gain). Right panel: Case-profile plot (a dashed line represents a weight gain!!!!!!!!!!!!!!!!!)", fig.align="center", out.width='100%', fig.width=9.5, fig.height = 3.0}
+
+
+
+
+
+```{r WeightGainHistogram, echo=FALSE, fig.cap="A histogram of weight changes (the vertical grey line represents no weight gain)", fig.align="center", out.width='70%', fig.width=8.5, fig.height = 3.0}
 par( mfrow = c(1, 2))
 
 hist( SW$GainWt,
@@ -278,39 +281,39 @@ abline(v = 0,
        lty = 1,
        lwd = 2)
 
-WhichTime <- c(
-  rep(1, SWlen),
-  rep(2, SWlen)
-)
-
-plot( range(c(SW$Week1, SW$Week12)) ~ c(1, 2),
-      pch = 19,
-      las = 1,
-      ylim = c(40, 110),
-      axes = FALSE,
-      type = "n",
-      main = "Weight gain from\nWeek 1 to Week 12",
-      xlab = "Week of semester",
-      ylab = "Weight gain (in kg)")
-axis(side = 1, 
-     at = 1:2,
-     labels = c("Week 1", "Week 12"))
-axis(side = 2, 
-     las = 1)
-box()
-
-for (i in 1:SWlen){
-  lines( x = c(1, 2),
-         y = c(SW$Week1[i], SW$Week12[i]),
-         col = ifelse( (SW$Week1[i] - SW$Week12[i]) > 0, plotSolid, "grey"),
-         lty = ifelse( (SW$Week1[i] - SW$Week12[i]) > 0, 1, 1),
-         lwd = 2 
-  )
-  points( c(1, 2),
-          c(SW$Week1[i], SW$Week12[i]),
-          pch = 19
-  )
-}
+# WhichTime <- c(
+#   rep(1, SWlen),
+#   rep(2, SWlen)
+# )
+# 
+# plot( range(c(SW$Week1, SW$Week12)) ~ c(1, 2),
+#       pch = 19,
+#       las = 1,
+#       ylim = c(40, 110),
+#       axes = FALSE,
+#       type = "n",
+#       main = "Weight gain from\nWeek 1 to Week 12",
+#       xlab = "Week of semester",
+#       ylab = "Weight gain (in kg)")
+# axis(side = 1, 
+#      at = 1:2,
+#      labels = c("Week 1", "Week 12"))
+# axis(side = 2, 
+#      las = 1)
+# box()
+# 
+# for (i in 1:SWlen){
+#   lines( x = c(1, 2),
+#          y = c(SW$Week1[i], SW$Week12[i]),
+#          col = ifelse( (SW$Week1[i] - SW$Week12[i]) > 0, plotSolid, "grey"),
+#          lty = ifelse( (SW$Week1[i] - SW$Week12[i]) > 0, 1, 1),
+#          lwd = 2 
+#   )
+#   points( c(1, 2),
+#           c(SW$Week1[i], SW$Week12[i]),
+#           pch = 19
+#   )
+# }
 ```
 
 
@@ -370,6 +373,7 @@ if( knitr::is_latex_output() ) {
         digits = 2,
         caption = "The mean, median, standard deviation and IQR for the weight-gain data (in kg)") %>%
     row_spec(0, bold = TRUE) %>%
+    row_spec(3, bold = TRUE) %>%
     kable_styling(font_size = 10)
 } else {
   kable(WtGain.DataSummary,
@@ -500,7 +504,7 @@ The CI for the mean difference has the same form as for a single mean (Chap.&nbs
 	\bar{d} \pm (2 \times\text{s.e.}(\bar{d})).
 \]
 This is the same as the CI for $\bar{x}$ if the differences are treated like the data.
-For the insulation data:  
+For the weight-gain data:  
 \[
 	0.8618 \pm (2 \times 0.1159764),
 \]
@@ -535,7 +539,7 @@ Provided the sample size is larger than about 25, this will be approximately tru
 That is, when $n > 25$ the sample means generally have an approximate normal distribution, even if the data themselves don't have a normal distribution.
 
 
-::: {.example #StatisticalValidityInsulation name="Statistical validity"}
+::: {.example #StatisticalValidityWeightGain name="Statistical validity"}
 For the weight-gain data, the sample size is $n = 68$, larger than 25, so the results are statistically valid.
 We do not require that the differences *in the population* follow a normal distribution.
 :::
@@ -545,14 +549,14 @@ We do not require that the differences *in the population* follow a normal distr
 
 Software (such as jamovi or SPSS) can produce *exact* 95% CIs, which may be slightly different than the *approximate* 95% CI (since the 68--95--99.7 rule gives *approximate* multipliers).
 The *approximate* and *exact* 95% CIs are the same to two decimal places.
-From the jamovi or SPSS output (Fig.&nbsp;\@ref(fig:InsulationTestOutput)) we can write:
+From the jamovi or SPSS output (Fig.&nbsp;\@ref(fig:WeightGainTestOutput)) we can write:
 
 > Based on the sample, a 95% CI is for the population mean weight gain between Weeks 1 and 12 is between $0.63$ to $1.09$kg
 
 
-```{r InsulationTestOutput, echo=FALSE, fig.cap="The weight-gain data: jamovi output (top) and SPSS output(bottom)", fig.align="center", out.width=c("95%","85%"), fig.show="hold"}
+```{r WeightGainTestOutput, echo=FALSE, fig.cap="The weight-gain data: jamovi output (top) and SPSS output(bottom)", fig.align="center", out.width=c("95%","85%"), fig.show="hold"}
 knitr::include_graphics("jamovi/WeightGain/WeightGain-PairedTOutput.jpg")
-knitr::include_graphics( "SPSS/InsulationBeforeAfter/InsulationBeforeAfterPairedTOutput.png") 
+knitr::include_graphics( "SPSS/WeightGain/WeightGain-PairedTOutput.png") 
 ```
 
 
@@ -962,7 +966,7 @@ In a study of hypertension [@data:hand:handbook; @data:macgregor:essential], 15 
    What do the differences *mean* when computed this way?
 1. Compute the differences.
 1. Compute an *approximate* 95% CI for the mean difference.
-1. Write down the *exact* 95% CI using the computer output (jamovi: Fig.&nbsp;\@ref(fig:CaptoriljamoviCI); SPSS: Fig.&nbsp;\@ref(fig:CaptorilSPSSCI)). 
+1. Write down the *exact* 95% CI using the computer output (Fig.&nbsp;\@ref(fig:CaptoriljamoviCI)). 
 1. Why are the two CIs different?
 :::
 
@@ -983,7 +987,7 @@ if( knitr::is_latex_output() ) {
     row_spec(0, bold = TRUE)
   
   d2 <- knitr::kable( rbind(bloodS[9:15, ],
-                            c(NA, NA, NA) ), # To even up the bottom o the columns in each table
+                            c(NA, NA, NA) ), # To even up the bottom of the columns in each table
                       format = "latex",
                       col.names = c("Before", 
                                     "After",
@@ -1044,12 +1048,8 @@ if( knitr::is_html_output() ) {
 
 
 
-```{r CaptoriljamoviCI, echo=FALSE, fig.cap="jamovi output for the Captoril data", fig.align="center", out.width="80%"}
-knitr::include_graphics("jamovi/CaptoprilAll/CaptoprilAll-PairedTOutput.png")
-```
-
-
-```{r CaptorilSPSSCI, echo=FALSE, fig.cap="The Captoril data: SPSS output", fig.align="center", out.width="90%"}
+```{r CaptoriljamoviCI, echo=FALSE, fig.cap="jamovi (top) and SPSS (bottom) output for the Captoril data", fig.align="center", out.width="80%", fig.show="hold"}
+knitr::include_graphics("jamovi/CaptoprilAll/CaptoprilAll-PairedTOutput.png") 
 knitr::include_graphics("SPSS/CaptoprilAll/CaptoprilAll-PairedTOutput.png")
 ```
 
@@ -1063,20 +1063,7 @@ BT <- read.csv("./Data/BehaviourTypes.csv")
 A study  [@data:Allen2018:Smoking] examined the effect of exercise on smoking.
 Men and women were assessed on a range of measures, including the 'intention to smoke'.
 
-'Intention to smoke' was assessed both before and after exercise for each subject, using the 10-item quantitative
-`r if (knitr::is_latex_output()) {
-   '*Questionnaire of Smoking Urges--Brief*'
-} else {
-   '[*Questionnaire of Smoking Urges--Brief*](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC2527734/)'
-}`
-scale [@cox2001evaluation], and the quantitative 
-`r if (knitr::is_latex_output()) {
-   '*Minnesota Nicotine Withdrawal Scale*'
-} else {
-   '[*Minnesota Nicotine Withdrawal Scale*](http://www.med.uvm.edu/behaviorandhealth/research/minnesota-tobacco-withdrawal-scale)'
-}`
-[@shiffman2004recommendation].
-
+'Intention to smoke' was assessed both before and after exercise for each subject, using two quantitative questionnaires.
 Smokers (people smoking at least five cigarettes per day) aged 18 to 40 were enrolled for the study.
 For the 23 women in the study, the mean intention to smoke after exercise *reduced* by 0.66 (with a standard error of 0.37).
 
