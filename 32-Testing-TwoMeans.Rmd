@@ -15,27 +15,19 @@
 </div>
 
 
-`r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}[6]{R}{.25\textwidth}
-  \begin{center}
-    \includegraphics[width=.20\textwidth]{Illustrations/pexels-splitshire-2224.jpg}
-  \end{center}
-\end{wrapfigure}
-`r if (knitr::is_html_output()) '-->'`
-
-
-To study [@data:Strayer2001:phones] the reaction times of students while driving, two different groups of students were used: one group *used* a mobile phone, and a different group *did not use* a mobile phone.
-Their reaction times were measured in a driving simulator.
+To study the reaction times of students while driving, two different groups of students were used: one group *used* a mobile phone, and a different group *did not use* a mobile phone.
+Their reaction times were measured in a driving simulator [@data:Strayer2001:phones].
 These data were seen previously in Sect. \@ref(MeansIndSamples).
 
-The two groups receive different treatments: one group *used* a mobile phone while driving, and a different group *did not use* a mobile phone while driving; this is an example of a [*between individuals comparison*](#Comparison).
+The two groups of students receive different treatments: one group *used* a mobile phone while driving, and a different group *did not use* a mobile phone while driving.
+This is an example of a [*between-individuals comparison*](#Comparison).
 The data are not paired; instead, the means of two separate (or independent) samples are being compared.
 The data would be [paired](#TestPairedMeans) if *each* student was measured twice: once using a phone, and once without using a phone.
 
 
 Consider the RQ:
 
-> For students, is the mean reaction time while driving the same for students who *are using* a mobile phone and students who are *not using* a mobile phone?
+> For students, is the mean reaction time while driving the same for students who *are using* a mobile phone and students who *are not using* a mobile phone?
 
 
 `r if (knitr::is_latex_output()) {
@@ -47,24 +39,8 @@ Consider the RQ:
 
 
 ```{r echo=FALSE}
-RT <- structure(list(Reaction = c(636, 623, 615, 672, 601, 600, 542, 
-554, 543, 520, 609, 559, 595, 565, 573, 554, 626, 501, 574, 468, 
-578, 560, 525, 647, 456, 688, 679, 960, 558, 482, 527, 536, 557, 
-572, 457, 489, 532, 506, 648, 485, 610, 444, 626, 626, 426, 585, 
-487, 436, 642, 476, 586, 565, 617, 528, 578, 472, 485, 539, 523, 
-479, 535, 603, 512, 449), Group = structure(c(1L, 1L, 1L, 1L, 
-1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 
-1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 2L, 2L, 2L, 2L, 
-2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 
-2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L), .Label = c("Phone", 
-"Control"), class = "factor")), .Names = c("Reaction", "Group"
-), row.names = c(NA, -64L), class = "data.frame", variable.labels = structure(c("Reaction time (in ms)", 
-"Group"), .Names = c("Reaction", "Group")), codepage = 65001L)
+RT <- read.csv("./Data/ReactionTimePhoneInd.csv")
 ```
-
-
-
-
 ```{r PhoneDataTableTest, echo=FALSE}
 RT.DataTable   <- cbind( RT$Reaction[RT$Group == "Phone"],
                          RT$Reaction[RT$Group == "Control"] )
@@ -72,15 +48,59 @@ RT.DataTable10 <- cbind( head(RT$Reaction[RT$Group == "Phone"], 10),
                          head(RT$Reaction[RT$Group == "Control"], 10) ) 
 
 if( knitr::is_latex_output() ) {
-  kable( RT.DataTable10,
-         format = "latex",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names = c("Using phone", 
-                       "Not using phone"),
-         caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones. The first ten observations are shown, but 32 students are in each group") %>%
-   row_spec(0, bold = TRUE) %>%
+  tb1 <- cbind( RT$Reaction[RT$Group == "Phone"][1:4],
+                RT$Reaction[RT$Group == "Phone"][5:8],
+                RT$Reaction[RT$Group == "Phone"][9:12],
+                RT$Reaction[RT$Group == "Phone"][13:16],
+                RT$Reaction[RT$Group == "Phone"][17:20],
+                RT$Reaction[RT$Group == "Phone"][21:24],
+                RT$Reaction[RT$Group == "Phone"][25:28],
+                RT$Reaction[RT$Group == "Phone"][29:32])
+  T1 <- knitr::kable( tb1,
+                      format = "latex",
+                      #col.names = c("Using phone",
+                      #              "Not using phone"),
+                      valign = 't',
+                      align = c("c", "c"),
+                      #table.env = "@empty",
+                      linesep = "",
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Using phone" = 8),
+                      bold = TRUE)
+
+  tb2 <- cbind( RT$Reaction[RT$Group == "Control"][1:4],
+                RT$Reaction[RT$Group == "Control"][5:8], 
+                RT$Reaction[RT$Group == "Control"][9:12], 
+                RT$Reaction[RT$Group == "Control"][13:16], 
+                RT$Reaction[RT$Group == "Control"][17:20], 
+                RT$Reaction[RT$Group == "Control"][21:24], 
+                RT$Reaction[RT$Group == "Control"][25:28], 
+                RT$Reaction[RT$Group == "Control"][29:32])
+  T2 <- knitr::kable( tb2,
+                      format = "latex",
+                      #col.names = c("Using phone",
+                      #              "Not using phone"),
+                      align = c("c", "c"),
+                      valign = 't',
+                      #table.env = "@empty",
+                      linesep = "",
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Not using phone" = 8),
+                      bold = TRUE)
+  
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "PhoneDataTableTest",
+                       caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones") %>% 
     kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out)
+  out2
 }
 if( knitr::is_html_output() ) {
   DT::datatable( RT.DataTable,
@@ -99,7 +119,7 @@ if( knitr::is_html_output() ) {
 
 ## Hypotheses and notation
 
-Since two groups are being compared, subscripts are used to distinguish between the statistics for the two groups (in general, Group A and Group B) is important (recapping Sect. \@ref(TwoMeansNotationCI)); see Table \@ref(tab:IndSampleNotationHT).
+Since two groups are being compared, using subscripts to distinguish between the statistics for the two groups (in general, Group A and Group B) is important (recapping Sect. \@ref(TwoMeansNotationCI)); see Table \@ref(tab:IndSampleNotationHT).
 Using this notation, the *parameter* in the RQ is the difference between population means: $\mu_A - \mu_B$.
 As usual, the population values are unknown, so this is estimated using the statistic $\bar{x}_A - \bar{x}_B$.
 
@@ -196,7 +216,8 @@ You need to be clear about how the difference is computed, and be consistent thr
 :::
 
 
-As always (Sect. \@ref(AboutHypotheses)), the null hypothesis is the default 'no difference, no change, no relationship' position; hence the null hypothesis is that there is 'no difference' between the population means of the two groups:
+As always (Sect. \@ref(AboutHypotheses)), the null hypothesis is the default 'no difference, no change, no relationship' position; any difference is due to sampling variation.
+Hence, the null hypothesis is that there is 'no difference' between the population means of the two groups:
 
 * $H_0$: $\mu_P - \mu_C = 0$ (or $\mu_P = \mu_C$).
 
@@ -223,12 +244,12 @@ The appropriate summary for graphically summarising the *data* is a boxplot (tho
 An error bar chart (Fig. \@ref(fig:PhoneErrorbar)), which compares the *sample means*, should also be produced.
 
 
-```{r ReactionPhoneSummaryTestjamovi, echo=FALSE, fig.cap="jamovi output for the phone reaction time data", fig.align="center", out.width="85%"}
+```{r ReactionPhoneSummaryTestjamovi, echo=FALSE, fig.cap="jamovi output for the phone reaction time data", fig.align="center", out.width="90%"}
 knitr::include_graphics("jamovi/ReactionPhone/ReactionPhone-Test-All.png")
 ```
 
 
-```{r ReactionPhoneSummaryTestSPSS, echo=FALSE, fig.cap="SPSS output for the phone reaction time data", fig.align="center", out.width="80%"}
+```{r ReactionPhoneSummaryTestSPSS, echo=FALSE, fig.cap="SPSS output for the phone reaction time data", fig.align="center", out.width="85%"}
 knitr::include_graphics("SPSS/ReactionPhone/ReactionPhone-Test.png")
 ```
 
@@ -237,17 +258,17 @@ The difference between the sample means is 51.59&nbsp;ms... but this value will 
 The sampling variation (*expectation*) for the values of $\bar{x}_A - \bar{x}_B$ can be described as having:
 
 * an approximate normal distribution;
-* centred around \( {\mu_{P}} - {\mu_{C}} = 0 \) (from $H_0$);
+* centred around a sampling mean denoted by $\mu_{\bar{x}_P - \bar{x}_C}$, whose value is ${\mu_{P}} - {\mu_{C}} = 0$, the difference between the means (from $H_0$);
 * with a standard deviation of $\displaystyle\text{s.e.}(\bar{x}_P - \bar{x}_C)$, called the *standard error for the difference between the means*.
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
 jamovi and SPSS give results from *two* similar hypothesis tests.
-In this book, we will always use the second row of information: the "Welch's $t$" row in jamovi, and the "Equal variance not assumed" row in SPSS.
+In this book, we will always use the second row of information: the "Welch's $t$" row in jamovi, and the "Equal variance not assumed" row in SPSS (these two are equivalent).
 \smallskip
 
-In both cases, this row of information does not assume that the population standard deviation are equal.
-The top row of information assume the population standard deviation are equal.
+In both cases, this row of information *does not* assume that the population standard deviation are equal.
+The top row of information *does* assume the population standard deviation are equal.
 In most cases, the information in both rows are similar anyway.
 :::
 
@@ -416,7 +437,7 @@ At one site studied (Ningxuan Freeway), speeds were recorded for 38 vehicles bef
 
 
 
-```{r SignageHT, echo=FALSE}
+```{r  echo=FALSE}
 Speed <- read.csv("./Data/Speed.csv")
 
 Speed$When <- factor(Speed$When,
@@ -424,16 +445,55 @@ Speed$When <- factor(Speed$When,
                      ordered = TRUE)
 Speed2 <- data.frame( Before = Speed$Speed[ Speed$When == "Before" ][1:10],
                       After = Speed$Speed[ Speed$When == "After" ][1:10])
+```
 
+```{r}
 if( knitr::is_latex_output() ) {
+  tb1 <- cbind( Speed$Speed[Speed$When == "Before"][1:6],
+                Speed$Speed[Speed$When == "Before"][7:12],
+                Speed$Speed[Speed$When == "Before"][13:18],
+                Speed$Speed[Speed$When == "Before"][19:24],
+                Speed$Speed[Speed$When == "Before"][25:30],
+                Speed$Speed[Speed$When == "Before"][31:36],
+                c(Speed$Speed[Speed$When == "Before"][37:38], NA, NA, NA, NA) )
+  T1 <- knitr::kable( tb1,
+                      format = "latex",
+                      valign = 't',
+                      align = c("c", "c"),
+                      linesep = "",
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Speeds before signage added" = 7),
+                      bold = TRUE)
+
+  tb2 <- cbind( Speed$Speed[Speed$When == "After"][1:6],
+                Speed$Speed[Speed$When == "After"][7:12], 
+                Speed$Speed[Speed$When == "After"][13:18], 
+                Speed$Speed[Speed$When == "After"][19:24], 
+                Speed$Speed[Speed$When == "After"][25:30], 
+                Speed$Speed[Speed$When == "After"][31:36], 
+                c(Speed$Speed[Speed$When == "After"][37:41], NA) ) 
+  T2 <- knitr::kable( tb2,
+                      format = "latex",
+                      align = c("c", "c"),
+                      valign = 't',
+                      linesep = "",
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Speeds after signage added" = 7),
+                      bold = TRUE)
   
-  kable( Speed2,
-         format = "latex",
-         longtable = FALSE,
-         booktabs = TRUE,
-         align = c("c", "c"),
-         caption = "Vehicle speeds before and after adding extra signage. Only some observations are shown.") %>%
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "SignageHT",
+                       caption = "Vehicle speeds before and after adding extra signage") %>%
     kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out, gap = "\\enskip")
+  out2
 }
 
 if( knitr::is_html_output(exclude = "epub") ) {
@@ -443,17 +503,6 @@ if( knitr::is_html_output(exclude = "epub") ) {
                  colnames = c("When measured", "Speed (km/h)"),
                  options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                  caption = "The observations from the signage data")
-}
-
-if ( knitr::is_html_output() & knitr::pandoc_to("epub")) {
-
-  kable( Speed[1:10,],
-         format = "html",
-         longtable = FALSE,
-         booktabs = TRUE,
-         align = c("c", "c", "c"),
-         caption = "Vehicle speeds before and after adding extra signage. Only the first 10 observations are shown.") %>%
-    kable_styling(font_size = 10)
 }
 ```
 
@@ -559,19 +608,21 @@ A graphical summary of the data is a boxplot (Fig. \@ref(fig:SignageErrorBar), l
 The parameter is $\mu_{\text{Before}} - \mu_{\text{After}}$, the *reduction* in the populations mean speed after signage is added.
 The hypotheses are:
 
-* $H_0$: $\mu_{\text{Before}} - \mu_{\text{After}} = 0$: There is no change in the population mean speeds
-* $H_1$: $\mu_{\text{Before}} - \mu_{\text{After}} > 0$: The populations mean speed has *reduced*
+* $H_0$: $\mu_{\text{Before}} - \mu_{\text{After}} = 0$: There is no change in the population mean speeds.
+* $H_1$: $\mu_{\text{Before}} - \mu_{\text{After}} > 0$: The population mean speed has *reduced*.
 
-The best estimate of the difference in *population* means is the difference between the *sample* means: $(\mu_{\text{Before}} - \mu_{\text{After}}) = 5.68$.
+The best estimate of the difference in *population* means is the difference between the *sample* means: $(\bar{x}_{\text{Before}} - \bar{x}_{\text{After}}) = 5.68$.
 The table gives the standard error for estimating this *difference* as $\text{s.e.}(\bar{x}_{\text{Before}} - \bar{x}_{\text{After}}) = 0.472$.
 Using the summary information in Table \@ref(tab:SignageSummaryHT), the $t$-score (using Equation \@ref(eq:tscore)) is:
 
 \[
-  t = \frac{5.68 - 0}{2.96} = 1.92.
+  t
+  = \frac{(\bar{x}_B - \bar{x}_A) - (\mu_B - \mu_A)}{\text{s.e.}(\bar{x}_B - \bar{x}_{A})}
+  = \frac{5.68 - 0}{2.96} = 1.92.
 \]
 (Recall that $\mu_{\text{Before}} - \mu_{\text{After}} = 0$ from the null hypothesis.)
 
-Remembering that the alternative hypothesis is *one-tailed*, the $P$-value is (using the [68--95--99.7 rule](#def:EmpiricalRule)) is larger than $0.025$, but smaller than $0.32$... so making a clear decision is difficult without using software.
+Remembering that the alternative hypothesis is *one-tailed*, the $P$-value (using the [68--95--99.7 rule](#def:EmpiricalRule)) is larger than $0.025$, but smaller than $0.32$... so making a clear decision is difficult without using software.
 However, since the $t$-score is *just* less than 2, we suspect that the $P$-value is likely to be closer to $0.025$ than $0.32$.
 
 From software, $P = 0.02968$ (you cannot be this precise just using the 68--95--99.7 rule).
@@ -596,7 +647,7 @@ Remember: *which* mean is larger must be clear!
 </div>
 
 
-A study [@data:Becker1991:BHADP] compared the access to health promotion (HP) services for people with and without a disability.
+A study [@data:Becker1991:BHADP] compared access to health promotion (HP) services for people with and without a disability.
 (This study was seen in  Sect. \@ref(BHADP).)
 Access was measured using the
 `r if (knitr::is_latex_output()) {
@@ -605,7 +656,7 @@ Access was measured using the
    '*Barriers to Health Promoting Activities for Disabled Persons* 
 [BHADP scale](http://www.utexas.edu/nursing/chpr/resources/bhadp.html)'
 }`,
-where higher scores mean greater barriers.
+where *higher* scores mean *greater* barriers.
 The RQ is:
 
 > Is the mean BHADP score the same for people with and without a disability?
@@ -613,11 +664,11 @@ The RQ is:
 The parameter is $\mu_D - \mu_N$, the difference between the population mean BHADP score (people with disabilities, minus people without disabilities).
 
 In this case, only numerical summary data are available (Table \@ref(tab:BHADPSummaryTest)), not the original data.
-(An appropriate graphical summary, an error bar chart, can be constructed from the summary information (Fig. \@ref(fig:BHADPErrorBar), though a boxplot cannot be constructed from the information.)
+(An appropriate graphical summary, an error bar chart, can be constructed from the summary information (Fig. \@ref(fig:BHADPErrorBar)), though a boxplot cannot be constructed from the information.)
 Denoting those with and without a disability with subscripts $D$ and $N$ respectively, the hypotheses are:
 
-* $H_0$: $\mu_D - \mu_N = 0$: There *is no* difference in the population mean BHADP scores
-* $H_1$: $\mu_D - \mu_N \ne 0$: There *is a* difference in the population mean BHADP scores
+* $H_0$: $\mu_D - \mu_N = 0$: There *is no* difference in the population mean BHADP scores.
+* $H_1$: $\mu_D - \mu_N \ne 0$: There *is a* difference in the population mean BHADP scores.
 
         
 ```{r BHADPSummaryTest, echo=FALSE}
@@ -638,7 +689,6 @@ BHADPSummary[3, ] <- c(6.76,
                        "", 
                        "", 
                        0.80285)
-  
 
 if( knitr::is_latex_output() ) {
   kable(BHADPSummary,
@@ -683,7 +733,7 @@ if( knitr::pandoc_to("epub3") ) {
 }
 ```
 
-The best estimate of the difference in *population* means is the difference between the *sample* means: $(\bar{x}_D - \bar{x}_{ND}) = 6.76$.
+The best estimate of the difference between the *population* means is the difference between the *sample* means: $(\bar{x}_D - \bar{x}_{ND}) = 6.76$.
 The table also gives the standard error for estimating this *difference* as $\text{s.e.}(\bar{x}_D - \bar{x}_{ND}) = 0.80285$ (*given* in the article), since the difference will vary for all possible samples.
 
 
@@ -696,13 +746,15 @@ You are not expected to do so.
 Using the summary information in Table \@ref(tab:BHADPSummaryTest), the $t$-score is computed using  Equation \@ref(eq:tscore):
 
 \[
-  t = \frac{6.76 - 0}{0.80285} = 8.42.
+  t 
+  = \frac{(\bar{x}_D - \bar{x}_{ND}) - (\mu_D - \mu_{ND})}{\text{s.e.}(\bar{x}_D - \bar{x}_{ND})}
+  = \frac{6.76 - 0}{0.80285} = 8.42.
 \]
 (Recall that $\mu_D - \mu_N = 0$ from the null hypothesis.)
 Using the [68--95--99.7 rule](#def:EmpiricalRule), this *very* large $t$-score implies the $P$-value will be *very* small.
 We conclude:
 
-> Strong evidence exists in the sample ($t = 8.42$; two-tailed $P < 0.001$) that people with a disability (mean: 31.83; $n = 132$; standard deviation: $7.73$) and people without a disability (mean: 25.07; $n = 137$; standard deviation: $4.80$) have different population mean access to health promotion services (95% CI for the difference: 5.17 to 8.35).
+> Strong evidence exists in the sample ($t = 8.42$; two-tailed $P < 0.001$) that people with a disability (mean: 31.83; $n = 132$; standard deviation: $7.73$) and people without a disability (mean: 25.07; $n = 137$; standard deviation: $4.80$) have different population mean access to health promotion services (95% CI for the difference: 5.17 to 8.35), as measured by BHADP scores.
 
 
 
@@ -717,9 +769,9 @@ The *test statistic* is
 \[
    t = \frac{ (\bar{x}_1 - \bar{x}_2) - (\mu_1 - \mu_2)}{\text{s.e.}(\bar{x}_1 - \bar{x}_2)},
 \]
-where $\mu_1 - \mu_2$ is the hypothesised value given in the null hypothesis.
+where $\mu_{\bar{x}_1 - \bar{x}_2} = \mu_1 - \mu_2$ is the hypothesised value given in the null hypothesis.
 This describes the *observations*.
-The $t$-value is like a $z$-score, and so an approximate *$P$-value* is estimated using the [68--95--99.7 rule](#def:EmpiricalRule), which is how we weigh the evidence to determine if it is *consistent* with the assumption.
+The $t$-value is like a $z$-score, and so an approximate *$P$-value* is estimated using the [68--95--99.7 rule](#def:EmpiricalRule) or normal-distribution tables, which is how we weigh the evidence to determine if it is *consistent* with the assumption.
 
 
 `r if (knitr::is_html_output()){
@@ -752,12 +804,12 @@ rownames(VeganDiet) <- c("Vegan diet",
                          "Conventional diet", 
                          "Difference")
 colnames(VeganDiet) <- c("Mean", 
-                         "Std. dev", 
+                         "Standard deviation", 
                          "n")
 
-VeganDiet[1, ] <- c(13.9, 2.3, 46)
-VeganDiet[2, ] <- c(15.0, 2.7, 47)
-VeganDiet[3, ] <- c(1.1, "", "")
+VeganDiet[1, ] <- c("13.9", "2.3", "46")
+VeganDiet[2, ] <- c("15.0", "2.7", "47")
+VeganDiet[3, ] <- c("1.1", "", "")
 
 
 if( knitr::is_latex_output() ) {
@@ -767,7 +819,8 @@ if( knitr::is_latex_output() ) {
         booktabs = TRUE,
         caption = "Comparing the iron levels (mg) for subjects using a vegan or conventional diet for 12 weeks") %>%
    kable_styling(font_size = 10) %>%
-   row_spec(0, bold = TRUE)
+   row_spec(0, bold = TRUE) %>%
+   row_spec(3, italic = TRUE)
 }
 
 if( knitr::is_html_output(exclude = "epub") ) {
@@ -777,17 +830,9 @@ if( knitr::is_html_output(exclude = "epub") ) {
         booktabs = TRUE,
         caption = "Comparing the iron levels (mg) for subjects using a vegan or conventional diet for 12 weeks")
 }
-
-if( knitr::pandoc_to("epub3") ) {
-  kable(VeganDiet,
-        format = "html",
-        longtable = FALSE,
-        booktabs = TRUE,
-        caption = "Comparing the iron levels (mg) for subjects using a vegan or conventional diet for 12 weeks") 
-}
 ```
 
-1. The sample size is missing from the 'Difference' row. 
+1. The sample size is missing from the 'Difference' row. \tightlist
    What should the sample size in this row be?
 `r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
   "46 + 47 = 93",
@@ -832,17 +877,53 @@ Selected answers are available in Sect. \@ref(TestTwoMeansAnswer).
 
 
 ::: {.exercise #TwoSampleHTWhalesHT}
+(These data were also seen in Exercise \@ref(exr:MeansIndSamplesExercisesWhalesCI).)
 A study of gray whales (*Eschrichtius robustus*) measured (among other things) the length of adult whales [@agbayani2020growth].
 Are adult female gray whales longer than males, on average, in the population?
-Summary information is shown below.
+Summary information is shown in Table \@ref(tab:WhaleInfoHT).
 In addition, the standard error of this difference is $\text{s.e.}(\bar{x}_F - \bar{x}_M) = 0.07079$.
 
 
-| Sex     |  Mean (in m)  |Standard deviation (in m) | Sample size 
-|--------:+:-------------:+:------------------------:+:-----------:
-| Female  | 12.70         | 0.611     	             | 260 	
-| Male 	  | 12.07	        | 0.705                    | 139
 
+```{r WhaleInfoHT, echo=FALSE}
+WhaleInfo <- array( dim = c(2, 3))
+colnames(WhaleInfo) <- c("Mean",
+                         "Std deviation",
+                         "Sample size")
+rownames(WhaleInfo) <- c("Female",
+                                      "Male")
+
+WhaleInfo[1, ] <- c("4.66", 
+                    0.379, 
+                    26)
+WhaleInfo[2, ] <- c("4.60", 
+                    0.305,
+                    30)
+
+if( knitr::is_latex_output() ) {
+  kable( WhaleInfo,
+         format = "latex",
+         longtable = FALSE,
+         booktabs = TRUE,
+         align = c("c", "c", "c"),
+         col.names = colnames(WhaleInfo),
+         caption = "Numerical summary of length of whales at birth (in m)") %>%
+    row_spec(0, 
+             bold = TRUE) %>%
+    kable_styling(font_size = 10)
+    
+}
+if( knitr::is_html_output() ) {
+  out <- kable( WhaleInfo,
+                format = "html",
+                longtable = FALSE,
+                booktabs = TRUE,
+                align = c("c", "c", "c"),
+                col.names = colnames(WhaleInfo),
+                caption = "Numerical summary of length of whales at birth (in m)") %>%
+    kable_styling(full_width = FALSE)
+}
+```
 
 1. Define the *difference*.
 1. Write the hypotheses to answer the RQ.
@@ -853,7 +934,7 @@ In addition, the standard error of this difference is $\text{s.e.}(\bar{x}_F - \
 
 
 ::: {.exercise #TestTwoMeansNHANES}
-Earlier, the NHANES study (Sect.&nbsp;\@ref(NHANESGraphs); Exercise \@ref(exr:MeansIndSamplesExercisesNHANES)) was used to address this RQ:
+Earlier, the NHANES study (Sect.&nbsp;\@ref(NHANESGraphs); Exercise \@ref(exr:MeansIndSamplesExercisesNHANES)) was used to answer this RQ:
 
 > Among Americans, is the mean direct HDL cholesterol different for current smokers and non-smokers?
 
@@ -861,7 +942,7 @@ Use the SPSS output in Fig. \@ref(fig:NHANESTest) to perform a hypothesis test t
 :::
 
    
-```{r NHANESTest, echo=FALSE, fig.cap="SPSS output for the NHANES data", fig.align="center", out.width="80%"}
+```{r NHANESTest, echo=FALSE, fig.cap="SPSS output for the NHANES data", fig.align="center", out.width="85%"}
 knitr::include_graphics("SPSS/NHANES/NHANES-TOutput.png")
 ```
 
@@ -962,6 +1043,7 @@ knitr::include_graphics("jamovi/BodyTemp/BodyTempTestGender.png")
 
 
 ::: {.exercise #TestTwoMeansDental}
+(These data were also seen in Exercise \@ref(exr:TestTwoMeansDentalCI).)
 A study [@data:woodward:dental] examined the sugar consumption in industrialised (mean: 41.8 kg/person/year) and non-industrialised (mean: 24.6 kg/person/year) countries.
 The jamovi output is shown in Fig. \@ref(fig:Dentaljamovi).
 
@@ -976,14 +1058,14 @@ knitr::include_graphics("jamovi/Dental/WoodwardWalker1994-ttest.png")
 ```
 
 
-::: {.exercise #FacePlantHT}
 
 ```{r echo=FALSE, message=FALSE}
 FF <- read.csv("./Data/forwardfall.csv")
 ```
 
-A study [@data:Wojcik:ForwardFall] compared the lean-forward angle in younger and older women.
+::: {.exercise #FacePlantHT}
 (This study was seen in Exercise \@ref(exr:FacePlantCI).)
+A study [@data:Wojcik:ForwardFall] compared the lean-forward angle in younger and older women.
 An elaborate set-up was constructed to measure this lean-forward angle, using harnesses.
 Consider this RQ:
 
@@ -1007,6 +1089,7 @@ knitr::include_graphics("jamovi/FallForward/FallForwardTTestOutput-All.png")
 
 
 ::: {.exercise #DecelerationHT}
+(These data were also seen in Exercise \@ref(exr:DecelerationCI).)
 In an attempt to reduce vehicle speeds on freeway exit ramps, a Chinese study tried using additional signage [@ma2019impacts].
 At one site studied (Ningxuan Freeway), speeds were recorded at various points on the freeway exit for vehicles *before* the extra signage was added, and then for different vehicles *after* the extra signage was added.
 
@@ -1028,16 +1111,53 @@ Decel2 <- data.frame( "Before" = head(Decel$Deceleration[Decel$When == "Before"]
                                       n = 5),
                       "After" = head(Decel$Deceleration[Decel$When == "After"],
                                      n = 5) )
+```
 
+```{r}
 if( knitr::is_latex_output() ) {
+  tb1 <- cbind( Decel$Deceleration[Decel$When == "Before"][1:7],
+                Decel$Deceleration[Decel$When == "Before"][8:14],
+                Decel$Deceleration[Decel$When == "Before"][15:21],
+                Decel$Deceleration[Decel$When == "Before"][22:28],
+                Decel$Deceleration[Decel$When == "Before"][29:35],
+                c(Decel$Deceleration[Decel$When == "Before"][36:38], NA, NA, NA, NA) )
+  T1 <- knitr::kable( tb1,
+                      format = "latex",
+                      valign = 't',
+                      align = "c",
+                      linesep = "",
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Deceleration before signage added" = 6),
+                      bold = TRUE)
+
+  tb2 <- cbind( Decel$Deceleration[Decel$When == "After"][1:7],
+                Decel$Deceleration[Decel$When == "After"][8:14], 
+                Decel$Deceleration[Decel$When == "After"][15:21], 
+                Decel$Deceleration[Decel$When == "After"][22:28], 
+                Decel$Deceleration[Decel$When == "After"][29:35], 
+                c(Decel$Deceleration[Decel$When == "After"][36:41], NA) ) 
+  T2 <- knitr::kable( tb2,
+                      format = "latex",
+                      align = "c",
+                      valign = 't',
+                      linesep = "",
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Deceleration after signage added" = 6),
+                      bold = TRUE)
   
-  kable( Decel2,
-         format = "latex",
-         longtable = FALSE,
-         booktabs = TRUE,
-         align = c("r", "r"),
-         caption = "Vehicle deceleration before and after adding extra signage (negative values mean the vehicle has accelerated). Only the first five observations are shown.") %>%
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "SignageSummaryDecHT",
+                       caption = "Vehicle decleration before and after adding extra signage") %>%
     kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out, gap = "\\enskip")
+  out2
 }
 
 if( knitr::is_html_output(exclude = "epub") ) {
@@ -1112,6 +1232,7 @@ if( knitr::is_latex_output() ) {
         caption = "The signage data summary (in m/s-squared)"
   ) %>%
   row_spec(0, bold = TRUE) %>%
+  row_spec(3, italic = TRUE) %>%
   kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {

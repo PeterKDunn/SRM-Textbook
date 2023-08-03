@@ -109,7 +109,7 @@ if( knitr::is_latex_output() ) {
   out <- knitr::kables(list(T1, T2),
                        format = "latex",
                        label = "PhoneDataTable",
-                       caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones. Only the first ten observations for each group are shown, but 32 students are in each group") %>% 
+                       caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones") %>% 
     kable_styling(font_size = 10)
   out2 <- prepareSideBySideTable(out)
   out2
@@ -324,6 +324,7 @@ if( knitr::is_latex_output() ) {
                       "Standard error"),
     caption = "The mean, median, standard deviation and standard error for the reaction-time data (in ms)") %>%
 		row_spec(0, bold = TRUE)  %>%
+    row_spec(3, italic = TRUE) %>%
     column_spec(3, width = "15mm") %>%
     column_spec(4, width = "18mm") %>%
     column_spec(5, width = "15mm") %>%
@@ -428,7 +429,7 @@ The *difference* between the sample means varies from sample to sample, and so h
 The *sampling distribution of the difference between two sample means* is described by:
 
 * an approximate normal distribution;
-* centred around a sampling mean $\mu_{\bar{x}_A - \bar{x}_B}$, whose value is $\mu_A - \mu_B$ (the *differences* between the population means);
+* centred around a sampling mean denoted by $\mu_{\bar{x}_P - \bar{x}_C}$, whose value is ${\mu_{P}} - {\mu_{C}} = 0$, the difference between the *population* means (from $H_0$);
 * with a standard deviation of $\displaystyle\text{s.e.}(\bar{x}_A - \bar{x}_B)$,
 
 when the appropriate conditions (Sect. \@ref(ValidityTwoMeans)) are met.
@@ -933,7 +934,7 @@ arrows(1:3, mns - 2 * ses,
 
 
 In an attempt to reduce vehicle speeds on freeway exit ramps, a Chinese study tried using additional signage [@ma2019impacts].
-At one site studied (Ningxuan Freeway), speeds were recorded for 38 vehicles before the extra signage was added, and then for 41 vehicles after the extra signage was added.
+At one site studied (Ningxuan Freeway), speeds were recorded for 38 vehicles before the extra signage was added, and then for 41 different vehicles after the extra signage was added.
 
 
 ```{r Signage, echo=FALSE, cache=FALSE}
@@ -943,50 +944,56 @@ Speed$When <- factor(Speed$When,
                      levels = c("Before", "After"),
                      ordered = TRUE)
 
+Speed2 <- data.frame( Before = Speed$Speed[ Speed$When == "Before" ][1:10],
+                      After = Speed$Speed[ Speed$When == "After" ][1:10])
+```
+
+```{r}
 if( knitr::is_latex_output() ) {
-  
-  Speed1 <- cbind( Speed$Speed[ Speed$When == "Before" ][1:5],
-                   Speed$Speed[ Speed$When == "Before" ][6:10])
-  Speed1 <- rbind( format(Speed1, 
-                          digits = 1, 
-                          nsmall = 1),
-                   c("$\\vdots$", "$\\vdots$"))
-  t1 <- knitr::kable( Speed1,
-         format = "latex",
-         longtable = FALSE,
-         booktabs = TRUE,
-         linesep = "",
-         escape = FALSE,
-         align = c("r", "r") )  %>%
+  tb1 <- cbind( Speed$Speed[Speed$When == "Before"][1:6],
+                Speed$Speed[Speed$When == "Before"][7:12],
+                Speed$Speed[Speed$When == "Before"][13:18],
+                Speed$Speed[Speed$When == "Before"][19:24],
+                Speed$Speed[Speed$When == "Before"][25:30],
+                Speed$Speed[Speed$When == "Before"][31:36],
+                c(Speed$Speed[Speed$When == "Before"][37:38], NA, NA, NA, NA) )
+  T1 <- knitr::kable( tb1,
+                      format = "latex",
+                      valign = 't',
+                      align = c("c", "c"),
+                      linesep = "",
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Before signage" = 2),
+    add_header_above( c("Speeds before signage added" = 7),
                       bold = TRUE)
-    
-    
-  Speed2 <- cbind( Speed$Speed[ Speed$When == "After" ][1:5],
-                   Speed$Speed[ Speed$When == "After" ][6:10])
-  Speed2 <- rbind( format(Speed2, 
-                          digits = 1, 
-                          nsmall = 1),
-                   c("$\\vdots$", "$\\vdots$"))
-  t2 <- knitr::kable( Speed2,
-         format = "latex",
-         longtable = FALSE,
-         booktabs = TRUE,
-         linesep = "",
-         digits = 1,
-         escape = FALSE,
-         align = c("r", "r") )  %>%
-    add_header_above( c("After signage" = 2), 
-                      bold = TRUE )
+
+  tb2 <- cbind( Speed$Speed[Speed$When == "After"][1:6],
+                Speed$Speed[Speed$When == "After"][7:12], 
+                Speed$Speed[Speed$When == "After"][13:18], 
+                Speed$Speed[Speed$When == "After"][19:24], 
+                Speed$Speed[Speed$When == "After"][25:30], 
+                Speed$Speed[Speed$When == "After"][31:36], 
+                c(Speed$Speed[Speed$When == "After"][37:41], NA) ) 
+  T2 <- knitr::kable( tb2,
+                      format = "latex",
+                      align = c("c", "c"),
+                      valign = 't',
+                      linesep = "",
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Speeds after signage added" = 7),
+                      bold = TRUE)
   
-  out <- knitr::kables(list(t1, t2),
+  out <- knitr::kables(list(T1, T2),
                        format = "latex",
-                       label = "Signage",
-                       caption = "The first ten observations from the signage data for trhe before and after measurements. There are 38 before observations and 41 after observations in total.") %>% 
+                       label = "SignageHT",
+                       caption = "Vehicle speeds before and after adding extra signage") %>%
     kable_styling(font_size = 10)
-  
-  out2 <- prepareSideBySideTable(out)
+  out2 <- prepareSideBySideTable(out, gap = "\\enskip")
   out2
 }
 
@@ -998,18 +1005,8 @@ if( knitr::is_html_output(exclude = "epub") ) {
                  options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                  caption = "The observations from the signage data")
 }
-
-if ( knitr::is_html_output() & knitr::pandoc_to("epub")) {
-
-  kable( Speed[1:10,],
-         format = "html",
-         longtable = FALSE,
-         booktabs = TRUE,
-         align = c("c", "c", "c"),
-         caption = "Vehicle speeds before and after adding extra signage. Only the first 10 observations are shown.") %>%
-    kable_styling(font_size = 10)
-}
 ```
+
 
 The researchers are hoping that the addition of extra signage will *reduce* the mean speed of the vehicles.
 The RQ is:
@@ -1073,6 +1070,7 @@ if( knitr::is_latex_output() ) {
         caption = "The signage data summary (in km/h)"
   ) %>%
   row_spec(0, bold = TRUE) %>%
+  row_spec(3, italic = TRUE) %>%
   kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
@@ -1242,6 +1240,7 @@ if( knitr::is_latex_output() ) {
         caption = "The BHADP data summary"
   ) %>%
   row_spec(0, bold = TRUE) %>%
+  row_spec(3, italic = TRUE) %>%
   kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
@@ -1367,8 +1366,6 @@ Selected answers are available in Sect.&nbsp;\@ref(MeansIndSamplesAnswer).
 A study of gray whales (*Eschrichtius robustus*) measured (among other things) the length of whales at birth [@agbayani2020growth].
 How much longer are female gray whales than males, on average, in the population?
 Some summary data are given in Table \@ref(tab:WhaleInfo); in addition, $\text{s.e.}(\bar{x}_F - \bar{x}_M) = 0.0929$.
-
-
 
 
 ```{r WhaleInfo, echo=FALSE}
@@ -1597,31 +1594,58 @@ In this context, the researchers are hoping that the extra signage might cause c
 
 
 
-```{r SignageDec, echo=FALSE}
+```{r}
 Decel <- read.csv("./Data/Deceleration.csv")
-
 
 Decel$When <- factor(Decel$When,
                      levels = c("Before", "After"),
                      ordered = TRUE)
+```
+```{r}
 if( knitr::is_latex_output() ) {
+  tb1 <- cbind( Decel$Deceleration[Decel$When == "Before"][1:7],
+                Decel$Deceleration[Decel$When == "Before"][8:14],
+                Decel$Deceleration[Decel$When == "Before"][15:21],
+                Decel$Deceleration[Decel$When == "Before"][22:28],
+                Decel$Deceleration[Decel$When == "Before"][29:35],
+                c(Decel$Deceleration[Decel$When == "Before"][36:38], NA, NA, NA, NA) )
+  T1 <- knitr::kable( tb1,
+                      format = "latex",
+                      valign = 't',
+                      align = "c",
+                      linesep = "",
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Deceleration before signage added" = 6),
+                      bold = TRUE)
+
+  tb2 <- cbind( Decel$Deceleration[Decel$When == "After"][1:7],
+                Decel$Deceleration[Decel$When == "After"][8:14], 
+                Decel$Deceleration[Decel$When == "After"][15:21], 
+                Decel$Deceleration[Decel$When == "After"][22:28], 
+                Decel$Deceleration[Decel$When == "After"][29:35], 
+                c(Decel$Deceleration[Decel$When == "After"][36:41], NA) ) 
+  T2 <- knitr::kable( tb2,
+                      format = "latex",
+                      align = "c",
+                      valign = 't',
+                      linesep = "",
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Deceleration after signage added" = 6),
+                      bold = TRUE)
   
-  Decel2 <- data.frame( "Before" = head(Decel$Deceleration[Decel$When == "Before"], 
-                                        n = 5),
-                        "After" = head(Decel$Deceleration[Decel$When == "After"],
-                                       n = 5) )
-  Decel2 <- rbind( Decel2, 
-                   c("$\\vdots$", "$\\vdots$"))
-  kable( Decel2,
-         format = "latex",
-         longtable = FALSE,
-         booktabs = TRUE,
-         linesep = "",
-         escape = FALSE,
-         align = c("r", "r"),
-         caption = "Vehicle deceleration before and after adding extra signage (negative values mean the vehicle has accelerated). Only the first five observations are shown.") %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE)
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "SignageDec",
+                       caption = "Vehicle decleration before and after adding extra signage") %>%
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out, gap = "\\enskip")
+  out2
 
 }
 
@@ -1730,6 +1754,10 @@ if( knitr::is_html_output() ) {
 
 ```{r echo=FALSE}
 FF <- read.csv("./Data/forwardfall.csv")
+FF$Group <- factor(FF$Group,
+                   levels = 1:2,
+                   labels = c("Younger",
+                              "Older"))
 ```
 ::: {.exercise #FacePlantCI}
 A study [@data:Wojcik:ForwardFall] compared the lean-forward angle in younger and older women.
@@ -1751,27 +1779,28 @@ The data are shown in Table \@ref(tab:FacePlant).
 :::
 
 ```{r FacePlant, echo=FALSE}
-FacePlant <- cbind( 
-  c(29, 32, 34, 31, 33),
-  c(34, 27, 32, 28, 27),
-  c(18, 15, 23, 13, 12) 
-)
 
 if( knitr::is_latex_output() ) {
+  FacePlant <- array(dim = c(2, 10), # COL 6 is a gap
+                   NA)
+  FacePlant[1, ] <- c( FF$LeanAngle[FF$Group == "Younger"][1:5],
+                       FF$LeanAngle[FF$Group == "Older"][1:5] )
+  FacePlant[2, 1:5] <- FF$LeanAngle[FF$Group == "Younger"][6:10]
+  
   kable( FacePlant,
          format = "latex",
          longtable = FALSE,
          booktabs = TRUE,
-         align = c("c", "c", "c"),
+         align = "c",
          caption = "Lean-forward angles for older women ($n = 10$) and younger women ($n = 5$)") %>%
-    add_header_above(header = c("Younger women " = 2, "Older women " = 1), 
+    add_header_above(header = c("Younger women " = 5, "Older women " = 5), 
                      bold = TRUE, 
 		     align = "c") %>%
     kable_styling(font_size = 10)
     
 }
 if( knitr::is_html_output() ) {
-  out <- kable( FacePlant,
+  out <- kable( FF,
                 format = "html",
                 longtable = FALSE,
                 booktabs = TRUE,
