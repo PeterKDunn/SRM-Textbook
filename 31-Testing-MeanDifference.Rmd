@@ -450,17 +450,18 @@ Here, the observations from the *first* visit minus the observation from the *se
 from the first to second measurement.
 
 
-```{r DiabetesDataTable2, echo=FALSE}
+```{r DiabetesDataTable2}
 DiffExists <- complete.cases(diab[, c("bp.1d", 
                                       "bp.2d",  
                                       "Diff")])
 
-if( knitr::is_latex_output() ) {
 diabData <- diab[DiffExists, c("bp.1d", 
                                "bp.2d", 
                                "Diff")]
-diabData <- rbind( head(diabData),
-                   c("$\\vdots$", "$\\vdots$", "$\\vdots$") )
+
+if( knitr::is_latex_output() ) {
+  diabData <- rbind( head(diabData),
+                     c("$\\vdots$", "$\\vdots$", "$\\vdots$") )
 
 knitr::kable(diabData,
              format = "latex",
@@ -479,15 +480,12 @@ knitr::kable(diabData,
 }
 
 if( knitr::is_html_output() ) {
-  kable( insulate,
+  kable( diabData,
          format = "html",
          booktabs = TRUE,
          longtable = FALSE,
-         col.names = c("Home", 
-                       "Before", 
-                       "After", 
-                       "Energy savings"),
-         caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") %>%
+             col.names = c("DBP: 1st visit", "DBP: 2nd visit", "Reduction in DBP"), 
+             caption = "The diastolic blood pressure data; the first six patients only") %>%
   kable_styling(font_size = 10) %>%
   #row_spec(row = 3, bold = TRUE) %>%
   row_spec(0, bold = TRUE)
@@ -772,8 +770,7 @@ if( knitr::is_html_output() ) {
                 caption = "The Captopril data: before after after systolic blood pressures (in mm Hg)",
                 longtable = FALSE
                 ) %>%
-    add_header_above(out, 
-                     header=c("  " = 2, "  " = 2), 
+    add_header_above(header=c("  " = 2, "  " = 2), 
 		     bold = TRUE, 
 		     align = "c")
 }
