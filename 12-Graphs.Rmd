@@ -126,7 +126,6 @@ if( knitr::is_latex_output() ) {
 ```
 ```{r BabyBoomDataHTML, fig.cap="The baby-births data"}
 if( knitr::is_html_output() ) {
-   if( knitr::is_html_output(excludes = "epub") ) {
       DT::datatable( BB2,
                      fillContainer = FALSE, # Make more room, so we don't just have ten values
                      options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
@@ -135,9 +134,6 @@ if( knitr::is_html_output() ) {
 		                              "Minutes since midnight"),
                      caption = "The baby-births data"
         )
-   } else { # Epub
-     out
-   }
 }
 ```
 
@@ -1317,7 +1313,7 @@ The histogram shows, for example, that 17 babies weighed 3.0kg or more, but unde
 
 ```{r animation.hook="gifski", interval=0.55, fig.height=7}
 ### BUILD A HISTOGRAM
-if (knitr::is_html_output(exclude = "epub")) {
+if (knitr::is_html_output()) {
   #Wts <- sort( round(BB$Weight/100, 0) )
   Wts <- sort(BB$Weight)
   DP2 <- function(x){format(round(x, 1), nsmall = 1) }
@@ -1594,13 +1590,10 @@ Typical shapes are shown in
 Sometimes, no short descriptions are suitable.
 
 
-```{r, child = if (knitr::is_html_output(excludes = "epub"))  './children/ShapeExampleCarousel.Rmd'}
+```{r, child = if (knitr::is_html_output())  './children/ShapeExampleCarousel.Rmd'}
 ```
 
 ```{r, child = if (knitr::is_latex_output()) './children/ShapeExampleImages.Rmd'}
-```
-
-```{r, child = if (knitr::is_html_output() & pandoc_to("epub")) './children/ShapeExampleImages.Rmd'}
 ```
 
 
@@ -1755,7 +1748,7 @@ hist(faithful$waiting,
 
 The number of bins used in the histogram can change the impression of the distribution.
 Software makes it easy to try different bin sizes to find one that suitably displays the overall distribution.
-```{r, child = if (knitr::is_html_output(excludes = "epub"))  './children/HTML/histogramChangeBins.Rmd'}
+```{r, child = if (knitr::is_html_output())  './children/HTML/histogramChangeBins.Rmd'}
 ```
 ```{r, child = if (knitr::is_latex_output()) './children/LaTeX/histogramChangeBins.Rmd'}
 ```
@@ -2182,13 +2175,8 @@ if( knitr::is_html_output() ) {
                align = c("r", "r", "r"),
                booktabs = TRUE,
                row.names = FALSE,
-               caption = "The NHANES age distribution, displayed in a tabular summary") 
-      
-   if ( knitr::is_html_output(excludes = "epub")) {
-      kable_styling(out, full_width = FALSE)
-  } else {
-    out
-  }
+               caption = "The NHANES age distribution, displayed in a tabular summary") %>%
+          kable_styling(full_width = FALSE)
 }
 ```
 
@@ -2242,13 +2230,8 @@ if( knitr::is_html_output() ) {
                align = c("c", "r", "r"),
                booktabs = TRUE,
                row.names = FALSE,
-               caption = "The baby-weights data, displayed in a tabular summary") 
-      
-   if ( knitr::is_html_output(excludes = "epub")) {
-      kable_styling(out, full_width = FALSE)
-  } else {
-    out
-  }
+               caption = "The baby-weights data, displayed in a tabular summary") %>%
+      kable_styling(full_width = FALSE)
 }
 ```
 
@@ -2305,7 +2288,6 @@ if( knitr::is_latex_output() ) {
   
 }
 if( knitr::is_html_output() ) {
-  if( knitr::is_html_output(exclude = "epub") ) {
     kable( KrillEggs2,
            format = "html",
            longtable = FALSE,
@@ -2317,15 +2299,6 @@ if( knitr::is_html_output() ) {
                                 " Control group" = 2), 
                      bold = TRUE, 
                      align = "c")
-  } else { # epub
-    kable( KrillEggs2,
-           format = "html",
-           longtable = FALSE,
-           booktabs = TRUE,
-           align = c("c", "c"),
-           #col.names = c("Treatment group", "Control group"),
-           caption = "The number of eggs laid by krill, for those in a treatment group and for those in a control group")
-  }  
 }
 ```
 
@@ -3097,12 +3070,8 @@ if( knitr::is_html_output() ) {
                longtable = FALSE,
                align = c("r", "c", "c", "c"),
                booktabs = TRUE,
-               caption = "The number of possums found as road kill, by sex and season")
-   if ( knitr::is_html_output(excludes = "epub")) {
-     kable_styling(out, full_width = FALSE)
-  } else {
-    out
-  }  
+               caption = "The number of possums found as road kill, by sex and season") %>%
+     kable_styling(full_width = FALSE)
 }
 ```
 
@@ -3668,12 +3637,8 @@ if( knitr::is_html_output() ) {
                longtable = FALSE,
                align = c("r", "r", "r"),
                booktabs = TRUE,
-               caption = "The percentages of possums found as road kill by sex, within each season (i.e., rows sum to 100%)")
- if ( knitr::is_html_output(excludes = "epub")) {
-    kable_styling(out, full_width = FALSE)
-  } else {
-    out
-  }   
+               caption = "The percentages of possums found as road kill by sex, within each season (i.e., rows sum to 100%)") %>%
+    kable_styling(full_width = FALSE)
 }
 ```
 
@@ -3996,22 +3961,11 @@ if( knitr::is_latex_output() ) {
       kable_styling(font = 10) %>%
       row_spec(0, bold = TRUE)
 }
-if( knitr::is_html_output(exclude = "epub") ) {
+if( knitr::is_html_output() ) {
      DT::datatable( round(insulate, 1),
                     fillContainer = FALSE, # Make more room, so we don't just have ten values
                     options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                     caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)")
-}
-
-if (knitr::pandoc_to("epub3")){
-   kable( insulate,
-          format = "latex",
-          booktabs = TRUE,
-          longtable = FALSE,
-          col.names = c("Before", 
-                        "After", 
-                        "Energy savings"),
-          caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") 
 }
 ```
 
@@ -4440,13 +4394,13 @@ From the NHANES webpage, this survey:
 
 The data are equivalent to a "a simple random sample from the American population" [@data:NHANES:Rpackage].
 In total, 10\,000 observations on scores of variables are available (from the 2009/2010 and the 2011/2012 surveys).
-`r if (knitr::is_html_output(excludes = "epub")) {
+`r if (knitr::is_html_output()) {
    'Fig. \\@ref(fig:NHANESFullDataTable) shows the first 1000 observations on the first 40 variables only.'
 }`
 
 
 ```{r NHANESFullDataTable, fig.cap="The full NHANES dataset", fig.align="center"}
-if( knitr::is_html_output(excludes = "epub") ) {
+if( knitr::is_html_output() ) {
   DT::datatable(NHANES[1:1000, 1:40 ],
                list(scrollX = TRUE, 
 	             scrollY = TRUE, 
@@ -4745,26 +4699,26 @@ if( knitr::is_html_output() ) {
 In each of the following scenarios, select the most appropriate graph to use.
 
 1. To compare the average number of hours of sunlight exposure per day for female and male teachers.\tightlist
-`r if( knitr::is_html_output(exclude = "epub")) {longmcq( c(
+`r if( knitr::is_html_output()) {longmcq( c(
    "A histogram of the differences", 
    answer = "A boxplot",
    "A stacked bar chart",
    "A histogram") )}`
 2. To compare the proportion of trees with koalas, for trees more than 10 metres tall with trees 10 metres or shorter.
-`r if( knitr::is_html_output(exclude = "epub")) {longmcq( c(
+`r if( knitr::is_html_output()) {longmcq( c(
    "A pie chart", 
    answer = "A stacked bar chart",
    "A boxplot",
    "A histogram of the differences") )}`
 3. To compare the average number of hours spent on social media for people aged over 30, to people aged 30 and under.
-`r if( knitr::is_html_output(exclude = "epub")) {longmcq( c(
+`r if( knitr::is_html_output()) {longmcq( c(
    "A stacked bar chart",
    "A pie chart", 
    answer = "A boxplot",
    "A histogram",
    "A histogram of the differences") )}`
 4. To compare the average number of hours of exercise per week for office workers, both in summer and in winter for each person.
-`r if( knitr::is_html_output(exclude = "epub")) {longmcq( c(
+`r if( knitr::is_html_output()) {longmcq( c(
    "A side-by-side bar chart",
    "A boxplot",
    "A barchart",
@@ -4793,7 +4747,7 @@ A study on the bruising of apples [@doosti2016development] purposefully hit appl
 The researchers then recorded the depth of the bruising (the *response* variable), to determine if it could be estimated from the surface temperature (the *explanatory* variable) at the bruise location (an *extraneous* variable).
 
 1. What graph would be appropriate to display the *response* variable?\tightlist  
-`r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
+`r if( knitr::is_html_output() ) {longmcq( c(
 	"A bar chart",
 	answer = "A histogram",
 	"A boxplot",
@@ -4801,7 +4755,7 @@ The researchers then recorded the depth of the bruising (the *response* variable
 	"A side-by-side bar chart"))}`
 
 2. What graph would be appropriate to display the *explanatory* variable?  
-`r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
+`r if( knitr::is_html_output() ) {longmcq( c(
 	"A bar chart",
 	answer = "A histogram",
 	"A boxplot",
@@ -4809,7 +4763,7 @@ The researchers then recorded the depth of the bruising (the *response* variable
 	"A side-by-side bar chart"))}`
 
 3. What graph could be used to display the *relationship* between the response and explanatory variables?  
-`r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
+`r if( knitr::is_html_output() ) {longmcq( c(
 	"A bar chart",
 	"A histogram",
 	"A boxplot",
@@ -4817,7 +4771,7 @@ The researchers then recorded the depth of the bruising (the *response* variable
 	"A side-by-side bar chart"))}`
 
 4. What graph could be used to display the *relationship* between the 'surface temperature' and 'bruise location'?  
-`r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
+`r if( knitr::is_html_output() ) {longmcq( c(
 	"A bar chart",
 	"A histogram",
 	answer = "A boxplot",
@@ -4844,7 +4798,7 @@ Selected answers are available in Sect. \@ref(GraphsAnswer).
 
 ::: {.exercise #Graphs1}
 To explore the relationship between the pH of water and the temperature of the water, in various creeks, what would be the most useful graph?
-`r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
+`r if( knitr::is_html_output() ) {longmcq( c(
 	"A bar chart",
 	"A histogram",
 	"A boxplot",
@@ -4858,7 +4812,7 @@ To explore the relationship between the pH of water and the temperature of the w
 Suppose, in a research study, the researchers measures the difference between a swimmer's fastest 100m time and their fastest 200m time.
 The researchers were interested in the average time *difference*.
 What would be the best graph for displaying these data?
-`r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
+`r if( knitr::is_html_output() ) {longmcq( c(
 	"A bar chart",
 	"A histogram",
 	"A boxplot",
@@ -4871,7 +4825,7 @@ What would be the best graph for displaying these data?
 ::: {.exercise #Graphs3}
 A research study examined the way in which students usually came to university (bus; private car; car pooling; etc.) and their postcode.
 What would be the best graph for displaying these data?
-`r if( knitr::is_html_output(exclude = "epub") ) {longmcq( c(
+`r if( knitr::is_html_output() ) {longmcq( c(
 	"A bar chart",
 	"A histogram",
 	"A boxplot",
