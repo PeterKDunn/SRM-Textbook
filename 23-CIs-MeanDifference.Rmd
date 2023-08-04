@@ -254,13 +254,7 @@ An appropriate graph is *a histogram* of the *differences* (Fig.&nbsp;\@ref(fig:
 Graphing the *Week 1* and *Week 12* data may also be useful too, but a graph of the differences is *crucial*, as the RQ is about the differences.
 A case-profile plot (Sect.&nbsp;\@ref(CaseProfilePlot)) is also useful, but is difficult to read here as the sample size is large (recall, a case-profile plot contains a line for each unit of analysis).
 
-
-
-
-
-
-
-```{r WeightGainHistogram, fig.cap="A histogram of weight changes (the vertical grey line represents no weight gain)", fig.align="center", out.width='70%', fig.width=8.5, fig.height = 3.0}
+```{r WeightGainHistogram, fig.cap="A histogram of weight changes (the vertical grey line represents no weight gain)", fig.align="center", out.width='60%', fig.width=8.5, fig.height = 3.0}
 par( mfrow = c(1, 2))
 
 hist( SW$GainWt,
@@ -368,7 +362,7 @@ if( knitr::is_latex_output() ) {
         digits = 2,
         caption = "The mean, median, standard deviation and IQR for the weight-gain data (in kg)") %>%
     row_spec(0, bold = TRUE) %>%
-    row_spec(3, bold = TRUE) %>%
+    row_spec(3, italic = TRUE) %>%
     kable_styling(font_size = 10)
 } else {
   kable(WtGain.DataSummary,
@@ -590,7 +584,7 @@ if( knitr::is_latex_output() ) {
         caption = "The endangered-species data summary"
   ) %>%
   row_spec(0, bold = TRUE) %>%
-  row_spec(3, bold = TRUE) %>%
+  row_spec(3, italic = TRUE) %>%
   kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
@@ -731,8 +725,6 @@ box()
 \end{figure}
 
 
-
-
 ```{r DiabetesDataTable2}
 DiffExists <- complete.cases(diab[, c("bp.1d", 
                                       "bp.2d", 
@@ -813,7 +805,7 @@ kable(Diab.Table,
       digits = c(2, 3, 3, 0),
       caption = "The numerical summary for the diabetes data (in mm Hg). The differences are the second visit value minus the first visit value: the decreases in diastolic blood pressure from the first to second visit") %>%
   row_spec(0, bold = TRUE) %>%
-  row_spec(3, bold = TRUE) %>%
+  row_spec(3, italic = TRUE) %>%
   kable_styling(font = 10)
 }
 if( knitr::is_html_output() ) {
@@ -957,72 +949,47 @@ In a study of hypertension [@data:hand:handbook; @data:macgregor:essential], 15 
 
 ```{r}
 if( knitr::is_latex_output() ) {
-  d1 <- knitr::kable( bloodS[1:8, ],
-                      format = "latex",
-                      col.names = c("Before", 
-                                    "After",
-                                    "Difference"),
-                      valign = 't',
-                      #table.env = "@empty",
-                      linesep = c("","","","\\addlinespace"),
-                      row.names = FALSE,
-                      booktabs = TRUE) %>%
+  T1 <- kable( bloodS[1:5, ],
+               format = "latex",
+               row.names = FALSE,
+               booktabs = TRUE,
+               longtable = FALSE) %>%
     row_spec(0, bold = TRUE)
-  
-  d2 <- knitr::kable( rbind(bloodS[9:15, ],
-                            c(NA, NA, NA) ), # To even up the bottom of the columns in each table
-                      format = "latex",
-                      col.names = c("Before", 
-                                    "After",
-                                    "Difference"),
-                      valign = 't',
-                      #table.env = "@empty",
-                      linesep = c("","","","\\addlinespace"),
-                      row.names = FALSE,
-                      booktabs = TRUE) %>%
+  T2 <- kable( bloodS[6:10, ],
+               format = "latex",
+               row.names = FALSE,
+               booktabs = TRUE,
+               longtable = FALSE) %>%
     row_spec(0, bold = TRUE)
+  T3 <- kable( bloodS[11:15, ],
+               format = "latex",
+               row.names = FALSE,
+               booktabs = TRUE,
+               longtable = FALSE) %>%
+    row_spec(0, bold = TRUE) 
   
-  out <- knitr::kables(list(d1, d2),
+  out <- knitr::kables(list(T1, T2, T3),
                        format = "latex",
                        label = "CICaptoprilData",
                        caption = "The Captopril data: before after after systolic blood pressures (in mm Hg)") %>% 
-    kable_styling(font_size = 10)
-  out2 <- prepareSideBySideTable(out)
+    kable_styling(font_size = 10)  
+  out2 <- prepareSideBySideTable(out, 
+                                 numberOfTables = 3,
+                                 gap = "\\quad") 
   out2
-  
-  #CANNOT figure how to centre this.
-  #So a hack: Add \centering, but need to make space for it first
-  # 
-  # out2 <- paste( substr(out, 1, 13), # This is just \\begin{table}
-  #            "\\centering", # New text
-  #            substr(out, 15, nchar(out)) )
-  # #print(out2)
-  # # Tables are very close together--annoyingly so. 
-  # # Be (very) nice to add space between them.
-  # findEndTabular <- unlist(gregexpr('end{tabular}',   # Find the stringf  tabular... 
-  #                                   out2,             # ... in  out2 ...
-  #                                   fixed = TRUE))    # ... taking the curly brackets literally
-  # findEndTabular <- findEndTabular[1] + 11 # Need to move to the *end* of the \end{tabular} string to add the spacing
-  # out3 <- paste( substr(out2, 1, findEndTabular),
-  #                "\\quad\\quad",
-  #                substr(out2, findEndTabular + 1, nchar(out2) ) )
-  # structure(out3,
-  #           format = "latex",
-  #           class = "knitr_kable")
-  
 }
 if( knitr::is_html_output() ) {
   out <- kable( bloodS2,
-         format = "html",
-         booktabs = TRUE,
-         longtable = FALSE,
-         caption = "The Captopril data: before after after systolic blood pressures (in mm Hg)") %>%
+                format = "html",
+                booktabs = TRUE,
+                caption = "The Captopril data: before after after systolic blood pressures (in mm Hg)",
+                longtable = FALSE
+                ) %>%
     add_header_above(header=c("  " = 2, "  " = 2), 
 		     bold = TRUE, 
 		     align = "c")
 }
 ```
-
 
 
 ```{r CaptoriljamoviCI, fig.cap="jamovi (top) and SPSS (bottom) output for the Captoril data", fig.align="center", out.width="80%", fig.show="hold"}
@@ -1140,6 +1107,7 @@ kable(STtable,
       digits = c(2, 2, 2, 0),
       caption = "The numerical summary for the presurgical stress data") %>%
   row_spec(0, bold = TRUE) %>%
+  row_spec(3, italic = TRUE) %>%
   kable_styling(font = 10)
 }
 if( knitr::is_html_output() ) {
@@ -1205,6 +1173,7 @@ if( knitr::is_latex_output() ) {
                caption = "Summary information for the COVID-lockdown exercise data",
                align = c("r", "r")) %>%
     row_spec(0, bold = TRUE) %>%
+    row_spec(3, italic = TRUE) %>%
     kable_styling(font_size = 10)
 } 
 if( knitr::is_html_output() ) {
