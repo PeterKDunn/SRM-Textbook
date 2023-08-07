@@ -4,7 +4,7 @@
 
 
 <!-- Introductions; easier to separate by format -->
-```{r, child = if (knitr::is_html_output()) {'./introductions/35-Relationships-Two-Quant-HTML.Rmd'} else {'./introductions/35-Relationships-Two-Quant-LaTeX.Rmd'}}
+```{r, child = if (knitr::is_html_output())  {'./introductions/35-Relationships-Two-Quant-HTML.Rmd'} else {'./introductions/35-Relationships-Two-Quant-LaTeX.Rmd'}}
 ```
 
 
@@ -15,13 +15,14 @@ RD <- read.csv("Data/RedDeer.csv")
 
 ## Introduction: red deer {#Chap33-Intro}
 
-One study [@data:Holgate1965:StraightLine] examined the relationship between the age of $n = 78$ male red deer and the weight of their
+A study [@data:Holgate1965:StraightLine] examined the relationship between the age of $n = 78$ male red deer and the weight of their
 `r if( knitr::is_latex_output() ) {
   'molars (Table \\@ref(tab:deerData)).'
 } else {
   'molars; the data are shown below.'
 }
 `
+The data comprises two quantitative variables.
 
 
 <!-- ```{r deerData, echo=FALSE} -->
@@ -51,18 +52,32 @@ if( knitr::is_html_output() ) {
 
 \begin{figure}
 \begin{minipage}{0.32\textwidth}
-\captionof{table}{The first 10 observations of the male red deer data\label{tab:deerData}}
+\captionof{table}{The first 10 observations of the male red deer data ($n = 78$)\label{tab:deerData}}
+\fontsize{10}{12}\selectfont
 ```{r deerData}
-knitr::kable( head(RD, 10),
+RDhead <- head(RD, 10)
+RDhead[1, ] <- format( RDhead[1, ], 
+                       nsmall = 1)
+RDhead[2, ] <- format( RDhead[2, ], 
+                       digits = 2,
+                       nsmall = 2)
+
+RDhead <- rbind( RDhead, 
+                 c("$\\vdots$", "$\\vdots$"))
+
+knitr::kable( RDhead,
          format = "latex",
          booktabs = TRUE,
          longtable = FALSE,
          table.env = "@empty",
+         escape = FALSE,
+         digits = c(1, 2),
+         align = "c",
          col.names = c( "Age (in years)", 
 	                      "Molar weight (in g)")) %>%
 #         caption = "The first 10 observations of the male red deer data") %>%
    row_spec(0, bold = TRUE) %>%
-   #kable_styling(font_size = 10) %>% # CANNOT USE THIS IS THE MINIPAGE
+   #kable_styling(font_size = 10) %>% # CANNOT USE THIS IN THE MINIPAGE
    column_spec(1, width = "13mm") %>%
    column_spec(2, width = "22mm")
 ```
@@ -102,15 +117,17 @@ For the red deer data, both variables are *quantitative*, so the appropriate gra
 `
 The *response* variable is graphed on the *vertical* axis, and denoted $y$; the *explanatory* variable is graphed on the *horizontal* axis,
 and denoted $x$.
+
 The *explanatory* variable (potentially) *influences* the response variable, so in this example:
 
 * The *explanatory variable* ($x$) is the age of the deer (in years), and
 * The *response variable* ($y$) is the weight of molars (in grams).
 
-In other words, the age of the deer would seem likely to influence the weight of the molars.
+In other words, the age of the deer may influence the weight of the molars.
+(Supposing that the weight of the molars may influence the age of the deer is silly.)
 (In some cases,  it doesn't matter which is $x$ and which is $y$, such as exploring the relationship between height and weight of red deer; for example, see Example \@ref(exm:CorTestDogs).)
 
-Each row in the dataset (and each point on the scatterplot) corresponds to a single deer (the units of analysis); two variables (age; molar weight) are measured on each deer.
+Each row in the dataset (and each point on the scatterplot) corresponds to a single deer (the units of analysis); two quantitative variables (age; molar weight) are measured on each deer.
 
 
 <!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
@@ -151,11 +168,11 @@ Examples are shown in
 }`
 
 
-```{r, child = if (knitr::is_html_output()) './children/ScatterExampleCarousel.Rmd'}
+```{r, child = if (knitr::is_html_output())  './children/ScatterExampleCarousel.Rmd'}
 ```
 
 
-```{r, child = if (knitr::is_latex_output()) './children/ScatterExampleImages.Rmd'}
+```{r, child = if (knitr::is_latex_output())   './children/ScatterExampleImages.Rmd'}
 ```
 
 
