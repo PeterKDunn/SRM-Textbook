@@ -56,9 +56,9 @@ if( knitr::is_html_output() ) {
 \fontsize{10}{12}\selectfont
 ```{r deerData}
 RDhead <- head(RD, 10)
-RDhead[1, ] <- format( RDhead[1, ], 
+RDhead[, 1] <- format( RDhead[, 1], 
                        nsmall = 1)
-RDhead[2, ] <- format( RDhead[2, ], 
+RDhead[, 2] <- format( RDhead[, 2], 
                        digits = 2,
                        nsmall = 2)
 
@@ -93,6 +93,7 @@ plot(Weight ~ Age,
      ylim = c(0, 5.5),
      xlim = c(4, 15),
      cex = 0.8,
+     main = "Molar weight and age\nof male red deer",
      xlab = "Age (in years)",
      ylab = "Molar weight (in g)")
 ```
@@ -139,9 +140,10 @@ plot(Weight ~ Age,
      pch = 19,
      ylim = c(0, 5.5),
      xlim = c(4, 15),
-     cex = 0.8,
+     cex = 1,
+     main = "Molar weight in male red deer\nplotted against the age of the deer",
      xlab = "Age (in years)",
-     ylab = "Molar weight (in g)")
+     ylab = "Molar weight (in g)") 
 ```
 `r if (knitr::is_latex_output()) '-->'`
 
@@ -203,6 +205,7 @@ scatter.smooth( lungcap$Ht, lungcap$FEV,
      cex = 0.7,
      col = "grey",
      lwd = 2,
+     main = "FEV and height",
      xlab = "Height (inches)",
      ylab = "FEV (litres)",
      pch = 19)
@@ -210,30 +213,34 @@ scatter.smooth( lungcap$Ht, lungcap$FEV,
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Describe the scatterplot of *diastolic* BP against age (Fig. \@ref(fig:NHANESscatterDBPAge)), from the NHANES data.\label{thinkBox:DescribeScatterNHANES}
+Describe the scatterplot of the diameter against the age of $385$ small-leaved lime trees (@data:ForestBiomass2017; Fig. \@ref(fig:LimeTreesScatter)).\label{thinkBox:DescribeLimeTreesScatter}
+
 
 `r if (knitr::is_latex_output()) '<!--'`
 `r webexercises::hide()`
-* **Form**: curved. 
-* **Direction**: not relevant (up, then down). 
-* **Variation**: large.
+* **Form**: may start off straight-ish, but seems curved for larger ages. 
+* **Direction**: diameter increases as age increases (on average). 
+* **Variation**:small-ish for small ages; large-ish for older trees.
 `r webexercises::unhide()`
 `r if (knitr::is_latex_output()) '-->'`
 :::
 
 
-```{r NHANESscatterDBPAge, fig.cap="Diastolic blood pressure plotted against age for the NHANES data", fig.align="center", fig.width=5, fig.height=4}
-# Replace 0 DBP with NA
-NHANES$BPDia1[ NHANES$BPDia1 == 0 ] <- NA
+```{r LimeTreesScatter, fig.cap="The age and diameter of small-leaved lime trees grown in Russia ($n = 385$)", fig.align="center", fig.width=5, fig.height=3.5}
+data(lime)
 
-plot(BPDia1 ~ Age,
+plot(DBH ~ Age,
 	las = 1,
+  main = "Diameter of small-leaved lime trees\nplotted against age",
 	xlab = "Age (in years)",
-	ylab = "Diastolic BP (mm Hg)", 
-  cex = 0.5,
-	ylim = c(0, 120),
-	data = NHANES)
+	ylab = "Diameter (in cm) at breast height", 
+  cex = 0.8,
+	pch = 19,
+	xlim = c(0, 140),
+	ylim = c(0, 40),
+	data = lime)
 ```
+
 
 ::: {.example #DescribeScatterplotsDeer name="Scatterplots"}
 For the red deer data (Fig. \@ref(fig:RedDeerScatter)), the relationship is approximately linear (form) with a negative direction (*older* deer generally have *lighter* teeth); the *variation* is... perhaps moderate.
@@ -256,11 +263,12 @@ The relationship is described by the *form* (linear, or otherwise), the *directi
 A study of onion growth [@meadplant] produced the scatterplot shown in Fig. \@ref(fig:MeanScatter).
 
 
-```{r MeanScatter, fig.cap="Onion yield plotted against planting density", fig.align="center", fig.width=5, fig.height=4}
+```{r MeanScatter, fig.cap="Onion yield plotted against planting density", fig.align="center", fig.width=5, fig.height=3.5}
 data(yieldden)
 
 plot(Yield ~ Dens,
 	las = 1,
+	main = "Planting density and yield per plant\nfor onions",
 	xlab = "Planting density (plants/sq. ft)",
 	ylab = "Yield/plant (g/plant)", 
   pch = 19,
@@ -268,7 +276,7 @@ plot(Yield ~ Dens,
 	data = yieldden)
 ```
 
-1. The $x$-variable is
+1. The $x$-variable is \tightlist
 `r if( knitr::is_html_output() ) {longmcq( c(
   answer = "Planting density",
   "Yield per plant",
@@ -315,6 +323,7 @@ plot(Energy ~ DryMatterDigest,
      las = 1,
      xlim = c(30, 80),
      ylim = c(1, 3.5),
+     main = "Sheep feed data",
      xlab = "Dry matter digestibility (%)",
      ylab = "Digestible energy (in Cal/gram)",
      pch = 19)
@@ -337,6 +346,7 @@ data(windmill)
 
 plot(DC ~ Wind, 
      data = windmill,
+     main = "DC output and wind speed",
      xlab = "Wind speed (in miles per hour)",
      ylab = "DC output",
      las = 1,
@@ -347,16 +357,21 @@ plot(DC ~ Wind,
 
 ::: {.exercise #TwoQuantExercisesMandible}
 A study examined the mandible length and gestational age for 167 foetuses from the 12th week of gestation onward [@data:royston:mandible].
-Describe the relationship (Fig. \@ref(fig:MandiblePlot)).
+Describe the relationship (Fig. \@ref(fig:MandibleGestationPlot), left panel).
 :::
 
 
 
-```{r MandiblePlot, fig.cap="The relationship between gestational age and mandible length", fig.align="center", fig.width=5, fig.height=3.5}
+```{r MandibleGestationPlot, fig.cap="Two scatterplots. Left: The relationship between gestational age and mandible length. Right: The time taken to deliver soft drinks to vending machines", fig.align="center", fig.width=9, fig.height=3.5, out.width='100%'}
+par(mfrow = c(1, 2), 
+    mar = c(5.1, 4.1, 4.1, 2.1))
+
+
 data(mandible)
 
 plot(Length ~ Age, 
      data = mandible,
+     main = "Gestational age and\nmandible length",
      xlab = "Gestational age (in weeks)",
      ylab = "Mandible length (in mm)",
      xlim = c(10, 40),
@@ -366,21 +381,14 @@ plot(Length ~ Age,
 abline(coef(lm(Length ~ Age, 
             data = mandible)), 
        col = "grey")
-```
 
+###
 
-
-::: {.exercise #TwoQuantExercisesSoftdrink}
-A study examined the time taken to deliver soft drinks to vending machines [@others:Montgomery:regressionanalysis].
-Describe the relationship (Fig. \@ref(fig:SoftdrinkPlot)).
-:::
-
-
-```{r SoftdrinkPlot, fig.cap="The time taken to deliver soft drinks to vending machines", fig.align="center", fig.width=5, fig.height=3.5}
 data(sdrink)
 
 plot(Time ~ Cases, 
      data = sdrink,
+     main = "Time to service vending machine\nand number of products stocked",
      xlab = "Number of cases of product stocked",
      ylab = "Time to service\nmachine (mins)",
      xlim = c(0, 30),
@@ -394,13 +402,22 @@ abline(coef(lm(Time ~ Cases,
 
 
 
+::: {.exercise #TwoQuantExercisesSoftdrink}
+A study examined the time taken to deliver soft drinks to vending machines [@others:Montgomery:regressionanalysis].
+Describe the relationship (Fig. \@ref(fig:MandibleGestationPlot), right panel).
+:::
+
+
 
 <!-- QUICK REVIEW ANSWERS -->
 `r if (knitr::is_html_output()) '<!--'`
 ::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
 **Answers to in-chapter questions:**
 
-- Sect. \ref{thinkBox:DescribeScatterNHANES}: *Form*: curved. *Direction*: not relevant (up, then down). *Variation*: large.
+- Sect. \ref{thinkBox:DescribeLimeTreesScatter}: 
+  **Form**: may start off straight-ish, but seems curved for larger ages.
+  **Direction**: diameter increases as age increases (on average). 
+  **Variation**:small-ish for small ages; large-ish for older trees.
 - \textbf{Answers to \textit{Quick Revision} questions:}
 **1.** Planting density.
 **2.** Curved.

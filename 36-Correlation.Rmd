@@ -130,42 +130,30 @@ The value of $r$ is *negative* because, in general, *older* deer ($x$) are assoc
 :::
 
 
-
-
-```{r NHANESBPdiaPlot, fig.cap="A scatterplot of the diastolic blood pressure against age for the NHANES data", fig.align="center", fig.width=5, fig.height=3.5}
-# Replace 0 DBP with NA
-NHANES$BPDia1[ NHANES$BPDia1 == 0 ] <- NA
-```
-
-
-::: {.example #NHANESBPCor name="Correlation coefficients"}
-Consider the plot in Fig. \@ref(fig:NHANESBPPlot) (left panel) from the NHANES data.
-This scatterplot of *diastolic* BP against age is not linear: a correlation coefficient is *not appropriate*.
-
-Consider the plot in Fig. \@ref(fig:NHANESBPPlot) (right panel) from the NHANES data.
-This scatterplot of *systolic* BP against age is approximately linear, so a correlation coefficient is *appropriate*.
-The correlation coefficient is $r = 0.532$. 
+::: {.example #LimeCor name="Correlation coefficients"}
+Consider the plot in Fig. \@ref(fig:LimeTreesScatter2), showing the diameter of small-leaved lime trees of various ages [@data:ForestBiomass2017; @mypapers:dunnsmyth:glms].
+The plot is not linear, and the variation in the diameters seems to increase as trees get older.
+A correlation coefficient is inappropriate.
 :::
 
 
-```{r NHANESBPPlot, fig.cap="Two scatterplots from the NHANES data: diastolic blood pressure against age (left panel); of the systolic blood pressure against age (right panel)", fig.align="center", fig.width=8, fig.height=3.5, out.width='90%'}
-par(mfrow = c(1, 2))
+```{r LimeTreesScatter2, fig.cap="The age and diameter of small-leaved lime trees grown in Russia ($n = 385$)", fig.align="center", fig.width=5, fig.height=3.5}
+data(lime)
 
-plot(BPDia1 ~ Age,
-	   las = 1,
-     ylab = "Diastolic BP (in mm Hg)",
-     xlab = "Age (in years)",
-	   ylim = c(0, 120),
-	   cex = 0.7,
-     data = NHANES)
-
-plot(BPSys1 ~ Age,
-     las = 1,
-     cex = 0.7,
-     ylim = c(50, 250),
-     ylab = "Systolic BP (in mm Hg)",
-     xlab = "Age (in years)", 
-     data = NHANES)
+plot(DBH ~ Age,
+	las = 1,
+  main = "Diameter of small-leaved lime trees\nplotted against age",
+	xlab = "Age (in years)",
+	ylab = "Diameter (in cm) at breast height", 
+  cex = 0.8,
+	pch = 19,
+	xlim = c(0, 140),
+	ylim = c(0, 40),
+	data = lime)
+abline( lm( DBH ~ Age, 
+            data = lime),
+        lwd = 2,
+        col = plot.colour)
 ```
 
 
@@ -190,6 +178,7 @@ plot(Energy ~ DryMatterDigest,
      las = 1,
      xlim = c(30, 80),
      ylim = c(1, 3.5),
+     main = "Sheep food data",
      xlab = "Dry matter digestibility (%)",
      ylab = "Digestible energy (in Cal/gram)",
      pch = 19)
@@ -233,7 +222,8 @@ plot(Energy ~ DryMatterDigest,
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-The web page [http://guessthecorrelation.com](http://guessthecorrelation.com) makes a game out of trying to guess the correlation coefficient.
+The web page [http://guessthecorrelation.com](http://guessthecorrelation.com) makes a game out of trying to guess the correlation coefficient from a scatterplot.
+It's quite difficult!
 :::
 
 
@@ -257,18 +247,14 @@ For the red deer data
   '(Fig. \\@ref(fig:RedDeerScatterHTML)),'
 }
 `
-the relationship is approximately linear, and the jamovi output (Fig. \@ref(fig:RedDeerCorrelationjamovi)) and SPSS output (Fig. \@ref(fig:RedDeerCorrelationSPSS)) show that $r = -0.584$.
+the relationship is approximately linear, and the output from jamovi or SPSS (Fig. \@ref(fig:RedDeerCorrelationjamoviSPSS)) show that $r = -0.584$.
 The *sign* of $r$ is negative, indicating a *negative* relationship: Higher ages are associated with lighter molars (in general).
 The *value* of $r$ indicates that the strength of the relationship is, perhaps, "moderate".
 
 
 
-```{r RedDeerCorrelationjamovi, fig.cap="jamovi correlation output for the red deer data", fig.align="center", out.width="45%"}
+```{r RedDeerCorrelationjamoviSPSS, fig.cap="jamovi correlation output for the red deer data. Left: jamovi output; right: SPSS output", fig.align="center", out.width=c("40%", "55%"), fig.show="hold"}
 knitr::include_graphics("jamovi/RedDeer/RedDeer-Correlation.png")
-```
-
-
-```{r RedDeerCorrelationSPSS, fig.cap="SPSS correlation output for the red deer data", fig.align="center", out.width="75%"}
 knitr::include_graphics("SPSS/RedDeer/RedDeer-Correlation.png")
 ```
 
@@ -284,7 +270,7 @@ Interpretation is easier using $R^2$, or 'R-squared': the square of the value of
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 The value of $R^2$ is *never* negative.
-It is usually multiplied by 100 and hence expressed as a percentage.
+It is usually multiplied by 100 and expressed as a percentage.
 :::
 
 
@@ -294,7 +280,7 @@ With most calculators, entering `-0.5^2` returns `-0.25`.
 The calculator interprets your input as meaning `-(0.25^2)`.
 \smallskip
 
-You need to use brackets: enter `(-0.5)^2`, which will give the expected answer of `0.25`.
+You need to use brackets: enter `(-0.5)^2`, which will give the correct answer of `0.25`.
 :::
 
 
@@ -401,7 +387,7 @@ In the context of the red deer data:
 > In male red deer, is there a correlation between age and the weight of molars?
 
 The RQ is about the population parameter $\rho$.
-Clearly, the *sample* correlation coefficient $r$ is not zero, and the RQ is asking if sampling variation if the reason for this.
+Clearly, the *sample* correlation coefficient $r$ is not zero, and the RQ is effectively asking if sampling variation is the reason for this.
 The null hypotheses is:
 
 * $H_0$: $\rho = 0$.
@@ -417,8 +403,7 @@ Then the *observed* value of $r$ is compared to the expected values to determine
 
 Software is used to conduct the hypotheses test.
 The output (Figs. \@ref(fig:RedDeerCorrelationjamovi) (jamovi) and \@ref(fig:RedDeerCorrelationSPSS) (SPSS)) contains the relevant $P$-value (twice in the SPSS output!).
-The two-tailed $P$-value for the test (labelled `Sig.` by SPSS) is less than 0.001 (`0.000` in SPSS).
-The $P$-value is zero *to three decimal places*, so *very strong evidence* exists to support $H_1$ (that the correlation in the population is not zero).
+The two-tailed $P$-value for the test (labelled `Sig.` by SPSS) is less than 0.001 (`0.000` in SPSS), so *very strong evidence* exists to support $H_1$ (that the correlation in the population is not zero).
 We write:
 
 > The sample presents very strong evidence (two-tailed $P < 0.001$) of a correlation between molar weight and the age of the male red deer ($r = -0.584$; $n = 78$) in the population.
@@ -436,7 +421,7 @@ The correlation may be weak in the population (as estimated by the value of $r$)
 
 ### Statistical validity conditions {#ValidityCorrelation}
 
-As usual, these results hold under [certain conditions to be met](#exm:StatisticalValidityAnalogy).
+As usual, these results hold under [certain conditions](#exm:StatisticalValidityAnalogy).
 The conditions for which the test is statistically valid are:
 
 1. The relationship is approximately linear.
@@ -454,36 +439,11 @@ The test in Sect. \@ref(CorrelationTesting) will be statistically valid.
 
 
 ::: {.example #StatisticalValidityBiomass name="Statistical validity"}
-A study [@data:ForestBiomass2017; @mypapers:dunnsmyth:glms] examined the foliage biomass of small-leaved lime trees.
-A plot of the foliage biomass against diameter (Fig. \@ref(fig:LimeScatter)) shows that the relationship is non-linear.
-In addition, the variation in foliage biomass *increases* for larger diameters (for values of $x$ near 10, the values of $y$ do not vary much at all, but for values of $x$ near 30, the values of $y$ vary greatly). 
+The scatterplot in Example \@ref(exm:LimeCor) shows that the relationship is non-linear, as least for larger ages.
+In addition, the variation in diameter biomass *increases* for larger ages (for values of $x$ near $20$, the values of $y$ do not vary much, but for values of $x$ near $80$, the values of $y$ vary greatly). 
 Both of these issues mean that correlations are not appropriate.
 A hypothesis test similar to that in Sect. \@ref(CorrelationTesting) is inappropriate.
 :::
-
-
-```{r LimeScatter, fig.cap="Foliage biomass plotted against diameter for small-leaved lime trees", fig.align="center", fig.width=5, fig.height=3.5}
-
-data(lime)
-
-plot(Foliage ~ DBH, 
-     data = lime,
-     las = 1,
-     pch = 19, 
-     ylim = c(0, 14),
-     xlim = c(0, 40),
-     xlab = "Diameter (in cm)",
-     ylab = "Foliage biomass (in kg)")
-
-
-LM.lm <- lm(Foliage ~ DBH, 
-            data = lime)
-abline( coef(LM.lm), 
-        lwd = 2, 
-        col = "grey")
-```
-
-
 
 
 ```{r}
@@ -498,19 +458,18 @@ In this example, it does not matter which variable is used as $x$ or $y$.
 
 Since taller dogs might be expected to be longer, we may ask:
 
-> For these dogs, are longer dogs also taller dogs, in general?
+> For Phu Quoc Ridgeback dogs, are longer dogs also taller dogs, in general?
   
 The hypotheses are:
-
 \[
-    H_0: \rho = 0\quad\text{and}\quad H_1: \rho > 0\quad \text{(i.e., one-tailed)}
+    H_0: \rho = 0\quad\text{and}\quad H_1: \rho > 0\quad \text{(i.e., one-tailed.)}
 \]
-From software, $r = 0.837$ and the two-tailed is $P < 0.001$, based on $n = 30$ dogs.
+From software, $r = 0.837$ and $P < 0.001$ (two-tailed), based on $n = 30$ dogs.
 We write:
 
 > Very strong evidence exists that longer Phu Quoc ridgeback dogs are also taller ($r = 0.837$; one-tailed $P < 0.001$; $n = 30$).
 
-Since (a) the sample size is larger than 25; (b) the relationship is approximately linear; *and* (c) the variation in heights do not seem to differ for different lengths, the test is statistically valid.
+Since (a) the relationship is approximately linear; (b) the variation in heights do not seem to differ for different lengths; and (c) the sample size is larger than 25, the test is statistically valid.
 :::
 
 
@@ -571,6 +530,7 @@ RE <- read.csv("Data/Removal.csv")
 
 plot(Removal ~ Temp, 
      data = RE,
+     main = "Removal efficiency",
      xlab = "Temperature (degrees C)",
      ylab = "Removal efficiency (%)",
      pch = 19,
@@ -580,13 +540,12 @@ plot(Removal ~ Temp,
      )
 ```
 
-To test if a relationship exists in the population, write:
-
+To test if a relationship exists in the population, write:  
 \[
-   H_0: \rho = 0;\quad\text{and}\quad H_1: \rho \ne 0
+   H_0: \rho = 0;\quad\text{and}\quad H_1: \rho \ne 0.
 \]
 The alternative hypothesis is two-tailed (as implied by the RQ).
-The software output (jamovi: Fig. \@ref(fig:RemovalEfficiencyjamovi); SPSS: Fig. \@ref(fig:RemovalEfficiencySPSS)) shows that $P < 0.001$.
+The software output (Fig. \@ref(fig:RemovalEfficiencyjamoviSPSS) shows that $P < 0.001$.
 We conclude:
 
 > The sample presents very strong evidence (two-tailed $P < 0.001$) that removal efficiency depends on the inlet temperature ($r = 0.891$; $n = 32$) in the population.
@@ -595,11 +554,8 @@ The relationship is approximately linear, there is no obvious non-constant varia
 
 
 
-```{r RemovalEfficiencyjamovi, fig.cap="jamovi output for the removal-efficiency data", fig.align="center", out.width="45%"}
+```{r RemovalEfficiencyjamoviSPSS, fig.cap="Output for the removal-efficiency data. Left: jamovi; right: SPSS", fig.align="center", out.width=c("40%", "55%"), fig.show="hold"}
 knitr::include_graphics("jamovi/Removal/RemovalCorrelation.png")
-```
-
-```{r RemovalEfficiencySPSS, fig.cap="SPSS output for the removal-efficiency data", fig.align="center", out.width="65%"}
 knitr::include_graphics("SPSS/Removal/RemovalCorrelation.png")
 ```
 
@@ -634,7 +590,7 @@ Sometimes, $R^2$ is used to describe the relationship: it indicates what percent
 A study of Chinese paedatric patients [@wong2018correlation] studied the relationship between the 6-minute walk distance (6MWD) and maximum oxygen uptake (VO2~max~) for $n = 29$ patients.
 The correlation coefficient is reported as $r = 0.457$, and the corresponding $P$-value as $P = 0.013$.
 
-1. The $x$-variable is
+1. The $x$-variable is \tightlist
 `r if( knitr::is_html_output() ) {
    longmcq( c(
      answer = "6-minute walk distance",
@@ -684,8 +640,7 @@ Draw a scatterplot with:
 ::: {.exercise #CorrelationExercisePunting}
 A study (@MyersRegression, p. 75) of American footballers measured the right-leg strengths $x$ of 13 players (using a weight lifting test), and the distance $y$ they punted a football with their right leg (Fig. \@ref(fig:PuntPlotCor)).
 
-1. The value of the correlation coefficient is 0.881. 
-   Compute the value of $R^2$, and explain what this means.
+1. Compute the value of $R^2$, and explain what this means.
 1. Using the jamovi output (Fig. \@ref(fig:Puntingjamovi)), perform a hypothesis test to determine if a correlation exists between punting distance and right-leg strength.
 :::
 
@@ -693,7 +648,7 @@ A study (@MyersRegression, p. 75) of American footballers measured the right-leg
 
 \begin{minipage}{0.45\textwidth}%
 \centering%
-```{r PuntPlotCor2, results='hide', fig.width=4.5, out.width='90%'}
+```{r PuntPlotCor2, results='hide', fig.width=4.5, fig.height = 3.5, out.width='90%'}
 punting <- read.csv("Data/Punting.csv")
 
 plot(Punt ~ Right, 
@@ -765,12 +720,14 @@ knitr::include_graphics("jamovi/Punting/Punting-Correlation.png")
 
 
 ::: {.exercise #CorrelationSoftdrink}
-A study examined the time taken to deliver soft drinks to vending machines [@others:Montgomery:regressionanalysis] using a sample of size $n = 25$ (Fig. \@ref(fig:SoftdrinkPlots2)).
+A study examined the time taken to deliver soft drinks to vending machines [@others:Montgomery:regressionanalysis] using a sample of size $n = 25$ (Fig. \@ref(fig:SoftdrinkPlotsVoids), left panel).
 To perform a test of the correlation coefficient, are the statistical validity conditions met?
 :::
 
 
-```{r SoftdrinkPlots2, fig.cap="The time taken to deliver soft drinks to vending machines", fig.align="center", fig.width=5, fig.height=3.5}
+```{r SoftdrinkPlotsVoids, fig.cap="The time taken to deliver soft drinks to vending machines", fig.align="center", fig.width=9, fig.height=3.5, out.width="100%"}
+par( mfrow = c(1, 2))
+
 data(sdrink)
 
 plot(Time ~ Cases, 
@@ -785,26 +742,12 @@ plot(Time ~ Cases,
 abline( coef( lm(Time ~ Cases, 
                  data = sdrink)), 
         col = "grey")
-```
 
+###
 
-```{r}
 Bit <- read.csv("Data/Bitumen.csv")
-```
 
 
-::: {.exercise #CorrelationExerciseBitumen}
-A study of hot mix asphalt [@data:Panda2018:Bitumen]created $n = 42$ samples of asphalt and measured the volume of air voids and the bitumen content by weight (Fig. \@ref(fig:BitumenPlotCor)).
-
-1. Using the plot, estimate the value of $r$.
-1. The value of $R^2$ is 99.29%.
-   What is the value of $r$? (Hint: Be careful!)
-1. Would you expect the $P$-value testing $H_0$: $\rho=0$ to be small or large? 
-   Explain.
-1. Would the test be statistically valid?
-:::
-
-```{r BitumenPlotCor, fig.cap="Air voids in bitumen samples", fig.align="center", fig.width=5, fig.height=3.5}
 plot(AirVoids ~ Bitumen, 
      data = Bit,
      pch = 19,
@@ -816,6 +759,19 @@ plot(AirVoids ~ Bitumen,
      ylim = c(3.5, 5.5)
      )
 ```
+
+
+::: {.exercise #CorrelationExerciseBitumen}
+A study of hot mix asphalt [@data:Panda2018:Bitumen] created $n = 42$ samples of asphalt and measured the volume of air voids and the bitumen content by weight (Fig. \@ref(fig:SoftdrinkPlotsVoids), right panel).
+
+1. Using the plot, estimate the value of $r$.
+1. The value of $R^2$ is 99.29%.
+   What is the value of $r$? (Hint: Be careful!)
+1. Would you expect the $P$-value testing $H_0$: $\rho=0$ to be small or large? 
+   Explain.
+1. Would the test be statistically valid?
+:::
+
 
 
 ::: {.exercise #CorrelationExerciseSoil}
