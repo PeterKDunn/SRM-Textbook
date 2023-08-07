@@ -94,7 +94,7 @@ lines( ynew ~ xnew,
 
 text(0.25, 40, 
      pos = 4,
-     "Form: non-linear (curved)\nDirection: (not relevant)\nVariation: small")
+     "Form: non-linear (curved)\nDirection: (irrelevant)\nVariation: small")
 
 dev.print(png, 
           filename = "ScatterExampleC.png",
@@ -136,7 +136,7 @@ lines( ynew ~ xnew,
 
 text(0, 125, 
      pos = 4,
-     "Form: non-linear (curved)\nDirection: (not relevant)\nVariation: moderate") 
+     "Form: non-linear (curved)\nDirection: (irrelevant)\nVariation: moderate") 
 
 dev.print(png, 
           filename = "ScatterExampleD.png", 
@@ -181,7 +181,7 @@ lines( ynew ~ xnew,
 
 text(0, 450, 
      pos = 4,
-     "Form: non-linear (curved)\nDirection: (not relevant)\nVariation: small/moderate") 
+     "Form: non-linear (curved)\nDirection: (irrelevant)\nVariation: small/moderate") 
 
 dev.print(png, 
           filename = "ScatterExampleE.png", 
@@ -314,7 +314,7 @@ lines( ynew ~ xnew,
 
 text(0, 18, 
      pos = 4,
-     "Form: non-linear (curved)\nDirection: (not relevant)\nVariation: increasing")
+     "Form: non-linear (curved)\nDirection: (irrelevant)\nVariation: increasing")
 
 dev.print(png, 
           filename = "ScatterExampleH.png", 
