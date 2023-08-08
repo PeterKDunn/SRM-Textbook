@@ -1,5 +1,6 @@
 # (PART) Connection RQs: regression and correlation {-}
 
+
 # Relationships between two quantitative variables {#TwoQuant}
 
 
@@ -15,7 +16,12 @@ RD <- read.csv("Data/RedDeer.csv")
 
 ## Introduction: red deer {#Chap33-Intro}
 
-A study [@data:Holgate1965:StraightLine] examined the relationship between the age of $n = 78$ male red deer and the weight of their
+So far, RQs comparing two groups have been studied.
+Comparing the mean value of a quantitative variable in two groups was studied in Sect. and .
+Comparing the percentage of times an outcome of interest appears in two groups was studied in Sect. and .
+In this Chapter(and the next two), the relationship between two quantitative variables is studied.
+
+Our example is a study [@data:Holgate1965:StraightLine] examined the relationship between the age of $n = 78$ male red deer and the weight of their
 `r if( knitr::is_latex_output() ) {
   'molars (Table \\@ref(tab:deerData)).'
 } else {
@@ -52,18 +58,21 @@ if( knitr::is_html_output() ) {
 
 \begin{figure}
 \begin{minipage}{0.32\textwidth}
-\captionof{table}{The first 10 observations of the male red deer data ($n = 78$)\label{tab:deerData}}
+\captionof{table}{The first five and last five observations of the male red deer data ($n = 78$)\label{tab:deerData}}
 \fontsize{10}{12}\selectfont
 ```{r deerData}
-RDhead <- head(RD, 10)
+RDhead <- array( dim = c(11, 2) )
+
+RDhead[1:5, ] <- as.matrix( head(RD, 5) )
+RDhead[7:11, ] <- as.matrix( tail(RD, 5) )
+
 RDhead[, 1] <- format( RDhead[, 1], 
                        nsmall = 1)
 RDhead[, 2] <- format( RDhead[, 2], 
                        digits = 2,
                        nsmall = 2)
 
-RDhead <- rbind( RDhead, 
-                 c("$\\vdots$", "$\\vdots$"))
+RDhead[6, ] <- c("$\\vdots$", "$\\vdots$")
 
 knitr::kable( RDhead,
          format = "latex",
@@ -73,9 +82,9 @@ knitr::kable( RDhead,
          escape = FALSE,
          digits = c(1, 2),
          align = "c",
+         linesep = "", # With the \vdots, spacing doesn't seem necessary
          col.names = c( "Age (in years)", 
 	                      "Molar weight (in g)")) %>%
-#         caption = "The first 10 observations of the male red deer data") %>%
    row_spec(0, bold = TRUE) %>%
    #kable_styling(font_size = 10) %>% # CANNOT USE THIS IN THE MINIPAGE
    column_spec(1, width = "13mm") %>%
@@ -126,7 +135,7 @@ The *explanatory* variable (potentially) *influences* the response variable, so 
 
 In other words, the age of the deer may influence the weight of the molars.
 (Supposing that the weight of the molars may influence the age of the deer is silly.)
-(In some cases,  it doesn't matter which is $x$ and which is $y$, such as exploring the relationship between height and weight of red deer; for example, see Example \@ref(exm:CorTestDogs).)
+In some cases,  it doesn't matter which is $x$ and which is $y$, such as exploring the relationship between height and weight of red deer (see Example \@ref(exm:CorTestDogs).)
 
 Each row in the dataset (and each point on the scatterplot) corresponds to a single deer (the units of analysis); two quantitative variables (age; molar weight) are measured on each deer.
 
@@ -150,8 +159,8 @@ plot(Weight ~ Age,
 
 ## Understanding scatterplots {#UnderstandingScatterplots}
 
-The purpose of a graph is to help us *understand* the data  (Sect. \@ref(GraphsIntro)).
-For a scatterplot, the *form*, *direction*, and *variation* (or the *strength*) are described:
+The purpose of a graph is to help *understand* the data (Sect. \@ref(GraphsIntro)).
+For a scatterplot, the *form*, *direction*, and *variation in the relationship* (or the *strength of the relationship*) are described:
 
 1. *Form*: The overall *form* or structure of the relationship (e.g., linear; curved upwards; etc.).
 2. *Direction*: The *direction* of the relationship (sometimes not relevant if the relationship is non-linear):
@@ -173,13 +182,12 @@ Examples are shown in
 ```{r, child = if (knitr::is_html_output())  './children/ScatterExampleCarousel.Rmd'}
 ```
 
-
 ```{r, child = if (knitr::is_latex_output())   './children/ScatterExampleImages.Rmd'}
 ```
 
 
 ::: {.example #DescribeScatterplots name="Describing scatterplots"}
-A study [@data:Tager:FEV; @BIB:data:FEV] measured the lung capacity of children in Boston (using the forced expiratory volume (FEV)).
+A study [@data:Tager:FEV; @BIB:data:FEV] measured the lung capacity of children in Boston (using the forced expiratory volume, FEV).
 The scatterplot (Fig. \@ref(fig:FEVscatter)) is curved (*form*), where older children have larger FEVs, in general (*direction*).
 The *variation* gets larger for taller youth. 
 :::
@@ -195,6 +203,7 @@ plot(FEV ~ Ht,
      las = 1,
      ylim = c(0, 6),
      cex = 0.7,
+     main = "FEV and height",
      xlab = "Height (inches)",
      ylab = "FEV (litres)",
      pch = 19)
@@ -213,7 +222,7 @@ scatter.smooth( lungcap$Ht, lungcap$FEV,
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Describe the scatterplot of the diameter against the age of $385$ small-leaved lime trees (@data:ForestBiomass2017; Fig. \@ref(fig:LimeTreesScatter)).\label{thinkBox:DescribeLimeTreesScatter}
+Describe the scatterplot of the diameter against the age of $385$ small-leaved lime trees (@data:ForestBiomass2017), shown in Fig. \@ref(fig:LimeTreesScatter)).\label{thinkBox:DescribeLimeTreesScatter}
 
 
 `r if (knitr::is_latex_output()) '<!--'`
@@ -226,8 +235,9 @@ Describe the scatterplot of the diameter against the age of $385$ small-leaved l
 :::
 
 
-```{r LimeTreesScatter, fig.cap="The age and diameter of small-leaved lime trees grown in Russia ($n = 385$)", fig.align="center", fig.width=5, fig.height=3.5}
+```{r LimeTreesScatter, fig.cap="The age and diameter of small-leaved lime trees grown in Russia ($n = 385$)", fig.align="center", fig.show="hold", fig.width=8, fig.height=3.25, out.width='90%'}
 data(lime)
+par( mfrow = c(1, 2))
 
 plot(DBH ~ Age,
 	las = 1,
@@ -239,6 +249,33 @@ plot(DBH ~ Age,
 	xlim = c(0, 140),
 	ylim = c(0, 40),
 	data = lime)
+
+###
+
+
+plot(DBH ~ Age,
+	las = 1,
+  main = "Diameter of small-leaved lime trees\nplotted against age",
+	xlab = "Age (in years)",
+	ylab = "Diameter (in cm) at breast height", 
+  cex = 0.8,
+	pch = 19,
+	col = "grey",
+	xlim = c(0, 140),
+	ylim = c(0, 40),
+	data = lime)
+abline( coef(lm(DBH ~ Age, 
+                data = lime)),
+        lwd = 2)
+#m2 <- lm(log(DBH) ~ log(Age), 
+#         data = lime)
+#
+#newAge <- seq( min(lime$Age), 
+#               max(lime$Age),
+#               length = 100)
+#newDBH <- predict(m2, 
+#                  newdata = data.frame(Age = newAge))
+#lines( newDBH ~ newAge)
 ```
 
 

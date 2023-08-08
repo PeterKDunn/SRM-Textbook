@@ -15,8 +15,9 @@ RD <- read.csv("./Data/RedDeer.csv")
 
 ## Correlation coefficients {#CorrCoefficients}
 
-Describing the *linear* relationship between two *quantitative* variables requires describing the form, direction and variation.
+Describing the *linear* relationship between two *quantitative* variables requires describing the form, direction and variation (Sect. \@ref(UnderstandingScatterplots)).
 A *correlation coefficient* is a single number encapsulating all this information.
+
 In the *population*, the unknown value of the correlation coefficient is denoted $\rho$ ('rho'); in the *sample* the value of the correlation coefficient is denoted $r$.
 As usual, $r$ (the *statistic*) is an estimate of $\rho$ (the *parameter*), and the value of $r$ is likely to be different in every sample (that is, *sampling variation* exists).
 
@@ -61,6 +62,7 @@ The *sign* indicates whether the relationship has a positive or negative linear 
 * $r = -1$ means a *perfect, negative* relationship:
   knowing the value of $x$ produces a perfect prediction of the value of $y$, and *larger* values of $y$ are associated with *smaller* values of $x$ (in general).
 
+Most values of $r$ are between these extremes of $r = -1$ and $r = +1$.
 `r if (knitr::is_html_output()) {
    'The animation below demonstrates how the values of the correlation coefficient work.'
 }`
@@ -131,29 +133,39 @@ The value of $r$ is *negative* because, in general, *older* deer ($x$) are assoc
 
 
 ::: {.example #LimeCor name="Correlation coefficients"}
-Consider the plot in Fig. \@ref(fig:LimeTreesScatter2), showing the diameter of small-leaved lime trees of various ages [@data:ForestBiomass2017; @mypapers:dunnsmyth:glms].
-The plot is not linear, and the variation in the diameters seems to increase as trees get older.
-A correlation coefficient is inappropriate.
+Consider the scatterplot in Fig. \@ref(fig:FEVscatter2), from a study [@data:Tager:FEV; @BIB:data:FEV] of lung capacity of children in Boston (using the forced expiratory volume, FEV).
+The plot is not linear, and the variation in the FEV increases as children get taller
+For instance, the variation in FEV for children about 50cm tall is much smaller than the variation in FEV for children about 70cm tall.
+
+A correlation coefficient is inappropriate
 :::
 
 
-```{r LimeTreesScatter2, fig.cap="The age and diameter of small-leaved lime trees grown in Russia ($n = 385$)", fig.align="center", fig.width=5, fig.height=3.5}
-data(lime)
+```{r FEVscatter2, fig.cap="FEV plotted against height for children in Boston", fig.align="center", fig.width=8, fig.height=3.25, out.width='90%'}
+data(lungcap)
 
-plot(DBH ~ Age,
-	las = 1,
-  main = "Diameter of small-leaved lime trees\nplotted against age",
-	xlab = "Age (in years)",
-	ylab = "Diameter (in cm) at breast height", 
-  cex = 0.8,
-	pch = 19,
-	xlim = c(0, 140),
-	ylim = c(0, 40),
-	data = lime)
-abline( lm( DBH ~ Age, 
-            data = lime),
-        lwd = 2,
-        col = plot.colour)
+par(mfrow = c(1, 2))
+
+plot(FEV ~ Ht, 
+     data = lungcap,
+     las = 1,
+     ylim = c(0, 6),
+     cex = 0.7,
+     main = "FEV and height",
+     xlab = "Height (inches)",
+     ylab = "FEV (litres)",
+     pch = 19)
+
+scatter.smooth( lungcap$Ht, lungcap$FEV,
+     las = 1,
+     ylim = c(0, 6),
+     cex = 0.7,
+     col = "grey",
+     lwd = 2,
+     main = "FEV and height",
+     xlab = "Height (inches)",
+     ylab = "FEV (litres)",
+     pch = 19)
 ```
 
 
@@ -239,14 +251,14 @@ It's quite difficult!
 </div>
 
 
-Software is used to compute the value of $r$ (formulas exist, but are tedious to use).
+While formulas exist to compute the value of $r$, they tedious to use.
+We will used software to compute the value of $r$.
 For the red deer data
 `r if( knitr::is_latex_output() ) {
   '(Fig. \\@ref(fig:RedDeerScatter)),'
 } else {
   '(Fig. \\@ref(fig:RedDeerScatterHTML)),'
-}
-`
+}`
 the relationship is approximately linear, and the output from jamovi or SPSS (Fig. \@ref(fig:RedDeerCorrelationjamoviSPSS)) show that $r = -0.584$.
 The *sign* of $r$ is negative, indicating a *negative* relationship: Higher ages are associated with lighter molars (in general).
 The *value* of $r$ indicates that the strength of the relationship is, perhaps, "moderate".
@@ -326,7 +338,7 @@ if (knitr::is_html_output()){
 
 
 The value of $R^2$ is the reduction in the unexplained variation of $y$ because the value of $x$ is known.
-When expressed as a percentage, $R^2$ is the percentage of the variation in $y$ explained by using the linear relationship, rather than just the mean value of $y$.
+When expressed as a percentage, $R^2$ is the percentage of the variation in $y$ explained by using the linear relationship, rather than using the mean value of $y$ as an estimate of $y$ for all values of $x$.
 
 
 ::: {.example #R2Deer name="Values of R-squared"}
