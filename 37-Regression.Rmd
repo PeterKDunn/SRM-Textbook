@@ -1166,112 +1166,55 @@ We write:
 > The sample presents moderate evidence ($t = 2.09$; two-tailed $P = 0.041$) of a relationship between neck circumference and REI (slope: $1.36$; $n = 60$; 95% CI from $0.057$ to $2.68$) in the population.
 
 
-## Example: food digestibility {#SheepFood}
+## Example: removal efficiency {#RegressionRemovalEfficiency}
 
+In wastewater treatment facilities, air from biofiltration is passed through a membrane and dissolved in water, and is transformed into harmless byproducts.
+The removal efficiency $y$ (in %) may depend on the inlet temperature (in $^\circ$C; $x$).
+A RQ is
 
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/pexels-arie-van-ravenswaay-1568070.jpg" width="200px"/>
-</div>
+> In treating biofiltation wastewater, how does the removal efficiency depend on the inlet temperature?
 
+The scatterplot of the data is shown in (REPEATED???) Fig. \@ref(fig:RegressionRemovalEfficiency)) and software output in Fig. \@ref(fig:RemovalEfficiencyjamoviSPSSRegression).
 
-```{r}
-data(ruminant)
-```
-
-A study evaluated various food for sheep [@data:Moir1961:RuminantDiet].
-One combination of variables assessed is shown in Fig. \@ref(fig:SheepScatter).
-The RQ is:
-
-> Does the digestible energy of feed *increase* with dry matter digestibility percentage (and if so, what is the relationship)?
-
-In this study, $x$ is the dry matter weight digestibility percentage, and $y$ is the digestible energy (in calories per gram).
-`r if( knitr::is_html_output() ) {
-  'The data are shown in Fig. \\@ref(fig:ruminantDT).'
-} else
-{
-  'Part of the data are shown in Table \\@ref(tab:ruminantKable).'
-
-}
-`
-Using the software output (Fig. \@ref(fig:RuminantRegressionjamoviSPSS)), the values of the slope and $y$-intercept in the *sample* are  $b_0 = -0.193$ and $b_1 = 0.047$.
-The regression equation is 
-
-\[ 
-  \hat{y} = -0.193 + 0.047x.
-\]
-
-
-```{r ruminantKable}
-if( knitr::is_latex_output() ) {
-  ruminantUse <- array(dim = c(11, 3))
-  ruminantUse[1:5, ] <- as.matrix(head(ruminant, 5)) 
-  ruminantUse[7:11, ] <- as.matrix(tail(ruminant, 5)) 
-  ruminantUse <- format(ruminantUse, 
-                        digits = 1, 
-                        nsmall = 1)
-  ruminantUse[6, ] <- rep("$\\vdots$", 3) 
-
-  knitr::kable(ruminantUse,
-               format = "latex",
-               longtable = FALSE,
-               booktabs = TRUE,
-               linesep = "",
-               escape = FALSE,
-               align = "c",
-               col.names = c("digestibility (in \\%)",
-                             "digestibility (in \\%)",
-                             "energy (in cal/gram)"),
-              caption = "Part of the digestibility dataset ($n = 36$)") %>%
-    row_spec(0 , bold = TRUE) %>%
-    kable_styling(font_size = 10) %>%
-    add_header_above(header = c("Dry matter " = 1,
-                                "Energy" = 1,
-                                "Digestible" = 1), 
-                     bold = TRUE, 
-                     line = FALSE,
-                     align = "c")
-}
-```
-
-```{r ruminantDT, fig.cap="The digestibility dataset", fig.align="center"}
-if( knitr::is_html_output() ) {
-  DT::datatable(ruminant,
-              list(scrollX = TRUE, 
-                   scrollY = TRUE, 
-                   ordering = FALSE),
-              caption = "The digestibility dataset")
-}
-```
-
-
-The slope means that when the dry matter weight digestibility increases by 1 percentage point, the digestible energy increases, on average, by 0.047 Cal/gram.
-Each sample will produce slightly different *sample* slopes, so we can test to see if the slope in the *population* is non-zero due to sampling variation, using a hypothesis test:
-
+From the output, $b_0 = 97.5$ and $b_1 = 0.0757$, so the regression equation is  
 \[
-   \text{$H_0$: } \beta_1 = 0\quad\text{and}\quad\text{$H_1$: } \beta_1 > 0 \quad\text{(i.e., one-tailed)}.
+  \hat{y} = 97.5 + 0.0757x
 \]
-The parameter is $\beta_1$, the population slope for the regression equation predicting digestible energy from dry matter weight.
-The alternative hypothesis is *one*-tailed, based on the RQ.
+for $x$ and $y$ defined above.
+The slope quantifies the relationship, so we can test  
+\[
+   \text{$H_0$: } \beta_1 = 0 \qquad\text{and}\qquad \text{$H_1$: } \beta_1 \ne 0.
+\]
+From the output, $t = 10.7$ whicis huge; the $P$#-value is small as expected: $P < 0.001$. The output does not include the CI, but since $\text{s.e.}(b_1) = 0.00705$, the approximate 95% CI is  
+\[
+  0.0757 \pm (2 \times 0.00705), \text{ or } 0.0757 \pm 0.0141.
+\]
+We can write:
 
-From the software output, $t = 39.322$, which is huge; the *two-tailed* $P$-value is $P < 0.001$.
-Since the alternative hypothesis is *one-tailed* , the $P$-value is less than $0.001/2 = 0.0005$.
-There is *very* strong evidence that the digestible energy increases as the dry matter weight digestibility increases.
-The *approximate* 95% CI for the population slope $\beta_1$ is $0.047 \pm (2\times 0.001)$, or from 0.045 to 0.049.
+> Very strong evidence exists ($t = 10.7$; $P < 0.001$) of a relationship between the inlet temperature and removal efficiency (slope: $0.0757$; approximate 95% CI: $0.0616$ to $0.0898$).
 
 
-```{r RuminantRegressionjamoviSPSS, fig.cap="Output for the sheep-feed data. Top: jamovi; bottom: SPSS", fig.align="center", out.width=c("55%", "80%"), fig.show="hold"}
-knitr::include_graphics( "jamovi/Ruminant/Ruminant-Reg.png")
-knitr::include_graphics( "SPSS/Ruminant/Ruminant-Reg-crop.png") 
+```{r RegressionRemovalEfficiency, fig.cap="The relationship between removal efficiency and inlet temperature", fig.align="center", fig.width=5, fig.height=3.5}
+RE <- read.csv("Data/Removal.csv")
+
+plot(Removal ~ Temp, 
+     data = RE,
+     xlab = "Temperature (degrees C)",
+     ylab = "Removal efficiency (%)",
+     pch = 19,
+     las = 1
+     )
 ```
 
-The results are statistically valid.
-We write:
 
-
-> The sample presents very strong evidence ($t = 39.322$; one-tailed $P < 0.0005$) of a relationship between dry matter weight digestibility and the digestible energy (slope: $0.047$;  $n = 36$; 95% CI from $-0.045$ to $-0.049$) in the population.
+```{r RemovalEfficiencyjamoviSPSSRegression, fig.cap="Regression output for the removal-efficiency data. Top: jamovi; bottom SPSS", fig.align="center", out.width=c("55%", "75%"), fig.show="hold"}
+knitr::include_graphics("jamovi/Removal/RemovalRegression.png")
+knitr::include_graphics("SPSS/Removal/RemovalRegression-crop.png")
+```
 
 
 <iframe src="https://learningapps.org/watch?v=pbefaxc9t22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+
 
 
 ## Summary {#Chap35-Summary}
@@ -1388,48 +1331,45 @@ plot( Wt ~ Ht,
 Selected answers are available in Sect. \@ref(RegressionAnswer).
 
 
-::: {.exercise #RegressionExerciseRemovalEfficiency}
-In wastewater treatment facilities, air from biofiltration is passed through a membrane and dissolved in water, and is transformed into harmless byproducts [@chitwood2001treatment; @DevoreBerk2007].
-The removal efficiency $y$ (in %) may depend on the inlet temperature (in $^\circ$C; $x$).
-The RQ is
 
-> In treating biofiltation wastewater, how does the removal efficiency depend on the inlet temperature?
+::: {.exercise #RegressionExerciseManifold}
+A study [@amin2019robust] of gas engines measured the throttle angle ($x$) and the manifold air pressure  ($y$) as a fraction of the maximum value.
 
-Using the scatterplot (Fig. \@ref(fig:RegressionRemovalEfficiency)) and software output (Fig. \@ref(fig:RemovalEfficiencyjamoviRegression) (jamovi); Fig. \@ref(fig:RemovalEfficiencySPSSRegression) (SPSS)), answer these questions.
-
-1. Write down the value of the slope ($b_1$) and $y$-intercept ($b_0$).
-1. Write down the regression equation.
-1. Interpret the slope ($b_1$).
-1. Test for a relationship in the population, by first writing the hypotheses.
-1. Write down the $t$-score and $P$-value from the software output.
-1. Determine an *approximate* 95% CI for the population slope $\beta_1$.
-1. Write a conclusion.
+1. The value of $r$ is given in the paper as $0.972986604$. 
+   Comment on this value, and what it means.
+1. Comment on the use of a regression model, based on the scatterplot (Fig. \@ref(fig:ThrottleAngle)). 
+1. The authors fitted the following regression model: $y = 0.009 + 0.458x$.
+   Identify errors that the researchers have made when giving this regression equation (there are more than one).
+1. Critique the researchers' approach.
 :::
 
 
-```{r RegressionRemovalEfficiency, fig.cap="The relationship between removal efficiency and inlet temperature", fig.align="center", fig.width=5, fig.height=3.5}
-RE <- read.csv("Data/Removal.csv")
-
-plot(Removal ~ Temp, 
-     data = RE,
-     xlab = "Temperature (degrees C)",
-     ylab = "Removal efficiency (%)",
-     pch = 19,
-     las = 1
-     )
+```{r}
+TA <- read.csv("Data/Throttle.csv")
 ```
 
+```{r ThrottleAngle, fig.cap="Manifold air pressure plotted against throttle angle for an internal-combustion gas engine", fig.align="center", fig.width=5, fig.height=3.5}
 
-```{r RemovalEfficiencyjamoviRegression, fig.cap="jamovi regression output for the removal-efficiency data", fig.align="center", out.width="55%"}
-knitr::include_graphics("jamovi/Removal/RemovalRegression.png")
-```
+par(mar = c(5.1, 5.1, 4.1, 2.1))
+plot(TA, 
+     pch = 19, 
+     xlab = "Throttle angle (degrees)", 
+     ylab = "Manifold air pressure\n(as fraction of the max.)", 
+     ylim = c(0, 1),
+     xlim = c(0, 90),
+     las = 1)
+par(mar = c(5.1, 4.1, 4.1, 2.1))
 
-```{r RemovalEfficiencySPSSRegression, fig.cap="SPSS regression output for the removal-efficiency data", fig.align="center", out.width="75%"}
-knitr::include_graphics("SPSS/Removal/RemovalRegression-crop.png")
+TAlm <- lm(MAPvalue ~ ThrottleAngle, 
+           data = TA)
+abline(coef(TAlm), 
+       lwd = 2, 
+       col = "grey")
 ```
 
 
 ::: {.exercise #RegressionExercisePunting}
+(These data were also seen in Exercise \@ref(exr:CorrelationExercisePunting).)
 A study (@MyersRegression, p. 75) of American footballers measured the right-leg strengths $x$ of 13 players (using a weight lifting test), and the distance $y$ they punt a football (with their right leg).
 
 1. Use the plot (Fig. \@ref(fig:PuntPlot)) to approximate of the values of the intercept and slope.
@@ -1487,40 +1427,20 @@ knitr::include_graphics("jamovi/Punting/Punting-Regression.png")
 ```
 
 
-::: {.exercise #RegressionExerciseManifold}
-A study [@amin2019robust] of gas engines measured the throttle angle ($x$) and the manifold air pressure  ($y$) as a fraction of the maximum value.
 
-1. The value of $r$ is given in the paper as $0.972986604$. 
-   Comment on this value, and what it means.
-1. Comment on the use of a regression model, based on the scatterplot (Fig. \@ref(fig:ThrottleAngle)). 
-1. The authors fitted the following regression model: $y = 0.009 + 0.458x$.
-   Identify errors that the researchers have made when giving this regression equation (there are more than one).
-1. Critique the researchers' approach.
+
+::: {.exercise #TwoQuantExercisesGorillas}
+(These data were also seen in Exercise \@ref(exr:TwoQuantExercisesGorillas).)
+A study examined 25 gorillas are recorded information about their chest beating and their size (measured by the breadth of the gorillas' backs).
+The relationship is shown in a scatterplot in Fig. \@ref(fig:GorillaWindmillPlot) (left panel).
+The data, and the jamovi output for exploring the relationship, are shown in Fig. ???
+
+Use the output (XXXX) to find the regression line, and perform a hypothesis tests for the slope.
+Write a conclusion.
+
+DATA/JAMOVI OUTOUT
 :::
 
-
-```{r}
-TA <- read.csv("Data/Throttle.csv")
-```
-
-```{r ThrottleAngle, fig.cap="Manifold air pressure plotted against throttle angle for an internal-combustion gas engine", fig.align="center", fig.width=5, fig.height=3.5}
-
-par(mar = c(5.1, 5.1, 4.1, 2.1))
-plot(TA, 
-     pch = 19, 
-     xlab = "Throttle angle (degrees)", 
-     ylab = "Manifold air pressure\n(as fraction of the max.)", 
-     ylim = c(0, 1),
-     xlim = c(0, 90),
-     las = 1)
-par(mar = c(5.1, 4.1, 4.1, 2.1))
-
-TAlm <- lm(MAPvalue ~ ThrottleAngle, 
-           data = TA)
-abline(coef(TAlm), 
-       lwd = 2, 
-       col = "grey")
-```
 
 
 
@@ -1530,6 +1450,7 @@ Bit <- read.csv("Data/Bitumen.csv")
 
 
 ::: {.exercise #RegressionExerciseBitumen}
+(These data were also seen in Exercise \@ref(exr:CorrelationExerciseBitumen).)
 A study of hot mix asphalt [@data:Panda2018:Bitumen] created $n=42$ samples of asphalt and measured the volume of air voids and the bitumen content by weight (Fig. \@ref(fig:BitumenPlotReg)).
 Use the software output (Fig. \@ref(fig:Bitumenjamovi)) to answer these questions.
 
@@ -1585,6 +1506,17 @@ knitr::include_graphics("jamovi/Bitumen/Bitumen-Regression.png")
 ```
 
 
+
+::: {.exercise #RegressionExerciseSoil}
+(These data wee also seen in Exercise \@ref(exr:CorrelationExerciseSoil).)
+The *California Bearing Ratio* (CBR) value is used to describe soil-sub grade for flexible pavements (such as in the design of air field runways).
+One study [@talukdar2014study] examined the relationship between CBR and other properties of soil, including the plasticity index (PI, a measure of the plasticity of the soil).
+The scatterplot from 16 different soil samples from Assam, India, is shown in  Fig. \@ref(fig:SoilPlotCor).
+
+Estimate the regression equation, using the 'rise-over-run' idea.
+:::
+
+
 ::: {.exercise #RegressionExerciseSunscreen}
 A study of $n = 31$ people on the use of sunscreen [@data:Heerfordt2018:sunscreen] explored the relationship between the time (in minutes) spent on sunscreen application $x$ and the amount (in grams) of sunscreen applied ($y$).
 The fitted regression equation was $\hat{y} = 0.27 + 2.21x$.
@@ -1607,8 +1539,7 @@ One study [@bhargava1985mid] stated:
 >
 > --- @bhargava1985mid, p. 1617
 
-The relationship between infant chest circumference (in cm) $x$ and birth weight (in grams) $y$ was given as:
-
+The relationship between infant chest circumference (in cm) $x$ and birth weight (in grams) $y$ was given as:  
 \[
    \hat{y} = -3440.2403 + 199.2987x.
 \]
@@ -1625,7 +1556,7 @@ The correlation coefficient was $r = 0.8696$ with $P < 0.001$.
 :::
 
 ADD: 
-**Gorilla chest beats? (Not sig) and also to correlation**
+**POSSUMS? And also to correlation**
 
 
 
