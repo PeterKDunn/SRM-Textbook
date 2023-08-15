@@ -118,6 +118,63 @@ For the others:
 * In **Plot B**, the correlation coefficient will be *negative*, but not that close to $-1$.
 * In **Plot F**, the correlation coefficient will close to zero.
 
+::: {.example #Correlations name="Correlation coefficients"}
+A study of sand dollars (@leuchtenberger2022effects, @Nishizaki2022SanddollarData) explored the relationship between water temperature and fertilization rates (Fig. \@ref(fig:SanddollarsPlot)).
+Fitting a straight line gives a correlation coefficient of $r = -0.49$ (left panel), which might suggest that *higher* temperatures result in *lower* fertilization rates.
+However, a curved relationship is apparent (right panel), and so the relationship is more involved: the fertilization rate increases up to about 18^o^C, and then starts falling again.
+
+A correlation coefficient is not suitable for describing the relationship.
+:::
+
+```{r SanddollarsPlot, fig.cap="Water temperature vs fertilization rates for sand dollars. Left: a linear relationship; right: a curved relationship", fig.align="center", fig.width=8, fig.height=3.25, out.width='90%'}
+
+par(mfrow = c(1, 2))
+
+SD <- read.csv("Data/Sanddollars.csv")
+
+SDsub <- subset(SD, SD.temperatures < 35)
+
+plot( SDsub$SD.temperatures, SDsub$SD.fertilization,
+      pch = 19,
+      col = "grey",
+      lwd = 2,
+      las = 1,
+      xlim = c(5, 35),
+      ylim = c(20, 100),
+      main = "Temperature vs fertilization\nrates for sand dollars",
+      xlab = "Water temperature (degrees C)",
+      ylab = "Fertilization rate (in %)")
+text(x = 15,
+     y = 50,
+     labels = expression( italic(r)==-0.49))
+
+abline( coef( lm( SD.fertilization ~ SD.temperatures,
+                  data =  SDsub ) ),
+        lwd = 2,
+        lty = 1)
+
+plot( SDsub$SD.temperatures, SDsub$SD.fertilization,
+      pch = 19,
+      col = "grey",
+      lwd = 2,
+      las = 1,
+      xlim = c(5, 35),
+      ylim = c(20, 100),
+      main = "Temperature vs fertilization\nrates for sand dollars",
+      xlab = "Water temperature (degrees C)",
+      ylab = "Fertilization rate (in %)")
+
+m2 <- lm( SD.fertilization ~ poly(SD.temperatures, 2),
+            data =  SDsub )
+newX <- seq(5, 35,
+            length = 100)
+newY <- predict( m2, newdata = data.frame(SD.temperatures = newX))
+lines(newY ~ newX,
+      lwd = 2)
+
+```
+
+
 
 ::: {.example #Correlations name="Correlation coefficients"}
 For the red-deer data 
