@@ -291,10 +291,10 @@ if (knitr::is_html_output()){
 
 
 <!-- FOR LaTeX: Put this example data plot and the static rise/run in the same plot -->
-```{r ExampleScatterLATEX, fig.cap="An example scatterplot", fig.align="center", fig.width=9, fig.height=4, out.width='100%'}
+```{r ExampleScatterLATEX, fig.cap="An example scatterplot. Left: Approximating $b_0$; right: approximating $b_1$ using rise-over-run", fig.align="center", fig.width=9, fig.height=4, out.width='100%'}
 set.seed(5000)
 x <- seq(0.5, 5, 
-        length = 10)
+         length = 10)
 mu <- 2 + 3 * x
 y <- mu + rnorm(length(x), 0, 0.5)
 m1 <- lm(y ~ x)
@@ -304,22 +304,54 @@ if (knitr::is_latex_output()){
   par(mfrow = c(1, 2))
   
   plot(y ~ x, 
-     xlim = c(0, 5), 
-     ylim = c(0, 20), 
-     las = 1, 
-     main = expression(An~example~scatterplot),
-         xlab = expression(Explanatory~italic(x) ), 
-         ylab = expression(Response~italic(y) ), 
-     pch = 19)
-grid()
+       xlim = c(0, 5), 
+       ylim = c(0, 20), 
+       las = 1, 
+       main = expression(Approximating~italic(b)[0]),
+       xlab = expression(Explanatory~italic(x) ), 
+       ylab = expression(Response~italic(y) ), 
+       pch = 19,
+       col = "grey")
+  grid()
+   rug(1:20, 
+      side = 2, 
+      ticksize = -0.02)
 
-abline( coef(m1), 
-        col = "grey",
-        lwd = 2)
-
- 
-######
-
+  
+  
+  abline( coef(m1), 
+          col = "black",
+          lwd = 2)
+  
+  # Beta 0
+  abline(v = 0,
+         lwd = 2,
+         col = "grey")
+  lines( x = c(0, 0),
+         y = c(0, coef(m1)[1]),
+         lty = 1,
+         lwd = 2,
+         col = "grey")
+  lines( x = c(-1, 0.45),
+         y = c(coef(m1)[1], coef(m1)[1]),
+         lty = 1,
+         lwd = 2,
+         col = "grey")
+  
+  arrows(x0 = 2,
+         x1 = 0.5,
+         y0 = 2,
+         y1 = coef(m1)[1],
+         angle = 15,
+         length = 0.25,
+         lwd = 2)
+  text(x = 2,
+       y = 2,
+       pos = 4,
+       labels = expression(Approximately~italic(b)[0]))
+  
+  ######
+  
   b0 <- 2
   b1 <- 3
   
@@ -329,91 +361,92 @@ abline( coef(m1),
   y2 <- b0 + (b1 * x2)
   
   NumPlots <- i <- 9
-#  for (i in (NumPlots:NumPlots)){
-    
-    # DATA
-    plot(y ~ x, 
-         xlim = c(0, 5), 
-         ylim = c(0, 20), 
-         type = "n",
-         las = 1, 
-         main = expression(Approximating~italic(b)[0]~and~italic(b)[1]),
-         xlab = expression(Explanatory~italic(x) ), 
-         ylab = expression(Response~italic(y) ), 
-         pch = 19)
-    rug(1:20, 
-        side = 2, 
-        ticksize = -0.02)
-    grid()
-    
-    points(y ~ x, 
-           pch = 19) 
-    
-    if ( i >=2 ){ # DATA + LINE
-      abline(b0, b1,
-             col = "red", 
-             lwd = 2)
-    }
-    if (i >= 3) { # DATA + LINE + x1 
-      lines( c(x1, x1), 
-             c(0, y1),
-             lwd = 2, 
-             col = "darkgrey",
-             lty = 2)
-    }
-    
-    if ( i >= 4){  # DATA + LINE + x1 + y1
-      lines( c(0, x1), 
-             c(y1, y1),
-             lwd = 2, 
-             col = "darkgrey",
-             lty = 2)
-    }
-    
-    if ( i >= 5 ){  # DATA + LINE + x1 + y1 + x2
-      lines( c(x2, x2), 
-             c(0, y2),
-             lwd = 2, 
-             col = "darkgrey",
-             lty = 2)
-    }
-    
-    if ( i >= 6) {  # DATA + LINE + x1 + y1 + x2 + y2
-      lines( c(0, x2), 
-             c(y2, y2),
-             lwd = 2, 
-             col = "darkgrey",
-             lty = 2)
-    }
-    
-    if (i >= 7 ) {  # DATA + LINE + x1 + y1 + x2 + y2 + RUN
-      run <- x2 - x1
-      arrows(x1, 2, 
-             x2, 2,
-             lwd = 2,
-             length = 0.15,
-             col = "darkgrey",
-             code = 2)
-      text( mean( c(x1, x2)), 
-            2, 
-            labels = bquote("Run: "~ .(x2)-.(x1) == .(run)),
-            pos = 3 )  
-    }
-    
-    if (i >= 8 ){ # DATA + LINE + x1 + y1 + x2 + y2 + RUN + RISE
-      arrows(0.5, y1, 
-             0.5, y2,
-             lwd = 2,
-             length = 0.15,
-             col = "darkgrey",
-             code = 2)
-      rise <- y2 - y1
-      text( 0.5, 
-            mean( c(y1, y2)), 
-            labels = bquote("Rise: "~ .(y2)-.(y1) == .(rise)),
-            pos = 4 )  
-    }
-#  }
+  #  for (i in (NumPlots:NumPlots)){
+  
+  # DATA
+  plot(y ~ x, 
+       xlim = c(0, 5), 
+       ylim = c(0, 20), 
+       type = "n",
+       las = 1, 
+       main = expression(Approximating~italic(b)[1]),
+       xlab = expression(Explanatory~italic(x) ), 
+       ylab = expression(Response~italic(y) ), 
+       pch = 19)
+  rug(1:20, 
+      side = 2, 
+      ticksize = -0.02)
+  grid()
+  
+  
+  points(y ~ x, 
+         pch = 19) 
+  
+  if ( i >=2 ){ # DATA + LINE
+    abline(b0, b1,
+           col = "red", 
+           lwd = 2)
+  }
+  if (i >= 3) { # DATA + LINE + x1 
+    lines( c(x1, x1), 
+           c(0, y1),
+           lwd = 2, 
+           col = "darkgrey",
+           lty = 2)
+  }
+  
+  if ( i >= 4){  # DATA + LINE + x1 + y1
+    lines( c(0, x1), 
+           c(y1, y1),
+           lwd = 2, 
+           col = "darkgrey",
+           lty = 2)
+  }
+  
+  if ( i >= 5 ){  # DATA + LINE + x1 + y1 + x2
+    lines( c(x2, x2), 
+           c(0, y2),
+           lwd = 2, 
+           col = "darkgrey",
+           lty = 2)
+  }
+  
+  if ( i >= 6) {  # DATA + LINE + x1 + y1 + x2 + y2
+    lines( c(0, x2), 
+           c(y2, y2),
+           lwd = 2, 
+           col = "darkgrey",
+           lty = 2)
+  }
+  
+  if (i >= 7 ) {  # DATA + LINE + x1 + y1 + x2 + y2 + RUN
+    run <- x2 - x1
+    arrows(x1, 2, 
+           x2, 2,
+           lwd = 2,
+           length = 0.15,
+           col = "darkgrey",
+           code = 2)
+    text( mean( c(x1, x2)), 
+          2, 
+          labels = bquote("Run: "~ .(x2)-.(x1) == .(run)),
+          pos = 3 )  
+  }
+  
+  if (i >= 8 ){ # DATA + LINE + x1 + y1 + x2 + y2 + RUN + RISE
+    arrows(0.5, y1, 
+           0.5, y2,
+           lwd = 2,
+           length = 0.15,
+           col = "darkgrey",
+           code = 2)
+    rise <- y2 - y1
+    text( 0.5, 
+          mean( c(y1, y2)) + 0.5, 
+          labels = bquote("Rise: "~ .(y2)-.(y1) == .(rise)),
+          pos = 4 )  
+  }
+  #  }
 }
 ```
 
@@ -456,7 +489,7 @@ plot(Total ~ OND,
 clm <- lm( Total ~ OND, 
            data = cyclones)
 abline( coef(clm), 
-        lwd = 1, 
+        lwd = 2, 
         col = "grey")
 grid(lty = 2)
 ```
@@ -554,8 +587,7 @@ cyclone.lm <- lm(Total ~ OND,
 ```
 
 ::: {.example #RegressionCoefficients name="Regression coefficients"}
-The regression equation for the cyclone data (Fig. \@ref(fig:ONIcyclones)) is found from the jamovi output (Fig. \@ref(fig:CyclonesRegressionjamoviSPSS)):
-
+The regression equation for the cyclone data (Fig. \@ref(fig:ONIcyclones)) is found from the jamovi output (Fig. \@ref(fig:CyclonesRegressionjamoviSPSS)):  
 \[
   \hat{y} = 12.14 - 2.23x,
 \]
@@ -841,9 +873,7 @@ knitr::include_graphics( "jamovi/ED/EDRegression-crop.png")
 ### Statistical hypotheses {#RegressionHypotheses}
 
 The null hypothesis is the usual 'no relationship' hypothesis.
-In this context, 'no relationship' means that the slope is zero (Sect. \@ref(SlopeMeaning)), so the null hypotheses (about the *population*) is:
-
-* $H_0$: $\beta_1 = 0$.
+In this context, 'no relationship' means that the slope is zero (Sect. \@ref(SlopeMeaning)), so the null hypotheses (about the *population*) is $H_0$: $\beta_1 = 0$.
 
 This hypothesis proposes that $\beta_1$ is zero, but $b_1$ is not zero due to sampling variation.
 As part of the [decision-making process](#DecisionMaking), the null hypothesis is initially *assumed* to be true.
@@ -875,6 +905,7 @@ The variation in the sample slope across all possible samples is described (Fig.
 
 
 ```{r RedDeerSlopeSampDist, fig.cap="The distribution of sample slopes for the red-deer data, if the population slope is 0", fig.align="center", fig.height=3.5, fig.width=8.25, out.width='85%'}
+par( mar = c(5, 2, 1, 2))
 mn <- 0
 se <- 0.0289
 
@@ -1174,8 +1205,7 @@ A RQ is
 
 > In treating biofiltation wastewater, how does the removal efficiency depend on the inlet temperature?
 
-The scatterplot of the data is shown in (REPEATED???) Fig. \@ref(fig:RegressionRemovalEfficiency)) and software output in Fig. \@ref(fig:RemovalEfficiencyjamoviSPSSRegression).
-
+The scatterplot of the data is shown in Fig. \@ref(fig:CorrelationRemovalEfficiency) and software output in Fig. \@ref(fig:RemovalEfficiencyjamoviSPSSRegression).
 From the output, $b_0 = 97.5$ and $b_1 = 0.0757$, so the regression equation is  
 \[
   \hat{y} = 97.5 + 0.0757x
@@ -1234,7 +1264,7 @@ The *slope* is how much the predicted mean value of $y$ changes, on average, whe
 The regression equation can be used to make *predictions* or to *understand* the relationship between the two variables.
 Predictions made with values of $x$ outside the values of $x$ used to create the regression equation (called *extrapolation*) may not be reliable.
 
-In the population, the regression equation is  x
+In the population, the regression equation is  
 \[
    \hat{y} = \beta_0 + \beta_1 x.
 \]
@@ -1242,8 +1272,7 @@ To test a hypothesis about a population slope $\beta_1$, based on the value of t
 Then, the sample slope varies from sample to sample and, under certain statistical validity conditions, varies with an approximate normal distribution centered around the hypothesised value of $\beta_1$, with a standard deviation of $\text{s.e.}(b_1)$.
 This distribution describes what values of the sample slope could be **expected** in the sample if the value of $\beta_1$ in the null hypothesis was true.
 
-The *test statistic* is
-
+The *test statistic* is  
 \[
    t = \frac{ b_1 - \beta_1}{\text{s.e.}(b_1)},
 \]
@@ -1289,11 +1318,11 @@ plot( Wt ~ Ht,
 ```
 
 
-1. The $y$-variable is
+1. The $y$-variable is \tightlist
 `r if( knitr::is_html_output() ) {mcq( c(
   answer="Weight",
   "Height") )} else {"________________."}`
-1. Using the 'rise over run' idea, the *slope* is approximately \tightlist
+1. Using the 'rise over run' idea, the *slope* is approximately 
 `r if( knitr::is_html_output() ) {mcq( c(
   -140,
   answer = 1,
