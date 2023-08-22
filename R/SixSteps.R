@@ -79,25 +79,25 @@ SixSteps <- function( Flag=NA, Text=NA, Labs="Long", Arrows=TRUE, seed=NA, ...){
   
   
   
-  par( mar=c(0, 0, 0, 0) + 0.1)
+  par( mar = c(0, 0, 0, 0) + 0.1)
   plot( c(-BoxWidth/2, BoxWidth/2),
-        c(-BoxHeight/2, 7*BoxHeight + 6*BoxGap),
-        type="n",
-        xlab="",
-        ylab=",",
-        axes=FALSE)
+        c(-BoxHeight/2, 7 * BoxHeight + 6 * BoxGap),
+        type = "n",
+        xlab = "",
+        ylab = ",",
+        axes = FALSE)
   
   Box.TopCorners <- (2:7) * BoxHeight + (0:5) * BoxGap  # NOTE: Box.TopCorners[1] is the lowest. So reverse
   Box.TopCorners <- rev(Box.TopCorners)                 # NOW: Box.TopCorners[1] is the *top* box, which is Step 1
   Box.BottomCorners <- Box.TopCorners - BoxHeight
   
   # Now adjust if one of the boxes is two lines of text high
-  if ( Flag>0 ) {# If a box is flagged...
+  if ( Flag > 0 ) {# If a box is flagged...
     if (  !is.na(Text) ) {   # *AND(* there is text to put there....
       if ( Flag == 6 ){ 
         Box.TopCorners[ 6 ] <- Box.TopCorners[ 6]
       } else {
-        Box.TopCorners[ (Flag+1):6] <- Box.TopCorners[ (Flag+1):6] - BoxHeight
+        Box.TopCorners[ (Flag + 1):6] <- Box.TopCorners[ (Flag + 1):6] - BoxHeight
       }
       Box.BottomCorners[ Flag:6] <- Box.BottomCorners[ Flag:6 ] - BoxHeight
     }
@@ -108,22 +108,22 @@ SixSteps <- function( Flag=NA, Text=NA, Labs="Long", Arrows=TRUE, seed=NA, ...){
     
     polygon( c(-BoxW/2, BoxW/2, BoxW/2, -BoxW/2),
              c(Box.TCorner, Box.TCorner, Box.BCorner, Box.BCorner),
-             col=col.Default, # All boxes same colour
+             col = col.Default, # All boxes same colour
              lwd = 4, # Thick borders
-             border=ifelse(flag, col.Flag, NA) ) # Thick, dark borders on flagged boxes
+             border = ifelse(flag, col.Flag, NA) ) # Thick, dark borders on flagged boxes
   }
   
   DrawLine <- function(Top, Bottom){
     
     arrows(0, Top,
            0, Bottom,
-           length=0.15,
-           lwd=2,
-           angle=15)  
+           length = 0.15,
+           lwd = 2,
+           angle = 15)  
   }
   
   for (i in (1:6)){
-    if (Arrows) if (i > 1 ) DrawLine( Box.BottomCorners[i-1], Box.TopCorners[i])
+    if (Arrows) if (i > 1 ) DrawLine( Box.BottomCorners[i - 1], Box.TopCorners[i])
     
     if ( i == Flag){
       DrawBox(Box.TopCorners[i], Box.BottomCorners[i], BoxWidth, 1, TRUE)
@@ -139,12 +139,12 @@ SixSteps <- function( Flag=NA, Text=NA, Labs="Long", Arrows=TRUE, seed=NA, ...){
     text.col <- grey(0.3)
     if (i == Flag ) text.col <- "black"
     text.string <- paste("text(0, Text.StepsLocation.Thisone, ", Labels[i], ", col=text.col)")
-    eval( parse(text=text.string))
+    eval( parse(text = text.string))
     #    text(0, Loc, rev(Labels)[i])
   }
   
   # Add the additional text
-  Text.AddedTextLocation <- Box.TopCorners[Flag] - BoxHeight*1.33
+  Text.AddedTextLocation <- Box.TopCorners[Flag] - BoxHeight * 1.33
   text(0, Text.AddedTextLocation, Text)
   
 }
