@@ -66,7 +66,7 @@ showSampleStratified <- function(sizeHorizontal = 21,
     mtext(paste("Select", sampleB, "males"),   
           side = 1, 
           cex = 0.9,
-          at = separation + (sizeHorizontal - separation) / 2)
+          at = separation + (sizeHorizontal - separation) / 2) + 0.05
     
     points( expand.grid(1:numA, 
                         1:sizeVertical))

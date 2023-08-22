@@ -42,7 +42,7 @@ showSampleMultistage <- function(sizeHorizontal = 21,
          at = selectedTutorials, 
          labels = paste("Gp.", selectedTutorials), 
          las = 1, 
-         font = 2) # BOLD text
+         font = 4) # BOLD, ITALICS text
     # Now plot everyone: 
     for (j in 1:numberTutorials){
       points(1:numStudentsInTutorials[j], rep(j, numStudentsInTutorials[j]),

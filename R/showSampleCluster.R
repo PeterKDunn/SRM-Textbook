@@ -39,7 +39,7 @@ showSampleCluster <- function(sizeHorizontal = 21,
          at = selectedTutorials, # Only labels SELECTED tutorials
          labels = paste("Gp.", selectedTutorials), 
          las = 1,
-         font = 2) # BOLD text
+         font = 4) # BOLD, ITALICS text
     # Now plot everyone: 
     for (j in 1:numberTutorials){
       points(x = 1:numStudentsInTutorials[j], 
