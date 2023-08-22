@@ -12,25 +12,42 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                             addCompareText = TRUE,
                             addBlocking = FALSE, # If  TRUE  then two block are shown 
                             addSampling = FALSE, # Show  "POP -> SAMPLE"
-                            addThirdParty = FALSE) { 
+                            addThirdParty = FALSE) { # This allows for showing blinding of researchers 
   
   ### Makes a study design diagram, withOUT blocking.
-  ### Works for two groups/treatments; most things hsould work with three
+  ### Works for two groups/treatments; most things should work with three
   
   
     ### CANVAS
   par( mar = c(0.5, 0.5, 0.5, 0.5))
+  useDefaultCanvas <- TRUE
+  xLimLo <- 0
+  xLimHi <- 1
+  
+  # WATCH THE ORDER HERE!
   if ( addThirdParty ) {
      # Recommend no POPULATION box---too wide!
-     shape::emptyplot(ylim = c(0, 1), # No change
-                     xlim = c(0.2, 1.5),
-                     asp = NULL) # ELSE  asp=1 or requested
-    #axis(side=1)
-    #axis(side=2)
-  } else {
-    diagram::openplotmat()
+    useDefaultCanvas <- FALSE
+    xLimHi <- 1.5
+  } 
+  if ( addIndividuals ) {
+    useDefaultCanvas <- FALSE
+    xLimLo <- 0.2
+  }
+  if ( addSampling ) {
+    useDefaultCanvas <- FALSE
+    xLimLo <- 0.0
+    xLimHi <- 1.0
   }
   
+  if (useDefaultCanvas) { 
+    diagram::openplotmat()
+  } else {
+    shape::emptyplot(ylim = c(0, 1), # No change
+                     xlim = c(xLimLo, xLimHi),
+                     asp = NULL) # ELSE  asp=1 or requested
+    
+    }
   
 ### AT PRESENT ONLY FOR ONE BLOCK...:
 
@@ -43,7 +60,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   }
   if ( addThirdParty ) {
     addResearcherControl <- FALSE # We add other things instead, 
-                                  # and besides... it is the same for quasi- and true epxerimets, so it doesn't matter which we show
+                                  # and besides... it is the same for quasi- and true experiments, so it doesn't matter which we show
     
     addBlindedTreatmentNames <- addCNames
     addCNames <- c('"A"', '"B"')
