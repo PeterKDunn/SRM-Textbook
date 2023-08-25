@@ -31,7 +31,7 @@
 </div>
 
 
-In Chap. \@ref(PairedIntro), data were introduced that studied the mean amount of weight gained between Week 1 and Week 12 when they began university.
+In Chap. \@ref(PairedIntro), data were introduced that studied the mean amount of weight gained between Week 1 and Week 12 when they began university (@levitsky2004freshman, @DASL:WeightChange).
 We could also ask:
 
 > For Cornell University students, does the *mean weight* of students *increase* after 12 weeks at university?
@@ -64,6 +64,11 @@ Here we will discuss weight *gain* as mentioned in the RQ.
 
 ```{r DataWeightChange2}
 SW <- read.csv("./Data/StudentWt.csv")
+SW <- dplyr::select(SW,
+                    Student,
+                    Week1,
+                    Week12,
+                    GainWt)
 
 SWlen <- length(SW$Week1) 
 
@@ -404,16 +409,16 @@ We write:
 
 
 ```{r}
-diab2 <- read.csv("./Data/Diabetes.csv")
-diab2$Diff <- diab2$bp.1d - diab2$bp.2d
+diab <- read.csv("./Data/Diabetes.csv")
+diab$Diff <- diab$SBPfirst - diab$SBPsecond
 
-n.D.diff <- length( diab2$Diff ) - sum( is.na(diab2$Diff) )
-se.D.diff <- sd(diab2$Diff, na.rm = TRUE) / sqrt(n.D.diff)
+n.D.diff <- length( diab$Diff ) - sum( is.na(diab$Diff) )
+se.D.diff <- sd(diab$Diff, na.rm = TRUE) / sqrt(n.D.diff)
 
 ### REORDER
-diab.names <- names(diab2)
-diab <- diab2[ c(which( diab.names %in% c("id", "bp.1d", "bp.2d")) , 
-                which( !(diab.names %in% c("id", "bp.1d", "bp.2d")) ) )]
+#diab.names <- names(diab2)
+#diab <- diab2[ c(which( diab.names %in% c("id", "bp.1d", "bp.2d")) , 
+#                which( !(diab.names %in% c("id", "bp.1d", "bp.2d")) ) )]
 
 ```
 
@@ -451,12 +456,11 @@ from the first to second measurement.
 
 
 ```{r DiabetesDataTable2}
-DiffExists <- complete.cases(diab[, c("bp.1d", 
-                                      "bp.2d",  
+DiffExists <- complete.cases(diab[, c("DBPfirst", 
+                                      "DBPsecond", 
                                       "Diff")])
-
-diabData <- diab[DiffExists, c("bp.1d", 
-                               "bp.2d", 
+diabData <- diab[DiffExists, c("DBPfirst", 
+                               "DBPfirst", 
                                "Diff")]
 
 if( knitr::is_latex_output() ) {
@@ -759,6 +763,10 @@ Perform a hypothesis test to determine if there is evidence of a population mean
 
 ```{r}
 FR <- read.csv("./Data/Ferritin.csv")
+FR <- dplyr::select(FR,
+                    September,
+                    March,
+                    Reduction)
 ```
 
 
@@ -837,8 +845,7 @@ Use the output to test the RQ.
 :::
 
 ```{r StressDescriptivesjamovi, fig.cap="", fig.align="center", out.width='80%'}
-
-ST <- read.csv("Data/stress.csv")
+ST <- read.csv("Data/Stress.csv")
 
 StressTab <- data.frame(
   "Means" = c( colMeans(ST),

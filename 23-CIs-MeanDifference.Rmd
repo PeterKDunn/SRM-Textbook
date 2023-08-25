@@ -67,7 +67,7 @@ Situations **1** and **3** are paired situations.
 
 ## Mean differences {#CIMeanDiffExample}
 
-Prof. David Levitsky (Cornell University) obtained data to answer this (descriptive) RQ [@DASL:WeightChange]:
+Prof. David Levitsky (Cornell University) obtained data to answer this (descriptive) RQ (@levitsky2004freshman, @DASL:WeightChange):
 
 > For Cornell University students, what is the *mean weight gain* in students after 12 weeks at university?
 
@@ -97,12 +97,16 @@ Here, we use weight *gain* since it is explicitly mentioned in the RQ.
 
 ```{r}
 SW <- read.csv("./Data/StudentWt.csv") 
+SW <- dplyr::select(SW,
+                    Student,
+                    Week1,
+                    Week12,
+                    GainWt)
+SWlen <- length(SW$Week1)
 
-SWlen <- length(SW$Week1)  
 ```
 
 ```{r DataWeightChange}
-
 tb1 <- SW[1:5, ]  
 
 T1 <- knitr::kable(tb1,
@@ -626,19 +630,18 @@ We write:
 ## Example: blood pressure {#BloodPressure}
 
 ```{r}
-diab2 <- read.csv("./Data/Diabetes.csv")
+diab <- read.csv("./Data/Diabetes.csv")
 
-diab2$Diff <- diab2$bp.1d - diab2$bp.2d
+diab$Diff <- diab$SBPfirst - diab$SBPsecond
 
-n.D.diff <- length( diab2$Diff ) - sum( is.na(diab2$Diff) )
-se.D.diff <- sd(diab2$Diff, na.rm = TRUE) / sqrt(n.D.diff)
+n.D.diff <- length( diab$Diff ) - sum( is.na(diab$Diff) )
+se.D.diff <- sd(diab$Diff, na.rm = TRUE) / sqrt(n.D.diff)
 
 ### REORDER
-diab.names <- names(diab2)
-diab <- diab2[ c(which( diab.names %in% c("id", "bp.1d", "bp.2d")) , 
-                which( !(diab.names %in% c("id", "bp.1d", "bp.2d")) ) )]
+#diab.names <- names(diab2)
+#diab <- diab2[ c(which( diab.names %in% c("id", "bp.1d", "bp.2d")) , 
+#                which( !(diab.names %in% c("id", "bp.1d", "bp.2d")) ) )]
 ```
-
 
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
@@ -676,11 +679,11 @@ The parameter is $\mu_d$, the population mean *reduction* in DBP.
 \captionof{table}{The first six observations (from the $n = 141$ available) from the diabetes study for people with both measurements: Diastolic blood pressure (DBP) for the first and second visits, and the decrease in DBP, all in mm Hg\label{tab:DiabetesDataTable}}
 \fontsize{10}{12}\selectfont
 ```{r}
-DiffExists <- complete.cases(diab[, c("bp.1d", 
-                                      "bp.2d", 
+DiffExists <- complete.cases(diab[, c("DBPfirst", 
+                                      "DBPsecond", 
                                       "Diff")])
-diabData <- diab[DiffExists, c("bp.1d", 
-                               "bp.2d", 
+diabData <- diab[DiffExists, c("DBPfirst", 
+                               "DBPfirst", 
                                "Diff")]
 diabData <- rbind( head(diabData),
                    c("$\\vdots$", "$\\vdots$", "$\\vdots$") )
@@ -719,14 +722,14 @@ box()
 
 
 ```{r DiabetesDataTable2}
-DiffExists <- complete.cases(diab[, c("bp.1d", 
-                                      "bp.2d", 
+DiffExists <- complete.cases(diab[, c("DBPfirst", 
+                                      "DBPsecond", 
                                       "Diff")])
 
 
 if( knitr::is_html_output() ) {
-  DT::datatable( diab[DiffExists, c("bp.1d", 
-                                    "bp.2d", 
+  DT::datatable( diab[DiffExists, c("DBPfirst", 
+                                    "DBPsecond", 
 				    "Diff")],
                  fillContainer = FALSE, # Make more room, so we don't just have ten values
                  colnames = c("First", "Second", "Differences"),
@@ -773,20 +776,20 @@ se.diab <- function(x) {
   sd(x, na.rm = TRUE) / sqrt(n.diab(x) )
 }
 
-Diab.Table[1, 1] <- mean(diab$bp.1d[DiffExists], na.rm = TRUE)
-Diab.Table[2, 1] <- mean(diab$bp.2d[DiffExists], na.rm = TRUE)
+Diab.Table[1, 1] <- mean(diab$DBPfirst[DiffExists], na.rm = TRUE)
+Diab.Table[2, 1] <- mean(diab$DBPsecond[DiffExists], na.rm = TRUE)
 Diab.Table[3, 1] <- mean(diab$Diff[DiffExists], na.rm = TRUE)
 
-Diab.Table[1, 2] <- sd(diab$bp.1d[DiffExists], na.rm = TRUE)
-Diab.Table[2, 2] <- sd(diab$bp.2d[DiffExists], na.rm = TRUE)
+Diab.Table[1, 2] <- sd(diab$DBPfirst[DiffExists], na.rm = TRUE)
+Diab.Table[2, 2] <- sd(diab$DBPsecond[DiffExists], na.rm = TRUE)
 Diab.Table[3, 2] <- sd(diab$Diff[DiffExists], na.rm = TRUE)
 
-Diab.Table[1, 3] <- se.diab(diab$bp.1d[DiffExists])
-Diab.Table[2, 3] <- se.diab(diab$bp.2d[DiffExists])
+Diab.Table[1, 3] <- se.diab(diab$DBPfirst[DiffExists])
+Diab.Table[2, 3] <- se.diab(diab$DBPsecond[DiffExists])
 Diab.Table[3, 3] <- se.diab(diab$Diff[DiffExists])
 
-Diab.Table[1, 4] <- n.diab(diab$bp.1d[DiffExists])
-Diab.Table[2, 4] <- n.diab(diab$bp.2d[DiffExists])
+Diab.Table[1, 4] <- n.diab(diab$DBPfirst[DiffExists])
+Diab.Table[2, 4] <- n.diab(diab$DBPsecond[DiffExists])
 Diab.Table[3, 4] <- n.diab(diab$Diff[DiffExists])
 
 rownames(Diab.Table) <- c("DBP: First visit", 
@@ -1009,7 +1012,7 @@ For the 23 women in the study, the mean intention to smoke after exercise *reduc
 :::
 
 ```{r out.width='80%'}
-AN <- read.csv("Data/anorexia.csv") ### HAND 285
+AN <- read.csv("Data/Anorexia.csv") ### HAND 285
 
 ANCB <- subset(AN, Treatment=="CB")
 # hist( ANCB$After - ANCB$Before)
