@@ -98,19 +98,12 @@ Here, we use weight *gain* since it is explicitly mentioned in the RQ.
 ```{r}
 data(StudentWt)
 
-SW <- StudentWt
-
-SW <- dplyr::select(SW,
-                    Student,
-                    Week1,
-                    Week12,
-                    GainWt)
-SWlen <- length(SW$Week1)
+SWlen <- length(StudentWt$Week1)
 
 ```
 
 ```{r DataWeightChange}
-tb1 <- SW[1:5, ]  
+tb1 <- StudentWt[1:5, ]  
 
 T1 <- knitr::kable(tb1,
                    format = "latex",
@@ -123,7 +116,7 @@ T1 <- knitr::kable(tb1,
                    booktabs = TRUE) %>%
   row_spec(0, bold = TRUE)
 
-tb2 <- SW[(SWlen - 4):SWlen, ]
+tb2 <- StudentWt[(SWlen - 4):SWlen, ]
 T2 <- knitr::kable(tb2,
                    format = "latex",
                    valign = 't',
@@ -147,7 +140,7 @@ out2
 
 ```{r}
 if( knitr::is_html_output() ) {
-  kable( SW,
+  kable( StudentWt,
          format = "html",
          booktabs = TRUE,
          longtable = FALSE, 
@@ -264,7 +257,7 @@ A case-profile plot (Sect.&nbsp;\@ref(CaseProfilePlot)) is also useful, but is d
 ```{r WeightGainHistogram, fig.cap="A histogram of weight changes (the vertical grey line represents no weight gain)", fig.align="center", out.width='60%', fig.width=8.5, fig.height = 3.0}
 par( mfrow = c(1, 2))
 
-hist( SW$GainWt,
+hist( StudentWt$GainWt,
       xlab = "Weight gain (kg)",
       ylab = "Frequency",
       las = 1,
@@ -276,40 +269,6 @@ abline(v = 0,
        col = "grey", 
        lty = 1,
        lwd = 2)
-
-# WhichTime <- c(
-#   rep(1, SWlen),
-#   rep(2, SWlen)
-# )
-# 
-# plot( range(c(SW$Week1, SW$Week12)) ~ c(1, 2),
-#       pch = 19,
-#       las = 1,
-#       ylim = c(40, 110),
-#       axes = FALSE,
-#       type = "n",
-#       main = "Weight gain from\nWeek 1 to Week 12",
-#       xlab = "Week of semester",
-#       ylab = "Weight gain (in kg)")
-# axis(side = 1, 
-#      at = 1:2,
-#      labels = c("Week 1", "Week 12"))
-# axis(side = 2, 
-#      las = 1)
-# box()
-# 
-# for (i in 1:SWlen){
-#   lines( x = c(1, 2),
-#          y = c(SW$Week1[i], SW$Week12[i]),
-#          col = ifelse( (SW$Week1[i] - SW$Week12[i]) > 0, plotSolid, "grey"),
-#          lty = ifelse( (SW$Week1[i] - SW$Week12[i]) > 0, 1, 1),
-#          lwd = 2 
-#   )
-#   points( c(1, 2),
-#           c(SW$Week1[i], SW$Week12[i]),
-#           pch = 19
-#   )
-# }
 ```
 
 
@@ -338,21 +297,21 @@ A formal numerical summary table is shown in Table \@ref(tab:WeightGainSummary).
 ```{r WeightGainSummary}
 WtGain.DataSummary <- array( dim = c(3, 4))
 
-WtGain.DataSummary[1, 1] <- mean(SW$Week1)
-WtGain.DataSummary[2, 1] <- mean(SW$Week12)
-WtGain.DataSummary[3, 1] <- mean(SW$GainWt)
+WtGain.DataSummary[1, 1] <- mean(StudentWt$Week1)
+WtGain.DataSummary[2, 1] <- mean(StudentWt$Week12)
+WtGain.DataSummary[3, 1] <- mean(StudentWt$GainWt)
 
-WtGain.DataSummary[1, 2] <- median(SW$Week1)
-WtGain.DataSummary[2, 2] <- median(SW$Week12)
-WtGain.DataSummary[3, 2] <- median(SW$GainWt)
+WtGain.DataSummary[1, 2] <- median(StudentWt$Week1)
+WtGain.DataSummary[2, 2] <- median(StudentWt$Week12)
+WtGain.DataSummary[3, 2] <- median(StudentWt$GainWt)
 
-WtGain.DataSummary[1, 3] <- sd(SW$Week1)
-WtGain.DataSummary[2, 3] <- sd(SW$Week12)
-WtGain.DataSummary[3, 3] <- sd(SW$GainWt)
+WtGain.DataSummary[1, 3] <- sd(StudentWt$Week1)
+WtGain.DataSummary[2, 3] <- sd(StudentWt$Week12)
+WtGain.DataSummary[3, 3] <- sd(StudentWt$GainWt)
 
-WtGain.DataSummary[1, 4] <- IQR(SW$Week1)
-WtGain.DataSummary[2, 4] <- IQR(SW$Week12)
-WtGain.DataSummary[3, 4] <- IQR(SW$GainWt)
+WtGain.DataSummary[1, 4] <- IQR(StudentWt$Week1)
+WtGain.DataSummary[2, 4] <- IQR(StudentWt$Week12)
+WtGain.DataSummary[3, 4] <- IQR(StudentWt$GainWt)
 
 rownames(WtGain.DataSummary) <- c("Week 1 weight", 
                                   "Week 12 weight", 
@@ -416,9 +375,9 @@ Notice that many decimal places are used in the working here; results will be ro
  
 
 ```{r WeightGainNormal, fig.cap="The sampling distribution is a normal distribution; it shows how the sample mean weight gain varies in samples of size $n = 68$", fig.align="center", fig.width=9.0, fig.height=2.75, out.width='95%'}
-mn <- mean(SW$GainWt)
-n <- length(SW$GainWt)
-stdd <- sd(SW$GainWt)
+mn <- mean(StudentWt$GainWt)
+n <- length(StudentWt$GainWt)
+stdd <- sd(StudentWt$GainWt)
 
 se <- stdd/sqrt(n)
 
@@ -634,17 +593,11 @@ We write:
 
 ```{r}
 data(Diabetes)
-diab <- Diabetes
 
-diab$Diff <- diab$SBPfirst - diab$SBPsecond
+dDiabetesiab$Diff <- Diabetes$SBPfirst - Diabetes$SBPsecond
 
-n.D.diff <- length( diab$Diff ) - sum( is.na(diab$Diff) )
-se.D.diff <- sd(diab$Diff, na.rm = TRUE) / sqrt(n.D.diff)
-
-### REORDER
-#diab.names <- names(diab2)
-#diab <- diab2[ c(which( diab.names %in% c("id", "bp.1d", "bp.2d")) , 
-#                which( !(diab.names %in% c("id", "bp.1d", "bp.2d")) ) )]
+n.D.diff <- length( Diabetes$Diff ) - sum( is.na(Diabetes$Diff) )
+se.D.diff <- sd(Diabetes$Diff, na.rm = TRUE) / sqrt(n.D.diff)
 ```
 
 
@@ -683,10 +636,10 @@ The parameter is $\mu_d$, the population mean *reduction* in DBP.
 \captionof{table}{The first six observations (from the $n = 141$ available) from the diabetes study for people with both measurements: Diastolic blood pressure (DBP) for the first and second visits, and the decrease in DBP, all in mm Hg\label{tab:DiabetesDataTable}}
 \fontsize{10}{12}\selectfont
 ```{r}
-DiffExists <- complete.cases(diab[, c("DBPfirst", 
+DiffExists <- complete.cases(Diabetes[, c("DBPfirst", 
                                       "DBPsecond", 
                                       "Diff")])
-diabData <- diab[DiffExists, c("DBPfirst", 
+diabData <- Diabetes[DiffExists, c("DBPfirst", 
                                "DBPfirst", 
                                "Diff")]
 diabData <- rbind( head(diabData),
@@ -710,7 +663,7 @@ knitr::kable(diabData,
 \begin{minipage}{0.43\textwidth}%
 \centering
 ```{r DiabetesHIST, fig.width=3.75, out.width='95%'}
-hist(diab$Diff,
+hist(Diabetes$Diff,
 	col = plot.colour,
 	xlab = "DBP decrease (in mm Hg)",
 	las = 2,
@@ -726,13 +679,13 @@ box()
 
 
 ```{r DiabetesDataTable2}
-DiffExists <- complete.cases(diab[, c("DBPfirst", 
+DiffExists <- complete.cases(Diabetes[, c("DBPfirst", 
                                       "DBPsecond", 
                                       "Diff")])
 
 
 if( knitr::is_html_output() ) {
-  DT::datatable( diab[DiffExists, c("DBPfirst", 
+  DT::datatable( Diabetes[DiffExists, c("DBPfirst", 
                                     "DBPsecond", 
 				    "Diff")],
                  fillContainer = FALSE, # Make more room, so we don't just have ten values
@@ -755,7 +708,7 @@ Numerical summaries can be computed using software, then reported in a suitable 
 <!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
 `r if (knitr::is_latex_output()) '<!--'`
 ```{r DiabetesHIST2, fig.cap="Histogram of the decrease in DBP between the first and second visits", fig.align="center", fig.width=5, fig.height=3.5}
-hist(diab$Diff,
+hist(Diabetes$Diff,
 	col = plot.colour,
 	xlab = "DBP decrease (in mm Hg)",
 	las = 2,
@@ -780,21 +733,21 @@ se.diab <- function(x) {
   sd(x, na.rm = TRUE) / sqrt(n.diab(x) )
 }
 
-Diab.Table[1, 1] <- mean(diab$DBPfirst[DiffExists], na.rm = TRUE)
-Diab.Table[2, 1] <- mean(diab$DBPsecond[DiffExists], na.rm = TRUE)
-Diab.Table[3, 1] <- mean(diab$Diff[DiffExists], na.rm = TRUE)
+Diab.Table[1, 1] <- mean(Diabetes$DBPfirst[DiffExists], na.rm = TRUE)
+Diab.Table[2, 1] <- mean(Diabetes$DBPsecond[DiffExists], na.rm = TRUE)
+Diab.Table[3, 1] <- mean(Diabetes$Diff[DiffExists], na.rm = TRUE)
 
-Diab.Table[1, 2] <- sd(diab$DBPfirst[DiffExists], na.rm = TRUE)
-Diab.Table[2, 2] <- sd(diab$DBPsecond[DiffExists], na.rm = TRUE)
-Diab.Table[3, 2] <- sd(diab$Diff[DiffExists], na.rm = TRUE)
+Diab.Table[1, 2] <- sd(Diabetes$DBPfirst[DiffExists], na.rm = TRUE)
+Diab.Table[2, 2] <- sd(Diabetes$DBPsecond[DiffExists], na.rm = TRUE)
+Diab.Table[3, 2] <- sd(Diabetes$Diff[DiffExists], na.rm = TRUE)
 
-Diab.Table[1, 3] <- se.diab(diab$DBPfirst[DiffExists])
-Diab.Table[2, 3] <- se.diab(diab$DBPsecond[DiffExists])
-Diab.Table[3, 3] <- se.diab(diab$Diff[DiffExists])
+Diab.Table[1, 3] <- se.diab(Diabetes$DBPfirst[DiffExists])
+Diab.Table[2, 3] <- se.diab(Diabetes$DBPsecond[DiffExists])
+Diab.Table[3, 3] <- se.diab(Diabetes$Diff[DiffExists])
 
-Diab.Table[1, 4] <- n.diab(diab$DBPfirst[DiffExists])
-Diab.Table[2, 4] <- n.diab(diab$DBPsecond[DiffExists])
-Diab.Table[3, 4] <- n.diab(diab$Diff[DiffExists])
+Diab.Table[1, 4] <- n.diab(Diabetes$DBPfirst[DiffExists])
+Diab.Table[2, 4] <- n.diab(Diabetes$DBPsecond[DiffExists])
+Diab.Table[3, 4] <- n.diab(Diabetes$Diff[DiffExists])
 
 rownames(Diab.Table) <- c("DBP: First visit", 
                           "DBP: Second visit", 
@@ -923,11 +876,10 @@ From this information:
 
 ```{r}
 data(Captopril)
-blood <- Captopril
 
-blood$Differences <- blood$Before - blood$After
+Captopril$Differences <- Captopril$Before - Captopril$After
 
-bloodS <- subset(blood, BP == "S")
+bloodS <- subset(Captopril, BP == "S")
 bloodS <- bloodS[, c("Before", 
                      "After", 
 		     "Differences")]

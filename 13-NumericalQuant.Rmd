@@ -106,20 +106,19 @@ Use the precise term 'mean' or 'median', rather than 'average', when possible!
 
 ```{r}
 data(MaryRiver)
-MR2 <- MaryRiver
 
-Mn <- aggregate(MR2$Mean, 
-                by = list(MR2$Month), 
+Mn <- aggregate(MaryRiver$Mean, 
+                by = list(MaryRiver$Month), 
 		            FUN = "mean", 
 		            na.rm = TRUE, 
 		            simplify = TRUE)
-Mdn <- aggregate(MR2$Mean, 
-                 by = list(MR2$Month), 
+Mdn <- aggregate(MaryRiver$Mean, 
+                 by = list(MaryRiver$Month), 
 		             FUN = "median", 
 		             na.rm = TRUE, 
 		             simplify = TRUE)
-Number <- aggregate(MR2$Mean, 
-                    by = list(MR2$Month),
+Number <- aggregate(MaryRiver$Mean, 
+                    by = list(MaryRiver$Month),
                     FUN = function(x){length(x) - sum(is.na(x))},
                     simplify = TRUE)
 
@@ -974,9 +973,9 @@ Some software uses slightly different rules when $n$ is even, producing slightly
 ### Which average to use? {#CompareMeanMedian}
 
 ```{r}
-LessThanMean <- sum( MR2$Mean[MR2$Month == 2] < 1123.2, 
+LessThanMean <- sum( MaryRiver$Mean[MaryRiver$Month == 2] < 1123.2, 
                      na.rm = TRUE ) / 
-                sum( !is.na(MR2$Mean[MR2$Month == 2]) )
+                sum( !is.na(MaryRiver$Mean[MaryRiver$Month == 2]) )
 ```
 
 Consider again estimating the average daily streamflow at the Mary River (Bellbird Creek) during February (Table \@ref(tab:MRtable)):
@@ -984,7 +983,7 @@ The *mean* daily streamflow is `r round(MRsummary[2, 2], 1)`ML, and the *median*
 Which is the 'best' measure for the average streamflow?
 
 A dot chart of the daily streamflow (Fig. \@ref(fig:DailyStreamflow)) shows that the data are *very* highly right-skewed, with many *very* large outliers (presumably during flood events):
-the maximum value is `r formatC( round(max(MR2$Mean[MR2$Month == 2], na.rm = TRUE), 0), format="fg", big.mark=',')`ML, more than *one hundred times* larger than the mean of `r formatC(round(MRsummary[2, 2], 1), big.mark=',')`ML).
+the maximum value is `r formatC( round(max(MaryRiver$Mean[MaryRiver$Month == "02"], na.rm = TRUE), 0), format="fg", big.mark=',')`ML, more than *one hundred times* larger than the mean of `r formatC(round(MRsummary[2, 2], 1), big.mark=',')`ML).
 In fact, about `r round(LessThanMean * 100)`% of the observations are *less* than the mean.
 The extreme outliers are clear in the tabular summary too (Table \@ref(tab:DailyStreamflowTab)).
 
@@ -995,7 +994,7 @@ For these data, the mean is hardly a *central* value...
 ```{r DailyStreamflow, fig.cap="A dot plot of the daily streamflow at Mary River from 1960 to 2017, for February. The vertical grey line is the mean value. Many large outliers exist, so the data near zero are all squashed together. Note: The values have been jittered in the vertical direction.", fig.align="center", out.width='100%', fig.width=9, fig.height=3}
 par(mfrow = c(1, 1))
 set.seed(183763286)
-stripchart(MR2$Mean[MR2$Month == "02"], 
+stripchart(MaryRiver$Mean[MaryRiver$Month == "02"], 
            main = "Dot plot of daily streamflow at\nMary Creek (Bell River) in Feb.",
            xlab = "Daily streamflow (in ML)",
            sub = "(From 01 October 1959 to 17 January 2019)",
@@ -1021,7 +1020,7 @@ abline( v = Mn[2,2],
 
 
 ```{r DailyStreamflowTab}
-out <- hist(MR2$Mean[MR2$Month == 2],
+out <- hist(MaryRiver$Mean[MaryRiver$Month == "02"],
             breaks = seq(0, 160000,
                          by = 20000),
             right = FALSE,
@@ -1981,7 +1980,7 @@ For the streamflow data at the Mary River (Table \@ref(tab:MRtable)), the Februa
 Constructing infrastructure to cope with the *median* streamflow would be inadequate
 :::
 
-<!-- > quantile( MR2$Mean[MR2$Month==2][ !is.na(MR2$Mean[MR2$Month==2])], probs=c(0.5, 0.9, 0.95, 0.99)) -->
+<!-- > quantile( MaryRiver$Mean[MaryRiver$Month==2][ !is.na(MaryRiver$Mean[MaryRiver$Month==2])], probs=c(0.5, 0.9, 0.95, 0.99)) -->
 <!--       50%       90%       95%       99%  -->
 <!--   146.060  1694.362  3480.261 19043.217  -->
 
@@ -2129,7 +2128,6 @@ More formally, *bell-shaped distributions are called normal distributions*.
 
 
 ```{r HusbandHistNormal, fig.cap="The heights of husbands have an approximate normal distribution", fig.align="center", fig.height=2.0, fig.width=6.5, out.width='100%'}
-
 data(HusbandWife)
 
 x <- hh <- HusbandWife$Hht/10

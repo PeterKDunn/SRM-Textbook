@@ -64,19 +64,12 @@ Here we will discuss weight *gain* as mentioned in the RQ.
 
 ```{r DataWeightChange2}
 data(StudentWt)
-SW <- StudentWt
 
-SW <- dplyr::select(SW,
-                    Student,
-                    Week1,
-                    Week12,
-                    GainWt)
-
-SWlen <- length(SW$Week1) 
+SWlen <- length(StudentWt$Week1) 
 
 if( knitr::is_latex_output() ) {
   
-  tb1 <- SW[1:5, ] 
+  tb1 <- StudentWt[1:5, ] 
   
   T1 <- knitr::kable(tb1,
                      format = "latex",
@@ -89,7 +82,7 @@ if( knitr::is_latex_output() ) {
                      booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) 
   
-  tb2 <- SW[(SWlen - 4):SWlen, ]
+  tb2 <- StudentWt[(SWlen - 4):SWlen, ]
   T2 <- knitr::kable(tb2,
                      format = "latex",
                      valign = 't',
@@ -111,7 +104,7 @@ if( knitr::is_latex_output() ) {
 }
 
 if( knitr::is_html_output() ) {
-  kable( SW,
+  kable( StudentWt,
          format = "html",
          booktabs = TRUE,
          longtable = FALSE,
@@ -412,18 +405,11 @@ We write:
 
 ```{r}
 data(Diabetes)
-diab <- Diabetes
 
-diab$Diff <- diab$SBPfirst - diab$SBPsecond
+Diabetes$Diff <- Diabetes$SBPfirst - Diabetes$SBPsecond
 
-n.D.diff <- length( diab$Diff ) - sum( is.na(diab$Diff) )
-se.D.diff <- sd(diab$Diff, na.rm = TRUE) / sqrt(n.D.diff)
-
-### REORDER
-#diab.names <- names(diab2)
-#diab <- diab2[ c(which( diab.names %in% c("id", "bp.1d", "bp.2d")) , 
-#                which( !(diab.names %in% c("id", "bp.1d", "bp.2d")) ) )]
-
+n.D.diff <- length( Diabetes$Diff ) - sum( is.na(Diabetes$Diff) )
+se.D.diff <- sd(Diabetes) / sqrt(n.D.diff)
 ```
 
 
@@ -460,10 +446,10 @@ from the first to second measurement.
 
 
 ```{r DiabetesDataTable2}
-DiffExists <- complete.cases(diab[, c("DBPfirst", 
+DiffExists <- complete.cases(diDiabetesab[, c("DBPfirst", 
                                       "DBPsecond", 
                                       "Diff")])
-diabData <- diab[DiffExists, c("DBPfirst", 
+diabData <- Diabetes[DiffExists, c("DBPfirst", 
                                "DBPfirst", 
                                "Diff")]
 
@@ -521,21 +507,21 @@ se.diab <- function(x) {
   sd(x, na.rm = TRUE) / sqrt(n.diab(x) )
 }
 
-Diab.Table[1, 1] <- mean(diab$bp.1d[DiffExists], na.rm = TRUE)
-Diab.Table[2, 1] <- mean(diab$bp.2d[DiffExists], na.rm = TRUE)
-Diab.Table[3, 1] <- mean(diab$Diff[DiffExists], na.rm = TRUE)
+Diab.Table[1, 1] <- mean(Diabetes$DBPfirst[DiffExists], na.rm = TRUE)
+Diab.Table[2, 1] <- mean(Diabetes$DBPsecond[DiffExists], na.rm = TRUE)
+Diab.Table[3, 1] <- mean(Diabetes$Diff[DiffExists], na.rm = TRUE)
 
-Diab.Table[1, 2] <- sd(diab$bp.1d[DiffExists], na.rm = TRUE)
-Diab.Table[2, 2] <- sd(diab$bp.2d[DiffExists], na.rm = TRUE)
-Diab.Table[3, 2] <- sd(diab$Diff[DiffExists], na.rm = TRUE)
+Diab.Table[1, 2] <- sd(Diabetes$DBPfirst[DiffExists], na.rm = TRUE)
+Diab.Table[2, 2] <- sd(Diabetes$DBPsecond[DiffExists], na.rm = TRUE)
+Diab.Table[3, 2] <- sd(Diabetes$Diff[DiffExists], na.rm = TRUE)
 
-Diab.Table[1, 3] <- se.diab(diab$bp.1d[DiffExists])
-Diab.Table[2, 3] <- se.diab(diab$bp.2d[DiffExists])
-Diab.Table[3, 3] <- se.diab(diab$Diff[DiffExists])
+Diab.Table[1, 3] <- se.diab(Diabetes$DBPfirst[DiffExists])
+Diab.Table[2, 3] <- se.diab(Diabetes$DBPsecond[DiffExists])
+Diab.Table[3, 3] <- se.diab(Diabetes$Diff[DiffExists])
 
-Diab.Table[1, 4] <- n.diab(diab$bp.1d[DiffExists])
-Diab.Table[2, 4] <- n.diab(diab$bp.2d[DiffExists])
-Diab.Table[3, 4] <- n.diab(diab$Diff[DiffExists])
+Diab.Table[1, 4] <- n.diab(Diabetes$DBPfirst[DiffExists])
+Diab.Table[2, 4] <- n.diab(Diabetes$DBPsecond[DiffExists])
+Diab.Table[3, 4] <- n.diab(Diabetes$Diff[DiffExists])
 
 rownames(Diab.Table) <- c("DBP: First visit", 
                           "DBP: Second visit", 
