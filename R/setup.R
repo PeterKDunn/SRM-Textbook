@@ -32,6 +32,30 @@ library("readr") # For "El Nino"
 options(formatR.arrow = TRUE,
         width = 90)
 
+# Environment defaults
+knitr::opts_chunk$set(fig.pos = "hbtp")   # Place tables HERE and so on
+
+
+# Chunk options: Options must all be on one line
+knitr::opts_chunk$set(
+  cache = TRUE, echo = FALSE, warning = FALSE, message = FALSE
+)
+
+# Set tables so that NA cells are not printed as NA, but left blank
+options(knitr.kable.NA = '')
+
+# knitr:::is_latex_output()
+# knitr:::is_html_output()
+# 
+# This example from: https://stackoverflow.com/questions/41745170/how-to-do-different-things-in-r-in-bookdown-if-output-is-html-or-latex
+# 
+# if( knitr:::is_latex_output() ) {
+#     xlatex ...
+# } else {
+#     DT...
+# }
+# 
+
 ### COLOURS
 someDefaultColoursTransparent <- viridis::viridis(8, 
                                                   alpha = 0.4)
@@ -134,27 +158,4 @@ makeTransparent <- function(someColor, alpha = 100){
   )
 }
 
-# Environment defaults
-knitr::opts_chunk$set(fig.pos = "hbtp")   # Place tables HERE and so on
-
-
-# Chunk options: Options must all be on one line
-knitr::opts_chunk$set(
-  cache = TRUE, echo = FALSE, warning = FALSE, message = FALSE
-)
-
-# Set tables so that NA cells are not printed as NA, but left blank
-options(knitr.kable.NA = '')
-
-# knitr:::is_latex_output()
-# knitr:::is_html_output()
-# 
-# This example from: https://stackoverflow.com/questions/41745170/how-to-do-different-things-in-r-in-bookdown-if-output-is-html-or-latex
-# 
-# if( knitr:::is_latex_output() ) {
-#     xlatex ...
-# } else {
-#     DT...
-# }
-# 
 
