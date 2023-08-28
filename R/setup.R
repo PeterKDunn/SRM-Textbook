@@ -1,3 +1,4 @@
+library("SRMData")    # Textbook data files: install.packages("~/Documents/Git-Projects/SRMData_0.1.0.tar.gz", repos=NULL)
 library("kableExtra")  # For tables
 library("oz")          # For Australia maps in graphics chapter
 library("ggplot2")     # Used for plots of Australia
@@ -18,7 +19,6 @@ library("dplyr")
 library("webexercises") # For inline exercises
 library("gifski") # Trying for animations: https://bookdown.org/yihui/rmarkdown-cookbook/animation.html
 library("plotfunctions") # For adding images (e.g. icons) to diagrams
-library("GLMsData")
 library("MASS")
 library("cowplot")
 library("dygraphs")
@@ -38,23 +38,13 @@ knitr::opts_chunk$set(fig.pos = "hbtp")   # Place tables HERE and so on
 
 # Chunk options: Options must all be on one line
 knitr::opts_chunk$set(
-  cache = TRUE, echo = FALSE, warning = FALSE, message = FALSE
+  cache = FALSE, echo = FALSE, warning = FALSE, message = FALSE
 )
 
 # Set tables so that NA cells are not printed as NA, but left blank
 options(knitr.kable.NA = '')
 
-# knitr:::is_latex_output()
-# knitr:::is_html_output()
-# 
-# This example from: https://stackoverflow.com/questions/41745170/how-to-do-different-things-in-r-in-bookdown-if-output-is-html-or-latex
-# 
-# if( knitr:::is_latex_output() ) {
-#     xlatex ...
-# } else {
-#     DT...
-# }
-# 
+
 
 ### COLOURS
 someDefaultColoursTransparent <- viridis::viridis(8, 
@@ -89,6 +79,8 @@ BlockColour <- rgb(253, 245, 187, ### FIX!
 
 
 
+# TEST COLOURS:
+#
 # plot( x = c(0, 1.6),
 #       y = c(0, 1) )
 # polygon( x = c(0, 0, 0.2, 0.2),
@@ -117,7 +109,7 @@ BlockColour <- rgb(253, 245, 187, ### FIX!
 #          col = BlockColourTransparent)
 
 
-### OTHER COOURS
+### OTHER COLOURS
 blueSolid <- rgb(214, 215, 252, 
                  maxColorValue = 256)
 plotSolid <- blueSolid
@@ -157,5 +149,3 @@ makeTransparent <- function(someColor, alpha = 100){
         }
   )
 }
-
-
