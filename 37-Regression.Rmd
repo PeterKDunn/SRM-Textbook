@@ -851,7 +851,7 @@ or $-0.34790 \pm 0.093344$, equivalent to $-0.441$ to $-0.255$ patients per day.
 
 
 ```{r EDScatterjamovi, fig.align = "center", fig.cap = "The number of emergency department patients, and the number of days since distribution of welfare. Left: scatterplot; right: jamovi output.", fig.width=5, fig.height=3.5, out.width=c("45%", "54%"), fig.show="hold"}
-EDpatients <- read.csv("Data/EDpatients.csv")
+data(EDpatients)
 
 plot( ED ~ Days,
       data = EDpatients,
@@ -1061,7 +1061,7 @@ The CI (Example \@ref(exm:EDpatientsCI)) and the test (Example \@ref(exm:EDpatie
 ## Example: obstructive sleep apnoea {#Apnoea}
 
 ```{r}
-OSA <- OSAoriginal <- read.csv("Data/OSA.csv")
+OSAoriginal <- data(OSA)
 OSA <- OSA[ -c(1, 7) ] # Remove ID (col1 ) and SAOS (col 6)
 OSA$Gender <- factor(OSA$Gender, 
                      levels = 1:2, 
@@ -1230,10 +1230,10 @@ We can write:
 
 
 ```{r RegressionRemovalEfficiency, fig.cap="The relationship between removal efficiency and inlet temperature", fig.align="center", fig.width=5, fig.height=3.5}
-RE <- read.csv("Data/Removal.csv")
+data(Removal)
 
 plot(Removal ~ Temp, 
-     data = RE,
+     data = Removal,
      xlab = "Temperature (degrees C)",
      ylab = "Removal efficiency (%)",
      pch = 19,
@@ -1377,14 +1377,14 @@ A study [@amin2019robust] of gas engines measured the throttle angle ($x$) and t
 :::
 
 
-```{r}
-TA <- read.csv("Data/Throttle.csv")
-```
 
 ```{r ThrottleAngle, fig.cap="Manifold air pressure plotted against throttle angle for an internal-combustion gas engine", fig.align="center", fig.width=5, fig.height=3.5}
 
 par(mar = c(5.1, 5.1, 4.1, 2.1))
-plot(TA, 
+
+data(Throttle)
+
+plot(Throttle, 
      pch = 19, 
      xlab = "Throttle angle (degrees)", 
      ylab = "Manifold air pressure\n(as fraction of the max.)", 
@@ -1394,7 +1394,7 @@ plot(TA,
 par(mar = c(5.1, 4.1, 4.1, 2.1))
 
 TAlm <- lm(MAPvalue ~ ThrottleAngle, 
-           data = TA)
+           data = Throttle)
 abline(coef(TAlm), 
        lwd = 2, 
        col = "grey")
@@ -1417,10 +1417,10 @@ A study (@MyersRegression, p. 75) of American footballers measured the right-leg
 
 
 ```{r PuntPlot, fig.align="center", fig.cap="Punting distance and right leg strength", fig.width=4, fig.height=3.5, out.width=c("45%", "50%"), fig.show="hold"}
-punting <- read.csv("Data/Punting.csv")
+data(Punting)
 
 plot(Punt ~ Right, 
-     data = punting,
+     data = Punting,
      las = 1,
      xlab = "Right leg strength (in pounds)",
      ylab = "Punting distance (in feet)",
@@ -1429,7 +1429,7 @@ plot(Punt ~ Right,
      ylim = c(100, 200)
 )
 abline( coef( Punt.lm <- lm( Punt ~ Right, 
-                             data = punting)), 
+                             data = Punting)), 
         lwd = 2, 
         col = "grey")
 
@@ -1453,7 +1453,7 @@ knitr::include_graphics("jamovi/Gorillas/GorillasRegression-jamovi.png")
 
 
 ```{r}
-Bit <- read.csv("Data/Bitumen.csv")
+data(Bitumen)
 ```
 
 
@@ -1474,7 +1474,7 @@ Use the software output (Fig. \@ref(fig:Bitumenjamovi)) to answer these question
 
 ```{r BitumenPlotReg, fig.cap="Air voids in bitumen samples", fig.align="center", fig.width=5, fig.height=3.5}
 plot(AirVoids ~ Bitumen, 
-     data = Bit,
+     data = Bitumen,
      pch = 19,
      xlab = "Actual bitumen content\nby weight (%)",
      ylab = "Air voids by volume (%)",
@@ -1486,7 +1486,8 @@ plot(AirVoids ~ Bitumen,
 
 
 ```{r BitumenOutputR, results='hide'}
-Bitumen.lm <- lm( AirVoids ~ Bitumen, data=Bit)
+Bitumen.lm <- lm( AirVoids ~ Bitumen, 
+                  data = Bitumen)
 
 if( knitr::is_latex_output() ) {
   kable(summary(Bitumen.lm)$coefficient,

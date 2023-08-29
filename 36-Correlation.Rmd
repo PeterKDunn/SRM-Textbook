@@ -121,12 +121,12 @@ A correlation coefficient is not suitable for describing the relationship.
 :::
 
 ```{r SanddollarsPlot, fig.cap="Water temperature vs fertilization rates for sand dollars. Left: a linear relationship; right: a curved relationship", fig.align="center", fig.width=8, fig.height=3.25, out.width='90%'}
-
 par(mfrow = c(1, 2))
 
-SD <- read.csv("Data/Sanddollars.csv")
+data(Sanddollars)
 
-SDsub <- subset(SD, SD.temperatures < 35)
+SDsub <- subset(Sanddollars, 
+                Sanddollars$SD.temperatures < 35)
 
 plot( SDsub$SD.temperatures, SDsub$SD.fertilization,
       pch = 19,
@@ -184,7 +184,7 @@ The value is about halfway between $r = 0$ and $r = -1$, so the relationship may
 :::
 
 
-::: {.example #LimeCor name="Correlation coefficients"}
+::: {.example #LungCapCor name="Correlation coefficients"}
 Consider the scatterplot in Fig. \@ref(fig:FEVscatter2), from a study [@data:Tager:FEV; @BIB:data:FEV] of lung capacity of children in Boston (using the forced expiratory volume, FEV).
 The plot is not linear, so a correlation coefficient is inappropriate.
 
@@ -266,7 +266,8 @@ Realistically, the best you can probably do is 'a reasonably high positive $r$ v
 
 
 ```{r PeasScatter, fig.cap="The relationship between some minerals in pea seeds", fig.align="center", fig.width=8, fig.height=3.25, out.width='90%'}
-Peas <- read.csv("Data/Peas.csv")
+data(Peas)
+
 par( mfrow = c(1, 2))
 
 plot( K ~ P,
@@ -553,14 +554,11 @@ The test in Sect. \@ref(CorrelationTesting) will be statistically valid.
 
 
 ::: {.example #StatisticalValidityBiomass name="Statistical validity"}
-The scatterplot in Example \@ref(exm:LimeCor), for the foliage biomass of lime trees, shows that the relationship is non-linear.
+The scatterplot in Fig. \@ref(fig:LimeTreesScatter), for the foliage biomass of lime trees, shows that the relationship is non-linear.
 A correlation coefficient is not appropriate, so a hypothesis tests about $r$ is inappropriate.
 :::
 
 
-```{r}
-dogs <- read.csv("Data/Dogs.csv")
-```
 
 ::: {.example #CorTestDogs name="Phu Quoc ridgeback dogs"}
 A study of Phu Quoc Ridgeback dogs (*Canis familiaris*) recorded many measurements of the dogs, including body length and body height [@quan2017relation].
@@ -586,8 +584,10 @@ Since (a) the relationship is approximately linear; (b) the variation in heights
 
 
 ```{r DogsScatter, fig.align = "center", fig.cap = "Phu Quoc ridgeback dogs: Left: a scatterplot of the body height vs body length; right: jamovi output", fig.width=5, fig.height=3.25, out.width=c("55%", "5%", "35%"), fig.show="hold"}
+data(Dogs)
+
 plot( jitter(BL) ~ jitter(BH),
-      data = dogs,
+      data = Dogs,
       xlab = "Body length (in cm)",
       ylab = "Body height (in cm)",
       main = "Body height vs body length\nfor Phu Quoc ridgeback dogs",
@@ -640,10 +640,10 @@ This means that about 79.4% of the variation in removal efficiency can be explai
 
 
 ```{r CorrelationRemovalEfficiency, fig.cap="The relationship between removal efficiency and inlet temperature", fig.align="center", fig.width=5, fig.height=3.5}
-RE <- read.csv("Data/Removal.csv")
+data(Removal)
 
 plot(Removal ~ Temp, 
-     data = RE,
+     data = Removal,
      main = "Removal efficiency",
      xlab = "Temperature (degrees C)",
      ylab = "Removal efficiency (%)",
@@ -771,10 +771,10 @@ Use the jamovi output (Fig. \@ref(fig:PuntPlotCor), left panel) to answer tyhese
 \begin{minipage}{0.45\textwidth}%
 \centering%
 ```{r PuntPlotCor2, results='hide', fig.width=4, fig.height = 3.5, out.width='90%'}
-punting <- read.csv("Data/Punting.csv")
+data(Punting)
 
 plot(Punt ~ Right, 
-     data = punting,
+     data = Punting,
      las = 1,
      xlab = "Right leg strength (in pounds)",
      ylab = "Punting distance (in feet",
@@ -784,7 +784,8 @@ plot(Punt ~ Right,
 )
 abline( 
   coef( 
-    Punt.lm <- lm( Punt ~ Right, data = punting)), 
+    Punt.lm <- lm( Punt ~ Right, 
+                   data = Punting)), 
   lwd = 2, 
   col = "grey")
 ```
@@ -801,8 +802,8 @@ knitr::include_graphics("jamovi/Punting/Punting-Correlation.png")
 
 
 ```{r PuntOutputRCor, results='hide'}
-data(Punting)
-with( Punting, cor.test(Punt, Right))
+with(Punting, 
+     cor.test(Punt, Right))
 ```
 
 
@@ -878,10 +879,10 @@ abline( coef( lm(Time ~ Cases,
 
 ###
 
-Bit <- read.csv("Data/Bitumen.csv")
+data(Bitumen)
 
 plot(AirVoids ~ Bitumen, 
-     data = Bit,
+     data = Bitumen,
      pch = 19,
      xlab = "Bitumen content by weight (%)",
      ylab = "Air voids by volume (%)",
@@ -900,10 +901,10 @@ A scatterplot of the data and the jamovi output are shown in Fig. \@ref(fig:Poss
 :::
 
 ```{r PossumsScatterjamovi, fig.cap="The relationship between weight of possums and the elevation of their location. Left: scatterplot; right: jamovi output", fig.align="center", fig.width=5, fig.height=3.5, out.width=c("50%", "45%"), fig.show="hold"}
-PS <- read.csv("Data/Possums.csv")
+data(Possums)
 
 plot(Wgt ~ DEM, 
-     data = subset(PS, Sex=="Male"),
+     data = subset(Possums, Sex=="Male"),
      xlab = "Elevation (in m)",
      ylab = "Body weight (in g)",
      main = "Body weight and elevation\nfor male Leadbeaters possums",
@@ -946,7 +947,7 @@ The scatterplot from 16 different soil samples from Assam, India, is shown in  F
 
 
 ```{r SoilPlotCor, fig.cap="The relationship between CBR and PI in sixteen soil samples", fig.align="center", fig.width=5, fig.height=3.5}
-Soils <- read.csv("Data/Soils.csv")
+data(Soils)
 
 plot(CBR ~ PI, 
      data = Soils,
