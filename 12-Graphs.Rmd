@@ -3675,63 +3675,116 @@ Furthermore, males have higher incidence of amputation than females in every jur
 :::
 
 
-```{r AmputationAustralia, fig.cap="Age-adjusted incidence of lower limb amputations in Australia, from August 2007 to December 2011: females (left) and males (right). Numbers are incidents per 100 000.",fig.width=10, fig.height=3, out.width='99%'}
-ozdata <- read.csv("Data/ozdata.csv")
+```{r AmputationAustralia, fig.cap="Age-adjusted incidence of lower limb amputations in Australia, from August 2007 to December 2011: females (left) and males (right). Numbers are incidents per 100 000.",fig.width=11, fig.height=5, out.width='99%'}
+library(ozmaps)
 
-require(gridExtra)
+colList <- viridis::viridis(6)[3:6]
 
-ozdata$Females <- ifelse(ozdata$state == "NT", 
-                         "55 to 75", 
-    			               "15 to 35")
-ozdata$Males <- ifelse(ozdata$state == "NT", 
-                       "95 to 115", 
-		                   "35 to 55")
+colF <- rep( colList[1], 9)
+colF[7] <- colList[3]  # NT
+colM <- rep( colList[2], 9)
+colM[7] <- colList[4]  # NT
 
-plotA <- ggplot() + geom_polygon(data = ozdata, 
-                         aes(x = long, 
-			                       y = lat, 
-			                       group = group, 
-			                       fill = Females) ) + 
-  xlab("Longitude") + 
-  ylab("Latitude") +
-  coord_equal() +
-  theme_light() +
-  ggtitle("Limb amputations: Females") +
-  annotate("text", x = 133, y = -20, label = "NT", col = grey(0.4)) +
-  annotate("text", x = 145, y = -22, label = "Qld", col = grey(0.4)) +
-  annotate("text", x = 121, y = -25, label = "WA", col = grey(0.4)) +
-  annotate("text", x = 150, y = -31, label = "NSW", col = grey(0.4)) +
-  annotate("text", x = 145, y = -36, label = "Vic", col = grey(0.4)) +
-  annotate("text", x = 150, y = -43, label = "Tas", col = grey(0.4)) +
-  annotate("text", x = 133, y = -29, label = "SA", col = grey(0.4)) +
-  scale_fill_manual(values = c("wheat", 
-                               "orange"))
+par( mfrow = c(1, 2),
+     mar = c(3, 3, 4, 0.5))
 
 
-plotB <- ggplot() + geom_polygon(data = ozdata, 
-                         aes(x = long, 
- 			                       y = lat, 
-			                       group = group, 
-			                       fill = Males) ) + 
-  xlab("Longitude") + 
-  ylab("Latitude") +
-  coord_equal() +
-  theme_light() +
-  ggtitle("Limb amputations: Males") +
-  annotate("text", x = 133, y = -20, label = "NT", col = grey(0.4)) +
-  annotate("text", x = 145, y = -22, label = "Qld", col = grey(0.4)) +
-  annotate("text", x = 121, y = -25, label = "WA", col = grey(0.4)) +
-  annotate("text", x = 150, y = -31, label = "NSW", col = grey(0.4)) +
-  annotate("text", x = 145, y = -36, label = "Vic", col = grey(0.4)) +
-  annotate("text", x = 150, y = -43, label = "Tas", col = grey(0.4)) +
-  annotate("text", x = 133, y = -29, label = "SA", col = grey(0.4)) +
-  scale_fill_manual(values = c("gold", 
-                               plot.colour))
+# FEMALES
+ozmap(x = "states",
+      xlim = c(110, 155),
+      ylim = c(-45, -5),
+      main = "Limb amputations per 100,000:\nFemales",
+      las = 1,
+      xlab = "Longitude",
+      ylab = "Latitude",
+      col = colF)
+box()
+axis(side = 1)
+axis(side = 2, 
+     las = 1)
 
+text(x = 133,
+     y = -20,
+     labels = "NT",
+     col = grey(0.9))
+text(x = 143, 
+     y = -22, 
+     labels = "Qld",
+     col = grey(0.9))
+text(x = 121, 
+     y = -25, 
+     labels = "WA",
+     col = grey(0.9))
+text(x = 147,
+     y = -32,
+     labels = "NSW",
+     col = grey(0.9))
+text(x = 143,
+     y = -37,
+     labels = "Vic",
+     col = grey(0.9))
+text(x = 151, 
+    y = -44, 
+    labels = "Tas", 
+    col = grey(0))
+text(x = 134, 
+    y = -29, 
+    labels = "SA", 
+    col = grey(0.9))
+legend("top",
+       fill = colList,
+       horiz = TRUE,
+       bty = "n",
+       legend = c("15 to 35", "35 to 55", "55 to 75", "95 to 115"))
 
-grid.arrange(plotA, 
-             plotB, 
-             ncol = 2)
+# MALES
+ozmap(x = "states", 
+      xlim = c(110, 155),
+      ylim =  c(-45, -5),
+      main ="Limb amputations per 100,000:\nMales",
+      las = 1,
+      xlab = "Longitude",
+      ylab = "Latitude",
+      col = colM)
+box()
+axis(side = 1)
+axis(side = 2, 
+     las = 1)
+
+text(x = 133,
+     y = -20,
+     labels = "NT",
+     col = grey(0))
+text(x = 143, 
+     y = -22, 
+     labels = "Qld",
+     col = grey(0.9))
+text(x = 121, 
+     y = -25, 
+     labels = "WA",
+     col = grey(0.9))
+text(x = 147,
+     y = -32,
+     labels = "NSW",
+     col = grey(0.9))
+text(x = 143,
+     y = -37,
+     labels = "Vic",
+     col = grey(0.9))
+text(x = 151, 
+    y = -44, 
+    labels = "Tas", 
+    col = grey(0))
+text(x = 134, 
+    y = -29, 
+    labels = "SA", 
+    col = grey(0.9))
+legend("top",
+       fill = colList,
+       horiz = TRUE,
+       bty = "n",
+       legend = c("15 to 35", "35 to 55", "55 to 75", "95 to 115"))
+
 ```
 
 

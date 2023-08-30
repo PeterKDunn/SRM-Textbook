@@ -1,12 +1,11 @@
-library("SRMData")    # Textbook data files: install.packages("~/Documents/Git-Projects/SRMData_0.1.0.tar.gz", repos=NULL)
+library("SRMData")     # Textbook data files: install.packages("~/Documents/Git-Projects/SRMData_0.1.0.tar.gz", repos=NULL)
 library("kableExtra")  # For tables
-library("oz")          # For Australia maps in graphics chapter
-library("ggplot2")     # Used for plots of Australia
-library("NHANES")      # or NHANES data
+library("ozmaps")      # For Australia maps in graphics chapter
+library("NHANES")      # For NHANES data
 library("knitr")
-library("diagram")     # TRYING this for diagrams
+library("diagram")     # For diagrams
 library("DT")          # For displaying tables
-library("webshot")     # screen shot of HTML animations
+library("webshot")     # For screen shot of HTML animations
 library("plot3D")
 library("latticeExtra")
 library("leaflet")
