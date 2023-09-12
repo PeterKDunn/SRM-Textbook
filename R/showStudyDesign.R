@@ -98,8 +98,21 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                             na.rm = TRUE ) )     # Population
   
   ### BACKGROUND, designating what researchers control
-  # We do the calculations wheter the research-control info is meeded or not, 
+  # We do the calculations whether the research-control info is needed or not, 
   # as sometimes  left  and  right  etc are used later
+  if (studyType == "TrueExp") text(x = mean( c(pos[8, 1], pos[1, 1] ) ),
+                                   y = 0.5,
+                                   labels = "By researchers",
+                                   col = "grey",
+                                   srt = 90,
+                                   cex = 1.65)
+  if (studyType != "Obs") text(x = mean( c(pos[1, 1], pos[4, 1]) ),
+                                   y = 0.5,
+                                   labels = "By researchers",
+                                   col = "grey",
+                                   srt = 90,
+                                   cex = 1.65)
+  
   if (studyType == "TrueExp") {
     top <- 0.99
     left <- pos[8, 1]
@@ -118,15 +131,15 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     #    right <- 0.7
     #    bottom <- 0.25
   }
-  if (addResearcherControl){
-    
-    if ( studyType != "Obs") { 
-      polygon( x = c(left, right, right, left),
-               y = c(top,  top, bottom, bottom),
-               border = NA,
-               col = viridis::viridis(10, alpha = 0.10)[1])
-    }  
-  }
+  # if (addResearcherControl){
+  #   
+  #   if ( studyType != "Obs") { 
+  #     polygon( x = c(left, right, right, left),
+  #              y = c(top,  top, bottom, bottom),
+  #              border = NA,
+  #              col = viridis::viridis(10, alpha = 0.10)[1])
+  #   }  
+  # }
   
   ### COMPARISON ARROW
   # Need "thick" arrow
@@ -156,45 +169,70 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   ### ARROWS next, so boxes overplot
   # Arrows from "Individuals" to the groups
   if (addIndividuals) {   
-    diagram::straightarrow(from = pos[8, ], # Individuals to Group i
-                           to = pos[1, ], 
-                           lcol = ifelse(studyType == "TrueExp", "black", "grey"),
-                           lty = ifelse(studyType == "TrueExp", 1, 2), 
-                           lwd = 2)
-    diagram::straightarrow(from = pos[8, ], # Individuals to Group i
+    diagram::bentarrow(from = pos[8, ], # Individuals to Group 1
+                       to = pos[1, ], 
+                       path = "V",
+                       lcol = ifelse(studyType == "TrueExp", "black", "grey"),
+                       lty = ifelse(studyType == "TrueExp", 1, 2), 
+                       arr.type = ifelse(studyType == "TrueExp", "curved", "none"),
+                       lwd = 2)
+    
+    diagram::bentarrow(from = pos[8, ], # Individuals to Group 2
                            to = pos[2, ], 
-                           lcol = ifelse(studyType == "TrueExp", "black", "grey"),
+                       path = "V",
+                       lcol = ifelse(studyType == "TrueExp", "black", "grey"),
                            lty = ifelse(studyType == "TrueExp", 1, 2),  
+                           arr.type = ifelse(studyType == "TrueExp", "curved", "none"),
                            lwd = 2)
     if (length(addGroupNames) == 3) {
-      diagram::straightarrow(from = pos[8, ], # Individuals to Group i
+      diagram::bentarrow(from = pos[8, ], # Individuals to Group 3
                              to = pos[3, ], 
+                             path = "V",
                              lcol = ifelse(studyType == "TrueExp", "black", "grey"),
                              lty = ifelse(studyType == "TrueExp", 1, 2),  
+                             arr.type = ifelse(studyType == "TrueExp", "curved", "none"),
                              lwd = 2)
     }
-    diagram::straightarrow(from = pos[8, ], # Individuals to Group i
-                           to = pos[2, ], 
-                           lcol = ifelse(studyType == "TrueExp", "black", "grey"),
-                           lty = ifelse(studyType == "TrueExp", 1, 2),  
-                           lwd = 2)
   }
   
   # Arrows from groups to treatments
-  if ( studyType == "Obs" ) { # For "Obs", arrows are grey and dashed
+  if ( studyType == "Obs" ) { # For "Obs", arrows are double arrows, are grey and dashed
+    diagram::straightarrow(to = pos[4, ], # Group 1 to Treatment 1
+                           from = pos[1, ], 
+                           lcol = "grey",
+                           segment = c(0.60, 0.70), # To get just the arrow
+                           arr.pos = 0.65,
+                           lty = 2)
     diagram::straightarrow(from = pos[4, ], # Group 1 to Treatment 1
                            to = pos[1, ], 
                            lcol = "grey",
+                           arr.pos = 0.65,
+                           lty = 2)
+
+    diagram::straightarrow(to = pos[5, ],  # Group 2 to Treatment 2
+                           from = pos[2, ], 
+                           arr.col = "grey",
+                           lcol = "grey", # Two sets of dashed lines often pverlap; make first white
+                           segment = c(0.60, 0.70), # To get just the arrow
+                           arr.pos = 0.65,
                            lty = 2)
     diagram::straightarrow(from = pos[5, ],  # Group 2 to Treatment 2
                            to = pos[2, ], 
                            lcol = "grey",
+                           arr.pos = 0.65,
                            lty = 2)
     
     if (length(addGroupNames) == 3) {
+      diagram::straightarrow(to = pos[6, ],  # Group 3 to Treatment 3
+                             from = pos[3, ], 
+                             arr.col = "grey",
+                             arr.pos = 0.65,
+                             segment = c(0.60, 0.70), # To get just the arrow
+                             lty = 2)
       diagram::straightarrow(from = pos[6, ],  # Group 3 to Treatment 3
                              to = pos[3, ], 
                              lcol = "grey",
+                             arr.pos = 0.65,
                              lty = 2)
     }
   } else { # studyType is  "QuasiExp" or "TrueExp"
@@ -247,7 +285,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                      shadow.size = 0,
                      lcol = GroupColour,
                      box.col = GroupColour)
-  diagram::textrect( pos[2, ], 
+   diagram::textrect( pos[2, ], 
                      lab = addGroupNames[2], 
                      radx = 0.075,
                      rady = 0.07,
@@ -398,22 +436,6 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
 #        label = ifelse(studyType == "Obs", "Conditions", "Treatments"))
 
   
-  # Add the "Controlled by researchers" text
-  if (studyType == "Obs") {
-    
-    # Decided to print nothing in this case
-    
-  } else { # TrueExp and QuasiExp
-    if ( !addThirdParty & !addInternalValidityText) {
-      text( x = mean( c(left, right) ), 
-            y = 0.925, # Mean of the top and bottom of the "Controlled by researchers" box
-            cex = 1.05,
-            font = 2, # BOLD
-            label = "Controlled by researchers")
-    }
-  }
-  
-  
   ### ADD RANDOM ALLOCATION TEXT
   if (addRandomAllocationText){
     diagram::textrect( c( mean( pos[ c(1, 4), 1] ), 
@@ -546,3 +568,4 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
          labels = "Allocated by\n researchers")
   }
 }
+
