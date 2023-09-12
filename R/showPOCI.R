@@ -54,7 +54,7 @@ showPOCI <- function(addC = ifelse(addI, TRUE, FALSE), # Always have PO; add C?
     diagram::curvedarrow(from = pos[4, ], # From I to Explanatory
                          to = pos[6, ], 
                          lcol = "grey",
-                         curve = -0.35,
+                         curve = -0.38,
                          #segment = c(0.25, 0.75),
                          lty = 2)
   }
