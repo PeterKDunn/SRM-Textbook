@@ -37,7 +37,19 @@ showSampleSRS <- function(sizeHorizontal = 21,
     
     sample.cex <- rep(1, length = populationSize)
     sample.cex[selected[1:i]] <- 1.3
+
+    # Some labels    
+    mtext( paste("Total number of students: ", populationSize, sep = ""), 
+           side = 3, 
+           cex = 0.8,
+           at = sizeHorizontal / 2)
+
+    mtext(paste("Select", sampleSize, "students"),   
+          side = 1, 
+          cex = 0.8,
+          at = sizeHorizontal / 2)
     
+    # Add points/students
     points( expand.grid(1:sizeHorizontal, 1:sizeVertical), 
             pch = sample.pch, 
             col = sample.col,
