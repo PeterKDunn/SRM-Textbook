@@ -2,6 +2,7 @@ showSampleSystematic <- function(sizeHorizontal = 21,
                                  sizeVertical = 21,
                                  sampleSize = 40,
                                  static = TRUE,
+                                 start = NA,
                                  plotDark = "blue",
                                  seed = 91827391){ 
   set.seed(seed)
@@ -11,10 +12,11 @@ showSampleSystematic <- function(sizeHorizontal = 21,
   
   jump <- floor(sizeHorizontal * sizeVertical / sampleSize)
   
-  selected <- seq(1, sizeHorizontal * sizeVertical, 
+  # Start value may be given (`start`), but start somewhere at random, unless given
+  if ( is.na(start)) start <- sample(1:jump, size = 1) # Select a starting place
+
+  selected <- seq(start, sizeHorizontal * sizeVertical, # Start at the value `start`
                   by = jump)
-  # But also start somewhere at random:
-  selected <- selected + sample(1 : jump, 1)
 
   if (static) { # If TRUE: Then no animation (i.e, pdf)}
     startLoop <- sampleSize
@@ -42,6 +44,21 @@ showSampleSystematic <- function(sizeHorizontal = 21,
     sample.cex <- rep(1, length = populationSize)
     sample.cex[selected[1:i]] <- 1.3
     
+    # Some labels    
+    mtext( paste("Total number of students: ", populationSize, sep = ""), 
+           side = 3, 
+           cex = 0.8,
+           at = sizeHorizontal / 2)
+    ordinal <- "th"
+    if (start == 2) ordinal <- "nd"
+    if (start == 3) ordinal <- "rd"
+    
+    mtext(paste0("Select ", sampleSize, " students, starting with the ", start, ordinal, " student"),   
+          side = 1, 
+          cex = 0.8,
+          at = sizeHorizontal / 2)
+
+    # Add points/students    
     points( expand.grid(1:sizeHorizontal, 1:sizeVertical), 
             pch = sample.pch, 
             col = sample.col,
