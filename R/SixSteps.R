@@ -1,7 +1,11 @@
 
 
 # Define the six steps to use repeatedly
-SixSteps <- function( Flag=NA, Text=NA, Labs="Long", Arrows=TRUE, seed=NA, ...){
+SixSteps <- function( Flag = NA, 
+                      Text = NA, 
+                      Labs = "Long", 
+                      Arrows = TRUE, 
+                      seed = NA, ...){
   # FLAG is the box flagged for adding additional text.
   # We count from the top down, so Flag=1 corresponds to Step 1: Ask
   #
@@ -9,9 +13,6 @@ SixSteps <- function( Flag=NA, Text=NA, Labs="Long", Arrows=TRUE, seed=NA, ...){
   #
   # if seed is NA (=the defaut), the items are labelled in the correct order.
   # Otherwise, the seed is used to generate the labels in a random order
-  
-  
-  
   
   
   # Colours
@@ -24,8 +25,6 @@ SixSteps <- function( Flag=NA, Text=NA, Labs="Long", Arrows=TRUE, seed=NA, ...){
   #  col.Default <- blueTransparent 
   
   
-  
-  
   BoxWidth <- 1      # Width of a box
   BoxHeight <- 0.4  # Height of a standard box (one line of text)
   BoxGap <- 0.4     # Gap *between* boxed
@@ -35,7 +34,7 @@ SixSteps <- function( Flag=NA, Text=NA, Labs="Long", Arrows=TRUE, seed=NA, ...){
     "Ask~the~question",
     "Design~the~study",
     "Collect~the~data",
-    "Describe~and~summarise~the~data",
+    "Describe*','~summarise~the~data",
     "Analyse~the~data",
     "Report~the~results")
   
@@ -64,15 +63,13 @@ SixSteps <- function( Flag=NA, Text=NA, Labs="Long", Arrows=TRUE, seed=NA, ...){
   }
   
   # To use  Text  in expressions, we need to replace the spaces with tildes
-  library(stringr)
-  #if (!is.na(Text)) Text <- str_replace_all(Text," ", "~")
   if (is.na(Flag) ) Flag <- 0
   
-  
-  # Some fooling about to make the main step in bold.
+
+    # Some fooling about to make the main step in bold.
   if ( !(Labs=="None")){ # So if we are adding labels...
     for (j in (1:6)){    # Treat each step in the six-step process one at a time..
-      Labels[j] <- paste("expression(bold(", Labels[j], "))", sep="")
+      Labels[j] <- paste( "expression(bold(", Labels[j],"))")
     }
   }
   
@@ -104,7 +101,12 @@ SixSteps <- function( Flag=NA, Text=NA, Labs="Long", Arrows=TRUE, seed=NA, ...){
   }
   
   
-  DrawBox <- function(Box.TCorner, Box.BCorner, BoxW=BoxWidth, which.box, flag=FALSE, Locations=Locations){
+  DrawBox <- function(Box.TCorner, 
+                      Box.BCorner, 
+                      BoxW = BoxWidth, 
+                      which.box, 
+                      flag = FALSE, 
+                      Locations = Locations){
     
     polygon( c(-BoxW/2, BoxW/2, BoxW/2, -BoxW/2),
              c(Box.TCorner, Box.TCorner, Box.BCorner, Box.BCorner),
@@ -139,6 +141,7 @@ SixSteps <- function( Flag=NA, Text=NA, Labs="Long", Arrows=TRUE, seed=NA, ...){
     text.col <- grey(0.3)
     if (i == Flag ) text.col <- "black"
     text.string <- paste("text(0, Text.StepsLocation.Thisone, ", Labels[i], ", col=text.col)")
+   # cat(text.string,"  |. <<<\n")
     eval( parse(text = text.string))
     #    text(0, Loc, rev(Labels)[i])
   }
@@ -149,3 +152,4 @@ SixSteps <- function( Flag=NA, Text=NA, Labs="Long", Arrows=TRUE, seed=NA, ...){
   
 }
 
+#SixSteps(4)
