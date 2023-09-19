@@ -89,7 +89,7 @@ showSampleMultistage <- function(sizeHorizontal = 21,
     }
     mtext(paste("Selected classes:", paste( sort(selectedTutorials), collapse = ", ")),
           side = 1,
-          cex = 0.9,
+          cex = 0.8,
           at = (1 + maxTutorial) / 2 )
   } else { #################################### NOT STATIC (static = FALSE)
     # Step 1
