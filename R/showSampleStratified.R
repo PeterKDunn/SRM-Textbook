@@ -48,11 +48,11 @@ showSampleStratified <- function(sizeHorizontal = 21,
            lwd = 2) # LEFT: Females: RIGHT: Males
     mtext( paste("Total females: ", populationSizeFemales, sep = ""), 
            side = 3, 
-           cex = 0.9,
+           cex = 0.8,
            at = separation / 2)
     mtext(paste("Select", sampleA,"females"),   
           side = 1, 
-          cex = 0.9,
+          cex = 0.8,
           at = separation / 2)
     
     abline(v = separation, 
@@ -60,12 +60,12 @@ showSampleStratified <- function(sizeHorizontal = 21,
            lwd = 2) # LEFT: Females: RIGHT: Males
     mtext( paste("Total males: ",  populationSizeMales, sep = ""), 
            side = 3, 
-           cex = 0.9,
+           cex = 0.8,
            at = separation + (sizeHorizontal - separation) / 2)
     
     mtext(paste("Select", sampleB, "males"),   
           side = 1, 
-          cex = 0.9,
+          cex = 0.8,
           at = separation + (sizeHorizontal - separation) / 2) + 0.05
     
     points( expand.grid(1:numA, 
