@@ -6,7 +6,7 @@ showSampleMultistage <- function(sizeHorizontal = 21,
                                  static = TRUE, 
                                  plotDark = "blue",
                                  main = "Multistage sampling",
-                                 seed = 9182391){ 
+                                 seed = 918239){ 
   
   set.seed(seed)
   
@@ -43,6 +43,18 @@ showSampleMultistage <- function(sizeHorizontal = 21,
          labels = paste("Gp.", selectedTutorials), 
          las = 1, 
          font = 4) # BOLD, ITALICS text
+    
+    # Grey box around chosen classes
+    for (i in (1:length(selectedTutorials))){
+      j <- selectedTutorials[i]
+      polygon(x = c(0.25, 0.25, 
+                    maxTutorial + 0.5, maxTutorial + 0.5),
+              y = c(j - 0.5, j + 0.5, 
+                    j + 0.5, j - 0.5),
+              border = NA, # No borders
+              col = grey(0.9))
+    }
+    
     # Now plot everyone: 
     for (j in 1:numberTutorials){
       points(1:numStudentsInTutorials[j], rep(j, numStudentsInTutorials[j]),

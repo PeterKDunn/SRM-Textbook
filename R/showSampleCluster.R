@@ -40,12 +40,24 @@ showSampleCluster <- function(sizeHorizontal = 21,
          labels = paste("Gp.", selectedTutorials), 
          las = 1,
          font = 4) # BOLD, ITALICS text
+
+    # Grey box around chosen classes
+    for (i in (1:length(selectedTutorials))){
+      j <- selectedTutorials[i]
+        polygon(x = c(0.25, 0.25, 
+                      maxTutorial + 0.25, maxTutorial + 0.25),
+                y = c(j - 0.5, j + 0.5, 
+                      j + 0.5, j - 0.5),
+                border = NA, # No borders
+                col = grey(0.9))
+    }
+    
     # Now plot everyone: 
     for (j in 1:numberTutorials){
       points(x = 1:numStudentsInTutorials[j], 
              y = rep(j, numStudentsInTutorials[j]),
              pch = 1,
-             col = grey(0.2),
+             col = grey(0.3),
              cex = 1,
              lwd = 1)
     }
