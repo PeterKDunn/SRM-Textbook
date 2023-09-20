@@ -71,25 +71,6 @@ showVariationExplained <- function(){
                      shadow.size = 0,
                      lcol = boxColours[1],
                      box.col = boxColours[2])
-  # diagram::textrect( mid = c( xLoc[2], mean( yHeights[1:2] ) ),
-  #           radx = barWidths,
-  #           rady = yRelative[2] / 2,
-  #           shadow.size = 0,
-  #           lcol = boxColours[2],
-  #           box.col = boxColours[2])
-  # diagram::textrect( mid = c( xLoc[2], mean( yHeights[2:3] ) ),
-  #           radx = barWidths,
-  #           rady = yRelative[3] / 2,
-  #           shadow.size = 0,
-  #           lcol = boxColours[3],
-  #           box.col = boxColours[3])
-  # diagram::textrect( mid = c( xLoc[2], mean( yHeights[3:4] ) ),
-  #           radx = barWidths,
-  #           rady =  yRelative[4] / 2,
-  #           shadow.size = 0,
-  #           lcol = boxColours[4],
-  #           box.col = boxColours[4])
-  
   
   #Outline
   polygon( x = c( xLoc[2] - barWidths,
@@ -211,13 +192,7 @@ showVariationExplained <- function(){
                      shadow.size = 0,
                      lcol = boxColours[3],
                      box.col = boxColours[3])
-  #diagram::textrect( mid = c( xLoc[4], mean( yHeights[3:4] ) ),
-  #          radx = barWidths,
-  #          rady =  yRelative[4] / 2,
-  #          shadow.size = 0,
-  #          lcol = boxColours[4],
-  #          box.col = boxColours[4])
-  
+
   
   #Outline
   polygon( x = c( xLoc[4] - barWidths,
@@ -265,12 +240,6 @@ showVariationExplained <- function(){
        cex = 0.90,
        col = "grey")
   
-  #text(x = xLoc[4],
-  #     y = mean( yHeights[3:4]),
-  #     labels = c("Due to the\ndesign"),
-  ##     srt = 90,
-  #     cex = 0.90
-  #     )
   
   
   
