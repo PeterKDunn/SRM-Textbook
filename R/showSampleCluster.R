@@ -39,7 +39,7 @@ showSampleCluster <- function(sizeHorizontal = 21,
          at = selectedTutorials, # Only labels SELECTED tutorials
          labels = paste("Gp.", selectedTutorials), 
          las = 1,
-         font = 4) # BOLD, ITALICS text
+         font = 2) # BOLD text
 
     # Grey box around chosen classes
     for (i in (1:length(selectedTutorials))){

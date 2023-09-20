@@ -42,7 +42,7 @@ showSampleMultistage <- function(sizeHorizontal = 21,
          at = selectedTutorials, 
          labels = paste("Gp.", selectedTutorials), 
          las = 1, 
-         font = 4) # BOLD, ITALICS text
+         font = 2) # BOLD text
     
     # Grey box around chosen classes
     for (i in (1:length(selectedTutorials))){
