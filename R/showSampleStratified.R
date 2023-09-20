@@ -25,7 +25,7 @@ showSampleStratified <- function(sizeHorizontal = 21,
   selectedB <- sample(1:(numB * sizeVertical), 
                       sampleB)
   
-  separation <- sizeHorizontal * proportionA + 0.5 # LEFT: Females: RIGHT: Males
+  separation <- sizeHorizontal * proportionA + 0.95 # LEFT: Females: RIGHT: Males
   populationSex <- rep("F", 
                        length = populationSize)
   
@@ -35,8 +35,8 @@ showSampleStratified <- function(sizeHorizontal = 21,
   
   plotPopulation <- function(){
     
-    plot( x = c(1, sizeHorizontal), 
-          y = c(1, sizeVertical),
+    plot( x = c(1, sizeHorizontal + 1), # The + 1 is to allow for the separation line 
+          y = c(1, sizeVertical), 
           type = "n",
           main = main,
           axes = FALSE,
@@ -44,7 +44,7 @@ showSampleStratified <- function(sizeHorizontal = 21,
           ylab = "")
     
     abline(v = separation, 
-           col = grey(0.3), 
+           col = grey(0.7), 
            lwd = 2) # LEFT: Females: RIGHT: Males
     mtext( paste("Total females: ", populationSizeFemales, sep = ""), 
            side = 3, 
@@ -55,9 +55,6 @@ showSampleStratified <- function(sizeHorizontal = 21,
           cex = 0.8,
           at = separation / 2)
     
-    abline(v = separation, 
-           col = grey(0.3), 
-           lwd = 2) # LEFT: Females: RIGHT: Males
     mtext( paste("Total males: ",  populationSizeMales, sep = ""), 
            side = 3, 
            cex = 0.8,
