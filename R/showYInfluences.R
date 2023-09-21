@@ -40,7 +40,7 @@ showYInfluences <- function (showY = TRUE,
          y = pos[4, 2],
          cex = 0.85,
          pos = 3,
-         labels = "Spurious")
+         labels = "Apparent")
     text(x = 0.666,
          y = pos[4, 2],
          cex = 0.85,
@@ -82,7 +82,7 @@ showYInfluences <- function (showY = TRUE,
              lcol = ExplanatoryColour)
   textrect( pos[1,], 
              lab = "Response", 
-             radx = 0.100, 
+             radx = 0.095, 
              rady = 0.075, 
              shadow.size = 0,
              box.col = ResponseColour,
