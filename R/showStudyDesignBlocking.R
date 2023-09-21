@@ -57,37 +57,7 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
   pos[11, ] <- c( pos[8, 1], 
                   -c( mean(pos[1:2, 2]) ) ) # BLOCK 2
   
-  
-  ### BACKGROUND, designating what researchers control
-  # We do the calculations whether the research-control info is needed or not, 
-  # as sometimes  left  and  right  etc are used later
-  # if (studyType == "TrueExp") {
-  #   top <- 0.99
-  #   left <- pos[8, 1]
-  #   right <- 1
-  #   bottom <- 0.15
-  # }
-  # if (studyType == "QuasiExp") {
-  #   top <- 1
-  #   left <- 0.50
-  #   right <- 1
-  #   bottom <- 0.15
-  # }
-  # if (studyType == "Obs") {
-  #   #    top <- 0.2
-  #   #    left <- 0.50
-  #   #    right <- 0.7
-  #   #    bottom <- 0.25
-  # }
-  # if (addResearcherControl){
-  #   
-  #   if ( studyType != "Obs") { 
-  #     polygon( x = c(left, right, right, left),
-  #              y = c(top,  top, bottom, bottom),
-  #              border = NA,
-  #              col = viridis::viridis(10, alpha = 0.10)[1])
-  #   }  
-  # }
+
   
   ### COMPARISON ARROWS
   # Need "thick" arrow
@@ -428,8 +398,8 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
   plotfunctions::plot_image(img = "Pics/iconmonstr-candy-5-240.png", # HIMALAYA
                             type = "png",
                             keep.ratio = TRUE,
-                            xrange = c( pos[4, 1] + 0.11 - 0.025,
-                                        pos[4, 1] + 0.11 + 0.025),
+                            xrange = c( pos[4, 1] + 0.11 - 0.0175,
+                                        pos[4, 1] + 0.11 + 0.0175),
                             yrange = c( pos[4, 2] - 0.08,
                                         pos[4, 2] + 0.08),
                             bty = "n", # Removes box from around the plot 
@@ -438,8 +408,8 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
   plotfunctions::plot_image(img = "Pics/iconmonstr-candy-8-240.png", # REFINED
                             type = "png",
                             keep.ratio = TRUE,
-                            xrange = c( pos[5, 1] + 0.11 - 0.025,
-                                        pos[5, 1] + 0.11 + 0.025),
+                            xrange = c( pos[5, 1] + 0.11 - 0.0175,
+                                        pos[5, 1] + 0.11 + 0.0175),
                             yrange = c( pos[5, 2] - 0.08,
                                         pos[5, 2] + 0.08),
                             bty = "n", # Removes box from around the plot 
@@ -450,8 +420,8 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
   plotfunctions::plot_image(img = "Pics/iconmonstr-candy-5-240.png", # HIMALAYA
                             type = "png",
                             keep.ratio = TRUE,
-                            xrange = c( pos[5, 1] + 0.11 - 0.025,
-                                        pos[5, 1] + 0.11 + 0.025),
+                            xrange = c( pos[5, 1] + 0.11 - 0.0175,
+                                        pos[5, 1] + 0.11 + 0.0175),
                             yrange = c( -pos[5, 2] - 0.08,
                                         -pos[5, 2] + 0.08),
                             bty = "n", # Removes box from around the plot 
@@ -460,8 +430,8 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
   plotfunctions::plot_image(img = "Pics/iconmonstr-candy-8-240.png", # REFINED
                             type = "png",
                             keep.ratio = TRUE,
-                            xrange = c( pos[4, 1] + 0.11 - 0.025,
-                                        pos[4, 1] + 0.11 + 0.025),
+                            xrange = c( pos[4, 1] + 0.11 - 0.0175,
+                                        pos[4, 1] + 0.11 + 0.0175),
                             yrange = c( -pos[4, 2] - 0.08,
                                         -pos[4, 2] + 0.08),
                             bty = "n", # Removes box from around the plot 
@@ -473,8 +443,8 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
   plotfunctions::plot_image(img = "Pics/iconmonstr-generation-4-240.png", # GIRL
                               type = "png",
                               keep.ratio = TRUE,
-                              xrange = c( pos[10, 1] - 0.04 - 0.03,
-                                          pos[10, 1] - 0.04 + 0.03),
+                              xrange = c( pos[10, 1] - 0.04 - 0.0175,
+                                          pos[10, 1] - 0.04 + 0.0175),
                               yrange = c( pos[10, 2] + 0.25 - 0.08,
                                           pos[10, 2] + 0.25 + 0.08),
                               bty = "n", # Removes box from around the plot 
@@ -483,8 +453,8 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
     plotfunctions::plot_image(img = "Pics/iconmonstr-generation-7-240.png", # BOY
                               type = "png",
                               keep.ratio = TRUE,
-                              xrange = c( pos[10, 1] + 0.04 - 0.03,
-                                          pos[10, 1] + 0.04 + 0.03),
+                              xrange = c( pos[10, 1] + 0.04 - 0.0175,
+                                          pos[10, 1] + 0.04 + 0.0175),
                               yrange = c( pos[10, 2] + 0.25 - 0.08,
                                           pos[10, 2] + 0.25 + 0.08),
                               bty = "n", # Removes box from around the plot 
@@ -493,8 +463,8 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
     plotfunctions::plot_image(img = "Pics/iconmonstr-generation-16-240.png", # LADY
                               type = "png",
                               keep.ratio = TRUE,
-                              xrange = c( pos[11, 1] - 0.04 - 0.03,
-                                          pos[11, 1] - 0.04 + 0.03),
+                              xrange = c( pos[11, 1] - 0.04 - 0.0175,
+                                          pos[11, 1] - 0.04 + 0.0175),
                               yrange = c( pos[11, 2] - 0.25 - 0.08,
                                           pos[11, 2] - 0.25 + 0.08),
                               bty = "n", # Removes box from around the plot 
@@ -503,8 +473,8 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
     plotfunctions::plot_image(img = "Pics/iconmonstr-generation-15-240.png", # MAN
                               type = "png",
                               keep.ratio = TRUE,
-                              xrange = c( pos[11, 1] + 0.04 - 0.03,
-                                          pos[11, 1] + 0.04 + 0.03),
+                              xrange = c( pos[11, 1] + 0.04 - 0.0175,
+                                          pos[11, 1] + 0.04 + 0.0175),
                               yrange = c( pos[11, 2] - 0.25 - 0.08,
                                           pos[11, 2] - 0.25 + 0.08),
                               bty = "n", # Removes box from around the plot 
@@ -539,7 +509,5 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
          lty = 2,
          col = "grey")
 }
-
-
 
 

@@ -10,6 +10,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                             addInternalValidityText = FALSE, 
                             addExternalValidityText = FALSE, 
                             addCompareText = TRUE,
+                            addByResearchers = TRUE,
                             addBlocking = FALSE, # If  TRUE  then two block are shown 
                             addSampling = FALSE, # Show  "POP -> SAMPLE"
                             addThirdParty = FALSE) { # This allows for showing blinding of researchers 
@@ -100,13 +101,13 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   ### BACKGROUND, designating what researchers control
   # We do the calculations whether the research-control info is needed or not, 
   # as sometimes  left  and  right  etc are used later
-  if (studyType == "TrueExp") text(x = mean( c(pos[8, 1], pos[1, 1] ) ),
+  if (studyType == "TrueExp" & addByResearchers) text(x = mean( c(pos[8, 1], pos[1, 1] ) ),
                                    y = 0.5,
                                    labels = "By researchers",
                                    col = "grey",
                                    srt = 90,
                                    cex = 1.65)
-  if (studyType != "Obs") text(x = mean( c(pos[1, 1], pos[4, 1]) ),
+  if (studyType != "Obs" & addByResearchers) text(x = mean( c(pos[1, 1], pos[4, 1]) ),
                                    y = 0.5,
                                    labels = "By researchers",
                                    col = "grey",
