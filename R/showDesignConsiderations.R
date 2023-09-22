@@ -42,25 +42,27 @@ showDesignConsiderations <- function(studyType = "Experiment"){
               curve = 0, 
               lty = 1, 
               lwd = 2)
-  if (studyType == "Experimental") {# No line for observational 
-  curvedarrow(from = pos[1, ] + extendArrowStart, # Confounding
-              to = pos[8, ],   # Random allocation
-              curve = 0, 
-              lty =  1, 
-              lwd = 2 ) 
+  if (studyType == "Experimental") {# No line for confounding to random allocation for observational 
+    curvedarrow(from = pos[1, ] + extendArrowStart, # Confounding
+                to = pos[8, ],   # Random allocation
+                curve = 0, 
+                lty =  1, 
+                lwd = 2 ) 
   }
-  curvedarrow(from = pos[5, ] + extendArrowStart, # Carryover
-              to = pos[12, ],   # Washout
-              curve = 0, 
-              lty = ifelse(studyType== "Experiment", 1, 2), # lty = 2 indicates "not at random" 
-              lwd = 2)
+  if (studyType == "Experimental") {# No line for carryover to washout when Obs
+    curvedarrow(from = pos[5, ] + extendArrowStart, # Carryover
+                to = pos[12, ],   # Washout
+                curve = 0, 
+                lty = 1, # lty = 2 indicates "not at random" 
+                lwd = 2)
+  }
   curvedarrow(from = pos[2, ] + extendArrowStart, # Hawthorne 
               to = pos[9, ],   # Blind individuals
               curve = 0, 
               lty = 1, 
               lwd = 2)
   curvedarrow(from = pos[3, ] + extendArrowStart, # Placebo
-             to = pos[9, ] - extendArrowStart/2,  # Blind individuals
+              to = pos[9, ] - extendArrowStart/2,  # Blind individuals
               curve = 0, 
               lty = 1, 
               lwd = 2)
@@ -212,8 +214,9 @@ showDesignConsiderations <- function(studyType = "Experiment"){
             radx = 0.08, 
             rady = 0.050, 
             shadow.size = 0,
-            box.col = DesignColour,
-            lcol = DesignColour)
+            col = ifelse( studyType =="Experiment", "black", "grey"), # TEXT COLOUR
+            box.col = ifelse(studyType == "Experiment", DesignColour, "white"), # BOX FILL COLOUR
+            lcol = ifelse(studyType == "Experiment", DesignColour, "grey") ) # LINES
   
   
   # Add icons
