@@ -42,14 +42,14 @@ showDesignConsiderations <- function(studyType = "Experiment"){
               curve = 0, 
               lty = 1, 
               lwd = 2)
-  if (studyType == "Experimental") {# No line for confounding to random allocation for observational 
+  if (studyType == "Experiment") {# No line for confounding to random allocation for observational 
     curvedarrow(from = pos[1, ] + extendArrowStart, # Confounding
                 to = pos[8, ],   # Random allocation
                 curve = 0, 
                 lty =  1, 
                 lwd = 2 ) 
   }
-  if (studyType == "Experimental") {# No line for carryover to washout when Obs
+  if (studyType == "Experiment") {# No line for carryover to washout when Obs
     curvedarrow(from = pos[5, ] + extendArrowStart, # Carryover
                 to = pos[12, ],   # Washout
                 curve = 0, 
