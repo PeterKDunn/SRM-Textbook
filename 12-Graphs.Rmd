@@ -13,7 +13,7 @@
 ## Introduction {#GraphsIntro}
 
 To answer a RQ, a study is designed to collect data, because *data are the means by which the research question is answered*.
-But before analysis begins, understanding, describing and summarising the collected sample data are important.
+But before analysis begins, understanding, describing and summarising the collected data are important.
 This chapter discusses the use of *graphs* to summarise data.
 Graphs are produced to aid understanding of the data, so the message in the graphs should always be explained, especially regarding what it reveals about answering the RQ.
 
@@ -26,11 +26,11 @@ In this chapter, graphs are discussed for
 
 :::::: {.cols data-latex=""}
 
-::: {.col data-latex="{0.47\textwidth}"}
+::: {.col data-latex="{0.48\textwidth}"}
 
 * One quantitative variable (Sect. \@ref(GraphsOneQuant));
 * One qualitative variable (Sect. \@ref(GraphsOneQual));
-* One qualitative and quantitative variable (Sect. \@ref(GraphOneQualOneQuant))();
+* One qualitative and quantitative variable (Sect. \@ref(GraphOneQualOneQuant));
 
 :::
 
@@ -40,10 +40,10 @@ In this chapter, graphs are discussed for
 a column separator -->
 :::
 
-::: {.col data-latex="{0.49\textwidth}"}
+::: {.col data-latex="{0.51\textwidth}"}
 
 * Two quantitative variables (Sect. \@ref(Scatterplots));
-* Two qualitative variables (Sect. \@ref(TwoQualVars)); and
+* Two qualitative variables (Sect. \@ref(TwoQualVars));
 * Other types of graphs (Sect. \@ref(GraphsOther)).
 
 :::
@@ -56,21 +56,20 @@ For quantitative data, a graph shows the *distribution* of the data: the values 
 
 
 ::: {.definition #Distribution name="Distribution"}
-The **distribution** of a quantitative variable describes what values are present in the data, and how often those values appear.
+The *distribution* of a quantitative variable describes what values are present in the data, and how often those values appear.
 :::
 
 
 The graphs discussed in this section are appropriate for *continuous* quantitative data, but may also be useful for discrete quantitative data if many possible values are present.
 Sometimes, *discrete* quantitative data with very few values are best graphed using graphs for qualitative data (Sect. \@ref(GraphsOneQual)).
-[The message in the graph should be described](#SummariseData).
 
 Three different types of graphs can be used to show the distribution of one quantitative variable:
 
-* **Stemplots** (or **stemplots**) (Sect. \@ref(StemAndLeafPlots)):
-  Best for small amounts of data; useful only in some cases.
-* **Dot chart** (Sect. \@ref(DotChartsOneVar)):
+* *Stemplots* (or *stemplots*) (Sect. \@ref(StemAndLeafPlots)):
+  Best for small amounts of data; only sometimes useful.
+* *Dot chart* (Sect. \@ref(DotChartsOneVar)):
   Best for small amounts of data; good for moderate amounts of data.
-* **Histogram** (Sect. \@ref(Histograms)):
+* *Histogram* (Sect. \@ref(Histograms)):
   Best for moderate to large amounts of data.
 
 
@@ -84,18 +83,17 @@ Consider the data in
 } else
 {
   'Table \\@ref(tab:BabyBoomDataLATEX) (which shows the first 10 of the total 44 observations).'
-}
-`
+}`
+The data give the weights (in kg) of babies born in a Brisbane hospital on one day [@mypapers:Dunn:dataset:1999; @data:Steele:BabyBoom].
+The dataset also includes the gender of each baby, and the number of minutes after midnight of the birth.
+The data are given in the order in which the births occurred.
+
 
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
 <img src="Illustrations/pexels-nappy-3569597.jpg" width="200px"/>
 </div>
 
-
-The data give the weights (in kg) of babies born in a Brisbane hospital on one day [@mypapers:Dunn:dataset:1999; @data:Steele:BabyBoom].
-The dataset also includes the gender of each baby, and the number of minutes after midnight of the birth.
-The data are given in the order in which the births occurred.
 
 
 
@@ -110,19 +108,42 @@ BB2 <- data.frame(Gender = factor(BB$Gender),
 ```
 
 ```{r BabyBoomDataLATEX}
-  out <- kable( head(BB2, 10),
-                format = "latex",
-                longtable = FALSE,
-                digits = c(0, 1, 0),
-                col.names = c("Gender", 
-                              "Weight (in kg)", 
-	  	                        "Minutes since midnight"),
-                caption = "The first ten observations (of 44) of the baby-births data",
-                booktabs = TRUE)
 if( knitr::is_latex_output() ) {
-   out %>%
-      kable_styling(font_size = 10) %>%
-      row_spec(0, bold = TRUE)
+  T1 <- kable( BB2[1:5, ],
+               format = "latex",
+               longtable = FALSE,
+               row.names = FALSE,
+               digits = c(0, 1, 0),
+               escape = FALSE,
+               col.names = c("Gender", 
+                             "Weight (kg)", 
+                             "Time of birth"),
+               booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+#    column_spec(1, width = "10mm") %>%
+#    column_spec(2, width = "10mm") %>%
+#    column_spec(3, width = "10mm")
+  T2 <- kable( BB2[6:10, ],
+               format = "latex",
+               longtable = FALSE,
+               row.names = FALSE,
+               digits = c(0, 1, 0),
+               col.names = c("Gender", 
+                             "Weight (kg)", 
+                             "Time of birth"),
+               booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+  
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "BabyBoomDataLATEX",
+                       caption = "The first ten observations (of 44) of the baby-births data. The 'time of birth is the number of minutes since midnight.") %>% 
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out, 
+                                 numberOfTables = 2,
+                                 gap = "\\quad") 
+  out2
+  
 }
 ```
 ```{r BabyBoomDataHTML, fig.cap="The baby-births data"}
@@ -140,7 +161,14 @@ if( knitr::is_html_output() ) {
 
 
 In a stemplot, part of each number is placed to the left of a vertical line (the *stem*), and the rest of each number to the right (the *leaf*).
-The weights (quantitative) are given to one decimal place of a kilogram, so the whole number of kilograms is placed to the left (as a *stem*), and the first decimal place is placed on the right (as a *leaf*).
+The weights (quantitative) 
+`r if( knitr::is_html_output() ) {
+  'in Fig. \\@ref(fig:BabyBoomDataHTML)'
+} else
+{
+  'in Table \\@ref(tab:BabyBoomDataLATEX)'
+}`
+are given to one decimal place of a kilogram, so the whole number of kilograms is placed to the left (as a *stem*), and the first decimal place is placed on the right (as a *leaf*).
 `r if (knitr::is_latex_output()) {
    'Figure \\@ref(fig:BBStem1) shows the stemplot starting to be built, and Fig. \\@ref(fig:BBStem44) shows the final stemplot. (The online version has an animation.)'
 } else {
@@ -169,7 +197,7 @@ if (knitr::is_html_output()){
                       1:datagrid.y),
           type = "n",
           ylim = c(0.7, 4.3),
-          main = "The data (in order)",
+          main = "The birthweights (in order)",
           xlab = "",
           ylab = "",
           axes = FALSE)
@@ -399,7 +427,7 @@ if (knitr::is_latex_output()){
   
   #  par(width=5, height=5, mar=c(0, 0, 2, 0)+0.1, mfrow=c(2, 1))
   par(mfrow = c(1, 2), 
-      mar = c(2, 2, 4, 1) + 0.1)
+      mar = c(3.85, 2, 3.5, 1) + 0.1)
   i <- 4
     # Plot the data
     datagrid.x <- 11
@@ -409,7 +437,7 @@ if (knitr::is_latex_output()){
           type = "n",
           ylim = c(0.7, 4.3),
           xlim = c(1, 13),
-          main = "The data (in order)",
+          main = "The birthweights (in order)",
           xlab = "",
           ylab = "",
           axes = FALSE)
@@ -444,9 +472,9 @@ if (knitr::is_latex_output()){
     
     plot( expand.grid(1:stemgrid.x, 1:stemgrid.y), 
           type = "n",
-          xlab = "",
+          xlab = "2 | 6 means 2.6 kg",
           ylab = "",
-          main = "Stemplot of birthweights\n(2 | 6 means 2.6 kg)",
+          main = "Stemplot of birthweights",
           xlim = c(0, 34), 
           ylim = c(0.8, 4.2),
           axes = FALSE)
@@ -608,14 +636,14 @@ if (knitr::is_latex_output()){
 ```
 
 
-```{r BBStem44,  fig.align="center", fig.cap="The final stemplot for the baby-weight data. The data are on the left; the final stemplot on the right.", fig.width=10, fig.height=3, out.width='95%' }
+```{r BBStem44,  fig.align="center", fig.cap="The final stemplot for the baby-weight data. The data are on the left; the final stemplot on the right.", fig.width=10, fig.height=3, out.width='100%' }
 if (knitr::is_latex_output()){
   Wts <- sort(BB$Weight)
   
   DP2 <- function(x){format(round(x, 1), nsmall = 1) }
   
   par(mfrow = c(1, 2), 
-      mar = c(2, 3, 4, 1) + 0.1)
+      mar = c(3.85, 2, 3.5, 1) + 0.1)
   for (i in (length(Wts):length(Wts))){
     # Plot the data
     datagrid.x <- 11
@@ -625,7 +653,7 @@ if (knitr::is_latex_output()){
           type = "n",
           ylim = c(0.7, 4.3),
           xlim = c(1, 13),
-          main = "The data (in order)",
+          main = "The birthweights (in order)",
           xlab = "",
           ylab = "",
           axes = FALSE)
@@ -654,9 +682,9 @@ if (knitr::is_latex_output()){
     
     plot( expand.grid(1:stemgrid.x, 1:stemgrid.y), 
           type = "n",
-          xlab = "",
+          xlab = "2 | 6 means 2.6 kg",
           ylab = "",
-          main = "Stemplot of birthweights\n(2 | 6 means 2.6 kg)",
+          main = "Stemplot of birthweights",
           xlim = c(0, 34),
           ylim = c(0.8, 4.2),
           axes = FALSE)
@@ -720,23 +748,24 @@ For stemplots:
 * Place the larger unit (e.g., kilograms) on the left (stems).
 * Place the next smallest unit (e.g., first decimal place of a kilogram) on the right (leaves).
 * Some data do not work well with stemplots.
-* Sometimes, data may need suitable rounding before creating the stemplot.
+* Sometimes, data may need suitable rounding before creating the stemplot (the baby weights were originally given to three decimal places).
 * The numbers in each row should be evenly spaced, so that the numbers in the columns are under each other.
-  This allows patterns to be seen.
+  This means the length of each stem is proportional to the number of observations.
 * Within each stem, the observations are *ordered* so patterns can be seen.
 * Add an explanation for reading the stemplot.
-  For example, the caption for the stemplot for the baby-birth data above says '2 | 6 means 2.6kg', which explains what the stem plot means. 
+  For example, the stemplot for the baby-birth data says '2 | 6 means 2.6kg'.
   For instance, '2 | 6' could mean 26kg, or 0.26kg, or 2lb 6oz.
 
 
 ::: {.example #StemLeafPlots name="Stemplots"}
 A study of krill [@data:Greenacre2016:reporting] produced 15 measurements of the number of eggs.
-The stemplot shows that the number of eggs is usually under 10, but occasionally a large number of eggs are seen.
+The stemplot 
 `r if (knitr::is_latex_output()) {
-   'Figure \\@ref(fig:KrillStem44) shows the stemplot. (The online version has an animation.)'
+   '(Fig. \\@ref(fig:KrillStem44); the online version has an animation)'
 } else {
-   'The animation below shows how the stemplot is constructed.'
+   'in the animation below shows the stemplot being constructed, and'
 }`
+shows that the number of eggs is usually under 10, but occasionally a large number of eggs are seen.
 For the purposes of the stemplot, single-digit observations are treated as `00`, `01`, `02` and so on, using `0` as the stem. 
 :::
 
@@ -750,7 +779,7 @@ if (knitr::is_html_output()){
   
   #  par(width=5, height=5, mar=c(0, 0, 2, 0)+0.1, mfrow=c(2, 1))
   par(mfrow = c(2, 1),
-      mar = c(2, 3, 4, 1) + 0.1)
+      mar = c(3.85, 3, 4, 1) + 0.1)
   for (i in (1:length(Eggs))){
     # Plot the data
     datagrid.x <- 5
@@ -760,7 +789,7 @@ if (knitr::is_html_output()){
                       1:datagrid.y),
           type = "n",
           ylim = c(0, 3.3),
-          main = "The data (in order)",
+          main = "The egg counts (in order)",
           xlab = "",
           ylab = "",
           axes = FALSE)
@@ -805,9 +834,9 @@ if (knitr::is_html_output()){
     plot( expand.grid(1:stemgrid.x, 
                       0:stemgrid.y), 
           type = "n",
-          xlab = "",
+          xlab = "1|6 means 16 eggs",
           ylab = "",
-          main = "Stemplot of egg counts of krill\n(1|6 means 16 eggs)",
+          main = "Stemplot of egg counts of krill",
           xlim = c(0, 11),
           ylim = c(-0.2, 3.2),
           axes = FALSE)
@@ -973,7 +1002,7 @@ if (knitr::is_html_output()){
 ```
 
 
-```{r KrillStem44, fig.align="center", fig.width=5, fig.cap="The krill data. The data are on the left, and the stemplot on the right.", fig.width=10, fig.height=3, out.width='95%' }
+```{r KrillStem44, fig.align="center", fig.width=5, fig.cap="The krill data. The data are on the left, and the stemplot on the right.", fig.width=10, fig.height=2.75, out.width='100%' }
 if (knitr::is_latex_output()){
 #KRILL
 
@@ -982,7 +1011,7 @@ if (knitr::is_latex_output()){
   
   #  par(width=5, height=5, mar=c(0, 0, 2, 0)+0.1, mfrow=c(2, 1))
   par(mfrow = c(1, 2),
-      mar = c(2, 3, 4, 1) + 0.1)
+      mar = c(3.85, 3, 4, 1) + 0.1)
   for (i in (length(Eggs):length(Eggs))){
     # Plot the data
     datagrid.x <- 5
@@ -993,7 +1022,7 @@ if (knitr::is_latex_output()){
           type = "n",
           ylim = c(0, 3.3),
           xlim = c(1, 7),
-          main = "The data (in order)",
+          main = "The egg counts (in order)",
           xlab = "",
           ylab = "",
           axes = FALSE)
@@ -1016,9 +1045,9 @@ if (knitr::is_latex_output()){
     
     plot( expand.grid(1:stemgrid.x, 0:stemgrid.y), 
           type = "n",
-          xlab = "",
+          xlab = "1|6 means 16 eggs",
           ylab = "",
-          main = "Stemplot of egg counts of krill\n(1|6 means 16 eggs)",
+          main = "Stemplot of egg counts of krill",
           xlim = c(0, 11),
           ylim = c(-0.2, 3.2),
           axes = FALSE)
@@ -1102,26 +1131,19 @@ Dot charts show the original data on a single axis, with each observation repres
 A study examined the serving size of fries at McDonald's [@data:Wetzel2005:McDonalds].
 The dot chart is shown in 
 `r if (knitr::is_latex_output()) {
-   'Fig \\@ref(fig:FriesPDF) (left panel)'
+   'Fig \\@ref(fig:FriesBabiesPDF) (left panel)'
 } else {
    'Fig \\@ref(fig:FriesHTML) (top panel)'
 }`
 (based on @data:Wetzel2005:McDonalds).
 The mass of fries is almost always *under* the target, and often substantially so.
-An alternative graph shows the *percentage* of each serving relative to the target; see
-`r if (knitr::is_latex_output()) {
-   'Fig \\@ref(fig:FriesPDF) (right panel),'
-} else {
-   'Fig \\@ref(fig:FriesHTML) (bottom panel),'
-}`
-(where 100% means the serving size was exactly the target weight).
 
 Notice that observations are *stacked* on top of each other when  multiple observations are the same; for example, two orders of fries were 133g.
 *Jittering* is also an option (Example \@ref(exm:DotsChartsQuant2)).
 :::
 
 
-```{r FriesPDF, fig.cap="Large orders of French fries: Mass measurements (left panel) and percentage of target mass (right panel)", fig.align="center", fig.width=9, fig.height=3, out.width='95%'}
+```{r FriesBabiesPDF, fig.cap="Large orders of French fries (left panel), where similar observations are stacked. A dot chart of the baby-weight data (right panel), where similar observations are jittered.", fig.align="center", fig.width=9, fig.height=3, out.width='95%'}
 if (knitr::is_latex_output()){
 
   par( mfrow = c(1, 2) )
@@ -1134,7 +1156,7 @@ if (knitr::is_latex_output()){
              xlab = "Serving weight (in g)",
              axes = FALSE,
              pch = 20,
-  	   col = plotSolid,
+  	   col = plotDark,
              ylim = c(-1, 10),
              xlim = c(112, 180) )
   axis(side = 1, 
@@ -1149,38 +1171,25 @@ if (knitr::is_latex_output()){
   lines( x = c(171, 171),
          y = c(-2, 4),
          col = "grey")
-  text(145, 6.5, 
+  text(145, 6.25, 
        "McDonald's target of\n171 grams per serving", 
-       cex = 0.8,
+       cex = 0.9,
        pos = 3)
+
+########
   
-  
-  
-  stripchart( Fries/171 * 100, 
-             method = "stack",
-             main = "Dotplot for percentage of target\nmass of large order of fries",
-             axes = FALSE,
-             xlab = "Percentage of target weight (171g)",
-             pch = 20,
-  	         col = plotSolid,
-             ylim = c(-1, 10),
-             xlim = c(65, 105) )
-  axis(side = 1, 
-       at = seq(65, 105, by = 5))
-  arrows(x0 = 85, 
-         y0 = 5.5, 
-         x1 = 100, 
-         y1 = 2, 
-         length = 0.10,
-         angle = 15)
-  lines( x = c(100, 100),
-         y = c(-2, 4),
-         col = "grey")
-  text(85, 6.5, 
-       "McDonald's target of\n171 grams per serving", 
-       cex = 0.8,
-       pos = 3)
+  stripchart(BB$Weight, 
+           method = "jitter",
+           pch = 19,
+	   col = plotDark,
+	   xlim = c(1.5, 4.5),
+           main = "Weight of babies",
+           axes = FALSE,
+           xlab = "Baby weight (in kg)")
+axis(side = 1,
+     at = seq(1.5, 4.5, by = 0.5))
 }
+  
 ```
 
 
@@ -1250,27 +1259,36 @@ if (knitr::is_html_output()){
 ::: {.example #DotsChartsQuant2 name="Dot charts"}
 Consider again the weights (in kg) of babies born in a Brisbane hospital
 `r if( knitr::is_html_output() ) {
-  '(Fig. \\@ref(fig:BabyBoomDataHTML)).'
+  '(Fig.\\ \\@ref(fig:BabyBoomDataHTML)).'
 } else
 {
-  '(Table \\@ref(tab:BabyBoomDataLATEX)).'
+  '(Table\\ \\@ref(tab:BabyBoomDataLATEX)).'
 }`
-A dot chart (Fig. \@ref(fig:BabyBoomDot)) shows that most babies were born between 3 and 4kg.
+A dot chart (Fig. \@ref(fig:BabyBoomDot)) 
+`r if( knitr::is_html_output() ) {
+  '(Fig.\\ \\@ref(fig:BabyBoomDotTML)).'
+} else
+{
+  '(Fig\\ \\@ref(tab:FriesBabiesPDF), right panel).'
+}`
+shows that most babies were born between 3 and 4kg.
 Notice that the observations have been *jittered* (i.e., placed with some added randomness in the vertical direction) to avoid overplotting.
 :::
 
 
-```{r BabyBoomDot, fig.cap="A dot chart of the baby-weight data", fig.align="center", fig.height=2.5, fig.width=5.5}
-stripchart(BB$Weight, 
-           method = "jitter",
-           pch = 19,
-	   col = plot.colour,
-	   xlim = c(1.5, 4.5),
-           main = "Weight of babies",
-           axes = FALSE,
-           xlab = "Baby weight (in kg)")
-axis(side = 1,
-     at = seq(1.5, 4.5, by = 0.5))
+```{r BabyBoomDotHTML, fig.cap="A dot chart of the baby-weight data", fig.align="center", fig.height=2.5, fig.width=5.5}
+if (knitr::is_html_output()){
+  stripchart(BB$Weight, 
+             method = "jitter",
+             pch = 19,
+             col = plot.colour,
+             xlim = c(1.5, 4.5),
+             main = "Weight of babies",
+             axes = FALSE,
+             xlab = "Baby weight (in kg)")
+  axis(side = 1,
+       at = seq(1.5, 4.5, by = 0.5))
+}
 ```
 
 
@@ -1287,7 +1305,7 @@ The vertical axis can be counts (labelled as 'Counts', 'Frequency', or similar) 
 
 
 ::: {.example #Histograms name="Histograms"}
-Consider again the weights (in kg) of babies born in a Brisbane hospital in one day [@mypapers:Dunn:dataset:1999]
+Consider again the weights (in kg) of babies born in a Brisbane hospital in one day
 `r if( knitr::is_html_output() ) {
   '(Fig. \\@ref(fig:BabyBoomDataHTML)).'
 } else {
@@ -1309,7 +1327,7 @@ The histogram shows, for example, that 17 babies weighed 3.0kg or more, but unde
 ```{r animation.hook="gifski", interval=0.55, fig.height=7}
 ### BUILD A HISTOGRAM
 if (knitr::is_html_output()) {
-  #Wts <- sort( round(BB$Weight/100, 0) )
+  
   Wts <- sort(BB$Weight)
   DP2 <- function(x){format(round(x, 1), nsmall = 1) }
   
@@ -1407,9 +1425,9 @@ if (knitr::is_latex_output()){
     plot( expand.grid(1:datagrid.x, 
                       1:datagrid.y),
           type = "n",
-          ylim = c(0.7, 4.3),
+          ylim = c(0.7, 4.5),
           xlim = c(1, 13),
-          main = "The data (in order)",
+          main = "The birthweights (in order)",
           xlab = "",
           ylab = "",
           axes = FALSE)
@@ -1447,72 +1465,66 @@ if (knitr::is_latex_output()){
           breaks = seq(1.5, 4.5, 
                        by = 0.5),
           col = plot.colour)
-  }
+    
+    # Annotate histogram
+    arrows(x0 = 1.75,
+           x1 = 1.75,
+           y0 = 19,
+           y1 = 3,
+           length = 0.15,
+           angle = 15)
+    text(1.75, 19,
+         pos = 4,
+         labels = "One observation: 1.7")
+    
+    arrows(x0 = 2.25,
+           x1 = 2.25,
+           y0 = 14,
+           y1 = 5,
+           length = 0.15,
+           angle = 15)
+    text(2.25, 14,
+         pos = 4,
+         labels = "Four observations: 2.1, 2.1, 2.2, 2.4")  
+    
+    arrows(x0 = 2.75,
+           x1 = 2.75,
+           y0 = 9,
+           y1 = 2,
+           length = 0.15,
+           angle = 15)
+    text(2.75, 9,
+         pos = 4,
+         labels = "One observation so far: 2.6")  
+}
 ```
 
 
 ```{r BBHist44, fig.align="center", fig.width=5, fig.height=3, out.width='45%', fig.cap="The final histogram for the baby-birth data" }
 if (knitr::is_latex_output()){
   Wts <- sort( BB$Weight )
-
-#  par(mfrow = c(1, 2))
   
-#     # Plot the data
-#     datagrid.x <- 11
-#     datagrid.y <- 4
-#     
-#     plot( expand.grid(1:datagrid.x, 
-#                       1:datagrid.y),
-#           type = "n",
-#           ylim = c(0.7, 4.3),
-#           xlim = c(1, 13),
-#           xlab = "",
-#           ylab = "",
-#           axes = FALSE)
-#     text(  1:datagrid.x, 
-#            rep(4, 11), 
-# 	   DP2(Wts[1:11]) )
-#     text(  1:datagrid.x, 
-#            rep(3, 11), 
-# 	   DP2(Wts[12:22]) )
-#     text(  1:datagrid.x, 
-#            rep(2, 11), 
-# 	   DP2(Wts[23:33]) )
-#     text(  1:datagrid.x, 
-#            rep(1, 11), 
-# 	   DP2(Wts[34:44]) )
-# #     
-# #     # Now highlight the observation being used
-# #     if ( (i > 33) ){
-# #       points(  i - 33, 1, 
-# #               pch = 1, 
-# # 	            col = plotDark, 
-# # 	            lwd = 3, 
-# # 	            cex = 4 )
-# #     }
-# #     
-    # Produce the histogram
-    
-    hist( Wts,
-          right = FALSE, # Right-closed and left-open (i.e., like 2.5 to under 3 kg)
-          xlab = "Birthweight (in kg)",
-          ylab = "Number of babies",
-          main = "Histogram of birthweights of babies\non one day in Brisbane",
-          las = 1,
-          xlim = c(1.5, 4.5),
-          ylim = c(0, 20),
-          breaks = seq(1.5, 4.5, by = 0.5),
-          col = plot.colour)
-
+  # Produce the histogram
+  
+  hist( Wts,
+        right = FALSE, # Right-closed and left-open (i.e., like 2.5 to under 3 kg)
+        xlab = "Birthweight (in kg)",
+        ylab = "Number of babies",
+        main = "Histogram of birthweights of babies\non one day in Brisbane",
+        las = 1,
+        xlim = c(1.5, 4.5),
+        ylim = c(0, 20),
+        breaks = seq(1.5, 4.5, by = 0.5),
+        col = plot.colour)
+  
 }
 ```
 
 
 ::: {.example #Histograms2 name="Histograms"}
-A study of 'headache attributed to ingestion or inhalation of a cold stimulus' (HICS), commonly called a *brain freeze* after eating cold food (e.g., ice cream) or drinking a cold drink, measured the duration of the brain freeze [@data:Mages2017:BrainFreeze].
+A study of *brain freezes* after eating cold food or drinking a cold drink measured the duration of the brain freeze [@data:Mages2017:BrainFreeze].
 
-A histogram of the data (Fig \@ref(fig:BrainFreeze), based on @data:Mages2017:BrainFreeze, Fig. 2b), shows 11 people experience HICS symptoms less than 5 seconds in length.
-In addition, nine people experienced symptoms for at least 5 but less than 10 seconds, and 1 person experienced symptoms for at least 35 seconds but under 40 seconds.
+A histogram of the data (Fig \@ref(fig:BrainFreeze), based on @data:Mages2017:BrainFreeze, Fig. 2b), shows 11 people experience HICS symptoms less than 5 seconds in length; nine people experienced symptoms for at least 5 but less than 10 seconds; and 1 person experienced symptoms for at least 35 seconds but under 40 seconds.
 :::
 
 ```{r BrainFreeze, fig.cap="Duration of HICS (brain freeze) after drinking ice water", fig.width=5.5, fig.height=3.5, fig.align="center"}
@@ -1527,7 +1539,7 @@ barplot(Hts,
         space = 0,
         ylim = c(0, 12),
         col = plot.colour,
-        main = "Duration of HICS (brain freeze) after drinking ice water",
+        main = "Duration of brain freeze after drinking ice water",
         ylab = "Number of volunteers",
         xlab = "Duration (s)",
         axes = FALSE)
@@ -1546,41 +1558,32 @@ Graphs are constructed to help readers understand the data.
 After producing a graph for one quantitative variable, describe these features:
 
 1. The *average*:
-   What is an "average" location, or central value?
+   What is an "average" value, or central value?
 2. The *variation*: 
    How much variation is present in the bulk of the data?
 3. The *shape*:
    What is the shape of the distribution?
    That is, are most of the values smaller or larger, or about even distributed between smaller and larger values?
-4. Any *outliers* (observations unusually large or small) or unusual features:
-   Are there any very unusual observations, or anything else of interest?
+4. Mention any *outliers* (observations unusually large or small) or unusual features.
 
 ::: {.example #DescribeQuantData name="Describing quantitative data"}
-The baby-birth data displayed in Example \@ref(exm:Histograms) 
-`r if( knitr::is_latex_output() ) {
-  '(Fig. \\@ref(fig:BBHist44)))'
-}`
-could be described as:
-
-1. *Average*: A typical, middle-position weight is between about 2.5kg and 3kg.
-2. *Variation*: Babies were between about 1.5kg and 4.5kg at birth.
-3.*Shape*: A few babies have very lower weights (premature births?).
-4. *Outliers*: No unusual values are present.
+The weights of babies (displayed in Example \@ref(exm:Histograms)) are typically between about 2.5kg and 3kg. (the *average*), with most between 1.5kg and 4.5 kg (*variation*).
+A few babies have very lower weights, probably premature births (*shape*).
+No unusual values are present.
 :::
 
-Describing the *shape* can be difficult, but some terminology may help:
+Describing the *shape* can be difficult, but sometimes terminology helps:
 
-* *Right* (or *positively*) skewed: most data are smaller, with some larger values (to the *right*).
-* *Left* (or *negatively*) skewed: most the data are larger, with some smaller values (to the *left*).
+* *Right* (or *positively*) skewed: most data are smaller, with some larger values.
+* *Left* (or *negatively*) skewed: most the data are larger, with some smaller values.
 * Symmetric data (and perhaps bell-shaped):
   Approximately equal numbers of values are smaller and larger.
-* Bimodal data: There are two peaks in the distribution.
+* Bimodal data: The distribution has two peaks.
 
-Typical shapes are shown in
 `r if (knitr::is_html_output()) {
-  'the carousel below (click the left and right arrows to move through the example plots).'
+  'The carousel below (click the left and right arrows to move through the example plots) shows typical shapes.'
 } else {
-  'Fig. \\@ref(fig:ShapeDescriptionExamples).'
+  'Figure \\@ref(fig:ShapeDescriptionExamples) shows typical shapes.'
 }`
 Sometimes, no short descriptions are suitable.
 
@@ -1588,7 +1591,7 @@ Sometimes, no short descriptions are suitable.
 ```{r, child = if (knitr::is_html_output())  './children/ShapeExampleCarousel.Rmd'}
 ```
 
-```{r, child = if (knitr::is_latex_output()) './children/ShapeExampleImages.Rmd'}
+```{r, child = if (knitr::is_latex_output()) './children/ShapeExampleImages.Rmd' }
 ```
 
 
@@ -1741,11 +1744,11 @@ hist(faithful$waiting,
 ```
 
 
-The number of bins used in the histogram can change the impression of the distribution.
+The number of boxes used in the histogram can change the impression of the distribution.
 Software makes it easy to try different bin sizes to find one that suitably displays the overall distribution.
-```{r, child = if (knitr::is_html_output())  './children/HTML/histogramChangeBins.Rmd'}
+```{r, child = if (knitr::is_html_output())  './children/HistogramBins/histogramChangeBinsHTML.Rmd'}
 ```
-```{r, child = if (knitr::is_latex_output()) './children/LaTeX/histogramChangeBins.Rmd'}
+```{r, child = if (knitr::is_latex_output()) './children/HistogramBins/histogramChangeBinsLATEX.Rmd'}
 ```
 
 
@@ -1793,8 +1796,8 @@ Placing the level names on the vertical axis often makes for easier reading, and
 
 
 ::: {.example #DotPlotsQual name="Dot plots"}
-A study of spider monkeys [@data:Chapman1990:SpiderMonkeys] examined the social groups present in a sample.
-A dot chart (Fig. \@ref(fig:SpiderMonkeys)) show the most common social group has many females plus offspring  (with almost 50 social groups).
+A study of spider monkeys [@data:Chapman1990:SpiderMonkeys] examined the types of social groups present (Fig. \@ref(fig:SpiderMonkeys)).
+The most common social group has many females plus offspring  (with almost 50 social groups).
 Also, none of the commonly-observed social group include males.
 :::
 
@@ -1853,7 +1856,7 @@ The reason for the different coloured bars is explained in Fig. \@ref(fig:Indepe
 :::
 
 
-```{r IndependenceBar, fig.cap="Diagnoses of participants: numbers (left panel) and percentges (right panel)", fig.align="center", out.width='100%', fig.height=3, fig.width=11}
+```{r IndependenceBar, fig.cap="Diagnoses of participants: numbers (left panel) and percentges (right panel)", fig.align="center", out.width='100%', fig.height=3.5, fig.width=10}
 Number <- rev( c(11, 10, 9, 8, 5, 4, 3, 3, 2, 4) )
 Diag <- rev( c("Amputation-one leg",
                "Neuromuscular disease",
@@ -1915,9 +1918,9 @@ In pie charts, a circle is divided into segments proportional to the number in e
 
 ::: {.example #PieCharts name="Pie charts"}
 In a study of functional independence [@data:Ocepek2013:SmartHome], the *severity* of the diagnoses were shown in a pie chart (Fig. \@ref(fig:IndependencePie)).
-This picture actually conveys only one piece of information ("69% of patients had a less severe injury"), so a graph of any kind is probably unnecessary.
+This picture conveys only one piece of information ("69% of patients had a less severe injury"), so a graph of any kind is probably unnecessary.
 
-The pie chart colours are used in the bar chart in Example \@ref(exm:IndependenceBarText): they refer to the severity of the diagnoses.
+The pie chart colours are used in the bar chart in Example \@ref(exm:IndependenceBarText), indicating the severity of the diagnoses.
 This is called *encoding* extra information into the bar chart.
 :::
 
@@ -1937,31 +1940,27 @@ Pie charts present challenges:
 
 * Pie charts only work when graphing parts of a whole.
 * Pie charts only work when *all* options are present ('exhaustive').
-* Pie charts only work when each unit can appear in just one group ('mutually exclusive').
 * Pie charts are difficult to use with levels having zero counts, or small counts.
 * Pie charts are difficult to read with many categories present.
-* Pie charts are hard to read: In general, humans are better at comparing *lengths* (as in bar and dot charts) than *angles* (as in pie charts) [@data:Friel:Graphs].
+* Pie charts are hard to read: Humans comparing *lengths* (as in bar and dot charts) better than *angles* (as in pie charts) [@data:Friel:Graphs].
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
 In which of these situations is a pie chart *appropriate*?\label{thinkBox:WhenPiechart}
   
 1. The percentage of people who use these web browsers: Firefox, Chrome, and Safari.
-2. For each state of Australia, the percentage of people who own an iPhone.
-3. The percentage of students awarded different grades in this course last semester.
+2. For each country in Asia, the percentage of people who own an iPhone.
 
 `r if (knitr::is_latex_output()) '<!--'`
 `r webexercises::hide()`
-1. A pie chart is **not suitable**.
+1. A pie chart is *not suitable*.
    The three browsers are not *mutually exclusive* (people can use more than one of these browsers) nor *exhaustive* (some people may use browsers not listed). 
    For example, the percentages *could* be that 65% use Firefox, 84% use Chrome, and 20% use Safari. 
    These add to more than 100%.
-2. A pie chart is **not suitable**, as the percentages are not parts of a whole.
+2. A pie chart is *not suitable*, as the percentages are not parts of a whole.
    Each individual (person) has information recorded on *two* qualitative variables: (a) which state the person lives in (many levels); and (b) whether or not they own an iPhone ('yes' or 'no').  
    For example, the percentages *could* be 53% in Queensland, 61% in NSW, 41% in Victoria, and so on.
    They could possibly add to more than 100%.
-3. A pie chart **is suitable**.
-   Only one qualitative variable is recorded for each individual (person): their grade.
 `r webexercises::unhide()`
 `r if (knitr::is_latex_output()) '-->'`
 :::
@@ -1972,12 +1971,12 @@ In which of these situations is a pie chart *appropriate*?\label{thinkBox:WhenPi
 
 Consider the pie chart in 
 `r if (knitr::is_latex_output()) {
-   'the left panel of Fig. \\@ref(fig:LCgraphsPDF)'
+   'Fig. \\@ref(fig:LCgraphsPDF) (left panel),'
 } else {
-   'the top panel of Fig. \\@ref(fig:LCgraphsHTML)'
+   'the top panel of Fig. \\@ref(fig:LCgraphsHTML),'
 }`
-(using data in @data:andersen:1977).
-The pie chart displays the number of lung cancer deaths in Fredericia (Denmark) during 1968 and 1971 inclusive, for various age groups (qualitative).
+based on data in @data:andersen:1977.
+The pie chart displays the number of lung cancer deaths in Fredericia (Denmark) from 1968 and 1971 inclusive, for various age groups (qualitative).
 A pie chart *is* appropriate: only one variable is recorded on each individual (the age of each individual person), and the counts are parts of a whole.
 However, determining *which* age groups have the most lung cancer deaths is hard.
 
@@ -1990,7 +1989,7 @@ The equivalent bar chart
 makes the comparison easy: clearly the age groups '65 to 69' and 'Over 74' have slightly fewer deaths than the other age groups.
 
 
-```{r LCgraphsHTML, fig.cap="Graphs of deaths from lung cancer in Fredericia (Denmark) during 1968 and 1971 (inclusive)", fig.align="center", fig.width=5, fig.height=8}
+```{r LCgraphsHTML, fig.cap="Graphs of deaths from lung cancer in Fredericia (Denmark) from 1968 and 1971 (inclusive)", fig.align="center", fig.width=5, fig.height=8}
 if (knitr::is_html_output()) {
   
   data(DanishLC)
@@ -2006,6 +2005,7 @@ if (knitr::is_html_output()) {
                   "70 to 74", 
                   "Over 74"),
        col = viridis(6),
+       mar = c(0.5, 0.5, 4.1, 0.5),
        main = "Pie chart of lung cancer deaths\nby age group")
   
   barplot(DanishLC$Cases[DanishLC$City == "Fredericia"], 
@@ -2024,7 +2024,7 @@ if (knitr::is_html_output()) {
 }
 ```
 
-```{r LCgraphsPDF, fig.cap="Graphs from a study of hospital admission of children with asthma", fig.align="center", fig.width=10, fig.height=3.5, out.width='95%'}
+```{r LCgraphsPDF, fig.cap="Graphs of deaths from lung cancer in Fredericia (Denmark) from 1968 and 1971 (inclusive)", fig.align="center", fig.width=10, fig.height=3.5, out.width='95%'}
 if (knitr::is_latex_output()) {
   data(DanishLC)
   
@@ -2082,7 +2082,7 @@ num.levels <- length(AgeD.levels)
 
 levels(AgeD) <- c( AgeD.levels[1:(num.levels - 2)],
                    rep(" 60+", 2))
-
+cols <- viridis(9)[3:8]
 
 # New data
 par(mfrow = c(2, 2)) #, mar=c(3, 1, 1, 1))
@@ -2092,17 +2092,17 @@ plotrix::pie3D( table(AgeD),
                 main = "Number in each age group",
                 theta = pi/4,
                 labelcex = 0.9,
-                col = viridis(7))
+                col = cols)
 
 pie(table(AgeD),
     las = 1,
-    col = viridis(7),
+    col = cols,
     main = "Number in each age group")
 
 barplot(table(AgeD),
         las = 2,
         ylim = c(0, 1600),
-        col = viridis(7),
+        col = cols,
         xlab = "Age group",
         cex.names = 0.9,
         ylab = "Number in sample",
@@ -2118,7 +2118,7 @@ dotchart( as.vector(table(AgeD)),
           cex = 1,
           pch = 19,
           xlim = c(0, 1600),
-          col =  viridis(7),
+          col =  cols,
           ylab = "Age group",
           xlab = "Number in sample",
           main = "Number in each age group")
@@ -2144,12 +2144,12 @@ The NHANES age data in Example \@ref(exm:ComparingGraphs) may be displayed using
 
 ```{r SimpleTable}
 simpletab <- t(
-              rbind("Age group" = levels(AgeD),
-                    Number = table(AgeD), 
-                    Percentage = format(table(AgeD)/sum(table(AgeD)) * 100, 
-                                        nsmall = 1, # Number of digits to right of decimal point
-                                        digits = 3))
-              )
+  rbind("Age group" = levels(AgeD),
+        Number = table(AgeD), 
+        Percentage = format(table(AgeD)/sum(table(AgeD)) * 100, 
+                            nsmall = 1, # Number of digits to right of decimal point
+                            digits = 3))
+)
 
 if( knitr::is_latex_output() ) {
   kable(simpletab,
@@ -2157,21 +2157,27 @@ if( knitr::is_latex_output() ) {
         longtable = FALSE,
         align = c("r", "r", "r"),
         booktabs = TRUE,
+        col.names = c("Age group",
+                      "Number of people",
+                      "Percentage of people"),
         linesep = c("","","", "\\addlinespace"),
         row.names = FALSE,
         caption = "The NHANES age distribution, displayed in a tabular summary") %>%
-	kable_styling(font_size = 10) %>%
-	row_spec(0, bold = TRUE)
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
 }
 if( knitr::is_html_output() ) {
- kable(simpletab,
-               format = "html",
-               longtable = FALSE,
-               align = c("r", "r", "r"),
-               booktabs = TRUE,
-               row.names = FALSE,
-               caption = "The NHANES age distribution, displayed in a tabular summary") %>%
-          kable_styling(full_width = FALSE)
+  kable(simpletab,
+        format = "html",
+        longtable = FALSE,
+        align = c("r", "r", "r"),
+        booktabs = TRUE,
+        col.names = c("Age group",
+                      "Number of people",
+                      "Percentage of people"),
+        row.names = FALSE,
+        caption = "The NHANES age distribution, displayed in a tabular summary") %>%
+    kable_styling(full_width = FALSE)
 }
 ```
 
@@ -2186,7 +2192,6 @@ The histogram is essentially a picture of this table.
 
 
 ```{r BabyBoomTable}
-#Wts <- sort( round(BB$Weight/100, 0) )
 Wts <- BB$Weight
 out <- hist(Wts,
             plot = FALSE,
@@ -2235,11 +2240,11 @@ if( knitr::is_html_output() ) {
 
 Relationships between *one qualitative variable* and *one quantitative variable* can be displayed using: 
 
-* [**Back-to-back stemplot**](#BackToBackStem):
+* [*Back-to-back stemplots*](#BackToBackStem):
   Best for small amounts of data when the qualitative variable has *two levels*; 
-* [**2-D dot chart**](#TwoDDot): 
+* [*2-D dot charts*](#TwoDDot): 
   Best choice for small to moderate amounts of data;
-* [**Boxplot**](#Boxplot):
+* [*Boxplots*](#Boxplot):
   Best choice, except for small amounts of data.        
 
 
@@ -2250,14 +2255,24 @@ Back-to-back stemplots can only be used when *two* groups are being compared.
 
 
 ::: {.example #KrillData name="Back-to-back stemplots"}
-A study of krill [@data:Greenacre2016:reporting] produced the data in Table \@ref(tab:KrillDataTable).
-A back-to-back stemplot allows the two groups to be compared visually (Fig. \@ref(fig:KrillEggsDoubleStem)).
+A study of krill [@data:Greenacre2016:reporting] produced the data in 
+`r if (knitr::is_latex_output()) {
+   'Table\\ \\@ref(tab:KrillDataTable).'
+} else {
+   'Table\\ \\@ref(tab:KrillDataTableHTML).'
+}`
+A back-to-back stemplot allows the two groups to be compared visually 
+`r if (knitr::is_latex_output()) {
+   '(Fig.\\ \\@ref(fig:KrillEggsDoubleStem)).'
+} else {
+   '(Fig.\\ \\@ref(fig:KrillEggsDoubleStemHTML)).'
+}`
 The *Treatment* leaves go from right-to-left, and the leaves for the *Control* group left-to-right, sharing the same stems.
 The control group tends to produce more eggs, in general.
 :::
 
 
-```{r KrillDataTable}
+```{r}
 Eggs.T <- c(0, 0, 1, 1, 3, 8, 8, 12, 18, 21, 26, 30, 35, 48, 50)
 Eggs.C <- c(0, 0, 0, 0, 1, 1, 1,  2,  2,  3,  8, 16, 20, 26, 31)
 
@@ -2266,40 +2281,35 @@ KrillEggs2 <- cbind( Eggs.T[1:8],
                      Eggs.C[1:8], 
 		     c(Eggs.C[9:15], "") )
 
+```
+
+`r if (knitr::is_html_output()) '<!--'`
+\begin{figure}
+\begin{minipage}{0.5\textwidth}
+\captionof{table}{The number of eggs laid by krill, for those in a treatment group and for those in a control group\label{tab:KrillDataTable}}
+\fontsize{10}{12}\selectfont
+```{r KrillDataTable}
+
 if( knitr::is_latex_output() ) {
   kable( KrillEggs2,
          format = "latex",
          longtable = FALSE,
+         table.env = "@empty",
          booktabs = TRUE,
          linesep = c("", "", "\\addlinespace"),
-         align = c("c","c"),
+         align = c("c","c")) %>%
          #col.names = c("Treatment group", "Control group"),
-         caption = "The number of eggs laid by krill, for those in a treatment group and for those in a control group") %>%
-    add_header_above(header = c("Treatment group " = 2, 
-                                " Control group" = 2), 
-                     bold = TRUE, 
-                     align = "c") %>%
-    kable_styling(font = 10)
-  
-}
-if( knitr::is_html_output() ) {
-    kable( KrillEggs2,
-           format = "html",
-           longtable = FALSE,
-           booktabs = TRUE,
-           align = c("c", "c"),
-           col.names = rep("",4),
-           caption = "The number of eggs laid by krill, for those in a treatment group and for those in a control group") %>%
     add_header_above(header = c("Treatment group " = 2, 
                                 " Control group" = 2), 
                      bold = TRUE, 
                      align = "c")
 }
 ```
-
-
- 
-```{r KrillEggsDoubleStem, fig.cap="The number of eggs from krill, for treatment and control groups", fig.align="center", fig.width=7.0}
+\end{minipage}
+\hspace{0.05\textwidth}
+\begin{minipage}{0.50\textwidth}%
+\centering
+```{r KrillEggsDoubleStem, fig.width=7.0, out.width='100%'}
 
   stemgrid.x <- 1
   stemgrid.y <- 6
@@ -2389,8 +2399,107 @@ if( knitr::is_html_output() ) {
   }
 }
 ```
+\caption{The number of eggs from krill, for treatment and control groups}\label{fig:KrillEggsDoubleStem}
+\end{minipage}
+\end{figure}
+`r if (knitr::is_html_output()) '-->'`
+
+
+`r if (knitr::is_latex_output()) '<!--'`
+```{r KrillEggsDoubleStemHTML, fig.width=7.0, out.width='100%'}
+
+  stemgrid.x <- 1
+  stemgrid.y <- 6
+  stemcounts <- array(1, dim=stemgrid.y)
+
+  plot( expand.grid(1:stemgrid.x, 0:stemgrid.y), 
+      type = "n",
+      xlab = "",
+      ylab = "",
+      main = "Stemplot of egg counts of krill\n(1|6 means 16 eggs)",
+      xlim = c(-11, 7),
+      ylim = c(-0.2, 6.2),
+      axes = FALSE)
   
+### Treatment data in cols 1  to 11 (x = -11 to x = -1)
+### Stems in col 12  (x=0)
+### Control data in cols 13 to 19 (x= 1 to x = 7)
   
+  # Divide the stems and leaves
+  lines(c(-0.5, -0.5),
+        c(0.5, 6.5),
+         lwd = 2,
+         col = "grey")
+  lines(c(0.5, 0.5),
+        c(0.5, 6.5),
+         lwd = 2,
+         col = "grey")
+  text(-5, 0, 
+       "Treatment data", 
+       font = 2)
+  text( 4, 0, 
+        "Control data", 
+	font = 2)
+  
+  # Plot stems
+  points( c(0, 0, 0, 0, 0, 0), 
+          1:6,
+          pch = as.character(5:0))
+  # Plot leaves
+  for (j in (1:2) ){
+
+    if (j == 1) { # Right-hand side
+      Eggs <- Eggs.C
+      step <- 1
+      stemcounts <- array(1, dim=stemgrid.y)
+    }
+    if (j == 2) { # Left-hand side
+      Eggs <- Eggs.T
+      step <- -1
+      stemcounts <- array(-1, dim = stemgrid.y)
+    }
+    
+    for (i in 1:length(Eggs)){
+    
+      if ( Eggs[i] < 10) {
+        points( stemcounts[1], 6, 
+	        pch = as.character(Eggs[i]))
+        stemcounts[1] <- stemcounts[1] + step
+      }
+
+    if ( (Eggs[i] >= 10) & (Eggs[i] < 20) ) {
+      points( stemcounts[2], 5, 
+              pch = as.character(Eggs[i] - 10) )
+      stemcounts[2] <- stemcounts[2] + step
+    }
+
+    if ( (Eggs[i] >= 20) & (Eggs[i] < 30) ) {
+      points( stemcounts[3], 4, 
+              pch = as.character(Eggs[i] - 20))
+      stemcounts[3] <- stemcounts[3] + step
+    }
+    if ( ( Eggs[i] >= 30 ) & (Eggs[i] < 40) ) {
+      points( stemcounts[4], 3, 
+              pch = as.character(Eggs[i] - 30))
+      stemcounts[4] <- stemcounts[4] + step
+    }
+    if ( ( Eggs[i] >= 40 ) & (Eggs[i] < 50) ) {
+      points( stemcounts[5], 2, 
+              pch = as.character(Eggs[i] - 40))
+      stemcounts[5] <- stemcounts[5] + step
+    }
+    if ( ( Eggs[i] >= 50 ) & (Eggs[i] < 60) ) {
+      points( stemcounts[6], 1, 
+              pch = as.character(Eggs[i] - 50))
+      stemcounts[6] <- stemcounts[6] + step
+    }
+  }
+}
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+
 ### 2-D dot charts {#TwoDDot}
 
 A 2-D dot chart places a dot for each observation, separated for each level of the qualitative variable (also see Sect. \@ref(DotChartsOneQual)).
@@ -2399,7 +2508,7 @@ For the same krill data in Example \@ref(exm:KrillData), a dot chart is shown in
 Many observations are the same, so some points would be *over-plotted* if points were not *stacked* (left panel), or some randomness added (a 'jitter') in the vertical direction, before plotting (right panel).
 
 
-```{r TwoDDotchart, fig.height=6, out.width='100%',fig.cap="Two variations of a 2-D dot chart for the krill-egg data: stacking (left) and jittering (right)", fig.align="center", fig.width=8.75, fig.height=3}
+```{r TwoDDotchart, fig.height=6, out.width='100%',fig.cap="Two variations of a 2-D dot chart for the krill-egg data to avoid overplotting: stacking (left) and jittering (right)", fig.align="center", fig.width=8.75, fig.height=3}
 old.par <- par()
 par(mar = c(5, 6, 4, 2) + 0.1)
 par(mfrow = c(1,2))
@@ -2433,8 +2542,8 @@ stripchart( list(Treatment = Eggs.T,
 
 ### Boxplots {#Boxplot}
 
-Understanding boxplots can be difficult, so boxplots will be discussed again in Sect. \@ref(VariationIQR).
-For the same krill data used in Example \@ref(exm:KrillData), a boxplot is shown in Fig. \@ref(fig:BoxplotKrill).
+For the krill data used in Example \@ref(exm:KrillData), a boxplot is shown in Fig. \@ref(fig:BoxplotKrill).
+Understanding boxplots is challenging, so boxplots will be discussed again in Sect. \@ref(VariationIQR).
 
 
 ```{r BoxplotKrill, fig.cap="A boxplot  for the krill-egg data", fig.align="center",  fig.height=3.5, , fig.width=5}
@@ -2458,22 +2567,22 @@ KrillC2.quantiles <- quantile(Eggs.C2)
 To explain boxplots, first focus on just *one* boxplot from Fig. \@ref(fig:BoxplotKrill): the boxplot for the *Treatment* group (the left box).
 Boxplots have five horizontal lines; from the top to the bottom of the plot (Fig. \@ref(fig:BoxplotKrillTreatment)):
 
-* **Top line**:
-  The *largest* number of eggs is `r KrillT.quantiles[5]`:
-* **Second line from the top**:
-  75% of the observations are smaller than about `r KrillT.quantiles[4]`, represented by the line at the top of the central box. 
-  This is called the *third quartile*, or $Q_3$.
-* **Middle line**:
-  50% of the observations are smaller than about `r KrillT.quantiles[3]`, represented by the line in the centre of the central box. 
-  This is an 'average' value for the data, or the *second quartile*, or $Q_2$.
-* **Second line from the bottom**:
-  25% of the observations are smaller than about `r KrillT.quantiles[2]`, represented by the line at the bottom of the central box. 
-  This is called the *first quartile*, or $Q_1$.
-* **Bottom line**:
-  The smallest number of eggs is `r KrillT.quantiles[1]`. 
+1. *Top line*:
+   The *largest* number of eggs is `r KrillT.quantiles[5]`.
+2. *Second line from top*:
+   75% of the observations are smaller than about `r KrillT.quantiles[4]`, represented by the line at the top of the central box. 
+   This is called the *third quartile* ($Q_3$).
+3. *Middle line*:
+   50% of the observations are smaller than about `r KrillT.quantiles[3]`, represented by the line in the centre of the central box. 
+   This is an 'average' value for the data, the *second quartile* ($Q_2$).
+4. *Second line from bottom*:
+   25% of the observations are smaller than about `r KrillT.quantiles[2]`, represented by the line at the bottom of the central box. 
+   This is called the *first quartile* ($Q_1$).
+5. *Bottom line*:
+   The *smallest* number of eggs is `r KrillT.quantiles[1]`. 
 
 
-```{r BoxplotKrillTreatment, fig.cap="A boxplot for the krill-egg data; the boxplot and dotplot just for the treatment group", fig.width=6, fig.height=6.5, out.width='60%', fig.align="center", }
+```{r BoxplotKrillTreatment, fig.cap="A boxplot for the krill-egg data; the boxplot and dotplot just for the treatment group. Thwe circled numbers on the left refer to the explantions in-text.", fig.width=6, fig.height=6.5, out.width='60%', fig.align="center" }
 Eggs.quantiles <- quantile(Eggs.T)
 out <- boxplot( list(Treatment = Eggs.T), 
             main = "A boxplot of the number of\neggs laid by krill: Treatment group",
@@ -2495,23 +2604,23 @@ bxp(out, # Replot to put over the dashed lines
 text( 1.5, Eggs.quantiles[5], 
       "Maximum value", 
       pos = 1, 
-      cex = 0.85)
+      cex = 0.9)
 text( 1.5, Eggs.quantiles[4], 
       "75% smaller than this", 
       pos = 3, 
-      cex = 0.85)
+      cex = 0.9)
 text( 1.5, Eggs.quantiles[3], 
       "Middle value\n('average')", 
       pos = 3, 
-      cex = 0.85)
+      cex = 0.9)
 text( 1.5, Eggs.quantiles[2], 
       "25% smaller\nthan this", 
       pos = 3, 
-      cex = 0.85)
-text( 1.75, Eggs.quantiles[1], 
+      cex = 0.9)
+text( 1.5, Eggs.quantiles[1], 
       "Minimum value", 
       pos = 1, 
-      cex = 0.85)
+      cex = 0.9)
 stripchart( list(Treatment = Eggs.T), 
             vertical = TRUE, 
             at = 2.0, 
@@ -2571,6 +2680,18 @@ mtext(Eggs.quantiles,
       las = 1,
       line = 1,
       cex = 1)
+
+axis(side=1)
+
+points(x = rep(0.75, length(Eggs.quantiles) ),
+      y = Eggs.quantiles,
+      pch = 1,
+      cex = 2.5)
+text( x = rep(0.75, length(Eggs.quantiles) ),
+      y = Eggs.quantiles,
+      label = rev(c("1", "2", "3", "4", "5")),
+      cex = 0.9
+      )
 ```
 
 
@@ -2579,7 +2700,7 @@ Computer software has identified this observation as potentially unusual (in thi
 (Unusually large or small observations are called *outliers*.)
 The values of the quantiles ($Q_1$, $Q_2$ and $Q_3$) are computed as usual (with outliers included).
 
-For the *Control* data, the largest observation (31 eggs) is deemed unusually large (explained in Sect. \@ref(OutliersIQRrule)), and then the boxplot is constructed like this (Fig. \@ref(fig:BoxplotKrillControl)):
+For the *Control* data, the largest observation (31 eggs) is deemed unusually large (explained in Sect. \@ref(OutliersIQRrule)), and then the boxplot is constructed as follows (Fig. \@ref(fig:BoxplotKrillControl)):
 
 ```{r}
 outC <- boxplot( list(Treatment = Eggs.C),
@@ -2588,18 +2709,23 @@ Eggs.quantiles <- outC$stats
 ```
 
 
-* The *largest* number of eggs (*excluding* the outlier of 31) is about `r Eggs.quantiles[5]`: 
+* *Top line*:
+  The *largest* number of eggs (*excluding* the outlier of 31) is about `r Eggs.quantiles[5]`: 
   This is the line at the top of the boxplot.
-* 75% of the observations (*including* the 31 eggs) are smaller than about `r Eggs.quantiles[4]`, represented by the line at the top of the central box. 
+* *Second line from top*:
+  75% of the observations (*including* the 31 eggs) are smaller than about `r Eggs.quantiles[4]`, represented by the line at the top of the central box. 
   This is called the *third quartile*, or $Q_3$.
-* 50% of the observations (*including* the 31 eggs) are smaller than about `r Eggs.quantiles[3]`,  represented by the line in the centre of the central box.
+* *Middle line*:
+  50% of the observations (*including* the 31 eggs) are smaller than about `r Eggs.quantiles[3]`,  represented by the line in the centre of the central box.
   This is an 'average' value for the data, the *second quartile*, or $Q_2$.
-* 25% of the observations (*including* the 31 eggs) are smaller than about `r Eggs.quantiles[2]`,  represented by the line at the bottom of the central box.
+* *Second line from bottom*:
+  25% of the observations (*including* the 31 eggs) are smaller than about `r Eggs.quantiles[2]`,  represented by the line at the bottom of the central box.
   This is called the *first quartile*, or $Q_1$.
-* The smallest number of eggs is `r Eggs.quantiles[1]`. 
+* *Bottom line*:
+  The smallest number of eggs is `r Eggs.quantiles[1]`. 
   This is the line at the bottom of the boxplot.
 
-Clearly, decimal numbers of eggs (such as $Q_2 = `r Eggs.quantiles[2]`$) is not observable; however, with `r length(Eggs.C)` observations, finding exactly the value for which 25% of observations are smaller is not possible.
+Clearly, decimal numbers of eggs (such as $Q_2 = `r Eggs.quantiles[2]`$) are not observable; however, with `r length(Eggs.C)` observations, finding exactly the value for which 25% of observations are smaller is not possible.
 Software uses approximations to compute these values (and different software may use different rules, and hence may produce slightly different values for quartiles).
 
 
@@ -2689,6 +2815,10 @@ mtext(c(Eggs.quantiles, "31"),
       las = 1,
       line = 1,
       cex = 1)
+
+
+axis(side=1)
+
 ```
 
 
@@ -2700,11 +2830,11 @@ For this reason, boxplots are excellent for *comparing* distributions, but histo
 
 ::: {.example #BoxplotsExplained name="Boxplots explained"}
 The NHANES study collects large amounts of information from about 10\,000 Americans each year (Sect. \@ref(NHANESGraphs)).
-Consider the boxplot of the age of the Americans
+Consider the boxplot of ages
 `r if (knitr::is_latex_output()) {
-   ' from 1999--2004, shown in Fig. \\@ref(fig:BoxplotAge). (The online version has an animation.)'
+   ' from the 1999--2004 participants (Fig. \\@ref(fig:BoxplotAge; the online version has an animation).'
 } else {
-   ' from 1999--2004. The animation below shows how the boxplot of the age of the Americans in the sample is constructed.'
+   ' from the 1999--2004 participants. The animation below shows how the boxplot of the age of the Americans in the sample is constructed.'
 }`
 The "average" age of the subjects is about 38 years, and the ages range from almost zero to about 80 years of age.
 :::
@@ -2808,63 +2938,12 @@ if (knitr::is_html_output()) {
 
 ```{r BoxplotAge, fig.align="center", fig.width=5,  fig.height=3.5, fig.cap="The boxplot for the age of people in the NHANES data" }
 if (knitr::is_latex_output()){
-  for (i in 6:6){
     boxplot( NHANES$Age, 
              col = plot.colour,
              las = 1,
              ylim = c(-3, 85),
              main = "Boxplot of Age (NHANES data)",
              ylab = "Age (in years)")
-    
-    if ( i == 2){
-      arrows(left, 
-             Qs[5],
-             axis.edge, 
-	     Qs[5],
-             angle = angle,
-             lwd = 2)
-      text(mid, Qs[5], 
-           label = "Maximum", pos=1)
-    }
-    if ( i == 3 ){
-      arrows(left, 
-             Qs[4],
-             axis.edge, 
-	     Qs[4],
-             angle = angle,
-             lwd = 2)
-      text(mid, Qs[4], 
-           label = expression( italic(Q)[3]), pos = 1)
-    }
-    if (i == 4){
-      arrows(left, 
-             Qs[3],
-             axis.edge, 
-	     Qs[3],
-             angle = angle,
-             lwd = 2)
-      text(mid, Qs[3], 
-           label = expression( italic(Q)[2]), pos = 1)
-    } 
-    if (i == 5){  
-      arrows(left, Qs[2],
-             axis.edge, Qs[2],
-             angle = angle,
-             lwd = 2)
-      text(mid, Qs[2], 
-           label = expression( italic(Q)[1]), pos = 1)
-    }
-    if ( i == 6){    
-      arrows(left, 
-             Qs[1],
-             axis.edge, 
-	           Qs[1],
-             angle = angle,
-             lwd = 2)
-      text(mid, Qs[1], 
-           label = "Minimum", pos=3)
-    }
-  }
 }
 ```
 
@@ -2975,7 +3054,7 @@ Scatterplots display the relationship between *two quantitative variables*.
 Conventionally, when appropriate, the response variable is on the vertical axis, and the explanatory variable is on the horizontal axis.
 As with any graph, describing the message in the graph is important, because the purpose of a graph is to display the information in the clearest, simplest possible way.
 *Scatterplots* can be described by briefly explaining how the variables are related to each other.
-Scatterplots are studied again later (Sect. \@ref(Scatterplots)).
+Scatterplots are studied further in Sect. \@ref(Scatterplots).
 
 
 
@@ -2992,7 +3071,7 @@ Clearly, the greater the percentage body fat, the greater the sum of skin folds,
 :::
 
 	
-```{r ScatterAIS, results ='hide', fig.cap="Scatterplot of SSF against percentage body fat for male AIS athletes", fig.width=4.5, fig.height=4, fig.align="center"}
+```{r ScatterAIS, results ='hide', fig.cap="Scatterplot of SSF against percentage body fat for male AIS athletes", fig.width=4.5, fig.height=4, fig.align="center", out.width='50%'}
 data(AISsub)
 
 plot( SSF ~ PBF,
@@ -3013,13 +3092,12 @@ title(sub = "(Note: Units of measurement for SSF not given)",
 
 The relationship between two qualitative variables can be explored using:
 
-* **Stacked bar charts** (Sect. \@ref(StackedBarCharts));
-* **Side-by-side bar charts** (Sect. \@ref(SideBySideBarCharts)); or
-* **Dot charts** (Sect. \@ref(TwoWayCountsDotCharts)).
+* *Stacked bar charts* (Sect. \@ref(StackedBarCharts));
+* *Side-by-side bar charts* (Sect. \@ref(SideBySideBarCharts)); or
+* *Dot charts* (Sect. \@ref(TwoWayCountsDotCharts)).
 
-Many variations of these graphs are possible (Sect. \@ref(OtherVariations)): using counts or percentages; variable levels on the vertical or horizontal axis.
 As an example, a study of road kill [@data:Russell2009:Possums] produced the data in Table \@ref(tab:PossumRoadkillNumber).
-The two qualitative variables are: the season (ordinal, with four levels); and the sex (nominal, with three levels including 'Unknown').
+The two qualitative variables are the *season* (ordinal, with four levels) and the *sex* (nominal, with three levels including 'Unknown').
 
 
 ```{r PossumRoadkillNumber}
@@ -3046,15 +3124,39 @@ rownames(Counts2) <- c("Aut.",
                        "Spr.", 
                        "Sum.")
 
+Percentages <- t( apply(Counts2, 1,
+                  function(x){ round(x / sum(x) * 100, 1)}))
+colnames(Percentages) <- c("Unknown", "Males", "Females")
+
+
 if( knitr::is_latex_output() ) {
-  knitr::kable(Counts,
+  T1 <- knitr::kable(Counts,
                format = "latex",
                longtable = FALSE,
                align = c("r", "c", "c", "c"),
-               booktabs = TRUE,
-               caption = "The number of possums found as road kill, by sex and season") %>%
-    kable_styling(font_size = 10) %>%
+               booktabs = TRUE) %>%
+    #kable_styling(font_size = 10) %>%
     row_spec(0, bold = TRUE)
+  
+  rownames(Percentages) <- c("Autumn", 
+                             "Winter",
+                             "Spring",
+                             "Summer")
+    T2 <- knitr::kable(Percentages,
+               format = "latex",
+               longtable = FALSE,
+               align = c("r", "r", "r"),
+               booktabs = TRUE) %>%
+    #kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+    
+   out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "PossumRoadkillNumber",
+                       caption = "The number of possums found as road kill, by sex and season (left). The percentages of possums found as road kill by sex, within each season (i.e., rows sum to 100\\%) (right).") %>% 
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out) 
+  out2  
 }
 if( knitr::is_html_output() ) {
   knitr::kable(Counts,
@@ -3158,7 +3260,7 @@ Instead of stacking the bars within each season on top of each other, the bars c
 Instead of bars, dots (or other symbols) can be used in place of a side-by-side bar chart (Fig. \@ref(fig:PossumDotCharts)).
 
 
-```{r PossumDotCharts, fig.height=5, fig.width=5.0, fig.cap="A dot chart of the number of possums found as road kill, by sex and season", fig.align="center"}
+```{r PossumDotCharts, fig.height=4.5, fig.width=5.0, fig.cap="A dot chart of the number of possums found as road kill, by sex and season", fig.align="center"}
 colnames(Counts) <- c("Unknown", 
                       "Males", 
                       "Females")
@@ -3173,24 +3275,28 @@ dotchart(Counts,
 
 ### Other variations {#OtherVariations}
 
-Many variations of these bar charts are possible, such as using:
+Many variations of these charts are possible, such as using:
 
-* horizontal or vertical bars;
-* percentages or counts;
-* stacked bar charts, side-by-side bar charts, or dot charts;
-* either the sex of the possum or the season as the first division of the data.
+* a stacked bar chart, side-by-side bar chart, or dot chart can be used;
+* percentages or counts can be used;
+* the counts (or percentage) can appear on either the horizontal or vertical axis;
+* either the sex of the possum or the season can be used as the first division of the data.
 
 Some of these variations are shown in 
 `r if (knitr::is_latex_output()) {
-   'Fig. \\@ref(fig:PossumBarChartsLATEX).'
+   'Fig.\\ \\@ref(fig:PossumBarChartsLATEX).'
 } else {
-   'Fig. \\@ref(fig:PossumBarChartsHTML).'
+   'Fig.\\ \\@ref(fig:PossumBarChartsHTML).'
+}`
+A table is also possible, of either counts
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:PossumRoadkillNumber), left table) or percentages (right  table).'
+} else {
+   'Table\\ \\@ref(tab:PossumRoadkillPercentages) or percentages (Table\\ \\@ref(PossumRoadkillPercentagesHTML)).'
 }`
 
-A table is also possible, of either counts (Table \@ref(tab:PossumRoadkillNumber)) or percentages (Table \@ref(tab:PossumRoadkillPercentages)).
 
-
-```{r PossumBarChartsLATEX, fig.height=8, fig.width=8.0, out.width='100%', fig.cap="Three graphs: The number or percentage of possums found as road kill, by sex and season", fig.align="center"}
+```{r PossumBarChartsLATEX, fig.height=8, fig.width=8.0, out.width='100%', fig.cap="Four graphs: The number or percentage of possums found as road kill, by sex and season, and a dot chart", fig.align="center"}
 
 if (knitr::is_latex_output()) {
   par( mfrow = c(2, 2))
@@ -3398,10 +3504,22 @@ if (knitr::is_latex_output()) {
          line = 3, 
          cex = 1, 
          padj = 0.5)
+  
+  
+  
+colnames(Counts) <- c("Unknown", 
+                      "Males", 
+                      "Females")
+
+dotchart( t(Counts),
+         main = "Dot chart of possum road deaths\nby season and sex of possum",
+         xlim = c(0, 80),
+ 	       xlab = "Number of possums",
+	       pch = c(1, 2, 3, 4))
 }
 ```
 
-```{r PossumBarChartsHTML, fig.height=10, fig.width=4.0, fig.cap="Three graphs: The number or percentage of possums found as road kill, by sex and season", fig.align="center"}
+```{r PossumBarChartsHTML, fig.height=10, fig.width=4.0, fig.cap="Four graphs: The number or percentage of possums found as road kill, by sex and season, and a dot chart", fig.align="center"}
 
 if (knitr::is_html_output()) {
   par( mfrow = c(3, 1))
@@ -3606,23 +3724,26 @@ if (knitr::is_html_output()) {
          line = 3, 
          cex = 1, 
          padj = 0.5)
+  
+  
+  
+  colnames(Counts) <- c("Unknown", 
+                      "Males", 
+                      "Females")
+
+dotchart( t(Counts),
+         main = "Dot chart of possum road deaths\nby season and sex of possum",
+         xlim = c(0, 80),
+ 	       xlab = "Number of possums",
+	       pch = c(1, 2, 3, 4))
 }
 ```
 
 
-```{r PossumRoadkillPercentages}
+<!-- tables are side-by-side in LaTeX, so oly need separate one for HTML -->
+```{r PossumRoadkillPercentagesHTML}
 colnames(Percentages) <- c("Unknown", "M", "F")
 
-if( knitr::is_latex_output() ) {
-  knitr::kable(Percentages,
-               format = "latex",
-               longtable = FALSE,
-               align = c("r", "r", "r"),
-               booktabs = TRUE,
-               caption = "The percentages of possums found as road kill by sex, within each season (i.e., rows sum to 100\\%)") %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE)
-}
 if( knitr::is_html_output() ) {
   knitr::kable(Percentages,
                format = "html",
@@ -3636,7 +3757,6 @@ if( knitr::is_html_output() ) {
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
 Of all these displays, which one do you think best communicates the message in the data?
-(Indeed, what *is* the main message that you would like to get across?)
 :::
 
 
@@ -3647,29 +3767,29 @@ Of all these displays, which one do you think best communicates the message in t
 ## Other types of graphs {#GraphsOther}
 
 Many types of graphs have been studied, but sometimes other plots are useful.
-Always remember the driving principle:
+The same principle applies:
 
 > The purpose of a graph is to display the information in the clearest, simplest possible way, to help the reader understand the message(s) in the data.
 
 In this section, graphs for some other situations are discussed:
 
-* **Geographic plots** (Sect. \@ref(GeographicPlots)): 
+* *Geographic plots* (Sect. \@ref(GeographicPlots)): 
   Useful when the RQ concerns geographical regions.
-* **Case-profile plots** (Sect. \@ref(CaseProfilePlot)): 
+* *Case-profile plots* (Sect. \@ref(CaseProfilePlot)): 
   Useful when the same units are measured over a small number of time points, or are otherwise connected.
-* **Histogram of differences** (Sect.\@ref(HistoDiffPlot)): 
+* *Histogram of differences* (Sect.\@ref(HistoDiffPlot)): 
   Useful for within-subject comparisons for *two* comparisons.
-* **Time plots** (Sect. \@ref(TimePlots)): 
-  Useful when the units are measured over a large number of time points.
+* *Time plots* (Sect. \@ref(TimePlots)): 
+  Useful when the units vary over a large number of time points.
 
 
 ### Geographic plots {#GeographicPlots}
 
-When data are summarised over a geographic area, plotting accordingly can be useful.
+Data with a geographic component can be plotted accordingly.
 
 
 ::: {.example #GeographicPlots name="Geographics plots"}
-A study examining lower-limb amputation incidence in Australia (based on @data:Dillon2017:Geographic) produced the graphs in Fig. \@ref(fig:AmputationAustralia).
+A study examining lower-limb amputation incidence in Australia (@data:Dillon2017:Geographic) produced the graphs in Fig. \@ref(fig:AmputationAustralia).
 Clearly, the incidence of amputation is higher in the Northern Territory than other parts of Australia for both females and males.
 Furthermore, males have higher incidence of amputation than females in every jurisdiction.
 :::
@@ -3815,12 +3935,12 @@ legend("top",
 
 ### Case-profile plots {#CaseProfilePlot}
 
-Sometimes the same variable is measured on each unit of analysis more than once (i.e., *within*-individual comparisons for each units of analysis) but only a small number of times.
-Then a *case-profile plot* can be used: a plot that show how the response variable changes for each unit of analysis.
+Sometimes the same variable is measured on each unit of analysis more than once (i.e., *within*-individual comparisons for each unit of analysis) but only a small number of times.
+Then a *case-profile plot* can be used: a plot showing how the response variable changes for each unit of analysis.
 Examples of this type of data include:
 
 * Measurements of household water consumption before and after installing water-saving devices, for many households.
-* Blood pressure measurements taken from left arms and right arms, for many people.
+* Blood pressure measurements from left arms and right arms, for many people.
 
 In both cases, the data are *paired* (*two* observations per unit of analysis) as each unit of analysis gets a pair of similar measurements.
 
@@ -3832,7 +3952,6 @@ A study of children with atopic asthma [@data:Lothian2006:Whey] included a graph
 } else {
    '(Fig. \\@ref(fig:PairedGraphCaseProfileHTML), top panel).'
 }`
-
 Each line on the graph represents one person.
 :::
 
@@ -3856,11 +3975,12 @@ if( knitr::is_latex_output() ) {
         las = 1,
         axes = FALSE,
         ylim = c(0, 6000),
+        xlim = c(0.8, 2.2),
         xlab = "Time",
         ylab = "IgE (in micrograms/L)")
   axis(side = 1, 
        at = 1:2, 
-       labels = c("Pre", "Post"))
+       labels = c("Pre-intervention", "Post-intervention"))
   box()
   
   axis(side = 2, 
@@ -3913,11 +4033,12 @@ if( knitr::is_html_output() ) {
         las = 1,
         axes = FALSE,
         ylim = c(0, 6000),
+        xlim = c(0.8, 2.2),
         xlab = "Time",
         ylab = "IgE (in micrograms/L)")
   axis(side = 1, 
        at = 1:2, 
-       labels = c("Pre", "Post"))
+       labels = c("Pre-intervention", "Post-intervention"))
   box()
   
   axis(side = 2, 
@@ -3952,8 +4073,6 @@ if( knitr::is_html_output() ) {
 ### Histogram of differences {#HistoDiffPlot}
 
 An alternative way to present paired data (two observations made for each unit of analysis) is to produce a histogram of the *changes* for each individual.
-This may be easier to produce in software than a case-profile plot. 
-
 Consider the person in the case-profile plot whose line is at the top in 
 `r if (knitr::is_latex_output()) {
    '(Fig. \\@ref(fig:PairedGraphCaseProfileLATEX)).'
@@ -4018,35 +4137,14 @@ A dashed line has been used to show an *increase* in energy usage, and a solid l
 data(InsulationBeforeAfter)
 
 InsulationBeforeAfter$Diff <- InsulationBeforeAfter$Before - InsulationBeforeAfter$After
-
-if( knitr::is_latex_output() ) {
-   kable( cbind(InsulationBeforeAfter$Before, 
-                InsulationBeforeAfter$After,
-                InsulationBeforeAfter$Diff ),
-          format = "latex",
-          booktabs = TRUE,
-          longtable = FALSE,
-          col.names = c("Before", 
-                        "After", 
-                        "Energy savings"),
-          caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") %>% 
-      kable_styling(font = 10) %>%
-      row_spec(0, bold = TRUE)
-}
-if( knitr::is_html_output() ) {
-     DT::datatable( round(InsulationBeforeAfter, 1),
-                    fillContainer = FALSE, # Make more room, so we don't just have ten values
-                    options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
-                    caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)")
-}
 ```
 
 For these data, finding the difference in energy consumption for each house is possible, since the same unit of analysis is measured twice on the same variable: energy consumption *before* and *after* adding insulation.
 The difference (or *saving*) in energy consumption for each house can be graphed using a histogram, stemplot, or dot chart (Fig. \@ref(fig:DataInsulationGraphPlots), right panel).
 
 
-```{r DataInsulationGraphPlots, fig.cap="Two plots of the energy consumption data. The dotted line in the top panel shows the one home where energy consumption increased.", fig.align="center", fig.width=10, fig.height=3, out.width='95%'}
-par( mfrow=c(1, 2))
+```{r DataInsulationGraphPlots, fig.cap="Two plots of the energy consumption data. The dotted line in the left panel shows the one home where energy consumption increased.", fig.align="center", fig.width=10, fig.height=3, out.width='95%'}
+par( mfrow = c(1, 2))
 
 
 WhichTime <- c(
@@ -4215,13 +4313,13 @@ legend("bottom",
 
 
 ::: {.example #TimePlots2 name="Time plots"}
-A study of the number of lynx trapped in the Mackenzie River area of Canada [@elton1942ten] each year from 1821 to 1934 produced the data shown in 
+The number of lynx trapped in the Mackenzie River area of Canada [@elton1942ten] each year from 1821 to 1934 is shown in 
 `r if (knitr::is_latex_output()) {
-   '(Fig. \\@ref(fig:BabyBoomTimeLATEX), right panel).'
+   'Fig.\\ \\@ref(fig:BabyBoomTimeLATEX) (right panel).'
 } else {
-   '(Fig. \\@ref(fig:BabyBoomTimeHTML), bottom panel).'
+   'Fig.\\ \\@ref(fig:BabyBoomTimeHTML) (bottom panel).'
 }`
-A regular cycle may be present, where the number of trapping is very large.
+A regular cycle may be present, when the number of trapping is very large.
 :::
 
 
@@ -4232,18 +4330,18 @@ A regular cycle may be present, where the number of trapping is very large.
 
 Always remember the purpose of a graph: to display the information in the *simplest* and *clearest* possible way, to help the reader understand the message(s) in the data.
 
-Instead, sometimes graphs are constructed to appear fancy or clever, rather than focusing on clear communication.
-One way people try to be fancy is to use a third dimension when it is not needed.
+Instead, sometimes graphs are constructed to appear fancy, rather than focusing on clear communication.
+One way people try to be fancy is to use a third dimension when not needed.
 This is poor: the resulting graphs can be misleading and hard to read [@siegrist1996use].
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-In the NHANES study [@data:NHANES3:Data], the age and sex of each participant were recorded(among numerous other variables).
+In the NHANES study [@data:NHANES3:Data], the age and sex of each participant were recorded (among other variables).
 Using Fig. \@ref(fig:Bar3D), can you easily determine if more females or more males are in each age group?
 :::
 
 
-```{r Bar3D, fig.cap="A three-dimensional bar chart of the NHANES data", fig.align="center", fig.width=5.0, fig.height=3, out.width="70%"}
+```{r Bar3D, fig.cap="A three-dimensional bar chart of the NHANES data", fig.align="center", fig.width=4, out.width="40%"}
 AgeD.Gender <- xtabs( ~ AgeD + NHANES$Gender)
 
 TwoDData <- data.frame(
@@ -4258,9 +4356,10 @@ TwoDData <- data.frame(
 
 par(mar = c(0, 0, 0, 0) + 0.1)
 
-
 lattice::cloud(Counts ~ factor(Gender) + factor(Age), 
-               data = TwoDData, 
+               data = TwoDData,
+               #panel.aspect = 2,
+               aspect = c(2, 1), # Wider plots
                panel.3d.cloud = panel.3dbars, 
                col.facet = c( rep('#FFFAF0', 7), 
                               rep('#5844ff', 7)),
@@ -4316,6 +4415,166 @@ legend("top",
 ```
 
 
+
+
+
+```{r}
+
+TwoDData.mat <- array( dim = c(2, 7))
+TwoDData.mat[1, ] <- TwoDData$Counts[1:7]
+TwoDData.mat[2, ] <- TwoDData$Counts[8:14]
+rownames(TwoDData.mat) <- c("Female", "Male")
+colnames(TwoDData.mat) <- unique(TwoDData$Age)
+
+col.mat <- TwoDData.mat
+col.mat[1, ] <- rep(1, 7)
+col.mat[2, ] <- rep(2, 7)
+
+cols <- c('#FFFAF0', '#5844ff')
+
+pmat <- hist3D(z = TwoDData.mat, 
+       x = c(0, 1),
+       y = 1:7,
+       col = cols,
+       colvar = col.mat,
+       border = "black",
+       colkey = FALSE,
+       facets = TRUE,
+       xlab = "Sex",
+       ylab = "Age group",
+       zlab = "Number",
+       main = "Main title",
+       space = 0.4,
+       axes = FALSE,
+       ticktype = "detailed",
+       zlim = c(0, 850),
+       d = 5)
+
+
+# TICKS
+### See: http://entrenchant.blogspot.com/2014_03_01_archive.html
+
+tick.start <- trans3d(0:1, 0.5, 0, pmat)
+tick.end <- trans3d(0:1, (0 - 0.10), 0, pmat)
+segments(tick.start$x, tick.start$y, tick.end$x, tick.end$y)
+
+tick.start <- trans3d(1.5, 1:7, 0, pmat)
+tick.end <- trans3d(1 + 0.7, 1:7, 0, pmat)
+segments(tick.start$x, tick.start$y, tick.end$x, tick.end$y)
+
+z.axis <- seq(0, 850, by = 50)
+tick.start <- trans3d(-0.5, 0.5, z.axis, pmat)
+tick.end <- trans3d(-0.5, (1 - 0.80), z.axis, pmat)
+segments(tick.start$x, tick.start$y, tick.end$x, tick.end$y)
+
+
+
+# LABELS
+### See: http://entrenchant.blogspot.com/2014_03_01_archive.html
+
+labels <- c('Female', 'Male')
+label.pos <- trans3d(0:1, (0 - 0.25), 0, pmat)
+text(label.pos$x, label.pos$y, labels=labels, adj=c(0, NA), srt=-35, cex=0.9)
+
+labels <- c('alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta', 'iota', 'kappa')
+label.pos <- trans3d((max.x + 0.25), y.axis, min.z, pmat)
+text(label.pos$x, label.pos$y, labels=labels, adj=c(0, NA), cex=0.5)
+
+labels <- as.character(z.axis)
+label.pos <- trans3d(min.x, (min.y - 0.5), z.axis, pmat)
+text(label.pos$x, label.pos$y, labels=labels, adj=c(1, NA), cex=0.5)
+
+
+
+```
+
+
+
+
+---
+
+
+```{r Bar3Dxxxxxxxx, fig.cap="A three-dimensional bar chart of the NHANES data", fig.align="center", fig.width=4, out.width="40%"}
+par(mfrow = c(1, 2),
+    mar = c(0, 0, 0, 0) + 0.1)
+
+
+AgeD.Gender <- xtabs( ~ AgeD + NHANES$Gender)
+
+TwoDData <- data.frame(
+  Counts = c(
+    AgeD.Gender[, 1],  
+    AgeD.Gender[, 2]),
+    Gender = c( rep("F", 7), 
+                rep("M", 7)),
+    Age = levels(AgeD)
+  
+)
+
+#par(mar = c(0, 0, 0, 0) + 0.1)
+
+lattice::cloud(Counts ~ factor(Gender) + factor(Age), 
+               data = TwoDData,
+               #panel.aspect = 2,
+               aspect = c(2, 1), # Wider plots
+               panel.3d.cloud = panel.3dbars, 
+               col.facet = c( rep('#FFFAF0', 7), 
+                              rep('#5844ff', 7)),
+               xbase = 0.4, 
+               ybase = 0.4,
+               scales = list(arrows = FALSE, 
+                             col = 1), 
+               zlim = c(0, 850),
+               zlab = list("Number", 
+                           rot = 95),
+               ylab = list("Age group", 
+                           rot = -50),
+               xlab = list("Gender", 
+                           rot = 23),
+               screen = list(z = 30, 
+                             x = -60), # The view; rotations about axes
+               main = "Number per group",
+               par.settings = list(axis.line = list(col = "transparent"))
+      )
+
+
+
+
+
+locatn <- barplot(t( AgeD.Gender ), 
+        beside = TRUE,
+        legend = FALSE, 
+        las = 2, 
+        cex.names = 0.8,
+        ylim = c(0, 900),
+        args.legend = list(x = "bottom", 
+	                         bg = "white", 
+			  cex = 0.75), 
+        ylab = "Number",
+        xlab = "Age group",
+        main = "Number per group",
+        col = c("#FFFAF0", "#5844ff"))
+#text(locatn[1, 4], 700, "F")
+#text(locatn[2, 4], 700, "M")
+legend("top", 
+       legend = c("Females", 
+                  "Males"), 
+       #levels(NHANES$Gender),
+       bty = "n", 
+       xpd = TRUE, 
+       ncol=2, 
+       cex = 0.9, 
+       fill = c( '#FFFAF0', '#5844ff') )
+
+```
+
+
+
+---
+
+
+
+
 ### Further comments {#GraphsFurtherComments}
 
 Always remember:
@@ -4327,26 +4586,28 @@ The purpose of a graph is to display the information in the simplest and cleares
 
 Helping readers to understand the data is the essence of producing a good graph.
 You should be able to construct the graphs by hand, but usually software is used (e.g., jamovi or SPSS).
-Given the purpose of a graph, communicating what the graph displays should be clear: Graphs need to be clear and well-labelled with captions.
+Graphs need to be clear and well-labelled with captions.
 
 Ensure that you:
 
-* **Do not** add artificial third dimensions, or other 'chart junk' [@su2008s].
-* **Do not** add optical illusions, such as an artificial third dimension.
-* **Do not** make errors.
-
-Ensure that you:
-
-* **Do** add units of measurement and value labels where appropriate.
-* **Do** add titles and axis labels.
-* **Do** ensure the axis scales are appropriate.
-* **Do** add any necessary explanations.
-* **Do** make it easy for the reader to be see how the data answer the RQ (for example, to easily make the comparison of greatest interest).
+* *Do not* add artificial third dimensions, or other 'chart junk' [@su2008s].
+* *Do not* add optical illusions, such as an artificial third dimension.
+* *Do not* make errors.
+* *Do* add units of measurement and value labels where appropriate.
+* *Do* add titles and axis labels.
+* *Do* ensure the axis scales are appropriate.
+* *Do* add any necessary explanations.
+* *Do* make it easy for the reader to be see how the data answer the RQ (for example, to easily make the comparison of greatest interest).
 
 
 ::: {.example #VerticalTruncation name="Truncating bar charts"}
 One common optical illusion occurs when the frequency (or percentage) axis on a bar chart (or dot chart) does not start at zero.
-For example, consider data recording the number of lung cancer cases in various Danish cities [@data:andersen:1977].
+For example, consider data recording the number of lung cancer cases in various Danish cities
+`r if (knitr::is_latex_output()) {
+   '(Fig. \\@ref(fig:LCgraphsPDF)).'
+} else {
+   '(Fig. \\@ref(fig:LCgraphsHTML)).'
+}`
 
 `r if (knitr::is_latex_output()) {
    'Figure \\@ref(fig:BarchartTruncated1) (left panel) shows the original bar chart with the count (vertical) axis starting at zero; the counts in each age group look very similar. In contrast, if the vertical axis starts at 9.75, the counts look very different (Fig. \\@ref(fig:BarchartTruncated1), right panel) for two age categories, suggesting large difference between the number of lung cancer cases. (The online version has an animation.)'
@@ -4380,8 +4641,8 @@ draw.bar <- function( ylim.lower) {
                   ylab = "Number of cases",
                   main = paste("Number of lung cancer cases in Fredericia\n",
 		                           ifelse(ylim.lower == 0,
-		                                  "Vertical axis NOT truncated", 
-				                              paste("Vertical axis truncated at", ylim.lower) 
+		                                  "(Vertical axis NOT truncated)", 
+				                              paste0("(Vertical axis truncated at ", ylim.lower,")") 
 				      )
 				),
                   xpd = FALSE, # BARS **DON'T** GO outside plotting region
@@ -4436,7 +4697,7 @@ if (knitr::is_latex_output()){
 </div>
 
 
-To demonstrate how graphs display data for answering RQs, consider the following RQ:
+To demonstrate how graphs help answer RQs, consider the following RQ:
 
 > Among Americans, is the average direct HDL cholesterol different for current smokers and non-smokers?
 
@@ -4445,8 +4706,8 @@ There is no intervention.
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-As with any study, possible confounding variables should be considered.
-Can you think of any possible confounding variables?\label{thinkBox:ConfoundingVars}   
+As with any study, possible confounding variables should be considered.\label{thinkBox:ConfoundingVars}
+Can you think of any possible confounding variables?
 `r if (!knitr::is_html_output()) '<!--'`
 `r webexercises::hide()`
 Maybe weight... Weight may be related to both the HDL cholesterol concentration *and* the smoking status.
@@ -4455,7 +4716,7 @@ Maybe weight... Weight may be related to both the HDL cholesterol concentration 
 :::
 
 
-Data to answer this (and other) RQs are obtained from the American *National Health and Nutrition Examination Survey* (NHANES) [@data:NHANES3:Data; @data:NHANES3].
+Data to answer this RQs are obtained from the American *National Health and Nutrition Examination Survey* (NHANES) [@data:NHANES3:Data; @data:NHANES3].
 From the NHANES webpage, this survey:
 
 > ... examines a nationally *representative* sample of about 5,000 persons each year... located in counties across the country, 15 of which are visited each year.
@@ -4489,7 +4750,7 @@ The histogram (Fig. \@ref(fig:NHANESHDLHist)) shows that the direct HDL choleste
 The data are slightly skewed right.
 
 
-```{r NHANESHDLHist, fig.cap="A histogram of the direct HDL cholesterol in the NHANES study", fig.align="center", fig.height = 4, fig.width=5}
+```{r NHANESHDLHist, fig.cap="A histogram of the direct HDL cholesterol in the NHANES study. Large outliers exist but are hard to see.", fig.align="center", fig.height = 4, fig.width=5}
 hist(NHANES$DirectChol,
 	xlab = "Direct HDL cholesterol (mmol/L)",
 	ylab = "Frequency",
@@ -4517,7 +4778,7 @@ Even though the NHANES data contains 10\,000 respondents, the bar chart clearly 
 A bar could be added to the bar chart to show the number of non-responses (though it probably isn't necessary): Fig. \@ref(fig:NHANESSmokeBarchart), right panel.
   
 
-```{r NHANESSmokeBarchart, fig.cap="A bar chart of current smoking status for the NHANES data. No response was recorded for many subjects", fig.align="center", fig.height=3.5, fig.width=8.75, out.width='90%'}
+```{r NHANESSmokeBarchart, fig.cap="A bar chart of current smoking status for the NHANES data. No response was recorded for many subjects", fig.align="center", fig.height=3.5, fig.width=7.75, out.width='70%'}
 par(mfrow = c(1, 2))
 
 barplot( table(NHANES$SmokeNow),
@@ -4652,10 +4913,10 @@ if (knitr::is_html_output()){
 ```
 
 
-The NHANES study is an observational study, so confounding is a potential problem (Sect. \@ref(ExtraneousVariables)), so exploring the relationships between the response and extraneous variables, and between the explanatory and extraneous variables, is useful (Fig. \@ref(fig:NHANESplots)).
+The NHANES study is an observational study, so confounding is a potential problem (Sect. \@ref(ExtraneousVariables)), so exploring the relationships involving extraneous variables is useful (Fig. \@ref(fig:NHANESplots)).
 
 
-```{r NHANESplots, fig.cap="Some plots from the NHANES data. Top panels: the response variables and some extraneous variables; bottom panels: the explanatory variable and some extraneous variables", fig.align="center", fig.height=5, fig.width=5, out.width='70%'}
+```{r NHANESplots, fig.cap="Some plots from the NHANES data. Top panels: the response variables and some extraneous variables; bottom panels: the explanatory variable and some extraneous variables", fig.align="center", fig.height=5, fig.width=6, out.width='80%'}
 par( mfrow = c(2, 2),
      mar = c(5, 5, 4, 2) + 0.1 ) # DEFAULT: c(5, 4, 4, 2) + 0.1.
 
@@ -4664,6 +4925,7 @@ plot( DirectChol ~ Weight,
 	    xlab = "Weight (in kg)", 
 	    ylab = "Direct HDL cholesterol\n(mmol/L)",
 	    ylim = c(0, 4),
+      col = plot.colour,
 	    las = 1)
 
 
@@ -4729,15 +4991,15 @@ In general, the 'response' variable is shown on the vertical axis.
 
 
 ```{r GraphsToUse}
-GraphTab <- array( dim=c(2, 2) )
+GraphTab <- array( dim = c(2, 2) )
 colnames(GraphTab) <- c( "Explanatory: Qualitative", 
                          "Explanatory: Quantitative")
 rownames(GraphTab) <- c("Response: Qualitative",
                         "Response: Quantitative")
 
-GraphTab[1, ] <- c("Stacked bar chart; side-by-side bar chart", 
-                   "Boxplot; back-to-back stem; 2-D dot chart")
-GraphTab[2, ] <- c("Boxplot; back-to-back stem; 2-D dot chart", 
+GraphTab[1, ] <- c("Stacked bar; side-by-side bar", 
+                   "Boxplot; back-to-back stem; 2-D dot")
+GraphTab[2, ] <- c("Boxplot; back-to-back stem; 2-D dot", 
                    "Scatterplot")
 
 if( knitr::is_latex_output() ) {
@@ -4747,14 +5009,18 @@ if( knitr::is_latex_output() ) {
         booktabs = TRUE,
         escape = FALSE, # For latex to work in \rightarrow
         caption = "Graphs to use for most situations",
+        linesep = "\\addlinespace",
         align = c("l", "l"))   %>%
    kable_styling(full_width = FALSE, font_size = 10) %>%
   row_spec(0, bold = TRUE) %>% # Columns headings (row 0) in bold
-  column_spec(0, bold = TRUE)     # Row headings in bold
+  column_spec(1, bold = TRUE) %>%     # Row headings in bold
+  column_spec(1, width = "20mm") %>%
+  column_spec(2, width = "40mm") %>%
+  column_spec(3, width = "40mm")
 }
 
 if( knitr::is_html_output() ) {
-  kable(GraphTab,
+    kable(GraphTab,
         format = "html",
         align = c("l", "l"),
         longtable = FALSE,
@@ -4766,9 +5032,9 @@ if( knitr::is_html_output() ) {
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-In each of the following scenarios, select the most appropriate graph to use.
+In the following scenarios, select the most appropriate graph to use.
 
-1. To compare the average number of hours of sunlight exposure per day for female and male teachers.\tightlist
+1. To compare the average number of hours of sunlight exposure per day for female and male teachers. \tightlist
 `r if( knitr::is_html_output()) {longmcq( c(
    "A histogram of the differences", 
    answer = "A boxplot",
@@ -4780,7 +5046,7 @@ In each of the following scenarios, select the most appropriate graph to use.
    answer = "A stacked bar chart",
    "A boxplot",
    "A histogram of the differences") )}`
-3. To compare the average number of hours spent on social media for people aged over 30, to people aged 30 and under.
+3. To compare the average number of hours spent on social media for people aged over 30, people aged 30 to under 50, and people over 50.
 `r if( knitr::is_html_output()) {longmcq( c(
    "A stacked bar chart",
    "A pie chart", 
@@ -5158,8 +5424,6 @@ These add to more than 100%.
 Each individual (person) has information recorded on *two* qualitative variables: (a) which state the person lives in (many levels); and (b) whether or not they own an iPhone ('yes' or 'no').
 For example, the percentages *could* be 53% in Queensland, 61% in NSW, 41% in Victoria, and so on.
 They could possibly add to more than 100%.
-**3.** A pie chart **is suitable**.
-Only one qualitative variable is recorded for each individual (person): their grade.
 
 - Sect. \ref{thinkBox:ConfoundingVars}: Maybe weight... Weight may be related to both the HDL cholesterol concentration *and* the smoking status.
 
