@@ -4330,18 +4330,21 @@ A regular cycle may be present, when the number of trapping is very large.
 
 Always remember the purpose of a graph: to display the information in the *simplest* and *clearest* possible way, to help the reader understand the message(s) in the data.
 
-Instead, sometimes graphs are constructed to appear fancy, rather than focusing on clear communication.
-One way people try to be fancy is to use a third dimension when not needed.
+Graphs should focusing on clear communication, not to appear fancy. 
+One way people try to be fancy is to use an unnecessary third dimension.
 This is poor: the resulting graphs can be misleading and hard to read [@siegrist1996use].
 
 
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
+::: {.example #Bar2D3D name="Two- and three-dimensional plots"}
 In the NHANES study [@data:NHANES3:Data], the age and sex of each participant were recorded (among other variables).
-Using Fig. \@ref(fig:Bar3D), can you easily determine if more females or more males are in each age group?
+Using Fig. \@ref(fig:Bar3D2D) (left panel), can you easily determine if more females or more males are in each age group?
+
+The artificial third dimension makes determining the heights of the bars hard.
+In contrast, a 2-D graph (a side-by-side bar graph; Fig. \@ref(fig:Bar3D2D), right panel) makes it clear whether each age group has more females or more males.
 :::
 
 
-```{r Bar3D, fig.cap="A three-dimensional bar chart of the NHANES data", fig.align="center", fig.width=4, out.width="40%"}
+```{r Bar3D2D, out.width='49%', fig.width=c(5, 3.75), fig.height=c(5, 3.5), fig.align="center", fig.cap="Two plots of the NHANES participants, divided by age group and sex. Left: A three-dimensional bar chart; right: a side-by-side bar chart", fig.show="hold"}
 AgeD.Gender <- xtabs( ~ AgeD + NHANES$Gender)
 
 TwoDData <- data.frame(
@@ -4353,73 +4356,15 @@ TwoDData <- data.frame(
     Age = levels(AgeD)
   
 )
-
-par(mar = c(0, 0, 0, 0) + 0.1)
-
-lattice::cloud(Counts ~ factor(Gender) + factor(Age), 
-               data = TwoDData,
-               #panel.aspect = 2,
-               aspect = c(2, 1), # Wider plots
-               panel.3d.cloud = panel.3dbars, 
-               col.facet = c( rep('#FFFAF0', 7), 
-                              rep('#5844ff', 7)),
-               xbase = 0.4, 
-               ybase = 0.4,
-               scales = list(arrows = FALSE, 
-                             col = 1), 
-               zlim = c(0, 850),
-               zlab = list("Number", 
-                           rot = 95),
-               ylab = list("Age group", 
-                           rot = -50),
-               xlab = list("Gender", 
-                           rot = 23),
-               screen = list(z = 30, 
-                             x = -60), # The view; rotations about axes
-               main = "Number per group",
-               par.settings = list(axis.line = list(col = "transparent"))
-      )
-```
-
-
-The artificial third dimension makes determining the heights of the bars hard.
-In contrast, a 2-D graph (a side-by-side bar graph; Fig. \@ref(fig:Bar2D)) makes it clear whether each age group has more females or more males.
-
-
-```{r Bar2D, fig.cap="A side-by-side bar chart of treatment data", fig.align="center", fig.width=3.75, fig.height=3.5, out.width='40%'}
-locatn <- barplot(t( AgeD.Gender ), 
-        beside = TRUE,
-        legend = FALSE, 
-        las = 2, 
-        cex.names = 0.8,
-        ylim = c(0, 900),
-        args.legend = list(x = "bottom", 
-	                         bg = "white", 
-			  cex = 0.75), 
-        ylab = "Number",
-        xlab = "Age group",
-        main = "Number per group",
-        col = c("#FFFAF0", "#5844ff"))
-#text(locatn[1, 4], 700, "F")
-#text(locatn[2, 4], 700, "M")
-legend("top", 
-       legend = c("Females", 
-                  "Males"), 
-       #levels(NHANES$Gender),
-       bty = "n", 
-       xpd = TRUE, 
-       ncol=2, 
-       cex = 0.9, 
-       fill = c( '#FFFAF0', '#5844ff') )
-
-```
-
-
-
-
-
-```{r}
-
+TwoDData <- data.frame(
+  Counts = c(
+    AgeD.Gender[, 1],  
+    AgeD.Gender[, 2]),
+    Gender = c( rep("F", 7), 
+                rep("M", 7)),
+    Age = levels(AgeD)
+  
+)
 TwoDData.mat <- array( dim = c(2, 7))
 TwoDData.mat[1, ] <- TwoDData$Counts[1:7]
 TwoDData.mat[2, ] <- TwoDData$Counts[8:14]
@@ -4432,6 +4377,9 @@ col.mat[2, ] <- rep(2, 7)
 
 cols <- c('#FFFAF0', '#5844ff')
 
+#par( mfrow = c(1, 2), mar = c(0, 0, 4, 3) + 0.1 ) # DEFAULT: c(5, 4, 4, 2) + 0.1.
+par( mar = c(0, 0, 4, 3) + 0.1 ) # DEFAULT: c(5, 4, 4, 2) + 0.1.
+
 pmat <- hist3D(z = TwoDData.mat, 
        x = c(0, 1),
        y = 1:7,
@@ -4443,103 +4391,137 @@ pmat <- hist3D(z = TwoDData.mat,
        xlab = "Sex",
        ylab = "Age group",
        zlab = "Number",
-       main = "Main title",
+       main = "Participants by group",
        space = 0.4,
        axes = FALSE,
        ticktype = "detailed",
        zlim = c(0, 850),
+       ylim = c(0.5, 7.5),
+       xlim = c(-0.5, 1.5),
        d = 5)
+
+
+# Set vars
+x.axis <- 0:1
+min.x <- -0.5
+max.x <- 1.5
+y.axis <- 1:7
+min.y <- 0.5
+max.y <- 7.5
+z.axis <- c( seq(0, 800, 
+                 by = 100), 
+             850)
+min.z <- 0
+max.z <- 850
+
+
+# LINES
+lines(trans3d(x = x.axis, 
+              y = min.y, 
+              z = min.z, 
+              pmat) , 
+      col = "black")
+lines(trans3d(x = max.x, 
+              y = y.axis, 
+              z = min.z, 
+              pmat) , 
+      col = "black")
+lines(trans3d(x = min.x, 
+              y = min.y, 
+              z = z.axis, 
+              pmat) , 
+      col = "black")
+
 
 
 # TICKS
 ### See: http://entrenchant.blogspot.com/2014_03_01_archive.html
+tick.start <- trans3d(x = x.axis, 
+                      y = min.y, 
+                      z = min.z, 
+                      pmat)
+tick.end <- trans3d(x = x.axis, 
+                    y = (min.y - 0.25), 
+                    z = min.z, 
+                    pmat)
+segments(x0 = tick.start$x, 
+         y0 = tick.start$y, 
+         x1 = tick.end$x, 
+         y1 = tick.end$y)
 
-tick.start <- trans3d(0:1, 0.5, 0, pmat)
-tick.end <- trans3d(0:1, (0 - 0.10), 0, pmat)
-segments(tick.start$x, tick.start$y, tick.end$x, tick.end$y)
+tick.start <- trans3d(x = max.x,
+                      y = y.axis, 
+                      z = min.z, 
+                      pmat)
+tick.end <- trans3d(x = max.x + 0.20, 
+                    y = y.axis, 
+                    z = min.z, 
+                    pmat)
+segments(x0 = tick.start$x, 
+         y0 = tick.start$y, 
+         x1 = tick.end$x, 
+         y1 = tick.end$y)
 
-tick.start <- trans3d(1.5, 1:7, 0, pmat)
-tick.end <- trans3d(1 + 0.7, 1:7, 0, pmat)
-segments(tick.start$x, tick.start$y, tick.end$x, tick.end$y)
-
-z.axis <- seq(0, 850, by = 50)
-tick.start <- trans3d(-0.5, 0.5, z.axis, pmat)
-tick.end <- trans3d(-0.5, (1 - 0.80), z.axis, pmat)
-segments(tick.start$x, tick.start$y, tick.end$x, tick.end$y)
+tick.start <- trans3d(x = min.x, 
+                      y = min.y, 
+                      z = z.axis, 
+                      pmat)
+tick.end <- trans3d(x = min.x, 
+                    y = (min.y - 0.20), 
+                    z = z.axis, 
+                    pmat)
+segments(x0 = tick.start$x, 
+         y0 = tick.start$y, 
+         x1 = tick.end$x, 
+         y1 = tick.end$y)
 
 
 
 # LABELS
 ### See: http://entrenchant.blogspot.com/2014_03_01_archive.html
 
-labels <- c('Female', 'Male')
-label.pos <- trans3d(0:1, (0 - 0.25), 0, pmat)
-text(label.pos$x, label.pos$y, labels=labels, adj=c(0, NA), srt=-35, cex=0.9)
+labels <- c("F", 
+            "M")
+label.pos <- trans3d(x = x.axis, 
+                     y = (min.y - 0.95),
+                     z = min.z, 
+                     pmat)
+text(x = label.pos$x, 
+     y = label.pos$y, 
+     labels = labels, 
+     adj = c(0, NA), 
+     #srt = 270, 
+     cex = 0.95)
 
-labels <- c('alpha', 'beta', 'gamma', 'delta', 'epsilon', 'zeta', 'eta', 'theta', 'iota', 'kappa')
-label.pos <- trans3d((max.x + 0.25), y.axis, min.z, pmat)
-text(label.pos$x, label.pos$y, labels=labels, adj=c(0, NA), cex=0.5)
+
+labels <- levels(factor(TwoDData$Age))
+label.pos <- trans3d(x = (max.x + 0.25), 
+                     y = y.axis,
+                     z = min.z, 
+                     pmat)
+text(x = label.pos$x, 
+     y = label.pos$y, 
+     labels = labels, 
+     adj = c(0, NA), 
+     srt = 0,
+     cex = 0.75)
 
 labels <- as.character(z.axis)
-label.pos <- trans3d(min.x, (min.y - 0.5), z.axis, pmat)
-text(label.pos$x, label.pos$y, labels=labels, adj=c(1, NA), cex=0.5)
+label.pos <- trans3d(x = min.x, 
+                     y = (min.y - 0.5), 
+                     z = z.axis, 
+                     pmat)
+text(x = label.pos$x, 
+     y = label.pos$y, 
+     labels = labels, 
+     adj = c(1, NA), 
+     cex = 0.65)
 
 
 
-```
-
-
-
-
----
-
-
-```{r Bar3Dxxxxxxxx, fig.cap="A three-dimensional bar chart of the NHANES data", fig.align="center", fig.width=4, out.width="40%"}
-par(mfrow = c(1, 2),
-    mar = c(0, 0, 0, 0) + 0.1)
-
-
-AgeD.Gender <- xtabs( ~ AgeD + NHANES$Gender)
-
-TwoDData <- data.frame(
-  Counts = c(
-    AgeD.Gender[, 1],  
-    AgeD.Gender[, 2]),
-    Gender = c( rep("F", 7), 
-                rep("M", 7)),
-    Age = levels(AgeD)
-  
-)
-
-#par(mar = c(0, 0, 0, 0) + 0.1)
-
-lattice::cloud(Counts ~ factor(Gender) + factor(Age), 
-               data = TwoDData,
-               #panel.aspect = 2,
-               aspect = c(2, 1), # Wider plots
-               panel.3d.cloud = panel.3dbars, 
-               col.facet = c( rep('#FFFAF0', 7), 
-                              rep('#5844ff', 7)),
-               xbase = 0.4, 
-               ybase = 0.4,
-               scales = list(arrows = FALSE, 
-                             col = 1), 
-               zlim = c(0, 850),
-               zlab = list("Number", 
-                           rot = 95),
-               ylab = list("Age group", 
-                           rot = -50),
-               xlab = list("Gender", 
-                           rot = 23),
-               screen = list(z = 30, 
-                             x = -60), # The view; rotations about axes
-               main = "Number per group",
-               par.settings = list(axis.line = list(col = "transparent"))
-      )
-
-
-
-
+#################
+# Restore defaults
+par( mar = c(5, 4, 4, 2) + 0.1 )
 
 locatn <- barplot(t( AgeD.Gender ), 
         beside = TRUE,
@@ -4552,12 +4534,12 @@ locatn <- barplot(t( AgeD.Gender ),
 			  cex = 0.75), 
         ylab = "Number",
         xlab = "Age group",
-        main = "Number per group",
+        main = "Participants by group",
         col = c("#FFFAF0", "#5844ff"))
 #text(locatn[1, 4], 700, "F")
 #text(locatn[2, 4], 700, "M")
 legend("top", 
-       legend = c("Females", 
+       legend = c("Females      ", 
                   "Males"), 
        #levels(NHANES$Gender),
        bty = "n", 
@@ -4567,12 +4549,6 @@ legend("top",
        fill = c( '#FFFAF0', '#5844ff') )
 
 ```
-
-
-
----
-
-
 
 
 ### Further comments {#GraphsFurtherComments}
