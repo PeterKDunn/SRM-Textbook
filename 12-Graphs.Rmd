@@ -1729,20 +1729,13 @@ par(mfrow = c(1, 1))
 
 ::: {.example #BimodalFaithful name="Bimodal data"}
 The *Old Faithful* geyser in Yellowstone National Park (USA) erupts regularly [@hardle1991smoothing].
-The time between eruptions (Fig. \@ref(fig:BimodalFaithfulHisto)) is bimodal, with peaks near 55 minutes and 80 minutes.
+The time between eruptions (Fig. \@ref(fig:BimodalFaithfulHistoChangeBins), left panel) is bimodal, with peaks near 55 minutes and 80 minutes.
 :::
 
 
-```{r, BimodalFaithfulHisto, fig.align="center", fig.cap="Histogram of the times between eruptions for the Old Faithful geyser", fig.width=4.5, fig.height=3.25, out.width='45%'}
+```{r}
 data(faithful) # Built-in data set
-hist(faithful$waiting,
-     main = "Time between eruptions for\nthe 'Old Faithful' geyser",
-     xlab = "Time between eruptions (mins)",
-     col = plot.colour,
-     las = 1
-     )
 ```
-
 
 The number of boxes used in the histogram can change the impression of the distribution.
 Software makes it easy to try different bin sizes to find one that suitably displays the overall distribution.
@@ -1989,7 +1982,7 @@ The equivalent bar chart
 makes the comparison easy: clearly the age groups '65 to 69' and 'Over 74' have slightly fewer deaths than the other age groups.
 
 
-```{r LCgraphsHTML, fig.cap="Graphs of deaths from lung cancer in Fredericia (Denmark) from 1968 and 1971 (inclusive)", fig.align="center", fig.width=5, fig.height=8}
+```{r LCgraphsHTML, fig.cap="Graphs of deaths from lung cancer in Fredericia (Denmark) from 1968 and 1971", fig.align="center", fig.width=5, fig.height=8}
 if (knitr::is_html_output()) {
   
   data(DanishLC)
@@ -2309,11 +2302,13 @@ if( knitr::is_latex_output() ) {
 \hspace{0.05\textwidth}
 \begin{minipage}{0.50\textwidth}%
 \centering
-```{r KrillEggsDoubleStem, fig.width=7.0, out.width='100%'}
+```{r KrillEggsDoubleStem, fig.width=4.0, fig.height=3, out.width='100%'}
 
   stemgrid.x <- 1
   stemgrid.y <- 6
   stemcounts <- array(1, dim=stemgrid.y)
+
+  par( mar = c(0.25, 0.25, 4, 0.25) + 0.1)
 
   plot( expand.grid(1:stemgrid.x, 0:stemgrid.y), 
       type = "n",
@@ -2406,11 +2401,13 @@ if( knitr::is_latex_output() ) {
 
 
 `r if (knitr::is_latex_output()) '<!--'`
-```{r KrillEggsDoubleStemHTML, fig.width=7.0, out.width='100%'}
+```{r KrillEggsDoubleStemHTML, fig.width=6.0, out.width='100%'}
 
   stemgrid.x <- 1
   stemgrid.y <- 6
   stemcounts <- array(1, dim=stemgrid.y)
+  
+  par( mar = c(0.5, 0.5, 4, 0.5) + 0.1)
 
   plot( expand.grid(1:stemgrid.x, 0:stemgrid.y), 
       type = "n",
@@ -2950,11 +2947,11 @@ if (knitr::is_latex_output()){
 
 ::: {.example #BoxplotsHorizontal name="Boxplots"}
 Boxplots can be plotted horizontally too, which leaves space for long labels.
-In Fig. \@ref(fig:CementBoxplot) (based on @data:Silva2016:rootcanal), the three dental cements are very different regarding their push-out forces.
+In Fig. \@ref(fig:CementBuildBoxplot) (left panel; based on @data:Silva2016:rootcanal), the three dental cements are very different regarding their push-out forces.
 :::
 
 
-```{r CementBoxplot, fig.cap="Comparing three push-out values for three dental cements", fig.align="center", fig.height=3, fig.width=5.5}
+```{r CementBuildBoxplot, fig.cap="Comparing three push-out values for three dental cements", fig.align="center", fig.height=2.75, fig.width=4.0, fig.show='hold', out.width=c('49%', '49%')}
 MTA    <- c(0.05, 0.1, 0.2, 0.25, 0.45)
 Endo   <- c(0.1, 0.2, 0.4,   1.0, 2.05)
 AHplus <- c(0.5, 1.1, 2.25, 2.9, 4.4)
@@ -2973,11 +2970,12 @@ CementStats <- list( n = c(5, 5, 5),
                   names = c("MTA Fillapex", 
 		                        "Endo Seal", 
 			                      "AH Plus"))
-par( mar = c(4, 8, 3, 2) + 0.1)
+par( mar = c(4, 6, 3, 2) + 0.1)
 plot( c(0, 5), 
       c(0.4, 3.6),
       type = "n",
       axes = FALSE,
+      main = "Boxplot of push-out force",
       ylab = "",
       xlab = "Push-out force (MPa)")
 
@@ -2991,19 +2989,9 @@ bxp(CementStats,
     horizontal = TRUE,
     add = TRUE,
     boxfill = plot.colour)
-```
 
+######
 
-::: {.example #Boxplots2 name="Boxplots"}
-A study of different engineering project delivery methods [@data:Hale2009:ProjectDelivery] produced the boxplot in Fig. \@ref(fig:ProjectBoxplot): the increase in the costs of projects seem to differ between the two methods.
-The quantitative variable is the percentage increase in costs, and the qualitative variable is the method used.
-
-The Design/Build (DB) method produces a smaller project cost growth on average (the centre line of the boxplot), but the Design/Bid/Build (DBB) method produces more variation in project cost growth.
-Outliers are present for both methods, as indicated by the dots.
-:::
-
-
-```{r ProjectBoxplot, fig.cap="Comparing two engineering project delivery methods", fig.align="center", fig.height=4.25, fig.width=5}
 DB  <-  c( 7,   3, 1.5, 1, -1.5)
 DBB <- c(10, 5.5, 3.5, 2, -2)
 
@@ -3022,6 +3010,7 @@ plot( c(0.4, 2.6),
       c(-10, 20),
       type = "n",
       axes = FALSE,
+      main = "Boxplot of project costs",
       ylab = "Cost increase (%)",
       xlab = "Project delivery method")
 
@@ -3035,6 +3024,17 @@ bxp(EngStats,
     add = TRUE,
     boxfill = plot.colour)
 ```
+
+
+::: {.example #Boxplots2 name="Boxplots"}
+A study of different engineering project delivery methods [@data:Hale2009:ProjectDelivery] produced the boxplot in Fig. \@ref(fig:CementBuildBoxplot) (right panel): the increase in the costs of projects seem to differ between the two methods.
+The quantitative variable is the percentage increase in costs, and the qualitative variable is the method used.
+
+The Design/Build (DB) method produces a smaller project cost growth on average (the centre line of the boxplot), but the Design/Bid/Build (DBB) method produces more variation in project cost growth.
+Outliers are present for both methods, as indicated by the dots.
+:::
+
+
 
 <div style="text-align:center;">
 ```{r}
@@ -3185,6 +3185,7 @@ out <- barplot( t(Counts2),
    beside = FALSE,
    ylab = "Number of possums",
    xlab = "Season",
+   main = "Stacked barchart of\nroadkill possums",
    col = viridis(3),
    #space = c(0.15, 1),
    ylim = c(0, 125),
@@ -3220,6 +3221,7 @@ out <- barplot( t(Counts2),
    beside = TRUE,
    ylab = "Number of possums",
    xlab = "Season",
+   main = "Side-by-side barchart of\nroadkill possums",
    col = viridis(3),
    space = c(0.15, 1),
    ylim = c(0, 80),
@@ -3308,6 +3310,7 @@ if (knitr::is_latex_output()) {
   barplot( Counts2, 
      beside = TRUE,
      xlab = "Number of possums",
+     main = "Roadkill possums",
      #ylab = "Season",
      space = c(0.15, 1),
      ylim = c(0, 16),
@@ -3378,6 +3381,7 @@ if (knitr::is_latex_output()) {
   barplot( Percentages, 
      beside = TRUE,
      ylab = "Percentages of possums",
+     main = "Roadkill possums",
      #xlab = "Season",
      space = c(0.15,1),
      names.arg = rep("", 3),
@@ -3440,6 +3444,7 @@ if (knitr::is_latex_output()) {
   barplot( Percentages, 
      beside = TRUE,
      ylab = "Percentages of possums",
+     main = "Roadkill possums",
      #xlab = "Season",
      space = c(0.15, 1),
      names.arg = rep("", 3),
@@ -3532,6 +3537,7 @@ if (knitr::is_html_output()) {
      beside = TRUE,
      xlab = "Number of possums",
      #ylab = "Season",
+     main = "Roadkill possums",
      space = c(0.15, 1),
      ylim = c(0, 16),
      xlim = c(0, 80),
@@ -3600,6 +3606,7 @@ if (knitr::is_html_output()) {
   barplot( Percentages, 
      beside = TRUE,
      ylab = "Percentages of possums",
+     main = "Roadkill possums",
      #xlab = "Season",
      space = c(0.15,1),
      names.arg = rep("", 3),
@@ -3661,6 +3668,7 @@ if (knitr::is_html_output()) {
   barplot( Percentages, 
      beside = TRUE,
      ylab = "Percentages of possums",
+     main = "Roadkill possums",
      #xlab = "Season",
      space = c(0.15, 1),
      names.arg = rep("", 3),
@@ -3976,6 +3984,7 @@ if( knitr::is_latex_output() ) {
         axes = FALSE,
         ylim = c(0, 6000),
         xlim = c(0.8, 2.2),
+        main = "Case-profile plot\nof the IgE data",
         xlab = "Time",
         ylab = "IgE (in micrograms/L)")
   axis(side = 1, 
@@ -4263,7 +4272,8 @@ if( knitr::is_latex_output() ) {
         data = Lynx,
         type = "b",
         xlab = "Year",
-        ylab = "Number of lynx trappings",
+        ylab = "Number of lynx trappings in Mackenzie River\nfrom 1821 to 1934",
+        main = "Lynx trappings",
         pch = 19,
         xlim = c(1820, 1935),
         ylim = c(0, 7000),
@@ -4703,7 +4713,7 @@ To demonstrate how graphs help answer RQs, consider the following RQ:
 
 > Among Americans, is the average direct HDL cholesterol concentration different for current smokers and non-smokers?
 
-The Population is 'Americans', the Outcome is the 'average direct HDL cholesterol levels', and the Comparison is 'Between those who currently do and do not smoke'.
+The Population is 'Americans', the Outcome is the 'average direct HDL cholesterol concentration', and the Comparison is 'Between those who currently do and do not smoke'.
 There is no intervention.
 
 
@@ -4747,17 +4757,17 @@ To answer any RQ, exploring and understanding the data are important.
 Graphs are an excellent way to do so (especially with large datasets).
 Begin by graphing both the response and explanatory variables involved in the RQ.
 
-For the NHANES data, the *response variable* is direct HDL cholesterol (quantitative continuous).
-The histogram (Fig. \@ref(fig:NHANESHDLHistBar), left panel) shows that the direct HDL cholesterol is usually around 1.5mmol/L, and varies between about 0.5 and 3 mmol/L.
+For the NHANES data, the *response variable* is direct HDL cholesterol concentration (quantitative continuous).
+The histogram (Fig. \@ref(fig:NHANESHDLHistBar), left panel) shows that the direct HDL cholesterol concentration is usually around 1.5mmol/L, and varies between about 0.5 and 3 mmol/L.
 The data are slightly skewed right.
 
 
-```{r NHANESHDLHistBar, fig.cap="Plots from the NHANES data. Left: histogram of the direct HDL cholesterol (large outliers exist but are hard to see); centre: bar chart of current smoking status for the NHANES data; right: bar chart of current smoking status, including missing data", fig.align="center", fig.height = 3.5, fig.width=3.5, out.width=c('33%', '32%', '32%'), fig.show="hold"}
+```{r NHANESHDLHistBar, fig.cap="Plots from the NHANES data. Left: histogram of the direct HDL cholesterol concetration (large outliers exist but are hard to see); centre: bar chart of current smoking status for the NHANES data; right: bar chart of current smoking status, including missing data", fig.align="center", fig.height = 3.5, fig.width=3.5, out.width=c('33%', '32%', '32%'), fig.show="hold"}
 
 hist(NHANES$DirectChol,
-     xlab = "Direct HDL cholesterol (mmol/L)",
+     xlab = "Direct HDL cholesterol conc. (mmol/L)",
      ylab = "Frequency",
-     main = "Distribution of direct\nHDL cholesterol",
+     main = "Distribution of direct\nHDL cholesterol concentration",
      las = 1,
      axes = FALSE,
      ylim = c(0, 2500),
@@ -4805,18 +4815,18 @@ Since only *one* piece of information is present, a graph probably isn't necessa
 Even though the NHANES data contains 10\,000 respondents, the bar chart clearly does not have 10\,000 responses: Many respondents did not answer this question.
 A bar could be added to the bar chart to show the number of non-responses (though it probably isn't necessary): Fig. \@ref(fig:NHANESHDLHistBar), right panel.
   
-The main RQ involves the *relationship* between average direct HDL cholesterol and current smoking status, so a graph displaying this relationship is needed (Fig. \@ref(fig:NHANESboxplot)).
+The main RQ involves the *relationship* between average direct HDL cholesterol concetration and current smoking status, so a graph displaying this relationship is needed (Fig. \@ref(fig:NHANESboxplot)).
 From the plot of the *sample* data, is there a difference in the average HDL cholesterol concentrations between the two smoking groups in the *population*?
 
     
-```{r NHANESboxplot, fig.cap="Boxplot of direct HDL cholesterol against current smoking status, for the NHANES data", fig.align="center", fig.height=4, fig.width=5}
+```{r NHANESboxplot, fig.cap="Boxplot of direct HDL cholesterol concentration against current smoking status, for the NHANES data", fig.align="center", fig.height=4, fig.width=5}
 boxplot(NHANES$DirectChol ~ NHANES$SmokeNow, 
         col = plot.colour, 
         las = 1,
         ylim = c(0, 4),
-        ylab = "Direct HDL cholesterol (mmol/L)",
+        ylab = "Direct HDL cholesterol conc. (mmol/L)",
         xlab = "Does respondent smoke now?",
-        main = "Direct HDL cholesterol by smoking\nstatus, for the NHANES data"
+        main = "Direct HDL cholesterol concentration by smoking\nstatus, for the NHANES data"
 )
 ```
 
@@ -4921,7 +4931,8 @@ par( mfrow = c(2, 2),
 plot( DirectChol ~ Weight, 
       data = NHANES, 
 	    xlab = "Weight (in kg)", 
-	    ylab = "Direct HDL cholesterol\n(mmol/L)",
+	    ylab = "Direct HDL cholesterol\nconc. (mmol/L)",
+      main = "NHANES data: HDL cholesterol\nconc. vs Weight",
 	    ylim = c(0, 4),
       col = plot.colour,
 	    las = 1)
@@ -4930,7 +4941,8 @@ plot( DirectChol ~ Weight,
 plot( DirectChol ~ Gender, 
       data = NHANES, 
 	    xlab = "Gender", 
-	    ylab = "Direct HDL cholesterol\n(mmol/L)",
+	    ylab = "Direct HDL cholesterol\nconc. (mmol/L)",
+      main = "NHANES data: HDL cholesterol\nconc. vs Gender",
 	    names = c("Female", "Male"),
       col = plot.colour,
 	    ylim = c(0, 4),
@@ -4939,7 +4951,8 @@ plot( DirectChol ~ Gender,
 plot( Weight ~ SmokeNow, 
       data = NHANES, 
 	    xlab = "Current smoker?", 
-	    ylab = "Weight (in kg",
+	    ylab = "Weight (in kg)",
+      main = "NHANES data: Weight\nvs smoking status",
 	    horiz = TRUE,
       col = plot.colour,
 	    ylim = c(0, 250),
@@ -4953,6 +4966,7 @@ out <- barplot( prop.table( xtabs(~ SmokeNow + Gender,
 	ylim = c(0, 100),
 	xlab = "Gender", 
 	ylab = "Percentage of people",
+  main = "NHANES data: Smokers\nby Gender",
 	names = c("Female", 
 	          "Male"),
 	col = c("white", 
@@ -5170,7 +5184,7 @@ Why?
 
 
 ::: {.exercise #GraphsLimeTrees}
-A study of lime trees (*Tilia cordata*) recorded these variables for 385 lime trees in Russia [@data:ForestBiomass2017; @mypapers:dunnsmyth:glms]:
+A study of lime trees (*Tilia cordata*) recorded these variables for 385 lime trees in Russia [@data:ForestBiomass2017]:
 
 * the foliage biomass, in kg (the response variable);
 * the tree diameter, in cm (the explanatory variable);
@@ -5195,7 +5209,7 @@ Sketch some graphs to explore the *relationships* between these variables.
 
 
 ::: {.exercise #GraphNitrogenInSoil}
-A study of fertilizer use [@data:Lane2002:GLMsoilscience; @mypapers:dunnsmyth:glms] recorded the soil nitrogen after applying different fertilizer doses.
+A study of fertilizer use [@data:Lane2002:GLMsoilscience] recorded the soil nitrogen after applying different fertilizer doses.
 The researchers recorded:
 
 * the fertilizer dose, in kilograms of nitrogen per hectare; 
@@ -5257,6 +5271,7 @@ boxplot(Ht ~ Sport,
         col = plot.colour,
         xlab = "Sport",
         ylab = "Height (in cm)",
+        main = "Boxplot of heights:\nbasketballers and netballers",
         names = c("Basketball", 
                   "Netball")
 )
@@ -5295,6 +5310,7 @@ plot( as.numeric( factor(Col) ) ~ as.numeric( factor(Spine) ),
       data = HCrabs,
       xlab = "Condition of the spine",
       ylab = "Carapace colour",
+      main = "Dot chart of carapace colouyr\nagainst spine condition",
       las = 1)
 ```
 
@@ -5381,6 +5397,7 @@ barplot(SPT,
         las = 2,
         ylab = "Number of AIS athletes",
         xlab = "Sport",
+        main = "Sports played by AIS athletes",
         col = plot.colour)
 ```
 
@@ -5400,13 +5417,9 @@ Every sample is a bit different, of course.
 Of course, I could be wrong.
 - Sect. \ref{thinkBox:WhenPiechart}:
 **1.** A pie chart is **not suitable**. 
-The three browsers are not *mutually exclusive* (people can use more than one of these browsers) nor *exhaustive* (some people may use browsers not listed). 
-For example, the percentages *could* be that 65% use Firefox, 84% use Chrome, and 20% use Safari. 
-These add to more than 100%.
-**2.** A pie chart is **not suitable**, as the percentages are not parts of a whole.
-Each individual (person) has information recorded on *two* qualitative variables: (a) which state the person lives in (many levels); and (b) whether or not they own an iPhone ('yes' or 'no').
-For example, the percentages *could* be 53% in Queensland, 61% in NSW, 41% in Victoria, and so on.
-They could possibly add to more than 100%.
+The three browsers are not *mutually exclusive* (people can use more than one) nor *exhaustive* (some people may use other browsers). 
+**2.** A pie chart is **not suitable**: the percentages are not parts of a whole.
+Each individual has information recorded on *two* qualitative variables: (a) state of residence; and (b) whether or not they own an iPhone.
 
 - Sect. \ref{thinkBox:ConfoundingVars}: Maybe weight... Weight may be related to both the HDL cholesterol concentration *and* the smoking status.
 
