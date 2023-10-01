@@ -94,18 +94,17 @@ plotNormal <- function(mu,
                  0 + verticalOffset),
            lwd = 2)
   }
+  if (showZtall) {
+    abline( v = seq(-3, 3, by = 1) * sd + mu,
+            col = "grey")
+  }
   if (showZ) {
-    if (showZtall) {
-      abline( v = seq(-3, 3, by = 1) * sd + mu,
-              col = "grey")
-    } else {
-      for (z in (-3:3)) { # Do one vertical line at a time
-        xVertLines <- z * sd + mu
-        yVertLines <- dnorm( xVertLines, mean = mu, sd = sd )
-        lines( x = c( xVertLines, xVertLines),
-               y = c(0, yVertLines) + verticalOffset,
-               col = "grey")
-      }
+    for (z in (-3:3)) { # Do one vertical line at a time
+      xVertLines <- z * sd + mu
+      yVertLines <- dnorm( xVertLines, mean = mu, sd = sd )
+      lines( x = c( xVertLines, xVertLines),
+             y = c(0, yVertLines) + verticalOffset,
+             col = "grey")
     }
   }
   

@@ -795,8 +795,9 @@ The sample mean butterfat is 5.25%, with a sample *standard deviation* of 0.554%
 
 
 ```{r ShowVar, fig.cap="The standard deviation is related to the sum of the squared-distances from the mean", fig.align="center",fig.width=6, out.width='60%'}
-source("R/showVar.R")
-showVar()
+#source("R/showVar.R")
+#showVar()
+1
 ```
 
 
@@ -809,8 +810,8 @@ Why?\label{thinkBox:CompareSD}
 `r webexercises::hide()`
 The standard deviation is a bit like the average distance that observations are from the mean.
 
-In Dataset B, more observations are closer to the mean, so the average distance would be a smaller number.
-This suggests that the standard deviation for Dataset B will be **smaller** than the standard deviation for Dataset A.
+In Dataset\ B, more observations are closer to the mean, so the average distance would be a smaller number.
+This suggests that the standard deviation for Dataset\ B will be **smaller** than the standard deviation for Dataset\ A.
 `r webexercises::unhide()`
 `r if (knitr::is_latex_output()) '-->'`
 :::
@@ -1487,7 +1488,7 @@ Sometimes, both the standard deviation and the IQR can be quoted.
 </div>
 
 
-While skewness can be described numerically, we will describe shape using words (skewed, approximately symmetric, bimodal, etc.) as before (Sect.\ \@ref(SummariseData)).
+While skewness can be described numerically, we will describe shape using words (skewed, approximately symmetric, bimodal, etc.) as in Sect.\ \@ref(SummariseData).
 
 
 ::: {.example #Skewness name="Skewness"}
@@ -1670,7 +1671,7 @@ axis(side = 1,
 
 
 These data are from one of the many possible samples of married UK men.
-And since every sample is likely to contain different men, and every sample of men will produce a slightly different histogram.
+Since every sample is likely to contain different men, and every sample will produce a slightly different histogram.
 For convenience then, an 'average' of all these possible histograms could be constructed.
 For example,
 `r if (knitr::is_latex_output()) {
@@ -1679,7 +1680,7 @@ For example,
    'see the animation below.'
 }`
 
-The solid line represents the 'average histogram' from every possible sample from the population.
+The solid line represents the possible 'average histogram' from every possible sample from the population.
 And, in effect then, the solid line is an estimate of how the heights may be distributed in the *population*.
 
 The smoothed histogram represents 100% of the observations (Fig.\ 
@@ -1881,7 +1882,7 @@ polygon( x.p, y.p,
 
 ### The 68--95--99.7 rule {#EmpiricalRule}
 
-One important rule, that applies for *any* normal distribution whatever the mean or standard deviation, is the *69--95--99.7 rule*.
+One important rule that applies for *any* normal distribution, whatever the mean or standard deviation, is the *69--95--99.7 rule*.
 
 
 ::: {.definition #EmpiricalRule name="The 68--95--99.7 Rule (or the Empirical Rule)"}
@@ -1899,7 +1900,7 @@ The *68--95--99.7 rule*, or *empirical rule*, is one of the *most important rule
 
 
 `r if (knitr::is_latex_output()) {
-   'The 68--95--99.7 rule is shown in Fig.\\ \\@ref(fig:EmpRuleFig) (the online version has an animation).'
+   'The 68--95--99.7 rule is shown in Fig.\\ \\@ref(fig:EmpRuleFig).'
 } else {
    'The animation below shows how the 68--95--99.7 works.'
 }`
@@ -1907,90 +1908,11 @@ The *68--95--99.7 rule*, or *empirical rule*, is one of the *most important rule
 
 
 ```{r EmpRule, animation.hook="gifski", interval=1, dev=if (is_latex_output()){"pdf"}else{"png"}}
-empRule <- function(z){
-  zseq <- seq(-4, 4, 
-              by = 0.1)
-  dseq <- dnorm(zseq)
-  
-  plot( dseq ~ zseq, 
-        xlim = c(-4, 4),
-        ylim = c(0, max(dseq)),
-        lwd = 2,
-        xlab = "Number of standard deviations from the mean",
-        ylab = "",
-        type = "l",
-        col = "blue",
-        axes = FALSE)
-  axis(side = 1, 
-       at = seq(-3, 3, by = 1) )
-  abline(h = 0, 
-         lwd = 1,
-         col = "grey")
-  abline(v = 0,
-         lwd = 1,
-         col = "grey")
-  
-  if (z == 1) {
-    pEmp <- "68%"
-    pEdge <- "16%"
-    title( main = "One standard deviation\nfrom the mean")
-  }
-  if (z == 2) {
-    pEmp <- "95%"
-    pEdge <- "2.5%"
-    title( main = "Two standard deviations\nfrom the mean")
-  }
-  if (z == 3) {
-    pEmp <- "99.7%"
-    pEdge <- "0.015%"
-    title( main = "Three standard deviations\nfrom the mean")
-  }
-  
-  # Lines
-  abline(v = z, 
-         col = "grey")
-  abline(v = -z, 
-         col = "grey")
-  
-  # Shading
-  zSelect <- (zseq <= z) & (zseq >= (-z) )
-
-  polygon( x = c( zseq[zSelect],                 rev( zseq[zSelect] ) ),
-           y = c( rep(0, length(zseq[zSelect])), rev( dseq[zSelect] ) ),
-           border = "blue",
-           lwd = 2,
-           col = rgb(0, 0, 100, 
-	             alpha = 50, 
-		     maxColorValue = 255))
-
-  # Labelling
-  text(   x = 0, 
-          max(dseq)/3, 
-          pEmp,  
-          pos = 3, 
-          cex = 1.1)
-  text(   3.2, max(dseq)/2, 
-          pEdge, 
-          pos = 3)
-  text(  -3.2, max(dseq)/2, 
-         pEdge, 
-         pos = 3)
-  
-  # Arrows
-  arrows( 3.2, 0.45 * max(dseq), 
-          mean( c(4, z) ), 
-	  (dseq[z == zseq]) * 0.15,
-          angle = 15)
-  arrows(-3.2, 0.45 * max(dseq), 
-         mean( c(-4, -z) ), 
-	 (dseq[z == zseq]) * 0.15,
-         angle = 15)
- 
-}
+source("R/showEmpRule.R")
 
 if (knitr::is_html_output()){
     for (i in 1:3 ){
-      empRule(i)
+      showEmpRule(i)
     }
 }
 ```
@@ -1998,13 +1920,15 @@ if (knitr::is_html_output()){
 <!-- fig.width=6, fig.height=1.75, out.width='90%' -->
 
 ```{r EmpRuleFig, fig.align="center", out.width='32%', fig.width=3, fig.height = 2.5, fig.show='hold', fig.cap="The 68--95--99.7 rule: About 95\\% of observations are within two standard deviations of the mean" }
+source("R/showEmpRule.R")
+
 if (knitr::is_latex_output()){
   par( mar = c(3, 0.5, 3, 0.4) + 0.1 )
-  empRule(1)
+  showEmpRule(1)
   par( mar = c(3, 0.5, 3, 0.4) + 0.1 )
-  empRule(2)
+  showEmpRule(2)
   par( mar = c(3, 0.5, 3, 0.4) + 0.1 )
-  empRule(3)
+  showEmpRule(3)
 }
 ```
 
@@ -2041,25 +1965,37 @@ That is, *almost all* observations are within three standard deviations of the m
 This suggests a rule for identifying outliers in approximately bell-shaped distributions: any observation more than 3 standard deviations from the mean is unusual, so may be considered an *outlier*.
 More generally, this rule is often applied to approximately symmetric distributions.
 
-Bell-shaped (normal) distributions are studied further later (for example, Chap.\ \@ref(SamplingDistributions)).
+Bell-shaped (normal) distributions are also studied in Chap.\ \@ref(SamplingDistributions).
 
 
 
-```{r HusbandHistNormalShadeEmpirical, fig.cap="The heights of husbands, showing the 68--95--99.7 rule in use", fig.align="center", fig.width=6.7, fig.height=2.1, out.width='100%'}
+```{r HusbandHistNormalShadeEmpirical, fig.cap="The heights of husbands, showing the 68--95--99.7 rule in use", fig.align="center", fig.width=6.7, fig.height=2.0, out.width='100%'}
 par( mfrow = c(1, 3),
      mar = c(6, 2, 2, 1) )
 
 # Mid 68%
-out1 <- plotNormal(mu = 173,
-           6.88,
-           round.dec = 0,
-           main = "Within 1 std. dev.", # Main title
-           xlab = "Height (cm)", # horizontal axis labels
-           showZ = FALSE, # Whether to show z = -3:3 or not
-           las = 2,
-           bg = "white", 
-           cex.tickmarks = 1,
-           axis.labels = NULL)
+mu <- 173
+sdev <- 6.88
+
+out1 <- plotNormal(mu = mu,
+                   sd = sdev,
+                   round.dec = 0,
+                   main = "Within 1 std. dev.", # Main title
+                   xlab = "Height (cm)", # horizontal axis labels
+                   showZ = FALSE, # Whether to show z = -3:3 or not
+                   las = 2,
+                   bg = "white", 
+                   showZtall = FALSE,
+                   cex.tickmarks = 1,
+                   axis.labels = NULL)
+lines( x = rep( mu - sdev, 2),
+       y = c(0, max(out1$y) * 0.9),
+       lwd = 1,
+       col = "grey")
+lines( x = rep( mu + sdev, 2),
+       y = c(0, max(out1$y) * 0.9),
+       lwd = 1,
+       col = "grey")
 shadeNormal(out1$x, out1$y,
             lo = 166.3,
             hi = 180.1,
@@ -2069,17 +2005,27 @@ abline(v = 0,
        col = "grey",
        lwd = 2)
 
+
 # Mid 95%
-out1 <- plotNormal(mu = 173,
-           6.88,
-           round.dec = 0,
-           main = "Within 2 std. devs.", # Main title
-           xlab = "Height (cm)", # horizontal axis labels
-           showZ = FALSE, # Whether to show z = -3:3 or not
-           las = 2,
-           bg = "white", 
-           cex.tickmarks = 1,
-           axis.labels = NULL)
+out1 <- plotNormal(mu = mu,
+                   sd = sdev,
+                   round.dec = 0,
+                   main = "Within 2 std. devs.", # Main title
+                   xlab = "Height (cm)", # horizontal axis labels
+                   showZ = FALSE, # Whether to show z = -3:3 or not
+                   las = 2,
+                   bg = "white", 
+                   showZtall = FALSE,
+                   cex.tickmarks = 1,
+                   axis.labels = NULL)
+lines( x = rep( mu - 2 * sdev, 2),
+       y = c(0, max(out1$y) * 0.6),
+       lwd = 1,
+       col = "grey")
+lines( x = rep( mu + 2 * sdev, 2),
+       y = c(0, max(out1$y) * 0.6),
+       lwd = 1,
+       col = "grey")
 shadeNormal(out1$x, out1$y,
             lo = 159.24,
             hi = 186.76,
@@ -2088,18 +2034,27 @@ shadeNormal(out1$x, out1$y,
 abline(v = 0, 
        col = "grey",
        lwd = 2)
-   
+
 # Mid 99.7%
-out1 <- plotNormal(mu = 173,
-           6.88,
-           round.dec = 0,
-           main = "Within 3 std. devs.", # Main title
-           xlab = "Height (cm)", # horizontal axis labels
-           showZ = FALSE, # Whether to show z = -3:3 or not
-           las = 2,
-           bg = "white", 
-           cex.tickmarks = 1,
-           axis.labels = NULL)
+out1 <- plotNormal(mu = mu,
+                   sd = sdev,
+                   round.dec = 0,
+                   main = "Within 3 std. devs.", # Main title
+                   xlab = "Height (cm)", # horizontal axis labels
+                   showZ = FALSE, # Whether to show z = -3:3 or not
+                   las = 2,
+                   bg = "white", 
+                   showZtall = FALSE,
+                   cex.tickmarks = 1,
+                   axis.labels = NULL)
+lines( x = rep( mu - 3 * sdev, 2),
+       y = c(0, max(out1$y) * 0.4),
+       lwd = 1,
+       col = "grey")
+lines( x = rep( mu + 3 * sdev, 2),
+       y = c(0, max(out1$y) * 0.4),
+       lwd = 1,
+       col = "grey")
 shadeNormal(out1$x, out1$y,
             lo = 152.36,
             hi = 193.64,
@@ -2180,17 +2135,8 @@ You don't need to *do* this (that's what software is for), but you do need to *u
 
 
 ```{r IQROutlier, animation.hook="gifski", interval=1.75, dev=if (is_latex_output()){"pdf"}else{"png"}}
-x <- c(25.35, 22.18, 41.5, 20.23, 42.46, 25.7, 85.51, 47.21, 25.06, 
-       27.99, 37.07, 66.07, 17.42, 15.31, 32.81, 26.67, 58.61, 72.28, 
-       82.04, 29.99, 78.34, 32.06, 37.58, 44.57, 24.1, 48.98, 22.96, 
-       77.09, 30.55, 24.66, 47.1, 23.55, 13, 52.6, 33.73, 23.5, 59.16, 
-       53.46, 35.08, 16.87, 24.95, 33.96, 20.89, 30.83, 21.68, 46.24, 
-       34.59, 47.86, 25.35, 28.31, 42.36, 42.95, 40.93, 22.86, 82.79, 
-       85.31, 134.59, 16.94, 32.21, 27.29, 21.28, 63.39, 24.27, 69.98, 
-       61.66, 110.15, 38.28, 42.36, 19.14, 48.87, 177.01, 62.37, 34.67, 
-       26.79, 50.58, 43.25, 11.67, 24.21, 50.47, 23.44, 69.02)
-
-
+data(Perm)
+x <- Perm$Perm
 
 plotIQROutliersAnimation <- function(x, i){
   grey.pch <- grey(0.75)
@@ -2266,7 +2212,10 @@ plotIQROutliersAnimation <- function(x, i){
   if ( (i >= 5 ) & (i <= 7)) {
     out <- bxp(b.out.noextreme, 
                add = TRUE, 
-               boxfill = rgb(0, 0, 0, maxColorValue = 256, alpha = 0.5), 
+               boxfill = rgb(0, 0, 0, 
+                             maxColorValue = 256, 
+                             alpha = 0.5), 
+               width = 0.25,
                las = 1)
   }
   
@@ -2390,8 +2339,18 @@ if (knitr::is_html_output()){
 ```
 
 
-```{r IQROutliers, fig.align="center", fig.width=5.5, fig.cap="Mild and extreme outliers, using the IQR rule, for the permeability data" }
+```{r IQROutliers, fig.align="center", fig.width=7, fig.height = 4.5, fig.cap="Mild and extreme outliers, using the IQR rule, for the permeability data", out.width = '99%' }
 if (knitr::is_latex_output()){ 
+  
+  par(mfrow = c(1, 2),
+      mar = c(0.5, 4, 4, 0.5) + 0.1)
+  boxplot(x,
+          main = "The original boxplot\nof permeability",
+          ylab = "Permeability (in seconds)",
+          ylim = c(0, 180), 
+          xlim = c(0.5, 1.5),
+          las = 1
+          )
    plotIQROutliersAnimation(x, 6)  
 }
 ```
@@ -3195,29 +3154,29 @@ For these patients:
 ::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
 **Answers to in-chapter questions:**
 
-- Sect. \ref{thinkBox:ValueOfMu}: **We do not know!** \tightlist
+- Sect.\ \ref{thinkBox:ValueOfMu}: **We do not know!** \tightlist
 We know the value of the *sample* mean, but not the *population* mean.
 We have an *estimate* of the value of the population mean by using the sample mean.
-- Sect. \ref{thinkBox:EstimateMu}: The **estimate** of $\mu$ is $\bar{x} = 532/11 = 48.4$cm.
-- Sect. \ref{thinkBox:PopMedian}: **We do not know!**
+- Sect.\ \ref{thinkBox:EstimateMu}: The **estimate** of $\mu$ is $\bar{x} = 532/11 = 48.4$cm.
+- Sect.\ \ref{thinkBox:PopMedian}: **We do not know!**
 We know the value of the *sample* median, but not the *population* median.
 We only have an *estimate* of the value of the population median.
-- Sect. \ref{thinkBox:EstimateMedian}: With $n = 11$, the median is the $(11 + 1)/2 = 6$th ordered value, which is 45cm.
-- Sect. \ref{thinkBox:SpecSheet}:
+- Sect.\ \ref{thinkBox:EstimateMedian}: With $n = 11$, the median is the $(11 + 1)/2 = 6$th ordered value, which is 45cm.
+- Sect.\ \ref{thinkBox:SpecSheet}:
 The data are skewed, which suggests using a median.
 In practice, a larger sample would be needed anyway before giving a value to use on a specification sheet.
-- Sect. \ref{thinkBox:CompareSD}:
+- Sect.\ \ref{thinkBox:CompareSD}:
 The standard deviation is a bit like the average distance that observations are from the mean.
-In Dataset B, more observations are closer to the mean, so the average distance would be a smaller number.
-This suggests that the standard deviation for Dataset B will be **smaller** than the standard deviation for Dataset A.
-- Sect. \ref{thinkBox:MilkStats}:
+In Dataset\ B, more observations are closer to the mean, so the average distance would be a smaller number.
+This suggests that the standard deviation for Dataset\ B will be **smaller** than the standard deviation for Dataset\ A.
+- Sect.\ \ref{thinkBox:MilkStats}:
 The *population* standard deviation is unknown.
 The best estimate is the *sample* standard deviation: $s = 0.554$%.
 If you do not get this value, you may be pressing the wrong button on your calculator: seek help!
-- Sect. \ref{thinkBox:HusbandsHts:997}: 
+- Sect.\ \ref{thinkBox:HusbandsHts:997}: 
 Three standard deviations is $3\times6.88 = 20.64$.
 So about 99.7% of husbands *in the population* are between $(173.2 - 20.64) = 152.6$cm and $(173.2 + 20.64) = 193.8$cm.
-- Sect. \ref{thinkBox:DiffMeans}:
+- Sect.\ \ref{thinkBox:DiffMeans}:
 We cannot be sure if there is a difference between the *population* means or not, just based on the *sample* means.
 *It is hard to make decisions about a population based on just a sample*.
 The difference is not large, so may be due to *sampling variation*: The two sample mean will vary from sample to sample, which may explain the small difference that we see in the sample. 
