@@ -2220,17 +2220,19 @@ plotIQROutliersAnimation <- function(x, i){
   }
   
   if ( i > 2 ){
-    abline( h=qx[2], 
+    abline( h = qx[2], 
             col = "grey", 
             lty = 2)
     text(1.4, qx[2], 
          expression(Q[1] == 24.66), 
+         pos = 1,
          cex = 0.9)
     abline( h = qx[4], 
             col = "grey", 
             lty = 2)
     text(1.4, qx[4], 
          expression(Q[3] == 50.58), 
+         pos = 3,
          cex = 0.9)
     
     arrows(0.75, qx[2], 
@@ -2238,8 +2240,8 @@ plotIQROutliersAnimation <- function(x, i){
            angle = 15,
            length = 0.125, 
            code = 3)
-    text(0.6, mean(qx[ c(2, 4)]), 
-         expression(IQR== 5.92), 
+    text(0.67, mean(qx[ c(3, 4)]), 
+         expression(IQR), 
          cex = 0.9)
   }
   
@@ -2339,7 +2341,7 @@ if (knitr::is_html_output()){
 ```
 
 
-```{r IQROutliers, fig.align="center", fig.width=7, fig.height = 4.5, fig.cap="Mild and extreme outliers, using the IQR rule, for the permeability data", out.width = '99%' }
+```{r IQROutliers, fig.align="center", fig.width=9, fig.height = 4.5, fig.cap="Mild and extreme outliers, using the IQR rule, for the permeability data", out.width = '99%' }
 if (knitr::is_latex_output()){ 
   
   par(mfrow = c(1, 2),
@@ -2371,18 +2373,18 @@ For the permeability data [@data:hald:statistical], compare the boxplot and hist
 The boxplot seems to adequately identify the observations in the histogram that seem to be outliers.
 :::
 
-```{r PermBoxHist, fig.align="center", fig.cap="A boxplot and histogram for the permeability data", fig.width=5, fig.height=6}
-par (mfrow = c(2, 1))
+```{r PermBoxHist, fig.align="center", fig.cap="A boxplot and histogram for the permeability data", fig.width=5, fig.height=4.5}
+#par (mfrow = c(2, 1))
 
 data(Perm)
 
 hist( Perm$Perm,
 	xlab = "Permeability (in secs)",
-	ylab = "Number of obs.",
+	ylab = "",
 	main = "Permeability of\nbuilding material",
 	col = plot.colour,
 	cex = 0.8,
-	ylim = c(0, 30),
+	ylim = c(0, 50),
 	xlim = c(0, 180),
 	axes = FALSE,
 	breaks = seq(0, 190, by = 10),
@@ -2391,9 +2393,14 @@ axis(side = 1,
      at = seq(0, 180, by = 20), 
      las = 2, 
      cex = 0.8 )
-axis(side = 2, 
+axis(side = 2,
+     at = seq(0, 30, by = 10),
      las = 1)
-
+mtext(text = "Number of obs.",
+      side = 2, 
+      line = 1, 
+      outer = TRUE,
+      at = 15)
 boxplot( Perm$Perm,
         horizontal = TRUE,
         xlab = "Permeability (in secs)",
@@ -2402,12 +2409,11 @@ boxplot( Perm$Perm,
 	      cex = 0.8,
 	      ylim = c(0, 180),
 	      axes = FALSE,
-	      las = 1)
-axis(side = 1, 
-     at = seq(0, 180, by = 20), 
-     las = 2, 
-     cex = 0.8 ) # las=2: Perpendicular to axes
-box()
+	      las = 1,
+        at = 40,
+        add = TRUE,
+        boxwex = 20)
+#box()
 ```
 
 
@@ -2425,40 +2431,37 @@ Using this information, sketch the boxplot and the histogram for the data.
 ### What to do with outliers? {#OutliersWhatToDo}
 
 What should be done if outliers are identified in data?
-Deleting or removing these outliers simply because they are identified as outliers is a *very poor idea*.
+Deleting or removing these outliers simply because they are identified as outliers is a *very bad idea*.
 After all, the outliers were obtained from your study just like all other observations... they deserve to be in your data as much as any other observation.
+*Outliers are unusual observations; they are not necessarily wrong.*
 In addition, the rules for identifying outliers are all *arbitrary* rules.
 
 The strategy for managing outliers depends on the *reason* for the outlier (@mypapers:dunnsmyth:glms, p. 138):
 
-* *The outlier is a mistake*:
-  If the outlier is clearly a mistake (e.g., an age of 222), it should be *fixed* if the correct value can be recovered (e.g., an age of 22 years was incorrectly entered as 222 years).
-  When the outlier is clearly an error but the correct value cannot be recovered, *deleting* the observation seem sensible.  
+* *The outlier is clearly a mistake* (e.g., an age of 222):
+  The mistake should be fixed if possible (e.g., the survey form is still available), otherwise the observation can be *deleted*.
   Similarly, if the outliers come from an error or mistake in the data collection (e.g., twice as much fertiliser was accidentally applied), the observation can be deleted.
 * *The outlier represents a different population*:
-  If the outliers come from a different population that the other observations, the outliers may be removed from the analysis.
-  For example, consider a study of how much students exercise.
-  One observation is found to be an outlier; closer inspection shows that this student is aged 65, but the next oldest student in the data is aged 38.
-  The outlier can be removed from the analysis, since it belongs to a different population ('students aged over 40'), and all the other observations belong to a different population ('students aged under 40').
-  The remaining observations can be analysed, on the understanding that the results only apply to students aged under 40 (which should be clearly communicated).
+  Suppose an outlier is identified in a study of students, corresponding to a student aged 65.
+  If the the next oldest student in the data is aged 38, the outlier can be removed, since it belongs to a different population ('students aged over 40') than the other observations  ('students aged under 40').
+  The remaining observations can be analysed, but the results only apply to students aged under 40 (which should be communicated).
 * *The reason for the outlier is unknown*:
-  Sometimes no obvious reason can explain the outlier.
-  In these situations, *discarding the outliers routinely is not recommended*, as the outliers are probably real observations that are just as valid as all the others.
-  Perhaps a different analysis is necessary (for example, based on using medians rather than means).
+  *Discarding the outliers routinely is not recommended*, as the outliers are probably real observations that are just as valid as all the others.
+  Maybe a different analysis is necessary (for example, using medians rather than means).
   In any case, in large datasets some observation are expected to be identified as outliers by the above rules (using the standard deviation rule, about 0.3% of observations will exceed three standard deviations from the mean anyway). 
 
 In all cases, whenever observations are removed from a dataset, this should be clearly explained and documented.
 
 
 ::: {.example #OutliersWhatToDo name="Outliers"}
-The Mary River dataset used in Sect.\ \@ref(ComputeAverage) has many *extreme* large outliers as identified by software, but each of them is reasonable. 
+The Mary River dataset (Sect.\ \@ref(ComputeAverage)) has many *extremely* large outliers identified by software, but each is reasonable. 
 They probably correspond to flooding events.
 Removing these from the analysis would be inappropriate.
 :::
 
 
 ::: {.example #OutliersWhatToDo2 name="Outliers"}
-The permeability data (Fig.\ \@ref(fig:PermBoxHist)) has some large outliers, but none of these seem unreasonable.
+The permeability data (Fig.\ \@ref(fig:PermBoxHist)) has large outliers, but none seem unreasonable.
 Removing these from the analysis would be inappropriate.
 :::
 
@@ -2646,14 +2649,14 @@ In Sect.\ \@ref(NHANESGraphs), the NHANES data were introduced (@data:NHANES3:Da
 
 > Among Americans, is the mean direct HDL cholesterol concentration different for current smokers and non-smokers?
 
-Using the software output (Fig.\ \@ref(fig:NHANEDescriptives)), the direct HDL cholesterol concentration can be summarised numerically:
+Using the software output (Fig.\ \@ref(fig:NHANEDescriptives)), the direct HDL cholesterol concentration in the *sample* can be summarised numerically:
 
-* Average value: The sample mean is $\bar{x} = `r round( mean(NHANES$DirectChol, na.rm=TRUE), 2)`$mmol/L; the sample median: $`r round( median(NHANES$DirectChol, na.rm=TRUE), 2)`$mmol/L.
-* Variation: The sample standard deviation: $s=`r round( sd(NHANES$DirectChol, na.rm=TRUE), 3)`$mmol/L; the sample IQR: $`r round( IQR(NHANES$DirectChol, na.rm=TRUE), 3)`$mmol/L.
+* Average value: $\bar{x} = `r round( mean(NHANES$DirectChol, na.rm=TRUE), 2)`$mmol/L; the sample median: $`r round( median(NHANES$DirectChol, na.rm=TRUE), 2)`$mmol/L.
+* Variation: $s=`r round( sd(NHANES$DirectChol, na.rm=TRUE), 3)`$mmol/L; IQR: $`r round( IQR(NHANES$DirectChol, na.rm=TRUE), 3)`$mmol/L.
 * Shape:
   Slightly skewed right (from Fig.\ \@ref(fig:NHANESboxplot) or\ \@ref(fig:NHANESHDLHist)).
 * Outliers: 
-  SPSS identified some outliers (Fig.\ \@ref(fig:NHANESboxplot)), mostly unusually large values.
+  Software identified some outliers (Fig.\ \@ref(fig:NHANESboxplot)), mostly large values.
 
 
 ```{r NHANEDescriptives, fig.cap="Output for direct HDL cholesterol concentration: jamovi (left); SPSS (right)", fig.align="center",  out.width=c('30%', '8%', '60%'), fig.show="hold"}
@@ -2663,10 +2666,18 @@ knitr::include_graphics("SPSS/NHANES/NHANES-DirectHDL-Explore.png")
 ```
 
 The RQ is about *comparing* the mean direct HDL cholesterol concentration in the two smoking groups, so compiling a table of summaries for each group is useful.
-Using different output (Fig.\ \@ref(fig:NHANEDescriptivesBySmoking)), Table\ \@ref(tab:NHANESSummaryQuant) shows the numerical summaries of direct HDL cholesterol concentration for each group, and the difference.
+Different output (Fig.\ \@ref(fig:NHANEDescriptivesBySmoking)), Table\ \@ref(tab:NHANESSummaryQuant) shows the numerical summaries of direct HDL cholesterol concentration for each group, and the difference.
+
+When creating numerical summary tables, remember to:
+
+* Round numbers appropriately (don't necessarily use all decimals provided by software).
+* Place captions *above* tables.
+* Use *no* vertical lines (in general) and *very few* horizontal lines.
+* Align numbers in the table by decimal point when possible, for easier reading.
+* Ensure the table allows readers to easily make the important comparisons.
 
 
-```{r NHANEDescriptivesBySmoking, fig.cap="Output for direct HDL cholesterol concentration, by current smoking status: jamovi (left) and SPSS (right)", fig.align="center",fig.show="hold", out.width=c('33%', '5%', '60%')}
+```{r NHANEDescriptivesBySmoking, fig.cap="Output for direct HDL cholesterol concentration, by current smoking status: jamovi (left) and SPSS (right)", fig.align="center",fig.show="hold", out.width=c('34%', '4%', '60%')}
 knitr::include_graphics("jamovi/NHANES/NHANES-DirectHDL-Smoke-Descriptives.png")
 knitr::include_graphics("OtherImages/SPACER.png")
 knitr::include_graphics("SPSS/NHANES/NHANES-DirectHDL-Smoke-Descriptives.png")
@@ -2741,8 +2752,8 @@ if( knitr::is_html_output() ) {
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-Notice that information about current smoking status is unavailable for very person in the study.
-This could impact the results (non-response bias; Sect.\ \@ref(SelectionBias)), especially if those who provide data and those who do not are different regarding direct HDL cholesterol concentration.
+Information about current smoking status is unavailable for very person in the study.
+This could impact the results (non-response bias; Sect.\ \@ref(SelectionBias)), if those who provide data and those who do not are different regarding direct HDL cholesterol concentration.
 :::
 
 
