@@ -49,23 +49,23 @@
    
    openplotmat(mar = c(0.25, 0.25, 0.25, 0.25))
    
-   # 'Background' squares delineating the steps
-   polygon( x = edgesX[ c(1, 1, 2, 2)],
-            y = edgesY[ c(2, 3, 3, 2)],
-            border = "grey",
-            col = NA)
-   polygon( x = edgesX[ c(2, 2, 3, 3)],
-            y = edgesY[ c(2, 3, 3, 2)],
-            border = "grey",
-            col = NA)
-   polygon( x = edgesX[ c(1, 1, 3, 3)],
-            y = edgesY[ c(1, 2, 2, 1)],
-            border = "grey",
-            col = NA)
-   polygon( x = edgesX[ c(3, 3, 5, 5)],
-            y = edgesY[ c(1, 3, 3, 1)],
-            border = "grey",
-            col = NA)
+   # # 'Background' squares delineating the steps
+   # polygon( x = edgesX[ c(1, 1, 2, 2)],
+   #          y = edgesY[ c(2, 3, 3, 2)],
+   #          border = "grey",
+   #          col = NA)
+   # polygon( x = edgesX[ c(2, 2, 3, 3)],
+   #          y = edgesY[ c(2, 3, 3, 2)],
+   #          border = "grey",
+   #          col = NA)
+   # polygon( x = edgesX[ c(1, 1, 3, 3)],
+   #          y = edgesY[ c(1, 2, 2, 1)],
+   #          border = "grey",
+   #          col = NA)
+   # polygon( x = edgesX[ c(3, 3, 5, 5)],
+   #          y = edgesY[ c(1, 3, 3, 1)],
+   #          border = "grey",
+   #          col = NA)
    
    
    straightarrow(from = pos[1, ], 
@@ -162,13 +162,13 @@
              col = grey(0)) # CHECKMARK
    
    textrect( pos[5, ],
-             radx = 0.11,
+             radx = 0.13,
              rady = 0.09,
              shadow.size = 0,
              lcol = CompareColour,
              box.col = CompareColour,
-             lab = expression( atop(bold(Compare)*":",
-                                    "Consistency?") ),
+             lab = expression( atop(bold(Compare)~expectation~with,
+                                    observation*":"~Consistency*"?") ),
              col = grey(0)) # CHECKMARK
    textrect( pos[6, ],
              radx = 0.11,
