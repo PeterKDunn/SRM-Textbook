@@ -1582,6 +1582,7 @@ ageBreaks2 <- seq(0, 110,
 
 
 Outliers are 'unusual' observations: observations quite different (larger or smaller) than the bulk of the data.
+Outliers are 'unusual', but not necessarily 'wrong or 'bad' observations.
 Rules for deciding whether or not an observation is 'unusual' are always arbitrary.
 
 
@@ -1596,483 +1597,10 @@ Two rules for identifying outliers are:
 * The *standard deviation rule*, useful when the data have an approximately symmetric distribution (Sect.\ \@ref(OutliersStdDevRule)).
 * The *IQR rule*, useful in other situations (Sect.\ \@ref(OutliersIQRrule)).
 
-Understanding the standard deviation rule first requires studying bell-shaped distributions (Sect.\ \@ref(NormalDistributions)) and the 68--95--99.7 rule (Sect.\ \@ref(EmpiricalRule)). 
-
-
-### Bell-shaped (normal) distributions {#NormalDistributions}
-
-Identifying outliers will be studied initially for approximately symmetrically distributed data, and bell-shaped distributions specifically.
-As an example, the heights of husbands in the UK [@data:hand:handbook; @data:Marsh1988:ExploringData] have an approximate bell shape (Fig.\ \@ref(fig:HusbandHistNormal), left panel).
-Most men are between 160 and 185cm; a few are shorter than 160cm and a few taller than 185cm.
-More formally, *bell-shaped distributions are called normal distributions*.
-
-
-
-```{r HusbandHistNormal, fig.cap="The heights of husbands have an approximate normal distribution", fig.align="center", fig.height=2.0, fig.width=6.5, out.width='100%'}
-data(HusbandWife)
-
-x <- hh <- HusbandWife$Hht/10
-
-#Produce some output to use before we plot:
-out <- hist(x, 
-            plot = FALSE)
-   
-par( mfrow = c(1, 3),
-     mar = c(5, 2, 2, 1) )
-
-hist(x, 
-     prob = TRUE, 
-     axes = FALSE,
-     xlab = "Husbands heights (in cm)",
-     las = 1,
-     ylab = "",
-     xlim = c(150, 200),
-     main = "Histogram of husbands'\nheights (1980 OPCS)",
-     sub = expression(italic(n)==199),
-     col = plot.colour)
-axis(side = 1, 
-     at = seq(150, 200, by = 5), 
-     las = 2)
-   
-hist(x, 
-     prob = TRUE, 
-     axes = FALSE,
-     xlab = "Husbands heights (in cm)",
-     las = 1,
-     ylab = "",
-     xlim = c(150, 200),
-     main = "Histogram of husbands'\nheights (1980 OPCS)",
-     sub = expression(italic(n)==199),
-     col = plot.colour)
-axis(side = 1,
-     at = seq(150, 200, by = 5), 
-     las = 2)
-
-plot( function(y) dnorm(y, mean(x), sd(x)), 
-      from = 150, 
-      to = 200, 
-      col = "red", 
-      add = TRUE,
-      lwd = 2)
-
-plot( function(y) dnorm(y, mean(x), sd(x)), 
-      axes = FALSE,
-      xlab = "Husbands heights (in cm)",
-      las = 1,
-      ylab = "",
-      ylim = c(0, max(out$density)),
-      main = "Husbands' heights\nPopulation model",
-      from = 150, 
-      to = 200, 
-      col = "red", 
-      lwd = 2)
-axis(side = 1, 
-     at = seq(150, 200, by = 5), 
-     las = 2)
-```
-
-
-These data are from one of the many possible samples of married UK men.
-Since every sample is likely to contain different men, and every sample will produce a slightly different histogram.
-For convenience then, an 'average' of all these possible histograms could be constructed.
-For example,
-`r if (knitr::is_latex_output()) {
-   'Fig.\\ \\@ref(fig:HusbandHistNormal) (centre panel) shows a histogram from *one* sample of men (the online version has an animation), but every sample will be different.'
-} else {
-   'see the animation below.'
-}`
-
-The solid line represents the possible 'average histogram' from every possible sample from the population.
-And, in effect then, the solid line is an estimate of how the heights may be distributed in the *population*.
-
-The smoothed histogram represents 100% of the observations (Fig.\ 
-\@ref(fig:HusbandHistNormal), right panel); *every* husband in the sample has a height, and so it must represented somewhere on the histogram.
-When we do this, the *areas* under the normal curve are theoretical percentages.
-
-
-```{r HeightsModelQUANTMovie, animation.hook="gifski", dev=if (is_latex_output()){"pdf"}else{"png"}}
- if (knitr::is_html_output()) {
-   set.seed(6000)
-
-  HT.mn <- 175
-  HT.sd <- 7
-  num.heights <- 100
-  
-  x <- seq( HT.mn - 4*HT.sd, 
-            HT.mn + 4*HT.sd, 
-	    length = 100)
-  y <- dnorm( x,  
-              mean = HT.mn, 
-	      sd = HT.sd)
-  
-    NumSampleHists <- 20
-  
-  for (i in (1:(NumSampleHists + 1))){
-    # HISTOGRAMS
-    if ( i > 1 ){
-      HT.data <- rnorm( num.heights, 
-                        mean = HT.mn, 
-			sd = HT.sd)
-      
-      out <- hist(HT.data, 
-                  breaks = seq(150, 200, by = 5),
-                  col = plot.colour,
-                  xlab = "Heights (in cm)",
-                  axes = FALSE,
-                  plot = TRUE,
-                  xlim = range(x),
-                  main = "Model for the heights of\nAustralian adult males",
-                  sub = paste( "Sample number:", (i - 1)),
-                  ylab = "")
-      axis(side = 1)
-    }
-    
-    
-    # Plot the normal distribution
-    if ( i == 1 ) {
-      plot( range(x), c(0, 1),
-            axes = FALSE,
-            type = "n",
-            main = "Model for the heights of\nAustralian adult males",
-            xlab = "Height (in cm)",
-            ylab = "")
-      axis(side = 1)
-      
-      lines( (y/max(y)) ~ x,
-             lwd = 2,
-             col = "black")
-    } else {
-      y <- y/max(y) * max (out$counts)
-      
-      lines( y ~ x,
-             lwd = 2,
-             col = "black")
-    }
-    
-    # Plot x-xaxis
-    abline(v = 0,
-           col = "grey",
-           lwd = 2)
-    # Plot the mean
-    abline(h = 0,
-           col = "grey",
-           lwd = 2)
-  }
-}
-```
-
-
-The smoothed histogram represents *all* of the husbands' heights (that is, 100%).
-Using this idea, areas of the histogram can be shaded (Fig.\ \@ref(fig:HusbandHistNormalShade)) to represent various percentages of the husbands' heights.
-For example:
-
-* The middle 50% of husbands (Fig.\ \@ref(fig:HusbandHistNormalShade), centre  panel) are between about 168cm and 178cm tall.
-* The tallest 20% of husbands (Fig.\ \@ref(fig:HusbandHistNormalShade), right panel) are taller than about 179cm.
-
-
-```{r HusbandHistNormalShade, fig.cap="The heights of husbands, with certain percentages shaded", fig.align="center", fig.width=6, fig.height=1.75, out.width='90%'}
-par( mfrow = c(1,3),
-     mar = c(4, 1, 1.5, 1) )
-
-hh.m <- mean ( hh )
-hh.s <- sd ( hh )
-
-z.lo <- -3.5
-z.hi <-  3.5
-
-x.lo <- z.lo * hh.s + hh.m
-x.hi <- z.hi * hh.s + hh.m
-xx <- seq(x.lo, x.hi, length = 200)
-
-locations <- seq(150, 195, by = 5)
-locations.labels <- c(
-	"150", "",
-	"160", "",
-	"170", "",
-	"180", "",
-	"190", "")
-
-
-hh.norm <- dnorm( xx, mean=hh.m, sd=hh.s )
-
-plot( hh.norm ~ xx,
-   type = "n",
-   xlab = "Heights (in cm)",
-   ylab = "",
-   las = 1,
-   axes = FALSE,
-   main = "100% of men")
- 
-lines( hh.norm ~ xx, 
-       lwd = 2)
-
-axis(side = 1,
-     at = locations,
-     labels = locations.labels)
-
-
-x.p <- c( xx[1], xx, xx[length(xx)] )
-y.p <- c( 0, hh.norm, 0 )
-polygon( x.p, y.p, 
-         col = plot.colour )
-
-
-# - Now shade middle 50%
-plot( hh.norm ~ xx,
-   type = "n",
-   xlab = "Heights (in cm)",
-   ylab = "",
-   las = 1,
-   axes = FALSE,
-   main = "Middle 50%")
-
-lines( hh.norm ~ xx, 
-       lwd = 2)
- 
-
-axis(side = 1,
-     at = locations,
-     labels = locations.labels)
-
-z.lo <-   qnorm(0.25)
-z.hi <-  -z.lo
-
-x.lo <- z.lo * hh.s + hh.m
-x.hi <- z.hi * hh.s + hh.m
-x.80 <- seq(x.lo, x.hi, length = 200)
-y.80 <- dnorm( x.80, 
-               mean = hh.m, 
-	       sd = hh.s )
-
-x.p <- c( x.80[1], x.80, x.80[length(xx)] )
-y.p <- c( 0, y.80, 0 )
-polygon( x.p, y.p, 
-         col = plot.colour )
-
-
-# -Tallest 20%
-plot( hh.norm ~ xx,
-   type = "n",
-   xlab = "Heights (in cm)",
-   ylab = "",
-   las = 1,
-   axes = FALSE,
-   main = "Tallest 20%")
- 
-lines( hh.norm ~ xx, 
-       lwd = 2)
- 
-axis(side = 1,
-     at = locations,
-     labels = locations.labels)
-
-z.lo <- qnorm(0.80)
-z.hi <-  3.5
-
-x.lo <- z.lo * hh.s + hh.m
-x.hi <- z.hi * hh.s + hh.m
-x.20 <- seq(x.lo, x.hi, length = 200)
-y.20 <- dnorm( x.20,
-               mean = hh.m, 
-	       sd = hh.s )
-
-x.p <- c( x.20[1], x.20, x.20[length(xx)] )
-y.p <- c( 0, y.20, 0 )
-polygon( x.p, y.p, 
-         col = plot.colour )
-```
-
-### The 68--95--99.7 rule {#EmpiricalRule}
-
-One important rule that applies for *any* normal distribution, whatever the mean or standard deviation, is the *69--95--99.7 rule*.
-
-
-::: {.definition #EmpiricalRule name="The 68--95--99.7 Rule (or the Empirical Rule)"}
-For *any* bell-shaped distribution, *approximately*:
-
-* 68% of observations lie within one standard deviation of the mean;
-* 95% of observations lie within two standard deviations of the mean;
-* 99.7% of observations lie within three standard deviations of the mean.
-:::
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The *68--95--99.7 rule*, or *empirical rule*, is one of the *most important rules we will see*.
-:::
-
-
-`r if (knitr::is_latex_output()) {
-   'The 68--95--99.7 rule is shown in Fig.\\ \\@ref(fig:EmpRuleFig).'
-} else {
-   'The animation below shows how the 68--95--99.7 works.'
-}`
-
-
-
-```{r EmpRule, animation.hook="gifski", interval=1, dev=if (is_latex_output()){"pdf"}else{"png"}}
-source("R/showEmpRule.R")
-
-if (knitr::is_html_output()){
-    for (i in 1:3 ){
-      showEmpRule(i)
-    }
-}
-```
-
-<!-- fig.width=6, fig.height=1.75, out.width='90%' -->
-
-```{r EmpRuleFig, fig.align="center", out.width='32%', fig.width=3, fig.height = 2.5, fig.show='hold', fig.cap="The 68--95--99.7 rule: About 95\\% of observations are within two standard deviations of the mean" }
-source("R/showEmpRule.R")
-
-if (knitr::is_latex_output()){
-  par( mar = c(3, 0.5, 3, 0.4) + 0.1 )
-  showEmpRule(1)
-  par( mar = c(3, 0.5, 3, 0.4) + 0.1 )
-  showEmpRule(2)
-  par( mar = c(3, 0.5, 3, 0.4) + 0.1 )
-  showEmpRule(3)
-}
-```
-
-
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-The percentages given in the 68--95--99.7 rule are *approximate*; the percentages are actually 68.27%, 95.45% and 99.73% respectively.
-:::
-
-
-The 68--95--99.7 rule can be used to describe and understand variables with an approximate normal distribution.
-Consider the heights of husbands again (Fig.\ \@ref(fig:HusbandHistNormalShadeEmpirical)); the sample mean height is $\bar{x} = 173.2$cm and the sample standard deviation is $s = 6.88$cm.
-Using the 68--95--99.7 rule, approximately 68% of the husbands *in the population* would have heights between $173.2 - 6.88 = 166.3$cm and $173.2 + 6.88 = 180.1$cm.
-
-(In fact, 71% of husbands in the *sample* are between 166.3cm and 180.1cm tall, close to the expected 68%.)
-Similarly, approximately 95% of the husbands in the *population* would have heights between $173.2 - (2\times 6.88) = 159.4$cm and $173.2 + (2\times 6.88) = 187.0$cm.
-
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-For the husbands' heights, the sample mean height is $173.2$cm; the sample standard deviation is $6.88$cm.
-Using the [68--95--99.7 rule](#def:EmpiricalRule), about 99.7% of the husbands in the population are between what heights?\label{thinkBox:HusbandsHts:997}
-
-
-`r if (knitr::is_latex_output()) '<!--'`
-`r webexercises::hide()`
-Three standard deviations is $3\times6.88 = 20.64$.
-So about 99.7% of husbands are between $(173.2 - 20.64) = 152.6$cm and $(173.2 + 20.64) = 193.8$cm.
-`r webexercises::unhide()`
-`r if (knitr::is_latex_output()) '-->'`
-:::
-
-
-The empirical rule indicates that 99.7% of observations are within 3 standard deviations of the mean.
-That is, *almost all* observations are within three standard deviations of the mean.
-This suggests a rule for identifying outliers in approximately bell-shaped distributions: any observation more than 3 standard deviations from the mean is unusual, so may be considered an *outlier*.
-More generally, this rule is often applied to approximately symmetric distributions.
-
-Bell-shaped (normal) distributions are also studied in Chap.\ \@ref(SamplingDistributions).
-
-
-
-```{r HusbandHistNormalShadeEmpirical, fig.cap="The heights of husbands, showing the 68--95--99.7 rule in use", fig.align="center", fig.width=6.7, fig.height=2.0, out.width='100%'}
-par( mfrow = c(1, 3),
-     mar = c(6, 2, 2, 1) )
-
-# Mid 68%
-mu <- 173
-sdev <- 6.88
-
-out1 <- plotNormal(mu = mu,
-                   sd = sdev,
-                   round.dec = 0,
-                   main = "Within 1 std. dev.", # Main title
-                   xlab = "Height (cm)", # horizontal axis labels
-                   showZ = FALSE, # Whether to show z = -3:3 or not
-                   las = 2,
-                   bg = "white", 
-                   showZtall = FALSE,
-                   cex.tickmarks = 1,
-                   axis.labels = NULL)
-lines( x = rep( mu - sdev, 2),
-       y = c(0, max(out1$y) * 0.9),
-       lwd = 1,
-       col = "grey")
-lines( x = rep( mu + sdev, 2),
-       y = c(0, max(out1$y) * 0.9),
-       lwd = 1,
-       col = "grey")
-shadeNormal(out1$x, out1$y,
-            lo = 166.3,
-            hi = 180.1,
-            outline = TRUE,
-            col = plot.colour)
-abline(v = 0, 
-       col = "grey",
-       lwd = 2)
-
-
-# Mid 95%
-out1 <- plotNormal(mu = mu,
-                   sd = sdev,
-                   round.dec = 0,
-                   main = "Within 2 std. devs.", # Main title
-                   xlab = "Height (cm)", # horizontal axis labels
-                   showZ = FALSE, # Whether to show z = -3:3 or not
-                   las = 2,
-                   bg = "white", 
-                   showZtall = FALSE,
-                   cex.tickmarks = 1,
-                   axis.labels = NULL)
-lines( x = rep( mu - 2 * sdev, 2),
-       y = c(0, max(out1$y) * 0.6),
-       lwd = 1,
-       col = "grey")
-lines( x = rep( mu + 2 * sdev, 2),
-       y = c(0, max(out1$y) * 0.6),
-       lwd = 1,
-       col = "grey")
-shadeNormal(out1$x, out1$y,
-            lo = 159.24,
-            hi = 186.76,
-            outline = TRUE,
-            col = plot.colour)
-abline(v = 0, 
-       col = "grey",
-       lwd = 2)
-
-# Mid 99.7%
-out1 <- plotNormal(mu = mu,
-                   sd = sdev,
-                   round.dec = 0,
-                   main = "Within 3 std. devs.", # Main title
-                   xlab = "Height (cm)", # horizontal axis labels
-                   showZ = FALSE, # Whether to show z = -3:3 or not
-                   las = 2,
-                   bg = "white", 
-                   showZtall = FALSE,
-                   cex.tickmarks = 1,
-                   axis.labels = NULL)
-lines( x = rep( mu - 3 * sdev, 2),
-       y = c(0, max(out1$y) * 0.4),
-       lwd = 1,
-       col = "grey")
-lines( x = rep( mu + 3 * sdev, 2),
-       y = c(0, max(out1$y) * 0.4),
-       lwd = 1,
-       col = "grey")
-shadeNormal(out1$x, out1$y,
-            lo = 152.36,
-            hi = 193.64,
-            outline = TRUE,
-            col = plot.colour)
-abline(v = 0, 
-       col = "grey",
-       lwd = 2)
-```
-
-
-
 
 ### The standard deviation rule {#OutliersStdDevRule}
 
-One rule for identifying outliers is based on the [68--95--99.7 rule](#def:EmpiricalRule).
+The first rule for identifying outliers applies for approximately symmetric distributions.
 
 
 ::: {.definition #StandardDeviationRuleForIdentifyingOutliers name="Standard deviation rule for identifying outliers"}
@@ -2081,12 +1609,11 @@ For approximately symmetric distributions, an observation more than three standa
 
 
 This rule uses the mean and the standard deviation, so is suitable for approximately symmetric distributions (when means and standard deviations are sensible numerical summaries).
-Although this rule is based on normal distributions, it is useful for many approximately-symmetric distributions. 
+The rationale behind this rule is explained in Sect.\ \@ref(NormalDistribution).
 
-All rules for identifying outliers are arbitrary.
-The standard deviation rule is sometimes given slightly differently.
+All rules for identifying outliers are arbitrary, and sometimes the standard deviation rule is sometimes given slightly differently.
 For example, outliers may be identified as observations more than 2.5 standard deviations away from the mean.
-Both rules are acceptable.
+Both rules are acceptable, since the definition is arbitrary.
 
 
 ### The IQR rule {#OutliersIQRrule}
@@ -2099,7 +1626,6 @@ Another rule is needed for identifying outliers in these situations: the IQR rul
 The IQR rule identifies mild and extreme outliers:
 
 * *Extreme outliers*: observations $3\times \text{IQR}$ more unusual than $Q_1$ or $Q_3$.
-
 * *Mild outliers*: observations $1.5\times \text{IQR}$ more unusual than $Q_1$ or $Q_3$ (that are not also extreme outliers).
 :::
 
@@ -2124,13 +1650,13 @@ That is, *mild* outliers are
 * more unusual than $50.6 + 38.9 = 89.5$ (that is, *greater* than $89.5$).
 
 The outliers are identified when constructing a boxplot: the 'whiskers' extended to the most extreme observation remaining *after* excluding mild and extreme observations.
-*Mild outliers* are located using a $\circ$, and *extreme outliers* using a $\star$.
+The outliers are located using a $\circ$ (and sometimes *extreme outliers* are located using a $\star$).
 :::
 
 
-You don't need to *do* this (that's what software is for), but you do need to *understand* what how to read boxplots.
+You don't need to *do* this (that's what software is for), but you do need to *understand* how to read boxplots.
 `r if (knitr::is_latex_output()) {
-   'The final boxplot is shown in Fig.\\ \\@ref(fig:IQROutliers). (The online version has an animation.)'
+   'The final boxplot is shown in Fig.\\ \\@ref(fig:IQROutliers).'
 } else {
    'Construction of the boxplot is shown in the animation below.'
 }`
@@ -2208,6 +1734,7 @@ plotIQROutliersAnimation <- function(x, i){
     out <- boxplot(x, 
                    add = TRUE, 
                    col = rgb(0, 0, 0, maxColorValue = 256, alpha = 0.5), 
+                   boxwex = 0.2,
                    range = 0, 
                    las = 1)
   }
@@ -2217,6 +1744,7 @@ plotIQROutliersAnimation <- function(x, i){
                boxfill = rgb(0, 0, 0, 
                              maxColorValue = 256, 
                              alpha = 0.5), 
+               pars = list(boxwex = 0.2),
                width = 0.25,
                las = 1)
   }
@@ -2225,25 +1753,30 @@ plotIQROutliersAnimation <- function(x, i){
     abline( h = qx[2], 
             col = "grey", 
             lty = 2)
-    text(1.4, qx[2], 
+    text(x = 1.4, 
+         y = qx[2], 
          expression(Q[1] == 24.66), 
          pos = 1,
          cex = 0.9)
     abline( h = qx[4], 
             col = "grey", 
             lty = 2)
-    text(1.4, qx[4], 
+    text(x = 1.4, 
+         y = qx[4], 
          expression(Q[3] == 50.58), 
          pos = 3,
          cex = 0.9)
     
-    arrows(0.75, qx[2], 
-           0.75, qx[4], 
+    arrows(x0 = 0.75, 
+           y0 = qx[2], 
+           x1 = 0.75, 
+           y1 = qx[4], 
            angle = 15,
            length = 0.125, 
            code = 3)
-    text(0.67, mean(qx[ c(3, 4)]), 
-         expression(IQR), 
+    text(x = 0.83, 
+         y = mean(qx[ c(3, 4)]), 
+         label = expression(IQR), 
          cex = 0.9)
   }
   
@@ -2252,37 +1785,44 @@ plotIQROutliersAnimation <- function(x, i){
             col = "gray",
             
 	    h = extreme )
-    text(1.3, mean( c(extreme, qx[5])), 
-         "All observations here\nare extreme outliers", 
+    text(1.0, mean( c(extreme, qx[5])), 
+         "All observations here are extreme outliers", 
          col = "grey")
   }
   if ( (i == 4) | (i == 5) ) {
-    arrows(0.75, qx[4], 0.75, 
-           extreme, 
+    arrows(x0 = 0.75, 
+           y0 = qx[4], 
+           x1 = 0.75, 
+           y1 = extreme, 
            angle = 15,
            length = 0.125, 
            code = 3)
-    text(0.6, mean( c(qx[4], extreme)), 
-         "Three IQRs")
+    text(x = 0.83, 
+         y = mean( c(qx[4], extreme)), 
+         labels = "Three IQRs")
   }
   
   if ( (i > 5) & (i < 8) ){
     abline( lwd = 2, 
             col = "gray", 
             h = mild )
-    text(1.3, 
-         mean( c(mild, extreme)), 
-         "All observations here\nare mild outliers", 
+    text(x = 1.0, 
+         y = extreme,
+         pos = 1,
+         labels = "All observations here are mild outliers", 
          col = "grey")
   }
   if ( (i == 6) | (i == 7) ) {
-    arrows(0.75, qx[4], 
-           0.75, mild, 
+    arrows(x0 = 0.75, 
+           y0 = qx[4], 
+           x1 = 0.75, 
+           y1 = mild, 
            angle = 15, 
            length = 0.125, 
            code = 3)
-    text(0.6, mean( c(qx[4], mild)), 
-         "1.5 IQRs")
+    text(x = 0.6, 
+         y = mean( c(qx[4], mild)), 
+         labels = "1.5 IQRs")
   }
   
   
@@ -2332,7 +1872,7 @@ plotIQROutliersAnimation <- function(x, i){
   
 }
 
-
+### HTML ONLY
 
 if (knitr::is_html_output()){
     for (i in 1:8){
@@ -2346,21 +1886,166 @@ if (knitr::is_html_output()){
 ```{r IQROutliers, fig.align="center", fig.width=9, fig.height = 4.5, fig.cap="Mild and extreme outliers, using the IQR rule, for the permeability data", out.width = '99%' }
 if (knitr::is_latex_output()){ 
   
+  data(Perm)
+  x <- Perm$Perm
+  
   par(mfrow = c(1, 2),
       mar = c(0.5, 4, 4, 0.5) + 0.1)
   boxplot(x,
-          main = "The original boxplot\nof permeability",
+          main = "The final boxplot\nof permeability",
           ylab = "Permeability (in seconds)",
           ylim = c(0, 180), 
           xlim = c(0.5, 1.5),
           las = 1
-          )
-   plotIQROutliersAnimation(x, 6)  
+  )
+  #   plotIQROutliersAnimation(x, 6)  
+  ###################################################
+  grey.pch <- grey(0.75)
+  
+  xsort <- sort( x , decreasing = TRUE)  
+  b.out <- boxplot(x, plot = FALSE)
+  
+  b.out.noextreme <- b.out
+  b.out.noextreme$n <- b.out.noextreme$n - 2
+  b.out.noextreme$out <- numeric(0)
+  b.out.noextreme$group <- numeric(0)
+  b.out.noextreme$stats[5, 1] <- xsort[3]
+  
+  b.out.nomild <- b.out
+  b.out.nomild$n <- b.out.nomild$n - 3
+  b.out.nomild$out <- numeric(0)
+  b.out.nomild$group <- numeric(0)
+  
+  qx <- quantile(x)
+  iqrx <- qx[4] - qx[2]
+  mild <- qx[4] + 1.5 * iqrx
+  extreme <- qx[4] + 3 * iqrx
+  
+  # FIND extreme obs
+  extreme.obs <-  b.out$out[2:3]
+  extreme.which <- which(x > extreme )
+  extreme.num <- length( x[extreme.obs] )
+  
+  # FIND mild obs
+  mild.obs <- b.out$out[1]
+  mild.which <- which(x > mild )
+  mild.num <- length( x[mild.obs] )
+  
+  x.nooutliers <- xsort[ -(1:3)]
+  
+  set.seed(937300)
+
+  stripchart(x.nooutliers,
+             vertical = TRUE, 
+             las = 1, 
+             pch = 1, 
+             ylim = c(0, 180), 
+             xlim = c(0.5, 1.5),
+             method = "jitter", 
+             jitter = 0.05,
+             ylab = "Permeability (in seconds)", 
+             main = "Constructing the boxplot\nand defining outliers",
+             col = grey.pch)
+  
+  # Shade a region (early, so it is overwritten with text and co.) to distinguish outliers
+  polygon( x = c(-1, 2, 2, -1),
+           y = c(mild, mild, extreme, extreme),
+           border = NA, # No border
+           col = grey(0.975) )
+
+
+  abline( h = qx[2], 
+          col = "grey", 
+          lty = 2)
+  text(x = 1.4, 
+       y = qx[2], 
+       expression(Q[1] == 24.66), 
+       pos = 1,
+       cex = 0.9)
+  abline( h = qx[4], 
+          col = "grey", 
+          lty = 2)
+  text(x = 1.4, 
+       y = qx[4], 
+       expression(Q[3] == 50.58), 
+       pos = 3,
+       cex = 0.9)
+  
+  # IQR    
+  arrows(x0 = 0.66, 
+         y0 = qx[2], 
+         x1 = 0.66, 
+         y1 = qx[4], 
+         angle = 15,
+         length = 0.125, 
+         code = 3)
+  text(x = 0.75, 
+       y = qx[ 3 ], 
+       label = expression(IQR), 
+       cex = 0.9)
+  
+  # EXTREME
+  abline( lwd = 2, 
+          col = "gray",
+          h = extreme )
+  text(1.0, mean( c(extreme, qx[5])), 
+       "All observations here are 'extreme outliers'", 
+       col = grey(0.2))
+  
+  
+  arrows(x0 = 0.5, 
+         y0 = qx[4], 
+         x1 = 0.5, 
+         y1 = extreme, 
+         angle = 15,
+         length = 0.125, 
+         code = 3)
+  text(x = 0.48,
+       pos = 4,
+       y = 100, 
+       cex = 0.9,
+       adj = 0,
+       labels = expression(3 %*% ~ "IQR") )
+  
+  
+  # MILD    
+  abline( lwd = 2, 
+          col = "gray", 
+          h = mild )
+  text(x = 1.0, 
+       y = extreme,
+       pos = 1,
+       labels = "All observations here are 'mild outliers'", 
+       col = grey(0.2))
+
+  # SHOW HOW THE MILD, EXTREME ARE DETERMINED
+  arrows(x0 = 0.8, 
+         y0 = qx[4], 
+         x1 = 0.8, 
+         y1 = mild, 
+         angle = 15, 
+         length = 0.125, 
+         code = 3)
+  text(x = 0.82,
+       pos = 2,
+       adj = 1,
+       y = mean( c(qx[4], mild)), 
+       cex = 0.9,
+       labels = expression(1.5 %*% ~ "IQR") )
+  
+  
+  out <- boxplot(x,  
+                 add = TRUE, 
+                 col = rgb(0, 0, 0, maxColorValue = 256, alpha = 0.5), 
+                 boxwex = 0.3,
+                 lwd = 2,
+                 las=1)
+  
 }
 ```
 
 
-### When to use which rule? {#CompareOutlierRules}
+### When outlier rule to use? {#CompareOutlierRules}
 
 In summary, two common ways to identify outliers are:
 
