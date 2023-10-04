@@ -174,13 +174,14 @@ BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
            y = c(0,          h.fulcrum, 0,         0),
            col = plot.colour)
   text(locate.fulcrum, -0.2, 
-       sprintf("%.3f", locate.fulcrum),
+       #sprintf("%.3f", locate.fulcrum),
+       expression(bar(italic(x)) == 5.25),
        pos = 1)
   
   
-  # Draw fulcrum pivot
+  # Draw fulcrum pivot, and the vertical line
   lines( x = c( locate.fulcrum, locate.fulcrum),
-         y = c(-0.05 * h.fulcrum, h.fulcrum),
+         y = c(-0.3 * h.fulcrum, h.fulcrum),
          col = grey(0.3))
   points(x = locate.fulcrum, 
          y = h.fulcrum, 
