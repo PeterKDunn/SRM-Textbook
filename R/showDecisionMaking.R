@@ -202,7 +202,7 @@
         y = 0.965,
         cex = 0.90,
         labels = "2. Describe what is expected")
-   text(x = pos[3, 1],
+   text(x = mean( pos[1:2, 1]),
         y = 0.02,
         cex = 0.90,
         labels = "3. Observe sample statistic")

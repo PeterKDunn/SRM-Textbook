@@ -1,10 +1,9 @@
 
-
-
 # Define helpful angles functions
 deg2rad <- function(x) {
   x * pi / 180
 }
+
 rad2deg <- function(x) {
   x * 180 / pi
 }
@@ -121,10 +120,6 @@ plotBallShadow <- function(angle,
 
 
 
-
-
-
-
 #####################################################################################
 ###########################################################################################################
 
@@ -204,17 +199,9 @@ plotSpinningWheel <- function(angle,
   
   # Find the whole number starting which of the 37 segments we are in
   # Recall that the  angles  are the midpoints of each sector
-#  cat("----\nangle:", rad2deg(angle - sectorAngle/2), "\n")
   angle.mod <- rad2deg(angle) %% 360
-#  cat("angle:", angle.mod, "\n")
   location <- (angle.mod / sectorAngle)
-#  location <- rad2deg(angle + deg2rad(sectorAngle)/2) / sectorAngle # Recall: angle is the middle o each segment.
 
-#  cat("\nlocation+2:", location+1, numberLabels[ location+2  ], "\n")
-#  cat("location+1:", location+1, numberLabels[ location+1  ], "\n")
-#  cat("location:", location, numberLabels[ location  ], "\n")
-#  cat("location-1:", location-1, numberLabels[ location-1  ], "\n")
-  
   numberLabels <-  c(0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 
                      11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 
                      22, 18, 29, 7, 28, 12, 35, 3, 26)
