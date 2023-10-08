@@ -9,8 +9,13 @@
 
 ## Introduction {#Chap18-Intro}
 
-In the [decision-making process used in statistics](#DecisionMaking), an *assumption* is made about a parameter of the population.
-And, of course, many different samples could be drawn from this population, and so the sample statistic can vary.
+In the [decision-making process used in research](#DecisionMaking), an *assumption* is made about a parameter of the population.
+A sample is then taken, and the value of the sample statistics computed. 
+And, of course, many different samples could be drawn from this population, and so the sample statistic can vary from sample to sample.
+
+Based on the assumption about the parameter, we can describe the values of the statistic that we would reasonably *expect* from all these possible samples.
+As seen in Chap.\ \@ref(SamplingVariation), often these sampling distributions are bell-shaped, or *normal distributions*.
+The challenge is that only one of these countless possible samples observed.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -27,240 +32,259 @@ Since many values for the sample statistic are possible, the possible values of 
 :::
 
 
-Based on the assumption about the parameter, we can describe the values of the statistic that we would *expect* from these all possible samples.
-As seen in Chap.\ \@ref(SamplingVariation), often these sampling distributions are bell-shaped, or *normal distributions*.
-The challenge is that only one of these countless possible samples observed.
-
-The normal distributions are a *model* used to describe the *sampling distribution*.
-For example, if I deal 15 cards, the *statistic* could be 'the proportion of red cards in a hand of 15'.
-The *model* would describe how often we would see a proportion of 0/15 red cards, 1/15 red cards, 2/15 red cards... up to 15/15 red cards (Sect. \@ref(MakingDecisionsInResearch)).
-
+The normal distributions are a *model* used to describe the *sampling distribution*: how the statistic varies.
 Under [certain circumstances](#ValidityProportions), many sample statistics have a *normal distribution* shape.
 We now study normal distributions, as they appear as the sampling distribution for many (but not all) statistics.
 
 
-## Distributions: an example {#DistributionsExample}
 
 
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/measure-289399_640.jpg" width="200px"/>
-</div>
+## Normal distributions: examples {#DistributionsExample}
+
+In Chap.\ \@ref(SamplingVariation), we saw that the proportion of red spins in 15 spins could vary; similarly, the mean spin from 15 spins could vary (Fig.\ \@ref(fig:RouletteWheelHistPropMean)).
+In both cases---and also for larger sample sizes---these sampling distributions had a rough bell-shape, or a *normal distribution*.
 
 
-Consider the heights of *all* Australian adult males (the population).
-Clearly, the height of *all* Australian adult males is unknown: no-one has ever, or could ever realistically, measure the height of every Australian adult male.
-The
-`r if (knitr::is_latex_output()) {
-   'Australian Bureau of Statistics (ABS),'
-} else {
-   '[Australian Bureau of Statistics (ABS)](http://www.abs.gov.au/ausstats/abs@.nsf/Lookup/4338.0main+features212011-13),'
-}`
-however, takes samples of Australians to finds heights and other measurements.
+```{r RouletteWheelHistPropMean, results='hide', fig.width=8.5, fig.height=3, fig.cap="Sampling distributions for the proportion of red spins (left), and the mean of the numbers after a roulette wheel spins (right)", fig.align="center", out.width="100%"}
+p <- 18/37
+spins <- c(15, 25, 100, 200)
 
-A model could be *assumed* for the heights of the population of Australian adult males.
-A model is a *theoretical* idea that might be a useful description of the heights of Australian adult males in the *population*.
-Suppose a *model* for the heights of Australian adult males is adopted that describes the heights as:
+se <- sqrt( p * (1 - p) / spins )
 
-* having a bell-shaped (normal) distribution,
-* with a *mean height* of 175cm, and 
-* a *standard deviation* of 7cm. 
+num.sims <- 5000
 
-Then, the *distribution* of the heights of Australian adult males would look like Fig. \@ref(fig:HeightsModel) (left panel).
-That is, most Australian adult males are between about 168 and 182cm, and very few are taller than 196cm or shorter than 154cm.
+par( mfrow = c(1, 2))
 
-```{r HeightsModel, out.width='95%', results='hide', fig.cap="A model for the heights of Australian adult males, showing 1, 2 and 3 standard deviations either side of the mean (left); the model for heights of Australian adult males, plus the histogram from one specific sample of size $n = 100$ of Australian adult males (right)", fig.align="center", fig.width=7.75, fig.height=2.5}
-HT.mn <- 175
-HT.sd <- 7
+### Spin the wheel spins[1] * num.sims. times 
+### and grab each sim set from there
 
-par( mfrow = c(1, 2),
-     mar = c(5, 0.5, 4, 0.5))
+xNorm <- seq(0, 1, 
+             length = 100)
 
-hide <- plotNormal(mu = HT.mn, 
-                   sd = HT.sd, 
-                   showZ = TRUE,
-                   xlab = "Height (in cm)",
-                   main = "Heights of Australian\nadult males")
-
-set.seed(14040)
-
-HT.mn <- 175
-HT.sd <- 7
-num.heights <- 100
-
-x <- seq( HT.mn - 4 * HT.sd, 
-          HT.mn + 4 * HT.sd, 
-          length = 100)
-y <- dnorm( x,  
-            mean = HT.mn, 
-            sd = HT.sd)
-
-# HISTOGRAM
-HT.data <- rnorm( num.heights, 
-                  mean = HT.mn, 
-                  sd = HT.sd)
-
-out <- hist(HT.data, 
-            breaks = seq(150, 200, by = 5),
-            col = plot.colour,
-            border = plot.colour,
-            xlab = "Heights (in cm)",
-            axes = FALSE,
-            plot = TRUE,
-            xlim = range(x),
-            main = "Heights of Australian adult\nmales: model, and one sample",
-            sub = "One sample of size 100",
-            ylab = "")
-axis(side = 1 )
-y <- y / max(y) * max (out$counts)
-
-lines( y ~ x,
-       lwd = 2,
-       col = "black")
-
-# Plot x-axis
-abline(v = 0,
-       col = "grey",
-       lwd = 2)
-# Plot the mean
-abline(h = 0,
-       col = "grey",
-       lwd = 2)
-```
-
-Since we do not know the heights of all Australian men, this model represents an idealised, or *assumed*, picture of the histogram of the heights of all Australian adult males in the *population*.
-If this model is accurate, the distribution of heights in any *sample* may be shaped a bit like this... but *sampling variation* will exist, and every sample will be a bit different.
-
-While any one sample will look a bit different than this model, the model captures the general feel of the histogram from many of these samples.
-The model is like the 'average' of many sample histograms.
-For example,
-`r if (knitr::is_latex_output()) {
-   'Fig. \\@ref(fig:HeightsModel) (right panel) shows a histogram from *one* sample of $n = 100$ men (the online version has an animation), but every sample will be different.'
-} else {
-   'see the animation below, where many samples of $n = 100$ men are taken.'
-}`
-
-
-```{r HeightsModelMovie, animation.hook="gifski", dev=if (is_latex_output()){"pdf"}else{"png"}}
-if (knitr::is_html_output()) {
-  set.seed(14040)
-  
-  HT.mn <- 175
-  HT.sd <- 7
-  num.heights <- 100
-  
-  x <- seq( HT.mn - 4 * HT.sd, 
-            HT.mn + 4 * HT.sd, 
-            length = 100)
-  y <- dnorm( x,  
-              mean = HT.mn, 
-              sd = HT.sd)
-  
-  NumSampleHists <- 20
-  
-  for (i in (1:(NumSampleHists + 1))){
-    # HISTOGRAMS
-    if ( i > 1 ){
-      HT.data <- rnorm( num.heights, 
-                        mean = HT.mn, 
-                        sd = HT.sd)
-      
-      out <- hist(HT.data, 
-                  breaks = seq(150, 200, by = 5),
-                  col = plot.colour,
-                  border = plot.colour,
-                  xlab = "Heights (in cm)",
-                  axes = FALSE,
-                  plot = TRUE,
-                  xlim = range(x),
-                  main = "Model for the heights of\nAustralian adult males",
-                  sub = paste( "Sample number:", (i - 1)),
-                  ylab = "")
-      axis(side = 1)
-    }
-    
-    
-    # Plot the normal distribution
-    if ( i == 1 ) {
-      plot( range(x), c(0, 1),
-            axes = FALSE,
-            type = "n",
-            main = "Model for the heights of\nAustralian adult males",
-            xlab = "Height (in cm)",
-            ylab = "")
-      axis(side = 1)
-      
-      lines( (y/max(y)) ~ x,
-             lwd = 2,
-             col = "black")
-    } else {
-      y <- y/max(y) * max (out$counts)
-      
-      lines( y ~ x,
-             lwd = 2,
-             col = "black")
-    }
-    
-    # Plot x-xaxis
-    abline(v = 0,
-           col = "grey",
-           lwd = 2)
-    # Plot the mean
-    abline(h = 0,
-           col = "grey",
-           lwd = 2)
-  }
+propOdd <- function(x){
+  sum( (x%%2 != 0 ) ) / length(x)
 }
+
+set.seed(37945000)
+spinNumbersAll <- sample( 0:36, 
+                          spins[1] * num.sims, 
+                          replace = TRUE)
+spinNumbers <- array( spinNumbersAll, 
+                      dim = c(spins[1], num.sims) )
+sampleP <- apply( spinNumbers, 
+                  MARGIN = 2, 
+                  FUN = propOdd )
+
+break.list <- seq(0, 1, 
+                  by = 1/15) + 1/30 
+
+out <- hist( sampleP,
+             breaks = break.list,
+             xlim = c(0, 1),
+             axes = FALSE,
+             col = plot.colour,
+             xlab = "Sample proportions", 
+             ylab = "",
+             main = paste("Proportion red spins, from\n", spins[1], " of the wheel") )
+yNorm <- dnorm(xNorm, 
+               mean = p, 
+               sd = se[1]) 
+lines( xNorm,
+       (yNorm) / max(yNorm) * max(out$count),
+       col = "black",
+       lwd = 2)
+axis(side = 1)
+
+points(x = 18/37,
+       y = 0,
+       pch = 19,
+       cex = 0.8)
+mtext(text = expression(italic(p)),
+      side = 1,
+      line = 1,
+      at = 18/37,
+     cex = 0.8)
+
+
+### 
+
+mu <- sum( 0:36 )/ 37
+sigma <- sqrt( sum( ( (0:36) - mu )^2 )/37 )
+
+spins <- c(15, 50, 100, 250)
+
+se <- sigma / sqrt( spins )
+
+
+num.sims <- 5000
+
+### Spin the wheel spins[1] * num.sims. times 
+### and grab each sim set from there
+set.seed(37389457)
+
+xNorm <- seq(0, 37, 
+             length = 100)
+
+
+spinNumbersAll <- sample( 0:36, 
+                          spins[1] * num.sims, 
+                          replace = TRUE)
+spinNumbers <- array( spinNumbersAll, 
+                      dim = c(spins[1], num.sims) )
+sampleMeans <- colMeans(spinNumbers)
+break.list <- seq(0, 37, 
+                  by = 1)
+
+out <- hist( sampleMeans,
+             breaks = break.list,
+             xlim = c(5, 30),
+             axes = FALSE,
+             col = plot.colour,
+             xlab = "Sample means", 
+             ylab = "",
+             main = paste("Mean number, from\n", spins[1], " of the wheel") )
+yNorm <- dnorm(xNorm, 
+               mean = mu, 
+               sd = se[1]) 
+lines( xNorm,
+       (yNorm) / max(yNorm) * max(out$count),
+       col = "black",
+       lwd = 2)
+axis(side = 1)
+
+points(x = 18,
+       y = 0,
+       pch = 19,
+       cex = 0.8)
+mtext(text = expression(mu),
+      side = 1,
+      line = 1,
+      at = 18,
+     cex = 0.8)
 ```
 
 
-
-
-<!-- ```{r HeightsModelMovie, echo=FALSE, fig.cap="The model for heights", fig.align="center"} -->
-<!--  htmltools::tags$iframe(title = "The model for heights of Australian adult males", src = "./Animations/HeightsModelMovie.html", frameborder=0, height=450, width=350)  -->
-<!-- ``` -->
-
-
-The model of heights has approximately a bell-shape: that is, most values are near the average height, but a small number of men are very tall or very short.
 A *bell-shaped distribution* is formally called a *normal distribution* or a *normal model*.
-A normal distribution is a way of *modelling* the population.
-			
 A *model* is a theoretical or ideal concept.
 In the same way that a model skeleton isn't 100% accurate and certainly not exactly like *your* skeleton, it suitably approximates reality.
 None of us probably have a skeleton *exactly* like the model, but the model is still useful and helpful.
 
 Likewise, no variable has *exactly* a normal distribution, but the model is still useful and helpful.
 The model is a *theoretical* way of describing the distribution in the population; it does not represent any particular sample of data.
-The model can be thought of as an 'average' of the histograms of the data from many samples.
 
-Indeed, if this model turns out to be poor at describing what appears in samples, the [*parameters*](#StatisticsAndParameters) of the model (the values of $\mu$ and $\sigma$) can be adjusted so the model *does* describe the sample data well.
-In fact, evidence suggests that the average height of Australians has been increasing [@loesch2000secular] and so the mean of the model may need to be changed to  remain a good model.
+The sampling distributions in Fig.\ \@ref(fig:RouletteWheelHistPropMean)) are not *exactly* normal distributions, but are very close to a normal distribution, and certainly close enough for most purposes.
+Many variables have approximate normal distributions, such as heights of people.
+Many sampling distributions, as in Fig.\ \@ref(fig:RouletteWheelHistPropMean), also have approximate normal distributions.
 
-A model is like an educated guess of the unknown population, based on sample information.
-For the heights of Australian males, then, a suitable model may be an approximately normal shape, with a mean height of $\mu = 175$cm, and a standard deviation of $\sigma = 7$ cm. 
+
+```{example NormalExamples, name="Examples of normal distributions"}
+The shapes of many *sampling distributions* have approximate normal distributions.
+We saw this in Chap.\ \@ref(SamplingVariation) for the proportion of red spins, and for the mean number of a set of roulette spin (Fig.\ \@ref(fig:RouletteWheelHistPropMean)).
+
+Many *variables* have approximate normal distributions too.
+The left panel of Fig.\ \@ref(fig:HistogramDBPPossums) shows the diastolic blood pressure of $398$ Americans [@data:Willems1997:CHD; @data:Schorling1997:smoking].
+The right panel of Fig.\ \@ref(fig:HistogramDBPPossums) shows the weight of $83$ male Leadbeater's possums [@data:Williams2022:Possums].
+```
+
+
+The histogram of the proportion of red spins in Fig.\ \@ref(fig:RouletteWheelHistPropMean) (left panel) is from one of the countless possible samples of red spins in $15$ spins.
+The histogram of the mean of a set of spins in Fig.\ \@ref(fig:RouletteWheelHistPropMean) (right panel) is from one of the countless possible samples of sets of $15$ spins.
+The normal distributions represent the unknown population sampling distributions that could reasonably have produced the histograms of the sample statistics. 
+
+The histograms in Fig.\ \@ref(fig:HistogramDBPPossums) are from one of the countless possible samples of Americans (left panel) or Leadbeater's possums (right panel).
+The normal distributions represent the unknown population distributions that could reasonably have produced the sample histograms. 
+
+
+<!-- * Height of husbands: Fig.\ \@ref(fig:HusbandOTHERTHINGHistNormal),left -->
+<!-- * Possum weights? `hist( Possums$Wgt[Possums$Sex=="Male"])` -->
+<!-- * Red deer weight -->
+<!-- * `hist(Peas$P)` or `hist(Peas$S)` or `hist(RedDeer$Weight)` -->
+
+
+```{r HistogramDBPPossums, fig.align="center", fig.height = 3, fig.width=8, out.width='95%', fig.cap="Two normal distributions: Diastolic blood pressure of $398$ Americans (left); the weight of $83$ male Leadbeater possums (right)"}
+par( mfrow = c(1, 2))
+data(Diabetes)
+out <- hist(Diabetes$DBPfirst,
+     col = plot.colour,
+     las = 1,
+     breaks = seq(40, 130, by = 10),
+     ylim = c(0, 120),
+     xlim = c(40, 130),
+     xlab = "Diastolic blood pressure (in bpm)",
+     ylab = "Number of people",
+     main = "Diastolic blood pressure")
+x <- seq(40, 130, 
+         length = 200)
+y <- dnorm(x,
+           mean = mean(Diabetes$DBPfirst, na.rm = TRUE),
+           sd = sd(Diabetes$DBPfirst, na.rm = TRUE) ) 
+y <- max(out$counts) * y / max(y)
+lines( y ~ x,
+       col = "black",
+       lwd = 2)
+
+#########
+
+data(Possums)
+out <- hist( Possums$Wgt[Possums$Sex=="Male"],
+      col = plot.colour,
+      las = 1,
+      xlab = "Weight (in g)",
+      ylab = "Number of possums",
+      xlim = c(100, 170),
+      ylim = c(0, 35),
+      main = "Weight of male Leadbeater possums")
+x <- seq(100, 170, 
+         length = 200)
+y <- dnorm(x,
+           mean = mean(Possums$Wgt[Possums$Sex=="Male"], na.rm = TRUE),
+           sd = sd(Possums$Wgt[Possums$Sex=="Male"], na.rm = TRUE) ) 
+y <- max(out$counts) * y / max(y)
+lines( y ~ x,
+       col = "black",
+       lwd = 2)
+```
 
 
 ## About normal distributions {#NormalDistribution}
 
-All normal distributions have these properties:
+Normal distributions represent the theoretical distributions of unknown populations.
+Any specific sample of data may have variables with *approximate* normal distributions, but normal distributions represent theoretical population distributions.
+Since they represent *population* distributions, the mean of the normal distribution is denoted by $\mu$ and the standard deviation by $\sigma$.
 
-* Normal distributions are symmetric about the mean.\tightlist
-* No upper limit or lower limit exists, in theory, for the variable.
-  Of course, the chance that some of these values occur is essentially zero (such as a male taller than 350cm).
-* The [68--95--99.7 rule](#def:EmpiricalRule) applies:
+**NOT x-bar and s.**
+the values of $\mu$ and $\sigma$ are unknown. 
+These are not sample values, but may be guided by sample values (eg silly to suggest a mode for possume weigt as 1000g based on the sample).
 
-  * approximately 68% of values lie within 1 standard deviation of the mean;
-  * approximately 95% of values lie within 2 standard deviations  of the mean; and
-  * approximately 99.7% of values lie within 3 standard deviations  of the mean.
+Normal distributions are symmetric about the mean, and have a bell shape.
+Half the values are greater than the mean, and half the values are less than the mean.
 
-These properties are true for *all* normal distributions, whatever the mean $\mu$ and whatever the standard deviation $\sigma$.
+In theory, no upper limits or lower limits exists for the variable modelled using a normal distribution.
+In practice, this is rarely true, but is usually never presents a problem.
+Consider the normal distributions in Fig. \@ref(fig:HistogramDBPPossums), for example.
+The normal distribution shown for the diastolic blood pressure (left panel) are so far from $0$ that the XXX XXXXXXX XXXXXXX XXXXXXXX XXX
 
+Similarly, the normal distribution shown for the weights of the possums are so far from $0$ that negative weights are YYY YYYYYY YYYYY YY
 
+One of the most important properties of normal distributions is summarised in the *68--95--99.7 rule*.
+
+:::{.definition #EmpiricalRule name="The 68--95--99.7 rule"}
+For any normal distribution
+\vspace{-2ex}
+
+* approximately 68% of values lie within 1 standard deviation of the mean;
+* approximately 95% of values lie within 2 standard deviations  of the mean; and
+* approximately 99.7% of values lie within 3 standard deviations  of the mean.
+\vspace{-2ex}
+
+These properties are true for *all* normal distributions, whatever the variable, whatever the value of the mean $\mu$ and whatever the value of the standard deviation $\sigma$.
+:::
 
 
 ## Standardising ($z$-scores) {#z-scores}
 
 <!-- Since many statistics have a normal distribution (under certain circumstances), the [68--95--99.7 rule](#def:EmpiricalRule) can be used to understand the distribution of sample statistics. -->
-Since the 68--95--99.7 rule (Sect. \@ref(def:EmpiricalRule)) applies for all normal distributions, the percentages only depend on how many standard deviations ($\sigma$) a value ($x$) is from the mean ($\mu$).
+Since the 68--95--99.7 rule (Def.\ \@ref(def:EmpiricalRule)) applies for all normal distributions, the percentages only depend on how many standard deviations ($\sigma$) a value ($x$) is from the mean ($\mu$).
 This information can be used to learn more about how values are distributed.
 
 
@@ -269,7 +293,7 @@ Suppose heights of Australian adult males have a mean of $\mu = 175$cm, and a st
 Using this model, what proportion of Australian adult men are *taller* than 182cm?
 :::
 
-From a picture of the situation (Fig. \@ref(fig:HtsExer1), left panel), $175 + 7 = 182$cm is one standard deviation *above* the mean.
+From a picture of the situation (Fig.\ \@ref(fig:HtsExer1), left panel), $175 + 7 = 182$cm is one standard deviation *above* the mean.
 Since 68% of values are within one standard deviation of the mean, 32% are outside that range, smaller or larger.
 Hence, 16% are taller than one standard deviation above the mean, so the answer is about 16%.
 (Another 16% are less than one standard deviation *below* the mean, or less than $175 - 7 = 168$cm in height.)
@@ -279,6 +303,9 @@ Again, the percentages only depend on how many standard deviations ($\sigma$) th
 
 
 ```{r HtsExer1, fig.cap="Left: What proportion of Australian adult males are taller than 182cm? Right: What proportion of Australian adult males are shorter than 161cm?", fig.align="center", fig.width=7.5, fig.height=3, out.width='90%'}
+
+HT.mn <- 175
+HT.sd <- 7
 
 par( mfrow = c(1, 2),
      mar = c(5, 0.5, 5, 0.5))
@@ -416,9 +443,10 @@ text(157, 0.06,
 Consider again the heights of Australian adult males.
 Using this model, what proportion are *shorter* than 161cm?
 
-Again, drawing the situation is helpful (Fig. \@ref(fig:HtsExer1), right panel).
+Again, drawing the situation is helpful (Fig.
+\@ref(fig:HtsExer1), right panel).
 Since $175 - (2\times 7) = 161$, then 161cm is two standard deviation *below* the mean.
-Since 95% of values are within two standard deviation of the mean, 5% are outside that range (half smaller, half larger; see Fig. \@ref(fig:HtsExer1), right panel), so that 2.5% are *shorter* than 161cm.
+Since 95% of values are within two standard deviation of the mean, 5% are outside that range (half smaller, half larger; see Fig.\ \@ref(fig:HtsExer1), right panel), so that 2.5% are *shorter* than 161cm.
 (Another 2.5% are *taller* than $175 + 14 = 189$cm.)
 :::
 
@@ -447,7 +475,7 @@ In symbols:
 where $x$ is the value, $\mu$ is the mean of the distribution, and $\sigma$ is the standard deviation of the distribution (measuring the variation in the $x$-values).
 :::
  
-The $z$-score is the *number of standard deviations the observation is away from the mean*, and is also called the *standardised value* or *standard score*, and is calculated using Equation \@ref(eq:zscores).
+The $z$-score is the *number of standard deviations the observation is away from the mean*, and is also called the *standardised value* or *standard score*, and is calculated using Equation\ \@ref(eq:zscores).
 Note that:
 
 * $z$-scores are negative for observations *below* the mean.
@@ -457,13 +485,13 @@ Note that:
 
  
 ::: {.example #HeightsExer3 name="$z$-scores"}
-In Example \@ref(exm:HeightsExer1), the $z$-score for a height of 182cm is 
+In Example\ \@ref(exm:HeightsExer1), the $z$-score for a height of 182cm is 
 
 \[
    z = \frac{x-\mu}{\sigma} = \frac{182 - 175}{7} = 1,
 \]
 one standard deviation *above* the mean.
-In Example \@ref(exm:HeightsExer2), the $z$-score for a height of 161cm is
+In Example\ \@ref(exm:HeightsExer2), the $z$-score for a height of 161cm is
 
 \[
    z = \frac{x-\mu}{\sigma} = \frac{161 - 175}{7} = -2,
@@ -474,7 +502,7 @@ two standard deviations *below* the mean (a *negative* $z$-score means the value
 
 
 ::: {.example #EmpiricalRuleZ  name="The 68--95--99.7 rule"}
-Consider the model for the heights of Australian adult males: a normal distribution, mean $\mu = 175$, standard deviation $\sigma = 7$ (Fig.&nbsp;\@ref(fig:HeightsModel)).
+Consider the model for the heights of Australian adult males: a normal distribution, mean $\mu = 175$, standard deviation $\sigma = 7$ (Fig.\ \@ref(fig:HeightsModel)).
 
 Using this model:
 
@@ -493,9 +521,9 @@ As we have seen above, percentages under normal distributions can be *approximat
 
 
 ::: {.example #Height160 name="Normal distribution areas"}
-Suppose again that heights of Australian adult males have a mean of $\mu = 175$cm, and a standard deviation of $\sigma = 7$cm, and (approximately) follow a normal distribution (Fig.&nbsp;\@ref(fig:HtsEmpirical)).
+Suppose again that heights of Australian adult males have a mean of $\mu = 175$cm, and a standard deviation of $\sigma = 7$cm, and (approximately) follow a normal distribution (Fig.\ \@ref(fig:HtsEmpirical)).
 
-To find the proportion of men *shorter* than 160cm, first draw the situation (Fig. \@ref(fig:HtsExer3)).
+To find the proportion of men *shorter* than 160cm, first draw the situation (Fig.\ \@ref(fig:HtsExer3)).
 :::
 
 
@@ -665,7 +693,7 @@ arrows( x0 = 161.5,
 
 
 Proceeding as before, we ask 'How many standard deviations below the mean is 160cm?'
-Using Equation \@ref(eq:zscores) to compute the $z$-score, $160$cm corresponds to a $z$-score of 
+Using Equation\ \@ref(eq:zscores) to compute the $z$-score, $160$cm corresponds to a $z$-score of 
 
 \begin{equation}
    z = \frac{160 - 175}{7} = -2.14;
@@ -676,7 +704,7 @@ that is, $2.14$ standard deviations *below* the mean.
 What percentage of observations are less than this $z$-score?
 This case is not covered by the [68--95--99.7 rule](#def:EmpiricalRule), though we can use the [68--95--99.7 rule](#def:EmpiricalRule) to make some *rough estimates*.
 
-About 2.5% of observations are less than 2 standard deviations below the mean (Example \@ref(exm:HeightsExer1)); that is, about 2.5% of men are shorter than 161cm.
+About 2.5% of observations are less than 2 standard deviations below the mean (Example\ \@ref(exm:HeightsExer1)); that is, about 2.5% of men are shorter than 161cm.
 So the percentages males even shorter than 161cm (that is, further into the tail of the distribution), will be *less* than 2.5%.
 While we don't know the probability exactly, it will be smaller than 2.5%.
 
@@ -684,14 +712,14 @@ Estimates in this way are crude, but often serviceable.
 However, better estimates of 'areas under the normal curve' are found using tables compiled for this very purpose.
 These tables are in 
 `r if ( knitr::is_html_output()) { 
-   'Appendix \\@ref(ZTablesOnline).'
+   'Appendix\\ \\@ref(ZTablesOnline).'
 } else {
-   'Appendices \\@ref(ZTablesNEG) and \\@ref(ZTablesPOS).'
+   'Appendices\\ \\@ref(ZTablesNEG) and \\@ref(ZTablesPOS).'
    }`
 'Percentages' under a normal curve are also called 'areas' under the normal curve.
-The *total area* under a normal curve is one (or 100%), since it represent all possible values that could be observed: evety height appear somewhere in Fig. \@ref(fig:HtsEmpirical).
+The *total area* under a normal curve is one (or 100%), since it represent all possible values that could be observed: every height appear somewhere in Fig.\ \@ref(fig:HtsEmpirical).
 
-We now learn how to use these tables for Example \@ref(exm:Height160).
+We now learn how to use these tables for Example\ \@ref(exm:Height160).
 
 
 ## Exact areas from normal distributions {#ExactAreasUsingTables}
@@ -718,14 +746,14 @@ This agrees with the approximate answer using the [68--95--99.7 rule](#def:Empir
 
 The general approach to computing probabilities from normal distributions is:
 
-* *Draw a diagram*, and mark on 160cm (Fig. \@ref(fig:HtsExer3)).
-* *Shade* the required region of interest: 'less than 160cm tall' (Fig. \@ref(fig:HtsExer3)).
-* *Compute* the $z$-score using Equation \@ref(eq:zscores).
-* *Use* the $z$ tables in `r if ( knitr::is_html_output()) { 'Appendix \\@ref(ZTablesOnline).'} else {'Appendices \\@ref(ZTablesNEG) and \\@ref(ZTablesPOS).'}`
+* *Draw a diagram*, and mark on 160cm (Fig.\ \@ref(fig:HtsExer3)).
+* *Shade* the required region of interest: 'less than 160cm tall' (Fig.\ \@ref(fig:HtsExer3)).
+* *Compute* the $z$-score using Equation\ \@ref(eq:zscores).
+* *Use* the $z$ tables in `r if ( knitr::is_html_output()) { 'Appendix\\ \\@ref(ZTablesOnline).'} else {'Appendices\\ \\@ref(ZTablesNEG) and\\ \\@ref(ZTablesPOS).'}`
 * *Compute* the answer.
 
-The number of standard deviations that 160cm is from the mean was computed above (Eq. \@ref(eq:zscore214)): $z = -2.14$.
-That is, 160cm is $2.14$ standard deviations *below* the mean, so use $z = -2.14$ in the tables (remembering that the tables give probability (area) *less* than $z = -2.14$; Fig. \@ref(fig:HtsExer3)).
+The number of standard deviations that 160cm is from the mean was computed above (Eq.\ \@ref(eq:zscore214)): $z = -2.14$.
+That is, 160cm is $2.14$ standard deviations *below* the mean, so use $z = -2.14$ in the tables (remembering that the tables give probability (area) *less* than $z = -2.14$; Fig.\ \@ref(fig:HtsExer3)).
 
 The probability of finding an Australian man less than 160cm tall is about $1.6$%.
 The 68--95--99.7 rule can be used to give *approximate* probabilities, as a check that the answer found using tables seems reasonable.
@@ -753,8 +781,8 @@ Using this model, what is the probability that a randomly-chosen tree has a diam
 
 Follow the steps identified earlier:
 
-* *Draw* a normal curve, and mark on 6 inches (Fig. \@ref(fig:ZDBH1), left panel).
-* *Shade* the region corresponding to 'greater than 6 inches' (Fig. \@ref(fig:ZDBH1), right panel).
+* *Draw* a normal curve, and mark on 6 inches (Fig.\ \@ref(fig:ZDBH1), left panel).
+* *Shade* the region corresponding to 'greater than 6 inches' (Fig.\ \@ref(fig:ZDBH1), right panel).
 * *Compute* the $z$-score using Eq. \@ref(eq:zscores):
   $\displaystyle z = (6 - 8.8)/2.7 = -2.8/2.7 = -1.04$ to two decimal places.
 * *Use* tables:
@@ -816,7 +844,7 @@ Remember: The *total* area under the normal distribution is one (or 100%).
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Match the diagram in Fig. \@ref(fig:MatchDiagrams) with the meaning for the tree-diameter model (recall: $\mu = 8.8$ inches):\label{thinkBox:MatchForward}
+Match the diagram in Fig.\ \@ref(fig:MatchDiagrams) with the meaning for the tree-diameter model (recall: $\mu = 8.8$ inches):\label{thinkBox:MatchForward}
 
 1. Tree diameters greater than 11 inches.
 2. Tree diameters *between* 6 and 11 inches.
@@ -885,17 +913,17 @@ shadeNormal(out$x,
 
 
 ::: {.example #NormalTrees2 name="Normal distributions"}
-Using the model for tree diameters in Example \@ref(exm:NormalTrees), what is the probability that a tree has a diameter *between* 6 and 11 inches?
+Using the model for tree diameters in Example\ \@ref(exm:NormalTrees), what is the probability that a tree has a diameter *between* 6 and 11 inches?
 :::
 
-First, **draw** the situation, and **shade** 'between 6 and 10 inches' (Fig. \@ref(fig:MatchDiagrams), Diagram C).
+First, **draw** the situation, and **shade** 'between 6 and 10 inches' (Fig.\ \@ref(fig:MatchDiagrams), Diagram C).
 Then, **compute** the $z$-scores for *both* tree diameters:
 
 * For 6 inches: $\quad  z = (6 - 8.8)/2.7 = -1.04$.
 * For 11 inches: $\quad z = (11 - 8.8)/2.7 = 0.81$.
 
 Table B can then be used to find the area to the *left* of $z = -1.04$, and also the area to the *left* of $z = 0.81$.
-However, neither of these provide the area *between* $z = -1.04$ and $z = 0.81$ (Fig.&nbsp;\@ref(fig:ZDBH3)).
+However, neither of these provide the area *between* $z = -1.04$ and $z = 0.81$ (Fig.\ \@ref(fig:ZDBH3)).
 
 
 ```{r ZDBH3, fig.cap="What proportion of tree diameters are between 6 and 11 inches? The two shaded areas are what we find by using the tables with $z = -1.04$ and $z = 0.81$, but neither give us the area we are seeking.", fig.align="center", fig.width=9.5, fig.height = 2.75,out.width='100%'}
@@ -1014,18 +1042,18 @@ if (knitr::is_html_output()){
 
 ## Unstandardising: Working backwards {#Unstandardising}
 
-Using the model for tree diameters in Example \@ref(exm:NormalTrees) again, different types of questions can be asked too.
+Using the model for tree diameters in Example\ \@ref(exm:NormalTrees) again, different types of questions can be asked too.
 
 ::: {.example #MNormalBackwards name="Normal distributions backwards"}
-Consider again the trees study (Example \@ref(exm:NormalTrees)). 
+Consider again the trees study (Example\ \@ref(exm:NormalTrees)). 
 Identify the diameters of the *smallest* 3% of trees.
 :::
 
 
-This is a different problem than before; previously, the *tree diameter* was known, so a $z$-score could be computed, and hence a probability (Fig.&nbsp;\@ref(fig:WorkingWithZ), top panel).
+This is a different problem than before; previously, the *tree diameter* was known, so a $z$-score could be computed, and hence a probability (Fig.\ \@ref(fig:WorkingWithZ), top panel).
 
-However, in Example \@ref(exm:MNormalBackwards), the *probability* is known, and a tree diameter is sought.
-That is, working 'backwards' is needed (Fig. \@ref(fig:WorkingWithZ), bottom panel), so the $z$-tables need to be used 'backwards' too.
+However, in Example\ \@ref(exm:MNormalBackwards), the *probability* is known, and a tree diameter is sought.
+That is, working 'backwards' is needed (Fig.\ \@ref(fig:WorkingWithZ), bottom panel), so the $z$-tables need to be used 'backwards' too.
 
 
 ```{r WorkingWithZ, fig.cap="Working with $z$-scores. In the tables, the areas (probabilities) are in the body of the table, and the $z$-scores are in the margins of the table.", fig.align="center", out.width='80%', fig.height=2.25, fig.width=8.25}
@@ -1117,7 +1145,7 @@ textrect( pos[3, ],
 
 ```
 
-Drawing a rough diagram of the situation again is very helpful (Fig. \@ref(fig:DBHBackwards)).
+Drawing a rough diagram of the situation again is very helpful (Fig.\ \@ref(fig:DBHBackwards)).
 We can only mark the approximate location of the required score, but this is sufficient.
 Then, tables must be used to determine the necessary $z$-score.
 
@@ -1163,7 +1191,7 @@ text(1.2,
 ```
 
 
-As before (Sect. \@ref(ExactAreasUsingTables)), *online* tables, or *hard copy* tables can be used (and again the online tables are easier to use).
+As before (Sect.\ \@ref(ExactAreasUsingTables)), *online* tables, or *hard copy* tables can be used (and again the online tables are easier to use).
 `r if (knitr::is_latex_output()) {
    'Only the *hard-copy* tables are explained in this book (see the online version for how to use the online tables).'
 } else {
@@ -1192,8 +1220,8 @@ The tables always give the area to the **left** of the $z$-score that is looked 
 :::
 
 
-Using either the hard-copy or online tables, the appropriate $z$-value is $-1.88$ standard deviations *below* the mean; that is, $z = -1.88$ (Fig.&nbsp;\@ref(fig:DBHBackwards)).
-The $z$-score can be converted to an observation value $x$ using the *unstandardising* formula^[This is found by re-arranging Equation&nbsp;\@ref(eq:zscores).]:  
+Using either the hard-copy or online tables, the appropriate $z$-value is $-1.88$ standard deviations *below* the mean; that is, $z = -1.88$ (Fig.\ \@ref(fig:DBHBackwards)).
+The $z$-score can be converted to an observation value $x$ using the *unstandardising* formula^[This is found by re-arranging Equation\ \@ref(eq:zscores).]:  
 \[
 	x = \mu + z\sigma.
 \]
@@ -1232,16 +1260,16 @@ Bearings less than about $49.90$&nbsp;mm in diameter cannot be sold.
 
 
 ::: {.example #LargestPC name="Normal distributions backwards"}
-Using the model for tree diameters in Example \@ref(exm:NormalTrees) again, suppose now the diameters of the *largest* $25$% of trees needs to be identified.
+Using the model for tree diameters in Example\ \@ref(exm:NormalTrees) again, suppose now the diameters of the *largest* $25$% of trees needs to be identified.
 What are these diameters?
 :::
 
 
 The tree diameters can be modelled with a normal distribution, with a mean of $\mu = 8.8$ inches and a standard deviation of $\sigma = 2.7$ inches.
-Since an area is given, we need to work 'backwards' (Fig. \@ref(fig:DBHBackwards2), bottom panel), so the $z$-tables need to be used 'backwards' too.
+Since an area is given, we need to work 'backwards' (Fig.\ \@ref(fig:DBHBackwards2), bottom panel), so the $z$-tables need to be used 'backwards' too.
 The *largest* $25$% implies large trees, so diameter is larger than the mean. 
 
-Using a diagram is important (Fig. \@ref(fig:DBHBackwards2)): the tables work with the area to the *left* of the value of interest, which is $75$%.
+Using a diagram is important (Fig.\ \@ref(fig:DBHBackwards2)): the tables work with the area to the *left* of the value of interest, which is $75$%.
 Using either the hard-copy or online tables, the appropriate $z$-value is $z = 0.674$.
 Then, the $z$-score can be converted to an observation value $x$ using the [*unstandardising* formula](#def:UnstandardizingFormula):
 \begin{align*}
@@ -1310,7 +1338,7 @@ text(5, max(out$y) * 0.7,
 ## Example: methane production
 
 A study of methane produced by animals [@huhtanen2016effects] modelled the retention time of food in sheep using a normal distribution, with the mean retention time as $\mu = 42.5$ hours, and the standard deviation of the retention time as $\sigma = 3.68$ hours.
-We can draw this normal distribution (Fig. \@ref(fig:RetentionTime)), and then apply the 68--95--99.7 rule:
+We can draw this normal distribution (Fig.\ \@ref(fig:RetentionTime)), and then apply the 68--95--99.7 rule:
 
 * About 68% of retention times are between 38.83 and 46.18 hrs;
 * About 95% of retention times are between 35.14 and 49.86 hrs;
@@ -1337,7 +1365,7 @@ A retention time of 40 hours corresponds to a $z$-score of:
    z = \frac{40 - 42.5}{3.68} = -0.68.
 \]
 This is a *negative* number, since 40 hours is *below* the mean.
-Using the normal distribution tables (that give the *area to the left* of the $z$-score), the area to the left of $z = -0.68$ is $0.2483$, or about $24.8$% (Fig \@ref(fig:RetentionPlots), top left panel).
+Using the normal distribution tables (that give the *area to the left* of the $z$-score), the area to the left of $z = -0.68$ is $0.2483$, or about $24.8$% (Fig.\ \@ref(fig:RetentionPlots), top left panel).
 About $24.8$% of sheep have a retention times *less* than 40 hours.
 
 
@@ -1346,7 +1374,7 @@ What proportion of sheep have a retention time *greater than* 48 hours (two days
 :::
 
 A retention time of 48 hours corresponds to a $z$-score of $1.49$.
-Using the normal distribution tables, the area to the *left* of this $z$-score is $0.9319$, so the area to the *right* of this $z$-score is $0.0681$ (Fig \@ref(fig:RetentionPlots), top left panel).
+Using the normal distribution tables, the area to the *left* of this $z$-score is $0.9319$, so the area to the *right* of this $z$-score is $0.0681$ (Fig.\ \@ref(fig:RetentionPlots), top left panel).
 
 
 ::: {.example #Methane3 name="Working with the normal distribution"}
@@ -1454,9 +1482,9 @@ shadeNormal(out$x,
 
 
 
-A retention time of 40 hours corresponds to $z = -0.68$, and, using the normal distribution tables, the area to the *left* of $z = -0.68$ is $0.2483$ (Fig. \@ref(fig:RetentionPlots), bottom left panel; hatched area).
+A retention time of 40 hours corresponds to $z = -0.68$, and, using the normal distribution tables, the area to the *left* of $z = -0.68$ is $0.2483$ (Fig.\ \@ref(fig:RetentionPlots), bottom left panel; hatched area).
 But this is not the area that we are seeking...
-From earlier, the area to the *left* of $z = 1.49$ is $0.9319$ (Fig. \@ref(fig:RetentionPlots), bottom left panel; coloured region).
+From earlier, the area to the *left* of $z = 1.49$ is $0.9319$ (Fig.\ \@ref(fig:RetentionPlots), bottom left panel; coloured region).
 But this is not the area to that we are seeking either...
 
 From the two areas that we know, we *can* find the area that we are seeking:
@@ -1474,11 +1502,11 @@ What are these retention times?
 :::
 
 The time we seek must be *smaller* than the mean if it defines the *shortest* 35% of retention times.
-We don't know *exactly* where to draw the retention time that this corresponds to on the diagram; it's just somewhere to the left of the mean (Fig \@ref(fig:RetentionPlots), bottom right panel).
+We don't know *exactly* where to draw the retention time that this corresponds to on the diagram; it's just somewhere to the left of the mean (Fig.\ \@ref(fig:RetentionPlots), bottom right panel).
 
 This time, *we know the area to the left*, but we do not know the value (or $z$-score).
 Previously, we knew the retention value (and hence the $z$-score), but not the area.
-This is like a 'backwards problem', and we need to find the $z$-score 'backwards' (Sect. \@ref(Unstandardising)).
+This is like a 'backwards problem', and we need to find the $z$-score 'backwards' (Sect.\ \@ref(Unstandardising)).
 From the hard copy tables, a $z$-score of $z = -0.39$ has an area to the left of $0.3483$... which is as close as we can get.
 From the online tables, $z = -0.385$.
 
@@ -1497,7 +1525,7 @@ Probabilities can be computed from normal distributions using **$z$-scores**.
 ## Quick revision questions {#Chap17-QuickReview}
 
 ::: {.webex-check .webex-box}
-Consider again the model for tree diameters in Example \@ref(exm:NormalTrees) [@data:Aedo1997:softwood]: a normal distribution with $\mu = 8.8$ inches, and $\sigma = 2.7$ inches.
+Consider again the model for tree diameters in Example\ \@ref(exm:NormalTrees) [@data:Aedo1997:softwood]: a normal distribution with $\mu = 8.8$ inches, and $\sigma = 2.7$ inches.
 
 
 ```{r}
@@ -1553,7 +1581,7 @@ prob2 <- pnorm(z2)
 
 ## Exercises {#SamplingDistributionsExercises}
 
-Selected answers are available in Sect. \@ref(SamplingDistributionsAnswer).
+Selected answers are available in Sect.\ \@ref(SamplingDistributionsAnswer).
 
 
 ::: {.exercise #Statements}
@@ -1705,7 +1733,7 @@ IQ scores are
    '[designed to have](https://en.wikipedia.org/wiki/IQ_classification)'
 }`
 a mean of 100 and a standard deviation of 15.
-Match the diagram in Fig. \@ref(fig:IQMatchDiagramsForwards) with the meaning.
+Match the diagram in Fig.\ \@ref(fig:IQMatchDiagramsForwards) with the meaning.
 
 :::::: {.cols data-latex=""}
 
@@ -1792,7 +1820,7 @@ IQ scores are
    '[designed to have](https://en.wikipedia.org/wiki/IQ_classification)'
 }`
 a mean of 100 and a standard deviation of 15.
-Match the diagram in Fig. \@ref(fig:IQMatchDiagramsBackwards) with the meaning.
+Match the diagram in Fig.\ \@ref(fig:IQMatchDiagramsBackwards) with the meaning.
 
 :::::: {.cols data-latex=""}
 
