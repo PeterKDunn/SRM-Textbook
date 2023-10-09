@@ -104,9 +104,10 @@ points(x = 18/37,
        cex = 0.8)
 mtext(text = expression(italic(p)),
       side = 1,
-      line = 1,
+      line = 0,
       at = 18/37,
-     cex = 0.8)
+      padj = 0.5,
+      cex = 0.8)
 
 
 ### 
@@ -161,9 +162,10 @@ points(x = 18,
        cex = 0.8)
 mtext(text = expression(mu),
       side = 1,
-      line = 1,
+      line = 0,
       at = 18,
-     cex = 0.8)
+      padj = 0.5,
+      cex = 0.8)
 ```
 
 
@@ -269,12 +271,10 @@ One of the most important properties of normal distributions is summarised in th
 
 :::{.definition #EmpiricalRule name="The 68--95--99.7 rule"}
 For any normal distribution
-\vspace{-2ex}
 
-* approximately $68$% of values lie within $1$ standard deviation of the mean;
-* approximately $95$% of values lie within $2$ standard deviations  of the mean; and
-* approximately $99.7$% of values lie within $3$ standard deviations  of the mean.
-\vspace{-2ex}
+* *approximately* $68$% of values lie within $1$ standard deviation of the mean;
+* *approximately* $95$% of values lie within $2$ standard deviations  of the mean; and
+* *approximately* $99.7$% of values lie within $3$ standard deviations  of the mean.
 
 These properties are true for *all* normal distributions, whatever the variable, whatever the value of the mean $\mu$, and whatever the value of the standard deviation $\sigma$.
 :::
@@ -469,8 +469,6 @@ text(x = mean(c(minus2, minus3)),
 ```
 
 
-
-
 ::: {.example #HeightsExer2 name="The 68--95--99.7 rule"}
 Consider again the heights of Australian adult females.
 Using this model, what proportion are *shorter* than $148$cm?
@@ -488,11 +486,11 @@ A $z$-score is computed using
 \[
    z = \frac{ x - \mu}{\sigma},
 \]
-where $\sigma$ is a measure of the variation in the $x$-values.
+where $\sigma$ is the standard deviation quantifying the variation in the $x$-values.
 Converting values to $z$-scores is called *standardising*.
 
 
-::: {.definition #zScore name="z-score"}
+::: {.definition #zScore name="$z$-score"}
 A *$z$-score* measures how many standard deviations a value is from the mean.
 In symbols:  
 \begin{equation}
@@ -587,19 +585,30 @@ mtext(expression( "("*italic(z)==-3*")"),
 
 ## Approximating percentages using the 68--95--99.7 rule {#ApproxProbs}
 
-As we have seen above, percentages under normal distributions can be *approximated* using the [68--95--99.7 rule](#def:EmpiricalRule).
+As seen above, the [68--95--99.7 rule](#def:EmpiricalRule) can be used to approximate percentages under normal distributions.
+The rule can even be used for values not exactly align with $1$, $2$ or $3$ standard deviations from the mean.
 
 
 ::: {.example #Height160 name="Normal distribution areas"}
 Suppose again that heights of Australian adult females have a mean of $\mu = 162$cm, and a standard deviation of $\sigma = 7$cm, and (approximately) follow a normal distribution (Fig.\ \@ref(fig:HtsEmpirical)).
 
-To find the proportion of women *shorter* than $150$cm, first draw the situation (Fig.\ \@ref(fig:HtsExer3)).
+Find the proportion of women *shorter* than $145$cm.
 :::
 
 
-```{r HtsExer3, fig.cap="What proportion of Australian adult females are shorter than $150$cm?", fig.align="center", fig.width=7.0, fig.height=3.00, out.width='85%'}
+First draw the situation (Fig.\ \@ref(fig:HtsExer3)).
+Proceeding as before, we ask 'How many standard deviations from the mean is $145$cm?'
+Using Equation\ \@ref(eq:zscores), $145$cm corresponds to a $z$-score of  
+\begin{equation}
+   z = \frac{145 - 162}{7} = -2.4285...;
+   (\#eq:zscore214)
+\end{equation}
+that is, $2.43$ standard deviations *below* the mean.
 
-HtInterest <- 150
+
+```{r HtsExer3, fig.cap="What proportion of Australian adult females are shorter than $150$cm?", fig.align="center", fig.width=7.0, fig.height=3.00, out.width='80%'}
+
+HtInterest <- 145
 
 out <- plotNormal(HT.mn, 
                   HT.sd, 
@@ -653,9 +662,9 @@ zInterest <- (HtInterest - HT.mn) / HT.sd
 
 lines( x = c(HtInterest, HtInterest),
        y = c(0, max(out$y) * 0.7),
-       col = "grey")
-text(x = HtInterest, 
-     y = max(out$y) * 0.7,
+       col = "black")
+text(x = HtInterest + gap, 
+     y = max(out$y) * 0.6,
      pos = 2,
      cex = 0.9,
      labels = "150 cm")
@@ -714,24 +723,15 @@ arrows( x0 = minus2 + gap,
 ```
 
 
-Proceeding as before, we ask 'How many standard deviations below the mean is $150$cm?'
-Using Equation\ \@ref(eq:zscores) to compute the $z$-score, $160$cm corresponds to a $z$-score of  
-\begin{equation}
-   z = \frac{145 - 162}{7} = -2.4285...;
-   (\#eq:zscore214)
-\end{equation}
-that is, $2.43$ standard deviations *below* the mean.
-
 What percentage of observations are less than this $z$-score?
-This case is not covered by the [68--95--99.7 rule](#def:EmpiricalRule), though we can use the [68--95--99.7 rule](#def:EmpiricalRule) to make some *rough estimates*.
+This case is not covered by the [68--95--99.7 rule](#def:EmpiricalRule), though the rule can be used to make *rough estimates*.
 
 About $2.5$% of observations are less than $2$ standard deviations below the mean (Example\ \@ref(exm:HeightsExer1)); that is, about $2.5$% of women are shorter than $148$cm.
-So the percentages females shorter than $150$cm (that is, not as far into the tail of the distribution), will be *a little more* than $2.5$%.
-While we don't know the probability exactly, it will be a little larger than $2.5$%.
+So the percentages females shorter than $145$cm (that is, even further into the tail of the distribution), will be *less* than $2.5$%.
+While we don't know the probability exactly, it will be smaller than $2.5$%.
 
-Estimates in this way are crude, but often serviceable.
-However, better estimates of 'areas under the normal curve' are found using tables compiled for this very purpose.
-These tables are in 
+Probabilities found this way are crude, but often serviceable.
+More accurate probabilities of 'areas under the normal curve' are found using tables compiled for this very purpose: see
 `r if ( knitr::is_html_output()) { 
    'Appendix\\ \\@ref(ZTablesOnline).'
 } else {
@@ -752,6 +752,8 @@ The online tables are easier to use,
 } else {
    'but only the *online* tables are explained in this online book (see the hard-copy version for how to use the hard-copy tables).'
 }`
+The tables (Appendices \@ref(ZTablesNEG) and \@ref(ZTablesPOS)) work with $z$-scores to two decimal places, so consider the $z$-score as $z = -2.43$ from Sect.\ \@ref(ApproxProbs).
+
 
 ```{r, child = if (knitr::is_latex_output()) './Tables/Ztables-Using-Hardcopy.Rmd'}
 ```
@@ -759,27 +761,23 @@ The online tables are easier to use,
 ```{r, child = if (knitr::is_html_output()) './Tables/Ztables-Using-Online.Rmd'}
 ```
 
-The hard-copy or online tables gives an answer of $1.62$%.
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The tables always give the area to the **left** of the $z$-score that is looked up.
+:::
+
+The hard-copy or online tables gives an answer of $0.75$%.
 This agrees with the approximate answer using the [68--95--99.7 rule](#def:EmpiricalRule): less than $2.5$%.
-
-
-## Computing areas (probabilities)
 
 The general approach to computing probabilities from normal distributions is:
 
-* *Draw a diagram*, and mark on $150$cm (Fig.\ \@ref(fig:HtsExer3)).
-* *Shade* the required region of interest: 'less than $150$cm tall' (Fig.\ \@ref(fig:HtsExer3)).
+* *Draw a diagram*, and mark on the values of interest.
+* *Shade* the required region of interest.
 * *Compute* the $z$-score using Equation\ \@ref(eq:zscores).
 * *Use* the $z$ tables in `r if ( knitr::is_html_output()) { 'Appendix\\ \\@ref(ZTablesOnline).'} else {'Appendices\\ \\@ref(ZTablesNEG) and\\ \\@ref(ZTablesPOS).'}`
 * *Compute* the answer.
 
-The number of standard deviations that $140$cm is from the mean was computed above (Eq.\ \@ref(eq:zscore214)): $z = -2.43$.
-That is, $150$cm is $2.43$ standard deviations *below* the mean, so use $z = -2.43$ in the tables (remembering that the tables give probability (area) *less* than $z = -2.43$; Fig.\ \@ref(fig:HtsExer3)).
-
-The probability of finding an Australian man less than $150$cm tall is about $0.8$%.
-The 68--95--99.7 rule can be used to give *approximate* probabilities, as a check that the answer found using tables seems reasonable.
-
-More complicated questions can be asked too, as shown in the next section.
+Using this approach, more complicated questions can be asked too, as shown in the next section.
 
 <iframe src="https://learningapps.org/watch?v=ppievv9gc22" style="border:0px;width:100%;height:800px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
 
@@ -790,36 +788,39 @@ More complicated questions can be asked too, as shown in the next section.
 
 ::: {.example #NormalTrees name="Normal distributions"}
 @data:Aedo1997:softwood simulated mechanized forest harvesting systems [@DevoreBerk2007].
-In their study, they modelled the diameter of specific trees using
+The diameter of specific trees were modelled using
 
 * a normal distribution; with
 * a mean of $\mu = 8.8$ inches; and
 * a standard deviation of $\sigma = 2.7$ inches.
 
-Using this model, what is the probability that a randomly-chosen tree has a diameter *greater than* than $6$\ inches?
+Using this model, what is the probability that a randomly-chosen tree has a diameter *greater than* than $5$\ inches?
 :::
 
 
 Follow the steps identified earlier:
 
-* *Draw* a normal curve, and mark on $6$\ inches (Fig.\ \@ref(fig:ZDBH1), left panel).
-* *Shade* the region corresponding to 'greater than $6$\ inches' (Fig.\ \@ref(fig:ZDBH1), right panel).
+* *Draw* a normal curve, and mark on $5$\ inches (Fig.\ \@ref(fig:ZDBH1), left panel).
+* *Shade* the region corresponding to 'greater than $5$\ inches' (Fig.\ \@ref(fig:ZDBH1), centre panel).
 * *Compute* the $z$-score using Eq. \@ref(eq:zscores):
-  $\displaystyle z = (6 - 8.8)/2.7 = -2.8/2.7 = -1.04$ to two decimal places.
+  $\displaystyle z = (5 - 8.8)/2.7 = -2.8/2.7 = -1.41$ to two decimal places.
 * *Use* tables:
-  The probability of a tree diameter *shorter* than $6$\ inches is $0.1492$. 
+  The probability of a tree diameter *shorter* than $5$\ inches is $0.0793$. 
   (The tables always give area *less* than the value of $z$ that is looked up.)
-* *Compute* the answer:
-  Since the *total* area under the normal distribution is one, the probability of a tree diameter  *greater* than $6$\ inches is $1 - 0.1492 = 0.8508$, or about $85$%.
+* *Compute* the answer (Fig.\ \@ref(fig:ZDBH1), right panel):
+  Since the *total* area under the normal distribution is one, the probability of a tree diameter  *greater* than $5$\ inches is $1 - 0.0793 = 0.9207$, or about $92$%.
 
 
 
 
-```{r ZDBH1, fig.cap="What proportion of tree diameters are greater than 6 inches?", fig.align="center", fig.width=9.5, fig.height=2.75, out.width='100%'}
+```{r ZDBH1, fig.cap="What proportion of tree diameters are greater than 6 inches?", fig.align="center", fig.width=7.0, fig.height=2., out.width='100%'}
 DBH.mn <- 8.8
 DBH.sd <- 2.7
+DBH.x <- 5
 
-par(mfrow = c(1, 2))
+
+par(mfrow = c(1, 3),
+    mar = c(3, 0.25, 4, 0.25))
 
 z <- seq( -3.5, 3.5, 
           length = 250)
@@ -836,9 +837,10 @@ out <- plotNormal(mu,
                   xlab = "Tree diameters (in inches)",
                   main = "Draw",
                   round.dec = 1)
-abline(v = 6,
+abline(v = DBH.x,
        lwd = 2)
 
+####
 
 out <- plotNormal(mu,
                   sigma,
@@ -849,10 +851,64 @@ out <- plotNormal(mu,
 shadeNormal(out$x,
             out$y,
             col = plot.colour,
-            lo = 6,
+            lo = DBH.x,
             hi = 20)
-abline(v = 6,
+abline(v = DBH.x,
        lwd = 2)
+
+text(x = 14, 
+     y = max(out$y) * 0.7,
+     pos = 3,
+     labels = "Area of\ninterest")
+arrows(x0 = 14,
+       y0 = max(out$y) * 0.7,
+       x1 = 10,
+       y1 = max(out$y) * 0.2,
+       lwd = 2,
+       angle = 15,
+       length = 0.1)
+
+
+####
+
+out <- plotNormal(mu,
+                  sigma,
+                  xlab = "Tree diameters (in inches)",
+                  main = "Compute the answer",
+                  round.dec = 1)
+
+shadeNormal(out$x,
+            out$y,
+            col = plot.colour,
+            lo = 0,
+            hi = DBH.x)
+abline(v = DBH.x,
+       lwd = 2)
+
+text(x = 14, 
+     y = max(out$y) * 0.7,
+     pos = 3,
+     labels = "Area of\ninterest")
+arrows(x0 = 14,
+       y0 = max(out$y) * 0.7,
+       x1 = 10,
+       y1 = max(out$y) * 0.15,
+       lwd = 2,
+       angle = 15,
+       length = 0.1)
+
+text(x = 2, 
+     y = max(out$y) * 0.7,
+     pos = 3,
+     labels = "Area from\ntables")
+arrows(x0 = 2,
+       y0 = max(out$y) * 0.7,
+       x1 = 4,
+       y1 = max(out$y) * 0.15,
+       lwd = 2,
+       angle = 15,
+       length = 0.1)
+
 ```
 
 
@@ -868,9 +924,9 @@ Remember: The *total* area under the normal distribution is one (or $100$%).
 Match the diagram in Fig.\ \@ref(fig:MatchDiagrams) with the meaning for the tree-diameter model (recall: $\mu = 8.8$ inches):\label{thinkBox:MatchForward}
 
 1. Tree diameters greater than $11$\ inches.
-2. Tree diameters *between* $6$\ and $11$\ inches.
-3. Tree diameters less than 11 inches.
-4. Tree diameters between $3$\ and $6$\ inches.
+2. Tree diameters *between* $5$\ and $11$\ inches.
+3. Tree diameters less than $11$\ inches.
+4. Tree diameters between $3$\ and $5$\ inches.
 
 `r if (knitr::is_latex_output()) '<!--'`
 `r webexercises::hide()`
@@ -895,7 +951,7 @@ shadeNormal(out$x,
             out$y,
             col = plot.colour,
             lo = 3,
-            hi = 6)
+            hi = 5)
 
 
 out <- plotNormal(mu,
@@ -916,7 +972,7 @@ out <- plotNormal(mu,
 shadeNormal(out$x,
             out$y,
             col = plot.colour,
-            lo = 6,
+            lo = 5,
             hi = 11)
 
 
@@ -934,33 +990,40 @@ shadeNormal(out$x,
 
 
 ::: {.example #NormalTrees2 name="Normal distributions"}
-Using the model for tree diameters in Example\ \@ref(exm:NormalTrees), what is the probability that a tree has a diameter *between* $6$\ and $11$\ inches?
+Using the model for tree diameters in Example\ \@ref(exm:NormalTrees), what is the probability that a tree has a diameter *between* $5$\ and $11$\ inches?
 :::
 
-First, **draw** the situation, and **shade** 'between $6$\ and $10$\ inches' (Fig.\ \@ref(fig:MatchDiagrams), Diagram C).
-Then, **compute** the $z$-scores for *both* tree diameters:
+First, *draw* the situation, and *shade* 'between $5$\ and $10$\ inches' (Fig.\ \@ref(fig:MatchDiagrams), Diagram\ C).
+Then, *compute* the $z$-scores for *both* tree diameters:
 
-* For 6 inches: $\quad  z = (6 - 8.8)/2.7 = -1.04$.
+* For 6 inches: $\quad  z = (5 - 8.8)/2.7 = -1.41$.
 * For 11 inches: $\quad z = (11 - 8.8)/2.7 = 0.81$.
 
-Table B can then be used to find the area to the *left* of $z = -1.04$, and also the area to the *left* of $z = 0.81$.
-However, neither of these provide the area *between* $z = -1.04$ and $z = 0.81$ (Fig.\ \@ref(fig:ZDBH3)).
+Table\ B can then be used to find the area to the *left* of $z = -1.41$, which is $0.0793$.
+Table\ B can also be used to find the area to the *left* of $z = 0.81$, which is $0.791$.
+However, neither of these provide the area *between* $z = -1.41$ and $z = 0.81$ (Fig.\ \@ref(fig:ZDBH3)).
 
 
-```{r ZDBH3, fig.cap="What proportion of tree diameters are between $6$\ and $11$\ inches? The two shaded areas are what we find by using the tables with $z = -1.04$ and $z = 0.81$, but neither give us the area we are seeking.", fig.align="center", fig.width=9.5, fig.height = 2.75,out.width='100%'}
+```{r ZDBH3, fig.cap="What proportion of tree diameters are between $5$\ and $11$\ inches? The two shaded areas are what we find using the tables with $z = -1.41$ and $z = 0.81$; neither give us the area we seek.", fig.align="center", fig.width=9.5, fig.height = 2.75,out.width='100%'}
 
 par( mfrow = c(1, 2))
 
 out <- plotNormal(mu,
                   sigma,
                   cex.axis = 0.85,
-                  main = expression(What~tables~give~"for"~italic(z)==-1.04),
+                  main = expression(What~tables~give~"for"~italic(z)==-1.41),
                   xlab = "Tree diameters (inches)")
 shadeNormal(out$x,
             out$y,
             col = plot.colour,
             lo = 0,
-            hi = 6)
+            hi = 5)
+
+text(x = 3,
+     y = 0.65* max(out$y),
+     labels = expression(Area*":"~0.0793) )
+      
+###################
 
 out <- plotNormal(mu,
                   sigma,
@@ -973,27 +1036,30 @@ shadeNormal(out$x,
             lo = 0,
             hi = 11)
 
+text(x = 7,
+     y = 0.1 * max(out$y),
+     labels = expression(Area*":"~0.791) )
 
 ```
 
 
 Looking carefully at the areas from the tables and the area sought, that area between the two $z$-scores is
 `r if (knitr::is_latex_output()) {
-   '$0.7910 - 0.1492 = 0.6418$ (the online version has an animation).'
+   '$0.7910 - 0.0793 = 0.7117$.'
 } else {
-   '$0.7910 - 0.1492 = 0.6418$; see the animation below.'
+   '$0.7910 - 0.0793 = 0.7117$; see the animation below.'
 }`
-The probability that a tree has a diameter between $6$\ and $11$\ inches is about $0.6418$, or about $64$%.
+The probability that a tree has a diameter between $5$\ and $11$\ inches is about $0.7117$, or about $71$%.
 
 
 
 
 ```{r animation.hook="gifski", dev=if (is_latex_output()){"pdf"}else{"png"}}
-  RT.mn <- 8.8
-  RT.sd <- 2.7
+RT.mn <- 8.8
+RT.sd <- 2.7
   
-  lower <- 6
-  upper <- 11
+lower <- 5
+upper <- 11
   
 if (knitr::is_html_output()){
   for (i in (1:4)){
@@ -1092,7 +1158,7 @@ pos[3, 1] <- pos[3, 1] + 0.0
 pos[, 2] <- 0.725
 
 text(0.5, 0.90, 
-     "The usual way to work with z-scores", 
+     label = expression(bold(The~usual~way~to~work~with~italic(z)*"-"*scores)), 
      font = 2)
 
 straightarrow(from = pos[1,], 
@@ -1134,7 +1200,7 @@ pos[3, 1] <- pos[3, 1] + 0.0
 pos[, 2] <- 0.1
 
 text(0.5, 0.28, 
-     "Working backwards with z-scores", 
+     expression(bold(Working~backwards~with~italic(z)*"-"*scores)), 
      font = 2)
 
 straightarrow(from = pos[2, ], 
@@ -1229,16 +1295,10 @@ As before (Sect.\ \@ref(ExactAreasUsingTables)), *online* tables, or *hard copy*
 Using hard copy tables, the closest value in the *body* of the tables to $3$% (or $0.030$) is $0.0301$.
 (Sometimes, the exact area can be found, but usually we take the value as close as possible.)
 This corresponds to a $z$-score of $z = -1.88$.
-Using the online tables (and entering an `Area.to.the.left` of $0.0300$), the $z$-score is $-1.881$ (a slightly more precise answer).
-
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-To identify the diameters of the *smallest* $3$% of trees, the $z$-score that has an area to the *left* of $3$% (or $0.030$) needs to be found (or, at least, as close as possible to $0.03$).
-:::
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The tables always give the area to the **left** of the $z$-score that is looked up.
+The tables always give the area to the *left* of the $z$-score that is looked up.
 :::
 
 
@@ -1256,28 +1316,12 @@ that is, about $3$% of trees have diameters less than about $3.72$ inches.
 
 
 ::: {.definition #UnstandardizingFormula name="Unstandardizing formula"}
-When the $z$-score is known, the corresponding value of the observation $x$ is
+When the $z$-score is known, the corresponding value of the observation $x$ is  
 \begin{equation}
 	x = \mu + z\sigma.
 (\#eq:UnstandardisingFormula)
 \end{equation}
 This is called the *unstandardising formula*.
-:::
-
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Ball bearings labelled as "50mm bearings" actually have diameters that follow a normal distribution with mean 50mm and standard deviation $0.1$mm.
-The *smallest* $15$% of bearings are too small for sale.
-What size bearings cannot be sold?\label{thinkBox:NormaBearings}
-
-`r if (knitr::is_latex_output()) '<!--'`
-`r webexercises::hide()`
-The closest area from the tables is $0.1492$, corresponding to $z = -1.04$.
-Using the unstandardising formula, $x = 50 + (-1.04\times 0.1) = 49.896$.
-
-Bearings less than about $49.90$&nbsp;mm in diameter cannot be sold.
-`r webexercises::unhide()`
-`r if (knitr::is_latex_output()) '-->'`
 :::
 
 
@@ -1299,7 +1343,6 @@ Then, the $z$-score can be converted to an observation value $x$ using the [*uns
 		&= 8.8 + (0.674 \times 2.7) = 10.621.
 \end{align*}
 That is, about $25$% of trees have diameters larger than about $10.6$&nbsp;inches.
-
 
 
 ```{r DBHBackwards2, fig.cap="Tree diameters: The largest 25\\% is the same as the smallest 75\\%", fig.align="center", fig.width=6.5, out.width='60%', fig.height=2.75}
@@ -1327,14 +1370,21 @@ arrows(x0 = 16,
        angle = 15, 
        length = 0.15, 
        lwd = 2) # Note: Locations in terms of z-scores
-text(16, max(out$y) * 0.45, 
+text(16.5, max(out$y) * 0.45, 
      "Largest 25%", 
      cex = 0.9,
      pos = 3)
 
-text(10.5,
-     max(out$y) * 0.97,
-     expression(italic(z)~near~here), 
+
+arrows(x0 = 12, 
+       x1 = 10.62,
+       y0 = max(out$y) * 0.925,
+       y1 = max(out$y) * 0.925,
+       length = 0.15,
+       angle = 15)
+text(12,
+     max(out$y) * 0.925,
+     expression(italic(z)~is~near~here), 
      pos = 4, 
      cex = 0.9)
 abline(v = 10.6,
@@ -1362,9 +1412,9 @@ text(5, max(out$y) * 0.7,
 A study of methane produced by animals [@huhtanen2016effects] modelled the retention time of food in sheep using a normal distribution, with the mean retention time as $\mu = 42.5$ hours, and the standard deviation of the retention time as $\sigma = 3.68$ hours.
 We can draw this normal distribution (Fig.\ \@ref(fig:RetentionTime)), and then apply the 68--95--99.7 rule:
 
-* About 68% of retention times are between 38.83 and 46.18 hrs;
-* About 95% of retention times are between 35.14 and 49.86 hrs;
-* About 99.7% of retention times are between 31.46 and 53.54 hrs.
+* About 68% of retention times are between $38.83$ and $46.18$\ hrs;
+* About 95% of retention times are between $35.14$ and $49.86$\ hrs;
+* About 99.7% of retention times are between $31.46$ and $53.54$\ hrs.
 
 
 
@@ -1379,38 +1429,35 @@ out <- plotNormal(42.5,
 
 
 ::: {.example #Methane1 name="Working with the normal distribution"}
-Using this model, what proportion of sheep have a retention time *less than* 40 hours?
+Using this model, what proportion of sheep have a retention time *less than* $40$\ hours?
 :::
 
-A retention time of 40 hours corresponds to a $z$-score of:  
+A retention time of $40$\ hours corresponds to a $z$-score of (Fig.\ \@ref(fig:RetentionPlots), top left panel):  
 \[
    z = \frac{40 - 42.5}{3.68} = -0.68.
 \]
-This is a *negative* number, since 40 hours is *below* the mean.
-Using the normal distribution tables (that give the *area to the left* of the $z$-score), the area to the left of $z = -0.68$ is $0.2483$, or about $24.8$% (Fig.\ \@ref(fig:RetentionPlots), top left panel).
-About $24.8$% of sheep have a retention times *less* than 40 hours.
+This is a *negative* number, since $40$ hours is *below* the mean.
+Using the normal distribution tables (that give the *area to the left* of the $z$-score), the area to the left of $z = -0.68$ is $0.2483$, or about $24.8$%.
+About $24.8$% of sheep have a retention times *less* than $40$\ hours.
 
 
 ::: {.example #Methane2 name="Working with the normal distribution"}
-What proportion of sheep have a retention time *greater than* 48 hours (two days)?
+What proportion of sheep have a retention time *greater than* $48$\ hours (two days)?
 :::
 
-A retention time of 48 hours corresponds to a $z$-score of $1.49$.
-Using the normal distribution tables, the area to the *left* of this $z$-score is $0.9319$, so the area to the *right* of this $z$-score is $0.0681$ (Fig.\ \@ref(fig:RetentionPlots), top left panel).
+A retention time of $48$\ hours corresponds to a $z$-score of $1.49$.
+Using the normal distribution tables, the area to the *left* of this $z$-score is $0.9319$, so the area to the *right* of this $z$-score is $0.0681$ (Fig.\ \@ref(fig:RetentionPlots), top right panel).
 
 
 ::: {.example #Methane3 name="Working with the normal distribution"}
-What proportion of sheep have a retention time *between* 40 and 48 hours?
+What proportion of sheep have a retention time *between* $40$\ and $48$\ hours?
 :::
 
 
-
-
-
-```{r RetentionPlots, fig.cap="Plots for retention times",  fig.align="center", out.width="80%", fig.height=4.00}
+```{r RetentionPlots, fig.cap="Plots for retention times",  fig.align="center", out.width="80%", fig.height=4.25}
 par( mfrow = c(2, 2))
 
-par( mar = c(5, 1, 1.5, 2) + 0.1)
+par( mar = c(5, 2, 1.5, 2) + 0.1)
 
 mu <- 42.5
 sigma <- 3.68
@@ -1442,7 +1489,7 @@ shadeNormal(out$x,
 
 out <- plotNormal(mu,
                   sigma,
-                  ylim = c(0, 0.140),
+                  ylim = c(0, 0.150),
                   main = "Between 40 and 48 hours",
                   xlab = "Retention times (hours)")
 shadeNormal(out$x,
@@ -1471,6 +1518,12 @@ arrows(x0 = 34,
        length = 0.10,
        angle = 15,
        lwd = 1)
+text(x = 35,
+     y = 0.11,
+     pos = 1,
+     cex = 0.8,
+     labels = expression(Less~than~40))
+
 arrows(x0 = 40,
        x1 = 48,
        y0 = 0.12,
@@ -1487,6 +1540,14 @@ lines( x = c(25, 40),
        lty = 2)
 abline( v = c(40, 48),
         col = "grey")
+text(x = 35,
+     y = 0.12,
+     pos = 3,
+     cex = 0.8,
+     labels = expression(Less~than~48))
+
+
+### 
 
  
 out <- plotNormal(mu,
@@ -1505,11 +1566,11 @@ shadeNormal(out$x,
 
 
 A retention time of 40 hours corresponds to $z = -0.68$, and, using the normal distribution tables, the area to the *left* of $z = -0.68$ is $0.2483$ (Fig.\ \@ref(fig:RetentionPlots), bottom left panel; hatched area).
-But this is not the area that we are seeking...
+But this is not the area that we seek...
 From earlier, the area to the *left* of $z = 1.49$ is $0.9319$ (Fig.\ \@ref(fig:RetentionPlots), bottom left panel; coloured region).
-But this is not the area to that we are seeking either...
+But this is not the area to that we seek either...
 
-From the two areas that we know, we *can* find the area that we are seeking:
+From the two areas that we know, we *can* find the area that we seek:
 
 * 48 hours corresponds to $z = 1.49$. The area to the *left* of this $z$-score is $0.9319$.
 * 40 hours corresponds to $z = -0.68$. The area to the *left* of this $z$-score is $0.2483$.
@@ -1530,9 +1591,9 @@ This time, *we know the area to the left*, but we do not know the value (or $z$-
 Previously, we knew the retention value (and hence the $z$-score), but not the area.
 This is like a 'backwards problem', and we need to find the $z$-score 'backwards' (Sect.\ \@ref(Unstandardising)).
 From the hard copy tables, a $z$-score of $z = -0.39$ has an area to the left of $0.3483$... which is as close as we can get.
-From the online tables, $z = -0.385$.
+(The online tables are a little more precise: $z = -0.385$.)
 
-We know the $z$-score, so we can find the retention value, using the unstandardising formula: $x = \mu + (z \times \sigma)$.
+We know the $z$-score, so the retention value is found using the unstandardising formula: $x = \mu + (z \times \sigma)$.
 The retention time is $41.07$ hours.
 
 
@@ -1566,32 +1627,32 @@ z2 <- round2( (diam2 - mean.tree)/sd.tree, 2)
 prob2 <- pnorm(z2)
 ```
 
-1. A tree diameter of `r diam1` inches corresponds to a $z$-score (to two decimal places) of:\tightlist  
+1. A tree diameter of $`r diam1`$ inches corresponds to a $z$-score `r if (knitr::is_html_output()) {'(to two decimal places)'}` of:\tightlist  
   `r if( knitr::is_html_output() ) {
 	fitb(z1,
  		num = TRUE,
 		tol = 0.01)}` 
-2. The probability that a tree has a diameter *less* than `r diam1` inches is (as a *decimal value*):  
+2. The probability that a tree has a diameter *less* than $`r diam1`$ inches is`r if (knitr::is_html_output()) {' (as a *decimal value*)'}`:  
   `r if( knitr::is_html_output() ) {
 	fitb( prob1,
 		num = TRUE,
 		tol = 0.01)}` 
-3. The probability that a tree has a diameter *greater* than `r diam1` inches is (as a *decimal value*):  
+3. The probability that a tree has a diameter *greater* than $`r diam1`$ inches is`r if (knitr::is_html_output()) {' (as a *decimal value*)'}`:  
   `r if( knitr::is_html_output() ) {
 	fitb( 1 - prob1,
 		num = TRUE,
 		tol = 0.01)}` 
-4. A tree diameter of `r diam2` inches corresponds to a $z$-score (to two decimal places) of:  
+4. A tree diameter of $`r diam2`$ inches corresponds to a $z$-score `r if (knitr::is_html_output()) {'(to two decimal places)'}` of:  
   `r if( knitr::is_html_output() ) {
 	fitb(z2,
  		num = TRUE,
 		tol = 0.01)}` 
-5. The probability that a tree has a diameter *less* than `r diam2` inches is (as a *decimal value*):  
+5. The probability that a tree has a diameter *less* than $`r diam2`$ inches is`r if (knitr::is_html_output()) {' (as a *decimal value*)'}`:  
   `r if( knitr::is_html_output() ) {
 	fitb( prob2,
 		num = TRUE,
 		tol = 0.01)}`
-6. The probability that a tree has a diameter *greater* than `r diam2` inches is (as a *decimal value*):  
+6. The probability that a tree has a diameter *greater* than $`r diam2`$ inches is`r if (knitr::is_html_output()) {' (as a *decimal value*)'}`:  
   `r if( knitr::is_html_output() ) {
 	fitb( 1 - prob2,
 		num = TRUE,
@@ -1607,12 +1668,12 @@ Selected answers are available in Sect.\ \@ref(SamplingDistributionsAnswer).
 
 
 ::: {.exercise #Statements}
-Are the following statements **true** or **false**?
+Are the following statements *true* or *false*?
 
 1. The unstandardising formula can be used to compute probabilities.\tightlist
    `r if( knitr::is_html_output() ) {
 	 mcq( c("True", answer = "False"))}`
-2. About 68% of observations are within two standard deviations of the mean.  
+2. About $68$% of observations are within two standard deviations of the mean.  
    `r if( knitr::is_html_output() ) {
 	 mcq( c("True", answer = "False"))}`
 3. Positive $z$-scores correspond to values larger than the mean.  
@@ -1621,7 +1682,7 @@ Are the following statements **true** or **false**?
 4. A $z$-score tells us how many standard deviations a value is away from the mean.  
    `r if( knitr::is_html_output() ) {
 	 mcq( c(answer = "True", "False"))}`
-5. A $z$-score larger than 4 is impossible.  
+5. A $z$-score larger than $4$ is impossible.  
    `r if( knitr::is_html_output() ) {
 	 mcq( c("True", answer = "False"))}`
 6. A $z$-score of zero is located at the mean value.  
@@ -1634,21 +1695,21 @@ Are the following statements **true** or **false**?
 
 
 ::: {.exercise #CornSeeds}
-In a simulation of methods to coat corn seeds (with fertilizer and crop protection chemicals, etc.), @pasha2016effect modelled the seed diameter as having a normal distribution, with mean 7.5mm and standard deviation of 0.225mm.
+In a simulation of methods to coat corn seeds (with fertilizer and crop protection chemicals, etc.), @pasha2016effect modelled the seed diameter as having a normal distribution, with mean $7.5$mm and standard deviation of $0.225$mm.
 
-1. What is the probability that a seed has a diameter of more than 8mm?\tightlist  
+1. What is the probability that a seed has a diameter of more than $8$mm?\tightlist  
   `r if( knitr::is_html_output() ) {
 	longmcq( c(
 	   "About 2.22",
 	   answer = "About 1.3%",
 	   "About 98.7%"))}`
- 2. What is the probability that a seed has a diameter less than 7.1mm?  
+ 2. What is the probability that a seed has a diameter less than $7.1$mm?  
   `r if( knitr::is_html_output() ) {
 	longmcq( c(
 	   "About 96.3%",
 	   answer = "About 3.8%",
 	   "About -1.78"))}`
-3. What is the probability that a seed has a diameter between 7.5 and 8mm?  
+3. What is the probability that a seed has a diameter between $7.5$ and $8$mm?  
   `r if( knitr::is_html_output() ) {
 	longmcq( c(
 	   "About 0.89",
@@ -1656,14 +1717,14 @@ In a simulation of methods to coat corn seeds (with fertilizer and crop protecti
 	   "About 2.22",
 	   "About 50%",
 	   "About 98.7%"))}`
-4. What is the diameter of the smallest 30% of seeds?  
+4. What is the diameter of the smallest $30$% of seeds?  
   `r if( knitr::is_html_output() ) {
 	longmcq( c(
 	   "Smaller than about 7.62mm",
 	   "Larger than about 7.38mm",
 	   "About -0.524",
 	   answer = "Smaller than about 7.38mm"))}`
-5. What is the diameter of the largest 90% of the seeds?  
+5. What is the diameter of the largest $90$% of the seeds?  
   `r if( knitr::is_html_output() ) {
 	longmcq( c(
 	   "Less than about 7.79mm",
@@ -1674,31 +1735,29 @@ In a simulation of methods to coat corn seeds (with fertilizer and crop protecti
 :::
 
 
-
-
 ::: {.exercise #SamplingDistributionsTrees}
 Consider again the study by @data:Aedo1997:softwood, who studied the diameter of trees in certain forests.
 The tree diameters can be modelled as having a normal distribution, with a mean of $\mu = 8.8$ inches, and a standard deviation of $\sigma = 2.7$ inches.
 For these trees:
 
-1. What is the probability that a tree will have a diameter *less than* 8 inches?
-1. What is the probability that a tree will have a diameter *greater than* 9 inches?
-1. What is the probability that a tree will have a diameter *between* 7 and 10 inches?
-1. The largest 15% of trees have what diameters?
-1. The smallest 25% of trees have what diameters?
+1. What is the probability that a tree will have a diameter *less than* $8$\ inches?
+1. What is the probability that a tree will have a diameter *greater than* $9$\ inches?
+1. What is the probability that a tree will have a diameter *between* $7$\ and $10$\ inches?
+1. The largest $15$% of trees have what diameters?
+1. The smallest $25$% of trees have what diameters?
 :::
 
 
 ::: {.exercise #SamplingDistributionsGestationLength}
-In a study [@snowden2018causal] to understand factors influencing preterm births, the gestation length of healthy babies was modelled with a normal distribution, having a mean of 40 weeks, and a standard deviation of 1.64 weeks.
+In a study to understand factors influencing preterm births [@snowden2018causal], the gestation length of healthy babies was modelled with a normal distribution, having a mean of $40$ weeks, and a standard deviation of $1.64$ weeks.
 Using this model:
 
-1. What proportion of births are *longer* than 39 weeks (that is, nine months)?
+1. What proportion of births are *longer* than $39$ weeks (that is, nine months)?
 1. In Australia, 
 `r if (knitr::is_latex_output()) {
-   'a premature birth is defined as a birth occuring before 37 weeks.'
+   'a premature birth is defined as a birth occurring before $37$ weeks.'
 } else {
-   '[a premature birth is defined as a birth occuring before 37 weeks](https://www.pregnancybirthbaby.org.au/premature-baby).'
+   '[a premature birth is defined as a birth occuring before $37$ weeks](https://www.pregnancybirthbaby.org.au/premature-baby).'
 }`
    What proportion of births are expected to be premature?
 1. According to
@@ -1708,9 +1767,9 @@ Using this model:
    '[Health Direct](https://www.pregnancybirthbaby.org.au/premature-baby),'
 }`
    'Babies born between 32 and 37 weeks may need care in a special care nursery'.
-   What proportion of healthy births would be expected to be born between 32 and 37 weeks gestation? 
-1. How long is the gestation length for the *longest* 5% of pregnancies?
-1. How long is the gestation length for the *shortest* 5% of pregnancies?
+   What proportion of healthy births would be expected to be born between $32$ and $37$ weeks gestation? 
+1. How long is the gestation length for the *longest* $5$% of pregnancies?
+1. How long is the gestation length for the *shortest* $5$% of pregnancies?
 :::
 
 
@@ -1721,14 +1780,13 @@ IQ scores are
 } else {
    '[designed to have](https://en.wikipedia.org/wiki/IQ_classification)'
 }`
-a mean of 100 and a standard deviation of 15.
+a mean of 100 and a standard deviation of $15$.
 `r if (knitr::is_latex_output()) {
    'Mensa'
 } else {
    '[Mensa](https://www.mensa.org/)'
 }`
 is a society for people with a high IQ; specifically, to people who have 'attained a score within the upper two percent of the general population' (Mensa webpage (https://www.mensa.org/)).
-
 What IQ score is needed to join Mensa?
 :::
 
@@ -1740,9 +1798,8 @@ IQ scores are
 } else {
    '[designed to have](https://en.wikipedia.org/wiki/IQ_classification)'
 }`
-a mean of 100 and a standard deviation of 15.
-@data:Zagorsky2016:Blondes reports that the US Military must "reject all military recruits whose IQ is in the bottom 10% of the population" [@data:Zagorsky2016:Blondes, p. 403].
-
+a mean of $100$ and a standard deviation of $15$.
+@data:Zagorsky2016:Blondes reports that the US Military must "reject all military recruits whose IQ is in the bottom $10$% of the population" [@data:Zagorsky2016:Blondes, p. 403].
 What IQs scores lead to a rejection from the US military?
 :::
 
@@ -1754,14 +1811,14 @@ IQ scores are
 } else {
    '[designed to have](https://en.wikipedia.org/wiki/IQ_classification)'
 }`
-a mean of 100 and a standard deviation of 15.
+a mean of $100$ and a standard deviation of $15$.
 Match the diagram in Fig.\ \@ref(fig:IQMatchDiagramsForwards) with the meaning.
 
 :::::: {.cols data-latex=""}
 
 :::: {.col data-latex="{0.4\textwidth}"}
-1. IQs greater than 110.
-2. IQs between 90 and 115.
+1. IQs greater than $110$.
+2. IQs between $90$ and $115$.
 
 ::::
 
@@ -1773,22 +1830,23 @@ a column separator -->
 
 :::: {.col data-latex="{0.5\textwidth}"}
 
-3. IQs less than 110.
-4. IQs greater than 85.
+3. IQs less than $110$.
+4. IQs greater than $85$.
 ::::
 ::::::
 :::
 
 
-```{r IQMatchDiagramsForwards, fig.cap="Match the diagram with the description", fig.align="center", out.width="80%", fig.height=3.75, fig.width=6.5}
-par( mfrow = c(2, 2),
-     mar = c(4, 1, 2, 2) + 0.1)
+```{r IQMatchDiagramsForwards, fig.cap="Match the diagram with the description", fig.align="center", out.width="100%", fig.height=1.50, fig.width=6.5}
+par( mfrow = c(1, 4),
+     mar = c(4, 1, 2, 1) + 0.1)
 
 mu <- 100 
 sigma <- 15
 
 out <- plotNormal(mu,
                   sigma,
+                  las = 2,
                   main = "Diagram A",
                   xlab = "IQ scores",
                   round.dec = 0)
@@ -1800,6 +1858,7 @@ shadeNormal(out$x,
 
 out <- plotNormal(mu,
                   sigma,
+                  las = 2,
                   main = "Diagram B",
                   xlab = "IQ scores",
                   round.dec = 0)
@@ -1811,6 +1870,7 @@ shadeNormal(out$x,
 
 out <- plotNormal(mu,
                   sigma,
+                  las = 2,
                   main = "Diagram C",
                   xlab = "IQ scores", 
                   round.dec = 0)
@@ -1822,6 +1882,7 @@ shadeNormal(out$x,
 
 out <- plotNormal(mu,
                   sigma,
+                  las = 2,
                   main = "Diagram D",
                   xlab = "IQ scores",
                   round.dec = 0)
@@ -1841,14 +1902,14 @@ IQ scores are
 } else {
    '[designed to have](https://en.wikipedia.org/wiki/IQ_classification)'
 }`
-a mean of 100 and a standard deviation of 15.
+a mean of $100$ and a standard deviation of $15$.
 Match the diagram in Fig.\ \@ref(fig:IQMatchDiagramsBackwards) with the meaning.
 
 :::::: {.cols data-latex=""}
 
 :::: {.col data-latex="{0.4\textwidth}"}
-1. The *largest* 25% of IQ scores.
-2. The *smallest* 10% of IQ scores.
+1. The *largest* $25$% of IQ scores.
+2. The *smallest* $10$% of IQ scores.
 
 ::::
 
@@ -1860,23 +1921,24 @@ a column separator -->
 
 :::: {.col data-latex="{0.5\textwidth}"}
 
-3. The *largest* 70% of IQ scores.
-4. The *smallest* 60% of IQ scores.
+3. The *largest* $70$% of IQ scores.
+4. The *smallest* $60$% of IQ scores.
 ::::
 ::::::
 
 :::
 
 
-```{r IQMatchDiagramsBackwards, fig.cap="Match the diagram with the description", fig.align="center", out.width="80%", fig.height=3.75, fig.width=6.5}
-par( mfrow = c(2, 2),
-     mar = c(4, 1, 2, 2) + 0.1)
+```{r IQMatchDiagramsBackwards, fig.cap="Match the diagram with the description", fig.align="center", out.width="100%", fig.height=1.5, fig.width=6.5}
+par( mfrow = c(1, 4),
+     mar = c(4, 1, 2, 1) + 0.1)
 
 mu <- 100
 sigma <- 15
 
 out <- plotNormal(mu,
                   sigma,
+                  las = 2,
                   main = "Diagram A",
                   xlab = "IQ scores",
                   round.dec = 0)
@@ -1899,6 +1961,7 @@ shadeNormal(out$x,
 
 out <- plotNormal(mu,
                   sigma,
+                  las = 2,
                   main = "Diagram C",
                   xlab = "IQ scores",
                   round.dec = 0)
@@ -1910,6 +1973,7 @@ shadeNormal(out$x,
 
 out <- plotNormal(mu,
                   sigma,
+                  las = 2,
                   main = "Diagram D",
                   xlab = "IQ scores",
                   round.dec = 0)
@@ -1932,7 +1996,7 @@ For this model:
 1. What is the probability that an EVs will begin charging before 5pm?
 1. What is the probability that an EVs will begin charging between 5pm and 6pm?
 1. 30% of the EVs begin charging after what time?
-1. The earliest 15% of charging begins when?
+1. The earliest $15$% of charging begins when?
   
 **Hint:** This question is *much* easier if you convert times into 'minutes after midnight'.
 :::
@@ -1945,17 +2009,14 @@ For this model:
 ::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
 **Answers to in-chapter questions:**
 
-- Sect. \ref{thinkBox:MatchForward}: **1:** matches B; **2:** matches C; **3:** matches D; **4:** matches A.
-- Sect. \ref{thinkBox:NormaBearings}: The closest area from the tables is $0.1492$, corresponding to $z = -1.04$.
-Using the unstandardising formula, $x = 50 + (-1.04\times 0.1) = 49.896$.
-Bearings less than about $49.90$mm in diameter cannot be sold.
+- Sect. \ref{thinkBox:MatchForward}: **1**--B; **2**--C; **3**--D; **4**--A.
 - \textbf{\textit{Quick Revision} questions:}
-**1a.** `r z1`. 
-**1b.** `r prob1`.
-**1c.** `r 1 - prob1`.
-**1d.** `r z2`
-**1e.** `r prob2`.
-**1f.** `r 1 - prob2`.
+**1a.** `r round(z1, 2)`. 
+**1b.** `r round(prob1, 2)`.
+**1c.** `r round(1 - prob1, 2)`.
+**1d.** `r round(z2, 2)`
+**1e.** `r round(prob2, 2)`.
+**1f.** `r round(1 - prob2, 2)`.
 **2a.** About 1.3%
 **2b.** About 3.8%
 **2c.** About 48.7%.
