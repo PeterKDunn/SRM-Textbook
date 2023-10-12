@@ -1,11 +1,15 @@
 
-xbar <- 2.8
-se <- 0.03883
-muvec <- seq(2.65, 2.95, 
-            by = 0.05)
+xbar <- 3.2
+se <- 0.5 # So sd = 2.5
+
+### MN: 3.5
+### VAR: sum( ((1:6) - 3.5)^2 * (1/6)) = 2.916667
+### So se(x-bar) = 2.916667/sqrt(25) = 0.58333
+muvec <- seq(1.5, 5, 
+            by = 0.5)
 Answers <- c("No",
              "No",
-             rep("Yes", 3),
+             rep("Yes", 4),
              "No",
              "No")
 if (knitr::is_html_output()){
@@ -21,16 +25,16 @@ if (knitr::is_html_output()){
 
 # Canvas
 par( mar = c(1, 1, 1, 1) / 4)
-plot( x = c(2.15, 4.05),
-      y = c(-95, 20),
+plot( x = c(-2, 14),
+      y = c(-12, 4),
       axes = FALSE, xlab = "", ylab="",
       type = "n")
 
-HeightOfEachNormalDist <- 14 # Includes some space to allow a gap between the distribution
-                            # The height of the distn itself is about 4
+HeightOfEachNormalDist <- 1.5 # Includes some space to allow a gap between the distribution
+                            # The height of the distn itself is about 0.8
 
-xLeft <- 2.45 # Lower x limits to plot with normal
-xRight <- 3.15 # Upper x limits to plot with normal
+xLeft <- 0 # Lower x limits to plot with normal
+xRight <- 6.75 # Upper x limits to plot with normal
 
 # Plot normal distributions
 
@@ -57,61 +61,122 @@ for (i in 1:length(muvec)){
          pch = 19)
   
   # Add value of mu
-  text(2.35, 
+  text(-1, 
        -(i - 1) * HeightOfEachNormalDist + (HeightOfEachNormalDist/2),
        cex = 0.9,
        bquote(mu==.(muvec[i])))
+  
   # Answers to "reasonableness" question
-  text(3.2, 
+  text(7, 
        -(i - 1) * HeightOfEachNormalDist + (HeightOfEachNormalDist/2),
        cex = 0.9,
        Answers[i],
        col = coloursAnswers[i] )
-  
 }
 
 # Mark observed value of x-bar
 lines( x = c(xbar, xbar),
-       y = c(-90, 7),
-       lty = 2,
+       y = c(-11, 1),
+       lty = 1,
        lwd = 2,
        col = "grey")
 
 # "Titles"
-text(2.3,
-     19,
-     expression(atop(Possible,
+text(x = -1,
+     y = 3,
+     labels = expression(atop(Possible,
                      values~of~mu)) )
-text(2.8,
-     19,
-     expression(atop(Values~of~bar(italic(x))~produced, 
+text(x = 3.4,
+     y = 3,
+     labels = expression(atop(Values~of~bar(italic(x))~produced, 
                      from~this~value~of~mu)))
-text(3.6,
-     19,
-     expression(atop(Is~it~reasonable~"for"~this~value~of~mu, 
+text(x = 12,
+     y = 3,
+     labels = expression(atop(Is~it~reasonable~"for"~this~value~of~mu, 
                      to~produce~the~observed~value~of~bar(italic(x))*"?")))
 
-text(xbar,
-     -95,
-     bquote(bar(italic(x))==.(xbar)))
+text(x = xbar,
+     y = -11,
+     labels = bquote(bar(italic(x))==.(xbar)))
 
-# Bracket the possible values
-lines( x = c(3.25, 3.3, 3.3, 3.25),
-       y = c(-HeightOfEachNormalDist,
-             -HeightOfEachNormalDist,
-             -(length(muvec) - 3) * HeightOfEachNormalDist ,
-             -(length(muvec) - 3) * HeightOfEachNormalDist ),
+
+### Bracket the possible values leading to x-bar
+
+shrinkBracket <- 2 # The small amount by which to bring the central brackets in a bit to avoid overlapping
+
+lines( x = c(8.9, 9.2, 9.2, 8.9),
+       y = c(-HeightOfEachNormalDist - shrinkBracket,
+             -HeightOfEachNormalDist - shrinkBracket,
+             -(length(muvec) - 3) * HeightOfEachNormalDist + shrinkBracket,
+             -(length(muvec) - 3) * HeightOfEachNormalDist + shrinkBracket),
        lwd = 1)
 
+# The tiny bit poking right to the meaning of the bracket
+
 heightOfBracketEdge <- mean( c(0, -(length(muvec) - 2) * HeightOfEachNormalDist ))
-lines( x = c(3.3, 3.35),
+lines( x = c(9.2, 9.5),
        y = c(heightOfBracketEdge,
              heightOfBracketEdge),
        lwd = 1)
-text(x = 3.65,
+text(x = 12,
      y = heightOfBracketEdge,
      cex = 0.9,
      expression(atop(These~values~of~mu~could,
+                     reasonably~have~produced~bar(italic(x)))))
+
+### Bracket the not possible values leading to x-bar
+# The up-bracket
+lines( x = c(8.9, 9.2),
+       y = c(-HeightOfEachNormalDist,
+             -HeightOfEachNormalDist),
+       lwd = 1, 
+       col = "grey")
+arrows( x0 = 9.2, 
+        x1 = 9.2,
+        y0 = -HeightOfEachNormalDist,
+        y1 =  HeightOfEachNormalDist - shrinkBracket,
+        angle = 15,
+        length = 0.15,
+        col = "grey")
+
+
+# The down-bracket
+lines( x = c(8.9, 9.2),
+       y = c(-(length(muvec) - 3) * HeightOfEachNormalDist ,
+             -(length(muvec) - 3) * HeightOfEachNormalDist),
+       lwd = 1,
+       col = "grey")
+arrows( x0 = 9.2, 
+        x1 = 9.2,
+        y0 = -(length(muvec) - 3) * HeightOfEachNormalDist,
+        y1 =  -(length(muvec) - 1) * HeightOfEachNormalDist,
+        angle = 15,
+        length = 0.15,
+        col = "grey")
+
+#-(length(pvec) - 3) * HeightOfEachNormalDist - 2* shrinkBracket,
+#-(length(pvec) - 3) * HeightOfEachNormalDist + shrinkBracket),
+
+
+# The tiny bit poking right to the meaning of the bracket
+heightOfBracketEdge <- mean( c(0, -(length(muvec) - 2) * HeightOfEachNormalDist ))
+lines( x = c(9.2, 9.4),
+       y = c(heightOfBracketEdge,
+             heightOfBracketEdge),
+       lwd = 1)
+
+# Label the brackets
+text(x = 12,
+     y = heightOfBracketEdge - 3 * HeightOfEachNormalDist,
+     cex = 0.9,
+     col = grey(0.3),
+     expression(atop(These~values~of~mu~could~bold(not),
+                     reasonably~have~produced~bar(italic(x)))))
+text(x = 12,
+     y = heightOfBracketEdge + 3 * HeightOfEachNormalDist,
+     cex = 0.9,
+     col = grey(0.3),
+     expression(atop(These~values~of~mu~could~bold(not),
                      reasonably~have~produced~bar(italic(x)))))
 
 
