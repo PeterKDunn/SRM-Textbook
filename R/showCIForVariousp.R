@@ -2,6 +2,10 @@
 p <- 0.5
 phat <- 0.44
 se <- 0.1
+
+CI <- c(phat - 2 * se, 
+        phat + 2 * se )
+
 pvec <- seq(0.1, 0.8, 
             by = 0.1)
 Answers <- c("No",
@@ -55,8 +59,9 @@ for (i in 1:length(pvec)){
   
   points(x = pvec[i],
          y = -(i - 1) * HeightOfEachNormalDist,
-         cex = 0.8,
-         pch = 19)
+         cex = 0.9,
+         col = "black",
+         pch = ifelse(Answers[i] == "Yes", 19, 4) )
   
   # Add value of p
   text(-0.5, 
@@ -72,12 +77,53 @@ for (i in 1:length(pvec)){
   
 }
 
-# Mark observed value of p-hat
+# Mark observed value of p-hat and CI
+text(phat,
+     4.25,
+     pos = 3,
+     cex = 0.9,
+     bquote(hat(italic(p))==.(phat)))
+points(x = phat,
+       y = 5,
+       cex = 0.75,
+       pch = 25, # Down triangle
+       bg = "black") # Triangle fill colour
+
 lines( x = c(phat, phat),
-       y = c(-40, 7),
+       y = c(-37, 4.5),
        lty = 1,
        lwd = 2,
        col = "grey")
+
+text(x = phat,
+     y = -38,
+     pos = 1,
+     cex = 0.9,
+     labels = "95% CI")
+
+# CI polygon
+greyTranslucent <- rgb(200, 
+                       200, 
+                       200, 
+                       max = 255, 
+                       alpha = 125, 
+                       names = "greyTranslucent")
+polygon( x = c( CI[1], CI[1], CI[2], CI[2]),
+         y = c(-37, 4, 4, -37),
+         border = NA, # No borders
+         col = greyTranslucent)
+
+arrows(x0 = CI[1],
+       x1 = CI[2],
+       y0 = -38,
+       y1 = -38,
+       code = 3, # Arrow both ends
+       angle = 15,
+       length = 0.1)
+points(x = phat,
+       y = -38,
+       pch = 19)
+
 
 # "Titles"
 text(-0.5,
@@ -93,10 +139,6 @@ text(2.25,
      expression(atop(Is~it~reasonable~"for"~this~value~of~italic(p), 
                      to~produce~the~observed~value~of~hat(italic(p))*"?")))
 
-
-text(phat,
-     -42,
-     bquote(hat(italic(p))==.(phat)))
 
 
 ### Bracket the possible values leading to p-hat
@@ -122,19 +164,6 @@ text(x = 2.5,
      expression(atop(These~values~of~italic(p)~could,
                      reasonably~have~produced~hat(italic(p)))))
 
-
-
-# The tiny bit poking right to the meaning of the bracket
-heightOfBracketEdge <- mean( c(0, -(length(pvec) - 2) * HeightOfEachNormalDist ))
-lines( x = c(1.6, 1.7),
-       y = c(heightOfBracketEdge,
-             heightOfBracketEdge),
-       lwd = 1)
-text(x = 2.5,
-     y = heightOfBracketEdge,
-     cex = 0.9,
-     expression(atop(These~values~of~italic(p)~could,
-                     reasonably~have~produced~hat(italic(p)))))
 
 
 
