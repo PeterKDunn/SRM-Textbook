@@ -357,6 +357,13 @@ when certain conditions are met (Sect.\ \@ref(ValiditySampleMean)), where $n$ is
 :::
 
 
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+A mean or a median may be appropriate for describing the *data*.
+However, the *sampling distribution* for the sample mean (under certain conditions) has a *normal distribution*, and so the mean is appropriate for describing the sampling distribution.
+:::
+
+
 ```{r NotationOneMeanCI}
 OneMeanNotation <- array( dim = c(4, 2))
 
@@ -432,27 +439,86 @@ Commonly, CIs are computed at $90$%, $95$% and $99$% confidence levels.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-The multiplier of is not actually a $z$-score here.
+The multiplier is not actually a $z$-score here.
 The multiplier *would* be a $z$-score if the value of the *population* standard deviation was known.
 We don't know the *population* standard deviation, and use the *sample* standard deviation instead.
-In these situations, the multiplier is actually a $t$-score.
+In these situations, the multiplier is a $t$-score.
 
-However, the values of $t$- and $z$-multipliers are *very* similar, and (except for small sample sizes) using an approximate multiplier of\ $2$ is reasonable for computing *approximate* $95$% CIs in either case.
+The values of $t$- and $z$-multipliers are *very* similar, and (except for small sample sizes) using an approximate multiplier of\ $2$ is reasonable for computing *approximate* $95$% CIs in either case.
 :::
 
+Pretend for the moment that the value of $\mu$ was unknown, and we tossed a die $25$ times, and found $\bar{x} = 3.2$ and $s = 2.5$.
+Then,  
+\[
+   \text{s.e.}(\bar{x}) = \frac{s}{\sqrt{n}} = \frac{2.5}{\sqrt{25}} = 0.5.
+\]
+Then, the sample means will vary with an approximate normal distribution, centred around the unknown value of $\mu$, with a standard deviation of $\text{s.e.}(\bar{x}) = 0.5$ (Fig.\ \@ref(fig:DiceMeanNormal)).
 
-Suppose we tossed a die $25$ times, and found $\bar{x} = 2.8$ and $s = 
-
-If we collected many samples of a specific size, $\bar{x}$ and $s$ would be different for each sample, so the calculated CI would be different for each.
-Some CIs would straddle the population mean $\mu$, and some would not.
-We never know if the CI computed from our single sample straddles $\mu$ or not.
-The CI could also be interpreted as the range of plausible values of $\mu$ that could have produced the observed value of $\bar{x}$.
-(Loosely speaking, there is a $95$% chance that a $95$% CI straddles $\mu$.)
+Our estimate of $\bar{x} = 3.2$ may be a bit smaller than the value of $\mu$, or a bit larger than the value of $\mu$.
+A range of $\bar{x}$ values that are likely to straddle $\mu$ is given by a CI.
+The *approximate* $95$% CI is from $3.2 - (2 \times 0.5)$ and $3.2 - (2 \times 0.5)$, or from $2.2$ to $4.2$ (see Def.\ \@ref(def:DEFSamplingDistributionXbar)).
+Hence, values of $\mu$ between $2.2$ to $4.2$ could reasonably have produced a sample mean of $\bar{x} = 3.2$.
 
 
-```{r CIrelationshipsMean, out.width='85%', fig.align="center", fig.cap="A CI gives a range of possible values of $\\mu$ for which it is reasonable to produce the observed value of $\\bar{x}$. The shaded regions represent the regions containing 95\\% of the values of $\\bar{x}$ for each value of $p$.", fig.width=9, fig.height=6.5}
-source("R/showCIForVariousMeans.R")                
+```{r CIrelationshipsMean, out.width='75%', fig.align="center", fig.cap="A CI gives a range of values of $\\mu$ for which it is reasonable to produce the observed value of $\\bar{x}$. The shaded regions under the normal distributions represent the regions containing 95\\% of the values of $\\bar{x}$ for each value of $\\bar{x}$.", fig.width=6.5, fig.height=8}
+#source("R/showCIForVariousMeans.R")                
 ```
+
+
+
+```{r DiceMeanNormal, fig.cap="The sampling distribution is a normal distribution; it shows how the sample mean of 25 die rolls varies in samples of size $n = 25$", fig.align="center", fig.width=9.5, fig.height=2.75, out.width='95%'}
+
+mn <- 3.5
+n <- 25
+stdd <- 2.5
+
+se <- stdd / sqrt(n)
+
+par( mar = c(4, 0.5, 0.5, 0.5) )
+out <- plotNormal(mn,
+                  se,
+                  xlab = "Sample mean die roll, from 25 rolls of a die", 
+                  cex.axis = 0.95,
+                  ylim = c(0, 1.3),
+                  showXlabels = c( 	
+                    expression( mu-0.5),
+                    expression( mu-1), 
+                    expression( mu-1.5), 
+                    expression( mu ),
+                    expression( mu+0.5), 
+                    expression( mu+1.0), 
+                    expression( mu+1.5) ) )
+
+arrows(x0 = mn,
+       x1 = mn,
+       y0 = 1.4 * max(out$y),
+       y1 = max(out$y),
+       lwd = 2,
+       length = 0.15,
+       angle = 15)
+text(x = mn,
+     y = 1.4 * max(out$y),
+     pos = 3,
+     labels = expression(Sampling~mean) )
+
+arrows(x0 = mn ,
+       x1 = mn + se,
+       y0 = 0.35 * max(out$y),
+       y1 = 0.35 * max(out$y),
+       lwd = 2,
+       code = 3,
+       length = 0.15,
+       angle = 15)
+text(x = mn + (se / 2),
+     y = 0.3 * max(out$y),
+     pos = 3,
+     labels = expression(Std~error))
+text(x = mn + (se / 2),
+     y = 0.32 * max(out$y),
+     pos = 1,
+     labels = expression(plain(s.e.)(bar(italic(x)))))
+```
+
 
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
@@ -464,15 +530,14 @@ source("R/showCIForVariousMeans.R")
 A study of the school bags that $586$ children (in Grades 6--8 in Tabriz, Iran) take to school found the mean weight was $\bar{x} = 2.8$\ kg with a standard deviation of $s = 0.94$\ kg [@data:Dianat2014:schoolbags].
 The parameter $\mu$ is the population mean weight of school bags for Iranian children in Grades 6--8.
 
-Another sample of $586$ children would produce a different sample mean, so the sample mean varies from sample to sample; sampling variation exists.
+Another sample of $586$ children would produce a different sample mean; sampling variation exists.
 The *standard error* of the sample mean is  
 \[
-   \text{s.e.}(\bar{x}) = \frac{s}{\sqrt{n}} = \frac{0.94}{\sqrt{586}} = 0.03883;
+   \text{s.e.}(\bar{x}) = \frac{s}{\sqrt{n}} = \frac{0.94}{\sqrt{586}} = 0.03883.
 \]
-see Fig.\ \@ref(fig:BagsNormal).
 The approximate $95$% CI for the population mean school-bag weight is  
 \[
-  2.8\pm(2 \times 0.03883),  
+  2.8\pm (2 \times 0.03883),  
 \]
 or $2.8\pm0.07766$.
 (The *margin of error* is $0.07766$.)
@@ -493,51 +558,45 @@ A *wider* interval is needed to be *more* confident that the interval contains t
 :::
 
 
-```{r BagsNormal, fig.cap="The sampling distribution is a normal distribution; it shows how the sample mean bag weight varies in samples of size $n = 586$", fig.align="center", fig.width=9.5, fig.height=2.75, out.width='95%'}
+<!-- ```{r BagsNormal, fig.cap="The sampling distribution is a normal distribution; it shows how the sample mean bag weight varies in samples of size $n = 586$", fig.align="center", fig.width=9.5, fig.height=2.75, out.width='95%'} -->
 
-mn <- 2.8
-n <- 586
-stdd <- 0.94
+<!-- mn <- 2.8 -->
+<!-- n <- 586 -->
+<!-- stdd <- 0.94 -->
 
-se <- stdd/sqrt(n)
+<!-- se <- stdd/sqrt(n) -->
 
-par( mar = c(4, 0.5, 0.5, 0.5) )
-out <- plotNormal(mn,
-                  se,
-                  xlab = "Sample mean bag weight, in kg (sample size: 586)", 
-                  cex.axis = 0.95,
-                  showXlabels = c( 	
-                    expression( mu-0.114),
-                    expression( mu-0.076), 
-                    expression( mu-0.038), 
-                    expression( mu ),
-                    expression( mu+0.038), 
-                    expression( mu+0.076), 
-                    expression( mu+0.114) ) )
-```
+<!-- par( mar = c(4, 0.5, 0.5, 0.5) ) -->
+<!-- out <- plotNormal(mn, -->
+<!--                   se, -->
+<!--                   xlab = "Sample mean bag weight, in kg (sample size: 586)",  -->
+<!--                   cex.axis = 0.95, -->
+<!--                   showXlabels = c( 	 -->
+<!--                     expression( mu-0.114), -->
+<!--                     expression( mu-0.076),  -->
+<!--                     expression( mu-0.038),  -->
+<!--                     expression( mu ), -->
+<!--                     expression( mu+0.038),  -->
+<!--                     expression( mu+0.076),  -->
+<!--                     expression( mu+0.114) ) ) -->
+<!-- ``` -->
 
 
 
 ## Statistical validity conditions {#ValiditySampleMean}
 
-As with any inference procedure, the underlying mathematics requires [certain conditions to be met](#exm:StatisticalValidityAnalogy) so that the results are statistically valid.
+As with any inference procedure, the underlying mathematics requires [certain conditions to be met](#exm:StatisticalValidityAnalogy) so that the results are statistically valid (i.e., the sampling distribution is sufficiently like a normal distribution).
 The CI for one mean will be *statistical valid* if *one* of these is true:
 
 1. The sample size is at least $25$, *or*
 2. The sample size is smaller than $25$ *and* the *population* data has an approximate normal distribution.
 
 The sample size of $25$ is a rough figure here, and some books give other (similar) values (such as $30$).
-This condition ensures that the *sampling distribution of the sample means has an approximate normal distribution* (so that, for example, the [68--95--99.7 rule](#def:EmpiricalRule) can be used).
 
+This condition ensures that the *sampling distribution of the sample means has an approximate normal distribution* (so that the [68--95--99.7 rule](#def:EmpiricalRule) can be used).
 Provided the sample size is larger than about $25$, this will be approximately true *even if* the distribution of the individuals in the
-population does not have a normal distribution.
-That is, when $n > 25$ the sample means generally have an approximate normal distribution, even if the data themselves don't have a normal distribution.
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-A mean or a median may be appropriate for describing the *data*.
-However, the CI is about the *mean* since the *sampling distribution* for the sample mean (under certain conditions) has a *normal distribution* and so the mean is appropriate for describing the sampling distribution.
-:::
+population do not have a normal distribution.
+That is, when $n > 25$ the sample means generally have an approximate normal distribution, even if the data themselves do not follow a normal distribution.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -545,9 +604,6 @@ When $n > 25$ approximately, we do *not* require that the *data* has a normal di
 The *sample means* need to have a normal distribution, which is approximately true if the statistical validity condition is true.
 :::
 
-
-This is one reason why means are used to describe samples: under certain conditions, sample means have an approximate normal distribution (so the 68--95--99.7 rule applies).
-In contrast, the distribution of sample medians is far more complicated to describe.
 
 To determine if assuming the *population* has an approximate normal distribution in the statistical validity condition, the histogram of the *sample* can be constructed.
 However, we can't really be sure about the distribution of the *population* from the distribution of the *sample*.
@@ -561,8 +617,7 @@ All we can reasonably do is to identify (from the sample) populations that likel
 
 ::: {.example #AssumptionsCT name="Assumptions"}
 A study [@data:silverman:CT; @data:zou:fluoroscopy] to examine exposure to radiation for CT scans in the abdomen assessed $n = 17$ patients.
-A CI for the mean radiation dose received could be formed.
-However, as the sample size is 'small' (less than $25$), the *population data* must have a normal distribution for the CI to be statistically valid.
+As the sample size is 'small' (less than $25$), the *population data* must have a normal distribution for a CI to be statistically valid.
 
 A histogram of the total radiation dose received using the *sample* data (Fig.\ \@ref(fig:CTscanHistogram)) suggests this is very unlikely.
 Even though the histogram is from *sample* data, it seems improbable that the data in the sample would have come from a *population* with a normal distribution.
@@ -593,77 +648,6 @@ We *do not* have to assume that the distribution of school bag weights has a nor
 
 
 <iframe src="https://learningapps.org/watch?v=ppetqnq4322" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
-
-
-## Example: NHANES {#OneMeanCINHANES}
-
-
-```{r}
-n.S <- length(NHANES$DirectChol) - sum( is.na(NHANES$DirectChol))
-
-mean.S <- mean(NHANES$DirectChol, 
-               na.rm = TRUE)
-sd.S <- sd(NHANES$DirectChol, 
-           na.rm = TRUE)
-
-se.S <- sd.S / sqrt( n.S )
-
-ci.lo.S <- mean.S - 2 * se.S
-ci.hi.S <- mean.S + 2 * se.S
-
-
-t99 <- abs( qt(0.005, df = n.S - 1) )
-ci.lo.S99 <- mean.S - t99 * se.S
-ci.hi.S99 <- mean.S + t99 * se.S
-```
-
-
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/hamburger-2253349_640.jpg" width="200px"/>
-</div>
-
-
-Previously, this RQ was asked about the [NHANES data](#NHANESGraphs):
-
-> Among Americans, is the mean direct HDL cholesterol different for current smokers and non-smokers?
-
-The response variable is direct HDL cholesterol concentration.
-The parameter is $\mu$, the population mean HDL cholesterol concentration.
-What is the *population* mean direct HDL cholesterol concentration?
-
-From the data (using jamovi or SPSS), the *sample* mean is $\bar{x} = `r round( mean.S, 4)`$ mmol/L; the standard deviation is $s =`r round( sd.S, 5)`$ mmol/L; and the sample size is $n = `r n.S`$.
-The value of $\bar{x}$ will vary from sample to sample; sampling variation exists.
-The standard error is:  
-\[
-	\text{s.e.}(\bar{x}) = 
-  	\frac{s}{\sqrt{n}}
-  	=
- 	\frac{ `r round(sd.S, 5)`}
-	{\sqrt{`r n.S`}} = 
-   	`r round(se.S, 5)`\text{ mmol/L}.
-\]
-The approximate $95$% CI uses a multiplier of $2$, so the margin-of-error is 
-$2\times `r round(se.S, 4)` = `r round(2 * se.S, 5)`$.
-The approximate $95$% CI is $`r round( mean.S, 3)`$, give-or-take $`r round(2 * se.S, 5)`$; or from $`r round( ci.lo.S, 3)`$ to $`r round( ci.hi.S, 3)`$\ mmol/L:
-
-> Based on the sample of size $n = `r n.S`$, a $95$% CI for the population mean direct HDL cholesterol levels of Americans is between $`r round( ci.lo.S, 3)`$ and $`r round( ci.hi.S, 3)`$\ mmol/L.
-
-If many samples of the same size were found in the same way, and computed the CI from each, about $95$% of the CIs would contain $\mu$ (but *this* particular CI may or may not contain the value of $\mu$).
-Alternatively, the CI gives a range of plausible values for $\mu$, or that we are about 95% confident that this CI straddles the value of $\mu$.
-
-Since the sample size is much larger than $25$, this CI for mean direct HDL cholesterol is statistically valid, *even though* the histogram of direct HDL cholesterol for individuals is skewed right (Fig.\ \@ref(fig:NHANEShistogram)).
-The distribution of the *sample means* should be normally distributed, *not* the distribution of the data.
-
-
-```{r NHANEShistogram, fig.cap="Histogram of direct HDL cholesterol concentration", fig.align="center", fig.width=4.5, fig.height=3.0}
-hist( NHANES$DirectChol, 
-      xlab = "Direct HDL cholesterol concentration (mmol/L)",
-      ylab = "Number of people",
-      col = plot.colour,
-      las = 1,
-      xlim = c(0, 4.5),
-      main = "Histogram of direct\nHDL cholesterol concentrations")
-```
 
 
 ## Example: cadmium in peanuts {#Cadmium-In-Peanuts}
@@ -709,15 +693,16 @@ LC.F11 <- subset(LungCap,
 1. True or false: A CI for $\mu$ is statistically valid only if the histogram of the *data* has an approximate normal distribution.  
 `r if( knitr::is_html_output() ) {torf(answer = FALSE )}`
 
-1. Suppose $s = 8$ and $n=20$. Which *one* of the following is **true**?  
+1. A sample of data produces $s = 8$ and $n = 20$. 
+   Which *one* of the following is **true**?  
 `r if( knitr::is_html_output() ) {longmcq( c(
-  answer = "The standard error is 1.7889.",
-  "The standard error is 8.",
-  "Since the sample size is less than 25, the standard error is invalid.") )}`
+  answer = "The standard error of the mean is 1.7889.",
+  "The standard error of the mean is 8.",
+  "Since the sample size is less than 25, the standard error is not statistically valid.") )}`
 `r if( !knitr::is_html_output() ) {
-'   * The standard error is 1.7889.
-   * The standard error is 8.
-   * Since the sample size is less than 25, the standard error is invalid.'
+'   * The standard error of the mean is 1.7889.
+   * The standard error of the mean is 8.
+   * Since the sample size is less than 25, the standard error is not statistically valid.'
 }`
 :::
 
@@ -744,7 +729,6 @@ A study of American black bears [@bartareau2017estimating] found the mean weight
 A study of the lung capacity of children in East Boston [@data:Tager:FEV; @BIB:data:FEV] measured the forced expiratory volume (FEV) of children in the area.
 The sample contained $n = 45$ eleven-year-old girls.
 For these children, the mean lung capacity was $\bar{x} = 2.85$ litres and the standard deviation was $s = 0.43$ litres.
-
 Find an approximate $95$% CI for the population mean lung capacity of eleven-year-old females from East Boston.
 :::
 
@@ -775,7 +759,7 @@ When the actual amount of blood spill on concrete was $1000$\ ml, the mean guess
 
 
 ::: {.exercise #OneMeanCINHANESInterpret}
-In Sect.\ \@ref(OneMeanCINHANES), the approximate $95$% CI for the mean direct HDL cholesterol was given as $1.356$ to $1.374$\ mmol/L.
+Using the NHANES data, the approximate $95$% CI for the mean direct HDL cholesterol is $1.356$ to $1.374$\ mmol/L.
 Which (if any) of these interpretations are acceptable?
 Explain *why* are the other interpretations are incorrect.
 
