@@ -98,6 +98,7 @@ text(phat,
      -42,
      bquote(hat(italic(p))==.(phat)))
 
+
 ### Bracket the possible values leading to p-hat
 
 shrinkBracket <- 1 # The small amount by which to bring the central brackets in a bit to avoid overlapping
@@ -180,22 +181,16 @@ lines( x = c(1.6, 1.7),
 
 # Label the brackets
 text(x = 2.5,
-     y = heightOfBracketEdge,
-     cex = 0.9,
-     expression(atop(These~values~of~italic(p)~could,
-                     reasonably~have~produced~hat(italic(p)))))
-
-text(x = 2.5,
      y = heightOfBracketEdge - 3 * HeightOfEachNormalDist,
      cex = 0.9,
      col = grey(0.3),
-     expression(atop(These~values~of~italic(p)~could~not,
+     expression(atop(These~values~of~italic(p)~could~bold(not),
                      reasonably~have~produced~hat(italic(p)))))
 text(x = 2.5,
      y = heightOfBracketEdge + 3 * HeightOfEachNormalDist,
      cex = 0.9,
      col = grey(0.3),
-     expression(atop(These~values~of~italic(p)~could~not,
+     expression(atop(These~values~of~italic(p)~could~bold(not),
                      reasonably~have~produced~hat(italic(p)))))
 
 
