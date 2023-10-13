@@ -1,7 +1,7 @@
 
 n <- 25
-phat <- 12/25 # 11/25
-se - sqrt( phat * (1 - phat) / n )
+phat <- 11/25 # 11/25
+se <- sqrt( phat * (1 - phat) / n )
 
 xValues <- seq(0, 1,
                by = 0.1)
@@ -88,20 +88,20 @@ for (i in (1:length(pCandidates))){
 abline(v = phat,
        lt = 2)
 
-arrows(x0 = lo,
-       x1 = lo,
-       y0 = (i + 1) * betweenCIs,
-       y1 = 0,
-       lty = 2,
-       angle = 15,
-       length = 0.1)
-arrows(x0 = hi,
-       x1 = hi,
-       y0 = (i + 1) * betweenCIs,
-       y1 = 0,
-       lty = 2,
-       angle = 15,
-       length = 0.1)
+# arrows(x0 = lo,
+#        x1 = lo,
+#        y0 = (i + 1) * betweenCIs,
+#        y1 = 0,
+#        lty = 2,
+#        angle = 15,
+#        length = 0.1)
+# arrows(x0 = hi,
+#        x1 = hi,
+#        y0 = (i + 1) * betweenCIs,
+#        y1 = 0,
+#        lty = 2,
+#        angle = 15,
+#        length = 0.1)
 
 
 
