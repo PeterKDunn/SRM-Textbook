@@ -53,18 +53,25 @@ text(x = phat,
 
 
 betweenCIs <- 1
+
+
 for (i in (1:length(pCandidates))){
   p <- pCandidates[i]
   se <- seCandidates[i]
   
   CIlo <- p - (2 * se)
+  if (CIlo < 0) CIlo <- 0
+  
   CIhi <- p + (2 * se)
-  cat("CI: (", CIlo, "to", CIhi, ")\n")
+  if (CIhi > 1) CIhi <- 1
+
+    #cat("CI: (", CIlo, "to", CIhi, ")\n")
 
   inside <- ifelse ( (phat  > CIlo) & (phat < CIhi),
                      TRUE,   # phat in the interval
                      FALSE)  # phat NOT in the interval
-  cat("p:", p, "inside:", inside, "\n\n")
+
+#cat("p:", p, "inside:", inside, "\n\n")
 
   yHeight <- i * betweenCIs
   
@@ -83,10 +90,12 @@ for (i in (1:length(pCandidates))){
           pch = ifelse(inside, 19, 4) )
          
 }
+plotTop <- yHeight
 
 # Add helpful vertical lines
-abline(v = phat,
-       lt = 2)
+lines(x = c(phat,  phat),
+      y = c(0, yHeight),
+       lty = 2)
 
 arrows(x0 = lo,
        x1 = lo,
@@ -94,14 +103,14 @@ arrows(x0 = lo,
        y1 = 0,
        lty = 2,
        angle = 15,
-       length = 0.1)
+       length = 0)
 arrows(x0 = hi,
        x1 = hi,
        y0 = (i + 1) * betweenCIs,
        y1 = 0,
        lty = 2,
        angle = 15,
-       length = 0.1)
+       length = 0)
 
 
 
@@ -126,15 +135,28 @@ text(x = -0.25,
      col = "grey",
      labels = expression( atop(These~intervals~bold(do),
                                bold(not)~contain~hat(italic(p)))) )
+lines( x = c(1.05, 1.05),
+       y = c(6.5, 9.5),
+       col = "grey")
+
+
 text(x = 1.25,
-     y = 8.5,
+     y = 8,
      cex = 0.9,
      col = "grey",
      labels = expression( atop(These~intervals~bold(do),
                                bold(not)~contain~hat(italic(p)))) )
+lines( x = c(-0.05, -0.05),
+       y = c(0, 3),
+       col = "grey")
 
-text(x = 1.1,
-     y = 4.5,
+
+
+text(x = 1.05,
+     y = 4.0,
      cex = 0.9,
      labels = expression( atop(These~intervals~bold(do),
                                contain~hat(italic(p)))) )
+lines( x = c(0.85, 0.85),
+       y = c(2.5, 6.5),
+       col = "black")
