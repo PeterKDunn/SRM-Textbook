@@ -20,7 +20,7 @@ hi <- phat + (2 * se)
 # Canvas
 par(mar = c(0.5, 0.5, 0.5, 0.5))
 plot(x = c(-0.5, 1.5),
-     y = c(-5, 12), # y = 0 corresponds to the horizontal axis
+     y = c(-5, 14), # y = 0 corresponds to the horizontal axis
      axes = FALSE,
      xlab = "",
      ylab = "",
@@ -45,7 +45,7 @@ for (i in 1:length(xValues)){
 # Add p-hat
 points(x = phat,
        y = -3,
-       pch = 19)
+       pch = 17)
 text(x = phat,
      y = -3.5,
      pos = 1,
@@ -53,18 +53,25 @@ text(x = phat,
 
 
 betweenCIs <- 1
+
+
 for (i in (1:length(pCandidates))){
   p <- pCandidates[i]
   se <- seCandidates[i]
   
   CIlo <- p - (2 * se)
+  if (CIlo < 0) CIlo <- 0
+  
   CIhi <- p + (2 * se)
-  cat("CI: (", CIlo, "to", CIhi, ")\n")
+  if (CIhi > 1) CIhi <- 1
+
+    #cat("CI: (", CIlo, "to", CIhi, ")\n")
 
   inside <- ifelse ( (phat  > CIlo) & (phat < CIhi),
                      TRUE,   # phat in the interval
                      FALSE)  # phat NOT in the interval
-  cat("p:", p, "inside:", inside, "\n\n")
+
+#cat("p:", p, "inside:", inside, "\n\n")
 
   yHeight <- i * betweenCIs
   
@@ -83,25 +90,28 @@ for (i in (1:length(pCandidates))){
           pch = ifelse(inside, 19, 4) )
          
 }
+plotTop <- yHeight
 
 # Add helpful vertical lines
-abline(v = phat,
-       lt = 2)
+lines(x = c(phat,  phat),
+      y = c(0, yHeight),
+       lty = 2)
 
+# 
 # arrows(x0 = lo,
 #        x1 = lo,
 #        y0 = (i + 1) * betweenCIs,
 #        y1 = 0,
 #        lty = 2,
 #        angle = 15,
-#        length = 0.1)
+#        length = 0)
 # arrows(x0 = hi,
 #        x1 = hi,
 #        y0 = (i + 1) * betweenCIs,
 #        y1 = 0,
 #        lty = 2,
 #        angle = 15,
-#        length = 0.1)
+#        length = 0)
 
 
 
@@ -116,25 +126,53 @@ arrows(x0 = lo,
 text(x = phat,
      y = (i + 1) * betweenCIs,
      pos = 3,
-     labels = expression(Values~of~italic(p)~"in"~this~range~could~produce~hat(italic(p))) )
+     labels = expression( atop(Values~of~italic(p)~"in"~this~range,
+                               could~reasonably~produce~hat(italic(p))) ) )
 
 
 # Explanatory text
-text(x = -0.25,
-     y = 1.5,
-     cex = 0.9,
-     col = "grey",
-     labels = expression( atop(These~intervals~bold(do),
-                               bold(not)~contain~hat(italic(p)))) )
-text(x = 1.25,
-     y = 8.5,
-     cex = 0.9,
-     col = "grey",
-     labels = expression( atop(These~intervals~bold(do),
-                               bold(not)~contain~hat(italic(p)))) )
+explanatoryLinesIndent <- 0.02
+tooLow <- 1.5
+tooHigh <- 8
+justRight <- 4.5
 
-text(x = 1.1,
-     y = 4.5,
+text(x = -0.25,
+     y = tooLow,
+     cex = 0.9,
+     col = "grey",
+     labels = expression( atop(These~intervals~bold(do),
+                               bold(not)~contain~hat(italic(p)))) )
+lines( x = c(1.05 - explanatoryLinesIndent, 1.05),
+       y = c(tooHigh - 1.25, tooHigh),
+       col = "grey")
+lines( x = c(1.05, 1.05 - explanatoryLinesIndent),
+       y = c(tooHigh, tooHigh + 1.25),
+       col = "grey")
+
+
+text(x = 1.25,
+     y = 8,
+     cex = 0.9,
+     col = "grey",
+     labels = expression( atop(These~intervals~bold(do),
+                               bold(not)~contain~hat(italic(p)))) )
+lines( x = c(-0.05, -0.05 - explanatoryLinesIndent),
+       y = c(tooLow - 0.75, tooLow),
+       col = "grey")
+lines( x = c(-0.05 - explanatoryLinesIndent, -0.05),
+       y = c(tooLow, tooLow + 0.75),
+       col = "grey")
+
+
+
+text(x = 1.05,
+     y = 4.0,
      cex = 0.9,
      labels = expression( atop(These~intervals~bold(do),
                                contain~hat(italic(p)))) )
+lines( x = c(0.85, 0.85 + explanatoryLinesIndent),
+       y = c(justRight- 1.75, justRight),
+       col = "black")
+lines( x = c(0.85 + explanatoryLinesIndent, 0.85),
+       y = c(justRight, justRight + 1.75),
+       col = "black")

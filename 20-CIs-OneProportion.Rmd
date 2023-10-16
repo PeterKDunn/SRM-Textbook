@@ -681,12 +681,12 @@ source("R/showCIrelationships.R")
 ```
 
 In summary, we *know* the value of $\hat{p}$, but the value of $p$ remains *unknown*.
-The value of $p$ in the population that gave rise to the observed sample proportion could be a bit larger than $\hat{p}$, or a bit smaller than $\hat{p}$.
-In other words, the value of $p$ that gave rise to the observed sample proportion is $\hat{p}$, give-or-take a bit.
+The value of $p$ could be a bit larger than $\hat{p}$, or a bit smaller than $\hat{p}$.
+In other words, the value of $p$ that produced the observed sample proportion is $\hat{p}$, give-or-take a bit.
 The amount to 'give-or-take' depends on how confident we wish to be that the interval straddles the value of $p$.
-This is like the interval in Eq.\ \@ref(eq:CIpKnownp), but creating the interval around $\hat{p}$ rather than around $p$.
 
-This all means that we can create an interval ($\hat{p}$, give-or-take a bit) that contains the values of $p$ likely to have produced the observed value of $\hat{p}$ (Fig.\ \@ref(fig:CIrelationshipsP)).
+This 'give-or-take' interval is like the sampling interval in Eq.\ \@ref(eq:CIpKnownp), but centred around $\hat{p}$ rather than around $p$.
+However, we could create such an interval ($\hat{p}$, give-or-take a bit) that contains the values of $p$ likely to have produced the observed value of $\hat{p}$ (Fig.\ \@ref(fig:CIrelationshipsP)).
 
 
 
@@ -694,10 +694,10 @@ This all means that we can create an interval ($\hat{p}$, give-or-take a bit) th
 source("R/showCIForVariousp.R")              
 ```
 
-This interval is called a *confidence interval* (or CI).
 Using $\hat{p} = 0.44$ and $\text{s.e.}(\hat{p}) = 0.0993$, the (approximate) $95$% CI is $0.44 \pm (2 \times 0.0993)$, or from $0.241$ to $0.639$.
+This interval is called a *confidence interval* (or CI).
 In general, we do not know if the computed interval straddles the value of $p$, since the value of $p$ is usually unknown.
-In this contrived example, though, the CI straddles the known value of $p = 0.5$.
+In this contrived example, though, the CI does straddle the known value of $p = 0.5$.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
@@ -705,6 +705,77 @@ In this case, we know the value of the population parameter: $p = 0.5$.
 Usually we do *not* know the value of the parameter:.
 After all, that's why we take a sample; to *estimate* the value of the population proportion.
 :::
+
+
+```{r, out.width='100%', fig.width=6, fig.height=2, fig.align="center", fig.cap="PIU Fiyt dytDut DFi TFi"}
+par(mfrow = c(1, 4),
+    mar = c(4, 0.2, 4, 0.2) )
+
+pHat <- 11/25
+
+n <- 25
+pVec <- c(0.25, 0.4, 0.6, 0.7)
+pMean <- pVec
+pStdDev <- sqrt( pVec * (1 - pVec) / n)
+
+pHatInside <- '( hat(italic(p))~likely~to~be~observed )'
+pHatOutside <- '( hat(italic(p))~likely~to~be~observed )'
+
+for (i in 1:4){
+  ciLo <- pVec[i] - 2 * pStdDev[i]
+  ciHi <- pVec[i] + 2 * pStdDev[i]
+  pHatInOrOut <- ifelse( (pHat > ciLo) & (pHat < ciHi), TRUE, FALSE )
+  
+out <- plotNormal(pMean[i],
+                  pStdDev[i],
+                  xlab = expression( Values~of~hat(italic(p))),
+                  xlim.lo = 0,
+                  xlim.hi = 1,
+                  main = if(pHatInOrOut) {
+                                bquote( atop( If~italic(p) == .(pVec[i])~then~hat(italic(p))~is,
+                                              bold(likely)~to~be~observed) ) } else {
+                                bquote( atop( If~italic(p) == .(pVec[i])~then~hat(italic(p))~is,
+                                              bold(unlikely)~to~be~observed) )
+                  },
+                  #ylim = c(0, 7.5),
+                  showXaxis = FALSE)
+axis(side = 1,
+     las = 2,
+     at = c(0, 0.25, 0.50, 0.75, 1))
+points(x = pHat,
+       y = 0,
+       cex =2,
+       pch = 17)
+}
+# arrows(x0 = 0.5,
+#        x1 = 0.5,
+#        y0 = 1.4 * max(out$y),
+#        y1 = max(out$y),
+#        lwd = 2,
+#        length = 0.15,
+#        angle = 15)
+# text(x = 0.5,
+#      y = 1.4 * max(out$y),
+#      pos = 3,
+#      labels = expression(Sampling~mean) )
+# 
+# arrows(x0 = 0.5,
+#        x1 = 0.6,
+#        y0 = 0.3 * max(out$y),
+#        y1 = 0.3 * max(out$y),
+#        lwd = 2,
+#        code = 3,
+#        length = 0.15,
+#        angle = 15)
+# text(x = 0.55,
+#      y = 0.25 * max(out$y),
+#      pos = 3,
+#      labels = expression(Std~error))
+# text(x = 0.55,
+#      y = 0.27 * max(out$y),
+#      pos = 1,
+#      labels = expression(plain(s.e.)(hat(italic(p)))))
+```
 
 
 ## Confidence intervals: unknown proportion {#ConfIntPUnknownP}
@@ -872,7 +943,7 @@ About $95$% of those $95$% CIs straddle the value $p = 0.5$ (shown as solid line
 Of course, since the value of $p$ is usually unknown, we never know if our CI from a single sample contains $p$ or not.
 
 
-```{r, out.width='100%', fig.align="center", fig.cap="oiHohohO", fig.width=8, fig.height=3}
+```{r, out.width='100%', fig.align="center", fig.cap="Various values of $p$ from which the observed value of $\\hat{p}$ could reasonably be observed. The intervals are the $95$\\% sampling intervals for the given value of $p$. The confidence interval contains the values for which the sampling interval contains the observed value of $\\hat{p}$.", fig.width=8, fig.height=3}
 source("R/testCI.R")
 ```
 
