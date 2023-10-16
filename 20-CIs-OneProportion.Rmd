@@ -618,6 +618,9 @@ Then (from Def.\ \@ref(def:DEFSamplingDistributionPhat)),
 (This is very similar to the value of $0.1$, the value of the standard error when the value of $p$ was known; see Sect.\ \@ref(SamplingDistributionKnownp).)
 
 Then, the sample proportions will vary with an approximate normal distribution (Fig.\ \@ref(fig:NormalDieTheoryUnknownp)), centred around the unknown value of $p$ with a standard deviation of $\text{s.e.}(\hat{p}) = 0.099277$.
+Using the 68--95--99.7 rule again,
+about $95$% of the values of $\hat{p}$ are expected to be between $p - 0.199$ and $p + 0.199$.
+That is, for some *known* value of $p$, the *unknown* value of $\hat{p}$ is expected to vary between $p - 0.199$ and $p + 0.199$ (Fig.\ \@ref(fig:CIrelationships)).
 
 
 ```{r NormalDieTheoryUnknownp, fig.cap="The normal distribution, showing how the proportion of even rolls varies when a die is rolled $25$ times, assuming the value of $p$ is unknown", fig.align="center", fig.width=8.25, fig.height=3.5, out.width='100%'}
@@ -669,9 +672,75 @@ text(x = 0.55,
      labels = expression(plain(s.e.)(hat(italic(p)))))
 ```
 
-Using the 68--95--99.7 rule again: 
-about $95$% of the values of $\hat{p}$ are expected to be between $p - 0.199$ and $p + 0.199$.
-That is, for some *known* value of $p$, the *unknown* value of $\hat{p}$ is expected to vary between $p - 0.199$ and $p + 0.199$ (Fig.\ \@ref(fig:CIrelationships)).
+
+
+```{r, pProducingpHat, out.width='100%', fig.width=6, fig.height=2, fig.align="center", fig.cap="Various possible values for $p$, and the values of $\\hat{p}$ these are likely to produce."}
+par(mfrow = c(1, 4),
+    mar = c(4, 0.3, 4, 0.3) )
+
+pHat <- 11/25
+
+n <- 25
+pVec <- c(0.25, 0.4, 0.6, 0.7)
+pMean <- pVec
+pStdDev <- sqrt( pVec * (1 - pVec) / n)
+
+pHatInside <- '( hat(italic(p))~likely~to~be~observed )'
+pHatOutside <- '( hat(italic(p))~likely~to~be~observed )'
+
+
+
+
+
+
+for (i in 1:4){
+  ciLo <- pVec[i] - 2 * pStdDev[i]
+  ciHi <- pVec[i] + 2 * pStdDev[i]
+  pHatInOrOut <- ifelse( (pHat > ciLo) & (pHat < ciHi), TRUE, FALSE )
+  
+  # Pre-calculate y-limits
+  xx <- seq(0, 1, length = 1000)
+  yy <- max( dnorm(x = xx, 
+                   mean = pMean[i],
+                   sd = pStdDev[i]) )
+
+
+  out <- plotNormal(pMean[i],
+                    pStdDev[i],
+                    xlab = expression( Values~of~hat(italic(p))),
+                    xlim.lo = 0,
+                    xlim.hi = 1,
+                    ylim = c(0, 1.2 * yy),
+                    main = if(pHatInOrOut) {
+                      bquote( atop( If~italic(p) == .(pVec[i])~then~hat(italic(p))~is,
+                                    likely~to~be~observed) ) } else {
+                                      bquote( atop( If~italic(p) == .(pVec[i])~then~hat(italic(p))~is,
+                                                    bold(unlikely)~to~be~observed) )
+                                    },
+                    #ylim = c(0, 7.5),
+                    showXaxis = FALSE)
+  shadeNormal(out$x, 
+              out$y,
+              lo = ciLo,
+              hi = ciHi,
+              col = plot.colour)
+  axis(side = 1,
+       las = 2,
+       at = c(0, 0.25, 0.50, 0.75, 1))
+
+  # Mark on p-hat
+  lines( x = c(pHat, pHat),
+         y = c(0, 1.15 * yy ),
+         lwd = 1,
+         lty = 1)
+  text(x = pHat,
+       y = 1.1 * yy,
+       cex = 0.95,
+       labels = expression(Observed~hat(italic(p))),
+       pos = 4)
+}
+```
+
 
 
 ```{r CIrelationships, out.width='75%', fig.align="center", fig.cap="A known value of $p$ produces a range of $\\hat{p}$ values.", fig.width = 7, fig.height=4}
@@ -684,15 +753,25 @@ In summary, we *know* the value of $\hat{p}$, but the value of $p$ remains *unkn
 The value of $p$ could be a bit larger than $\hat{p}$, or a bit smaller than $\hat{p}$.
 In other words, the value of $p$ that produced the observed sample proportion is $\hat{p}$, give-or-take a bit.
 The amount to 'give-or-take' depends on how confident we wish to be that the interval straddles the value of $p$.
+Many different values of $p$ could have reasonably produced the observed value of $\hat{p}$; see Fig.\ \@ref(fig:pProducingpHat).
+
 
 This 'give-or-take' interval is like the sampling interval in Eq.\ \@ref(eq:CIpKnownp), but centred around $\hat{p}$ rather than around $p$.
 However, we could create such an interval ($\hat{p}$, give-or-take a bit) that contains the values of $p$ likely to have produced the observed value of $\hat{p}$ (Fig.\ \@ref(fig:CIrelationshipsP)).
 
 
 
-```{r CIrelationshipsP, out.width='75%', fig.align="center", fig.cap="A CI gives a range of possible values of $p$ for which it is reasonable to produce the observed value of $\\hat{p}$. The shaded regions under the normal distributions represent regions containing $95$\\% of the values of $\\hat{p}$ for each value of $p$.", fig.width=6.5, fig.height=8}
-source("R/showCIForVariousp.R")              
+<!-- ```{r CIrelationshipsP2, out.width='75%', fig.align="center", fig.cap="A CI gives a range of possible values of $p$ for which it is reasonable to produce the observed value of $\\hat{p}$. The shaded regions under the normal distributions represent regions containing $95$\\% of the values of $\\hat{p}$ for each value of $p$.", fig.width=6.5, fig.height=8} -->
+<!-- source("R/showCIForVariousp.R")               -->
+<!-- ``` -->
+
+
+
+```{r, CIrelationshipsP, out.width='100%', fig.align="center", fig.cap="Various values of $p$ from which the observed value of $\\hat{p}$ could reasonably be observed. The intervals are the $95$\\% sampling intervals for the given value of $p$. The confidence interval contains the values for which the sampling interval contains the observed value of $\\hat{p}$.", fig.width=8, fig.height=3}
+source("R/testCI.R")
 ```
+
+
 
 Using $\hat{p} = 0.44$ and $\text{s.e.}(\hat{p}) = 0.0993$, the (approximate) $95$% CI is $0.44 \pm (2 \times 0.0993)$, or from $0.241$ to $0.639$.
 This interval is called a *confidence interval* (or CI).
@@ -706,76 +785,6 @@ Usually we do *not* know the value of the parameter:.
 After all, that's why we take a sample; to *estimate* the value of the population proportion.
 :::
 
-
-```{r, out.width='100%', fig.width=6, fig.height=2, fig.align="center", fig.cap="PIU Fiyt dytDut DFi TFi"}
-par(mfrow = c(1, 4),
-    mar = c(4, 0.2, 4, 0.2) )
-
-pHat <- 11/25
-
-n <- 25
-pVec <- c(0.25, 0.4, 0.6, 0.7)
-pMean <- pVec
-pStdDev <- sqrt( pVec * (1 - pVec) / n)
-
-pHatInside <- '( hat(italic(p))~likely~to~be~observed )'
-pHatOutside <- '( hat(italic(p))~likely~to~be~observed )'
-
-for (i in 1:4){
-  ciLo <- pVec[i] - 2 * pStdDev[i]
-  ciHi <- pVec[i] + 2 * pStdDev[i]
-  pHatInOrOut <- ifelse( (pHat > ciLo) & (pHat < ciHi), TRUE, FALSE )
-  
-out <- plotNormal(pMean[i],
-                  pStdDev[i],
-                  xlab = expression( Values~of~hat(italic(p))),
-                  xlim.lo = 0,
-                  xlim.hi = 1,
-                  main = if(pHatInOrOut) {
-                                bquote( atop( If~italic(p) == .(pVec[i])~then~hat(italic(p))~is,
-                                              bold(likely)~to~be~observed) ) } else {
-                                bquote( atop( If~italic(p) == .(pVec[i])~then~hat(italic(p))~is,
-                                              bold(unlikely)~to~be~observed) )
-                  },
-                  #ylim = c(0, 7.5),
-                  showXaxis = FALSE)
-axis(side = 1,
-     las = 2,
-     at = c(0, 0.25, 0.50, 0.75, 1))
-points(x = pHat,
-       y = 0,
-       cex =2,
-       pch = 17)
-}
-# arrows(x0 = 0.5,
-#        x1 = 0.5,
-#        y0 = 1.4 * max(out$y),
-#        y1 = max(out$y),
-#        lwd = 2,
-#        length = 0.15,
-#        angle = 15)
-# text(x = 0.5,
-#      y = 1.4 * max(out$y),
-#      pos = 3,
-#      labels = expression(Sampling~mean) )
-# 
-# arrows(x0 = 0.5,
-#        x1 = 0.6,
-#        y0 = 0.3 * max(out$y),
-#        y1 = 0.3 * max(out$y),
-#        lwd = 2,
-#        code = 3,
-#        length = 0.15,
-#        angle = 15)
-# text(x = 0.55,
-#      y = 0.25 * max(out$y),
-#      pos = 3,
-#      labels = expression(Std~error))
-# text(x = 0.55,
-#      y = 0.27 * max(out$y),
-#      pos = 1,
-#      labels = expression(plain(s.e.)(hat(italic(p)))))
-```
 
 
 ## Confidence intervals: unknown proportion {#ConfIntPUnknownP}
@@ -941,11 +950,6 @@ if (knitr::is_latex_output()){
 
 About $95$% of those $95$% CIs straddle the value $p = 0.5$ (shown as solid lines)... but some do not (shown as dashed lines).
 Of course, since the value of $p$ is usually unknown, we never know if our CI from a single sample contains $p$ or not.
-
-
-```{r, out.width='100%', fig.align="center", fig.cap="Various values of $p$ from which the observed value of $\\hat{p}$ could reasonably be observed. The intervals are the $95$\\% sampling intervals for the given value of $p$. The confidence interval contains the values for which the sampling interval contains the observed value of $\\hat{p}$.", fig.width=8, fig.height=3}
-source("R/testCI.R")
-```
 
 
 ::: {.definition #ConfidenceInterval name="Confidence interval"}
