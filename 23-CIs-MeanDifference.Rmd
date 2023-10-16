@@ -94,18 +94,20 @@ data(StudentWt)
 SWlen <- length(StudentWt$Week1)
 ```
 
-<!-- Case-profile plot not very helpfuk: -->
+<!-- Case-profile plot not very helpful: -->
 
 <!-- for (i in (1:68)){lines( x=c(1,2), y = c(StudentWt$Week1[i], StudentWt$Week12[i]));  -->
 <!-- points(x=c(1,2), y = c(StudentWt$Week1[i], StudentWt$Week12[i]), pch= 19, cex = 0.5)} -->
 
 ```{r DataWeightChange}
-tb1 <- StudentWt[1:5, ]  
+tb1 <- surroundMaths( StudentWt[1:5, ],
+                      cols = 2:4,
+                      decDigits = 1)
 
 T1 <- knitr::kable(tb1,
                    format = "latex",
                    valign = 't',
-                   align = c("r", "c", "c", "c"),
+                   align = c("r", "c", "c", "r"),
                    linesep = "",
                    col.names = c("Student", "Week 1", "Week 12", "Wt gain"),
                    row.names = FALSE,
@@ -113,11 +115,13 @@ T1 <- knitr::kable(tb1,
                    booktabs = TRUE) %>%
   row_spec(0, bold = TRUE)
 
-tb2 <- StudentWt[(SWlen - 4):SWlen, ]
+tb2 <- surroundMaths( StudentWt[(SWlen - 4):SWlen, ],
+                      cols = 2:4,
+                      decDigits = 1)
 T2 <- knitr::kable(tb2,
                    format = "latex",
                    valign = 't',
-                   align = c("r", "c", "c", "c"),
+                   align = c("r", "c", "c", "r"),
                    linesep = "",
                    col.names = c("Student", "Week 1", "Week 12", "Wt gain"),
                    row.names = FALSE,
@@ -300,7 +304,8 @@ A numerical summary of the weight gain (using a computer) gives the sample mean 
   \text{s.e.}(\bar{x}) =  \frac{0.9563659}{\sqrt{68}} = 0.1150756.
 \]
 A formal numerical summary table is shown in Table\ \@ref(tab:WeightGainSummary).
-
+All statistics are slightly different in Weeks\ 1 and\ 12.
+(Notice that the standard deviation for the weight gain is **not** the difference between the Week\ ` and the Week\ 12 standard deviation; instead, it is the standard deviation of the weight gains of individuals.)
 
 ```{r WeightGainSummary}
 WtGain.DataSummary <- array( dim = c(3, 4))
@@ -321,20 +326,22 @@ WtGain.DataSummary[1, 4] <- findStdError(StudentWt$Week1)
 WtGain.DataSummary[2, 4] <- findStdError(StudentWt$Week12)
 WtGain.DataSummary[3, 4] <- findStdError(StudentWt$GainWt)
 
-rownames(WtGain.DataSummary) <- c("Week 1 weight", 
-                                  "Week 12 weight", 
-                                  "Weight gain")
-
+rownames(WtGain.DataSummary) <- c("Week 1 weight (in kg)", 
+                                  "Week 12 weight (in kg)", 
+                                  "Weight gain (in kg)")
 
 if( knitr::is_latex_output() ) {
-  kable(WtGain.DataSummary,
+  kable(surroundMaths(WtGain.DataSummary,
+                      cols = 1:4,
+                      decDigits = c(2, 1, 2, 2)),
         format = "latex",
         booktabs = TRUE,
         longtable = FALSE,
+        escape = FALSE,
         align = c("r", "r", "r", "r"),
         col.names = c("Mean", "Median", "Standard deviation", "Standard error"),
         digits = 2,
-        caption = "The mean, median, standard deviation and standard error for the weight-gain data (in kg)") %>%
+        caption = "The mean, median, standard deviation and standard error for the weight-gain data") %>%
     row_spec(0, bold = TRUE) %>%
     row_spec(3, italic = TRUE) %>%
     kable_styling(font_size = 10)
@@ -343,10 +350,11 @@ if( knitr::is_latex_output() ) {
         format = "html",
         booktabs = TRUE,
         longtable = FALSE,
+        escape  = FALSE,
         align = c("r", "r", "r", "r", "r"),
         col.names = c("Mean", "Median", "Standard deviation", "Standard error"),
         digits = 2,
-        caption = "The mean, median, standard deviation and standard error for the weight-gain data (in kg)") %>%
+        caption = "The mean, median, standard deviation and standard error for the weight-gain data") %>%
     row_spec(0, bold = TRUE) 
 }
 ```
@@ -524,10 +532,13 @@ SpeciesSummary[3, ] <- c(0.77, 1.07)
   
 
 if( knitr::is_latex_output() ) {
-  kable(SpeciesSummary,
+  kable( surroundMaths(SpeciesSummary,
+                       cols = 1:2,
+                       decDigits = 2),
         format = "latex",
         longtable = FALSE,
         booktabs = TRUE,
+        escape = FALSE,
         #linesep = c("", "", "", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), # Otherwise adds a space after five lines... 
         align = c("c", "c"),
         col.names = c("Mean score", 
@@ -892,32 +903,36 @@ In a study of hypertension [@data:hand:handbook; @data:macgregor:essential], 15 
 
 ```{r CICaptoprilData}
 if( knitr::is_latex_output() ) {
-  T1 <- kable( bloodS[1:5, ],
+  bloodS <- rbind( bloodS, 
+                   c(NA, NA, NA) )
+  T1 <- kable( surroundMaths(bloodS[1:8, ],
+                             rows = 1:8,
+                             decDigits = 0),
                format = "latex",
                row.names = FALSE,
                booktabs = TRUE,
+               align = c("c", "c", "r"),
+               escape = FALSE,
                longtable = FALSE) %>%
     row_spec(0, bold = TRUE)
-  T2 <- kable( bloodS[6:10, ],
+  T2 <- kable( surroundMaths(bloodS[9:16, ],
+                             rows = 1:7,
+                             decDigits = 0),
                format = "latex",
                row.names = FALSE,
                booktabs = TRUE,
+               align = c("c", "c", "r"),
+               escape = FALSE,
                longtable = FALSE) %>%
     row_spec(0, bold = TRUE)
-  T3 <- kable( bloodS[11:15, ],
-               format = "latex",
-               row.names = FALSE,
-               booktabs = TRUE,
-               longtable = FALSE) %>%
-    row_spec(0, bold = TRUE) 
-  
-  out <- knitr::kables(list(T1, T2, T3),
+
+  out <- knitr::kables(list(T1, T2),
                        format = "latex",
                        label = "CICaptoprilData",
                        caption = "The Captopril data: before after after systolic blood pressures (in mm Hg)") %>% 
     kable_styling(font_size = 10)  
   out2 <- prepareSideBySideTable(out, 
-                                 numberOfTables = 3,
+                                 numberOfTables = 2,
                                  gap = "\\quad") 
   out2
 }
@@ -1009,12 +1024,16 @@ STtable[, 3] <- STtable[, 2] / sqrt( STtable[, 4])
 
 
 if( knitr::is_latex_output() ) {
-kable(STtable,
+kable(surroundMaths(STtable,
+                    cols = 1:4,
+                    decDigits = c(2, 2, 2, 0) ),
       format = "latex",
       booktabs = TRUE,
       longtable = FALSE,
+      escape = FALSE,
+      align = c("r", "r", "r", "c"),
       col.names = c("Mean", "Std deviation", "Std error", "Sample size"),
-      digits = c(2, 2, 2, 0),
+      #digits = c(2, 2, 2, 0),
       caption = "The numerical summary for the presurgical stress data") %>%
   row_spec(0, bold = TRUE) %>%
   row_spec(3, italic = TRUE) %>%
@@ -1076,10 +1095,13 @@ COVID.summary[3, ] <- c(2.68,
 
 
 if( knitr::is_latex_output() ) {
-  knitr::kable(COVID.summary,
+  knitr::kable( surroundMaths(COVID.summary,
+                              cols = 1:2,
+                              decDigits = 2),
                format = "latex",
                booktabs = TRUE,
                longtable = FALSE,
+               escape = FALSE,
                caption = "Summary information for the COVID-lockdown exercise data",
                align = c("r", "r")) %>%
     row_spec(0, bold = TRUE) %>%
