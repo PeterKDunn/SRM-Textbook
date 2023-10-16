@@ -117,7 +117,10 @@ plotNormal <- function(mu,
 ####################################
 
 
-shadeNormal <- function(xx, yy, lo, hi, 
+shadeNormal <- function(xx, 
+                        yy, 
+                        lo, 
+                        hi, 
                         col = "blue", #Shading colour
                         density = NULL,
                         angle = 45,
