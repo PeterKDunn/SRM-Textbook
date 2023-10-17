@@ -1,30 +1,50 @@
-surroundMaths <- function(x, rows = NA, cols = NA, decDigits = 1){
+surroundMaths <- function(x, all = FALSE, rows = NA, cols = NA, decDigits = 1){
   # Takes the "table" in x, surrounds specified rows/cols with $...$
   
   #if ( !is.na(rows) & !is.na(cols) ) paste("Only rows or cols, one at a time\n")
   tempTable <- x
   
-  
-  if ( !is.na(rows[1]) ) { 
+  if (all) {
+#    rows <- 1 : dim(x)[1]
+    cols <- 1 : dim(x)[2]
+  }
+  cat(cols, "\n")
+  cat(rows, "\n")
+  if ( !is.na(rows[1]) ) { # That is, rows are specified for surrounding by $...$
     if ( length(decDigits) < length(rows)) decDigits <- rep(decDigits, length(rows))
     
-      for (i in (1 : length(rows))){
-        tempTable[ rows[i], ] <- paste0("$", 
-                                      format( round(x[rows[i], ], digits = decDigits[i]),
+    for (i in (1 : length(rows))){
+      locateNA <- is.na( tempTable[ rows[i], ])
+      # Now temporarily make these 0, so the  round()  can be applied
+      if ( any( locateNA) ) tempTable[ rows[i], locateNA] <- 0
+
+      tempTable[ rows[i], ] <- paste0("$", 
+                                      format( round(x[rows[i], ], 
+                                                    digits = decDigits[i]),
                                               nsmall = decDigits[i]),
                                       "$")
+      # Now replace the NA with NA again
+      if ( any( locateNA) ) tempTable[ rows[i], locateNA] <- NA
       
     }
   }
   
+  
   if ( !is.na(cols[1]) ) {
     if ( length(decDigits) < length(cols)) decDigits <- rep(decDigits, length(cols))
-    
+
     for (i in (1 : length(cols))){
+      locateNA <- is.na( tempTable[ , cols[i] ])
+      # Now temporarily make these 0, so the  round()  can be applied
+      if ( any( locateNA) ) tempTable[ locateNA, cols[i]] <- rep(0, sum(locateNA) )
+
       tempTable[, cols[i]] <- paste0("$", 
-                                     format( round(x[, cols[i]], digits = decDigits[i]), 
+                                     format( round(x[, cols[i]], 
+                                                   digits = decDigits[i]), 
                                            nsmall = decDigits[i]),
                                      "$")
+      # Now replace the NA with NA again
+      if ( any( locateNA) ) tempTable[ locateNA, cols[i]] <- NA
       
     }
   }
