@@ -6,10 +6,10 @@ se <- sqrt( phat * (1 - phat) / n )
 xValues <- seq(0, 1,
                by = 0.1)
 
-pCandidates <- seq(0.1, 0.9, 
+pCandidates <- seq(0.2, 0.8, 
                    by = 0.05)
 seCandidates <- sqrt( pCandidates * (1 - pCandidates) / n)
-seCandidates <- rep( sqrt( pHat * (1 - pHat) / n),
+seCandidates <- rep( sqrt( phat * (1 - phat) / n),
                      length(pCandidates) )
 
 
@@ -22,7 +22,7 @@ hi <- phat + (2 * se)
 # Canvas
 par(mar = c(0.5, 0.5, 0.5, 0.5))
 plot(x = c(-0.5, 1.5),
-     y = c(-5, 14), # y = 0 corresponds to the horizontal axis
+     y = c(-3, 10), # y = 0 corresponds to the horizontal axis
      axes = FALSE,
      xlab = "",
      ylab = "",
@@ -32,7 +32,7 @@ plot(x = c(-0.5, 1.5),
 lines(x = c(0, 1),
       y = c(0, 0))
 text(x = xValues,
-     y = rep(0, length(xValues)),
+     y = rep(0, length(xValues)) - 0.35,
      pos = 1,
      labels = xValues)
 
@@ -44,60 +44,47 @@ for (i in 1:length(xValues)){
            y1 = -0.4)
 }
 
-# Add p-hat
-points(x = phat,
-       y = -3,
-       pch = 17)
-text(x = phat,
-     y = -3.5,
-     pos = 1,
-     labels = bquote(hat(italic(p))==.(phat) ))
-
-
 betweenCIs <- 1/2
 
+CIlo <- CIhi <- array( dim = length(pCandidates))
 
 for (i in (1:length(pCandidates))){
   p <- pCandidates[i]
   se <- seCandidates[i]
   
-  CIlo <- p - (2 * se)
-  if (CIlo < 0) CIlo <- 0
+  CIlo[i] <- p - (2 * se)
+  if (CIlo[i] < 0) CIlo[i] <- 0
   
-  CIhi <- p + (2 * se)
-  if (CIhi > 1) CIhi <- 1
-
-    #cat("CI: (", CIlo, "to", CIhi, ")\n")
-
-  inside <- ifelse ( (phat  > CIlo) & (phat < CIhi),
+  CIhi[i] <- p + (2 * se)
+  if (CIhi[i] > 1) CIhi[i] <- 1
+  
+  inside <- ifelse ( (phat  > CIlo[i]) & (phat < CIhi[i]),
                      TRUE,   # phat in the interval
                      FALSE)  # phat NOT in the interval
-
-#cat("p:", p, "inside:", inside, "\n\n")
-
+  
   yHeight <- i * betweenCIs
   
-  arrows(x0 = CIlo,
-         x1 = CIhi,
+  arrows(x0 = CIlo[i],
+         x1 = CIhi[i],
          y0 = yHeight,
          y1 = yHeight,
          col = ifelse(inside, "black", "grey"),
          code = 3, # Cap both ends
          angle = 90,
          length = 0.05)
-           
+  
   points( x = p,
           y = yHeight,
           col = ifelse(inside, "black", "grey"),
           pch = ifelse(inside, 19, 4) )
-         
+  
 }
 plotTop <- yHeight
 
 # Add helpful vertical lines
-lines(x = c(phat,  phat),
-      y = c(0, yHeight),
-       lty = 2)
+#lines(x = c(phat,  phat),
+#      y = c(0, yHeight),
+#       lty = 2)
 
 
 arrows(x0 = lo,
@@ -134,47 +121,97 @@ text(x = phat,
 
 # Explanatory text
 explanatoryLinesIndent <- 0.02
-tooLow <- 1.5
-tooHigh <- 8
-justRight <- 4.5
+bracketLength <- 0.02
 
+bottom <- 0
+
+LowRight <- 1.5 # Between the lines where too low, and just right
+RightHigh <- 9.5 # Between the lines where just right, and too high
+
+top <- length(pCandidates)
+
+
+# Bottom
+edge <- -0.05
 text(x = -0.25,
-     y = tooLow,
+     y = betweenCIs *  mean( c(betweenCIs,
+                               LowRight) ),
+     cex = 0.9,
+     col = "grey",
+     labels = expression( atop(This~interval~bold(does),
+                               bold(not)~contain~hat(italic(p)))) )
+
+lines( x = c( edge + bracketLength,
+              edge,
+              edge,
+              edge + bracketLength),
+       y = betweenCIs * c(betweenCIs,
+                          betweenCIs,
+                          LowRight,
+                          LowRight),
+       col = "grey")
+
+
+# Top
+edge <- 1.05
+text(x = 1.26,
+     y = betweenCIs * mean( c(RightHigh,
+                              top) ),
      cex = 0.9,
      col = "grey",
      labels = expression( atop(These~intervals~bold(do),
                                bold(not)~contain~hat(italic(p)))) )
-lines( x = c(1.05 - explanatoryLinesIndent, 1.05),
-       y = c(tooHigh - 1.25, tooHigh),
-       col = "grey")
-lines( x = c(1.05, 1.05 - explanatoryLinesIndent),
-       y = c(tooHigh, tooHigh + 1.25),
+
+lines( x = c( edge - bracketLength,
+              edge,
+              edge,
+              edge - bracketLength),
+       y = betweenCIs * c(RightHigh,
+                          RightHigh,
+                          top,
+                          top),
        col = "grey")
 
-
-text(x = 1.25,
-     y = 8,
+# Middle
+edge <- 0.90
+text(x = 1.11,
+     y = betweenCIs * mean( c(LowRight,
+                              RightHigh) ),
      cex = 0.9,
-     col = "grey",
-     labels = expression( atop(These~intervals~bold(do),
-                               bold(not)~contain~hat(italic(p)))) )
-lines( x = c(-0.05, -0.05 - explanatoryLinesIndent),
-       y = c(tooLow - 0.75, tooLow),
-       col = "grey")
-lines( x = c(-0.05 - explanatoryLinesIndent, -0.05),
-       y = c(tooLow, tooLow + 0.75),
-       col = "grey")
-
-
-
-text(x = 1.05,
-     y = 4.0,
-     cex = 0.9,
+     col = "black",
      labels = expression( atop(These~intervals~bold(do),
                                contain~hat(italic(p)))) )
-lines( x = c(0.85, 0.85 + explanatoryLinesIndent),
-       y = c(justRight- 1.75, justRight),
+
+lines( x = c( edge - bracketLength,
+              edge,
+              edge,
+              edge - bracketLength),
+       y = betweenCIs * c(LowRight,
+                          LowRight,
+                          RightHigh,
+                          RightHigh),
        col = "black")
-lines( x = c(0.85 + explanatoryLinesIndent, 0.85),
-       y = c(justRight, justRight + 1.75),
-       col = "black")
+
+
+
+
+# Add p-hat
+points(x = phat,
+       y = -0.15,
+       pos = 1,
+       pch = 17)
+text(x = phat,
+     y = -1.55,
+     pos = 1,
+     labels = bquote(hat(italic(p))==.(phat) ))
+arrows(x0 = phat,
+       x1 = phat,
+       y0 = -1.5,
+       y1 = 0,
+       angle = 15,
+       length = 0)
+lines( x = c(phat, phat),
+       y = c(0, length(pCandidates) * betweenCIs),
+       col = "grey",
+       lty = 2)
+
