@@ -115,7 +115,7 @@ arrows(x0 = lo,
 text(x = phat,
      y = (i + 1) * betweenCIs,
      pos = 3,
-     labels = expression( atop(Values~of~italic(p)~"in"~this~range,
+     labels = expression( atop(CI*":"~Values~of~italic(p)~"in"~this~range,
                                could~reasonably~produce~hat(italic(p))) ) )
 
 
