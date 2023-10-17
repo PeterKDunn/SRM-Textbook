@@ -488,11 +488,11 @@ Figure\ \@ref(fig:NormalDieTheory) suggests that, while not impossible, 0.80 or 
 
 ## Sampling intervals: known proportion {#CIpKnownp}
 
-Since the possible values of the sample proportions $\hat{p}$ can be described by an approximate *normal distribution*, the 68--95--99.7 rule (Sect.\ \ @ref(def:EmpiricalRule) can be applied.
+Since the possible values of the sample proportions $\hat{p}$ can be described by an approximate *normal distribution*, the 68--95--99.7 rule (Def.\ \@ref(def:EmpiricalRule) can be applied.
 For example (see Fig.\ \@ref(fig:NormalDieTheory)), about $68$% of the time, a set of $25$ rolls will have a value of $\hat{p}$ between $0.5$ give-or-take *one* standard deviation (that is, give-or-take `r round(se.die, 3)`) rolls that are even.
 So, about $68$% of the time, the proportion of even rolls in a set of $25$ rolls will be between $0.5 - `r round(se.die, 3)` =  `r round(0.5 - se.die, 3)`$ and $0.5 + `r round(se.die, 3)` =  `r round(0.5 + se.die, 3)`$.
 
-Similarly, about $95$% of the time, the proportion of even rolls will be between $0.5$ give-or-take *two* standard deviations, or between $0.5 - (2\times`r round(se.die, 3)`) =  `r round(0.5 - 2*se.die, 3)`$ and $0.5 + (2\times`r round(se.die, 3)`) =  `r round(0.5 + 2*se.die, 3)`$.
+Similarly, about $95$% of the time, the proportion of even rolls will be between $0.5$ give-or-take $(2\times`r round(se.die, 3)`$), or between $0.5 - (2\times`r round(se.die, 3)`) =  `r round(0.5 - 2*se.die, 3)`$ and $0.5 + (2\times`r round(se.die, 3)`) =  `r round(0.5 + 2*se.die, 3)`$.
 This interval tell us what values of $\hat{p}$ are likely to be observed in samples of size 25.
 Most of the time (i.e., approximately $95$% of the time), the value of $\hat{p}$ is expected to be between $0.30$ and $0.70$.
 (`r if (knitr::is_latex_output()) {
@@ -507,6 +507,16 @@ Formally, the sample proportion $\hat{p}$ is likely to lie within the interval
    p \pm (\text{multiplier} \times \text{s.e.}(\hat{p})),
 \]
 where $\text{s.e.}(\hat{p})$ is the *standard error of the sample proportion* (calculated using Eq.\ \@ref(eq:StdErrorPknown)), and the *multiplier* comes from the 68--95--99.7 rule, depending on the level of confidence we are aiming for.
+This is called a *sampling interval*.
+
+
+
+```{r CIrelationships, out.width='75%', fig.align="center", fig.cap="A known value of $p$ produces a range of $\\hat{p}$ values.", fig.width = 7, fig.height=4}
+par(mar = c(1, 1, 5.5, 1) + 0.5 )   
+
+source("R/showCIrelationships.R")       
+```
+
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -527,7 +537,7 @@ For a $90$% sampling interval, either tables or a computer would be used to find
 
 ## Sampling distribution: unknown proportion  {#SamplingDistributionUnknownp}
 
-In the die example (Sect.\ \@ref(SamplingDistributionKnownp)), the value of $p$ was known.
+In the die example (Sects.\ \@ref(SamplingDistributionKnownp) and\ \@ref(CIpKnownp)), the value of $p$ was known.
 However, usually the value of $p$ (the *parameter*) is unknown; after all, the reason for taking a sample is to *estimate* the unknown value of $p$.
 
 When $p$ is unknown, the best available estimate of $p$ (which is $\hat{p}$) is used to compute the standard error.
@@ -611,70 +621,29 @@ Let's *pretend* for the moment that the proportion of even rolls of a fair die i
 In this case, an *estimate* of the proportion of even rolls can be found by rolling a die $n = 25$ times and computing $\hat{p}$.
 
 Suppose $11$ of the $n = 25$ rolls produced an even number, so that $\hat{p} = 11/25 = 0.44$.
-Then (from Def.\ \@ref(def:DEFSamplingDistributionPhat)),  
+The unknown value of $p$ could be a bit larger than $\hat{p} = 0.44$, or a bit smaller than $\hat{p} = 0.44$.
+In other words, the unknown value of $p$ is $\hat{p}$, give-or-take a bit.
+
+Since the sampling distribution has an approximate normal distribution (Def.\ \@ref(def:DEFSamplingDistributionPhat)), the 68--95--99.7 rule can be used to compute the give-or-take amount (using the ideas in Sect.\ \@ref(CIpKnownp)): the give-or-take amount would be $\left(\text{multipler}\times\text{s.e.}(\hat{p})\right)$.
+This means that the interval, more precisely, would be  
+\[
+  \hat{p} \pm \left(\text{multipler}\times\text{s.e.}(\hat{p})\right),
+\]
+for a suitable multiplier.
+This interval for $p$ is called a *confidence interval*.
+
+Using $\hat{p} = 0.44$ and $n = 25$, then  
 \[
    \text{s.e.}(\hat{p}) = \sqrt{ \frac{ 0.44 \times (1 - 0.44)}{25}} = 0.099277.
 \]
-(This is very similar to the value of $0.1$, the value of the standard error when the value of $p$ was known; see Sect.\ \@ref(SamplingDistributionKnownp).)
+So, the (approximate) $95$% CI is $0.44 \pm (2 \times 0.099277)$, or from $0.241$ to $0.639$.
+In general, we do not know if the computed interval straddles the value of $p$, since the value of $p$ is usually unknown.
+In this contrived example, though, the CI does straddle the known value of $p = 0.5$.
 
-Then, the sample proportions will vary with an approximate normal distribution (Fig.\ \@ref(fig:NormalDieTheoryUnknownp)), centred around the unknown value of $p$ with a standard deviation of $\text{s.e.}(\hat{p}) = 0.099277$.
-Using the 68--95--99.7 rule again,
-about $95$% of the values of $\hat{p}$ are expected to be between $p - 0.199$ and $p + 0.199$.
-That is, for some *known* value of $p$, the *unknown* value of $\hat{p}$ is expected to vary between $p - 0.199$ and $p + 0.199$ (Fig.\ \@ref(fig:CIrelationships)).
-
-
-```{r NormalDieTheoryUnknownp, fig.cap="The normal distribution, showing how the proportion of even rolls varies when a die is rolled $25$ times, assuming the value of $p$ is unknown", fig.align="center", fig.width=8.25, fig.height=3.5, out.width='100%'}
-die.mn <- 0.5
-die.sd <- 0.099277
-
-par( mar = c(5, 0.5, 0.5, 0.5)) 
-
-out <- plotNormal(die.mn,
-                  die.sd,
-                  xlab = "Sample proportion of even rolls out of 25",
-                  ylim = c(0, 7.5),
-                  showXlabels = c( 	
-                    expression( italic(p)-0.298),
-                    expression( italic(p)-0.199), 
-                    expression( italic(p)- 0.099), 
-                    expression( italic(p)),
-                    expression( italic(p)+ 0.099), 
-                    expression( italic(p)+ 0.199), 
-                    expression( italic(p)+ 0.298)) )
-
-arrows(x0 = 0.5,
-       x1 = 0.5,
-       y0 = 1.4 * max(out$y),
-       y1 = max(out$y),
-       lwd = 2,
-       length = 0.15,
-       angle = 15)
-text(x = 0.5,
-     y = 1.4 * max(out$y),
-     pos = 3,
-     labels = expression(Sampling~mean) )
-
-arrows(x0 = 0.5,
-       x1 = 0.6,
-       y0 = 0.3 * max(out$y),
-       y1 = 0.3 * max(out$y),
-       lwd = 2,
-       code = 3,
-       length = 0.15,
-       angle = 15)
-text(x = 0.55,
-     y = 0.25 * max(out$y),
-     pos = 3,
-     labels = expression(Std~error))
-text(x = 0.55,
-     y = 0.27 * max(out$y),
-     pos = 1,
-     labels = expression(plain(s.e.)(hat(italic(p)))))
-```
+This confidence interval gives the values of $p$ that could have reasonably produced the observed value of $\hat{p}$; see Fig.\ \@ref(fig:pProducingpHat).
 
 
-
-```{r, pProducingpHat, out.width='100%', fig.width=6, fig.height=2, fig.align="center", fig.cap="Various possible values for $p$, and the values of $\\hat{p}$ these are likely to produce."}
+```{r, pProducingpHat, out.width='100%', fig.width=6, fig.height=2, fig.align="center", fig.cap="Various possible values for $p$, and the values of $\\hat{p}$ these are likely to produce. The $95$\\% confidence interval is computed as $0.241$ to $0.639$."}
 par(mfrow = c(1, 4),
     mar = c(4, 0.3, 4, 0.3) )
 
@@ -685,19 +654,12 @@ pVec <- c(0.25, 0.4, 0.6, 0.7)
 pMean <- pVec
 pStdDev <- sqrt( pVec * (1 - pVec) / n)
 
-pHatInside <- '( hat(italic(p))~likely~to~be~observed )'
-pHatOutside <- '( hat(italic(p))~likely~to~be~observed )'
-
-
-
-
-
-
 for (i in 1:4){
   ciLo <- pVec[i] - 2 * pStdDev[i]
   ciHi <- pVec[i] + 2 * pStdDev[i]
+
   pHatInOrOut <- ifelse( (pHat > ciLo) & (pHat < ciHi), TRUE, FALSE )
-  
+
   # Pre-calculate y-limits
   xx <- seq(0, 1, length = 1000)
   yy <- max( dnorm(x = xx, 
@@ -737,27 +699,78 @@ for (i in 1:4){
        y = 1.1 * yy,
        cex = 0.95,
        labels = expression(Observed~hat(italic(p))),
-       pos = 4)
+       pos = ifelse(i < 3, 4, 2) ) #Swap sides depending on value of p
 }
 ```
 
 
 
-```{r CIrelationships, out.width='75%', fig.align="center", fig.cap="A known value of $p$ produces a range of $\\hat{p}$ values.", fig.width = 7, fig.height=4}
-par(mar = c(1, 1, 5.5, 1) + 0.5 )   
-
-source("R/showCIrelationships.R")       
+```{r, CIrelationshipsP, out.width='100%', fig.align="center", fig.cap="Various values of $p$ from which the observed value of $\\hat{p}$ could reasonably be observed. The intervals are the $95$\\% sampling intervals for the given value of $p$. The confidence interval contains the values for which the sampling interval contains the observed value of $\\hat{p}$.", fig.width=8, fig.height=5}
+source("R/testCI.R")
 ```
 
-In summary, we *know* the value of $\hat{p}$, but the value of $p$ remains *unknown*.
-The value of $p$ could be a bit larger than $\hat{p}$, or a bit smaller than $\hat{p}$.
-In other words, the value of $p$ that produced the observed sample proportion is $\hat{p}$, give-or-take a bit.
-The amount to 'give-or-take' depends on how confident we wish to be that the interval straddles the value of $p$.
-Many different values of $p$ could have reasonably produced the observed value of $\hat{p}$; see Fig.\ \@ref(fig:pProducingpHat).
 
 
-This 'give-or-take' interval is like the sampling interval in Eq.\ \@ref(eq:CIpKnownp), but centred around $\hat{p}$ rather than around $p$.
-However, we could create such an interval ($\hat{p}$, give-or-take a bit) that contains the values of $p$ likely to have produced the observed value of $\hat{p}$ (Fig.\ \@ref(fig:CIrelationshipsP)).
+<!-- ```{r NormalDieTheoryUnknownp, fig.cap="The normal distribution, showing how the proportion of even rolls varies when a die is rolled $25$ times, assuming the value of $p$ is unknown", fig.align="center", fig.width=8.25, fig.height=3.5, out.width='100%'} -->
+<!-- die.mn <- 0.5 -->
+<!-- die.sd <- 0.099277 -->
+
+<!-- par( mar = c(5, 0.5, 0.5, 0.5))  -->
+
+<!-- out <- plotNormal(die.mn, -->
+<!--                   die.sd, -->
+<!--                   xlab = "Sample proportion of even rolls out of 25", -->
+<!--                   ylim = c(0, 7.5), -->
+<!--                   showXlabels = c( 	 -->
+<!--                     expression( italic(p)-0.298), -->
+<!--                     expression( italic(p)-0.199),  -->
+<!--                     expression( italic(p)- 0.099),  -->
+<!--                     expression( italic(p)), -->
+<!--                     expression( italic(p)+ 0.099),  -->
+<!--                     expression( italic(p)+ 0.199),  -->
+<!--                     expression( italic(p)+ 0.298)) ) -->
+
+<!-- arrows(x0 = 0.5, -->
+<!--        x1 = 0.5, -->
+<!--        y0 = 1.4 * max(out$y), -->
+<!--        y1 = max(out$y), -->
+<!--        lwd = 2, -->
+<!--        length = 0.15, -->
+<!--        angle = 15) -->
+<!-- text(x = 0.5, -->
+<!--      y = 1.4 * max(out$y), -->
+<!--      pos = 3, -->
+<!--      labels = expression(Sampling~mean) ) -->
+
+<!-- arrows(x0 = 0.5, -->
+<!--        x1 = 0.6, -->
+<!--        y0 = 0.3 * max(out$y), -->
+<!--        y1 = 0.3 * max(out$y), -->
+<!--        lwd = 2, -->
+<!--        code = 3, -->
+<!--        length = 0.15, -->
+<!--        angle = 15) -->
+<!-- text(x = 0.55, -->
+<!--      y = 0.25 * max(out$y), -->
+<!--      pos = 3, -->
+<!--      labels = expression(Std~error)) -->
+<!-- text(x = 0.55, -->
+<!--      y = 0.27 * max(out$y), -->
+<!--      pos = 1, -->
+<!--      labels = expression(plain(s.e.)(hat(italic(p))))) -->
+<!-- ``` -->
+
+
+
+<!-- In summary, we *know* the value of $\hat{p}$, but the value of $p$ remains *unknown*. -->
+<!-- The value of $p$ could be a bit larger than $\hat{p}$, or a bit smaller than $\hat{p}$. -->
+<!-- In other words, the value of $p$ that produced the observed sample proportion is $\hat{p}$, give-or-take a bit. -->
+<!-- The amount to 'give-or-take' depends on how confident we wish to be that the interval straddles the value of $p$. -->
+<!-- Many different values of $p$ could have reasonably produced the observed value of $\hat{p}$; see Fig.\ \@ref(fig:pProducingpHat). -->
+
+
+<!-- This 'give-or-take' interval is like the sampling interval in Eq.\ \@ref(eq:CIpKnownp), but centred around $\hat{p}$ rather than around $p$. -->
+<!-- However, we could create such an interval ($\hat{p}$, give-or-take a bit) that contains the values of $p$ likely to have produced the observed value of $\hat{p}$ (Fig.\ \@ref(fig:CIrelationshipsP)). -->
 
 
 
@@ -767,16 +780,16 @@ However, we could create such an interval ($\hat{p}$, give-or-take a bit) that c
 
 
 
-```{r, CIrelationshipsP, out.width='100%', fig.align="center", fig.cap="Various values of $p$ from which the observed value of $\\hat{p}$ could reasonably be observed. The intervals are the $95$\\% sampling intervals for the given value of $p$. The confidence interval contains the values for which the sampling interval contains the observed value of $\\hat{p}$.", fig.width=8, fig.height=3}
-source("R/testCI.R")
-```
+<!-- ```{r, CIrelationshipsP, out.width='100%', fig.align="center", fig.cap="Various values of $p$ from which the observed value of $\\hat{p}$ could reasonably be observed. The intervals are the $95$\\% sampling intervals for the given value of $p$. The confidence interval contains the values for which the sampling interval contains the observed value of $\\hat{p}$.", fig.width=8, fig.height=3} -->
+<!-- source("R/testCI.R") -->
+<!-- ``` -->
 
 
 
-Using $\hat{p} = 0.44$ and $\text{s.e.}(\hat{p}) = 0.0993$, the (approximate) $95$% CI is $0.44 \pm (2 \times 0.0993)$, or from $0.241$ to $0.639$.
-This interval is called a *confidence interval* (or CI).
-In general, we do not know if the computed interval straddles the value of $p$, since the value of $p$ is usually unknown.
-In this contrived example, though, the CI does straddle the known value of $p = 0.5$.
+<!-- Using $\hat{p} = 0.44$ and $\text{s.e.}(\hat{p}) = 0.0993$, the (approximate) $95$% CI is $0.44 \pm (2 \times 0.0993)$, or from $0.241$ to $0.639$. -->
+<!-- This interval is called a *confidence interval* (or CI). -->
+<!-- In general, we do not know if the computed interval straddles the value of $p$, since the value of $p$ is usually unknown. -->
+<!-- In this contrived example, though, the CI does straddle the known value of $p = 0.5$. -->
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
