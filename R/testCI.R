@@ -7,8 +7,10 @@ xValues <- seq(0, 1,
                by = 0.1)
 
 pCandidates <- seq(0.1, 0.9, 
-                   by = 0.1)
+                   by = 0.05)
 seCandidates <- sqrt( pCandidates * (1 - pCandidates) / n)
+seCandidates <- rep( sqrt( pHat * (1 - pHat) / n),
+                     length(pCandidates) )
 
 
 # Sample CI
@@ -52,7 +54,7 @@ text(x = phat,
      labels = bquote(hat(italic(p))==.(phat) ))
 
 
-betweenCIs <- 1
+betweenCIs <- 1/2
 
 
 for (i in (1:length(pCandidates))){
@@ -97,21 +99,21 @@ lines(x = c(phat,  phat),
       y = c(0, yHeight),
        lty = 2)
 
-# 
-# arrows(x0 = lo,
-#        x1 = lo,
-#        y0 = (i + 1) * betweenCIs,
-#        y1 = 0,
-#        lty = 2,
-#        angle = 15,
-#        length = 0)
-# arrows(x0 = hi,
-#        x1 = hi,
-#        y0 = (i + 1) * betweenCIs,
-#        y1 = 0,
-#        lty = 2,
-#        angle = 15,
-#        length = 0)
+
+arrows(x0 = lo,
+       x1 = lo,
+       y0 = (i + 1) * betweenCIs,
+       y1 = 0,
+       lty = 2,
+       angle = 15,
+       length = 0)
+arrows(x0 = hi,
+       x1 = hi,
+       y0 = (i + 1) * betweenCIs,
+       y1 = 0,
+       lty = 2,
+       angle = 15,
+       length = 0)
 
 
 
