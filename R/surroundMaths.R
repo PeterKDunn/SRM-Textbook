@@ -8,9 +8,8 @@ surroundMaths <- function(x, all = FALSE, rows = NA, cols = NA, decDigits = 1){
 #    rows <- 1 : dim(x)[1]
     cols <- 1 : dim(x)[2]
   }
-  cat(cols, "\n")
-  cat(rows, "\n")
-  if ( !is.na(rows[1]) ) { # That is, rows are specified for surrounding by $...$
+
+    if ( !is.na(rows[1]) ) { # That is, rows are specified for surrounding by $...$
     if ( length(decDigits) < length(rows)) decDigits <- rep(decDigits, length(rows))
     
     for (i in (1 : length(rows))){
