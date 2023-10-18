@@ -930,14 +930,15 @@ Speed2 <- data.frame( Before = Speed$Speed[ Speed$When == "Before" ][1:10],
 
 ```{r}
 if( knitr::is_latex_output() ) {
-  tb1 <- cbind( Speed$Speed[Speed$When == "Before"][1:6],
-                Speed$Speed[Speed$When == "Before"][7:12],
-                Speed$Speed[Speed$When == "Before"][13:18],
-                Speed$Speed[Speed$When == "Before"][19:24],
-                Speed$Speed[Speed$When == "Before"][25:30],
-                Speed$Speed[Speed$When == "Before"][31:36],
-                c(Speed$Speed[Speed$When == "Before"][37:38], NA, NA, NA, NA) )
-  T1 <- knitr::kable( tb1,
+  tb1 <- cbind( Speed$Speed[Speed$When == "Before"][1:7],
+                Speed$Speed[Speed$When == "Before"][8:14],
+                Speed$Speed[Speed$When == "Before"][15:21],
+                Speed$Speed[Speed$When == "Before"][22:28],
+                Speed$Speed[Speed$When == "Before"][29:35],
+                c( Speed$Speed[Speed$When == "Before"][36:38], NA, NA, NA, NA ) )
+  T1 <- knitr::kable( surroundMaths(tb1,
+                                    all = TRUE,
+                                    decDigits = 1),
                       format = "latex",
                       valign = 't',
                       align = c("c", "c"),
@@ -946,17 +947,18 @@ if( knitr::is_latex_output() ) {
                       escape = FALSE,
                       booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Speeds before signage added" = 7),
+    add_header_above( c("Speeds before signage added" = 6),
                       bold = TRUE)
 
-  tb2 <- cbind( Speed$Speed[Speed$When == "After"][1:6],
-                Speed$Speed[Speed$When == "After"][7:12], 
-                Speed$Speed[Speed$When == "After"][13:18], 
-                Speed$Speed[Speed$When == "After"][19:24], 
-                Speed$Speed[Speed$When == "After"][25:30], 
-                Speed$Speed[Speed$When == "After"][31:36], 
-                c(Speed$Speed[Speed$When == "After"][37:41], NA) ) 
-  T2 <- knitr::kable( tb2,
+  tb2 <- cbind( Speed$Speed[Speed$When == "After"][1:7],
+                Speed$Speed[Speed$When == "After"][8:14], 
+                Speed$Speed[Speed$When == "After"][15:21], 
+                Speed$Speed[Speed$When == "After"][22:28], 
+                Speed$Speed[Speed$When == "After"][29:35], 
+                c( Speed$Speed[Speed$When == "After"][36:41], NA) )
+  T2 <- knitr::kable( surroundMaths(tb2,
+                                    all = TRUE,
+                                    decDigits = 1),
                       format = "latex",
                       align = c("c", "c"),
                       valign = 't',
@@ -965,13 +967,13 @@ if( knitr::is_latex_output() ) {
                       escape = FALSE,
                       booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Speeds after signage added" = 7),
+    add_header_above( c("Speeds after signage added" = 6),
                       bold = TRUE)
   
   out <- knitr::kables(list(T1, T2),
                        format = "latex",
                        label = "SignageHT",
-                       caption = "Vehicle speeds before and after adding extra signage") %>%
+                       caption = "Vehicle speeds (in km/h) before and after adding extra signage") %>%
     kable_styling(font_size = 10)
   out2 <- prepareSideBySideTable(out, gap = "\\enskip")
   out2
@@ -1038,15 +1040,18 @@ SignageSummary[3, 2] <- NA
 
 
 if( knitr::is_latex_output() ) {
-  kable(SignageSummary,
+  kable(surroundMaths(SignageSummary,
+                      all = TRUE,
+                      decDigits = c(2, 2, 3, 0)),
         format = "latex",
         longtable = FALSE,
         booktabs = TRUE,
+        escape = FALSE,
         align = c("r", "r", "r", "r"),
         col.names = c("Mean", 
                       "Std deviation", 
-                      "Sample size", 
-                      "Std error"),
+                      "Std error",
+                      "Sample size"),
         caption = "The signage data summary (in km/h)"
   ) %>%
   row_spec(0, bold = TRUE) %>%
@@ -1202,10 +1207,13 @@ BHADPSummary[3, ] <- c(6.76, "", "", 0.80285)
   
 
 if( knitr::is_latex_output() ) {
-  kable(BHADPSummary,
+  kable( surroundMaths(BHADPSummary,
+                       all = TRUE,
+                       decDigits = c(2, 2, 0, 5) ),
         format = "latex",
         longtable = FALSE,
         booktabs = TRUE,
+        escape = FALSE,
         #linesep = c("", "", "", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), # Otherwise addes a space after five lines... 
         align = c("r", "r", "r", "l"),
         col.names = c("Sample mean", 
@@ -1354,10 +1362,13 @@ WhaleInfo[2, ] <- c("4.60",
                     30)
 
 if( knitr::is_latex_output() ) {
-  kable( WhaleInfo,
+  kable( surroundMaths(WhaleInfo,
+                       all = TRUE,
+                       decDigits = c(2, 3, 0)),
          format = "latex",
          longtable = FALSE,
          booktabs = TRUE,
+         escape = FALSE,
          align = c("c", "c", "c"),
          col.names = colnames(WhaleInfo),
          caption = "Numerical summary of length of whales at birth (in m)") %>%
@@ -1436,10 +1447,13 @@ EchinaceaInfo[2, ] <- c(6.34, 3.31, "", 183)
 EchinaceaInfo[3, ] <- c(0.53, "", 0.367, "")
 
 if( knitr::is_latex_output() ) {
-  kable( EchinaceaInfo,
+  kable( surroundMaths(EchinaceaInfo,
+                       all = TRUE,
+                       decDigits = c(2, 2, 3, 0)),
          format = "latex",
          longtable = FALSE,
          booktabs = TRUE,
+         escape = FALSE,
          align = c("c", "c", "c", "c"),
          col.names = colnames(EchinaceaInfo),
          caption = "Numerical summary of duration (in days) of common cold symptoms, for blinded patients taking echinacea or a placebo") %>%
@@ -1492,10 +1506,13 @@ CTInfo[2, ] <- c(1.1, 1.1, "", 10)
 CTInfo[3, ] <- c(0.3, "", 0.563, "")
 
 if( knitr::is_latex_output() ) {
-  kable( CTInfo,
+  kable( surroundMaths(CTInfo,
+                       all = TRUE,
+                       decDigits = c(1, 1, 3, 0)),
          format = "latex",
          longtable = FALSE,
          booktabs = TRUE,
+         escape = FALSE,
          align = c("c", "c", "c", "c"),
          col.names = colnames(CTInfo),
          caption = "Numerical summary of pain intensity for two different treatments of carpal tunnel syndrome") %>%
