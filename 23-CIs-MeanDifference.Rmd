@@ -23,16 +23,108 @@ Or perhaps they lose weight, as they cannot afford to purchase sufficient food.
 One approach to studying this is to obtain some students' weights as they begin university, and then obtain some students' weight at some later time.
 If the *same* students have their weights measured at both times, we would be comparing *within* individuals (Sect.\ \@ref(Comparison)).
 
-This would be a *descriptive RQ*: the *Outcome* is the mean *change* in weight, and the response variable is the weight change for each individual student.
+This would be a *descriptive RQ*: the *Outcome* is the mean *change* in weight, and the response variable is the weight *change* for each individual student.
 There is *no* between-individuals comparison.
-Each students gets a *pair* of weight measurements, and produces *paired data*, which is the subject of this chapter.
+Each students gets a *pair* of weight measurements.
+The study produces *paired data*, which is the subject of this chapter.
 	
 Alternatively, the researchers could take a sample of students who are beginning university and measure their weight, and then take a *different* sample of students at some later time and measure their weight.
 This would be comparing *between* individuals.
-The second (between-individuals) design requires the means of two different groups of students to be compared, the topic of the next chapter.
+The second (between-individuals) design requires comparing the means of two different groups of students, the topic of the next chapter.
+
+
+## Paired data {#PairedData}
+
+*Paired data* refers to situations where each observation in one group is uniquely related to, or can be matched sensibly to, an observation in another group.
+The two groups are *not* independent (Sect.\ \@ref(Independence)), and finding the differences between individual pair makes sense.
+
+Since individuals can vary substantially, taking two measurements from each individual means that variables (potentially, other *confounding* variables) are held constant for those two observations.
+In this sense, pairing is a form of blocking (Sect.\ \@ref(ExpManagingConfounding)).
+Pairing is a good design strategy when the individuals in the pair are similar for many extraneous variables.
+
+A typical example is when a variable of interest is recorded on the same individuals *before* and *after* giving a drug.
+However, paired data can arise in many ways:
+
+* The number of visitors is recorded at national parks on the first weekend in summer, and on the first weekend on winter.
+  Each national park receives a pair of measurements, and the *change* in visitor numbers for each national park between these time points is recorded.
+* Heart rate is measured for each individual when are sitting and when standing.
+    (Some individuals may have their heart rate recorded first while sitting, and some first while standing.)
+* The body temperature of dogs is measured using two different types of thermometers.
+  Each dog receives a pair of measurements, and the *difference* between the two recorded temperatures is recorded.
+* The thickness of the cornea is measured for each patients' glaucoma eye, and for each patients' non-glaucoma eye.
+  The difference in corneal thickness is recorded for each patient.
+* Height is measured for each twin in a pair.
+  Pairing the heights for each twin is reasonable given the shared genetics (and perhaps environments also).
+  The difference in the height of the twins can be recorded for each pair.
+* Recording the species richness of numerous natural waterways before and after restoration projects.
+  Each waterway has the species richness recorded both before and after, and the change in species richness is recorded for each waterway
+
+Many of these examples can be extended to beyond two measurements.
+For instance, the number of visitors at a national park can be record for every weekend in a  season, or temperatures can be compared using three different types of thermometers.
+We only study pairs of measurements.
+
+In this book, comparing pairs on a quantitative variable are considered.
+
+
+
+:::{.example #PairedUnpaitred, name = "Paired and unpaired data"}
+Treating data as paired or not. STD devs, plots
+
+```{r}
+data(StudentWt)
+apply(StudentWt[, 2:4], 2, "sd")
+```
+:::
+
+
+```{r ComparePaired, out.width='100%', fig.cap="Plots of the weight-loss data. Left: Treating the data incorrectly as not paired; centre: a boxplot of the weight gains; right: A case-profile plot of the weight gains.", fig.height = 2.5, fig.width = 7}
+
+par(mfrow = c(1, 3))
+
+boxplot( cbind(StudentWt$Week1,
+               StudentWt$Week12),
+         names = c("Week 1", "Week 12"),
+         las = 1,
+         ylab = "Weight (in kg)",
+         main = "A boxplot of student weights")
+
+boxplot(StudentWt$GainWt,
+        las = 1,
+        ylab = "Weight loss (in kg)",
+        main = "Boxplot of weight gains")
+abline(h = 0,
+       col = "grey")
+
+
+#hist(StudentWt$GainWt,
+#     xlab = "Weight gain (in kg)",
+#     ylab = "No. of students",
+#     main = "Histogram of weight gains")
+plot(x = c(0.75, 2.25),
+     y = c(40, 110),
+     type = "n",
+     las = 1,
+     ylab = "Weight (in kg)",
+     xlab = "",
+     main = "iugoiug")
+
+ for (i in 1:length(StudentWt$Week1)){
+   lines( x = c(1, 2),
+          y = c(StudentWt$Week1[i],
+                StudentWt$Week12[i]) )
+}
+
+```
+
+
+
+
+  Weight is measured for the same students at the start of university and after 12 weeks at university.
+  Each student receives a pair of measurements, and the *change* in weight for each individual between these time points can be recorded.
 
 
 ::: {.definition #PairedData name="Paired data"}
+FIX!!!!! 
 Data are *paired* when two observations about the same variable are recorded for each unit of analysis.
 Paired data come from [*within-individual* comparisons](#Comparison).
 :::
@@ -161,26 +253,6 @@ The differences are computed as *Week\ 12* minus *Week\ 1*, so a negative value 
 
 
 As always, begin by understanding the data, and produce appropriate graphical and numerical summaries.
-
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-What graphs would be suitable for displaying these data?\label{thinkBox:WhichGraph}
-`r if (knitr::is_latex_output()) '<!--'`
-* Boxplot  
-`r if( knitr::is_html_output() ) {
-	 mcq( c("Suitable", answer = "Not suitable"))}`   
-* A histogram  
-`r if( knitr::is_html_output() ) {
-	 mcq( c("Suitable", answer = "Not suitable"))}`   
-* A histogram of the differences (such as the energy savings) for each house  
-`r if( knitr::is_html_output() ) {
-	 mcq( c(answer = "Suitable", "Not suitable"))}`   
-* A case-profile plot  
-`r if( knitr::is_html_output() ) {
-	 mcq( c(answer = "Suitable", "Not suitable"))}`   
-`r if (knitr::is_latex_output()) '-->'`
-:::
-
 
 
 ## Defining notation {#PairedNotationCI}
@@ -391,57 +463,57 @@ Many decimal places are used in the working; results will be rounded when report
  
 
 
-```{r NotationOneDiffCI}
+<!-- ```{r NotationOneDiffCI} -->
 
-OneDiffNotation <- array( dim = c(4, 2))
+<!-- OneDiffNotation <- array( dim = c(4, 2)) -->
 
-OneDiffNotation[1, ] <- c("Individual difference in the population",
-                          "Vary with mean $\\mu_d$ and standard deviation $\\sigma_d$")
-OneDiffNotation[2, ] <- c("Individual differences in a sample",
-                          "Vary with mean $\\bar{d}$ and standard deviation $s_d$")
-OneDiffNotation[3, ] <- c("Sample means ($\\bar{d}$) across",
-                          "Vary with approx. normal distribution (under certain conditions)")
-OneDiffNotation[4, ] <- c("all possible samples:",
-                          "sampling mean $\\mu_{{d}}$; standard deviation $\\text{s.e.}(\\bar{d})$")
+<!-- OneDiffNotation[1, ] <- c("Individual difference in the population", -->
+<!--                           "Vary with mean $\\mu_d$ and standard deviation $\\sigma_d$") -->
+<!-- OneDiffNotation[2, ] <- c("Individual differences in a sample", -->
+<!--                           "Vary with mean $\\bar{d}$ and standard deviation $s_d$") -->
+<!-- OneDiffNotation[3, ] <- c("Sample means ($\\bar{d}$) across", -->
+<!--                           "Vary with approx. normal distribution (under certain conditions)") -->
+<!-- OneDiffNotation[4, ] <- c("all possible samples:", -->
+<!--                           "sampling mean $\\mu_{{d}}$; standard deviation $\\text{s.e.}(\\bar{d})$") -->
 
 
-if( knitr::is_latex_output() ) {
-  kable( OneDiffNotation,
-         format = "latex",
-         booktabs = TRUE,
-         longtable = FALSE,
-         escape = FALSE,
-         caption = "The notation used for describing means, and the sampling distribution of the sample means",
-         align = c("r", "l"),
-         linesep = c("\\addlinespace",
-                     "\\addlinespace",
-                     ""),
-         col.names = c("Quantity",
-                       "Description") ) %>%
-	row_spec(0, bold = TRUE) %>%
-  kable_styling(font_size = 10)
-} else {
-  OneDiffNotation[3, 1] <- paste(OneDiffNotation[3, 1], 
-                                 OneDiffNotation[4, 1])
-  OneDiffNotation[3, 2] <- paste(OneDiffNotation[3, 2], 
-                                 OneDiffNotation[4, 2])
-  OneDiffNotation[4, ] <- NA 
-  
-    kable( OneDiffNotation,
-         format = "html",
-         booktabs = TRUE,
-         longtable = FALSE,
-         escape = FALSE,
-         caption = "The notation used for describing means, and the sampling distribution of the sample means",
-         align = c("r", "l"),
-         linesep = c("\\addlinespace",
-                     "\\addlinespace",
-                     ""),
-         col.names = c("Quantity",
-                       "Description") ) %>%
-	row_spec(0, bold = TRUE) 
-}
-```
+<!-- if( knitr::is_latex_output() ) { -->
+<!--   kable( OneDiffNotation, -->
+<!--          format = "latex", -->
+<!--          booktabs = TRUE, -->
+<!--          longtable = FALSE, -->
+<!--          escape = FALSE, -->
+<!--          caption = "The notation used for describing means, and the sampling distribution of the sample means", -->
+<!--          align = c("r", "l"), -->
+<!--          linesep = c("\\addlinespace", -->
+<!--                      "\\addlinespace", -->
+<!--                      ""), -->
+<!--          col.names = c("Quantity", -->
+<!--                        "Description") ) %>% -->
+<!-- 	row_spec(0, bold = TRUE) %>% -->
+<!--   kable_styling(font_size = 10) -->
+<!-- } else { -->
+<!--   OneDiffNotation[3, 1] <- paste(OneDiffNotation[3, 1],  -->
+<!--                                  OneDiffNotation[4, 1]) -->
+<!--   OneDiffNotation[3, 2] <- paste(OneDiffNotation[3, 2],  -->
+<!--                                  OneDiffNotation[4, 2]) -->
+<!--   OneDiffNotation[4, ] <- NA  -->
+
+<!--     kable( OneDiffNotation, -->
+<!--          format = "html", -->
+<!--          booktabs = TRUE, -->
+<!--          longtable = FALSE, -->
+<!--          escape = FALSE, -->
+<!--          caption = "The notation used for describing means, and the sampling distribution of the sample means", -->
+<!--          align = c("r", "l"), -->
+<!--          linesep = c("\\addlinespace", -->
+<!--                      "\\addlinespace", -->
+<!--                      ""), -->
+<!--          col.names = c("Quantity", -->
+<!--                        "Description") ) %>% -->
+<!-- 	row_spec(0, bold = TRUE)  -->
+<!-- } -->
+<!-- ``` -->
 
 
 
@@ -496,7 +568,7 @@ We do not require that the differences *in the population* follow a normal distr
 ## Using software
 
 Software (such as jamovi or SPSS) can produce *exact* 95% CIs, which may be slightly different than the *approximate* 95% CI (since the 68--95--99.7 rule gives *approximate* multipliers).
-The *approximate* and *exact* 95% CIs are the same to two decimal places.
+For the weight-loss data, the *approximate* and *exact* 95% CIs are the same to two decimal places.
 From the jamovi or SPSS output (Fig.\ \@ref(fig:WeightGainTestOutput)) we can write:
 
 > Based on the sample, an *exact* $95$% CI is for the population mean weight gain between Weeks\ 1 and\ 12 is between $0.63$ to $1.09$\ kg
@@ -1132,7 +1204,6 @@ if( knitr::is_html_output() ) {
 **Answers to in-chapter questions:**
 
 - Sect. \ref{thinkBox:WhichPaired}: Situations **1** and **3** are paired.
-- Sect. \ref{thinkBox:WhichGraph}: Histogram of differences; case-profile plot.
 - Sect. \ref{thinkBox:MeanDifferenceDBP}: Be careful: The RQ is about the mean difference in the **population**... but we only have the mean difference from one of the many possible **samples**.
   So it is difficult to be certain.
 - \textbf{\textit{Quick Revision} questions:}
