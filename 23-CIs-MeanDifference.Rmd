@@ -35,18 +35,25 @@ The second (between-individuals) design requires comparing the means of two diff
 
 ## Paired data {#PairedData}
 
-*Paired data* refers to situations where every observation in one group is related to, or can be matched sensibly to, one observation in another group.
+*Paired data* refers to situations where every observation in one group is related to, or can be matched sensibly to, one unique observation in another group.
 Because of this, computing the differences between the pairs of observations makes sense.
-The two groups are *not* independent (Sect.\ \@ref(Independence)),.
+The two groups are *not* independent (Sect.\ \@ref(Independence)).
 
 Pairing data, when appropriate, can be useful because individuals can vary substantially.
 Taking two measurements from each individual, rather than from two different individuals, means that variables (potentially, other *confounding* variables) are held constant for those two observations.
 In this sense, pairing is a form of blocking (Sect.\ \@ref(ExpManagingConfounding)).
 Pairing is a good design strategy when the individuals in the pair are similar for many extraneous variables.
 
-Paired data can arise in many ways; consider these examples:
 
-* Blood pressure is recorded on the same individuals *before* and *after* giving a drug.
+::: {.definition #PairedData name="Paired data"}
+*Paired data* occurs in situations where every observation in one group is related to, or can be matched sensibly to, one unique observation in another group.
+:::
+
+
+Paired data arises in studies using a *within-individuals* comparison (Sect.\ \@ref(Comparison)), but appears in other ways too.
+Consider these examples of paired data:
+
+* Blood pressure is recorded on the same individuals *before* and *after* giving a drug (i.e., a *within-individuals* comparison).
   Each person receives a pair of measurements, and the *change* in blood pressure is recorded.
 * The number of visitors is recorded at national parks on the first weekend in summer, and on the first weekend on winter.
   Each national park receives a pair of measurements, and the *change* in visitor numbers for each national park between these time points is recorded.
@@ -60,8 +67,6 @@ Paired data can arise in many ways; consider these examples:
 * Height is measured for each twin in a pair.
   Pairing the heights for each twin is reasonable given the shared genetics (and perhaps environments also).
   The difference in the height of the twins can be recorded for each pair.
-* Recording the species richness of numerous natural waterways before and after restoration projects.
-  Each waterway has the species richness recorded twice, and the change in species richness is recorded for each waterway
 
 Many of these examples can be extended to beyond two measurements.
 For instance, blood pressures can be recorded every thirty minutes, or temperatures can be compared using three different types of thermometers.
@@ -70,30 +75,36 @@ We only study pairs of measurements, and only for quantitative variable.
 
 
 :::{.example #PairedUnpaired name="Paired and unpaired data"}
-Treating data as paired or not. STD devs, plots
+Consider the student weight-loss study described above.
+Weight is measured for the same students at the start of university and after 12\ weeks at university.
+Each student receives a pair of measurements, and the *change* in weight for each individual between these time points can be recorded.
 
-```{r}
-data(StudentWt)
-apply(StudentWt[, 2:4], 2, "sd")
-```
+A boxplot comparing students' weights at Week\ 1 and at Week\ 12 (that is, *not* treating the data as paired) shows that the distribution of weights, and the median weights, are very similar (Fig.\ \@ref(fig:ComparePairedBoxplots), left panel).
+Any difference is difficult to see and detect due to the amount of variation in the weights of the students.
+Changes in weight for individuals cannot be determined.
+
+A boxplot of the weight *gains* (that is, treating the data as *paired*) makes the change in weight much easier to see and detect (Fig.\ \@ref(fig:ComparePairedBoxplots), right panel).
+It is also easy to see that some students *lost* weight from Week\ 1 to Week\ 12.
 :::
 
+```{r ComparePairedBoxplots, fig.align="center", out.width='80%', fig.cap="Plots of the weight-loss data. Left: Treating the data incorrectly as not paired; right: a boxplot of the weight gains.", fig.height = 3.5, fig.width = 7}
+data(StudentWt)
 
-```{r ComparePaired, out.width='100%', fig.cap="Plots of the weight-loss data. Left: Treating the data incorrectly as not paired; centre: a boxplot of the weight gains; right: A case-profile plot of the weight gains.", fig.height = 2.5, fig.width = 7}
-
-par(mfrow = c(1, 3))
+par(mfrow = c(1, 2))
 
 boxplot( cbind(StudentWt$Week1,
                StudentWt$Week12),
          names = c("Week 1", "Week 12"),
          las = 1,
+         ylim = c(40, 105),
          ylab = "Weight (in kg)",
-         main = "A boxplot of student weights")
+         main = "A boxplot of student weights\nin Week 1 and Week 12")
 
 boxplot(StudentWt$GainWt,
         las = 1,
-        ylab = "Weight loss (in kg)",
-        main = "Boxplot of weight gains")
+        ylim = c(-2.5, 4),
+        ylab = "Weight gain (in kg)",
+        main = "Boxplot of weight gains\nfrom Week 1 to 12")
 abline(h = 0,
        col = "grey")
 
@@ -102,39 +113,27 @@ abline(h = 0,
 #     xlab = "Weight gain (in kg)",
 #     ylab = "No. of students",
 #     main = "Histogram of weight gains")
-plot(x = c(0.75, 2.25),
-     y = c(40, 110),
-     type = "n",
-     las = 1,
-     ylab = "Weight (in kg)",
-     xlab = "",
-     main = "iugoiug")
-
- for (i in 1:length(StudentWt$Week1)){
-   lines( x = c(1, 2),
-          y = c(StudentWt$Week1[i],
-                StudentWt$Week12[i]) )
-}
+# plot(x = c(0.75, 2.25),
+#      y = c(40, 110),
+#      type = "n",
+#      las = 1,
+#      ylab = "Weight (in kg)",
+#      xlab = "",
+#      main = "iugoiug")
+# 
+#  for (i in 1:length(StudentWt$Week1)){
+#    lines( x = c(1, 2),
+#           y = c(StudentWt$Week1[i],
+#                 StudentWt$Week12[i]) )
+# }
 
 ```
 
 
+<!-- Since each unit of analysis has two observations about weight, the *change* (or the *difference*) in weight can be computed for *each* student. -->
+<!-- Then, questions can be asked about the *population mean difference*, which is not the same as *difference between two separate population means* (the subject of the next chapter). -->
+<!-- In paired data, finding the difference between the two measurements for each *individual* unit of analysis makes sense, since each unit of analysis (each student) has two related observations. -->
 
-
-  Weight is measured for the same students at the start of university and after 12 weeks at university.
-  Each student receives a pair of measurements, and the *change* in weight for each individual between these time points can be recorded.
-
-
-::: {.definition #PairedData name="Paired data"}
-FIX!!!!! 
-Data are *paired* when two observations about the same variable are recorded for each unit of analysis.
-Paired data come from [*within-individual* comparisons](#Comparison).
-:::
-
-
-Since each unit of analysis has two observations about weight, the *change* (or the *difference*) in weight can be computed for *each* student.
-Then, questions can be asked about the *population mean difference*, which is not the same as *difference between two separate population means* (the subject of the next chapter).
-In paired data, finding the difference between the two measurements for each *individual* unit of analysis makes sense, since each unit of analysis (each student) has two related observations.
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
@@ -202,10 +201,19 @@ T1 <- knitr::kable(tb1,
                    valign = 't',
                    align = c("r", "c", "c", "r"),
                    linesep = "",
-                   col.names = c("Student", "Week 1", "Week 12", "Wt gain"),
+                   col.names = c("Student", 
+                                 "Week 1", 
+                                 "Week 12", 
+                                 "gain"),
                    row.names = FALSE,
                    escape = FALSE,
                    booktabs = TRUE) %>%
+  add_header_above( c("  " = 1,
+                      "Weight" = 1, 
+                      "Weight" = 1, 
+                      "Weight" = 1),
+                    line = FALSE,
+                    bold = TRUE) %>%
   row_spec(0, bold = TRUE)
 
 tb2 <- surroundMaths( StudentWt[(SWlen - 4):SWlen, ],
@@ -216,10 +224,19 @@ T2 <- knitr::kable(tb2,
                    valign = 't',
                    align = c("r", "c", "c", "r"),
                    linesep = "",
-                   col.names = c("Student", "Week 1", "Week 12", "Wt gain"),
+                   col.names = c("Student", 
+                                 "Week 1", 
+                                 "Week 12", 
+                                 "gain"),
                    row.names = FALSE,
                    escape = FALSE,
                    booktabs = TRUE) %>%
+  add_header_above(c( " " = 1, 
+                      "Weight" = 1, 
+                      "Weight" = 1, 
+                      "Weight" = 1),
+                   line = FALSE,
+                   bold = TRUE) %>%
   row_spec(0, bold = TRUE)
 
 out <- knitr::kables(list(T1, T2),
