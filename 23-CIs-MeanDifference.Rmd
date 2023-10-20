@@ -77,7 +77,13 @@ We only study pairs of measurements, and only for quantitative variable.
 :::{.example #PairedUnpaired name="Paired and unpaired data"}
 Consider the student weight-loss study described above.
 Weight is measured for the same students at the start of university and after 12\ weeks at university.
-Each student receives a pair of measurements, and the *change* in weight for each individual between these time points can be recorded.
+Each student receives a pair of measurements, and the *change* in weight for each individual between these time points can be recorded
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:DataWeightChange)).'
+} else {
+   '(data below).'
+}`
+
 
 A boxplot comparing students' weights at Week\ 1 and at Week\ 12 (that is, *not* treating the data as paired) shows that the distribution of weights, and the median weights, are very similar (Fig.\ \@ref(fig:ComparePairedBoxplots), left panel).
 Any difference is difficult to see and detect due to the amount of variation in the weights of the students.
@@ -87,7 +93,7 @@ A boxplot of the weight *gains* (that is, treating the data as *paired*) makes t
 It is also easy to see that some students *lost* weight from Week\ 1 to Week\ 12.
 :::
 
-```{r ComparePairedBoxplots, fig.align="center", out.width='80%', fig.cap="Plots of the weight-loss data. Left: Treating the data incorrectly as not paired; right: a boxplot of the weight gains.", fig.height = 3.5, fig.width = 7}
+```{r ComparePairedBoxplots, fig.align="center", out.width='80%', fig.cap="Plots of the weight-loss data. Left: Treating the data incorrectly as not paired; right: a boxplot of the weight gains when the data are treated as paired.", fig.height = 3.5, fig.width = 7}
 data(StudentWt)
 
 par(mfrow = c(1, 2))
@@ -104,7 +110,7 @@ boxplot(StudentWt$GainWt,
         las = 1,
         ylim = c(-2.5, 4),
         ylab = "Weight gain (in kg)",
-        main = "Boxplot of weight gains\nfrom Week 1 to 12")
+        main = "Boxplot of weight gains\nfrom Week 1 to Week 12")
 abline(h = 0,
        col = "grey")
 
@@ -157,7 +163,7 @@ The example introduced in Sect.\ \@ref(PairedIntro) was studied by Prof. David L
 
 > For Cornell University students, what is the *mean weight gain* in students after 12 weeks at university?
 
-Data were obtained data to answer this (descriptive) RQ 
+Data were obtained data to answer this descriptive RQ 
 `r if (knitr::is_latex_output()) {
    '(Table\\ \\@ref(tab:DataWeightChange)).'
 } else {
@@ -165,20 +171,6 @@ Data were obtained data to answer this (descriptive) RQ
 }`
 The parameter is $\mu_d$, the population mean *weight gain* (in kg).
 The subscript $d$ is because we are working with *differences* between the initial weight and the weight after 12 weeks.
-
-Finding the *difference* in weight for each student seems sensible: each student has a *Week\ 1* and *Week\ 12* measurement.
-Using these differences, the process for computing a CI is the same as in Chap.\ \@ref(OneMeanConfInterval), where these changes (or differences) are treated as the data.
-Either weight *gain* or weight *loss* could be used as the differences.
-
-
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-Be clear about *how* the differences are computed.
-Differences could be computed as  *Week\ 1* minus *Week\ 12* (the weight *loss*), or *Week\ 12* minus *Week\ 1* (the weight *gain*).
-
-Either is fine: provided you are consistent throughout, the meaning of any conclusions will be the same.
-Here, we use weight *gain* since it is explicitly mentioned in the RQ.
-:::
-
 
 
 ```{r}
@@ -209,8 +201,8 @@ T1 <- knitr::kable(tb1,
                    escape = FALSE,
                    booktabs = TRUE) %>%
   add_header_above( c("  " = 1,
-                      "Weight" = 1, 
-                      "Weight" = 1, 
+                      "Weight:" = 1, 
+                      "Weight:" = 1, 
                       "Weight" = 1),
                     line = FALSE,
                     bold = TRUE) %>%
@@ -232,8 +224,8 @@ T2 <- knitr::kable(tb2,
                    escape = FALSE,
                    booktabs = TRUE) %>%
   add_header_above(c( " " = 1, 
-                      "Weight" = 1, 
-                      "Weight" = 1, 
+                      "Weight:" = 1, 
+                      "Weight:" = 1, 
                       "Weight" = 1),
                    line = FALSE,
                    bold = TRUE) %>%
@@ -262,6 +254,20 @@ if( knitr::is_html_output() ) {
 }
 ```
 
+Finding the *difference* in weight for each student seems sensible: each student has a *Week\ 1* and *Week\ 12* measurement.
+Using these differences, the process for computing a CI is the same as in Chap.\ \@ref(OneMeanConfInterval), where these changes (or differences) are treated as the data.
+Either weight *gain* or weight *loss* could be used as the differences.
+
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+Be clear about *how* the differences are computed.
+Differences could be computed as  *Week\ 1* minus *Week\ 12* (the weight *loss*), or *Week\ 12* minus *Week\ 1* (the weight *gain*).
+
+Either is fine: provided you are consistent throughout, the meaning of any conclusions will be the same.
+Here, we use weight *gain* since it is explicitly mentioned in the RQ.
+:::
+
+
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 Some weight gains are *negative*.
@@ -270,10 +276,8 @@ The differences are computed as *Week\ 12* minus *Week\ 1*, so a negative value 
 :::
 
 
-As always, begin by understanding the data, and produce appropriate graphical and numerical summaries.
 
-
-## Defining notation {#PairedNotationCI}
+## Notation {#PairedNotationCI}
 
 The notation used for paired data reflects that we work with the *differences* (Table\ \@ref(tab:PairedNotation)).
 Apart from that, the notation is similar to that used in Chap.\ \@ref(OneMeanConfInterval).
@@ -371,31 +375,23 @@ plot(out,
 ```
 
 
-The Week\ 1 and the Week\ 12 data can both be summarised.
-Since the data are differences, a *numerical* summary must also summarise the *differences*, because the RQ is about the differences
+Since the RQ is about the differences, a numerical summary of the differences is essential.
+The Week\ 1 and the Week\ 12 data can also be summarised
 `r if (knitr::is_latex_output()) {
    '(Table\\ \\@ref(tab:WeightGainSummary)).'
 } else {
    '(see below).'
 }`
-For the weight-gain data, the appropriate *numerical summary* for paired quantitative data uses means, standard deviations, and so on, as appropriate.
+Since the weights and the differences are quantitative, the appropriate *numerical summary* includes means, standard deviations, and so on, as appropriate.
 (Notice that the standard deviation of the difference is **not** the difference between the two given values of the standard deviation.)
 
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-A mean or a median may be appropriate for describing the *data*.
-However, the CI is about the *mean* of the data, and *not* about the data itself.
-
-Since the sampling distribution for the sample mean (under certain conditions) has a symmetric *normal distribution*, the mean *is* appropriate for describing the sampling distribution.
-:::
-
-
-A numerical summary of the weight gain (using a computer) gives the sample mean of the differences as $\bar{d} = -0.8735$, the standard deviation of the differences as $s_d = 0.9489378$, and the standard error as  
+A numerical summary of the weight gain (e.g., using a computer) gives the sample mean of the differences as $\bar{d} = -0.8735$, the standard deviation of the differences as $s_d = 0.9489378$, and the standard error as  
 \[
   \text{s.e.}(\bar{x}) =  \frac{0.9563659}{\sqrt{68}} = 0.1150756.
 \]
 A formal numerical summary table is shown in Table\ \@ref(tab:WeightGainSummary).
 All statistics are slightly different in Weeks\ 1 and\ 12.
-(Notice that the standard deviation for the weight gain is **not** the difference between the Week\ ` and the Week\ 12 standard deviation; instead, it is the standard deviation of the weight gains of individuals.)
+(Notice that the standard deviation for the weight gain is *not* the difference between the Week\ 1 and the Week\ 12 standard deviation; instead, it is the standard deviation of the weight gains of individuals.)
 
 ```{r WeightGainSummary}
 WtGain.DataSummary <- array( dim = c(3, 4))
@@ -453,20 +449,28 @@ if( knitr::is_latex_output() ) {
 ## Describing sampling distribution 
 
 The study concerns the mean weight gain.
-Every possible sample of $n = 68$ students comprises different students, and hence produces different *Week\ 1* and *Week\ 12* weights, and hence different weight gains.
-As a result, the *sample mean weight gain* will vary from sample to sample, so the mean differences have a *sampling distribution*, and a *standard error*.
+Every possible sample of $n = 68$ students comprises different students, and hence produces different Week\ 1 and Week\ 12 weights, and hence different weight gains.
+As a result, the sample mean weight gain will vary from sample to sample, so the mean differences have a *sampling distribution*, and a *standard error*.
 
 Since the differences are like a single sample of data (Chap.\ \@ref(OneMeanConfInterval)), the sampling distribution for the differences will have a similar sampling distribution to the mean of a single sample $\bar{x}$ (provided the conditions are met; Sect.\ \@ref(ValidityPaired)).
 
 
 ::: {.definition #DEFSamplingDistributionDbar name="Sampling distribution of a sample mean difference"}
-The *sampling distribution of a sample mean differences* is described by:
+The *sampling distribution of a sample mean differences* is (when certain conditions are met (Sect.\ \@ref(ValidityPaired)) described by:
 
 * an approximate normal distribution,
 * centred around the *sampling mean* whose value is the population mean *difference* $\mu_d$,
 * with a standard deviation, called the standard error of the difference, of $\displaystyle\text{s.e.}(\bar{d}) = \frac{s_d}{\sqrt{n_d}}$,
 
-when certain conditions are met (Sect.\ \@ref(ValidityPaired)), where $n$ is the size of the sample, and $s_d$ is the standard deviation of the individual differences in the sample.
+where $n$ is the size of the sample, and $s_d$ is the standard deviation of the individual differences in the sample.
+:::
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+A mean or a median may be appropriate for describing the *data*.
+However, the CI is about the *mean* of the data, and *not* about the data itself.
+
+Since the sampling distribution for the sample mean difference (under certain conditions) has a symmetric *normal distribution*, the mean *is* appropriate for describing the sampling distribution.
 :::
 
 
@@ -476,7 +480,7 @@ For the weight-gain data, the the sample mean differences $\bar{d}$ are describe
 * with a sampling mean whose value is $\mu_{{d}}$;
 * with a *standard error* of $0.1159764$.
 
-Many decimal places are used in the working; results will be rounded when reported.
+Many decimal places are shown here; results will be rounded when reported.
  
  
 
@@ -552,8 +556,9 @@ We write:
 
 > Based on the sample, an *approximate* $95$% CI for the population mean weight gain between Week\ 1 and\ 12 is from $0.63$\ kg to $1.09$\ kg.
 
-The $95$% CI is saying that we are reasonably confident that, between Weeks\ 1 and\ 12, the mean weight gain is between using $0.63$\ kg and $1.09$\ kg.
-Alternatively, the plausible values for the mean weight gain in the *population* are between $0.63$\ kg and $1.09$\ kg.
+The $95$% CI means that the plausible values for the population mean weight gain are between $0.63$\ kg and $1.09$\ kg.
+Alternatively, 
+we are $95$% confident that, between Weeks\ 1 and\ 12, the population mean weight gain is between using $0.63$\ kg and $1.09$\ kg.
 
 
 <iframe src="https://learningapps.org/watch?v=piue8vvyk22" style="border:0px;width:100%;height:600px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
@@ -561,7 +566,7 @@ Alternatively, the plausible values for the mean weight gain in the *population*
 
 ## Statistical validity conditions {#ValidityPaired}
 
-As with any inferential procedure, these results apply [under certain conditions](#exm:StatisticalValidityAnalogy).
+As with any confidence interval, these results apply [under certain conditions](#exm:StatisticalValidityAnalogy).
 The conditions under which the CI is statistically valid for paired data are similar to those for one sample mean, rephrased for differences.
 
 The CI computed above is statistically valid if *one* of these conditions is true:
@@ -585,40 +590,39 @@ We do not require that the differences *in the population* follow a normal distr
 
 ## Using software
 
-Software (such as jamovi or SPSS) can produce *exact* $95$% CIs, which may be slightly different than the *approximate* $95$% CI (since the 68--95--99.7 rule gives *approximate* multipliers).
+Statistical software can produce *exact* $95$% CIs, which may be slightly different than the *approximate* $95$% CI (since the 68--95--99.7 rule gives *approximate* multipliers).
 For the weight-loss data, the *approximate* and *exact* $95$% CIs are the same to two decimal places.
-From the jamovi or SPSS output (Fig.\ \@ref(fig:WeightGainTestOutput)) we can write:
+From the jamovi output (Fig.\ \@ref(fig:WeightGainTestOutput)) we can write:
 
 > Based on the sample, an *exact* $95$% CI is for the population mean weight gain between Weeks\ 1 and\ 12 is between $0.63$ to $1.09$\ kg
 
 
-```{r WeightGainTestOutput, fig.cap="The weight-gain data: jamovi output (top) and SPSS output(bottom)", fig.align="center", out.width=c("95%","85%"), fig.show="hold"}
+```{r WeightGainTestOutput, fig.cap="The weight-gain data: jamovi output", fig.align="center", out.width="100%", fig.show="hold"}
 knitr::include_graphics("jamovi/WeightGain/WeightGain-PairedTOutput.jpg")
-knitr::include_graphics( "SPSS/WeightGain/WeightGain-PairedTOutput.png") 
 ```
 
 
 ## Example: endangered species {#EndangeredCI}
 
-A study of endangered species [@harnish2020attitudes, p. 1703] examined 
+A study of endangered species (@harnish2020attitudes, p. 1703) examined 
 
 > ...whether perceived physical attractiveness of a species impacted participants' attitudes toward supporting and protecting the species...
 
 To do so, $210$ undergraduate students were surveyed about $14$ animals on various aspects of supporting and protecting them.
-Part of the data are summarised in Table\ \@ref(tab:SpeciesSummary), for two animals, when asked about 'support to protect the animal from illicit trade'.
+Part of the data are summarised in Table\ \@ref(tab:SpeciesSummary) (raw data unavailable), for two animals, when asked about 'support to protect the animal from illicit trade'.
 *Larger* values means *greater* support for protecting the animal from illicit trade.
 
 
 
 ```{r SpeciesSummary}
-SpeciesSummary <- array(dim = c(3, 2))
+SpeciesSummary <- array(dim = c(3, 3))
 rownames(SpeciesSummary) <- c("Bay Checkerspot Butterfly", 
                               "Valley Elderberry Longhorn Beetle",
                               "Difference")
 
-SpeciesSummary[1, ] <- c(3.10, 1.06)
-SpeciesSummary[2, ] <- c(2.33, 1.13)
-SpeciesSummary[3, ] <- c(0.77, 1.07)
+SpeciesSummary[1, ] <- c(3.10, 1.06, 0.073)
+SpeciesSummary[2, ] <- c(2.33, 1.13, 0.078)
+SpeciesSummary[3, ] <- c(0.77, 1.07, 0.074)
   
 
 if( knitr::is_latex_output() ) {
@@ -630,9 +634,10 @@ if( knitr::is_latex_output() ) {
         booktabs = TRUE,
         escape = FALSE,
         #linesep = c("", "", "", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), # Otherwise adds a space after five lines... 
-        align = c("c", "c"),
+        align = c("c", "c", "c"),
         col.names = c("Mean score", 
-                      "Standard deviation"),
+                      "Standard deviation",
+                      "Standard error"),
         caption = "The endangered-species data summary"
   ) %>%
   row_spec(0, bold = TRUE) %>%
@@ -644,9 +649,10 @@ if( knitr::is_html_output() ) {
                format = "html",
                longtable = FALSE,
                booktabs = TRUE,
-        align = c("c", "c"),
+        align = c("c", "c", "c"),
         col.names = c("Mean score", 
-                      "Standard deviation"),
+                      "Standard deviation",
+                      "Standard error"),
         caption = "The endangered-species data summary"
   ) %>%
   row_spec(3, bold = TRUE) %>%
@@ -658,17 +664,10 @@ if( knitr::is_html_output() ) {
 The *difference* is defined as each student's score for the butterfly (deemed more attractive) *minus* their score for the beetle (deemed less attractive).
 A positive value therefore means more support (on average) for the butterfly.
 
-The researchers (p. 1704) wished to test if
-
-> ...animals perceived as more physically attractive [i.e., the butterfly] compared to those which are perceived as less physically attractive [i.e., the beetle] will receive relatively more support to prevent the species from illicit trade
-
 The parameter is $\mu_d$, the population mean difference.
 The mean difference is $\bar{d} = 0.77$ and $s_d = 1.07$.
-The value of $\bar{d}$ will vary from sample to sample, so has a standard error:
+The value of $\bar{d}$ will vary from sample to sample, so has a standard error, as shown in the table, of  $\text{s.e.}(\bar{d}) = s_d/\sqrt{n} = 1.07/\sqrt{210} = 0.073837$.
 
-\[
-   \text{s.e.}(\bar{d}) = \frac{s_d}{\sqrt{n}} = \frac{1.07}{\sqrt{210}} = 0.073837.
-\]
 Using an approximate multiplier of\ $2$, the margin of error is $2 \times 0.073837 = 0.147674$, so an approximate $95$% CI for the difference in support *in the population* is $0.77\pm 0.147674$, or from $0.62$ to $0.92$.
 We write:
 
@@ -939,7 +938,7 @@ Some people struggle to eat the recommended intake of vegetables.
 In one study exploring ways to increase vegetable intake in teens [@data:Fritts2018:Vegetables], teens rated the taste of raw broccoli, and raw broccoli served with a specially-made dip.
 
 Each teen ($n = 100$) had a *pair* of measurements: the taste rating of the broccoli *with* and *without* dip.
-Taste was assessed using a '100 mm visual analog scale', where a *higher* score means a *better* taste.
+Taste was assessed using a '$100$\ mm visual analog scale', where a *higher* score means a *better* taste.
 In summary:
 
 * For raw broccoli, the mean taste rating was $56.0$ (with a standard deviation of $26.6$);
@@ -1053,10 +1052,8 @@ knitr::include_graphics("SPSS/CaptoprilAll/CaptoprilAll-PairedTOutput.png")
 
 ::: {.exercise #PairedCIExercisesSmokeExercise}
 A study  [@data:Allen2018:Smoking] examined the effect of exercise on smoking.
-Men and women were assessed on a range of measures, including the 'intention to smoke'.
-
-'Intention to smoke' was assessed both before and after exercise for each subject, using two quantitative questionnaires.
-Smokers (people smoking at least five cigarettes per day) aged 18 to 40 were enrolled for the study.
+Men and women were assessed on their 'intention to smoke', both before and after exercise for each subject (using two quantitative questionnaires).
+Smokers (smoking at least five cigarettes per day) aged 18 to 40 were enrolled for the study.
 For the $23$ women in the study, the mean intention to smoke after exercise *reduced* by $0.66$ (with a standard error of $0.37$).
 
 1. Find a $95$% confidence interval for the population mean reduction in intention to smoke for women after exercising.
@@ -1088,7 +1085,7 @@ The concentration of beta-endorphins in the blood is a sign of stress.
 One study (@data:hand:handbook, Dataset 232; @hoaglin2011exploring) measured the beta-endorphin concentration for $19$ patients about to undergo surgery.
 
 Each patient had their beta-endorphin concentrations measured $12$--$14$ hours before surgery, and also $10$ minutes before surgery.
-A numerical summary can be produced from jamovi output (Table\ \@ref(tab:StressTable)).
+A numerical summary (from the jamovi output) is in Table\ \@ref(tab:StressTable).
 
 
 ```{r StressTable}
