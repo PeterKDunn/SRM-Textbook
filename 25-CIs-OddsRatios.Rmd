@@ -334,7 +334,7 @@ Both are correct, but one is usually easier to understand.
 
 We write:
 
-> Based on the sample, a $95$% CI for the OR comparing the odds of eating most meals off-campus is from $1.35$ to $26.1$ (living with parents, compared to *not* living with parents).
+> Based on the sample, a $95$% CI for the OR comparing the odds of eating most meals off-campus is $5.94$, with the $95% CI from $1.35$ to $26.1$ (living with parents, compared to *not* living with parents).
 
 There is a $95$% chance that this CI straddles the population OR.
 Notice that the *meaning* of the OR is explained in the conclusions: the odds of eating most meals *off*-campus, and comparing students living with parents to *not* living with parents.
@@ -370,7 +370,7 @@ The sample OR is $0.986$, but this value would change from sample to sample.
 From software, the $95$% CI for the odds ratio is from $0.480$ to $2.018$.
 We write
 
-> The population odds ratio for a crash involving pedestrians (comparing 2011 to 2015) has a $95$% chance of being between $0.480$ and $2.018$.
+> The population odds ratio for a crash involving pedestrians (comparing 2011 to 2015) is $0.986$, and has a $95$% chance of being between $0.480$ and $2.018$.
 :::
 
 
@@ -569,30 +569,200 @@ if( knitr::is_html_output() ) {
 
 
 
+## Example: turtle nests {#TurtleNestsOR}
+
+The hatching success of loggerhead turtles on Mediterranean beaches is often compromised by fungi and bacteria.
+A study [@candan2021first] compared the proportion of infected nests between relocated nest (relocated due to the risk of tidal inundation) and non-relocated nests (Table\ \@ref(tab:TurtleNestDataTable))..
+The researchers were interested in knowing:
+
+> For Mediterranean loggerhead turtles, what are the odds of infections comparing natural to relocated nests?
+
+
+```{r TurtleNestDataTable}
+TurtleData <- array( dim = c(2, 2))
+TurtleData[, 1] <- c(29, 14)
+TurtleData[, 2] <- c(10, 8)
+
+rownames(TurtleData) <- c("Natural",
+                          "Relocated")
+colnames(TurtleData) <- c("Non-infected",
+                          "Infected")
+
+if( knitr::is_latex_output() ) {
+  kable(surroundMaths(TurtleData,
+                      all = TRUE,
+                      decDigits = 0),
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        escape = FALSE,
+        align = "r",
+        caption = "Infected and non-infected turtle nests") %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  kable(TurtleData,
+               format = "html",
+               booktabs = TRUE,
+               longtable = FALSE,
+               align = "r",
+        caption = "Infected and non-infected turtle nests") %>%
+    row_spec(0, bold = TRUE)
+}
+```
+
+
+The parameter is the odds ratio of infection, comparing natural to relocated nests.
+A numerical summary table (Table\ \@ref(tab:TurtleNestsNumericalSummary)) shows that the odds of natural nest being infected is $1.657$ times the odds of a relocated nest being infected.
+From the jamovi output (Fig.\ \@ref(fig:TurtleNestsOutputjamovi)), the $95$% CI for this odds ratio is from $0.537$ to $5.12$.
+The smallest *expected* count is $6.49$ (Fig.\ \@ref(fig:TurtleNestsOutputjamovi)), so this CI is statistically valid.
+We write:
+
+> Based on the sample, the OR of an infected nest, comparing natural nests to relocated nests, is $1.66$ with a $95$% CI from $0.537$ to $5.12$.
+
+
+<!-- and Table 5 (BTW, Table 6 is  not $2\times 2$): -->
+
+
+```{r}
+TNsummary <- array( dim = c(3, 3) )
+
+colnames(TNsummary) <- c( "Odds infected",
+                          "Percentage infected",
+                          "Sample size")
+rownames(TNsummary) <- c("Natural",
+                         "Relocated",
+                         "Odds ratio:")
+  
+  
+TNsummary[1:2, 1] <- TurtleData[, 1] / TurtleData[, 2]
+TNsummary[1:2, 2] <- TurtleData[, 1] / rowSums(TurtleData) * 100
+TNsummary[1:2, 3] <- apply(TurtleData, 1, "sum")
+TNsummary[3, 1] <- TNsummary[1, 1] / TNsummary[2, 1]
+```
+
+
+
+\begin{figure}
+\begin{minipage}{0.52\textwidth}
+\captionof{table}{The odds and percentage of infected turtle nests\label{tab:TurtleNestsNumericalSummary}}
+\fontsize{10}{12}\selectfont
+```{r}
+  kable( surroundMaths(TNsummary,
+                       all = TRUE,
+                       decDigits = c(2, 1, 0)),
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = "c",
+        escape = FALSE,
+        table.env = "@empty",
+        col.names = c("infected",
+                     "infected",
+                     "size")) %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, italic = TRUE) %>%
+    add_header_above( c( " " = 1,
+                         "Odds" = 1,
+                         "Percentage" = 1,
+                         "Sample" = 1),
+                      bold = TRUE,
+                      line = FALSE)
+```
+\end{minipage}
+\hspace{0.05\textwidth}
+\begin{minipage}{0.40\textwidth}%
+\centering
+```{r, out.width='99%', fig.width=3.75, fig.height=3}
+par(xpd = TRUE,
+    mar = c(2, 4, 4, 1) + 0.1) # DEFAULT: c(5, 4, 4, 2) + 0.1
+
+barplot(TurtleData, 
+	las = 1,
+	ylab = "Count",
+	xlab = "Type of nest",
+	main = "Number of turtle\nnest infections",
+	beside = TRUE,
+	names.arg = c("Natural", 
+	              "Relocated"),
+	ylim = c(0, 30),
+	col =  viridis::viridis(10)[c(3, 8)]
+)
+box()
+
+legend(6.2, 
+       400, 
+	     fill =  viridis::viridis(10)[c(3, 8)],
+	     title = "Infection",
+	     legend = c("Not infected", 
+	                "Infected"), 
+	     bty = "n")
+```
+\caption{A plot of the turtle-nest data}\label{fig:TurtleNestsGraphs}
+\end{minipage}
+\end{figure}
+
+
+
+
+
+```{r TurtleNestsNumericalSummary}
+if( knitr::is_html_output() ) {
+  kable(TNsummary,
+        format = "html",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = "c",
+        digits = c(2, 1, 0),
+        caption = "The odds and percentage of infected nests")
+}
+```
+
+<!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r TurtleNestsGraphs, fig.show="hold", fig.cap="jamovi output for the EV study", fig.align="center", out.width="50%"}
+par(xpd = TRUE,
+    mar = c(5, 4, 4, 8) + 0.1) # DEFAULT: c(5, 4, 4, 2) + 0.1
+
+barplot(TurtleData, 
+	las = 1,
+	ylab = "Count",
+	xlab = "Type of nest",
+	beside = TRUE,
+	names.arg = c("Natural", 
+	              "Relocated"),
+	ylim = c(0, 30),
+	col =  viridis::viridis(10)[c(3, 8)]
+)
+box()
+
+legend(6.2, 
+       400, 
+	     fill =  viridis::viridis(10)[c(3, 8)],
+	     title = "Infection",
+	     legend = c("Not infected", 
+	                "Infected"), 
+	     bty = "n")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+
+
+
+
+
+
+
+
+
+```{r TurtleNestsOutputjamovi, fig.show="hold", fig.cap="The jamovi output for the turtle-nesting data", fig.align="center", out.width=c("48%", "48%")}
+knitr::include_graphics("jamovi/TurtleNests/TurtleNests-OR.png")
+knitr::include_graphics("jamovi/TurtleNests/TurtleNests-Expected.png")
+```
+
 ## Example: pet birds REMOVE?? {#PetBirdsOR}
-
-
-
-
-
-CONSIDER NON-PERSONE example:
-[@candan2021first]
-and Table 5 (BTW, Table 6 is  not $2\times 2$):
-
-
-|                | Natural | Relocated
-|----------------|---------|----------
-| Non-infected   | 29      |  14
-| Infected       | 10      |   8
-
-
-"There are various biotic factors affecting the hatching success of loggerhead sea turtles (Caretta caretta) nesting on Mediterranean beaches. Eggs contaminated by fungi and bacteria are adversely affected in terms of hatching success. This study aims to identify Fusarium species that cause infection by sampling eggs and nest sands that failed to hatch during the 2015–2016 nesting season. 
-
-A sand sample was taken using gloves from the base of the nest opened by an adult female before the laying egg. Sand samples were taken into sterile containers. The samples were brought to the laboratory with a cold transport chain as soon as possible. Sampled nests having a risk of tidal inundation were relocated to safe areas. This way, a comparison can be made between the relocated and non-relocated nests."
-
-
-
----
 
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
@@ -749,8 +919,8 @@ One RQ was:
 
 The parameter is the population OR, comparing the odds of being B12 deficient, for vegetarians to non-vegetarians.
 
-The data appear in Table \@ref(tab:B12DataCI).
-From the jamovi output (Fig.&nbsp;\@ref(fig:B12SPSSOutputCIjamovi)), the OR (and 95% CI) is $3.15$ ($1.08$ to $9.24$).
+The data appear in Table\ \@ref(tab:B12DataCI).
+From the jamovi output (Fig.\ \@ref(fig:B12SPSSOutputCIjamovi)), the OR (and $95$% CI) is $3.15$ ($1.08$ to $9.24$).
 The numerical summary table (Table \@ref(tab:B12DataSummaryCI)) and graphical summary (Fig.\ \@ref(fig:B12BarchartsCI)) can hence be constructed.
 
 
@@ -883,7 +1053,7 @@ Nonetheless, only *one* cell has an expected count less than five, and only *jus
 
 We write:
 
-> Based on the sample, a $95$% CI for the OR of being B12 deficient is from $1.08$ to $9.24$ (comparing vegetarians to *non*-vegetarians).
+> Based on the sample, the OR of being B12 deficient (comparing vegetarians to *non*-vegetarians) is $3.15$, and the $95$% CI is from $1.08$ to $9.24$.
 
 
 ```{r B12jamoviExpectedCounts, fig.show="hold", fig.cap="The expected counts from jamovi for the B12 data", fig.align="center", out.width="70%"}
