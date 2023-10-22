@@ -5,13 +5,36 @@
 ```
 
 
-
-## General ideas {#SampleSizeIdeas}
+## Introduction {#SampleSizeIntroduction}
 
 A [confidence interval](#AboutCIs) is an interval which gives a range of values of the population parameter that could plausibly have given rise to our observed value of the statistic.
 All other things being equal, a *larger* sample size gives a *more precise* estimate of the population parameter.
 After all, that's why we prefer larger samples: to get more [*precise*](#PrecisionAccuracy) estimates, and hence narrower CIs.
 If that was not the case, we could take the smallest, cheapest and easiest possible sample of size one... which is clearly absurd.
+
+For a given level of confidence, the width of a CI depends on the size of the sample.
+All other things being equal, *larger* samples produce more [*precise*](#PrecisionAccuracy) estimates of the parameter (Sect.\ \@ref(PrecisionAccuracy)), and hence *narrower* CIs.
+
+
+:::{.example #SampleSizeImpact name="Impact of sample size on CIs"}
+Suppose we wish to estimate an unknown proportion, and find that $\hat{p} = 0.55$ using a sample of size $n = 25$.
+The approximate $95$% CI is $0.55 \pm 0.199$ (and the *margin of error* is $0.199$)
+
+If the estimate of $\hat{p} = 0.55$ was found from a sample of size $n = 100$, we should expect a more precise estimate.
+The approximate $95$% CI is $0.55\pm 0.100$; the margin of error is $0.100$.
+
+If the estimate of $\hat{p} = 0.55$ was found from a sample of size $n = 400$, the approximate $95$% CI is $0.55\pm 0.050$; the margin of error is $0.050$.
+:::
+
+
+```{r, child = if (knitr::is_html_output())  './children/SampleSizeCI/SampleSizeCI-HTML.Rmd'}
+```
+
+```{r, child = if (knitr::is_latex_output()) './children/SampleSizeCI/SampleSizeCI-LaTeX.Rmd'}
+```
+
+That is, improving precision gets more difficult as sample sizes get larger.
+Large gains in precision are made by moderately increasing small sample sizes, but only small gains in precision are made by large increases in already-large sample sizes. 
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -19,12 +42,15 @@ Remember that the sample size is the number of [*units of analysis*](#UnitsObsAn
 :::
 
 
+
+## General ideas {#SampleSizeIdeas}
+
 If larger samples give more precise estimates, should we use the largest sample possible?
 Not necessarily: using large samples also has disadvantages: 
 
-* Studies with larger samples take longer to conduct.
-* Studies with larger samples can cost more money.
-* Ethics committees often wish to keep sample sizes as small as possible, so that:
+* Studies with larger samples sizes take longer to complete.
+* Studies with larger samples sizes cost more money.
+* Ethics committees aim to keep sample sizes as small as possible, so that:
   - As little (potential) harm as possible is done to the environment.
   - As little (potential) harm as possible is done to as few animals as possible. 
   - As little (potential) harm as possible is done to as few people as possible. 
@@ -53,9 +79,9 @@ Clearly, every pot that is used comes with a substantial cost, both in terms of 
 In this chapter, we learn how to compute the (approximate) minimum sample size needed to obtain a given precision for a confidence interval.
 We only study estimating sample sizes for descriptive RQs:
 
-* Estimating sample size for estimating a proportion: Sect \@ref(SampleSizeProportions).
-* Estimating sample size for estimating a mean: Sect \@ref(SampleSizeOneMean).
-* Estimating sample size for estimating a mean difference: Sect \@ref(SampleSizeMeanDifferences).
+* Estimating sample size for estimating a proportion: Sect.\ \@ref(SampleSizeProportions).
+* Estimating sample size for estimating a mean: Sect.\ \@ref(SampleSizeOneMean).
+* Estimating sample size for estimating a mean difference: Sect.\  \@ref(SampleSizeMeanDifferences).
 
 
 
@@ -65,39 +91,24 @@ We only study estimating sample sizes for descriptive RQs:
 
 ## One proportion {#SampleSizeProportions}
 
-For a given level of confidence, the width of a CI depends on the size of the sample.
-All other things being equal, *larger* samples produce more [*precise*](#PrecisionAccuracy) estimates of the parameter (Sect.&nbsp;\@ref(PrecisionAccuracy)), and hence *narrower* CIs.
+For the NHANES data, first seen in Sect.\ \@ref(NHANESGraphs), the unknown parameter is $p$, the *population* proportion of Americans that currently smoke.
+In the study, $1466$ out of the $3211$ respondents who reported their smoking status said they currently smoked: $\hat{p} =  1466\div 3211 = 0.4566$ where $n = 1466$.
+The standard  error is $\text{s.e.}(\hat{p}) = 0.00879$, so the approximate 95% CI for $p$ is $0.456\pm 0.018$, or from $0.439$ to $0.474$.
 
-
-
-```{r, child = if (knitr::is_html_output())  './children/HTML/SampleSizeCI.Rmd'}
-```
-
-```{r, child = if (knitr::is_latex_output()) './children/LaTeX/SampleSizeCI.Rmd'}
-```
-
-In other words, improving precision gets more difficult as sample sizes get larger.
-Large gains in precision are made by moderately increasing small sample sizes, but only small gains in precision are made by large increases in already-large sample sizes. 
-
-For the NHANES data, first seen in Sect.&nbsp;\@ref(NHANESGraphs), the unknown parameter is $p$, the *population* proportion of Americans that currently smoke.
-In the study, 1466 out of the 3211 respondents who reported their smoking status said they currently smoked: $\hat{p} =  1466\div 3211 = 0.4566$ where $n = 1466$.
-The standard  error is $\text{s.e.}(\hat{p}) = 0.00879$, so the approximate 95% CI for $p$ is $0.456\pm 0.018$, or from 0.439 to 0.474.
-
-Suppose we want our 95% CI for the proportion of smokers to be precise to give-or-take $0.01$ (that is, $\pm 0.01$, rather than the $\pm 0.018$ found from the sample).
+Suppose we want a $95$% CI for the proportion of smokers to be precise to give-or-take $0.01$ (that is, the margin of error is $\pm 0.01$, rather than the $\pm 0.018$ found from the sample).
 What size sample is needed?
 Since we seek a *more* precise estimate, a *larger* sample is needed... but how much larger?
 
 
 :::{.definition #SampleSizeProportion name="Sample size (proportion)"}
-Conservatively, the size of the [*simple random sample*](#SRS) needed *for a 95% CI for a proportion* with a specified margin-of error is *at least*
-
+Conservatively, the size of the [*simple random sample*](#SRS) needed *for a $95$% CI for a proportion* with a specified margin-of error is *at least*  
 \[
    \frac{1}{(\text{Margin of error})^2}.
 \]
 We say "conservatively", since the sample may be a little too large, but that's better than being too small.
 :::
 
-For the NHANES example, then, a sample size of at least $\displaystyle 1\div (0.01^2) = 10\,000$ Americans is needed.
+For the NHANES example, then, a sample size of at least $\displaystyle 1\div (0.01^2) = 10\ 000$ Americans is needed.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -107,14 +118,13 @@ Always **round up** the result of the sample size calculation.
 
 
 ::: {.example #SampleSizep name="Sample size calculations for one proportion"}
-To estimate the population proportion of Australians that smoke, to within $0.07$ with 95% confidence, a sample size of at least
-   
+To estimate the population proportion of Australians that smoke, to within $0.07$ with $95$% confidence, a sample size of at least  
 \[
   \frac{1}{(\text{Margin of error})^2} { = \frac{1}{0.07^2}}
 \]
 is needed; *at least* $n = 204.0816$ people.
 
-In practice, *at least* 205 people are needed to achieve this desired level of precision (that is, **always round up** in sample size calculations).
+In practice, *at least* $205$ people are needed to achieve this desired level of precision (that is, **always round up** in sample size calculations).
 :::
 
 
@@ -130,92 +140,92 @@ In practice, *at least* 205 people are needed to achieve this desired level of p
 ## One mean {#SampleSizeOneMean}
 
 As with proportions, estimating a population *mean* is more *precise* with a larger sample.
-All other things being equal, *larger* samples produce more [*precise*](#PrecisionAccuracy) estimates of the parameter (Sect.&nbsp;\@ref(PrecisionAccuracy)), and hence *narrower* CIs (Fig. \@ref(fig:SampleSizeCIWidthMean)).
+All other things being equal, *larger* samples produce more [*precise*](#PrecisionAccuracy) estimates of the parameter (Sect.\ \@ref(PrecisionAccuracy)), and hence *narrower* CIs.
 Again, large gains in precision are made by moderately increasing small sample sizes, but only small gains in precision are made by large increases in already-large sample sizes. 
 
 
-```{r SampleSizeCIWidthMean, fig.align="center", out.width = "65%", fig.cap='The approximate width of a 95\\% CI for a mean, when various size samples are used. No values are given on the vertical axis, as the actual values depend on the value of the standard deviation, $s$', fig.height = 4.5}
-ME <- function(n, s = 1){
-  1.96 * 2 * s / sqrt( n )
-}
-n <- seq(5, 50, by = 1)
+<!-- ```{r SampleSizeCIWidthMean, fig.align="center", out.width = "65%", fig.cap='The approximate width of a $95$\\% CI for a mean, when various size samples are used. No values are given on the vertical axis, as the actual values depend on the value of the standard deviation, $s$', fig.height = 4.5} -->
+<!-- ME <- function(n, s = 1){ -->
+<!--   1.96 * 2 * s / sqrt( n ) -->
+<!-- } -->
+<!-- n <- seq(5, 50, by = 1) -->
 
-par( mfrow = c(1, 1),
-     mar = c(4, 5, 5, 3), # LINES on each side of plot
-     oma = c(1, 1, 1, 1) ) # OUTER margins, between plots and edges of canvas
+<!-- par( mfrow = c(1, 1), -->
+<!--      mar = c(4, 5, 5, 3), # LINES on each side of plot -->
+<!--      oma = c(1, 1, 1, 1) ) # OUTER margins, between plots and edges of canvas -->
 
 
-plot( x = c( min(n), max(n) ), 
-      y = c(-2, 2),
-      type = "n",
-      pch = 19,
-      las = 1,
-      axes = FALSE,
-      xlim = c(0, 50),
-      ylim <- c(-1.9, 1.9),
-      xlab = "Sample size",
-      ylab = "Estimates",
-      main = "The width of CI by sample size\n(for estimating a mean)")
-axis(side = 1)
-box()
-abline(h = 0,
-       lwd = 1,
-       col = "grey")
-lines(n,
-      0 + ME(n),
-      type = "b",
-      pch = 19,
-      cex = 0.75,
-      col = plot.colour,
-      lty = 1,
-      lwd = 2)
-lines(n,
-      0.0 - ME(n),
-      type = "b",
-      pch = 19,
-      cex = 0.75,
-      col = plot.colour,
-      lty = 1,
-      lwd = 2)
-text(10,
-     0.0,
-     srt = 90,
-     "Approximate width\nof 95% CI")
+<!-- plot( x = c( min(n), max(n) ),  -->
+<!--       y = c(-2, 2), -->
+<!--       type = "n", -->
+<!--       pch = 19, -->
+<!--       las = 1, -->
+<!--       axes = FALSE, -->
+<!--       xlim = c(0, 50), -->
+<!--       ylim <- c(-1.9, 1.9), -->
+<!--       xlab = "Sample size", -->
+<!--       ylab = "Estimates", -->
+<!--       main = "The width of CI by sample size\n(for estimating a mean)") -->
+<!-- axis(side = 1) -->
+<!-- box() -->
+<!-- abline(h = 0, -->
+<!--        lwd = 1, -->
+<!--        col = "grey") -->
+<!-- lines(n, -->
+<!--       0 + ME(n), -->
+<!--       type = "b", -->
+<!--       pch = 19, -->
+<!--       cex = 0.75, -->
+<!--       col = plot.colour, -->
+<!--       lty = 1, -->
+<!--       lwd = 2) -->
+<!-- lines(n, -->
+<!--       0.0 - ME(n), -->
+<!--       type = "b", -->
+<!--       pch = 19, -->
+<!--       cex = 0.75, -->
+<!--       col = plot.colour, -->
+<!--       lty = 1, -->
+<!--       lwd = 2) -->
+<!-- text(10, -->
+<!--      0.0, -->
+<!--      srt = 90, -->
+<!--      "Approximate width\nof 95% CI") -->
 
-n.example <- 10
-arrows(n.example,
-       0.0 + ME(n.example),
-       n.example,
-       0.0 - ME(n.example),
-       length = 0.1,
-       angle = 15,
-       lwd = 2,
-       code = 3, # Draw arrowhead at both ends
-       col = "black")
-mtext(expression(" "*Mean*","~bar(italic(x))),
-      side = 4,
-      las = 1)
-```
-      
+<!-- n.example <- 10 -->
+<!-- arrows(n.example, -->
+<!--        0.0 + ME(n.example), -->
+<!--        n.example, -->
+<!--        0.0 - ME(n.example), -->
+<!--        length = 0.1, -->
+<!--        angle = 15, -->
+<!--        lwd = 2, -->
+<!--        code = 3, # Draw arrowhead at both ends -->
+<!--        col = "black") -->
+<!-- mtext(expression(" "*Mean*","~bar(italic(x))), -->
+<!--       side = 4, -->
+<!--       las = 1) -->
+<!-- ``` -->
+
 
 
 :::{.definition #SampleSizeMean name="Sample size (mean)"}
-Conservatively, the size of the [*simple random sample*](#SRS) needed *for a 95% CI for the mean* with a specified margin-of error is *at least*
-
+Conservatively, the size of the [*simple random sample*](#SRS) needed *for a $95$% CI for the mean* with a specified margin-of error is *at least*  
 \[
-   \left( \frac{2 \times s}{\text{Margin of error}}\right)^2.
+   \left( \frac{2 \times s}{\text{Margin of error}}\right)^2
 \]
+where $s$ is an estimate of the standard deviation in the population.
 We say "conservatively", since the sample may be a little too large, but that's better than being too small.
 :::
 
 
 
-Notice that the formula requires an estimate of the population standard deviation (that is, the sample standard deviation, $s$).
+The formula requires a value for the sample standard deviation, $s$.
 But if we don't have a sample yet... how can we have a value for the *sample* standard deviation?
 Sometimes, an approximate value for $s$ comes from:
 
 * The results of a [pilot study](#protocols), where the computed value of $s$ is used.
-* The results of a similar study, where the value $s$ found there can be used (see Example \@ref(exm:SampleSizePeanuts)).
+* The results of a similar study, where the value $s$ there can be used (see Example\ \@ref(exm:SampleSizePeanuts)).
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -229,15 +239,14 @@ Always **round up** the results of a sample size calculation.
 
 
 ::: {.example #SampleSizePeanuts name="Sample size estimation for one mean"}
-Sect. \@ref(Cadmium-In-Peanuts) discusses a study about the mean cadmium concentrations in peanuts in the United States, where $s = 0.0460$&nbsp;ppm.
+Sect.\ \@ref(Cadmium-In-Peanuts) discusses a study about the mean cadmium concentrations in peanuts in the United States, where $s = 0.0460$\ ppm.
 
-Suppose we wanted to estimate the mean cadmium concentration in *Australian* peanuts, to give-or-take $0.005$&nbsp;ppm with 95% confidence.
-We could use this value for $s$ as a starting point, and then compute:
-
+Suppose we wanted to estimate the mean cadmium concentration in *Australian* peanuts, to give-or-take $0.005$\ ppm with $95$% confidence.
+We could use this value for $s$ as a starting point, and then compute:  
 \[
    \left( \frac{2 \times 0.0460}{0.005}\right)^2 = 338.56;
 \] 
-we would need about 339 peanuts.
+we would need about $339$ peanuts.
 :::
 
 
@@ -245,10 +254,17 @@ we would need about 339 peanuts.
 ## Mean differences {#SampleSizeMeanDifferences}
 
 The ideas in the previous section also work for computing sample sizes for estimating *mean differences*, since the differences can be treated like a single sample.
-Conservatively, the size of the [*simple random sample*](#SRS) needed **for a 95% CI** is *at least*  
+
+
+:::{.definition #SampleSizeMean name="Sample size (mean)"}
+Conservatively, the size of the [*simple random sample*](#SRS) needed *for a $95$% CI for the mean difference* with a specified margin-of error is *at least*  
 \[
    \left( \frac{2 \times s_d}{\text{Margin of error}}\right)^2.
 \]
+where $s_d$ is an estimate of the standard deviation in the population.
+We say "conservatively", since the sample may be a little too large, but that's better than being too small.
+:::
+
 
 
 ```{r}
@@ -266,15 +282,15 @@ ci.hi <-  mean(Diabetes$Diff) + 2 * se.D.diff
 
 
 ::: {.example #SampleSizeDBPReduction name="Sample size estimation for mean differences"}
-In Sect. \@ref(BloodPressure), the mean *reduction* in diastolic blood pressure from the first to the second visit to a clinic was estimated [@data:Willems1997:CHD; @data:Schorling1997:smoking], using a sample of size $n = `r n.D.diff`$.
-The computed approximate 95% CI was $`r round( mean(Diabetes$Diff, na.rm=TRUE), 3)`$, give-or-take $`r round(2 * se.D.diff, 3)`$, and the standard deviation *of the differences* was $s_d = `r round(sd(Diabetes$Diff, na.rm = TRUE), 3)`$.
+In Sect.\ \@ref(BloodPressure), the mean *reduction* in diastolic blood pressure from the first to the second visit to a clinic was estimated [@data:Willems1997:CHD; @data:Schorling1997:smoking], using a sample of size $n = `r n.D.diff`$.
+The computed approximate $95$% CI was $`r round( mean(Diabetes$Diff, na.rm=TRUE), 3)`$, give-or-take $`r round(2 * se.D.diff, 3)`$, and the standard deviation *of the differences* was $s_d = `r round(sd(Diabetes$Diff, na.rm = TRUE), 3)`$.
 
-Suppose we wanted the 95% CI to have a margin of error of only $1.00$ (that is, rather than $`r round(2 * se.D.diff, 3)`$), the size sample needed would be  
+Suppose we wanted the $95$% CI to have a margin of error of only $1.00$ (that is, rather than $`r round(2 * se.D.diff, 3)`$), the size sample needed would be  
 \[
       \left( \frac{2 \times s_d}{\text{Margin of error}}\right)^2 = \left( \frac{2 \times 10.931
  }{1.00}\right)^2 = 477.947;
 \]
-we would need about 478 patients (recall we always *round up* in sample size calculations).
+we would need about $478$ patients (recall we always *round up* in sample size calculations).
 :::
 
 
@@ -282,35 +298,35 @@ we would need about 478 patients (recall we always *round up* in sample size cal
 ## Other issues related to sample size {#SampleSizeOtherIssues}
 
 The above calculations form just one part of the information needed to make the final decision about the necessary sample size.
-For example, the *cost* (time and money) of taking sample of this size has not been factored in.
+For example, the *cost* (time and money) of taking sample of this size has not been considered.
 
 The calculations in this chapter assume a [*simple random sample*](#SRS) will be used, which is often unreasonable.
 Other, more complex, formulas are available for computing sample sizes for other random-sampling schemes (such as [stratified samples](#StratifiedSampling)).
 However, 
 the above calculations do give an *estimate* of the sample size that would be required.
-In addition, the calculations in this chapter are only for producing 95% confidence intervals. 
+In addition, the calculations in this chapter are only for producing $95$% confidence intervals. 
 
 In practice, researchers often start with a slightly larger sample than required to allow for drop-outs (for example, plants die, or people withdraw from the study).
 
 
+## Example: residential aged care
 
-## Example: paramedics
+A study examined residential aged care residents in Australia needing emergency care [@dwyer2021residential] and recorded, among other information, the average age of such residents ($\bar{x} = 85$; $s = 7.3$) and the proportion of calls related to falls ($\hat{p} = 0.156$).
 
-@data:MacDonald:Resuscitation studied the time taken for paramedics to perform certain tasks (such as intravenous cannulation and electrical defibrillation).
-To compute the necessary sample size, they used a standard deviation of 0.2 minutes (based on data from previous similar studies) with a margin of error of 0.1 minutes (with 95% confidence).
-The necessary sample size is
+Suppose a similar study was to be conducted in New Zealand.
+The aim was to estimate the mean age of residents to with $2$ years of age, and the proportion of incidents related to falls to within $0.15$.
 
+The sample size required to meet the age requirement is at least  
 \[
-   n = \left( \frac{2 \times s}
-                   {\text{Margin of error}}
-       \right)^2 
-       = \left(\frac{2 \times 0.2}
-              {0.1}
-         \right)^2 
-       = 16.
+  n = \left(\frac{2\times s}{\text{Margin of error}}\right)^2 = \left(\frac{2\times 7.3}{2}\right)^2 = 53.29,
 \]
-A sample size of 16 paramedics was required (and was used).
-
+or at least $54$ residents.
+The sample size required to meet the falls requirement is at least  
+\[
+  n = \frac{1}{(\text{Margin of error}^2)} = \frac{1}{0.15^2} = 44.444,
+\]
+or $45$.
+Since the same subjects will be required for both estimates, the study should use at least $54$ residents.
 
 
 
@@ -339,7 +355,7 @@ A sample size of 16 paramedics was required (and was used).
 ## Exercises {#EstimatingSampleSizeExercises}
 
 
-Selected answers are available in Sect.&nbsp;\@ref(EstimatingSampleSizeAnswer).
+Selected answers are available in Sect.\ \@ref(EstimatingSampleSizeAnswer).
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -348,50 +364,50 @@ Always **round up** the result of the sample size calculation.
 
 
 ::: {.exercise #SampleSizeProp1}
-Suppose we have a situation where we need to estimate a population *proportion* (with 95% confidence).
+Suppose we need to estimate a population *proportion* (with $95$% confidence).
 
-1. What size sample is needed to estimate the population proportion within 0.04?
-1. What size sample is needed to estimate the population proportion within 0.02 (that is, the confidence interval will be *half* as wide as in the first calculation)?
-1. What size sample is needed to estimate the population proportion within 0.01 (that is, the confidence interval will be *a quarter* as wide as in the first calculation)?
+1. What size sample is needed to estimate the population proportion within $0.04$?
+1. What size sample is needed to estimate the population proportion within $0.02$ (that is, the confidence interval will be *half* as wide as in the first calculation)?
+1. What size sample is needed to estimate the population proportion within $0.01$ (that is, the confidence interval will be *a quarter* as wide as in the first calculation)?
 1. To get an estimate *half* as wide, how many *times* more units of analysis are needed?
 1. To get an estimate *a quarter* as wide, how many *times* more units of analysis are needed?
 :::
 
 
 ::: {.exercise #SampleSizePropEating}
-Sect. \@ref(exr:CIOneProportionSnacking) discusses a study of the eating habits of university students in Canada [@data:Mann12017:UniStudents].
+Sect.\ \@ref(exr:CIOneProportionSnacking) discusses a study of the eating habits of university students in Canada [@data:Mann12017:UniStudents].
 In that study, they estimated the proportion of Canadian students that ate a sufficient number of servings of grains each day.
 
-Suppose we wished to repeat the study but for *New Zealand* university students; that is, we seek an estimate of the population proportion of New Zealand students that ate a sufficient number of servings of grains each day (with 95% confidence).
+Suppose we wished to repeat the study but for *New Zealand* university students; that is, we seek an estimate of the population proportion of New Zealand students that eat a sufficient number of servings of grains each day (with $95$% confidence).
 
-1. What size sample would be needed if we wished to estimate the proportion to give-or-take 0.01? 
-2. What size sample would be needed if we wished to estimate the proportion to give-or-take 0.02? 
-3. What size sample would be needed if we wished to estimate the proportion to give-or-take 0.10?
+1. What size sample would be needed if we wished to estimate the proportion to give-or-take $0.01$? 
+2. What size sample would be needed if we wished to estimate the proportion to give-or-take $0.02$? 
+3. What size sample would be needed if we wished to estimate the proportion to give-or-take $0.10$?
 4. Do you think this study would be costly, in terms of time and money?
 :::
 
 
 ::: {.exercise #SampleSizeMeanLungCapacity}
 In Exercise \@ref(exr:CIOneMeanLungCapacityInChildren), a study by @data:Tager:FEV was discussed that measured the lung capacity of 11-year-old girls in East Boston (using the *forced expiratory volume* (FEV) of the children).
-Suppose we wished to repeat the study, and find a 95% confidence interval for the mean FEV for 11-year-old *Australian* girls.
+Suppose we wished to repeat the study, and find a $95$% confidence interval for the mean FEV for 11-year-old *Australian* girls.
 
 Since Australian and American children might be somewhat similar, we could use (as a first approximation) the standard deviation from that study: $s = 0.43$ litres.
 
-1. What size sample would be needed if we wished to estimate the mean to give-or-take 0.02 litres? 
-2. What size sample would be needed if we wished to estimate the mean to give-or-take 0.05 litres? 
-3. What size sample would be needed if we wished to estimate the mean to give-or-take 0.10 litres?
-4. Suppose we wished to find 99% (not 95%) confidence interval for the mean FEV for 11-year-old *Australian* girls, to give-or-take 0.10 litres.
-   Would this sample size be *larger* or *smaller* than the sample size found for a 95% confidence interval (also with give-or-take 0.10 litres)?
+1. What size sample would be needed if we wished to estimate the mean to give-or-take $0.02$ litres? 
+2. What size sample would be needed if we wished to estimate the mean to give-or-take $0.05$ litres? 
+3. What size sample would be needed if we wished to estimate the mean to give-or-take $0.10$ litres?
+4. Suppose we wished to find $99$% (not $95$%) confidence interval for the mean FEV for 11-year-old *Australian* girls, to give-or-take $0.10$ litres.
+   Would this sample size be *larger* or *smaller* than the sample size found for a $95$% confidence interval (also with give-or-take $0.10$ litres)?
 5. Do you think this study would be costly, in terms of time and money?
 :::
 
 
 ::: {.exercise #CIOneMeanBloodLossSampleSize}
 A study of paramedics [@data:Williams2007:BloodLoss] asked participants ($n = 199$) to estimate the amount of blood loss on four different surfaces.
-When the actual amount of blood spill on concrete was 1000&nbsp;ml, the mean guess was 846.4&nbsp;ml (with a standard deviation of 651.1&nbsp;ml).
+When the actual amount of blood spill on concrete was $1000$\ ml, the mean guess was $846.4$\ ml (with a standard deviation of $651.1$\ ml).
 
-1. How many paramedics would be needed if the mean guess was to be estimated with an precision of give-or-take 50&nbsp;ml?
-1. How many paramedics would be needed if the mean guess was to be estimated with an precision of give-or-take 25&nbsp;ml?
+1. How many paramedics would be needed if the mean guess was to be estimated with an precision of give-or-take $50$\ ml?
+1. How many paramedics would be needed if the mean guess was to be estimated with an precision of give-or-take $25$\ ml?
 1. How many times greater does the sample size need to be to *halve* the width of the margin of error?
 :::
 
@@ -400,8 +416,8 @@ When the actual amount of blood spill on concrete was 1000&nbsp;ml, the mean gue
 ::: {.exercise #CIOneProportionAustSmokers}
 We wish to estimate the population proportion of Australians that smoke.
 
-1. Suppose we wish our 95% CI to be give-or-take $0.05$. How many Australians would we need to survey?
-1. Suppose we wish our 95% CI to be give-or-take $0.025$; that is, we wish to *halve* the width of the interval above. 
+1. Suppose we wish our $95$% CI to be give-or-take $0.05$. How many Australians would we need to survey?
+1. Suppose we wish our $95$% CI to be give-or-take $0.025$; that is, we wish to *halve* the width of the interval above. 
    How many Australians would we need to survey? 
 1. How many *times* as many Australians are needed to *halve* the width of the interval?
 :::
