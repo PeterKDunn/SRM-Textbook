@@ -14,9 +14,9 @@
 
 
 `r if (knitr::is_html_output()) '<!--'`
-\begin{wrapfigure}{R}{.25\textwidth}
+\begin{wrapfigure}{R}{.27\textwidth}
   \begin{center}
-    \includegraphics[width=.20\textwidth]{Illustrations/LoadedDice.png}
+    \includegraphics[width=.24\textwidth]{Illustrations/LoadedDice.png}
   \end{center}
 \end{wrapfigure}
 `r if (knitr::is_html_output()) '-->'`
@@ -28,34 +28,35 @@ I bought two packs!
 But how could I determine *which* die was the 'loaded' die, and which was the 'normal' die?
 I guess had to roll the dice...
 
-Using classical probability (Sect. \@ref(ProbClassical)), the *population* proportion of times a `r include_graphics("Dice/die1.png", dpi=1500)` is rolled on a fair die is $1/6$.
-If I rolled the *fair* die, I'd expect that each face would appear *approximately* (but not exactly) one-sixth of the time.
-
+If I rolled the *fair* die, I'd expect that each face would appear *approximately* (but not exactly) one-sixth of the time (using classical probability; Sect.\ \@ref(ProbClassical)).
 So, I could roll one of the dice, and see how often a `r include_graphics("Dice/die1.png", dpi=1500)` (for example) actually appeared.
-Using the [decision-making process](#DecisionMaking) discussed earlier, I could decide if that  die was the fair die.
+Using the decision-making process discussed earlier (Sect.\ \@ref(DecisionMaking)), then I could decide if that die was the fair die.
 
 
 ## Statistical hypotheses and notation
 
 If the die was fair, I would expect about one-sixth of rolls to produce a `r include_graphics("Dice/die1.png", dpi=1500)`, but not necessarily *exactly* one-sixth of the rolls, due to *sampling variation*.
-However, by initially assuming the population proportion of ones would be $1/6$, the possible values of the *sample* proportion from all possible rolls of the fair die could be determined.
-This is the beginning of the [decision-making process](#DecisionMaking).
+Sometimes the value of $\hat{p}$ would be a little smaller than $1/6$, and sometimes a little larger.
 
-More formally, the initial assumption about the population is that the die is fair (I have no evidence against this), and hence that the *population* proportion of rolling a `r include_graphics("Dice/die1.png", dpi=1500)` is $p = 1/6$, or approximately $p = 0.16667$.
-Then, the values of the sample proportion that are reasonable to expect from all possible sample is described, and compared to the observed value of $\hat{p}$ from just one of those possible samples.
+By initially assuming the population proportion of ones would be $1/6$, the possible values of the *sample* proportion from all possible rolls of the fair die could be determined; that is, the *sampling distribution* could be described.
+Then, reasonable values of the sample proportion to expect from all possible samples can be compared to the observed value of $\hat{p}$ from just one of those possible samples.
 
-If the sample proportion of rolls that are `r include_graphics("Dice/die1.png", dpi=1500)` is not *exactly* $1/6$, two possibilities exist:
+If the sample proportion of rolls that are `r include_graphics("Dice/die1.png", dpi=1500)` is not *exactly* $1/6$, two explanations exist:
 
-* The *population* proportion *is* $1/6$, and the *sample* proportion is not exactly $p = 1/6$ due to sampling variation; or
-* The *population* proportion *is not* $1/6$; that is, the *sample* proportion is not exactly $p = 1/6$ because the die is not fair.
+* The *population* proportion *really is* $1/6$, and the *sample* proportion is not exactly $p = 1/6$ due to sampling variation; or
+* The *population* proportion *really is not* $1/6$; that is, the *sample* proportion is not exactly $p = 1/6$ because the die is not fair.
 
 These two possible explanations are called *statistical hypotheses*.
-Formally, the two statistical hypotheses above are written:
+Formally, the two statistical hypotheses above are:
 
 * $H_0$: $p = 1/6$, the *null hypothesis*; and
 * $H_1$: $p \ne 1/6$, the *alternative hypothesis*.
 
-The null hypothesis is always the 'sampling variation' explanation.
+The null hypothesis proposes that the difference between the hypothesised population proportion and the observed sample proportion is due to *sampling variation*.
+
+Notice that the hypotheses always propose values for the unknown *population* proportion (the *parameter* $p$).
+Proposing values for the *known* sample proportion (i.e., the statistic $\hat{p}$) is silly: we *know* the value of $\hat{p}$.
+
 The alternative hypothesis can take different forms, depending on the research question.
 Here, the alternative hypothesis here is open to the value of $p$ being smaller *or* larger than $1/6$; that is, two possibilities are considered (since we are interested in finding if the die is loaded in any way).
 For this reason, this alternative hypothesis is called a *two-tailed* alternative hypothesis.
@@ -67,25 +68,30 @@ An alternative hypothesis like $p > 1/6$ or $p < 1/6$ is a *one-tailed* hypothes
 When the proportion of rolls that show a `r include_graphics("Dice/die1.png", dpi=1500)` really is $p = 1/6$, what values of the *sample* proportion are reasonable to expect from all possible samples, given sampling variation?
 The answer depends on the sample size.
 In *one* roll of a die, rolling a `r include_graphics("Dice/die1.png", dpi=1500)`, and hence finding a sample proportion of $\hat{p} = 1$, is not unreasonable.
-However, in 20,000 rolls, a sample proportion of $\hat{p} = 1$ would be *incredibly* unlikely for a fair die.
+However, in $20\ 000$ rolls, a sample proportion of $\hat{p} = 1$ would be *incredibly* unlikely for a fair die.
 
-Earlier (Sect. \@ref(SamplingDistributionKnownp)), the sampling distribution of a sample proportion (Sed. \@ref(def:SamplingDistProp)) was given.
-For an assumed value of $p$, the sample proportion $\hat{p}$ across all possible samples is expected to vary, described by
+In Chap.\ \@ref(CIOneProportion), the sampling distribution of a sample proportion was given.
+Since hypothesis testing begins by making an *assumption* about the parameter (here, assuming that $p = 1/6$), 
+the sampling distribution can be described as follows (see Sect.\ \@ref(SamplingDistributionKnownp)).
 
-* an approximate normal distribution;
-* centred around a sampling mean whose value is the population proportion $p$;
+
+::: {.definition #DEFSamplingDistributionPhat name="Sampling distribution of a sample proportion when $p$ is unknown"}
+The *sampling distribution of the sample proportion* is (when certain conditions are met; Sect.\ \@ref(ValidityProportionsTest)) described by
+
+* an approximate normal distribution,
+* centred around the sampling mean, whose value is $p$,
 * with a standard deviation (called the *standard error* of $\hat{p}$) of  
 \begin{equation}
-   \text{s.e.}(\hat{p}) 
-   = \sqrt{\frac{p \times (1 - p)}{n}},
+   \text{s.e.}(\hat{p}) = \sqrt{\frac{ p \times (1 - p)}{n}},
    (\#eq:StdErrorPknownTest)
 \end{equation}
-when certain conditions are met (Sect. \@ref(ValidityProportionsTest)), where $n$ is the size of the sample.
-This is the *sampling distribution of the sample proportion*.
+where $n$ is the size of the sample, and $p$ is the assumed value of the population proportion (from $H_0$)..
+In general, the approximation gets better as the sample size gets larger.
+:::
+
 
 The *mean* of this distribution is the *mean* of all possible values of $\hat{p}$; the value of that means just happens to be the value of $p$.
 Similarly, the standard deviation of this distribution is denoted $\text{s.e.}(\hat{p})$, to remind us that it is the standard deviation of the mean of all possible values of the statistic $\hat{p}$.
-So we write that the sample proportions have a normal distribution, with mean $\mu_{\hat{p}} = p$ and standard deviation $\text{s.e.}(\hat{p})$ as given in Eq. \@ref(eq:StdErrorPknownTest).
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -93,89 +99,89 @@ The notation $\text{s.e.}{\hat{p}}$ is the *standard error of the sample proport
 :::
 
 
-I decided to use 100 rolls.
-So, if $p$ really was $1/6$, and if certain conditions are met (Sect. \@ref(ValidityProportionsTest)), the possible values of the sample proportion that could be expected across all possible samples of size $100$ would be described using:
+I decided to use $100$ rolls.
+So, if $p$ really was $1/6$, and if certain conditions are met (Sect.\ \@ref(ValidityProportionsTest)), the possible values of the sample proportion that could be expected across all possible samples of size $100$ would be described using:
 
-* An approximate normal distribution;
-* With mean $\mu_{\hat{p}} = 1/6$;
+* An approximate normal distribution,
+* With mean of $1/6$,
 * With a standard deviation of 
   $\displaystyle
   \text{s.e.}(\hat{p}) 
-  = \sqrt{\frac{\frac{1}{6} \times(1 - \frac{1}{6})}{100}} = 0.037267$.
+  = \sqrt{\frac{ (1/6) \times \left(1 - (1/6)\right)}{100}} = 0.037267$.
   This is the standard deviation of all possible sample proportions when $n = 100$.
 
 
 
-```{r NotationOnePropHT}
-OneProportionNotation <- array( dim = c(4, 2))
+<!-- ```{r NotationOnePropHT} -->
+<!-- OneProportionNotation <- array( dim = c(4, 2)) -->
 
-OneProportionNotation[1, ] <- c("Individual values in the population",
-                          "Proportion of successes $p$")
-OneProportionNotation[2, ] <- c("Individual values in a sample",
-                          "Proportion of successes $\\hat{p}$")
-OneProportionNotation[3, ] <- c("Sample proportions ($\\hat{p}$) across",
-                          "Vary with approx. normal distribution (under certain conditions)")
-OneProportionNotation[4, ] <- c("all possible samples",
-                          "with mean $\\mu_{\\hat{p}}$ and standard deviation $\\text{s.e.}(\\hat{p})$")
+<!-- OneProportionNotation[1, ] <- c("Individual values in the population", -->
+<!--                           "Proportion of successes $p$") -->
+<!-- OneProportionNotation[2, ] <- c("Individual values in a sample", -->
+<!--                           "Proportion of successes $\\hat{p}$") -->
+<!-- OneProportionNotation[3, ] <- c("Sample proportions ($\\hat{p}$) across", -->
+<!--                           "Vary with approx. normal distribution (under certain conditions)") -->
+<!-- OneProportionNotation[4, ] <- c("all possible samples", -->
+<!--                           "with mean $\\mu_{\\hat{p}}$ and standard deviation $\\text{s.e.}(\\hat{p})$") -->
 
 
-if( knitr::is_latex_output() ) {
-  kable( OneProportionNotation,
-         format = "latex",
-         booktabs = TRUE,
-         longtable = FALSE,
-         escape = FALSE,
-         caption = "The notation used for describing means, and the sampling distribution of the sample means",
-         align = c("r", "l"),
-         linesep = c("\\addlinespace",
-                     "\\addlinespace",
-                     ""),
-         col.names = c("Quantity",
-                       "Description") ) %>%
-	row_spec(0, bold = TRUE) %>%
-  kable_styling(font_size = 10)
-} else {
-  OneProportionNotation[3, 1] <- paste(OneProportionNotation[3, 1], 
-                                 OneProportionNotation[4, 1])
-  OneProportionNotation[3, 2] <- paste(OneProportionNotation[3, 2], 
-                                 OneProportionNotation[4, 2])
-  OneProportionNotation[4, ] <- NA
-  
-    kable( OneProportionNotation,
-         format = "html",
-         booktabs = TRUE,
-         longtable = FALSE,
-         escape = FALSE,
-         caption = "The notation used for describing means, and the sampling distribution of the sample means",
-         align = c("r", "l"),
-         linesep = c("\\addlinespace",
-                     "\\addlinespace",
-                     ""),
-         col.names = c("Quantity",
-                       "Description") ) %>%
-	row_spec(0, bold = TRUE) 
-}
-```
+<!-- if( knitr::is_latex_output() ) { -->
+<!--   kable( OneProportionNotation, -->
+<!--          format = "latex", -->
+<!--          booktabs = TRUE, -->
+<!--          longtable = FALSE, -->
+<!--          escape = FALSE, -->
+<!--          caption = "The notation used for describing means, and the sampling distribution of the sample means", -->
+<!--          align = c("r", "l"), -->
+<!--          linesep = c("\\addlinespace", -->
+<!--                      "\\addlinespace", -->
+<!--                      ""), -->
+<!--          col.names = c("Quantity", -->
+<!--                        "Description") ) %>% -->
+<!-- 	row_spec(0, bold = TRUE) %>% -->
+<!--   kable_styling(font_size = 10) -->
+<!-- } else { -->
+<!--   OneProportionNotation[3, 1] <- paste(OneProportionNotation[3, 1],  -->
+<!--                                  OneProportionNotation[4, 1]) -->
+<!--   OneProportionNotation[3, 2] <- paste(OneProportionNotation[3, 2],  -->
+<!--                                  OneProportionNotation[4, 2]) -->
+<!--   OneProportionNotation[4, ] <- NA -->
+
+<!--     kable( OneProportionNotation, -->
+<!--          format = "html", -->
+<!--          booktabs = TRUE, -->
+<!--          longtable = FALSE, -->
+<!--          escape = FALSE, -->
+<!--          caption = "The notation used for describing means, and the sampling distribution of the sample means", -->
+<!--          align = c("r", "l"), -->
+<!--          linesep = c("\\addlinespace", -->
+<!--                      "\\addlinespace", -->
+<!--                      ""), -->
+<!--          col.names = c("Quantity", -->
+<!--                        "Description") ) %>% -->
+<!-- 	row_spec(0, bold = TRUE)  -->
+<!-- } -->
+<!-- ``` -->
 
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 When computing the standard error for a proportion, take care!
 
-* The formula for a confidence interval uses the **sample proportion** $\hat{p}$ (see Eq. \@ref(eq:StdErrorPknownTest)), since we only have sample information to work with when forming a confidence interval.
-* The formula for a hypothesis test uses the **population proportion** $p$ from the null hypothesis (see Eq. \@ref(eq:stderrorphat)), since hypothesis testing *assumes that the null hypothesis is true*, and hence the value of $p$ is known.
-* In both cases, make sure you are using a *proportion* in the formula, not a *percentage* (i.e., using 0.16666 rather than 16.666%). 
+* The formula for a confidence interval uses the *sample proportion* $\hat{p}$ (see Eq.\ \@ref(eq:StdErrorPknownTest)), since we only have sample information to work with when forming a confidence interval.
+* The formula for a hypothesis test uses the *population proportion* $p$ from the null hypothesis (see Eq.\ \@ref(eq:StdErrorPknownTest)), since hypothesis testing *assumes that the null hypothesis is true*, and hence the value of $p$ is known.
+* In both cases, make sure you are using a *proportion* in the formula, not a *percentage* (i.e., using $0.16666...$ rather than $16.666...$%). 
 
 Also: Don't forget to take the square root!
 :::
 
 
-A picture of this sampling distribution (Fig. \@ref(fig:RollsSixesSD)) shows how the *sample* proportion varies when $n = 100$ across all possible samples, simply due to sampling variation, when $p = 0.1666...$.
-A value of $\hat{p}$ larger than 0.25 looks unlikely when $n = 100$; a value less than 0.10 also looks quite unlikely, but not impossible.
-A value above 0.3, or lower than 0.05, looks almost impossible.
+A picture of this sampling distribution (Fig.\ \@ref(fig:RollsSixesSD)) shows how the *sample* proportion varies when $n = 100$ across all possible samples, simply due to sampling variation, when $p = 1/6 = 0.1666...$.
+A value of $\hat{p}$ larger than $0.25$ looks unlikely when $n = 100$; a value less than $0.10$ also looks quite unlikely, but not impossible.
+A value above $0.3$, or lower than $0.05$, looks almost impossible.
 
 
-```{r, RollsSixesSD, fig.height=3.00, fig.width=9, out.width='90%', fig.align="center", fig.cap="The sampling distribution, showing the distribution of the sample proportion of 1s when the population proportion is 0.1666..., in 50 die rolls"}
+```{r, RollsSixesSD, fig.height=3.25, fig.width=9, out.width='90%', fig.align="center", fig.cap="The sampling distribution, showing the distribution of the sample proportion of 1s when the population proportion is $1/6$, in $50$ die rolls"}
 p <- 1/6
 n <- 100
 mu <- p
@@ -190,6 +196,7 @@ out <- plotNormal(mu = mu,
                   sd = sep,
                   round.dec = 3,
                   xlim.hi = 0.45,
+                  ylim = c(0, 16), 
                   showX = seq(-3, 7, by = 1) * sep + p, # The tick marks
                   xlab = "Values of the sample proportion",
                   main = "Sampling distribution of the sample proportion of ones\nin 100 rolls ")
@@ -209,15 +216,38 @@ text(y =  0.75 * max(out$y),
      x = x,
      cex = 0.8,
      pos = 3,
-     labels = expression(41~ones~"in"~100~rolls) )
+     labels = expression( atop(41~ones~"in"~100~rolls,
+                               group("(",hat(italic(p))==0.41, ")" ) ) ) )
 
 
-text(y =  0.6 * max(out$y),
+
+# Sampling mean
+arrows(x0 = mu,
+       x1 = mu,
+       y0 = 13,
+       y1 = max(out$y),
+       angle = 15,
+       length = 0.1)
+text(y =  13,
      x = mu,
      cex = 0.8,
      pos = 3,
-     labels = expression( mu[hat(italic(p))]==italic(p) ) )
+     labels = expression( Sampling~mean~italic(p) ) )
 
+# Std error
+arrows(x0 = mu,
+       x1 = mu + sep,
+       y0 = 1.25,
+       y1 = 1.25,
+       code = 3, # Arrows both ends
+       angle = 15,
+       length = 0.1)
+text(y =  1.25,
+     x = mu + (sep / 2),
+     cex = 0.8,
+     pos = 3,
+     labels = expression( atop(Std.~error,
+                               0.0373 ) ) )
 
 
 mtext( expression( group( "(", italic(z)==-2, ")" ) ) ,
@@ -248,26 +278,26 @@ mtext( expression( group( "(", italic(z)==6, ")" ) ) ,
 ```
 
 
-In my 100 rolls of one die, I observed 41 that showed a `r include_graphics("Dice/die1.png", dpi=1500)`, a sample proportion of $\hat{p} = 41/100 = 0.41$.
-From Fig. \@ref(fig:RollsSixesSD)---which displays the values of $\hat{p}$ from all possible samples---this is practically impossible *if the die was fair*.
+In my $100$ rolls of one die, I observed $41$ that showed a `r include_graphics("Dice/die1.png", dpi=1500)`, a sample proportion of $\hat{p} = 41/100 = 0.41$.
+From Fig.\ \@ref(fig:RollsSixesSD)---which displays the values of $\hat{p}$ from *all* possible samples---this is practically impossible *if the die was fair*.
 What I observed was almost impossible... but I really did observe it.
-A reasonable conclusion is that the assumption I was making---that the die is fair---is not tenable.
+A reasonable conclusion is that the assumption I was making---that the die is fair---is not tenable, nor supported by the evidence (i.e., the data).
 
 
 ## Computing the test statistic and $z$-scores {#OnePropTestStatistic}
 
-One way to measure how far the sample proportion $\hat{p} = 0.41$ is from the population proportion $p = 1/6$ in 100 rolls is to use a $z$-score, since the sampling distribution (Fig. \@ref(fig:RollsSixesSD)) has an approximate normal distribution, with mean $p$ and standard deviation of $\text{s.e.}(\hat{p})$.
-The $z$-score is
-
+One way to measure how far the sample proportion $\hat{p} = 0.41$ is from the population proportion $p = 1/6$ in $100$ rolls is to use a $z$-score, since the sampling distribution (Fig.\ \@ref(fig:RollsSixesSD)) has an approximate normal distribution, with mean $p$ and standard deviation of $\text{s.e.}(\hat{p})$.
+The $z$-score is  
 \begin{align*}
    z 
    &= \frac{\text{sample statistic} - \text{mean of the distribution}}{\text{standard deviation of the distribution}}\\
    &= \frac{\hat{p} - p }{\text{s.e.}(\hat{p})} \\
-   &= \frac{0.41 - 0.1666...}{037267} = 6.53.
+   &= \frac{0.41 - 0.1666...}{0.037267} = 6.53.
 \end{align*}
-(Remember that the standard deviation of the distribution in Fig. \@ref(fig:RollsSixesSD) is the the standard error: the amount of variation in the sample proportions.)
-The observed sample proportion is more than six standard deviations from the mean, which is *highly unusual* according to the [68--95--99.7 rule](#def:EmpiricalRule).
+(Remember that the standard deviation of the distribution in Fig.\ \@ref(fig:RollsSixesSD) is the standard error: the amount of variation in the sample proportions.)
 
+In this context, the $z$-score is called a *test statistic*.
+It tells us that the observed sample proportion is more than six standard deviations from the mean, which is *highly unusual* according to the [68--95--99.7 rule](#def:EmpiricalRule).
 
 
 ## Determining $P$-values {#OnePropTestP}
@@ -275,48 +305,52 @@ The observed sample proportion is more than six standard deviations from the mea
 The value of the $z$-score shows that the value of $\hat{p}$ is highly very unusual... but how unusual?
 Quantifying *how* unusual is assessed more precisely using a $P$-value, which is used widely in scientific research. The $P$-value is a way of measuring how unusual an observation is, when $H_0$ is assumed to be true.
 
+$P$-values refer to the area *more extreme* than the calculated $z$-score in the normal distribution; that is, in the *tails* of the distribution.
+Clearly, from what the $P$-value means, a $P$-value is always between $0$ and $1$.
+
+
 
 ### Approximating $P$-values: the 68--95--99.7 rule {#OnePropTestP6895997}
 
-$P$-values can be approximated using the 68--95--99.7 rule with a diagram (Sect. \@ref(ApproxProbs)), or more precisely using the $z$-tables
+$P$-values can be approximated using the 68--95--99.7 rule with a diagram (Sect.\ \@ref(ApproxProbs)), or more precisely using the $z$-tables
 `r if (knitr::is_latex_output()) {
-   '(Appendices \\@ref(ZTablesNEG) and \\@ref(ZTablesPOS);'
+   '(Appendices\\ \\@ref(ZTablesNEG) and \\@ref(ZTablesPOS);'
 } else {
-   '(App. \\@ref(ZTablesOnline);'
+   '(App.\\ \\@ref(ZTablesOnline);'
 }`
-see Sect. \@ref(Z-Score-Forestry)).
-For many hypothesis tests, $P$-values are found using software.
+see Sect.\ \@ref(Z-Score-Forestry)).
+$P$-values are also reported by software.
 
-$P$-values refer to the area **more extreme** than the calculated $z$-score in the normal distribution; that is, in the *tails* of the distribution. 
 For *two-tailed* $P$-values, the $P$-value is the combined area in the two tails; for *one-tailed* $P$-values, the $P$-value is the area in one tail only.
 For example:
 
-* *If* the calculated $z$-score was $z = 1$, the two-tailed $P$-value would be the shaded area in Fig. \@ref(fig:OnePropTestP) (left panel):
-  About 32%, based on the 68--95--99.7 rule.
+* *If* the calculated $z$-score was $z = 1$, the two-tailed $P$-value would be the shaded area in Fig.\ \@ref(fig:OnePropTestP) (left panel):
+  About $32$%, based on the 68--95--99.7 rule.
   The $P$-value would be the same if $z = -1$.
   The *one-tailed* $P$-value would the the area in one-tail: 
-  About 16%, based on the 68--95--99.7 rule.
-* *If* the calculated $z$-score was $z = 2$, the two-tailed $P$-value would be the shaded area shown in Fig. \@ref(fig:OnePropTestP) (middle panel): 
-  About 5%, based on the 68--95--99.7 rule.
+  About $16$%, based on the 68--95--99.7 rule.
+* *If* the calculated $z$-score was $z = 2$, the two-tailed $P$-value would be the shaded area shown in Fig.\ \@ref(fig:OnePropTestP) (right panel): 
+  About $5$%, based on the 68--95--99.7 rule.
   The $P$-value would be the same if $z = -2$.
   The *one-tailed* $P$-value would the the area in one-tail:
-  About 2.5%, based on the 68--95--99.7 rule.
+  About $2.5$%, based on the 68--95--99.7 rule.
 
 
-If the $z$-score is a little *larger* than $z = 1$, say $z = 1.2$, then the tail area will be a little *smaller* than the tail area when $z = 1$ (Fig \@ref(fig:OnePropTestP2), left panel).
+If the $z$-score is a little *larger* than $z = 1$, say $z = 1.2$, then the tail area will be a little *smaller* than the tail area when $z = 1$ (Fig.\ \@ref(fig:OnePropTestP2), left panel).
 The two-tailed $P$-value is a little *smaller* than $0.32$.
 
-Similarly, when the $t$-score is a bit *less* than $z = 2$, say $z = 1.9$, the tail area will be a little *larger* than the tail area when $z = 2$ (Fig \@ref(fig:OnePropTestP2), left panel).
+Similarly, when the $t$-score is a bit *smaller* than $z = 2$, say $z = 1.9$, the tail area will be a little *larger* than the tail area when $z = 2$ (Fig.\ \@ref(fig:OnePropTestP2), right panel).
 The two-tailed $P$-value is a little *larger* than $0.05$.
 
 
-```{r, OnePropTestP, fig.cap="The two-tailed P-value is the combined area in the two tails of the distribution; left panel: if $z = 1$ (or $z = -1$); right panel: if $z = 2$ (or $z = -2$)", fig.width=10, fig.height=3, out.width='90%', fig.align="center"}
+```{r, OnePropTestP, fig.cap="The two-tailed P-value is the combined area in the two tails of the distribution; left panel: if $z = 1$ (or $z = -1$); right panel: if $z = 2$ (or $z = -2$). (The one-tailed $P$-values are half the two-tailed $P$-values: $P = 0.16$ and $P = 0.025$.)", fig.width=10, fig.height=3, out.width='90%', fig.align="center"}
 par(mfrow = c(1, 2), 
     mar = c(4, 1, 4, 1) + 0.1)
 
 out <- plotNormal(mu = 0,
            sd = 1,
-           main = expression(The~italic(P)*"-value"~"if"~italic(z)==1),
+           main = expression( atop( The~italic(P)*"-value"~"if"~italic(z)==1~or~italic(z)==-1*":",
+                                    Approx.~italic(P)*"-"*value*":"~0.32) ),
            xlab = expression(italic(z)*"-score")
            )
 
@@ -348,7 +382,8 @@ text(0,
 
 out <- plotNormal(mu = 0,
            sd = 1,
-           main = expression(The~italic(P)*"-value"~"if"~italic(z)==2),
+           main = expression( atop( The~italic(P)*"-value"~"if"~italic(z)==2~or~italic(z)==-1*":",
+                                    Approx.~italic(P)*"-"*value*":"~0.05) ),
            xlab = expression(italic(z)*"-score")
            )
 shadeNormal(out$x, out$y,
@@ -377,12 +412,28 @@ text(0,
 ```
 
 
-```{r OnePropTestP2, fig.cap="The two-tailed P-value is the combined area in the two tails of the distribution; left panel: when $z = 1.2$ (or $z = -1.2$); right panel: when $z = 1.9$ (or $z = -1.9$)", fig.align="center", fig.width=10, fig.height=3, out.width='90%'}
+
+### Exact $P$-values: using tables {#OnePropTestPTables}
+
+Using the tables of areas under normal distributions (`r if ( knitr::is_html_output()) { 'Appendix\\ \\@ref(ZTablesOnline).'} else {'Appendices\\ \\@ref(ZTablesNEG) and \\@ref(ZTablesPOS)'}`), we can be more precise when computing the $P$-values, using the ideas from Sect.\ \@ref(ExactAreasUsingTables).
+For instance (see Fig.\ \@ref(fig:OnePropTestP2)):
+
+* For $z = 1.2$: the area to the *left* of $z = -1.2$ is $0.1151$, and the area to the *right* of $z = 1.2$ is $0.1151$, so the *two-tailed* $P$-value is $0.1151 + 0.1151 = 0.2302$.
+  This is a little smaller than $0.32$, as estimated above.
+* For $z = 1.9$: the area to the *left* of $z = -1.9$ is $0.0287$, and the area to the *right* of $z = 1.9$ is $0.0287$, so the *two-tailed* $P$-value is $0.0287 + 0.0287 = 0.0574$.
+  This is a little larger than $0.05$, as estimated above.
+
+In this die-rolling example, where the $z$-score is $6.53$, the tail area is *very* small (using `r if ( knitr::is_html_output()) { 'Appendix\\ \\@ref(ZTablesOnline)'} else {'Appendices\\ \\@ref(ZTablesNEG) and\\ \\@ref(ZTablesPOS)'}`),
+and zero to four decimal places (Fig.\ \@ref(fig:RollsSixesSD)).
+
+
+```{r OnePropTestP2, fig.cap="The two-tailed P-value is the combined area in the two tails of the distribution; left panel: when $z = 1.2$ (or $z = -1.2$); right panel: when $z = 1.9$ (or $z = -1.9$).", fig.align="center", fig.width=10, fig.height=3, out.width='90%'}
 par( mfrow = c(1, 2))
 
 out <- plotNormal(mu = 0,
            sd = 1,
-           main = expression(The~italic(P)*"-value"~when~italic(z)==1.2),
+           main = expression( atop(The~italic(P)*"-value"~when~italic(z)==1.2*":",
+                                   a~bit~smaller~than~0.32)),
            xlab = expression(italic(z)*"-score")
            )
 shadeNormal(out$x, out$y,
@@ -409,12 +460,22 @@ text(x = 1,
      pos = 3,
      label = expression(" "~italic(z) == 1))
 
-
+arrows(x0 = -1, 
+       x1 = 1,
+       y0 = 0.04,
+       y1 = 0.04,
+       angle = 15,
+       length = 0.15,
+       code = 3) # BOTH ENDS
+text(0,
+     y = 0.07,
+     label = "Area: 68%")
 
 
 out <- plotNormal(mu = 0,
            sd = 1,
-           main = expression(The~italic(P)*"-value"~when~italic(z)==1.9),
+           main = expression( atop(The~italic(P)*"-value"~when~italic(z)==1.9*":",
+                                   a~bit~larger~than~0.05)),
            xlab = expression(italic(z)*"-score")
            )
 shadeNormal(out$x, out$y,
@@ -443,34 +504,16 @@ text(x = 2,
 ```
 
 
-### Exact $P$-values: using tables {#OnePropTestPTables}
-
-Using the tables of areas under normal distributions (`r if ( knitr::is_html_output()) { 'Appendix \\@ref(ZTablesOnline).'} else {'Appendices \\@ref(ZTablesNEG) and \\@ref(ZTablesPOS)'}`), we can be more precises when computing the $P$-values, using the ideas from Sect. \@ref(ExactAreasUsingTables).
-For instance (see Fig. \@ref(fig:OnePropTestP2)):
-
-* For $z = 1.2$: the area to the *left* of $z = -1.2$ is $0.1151$, and the area to the *right* of $z = 1.2$ is $0.1151$, so the *two-tailed* $P$-value is $0.1151 + 0.1151 = 0.2302$.
-  This is a little smaller than $0.32$, as estimated above.
-* For $z = 1.9$: the area to the *left* of $z = -1.9$ is $0.0287$, and the area to the *right* of $z = 1.9$ is $0.0287$, so the *two-tailed* $P$-value is $0.0287 + 0.0287 = 0.0574$.
-  This is a little larger than $0.05$, as estimated above.
-
-In this die-rolling example, where the $z$-score is 6.53, the tail area is *very* small (using `r if ( knitr::is_html_output()) { 'Appendix \\@ref(ZTablesOnline)'} else {'Appendices \\@ref(ZTablesNEG) and \\@ref(ZTablesPOS)'}`),
-and zero to four decimal places (Fig. \@ref(fig:RollsSixesSD)).
-Clearly, from what the $P$-value means, a $P$-value is always between 0 and 1.
-
-
-
-
 ## Making decisions with $P$-values {#OnePropTestDecisions}
 
-$P$-values tells us the probability of observing the sample statistic (or something even more extreme), assuming the null hypothesis is true.
-In this context, the $P$-value tells us the probability of observing the value of $\hat{p}$ (or something more extreme), just through sampling variation (chance) if $p = 0.1666\dots$
-
-So, the $P$-value is a probability, albeit a probability of something quite specific, so it is a value between 0 and 1. 
+$P$-values tells us the probability of observing the sample statistic (or one even more extreme), assuming the null hypothesis is true.
+In this context, the $P$-value is the probability of observing the value of $\hat{p} = 0.41$ (or more extreme), just through sampling variation (chance) if $p = 1/6$.
+Since the $P$-value is a probability (albeit a probability of something quite specific), so is a value between $0$ and $1$. 
 Then `r if( knitr::is_html_output() ) {
-   "(see Fig. \\@ref(fig:PvaluesAnimation)):"
+   "(see Fig.\\ \\@ref(fig:PvaluesAnimation)):"
 }`
 `r if( knitr::is_latex_output() ) {
-   "(see Fig. \\@ref(fig:PvaluesBigSmall)):"
+   "(see Fig.\\ \\@ref(fig:PvaluesBigSmall)):"
 }`
 
 * 'Big' $P$-values mean that the sample statistic (i.e., $\bar{p}$) could reasonably have occurred through sampling variation in one of the many possible samples, if the assumption made about the parameter (stated in $H_0$) was true: 
@@ -480,10 +523,11 @@ Then `r if( knitr::is_html_output() ) {
 
 What is meant by 'small' and 'big'? 
 This is *arbitrary*: no definitive rules exist.
-A $P$-value smaller than 1% (that is, smaller than 0.01) is usually considered 'small', and a $P$-value larger than 10% (that is, larger than 0.10) is usually considered 'big'.
-Between the values of 1% and 10% is often a 'grey area', though a $P$-value less than 0.05 is often considered 'small'.
+A $P$-value smaller than $1$% (that is, smaller than $0.01$) is usually considered 'small', and a $P$-value larger than 10% (that is, larger than $0.10$) is usually considered 'big'.
+Between the values of $1$% and $10$% is often a 'grey area'.
+Commonly, however, a $P$-value less than $0.05$ is often considered 'small'.
 
-In this die-rolling example, where the $P$-value is *very* small, the data contradict the null hypothesis (that $p = 1/6$), suggesting that the die may not be fair.
+In this die-rolling example, where the $P$-value is *very* small, the data contradict the null hypothesis (that $p = 1/6$), suggesting that the die is probably not fair.
 
 
 ```{r PvaluesAnimation, animation.hook="gifski",  interval=0.20, fig.cap="The strength of evidence: P-values. As the $z$-score becomes larger, the $P$-value becomes smaller, and the evidence is greater to support the alternative hypothesis.", fig.height = 2.75, fig.align="center", dev=if (is_latex_output()){"pdf"}else{"png"}}
@@ -558,8 +602,8 @@ if (knitr::is_latex_output()) {
   par(mfrow = c(1, 2) )
 #  par( mar = c(0.1, 0.1, 0.1, 0.1) ) # Number of margin lines on each side
 
-  zList <- c( 1.5, # Two-tailed P-value: 10% -1.645
-              2.4 ) # Two-tailed P-value: 1% -2.576
+  zList <- c( 1.25, # Two-tailed P-value: 10% -1.645
+              2.3 ) # Two-tailed P-value: 1% -2.576
 
   pMeaning <- function(pValue){
     if (pValue > 0.10) Meaning <- "Insufficient"
@@ -622,172 +666,157 @@ if (knitr::is_latex_output()) {
 
 In general, to communicate the results of any hypothesis test, report:
 
-* An answer to the RQ.
-  Since the null hypothesis is assumed to be true, the onus is on the evidence to support the alternative hypothesis.
-  Hence, conclusions are worded in terms of how much evidence exists to support the *alternative* hypothesis.
+* An answer to the RQ,  worded in terms of how much evidence exists to support the *alternative* hypothesis.
 * A summary of the evidence used to reach that conclusion (such as the $z$-score and $P$-value, including if the $P$-value is one- or two-tailed).
 * Sample summary information, including a CI, summarising the data used to make the decision.
 
 So for the die-rolling example, write:
 
-> The sample provides very strong evidence ($z = 6.53$; two-tailed $P < 0.001$) that the proportion of sixes is not $1/6$ ($n = 100$ rolls; 41 sixes) in the population.
+> The sample provides very strong evidence ($z = 6.53$; two-tailed $P < 0.001$) that the proportion of sixes is not $1/6$ ($\hat{p} = 0.41$; $n = 100$ rolls) in the population.
 
 The components are:
 
 * An answer to the RQ: 'The sample provides very strong evidence... that the population proportion is not $1/6$'; notice the wording states how much evidence exists in the sample to support the *alternative* hypothesis.
 * The evidence used to reach the conclusion: '$z = 6.53$; two-tailed $P < 0.001$)'.
-* Some sample summary information (including a CI).
+* Sample summary information (including a CI).
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 Since the *null* hypothesis is initially assumed to be true, *the onus is on the evidence to refute the null hypothesis*. 
 Hence, conclusions are worded in terms of how strongly the evidence (i.e., sample data) support the alternative hypothesis.  
 
-In fact,  the alternative hypothesis *may* or *may not* be true... but the evidence (data) available supports the alternative hypothesis.
+The alternative hypothesis *may* or *may not* be true... but we report how much evidence (data) supports the alternative hypothesis.
 :::
 
 
-## Summary {#OnePropTestSummary}
+## Process overview {#OnePropTestOverview}
 
 Let's recap the decision-making process, in this context about rolling a `r include_graphics("Dice/die1.png", dpi=1500)`:
 
-1. **Assumption**: 
-   Write the *null hypothesis* snd *alternative hypothesis* about the *parameter* (based on the RQ): 
-   * $H_0$: $p = 01.666...$, and 
-   * $H_1$: $p \ne 0.1666...$ (this is a two-tailed alternative hypothesis).
-2. **Expectation**: 
+1. *Assumption*: 
+   Write the *null hypothesis* and *alternative hypothesis* about the *parameter* (based on the RQ): 
+   * $H_0$: $p = 1/6$, and 
+   * $H_1$: $p \ne 1/6$ (this is a two-tailed alternative hypothesis).
+2. *Expectation*: 
    The sampling distribution describes what values to expect reasonably expect from the sample statistic across all possible samples, *if* the null hypothesis is true.
-   Under certain circumstances, the sample proportions will vary with an approximate normal distribution around a mean of $p = 0.1666...$ with a standard deviation of $\text{s.e.}(\hat{p}) = 0.0372678$.
-3. **Observation**: 
+   Under certain circumstances, the sample proportions will vary with an approximate normal distribution around a mean of $p = 1/6$ with a standard deviation of $\text{s.e.}(\hat{p}) = 0.0372678$.
+3. *Observation*: 
    Compute the $z$-score: $z = 6.53$ to measure the distance between the assumed population value, and the observed sample value.
-4. **Consistency?**: 
+4. *Consistency?*: 
    Determine if the data are consistent with the assumption, by computing the $P$-value. 
   Here, the $P$-value is (much) less than $0.001$.
   The $P$-value can be computed by software, or approximated using the 68--95--99.7 rule.
 
-The **conclusion** is that very strong evidence exists that $p$ is *not* $0.16667$, based on the evidence.
+The *conclusion* is that very strong evidence exists that $p$ is *not* $1/6$, based on the evidence.
 
 
 ::: {.example #POnePropTestMeasles name="One sample proportion test"}
-A study of the measles-rubella vaccination in Korea [@kim2004sero] compared the proportion of children with measles antibodies to the World Health Organization (WHO) target proportion (for children aged 5 to 9 years old: 10%).
+A study of the measles-rubella vaccination in Korea [@kim2004sero] compared the proportion of children with measles antibodies to the World Health Organization (WHO) target proportion (for children aged 5 to 9 years old: $10$%).
 
-In the study, 55 children out of 972 had the antibody present; that is, $\hat{p} = 55/972 = 0.056584...$.
-Of course, every sample of 972 children would produce a different sample proportion (depending on which children were selected to be in the sample), so the difference between this sample proportion and the target proportion (of 10%, or $p = 0.10$) could be due to sampling variation.
+In the study, $55$ children out of $972$ had the antibody present; that is, $\hat{p} = 55/972 = 0.056584...$.
+Of course, every sample of $972$ children would produce a different sample proportion (depending on which children were selected to be in the sample), so the difference between this sample proportion and the target proportion (of $10$%, or $p = 0.10$) could be due to sampling variation.
 
-The aim of the study was to test if the proportion of Korean children with the measles antibody in the *population* was 10% or better (lower); the hypotheses are:
+The aim of the study was to test if the proportion of Korean children with the measles antibody in the *population* was $10$% or better (lower); the hypotheses are:
 
-* $H_0$: $p = 0.10$ (assume the target is met, and the difference between $p$ and $\hat{p}$ is due to sampling variation); and
-* $H_1$: $p < 0.10$ (one-tailed, since the RQ is whether the target is 10% or *lower*).
+* $H_0$: $p = 0.10$ (i.e, assume the target is met, and the difference between $p$ and $\hat{p}$ is due to sampling variation); and
+* $H_1$: $p < 0.10$ (one-tailed, since the RQ is whether the target is $10$% or *lower*).
 
-The *standard error* for the sample proportion is
-
+The *standard error* for the sample proportion is  
 \[
    \text{s.e.}(\hat{p}) 
    = \sqrt{\frac{p (1 - p)}{n}}
    = 0.0096225...
 \]
-The *test statistic* is:
-
+The *test statistic* is:  
 \[
    z 
    = \frac{\hat{p} - p}{\text{s.e.}(p)}
    = \frac{0.056584 - 0.10}{0.0096225} = -4.51.
 \]
-This is a *very* large (and *negative*) $z$-score, so expect a *very* small $P$-value from using the 68--95--99.7 rule or using tables: there is very strong evidence to support the alternative hypothesis.
+This is a *very* large (and *negative*) $z$-score, so the $P$-value will be very small based on either the 68--95--99.7 rule or using tables.
+Either way, the evidence very strongly supports the alternative hypothesis.
 We write:
 
-> Very strong evidence exists in the sample ($z = -4.51$; two-tailed $P < 0.001$) that the population proportion is less than the target of $p = 0.10$ (Korean sample proportion: $\hat{p} = 0.0566$; $n = 972$; approximate 95% CI from $0.042$ to $0.071$).
+> Very strong evidence exists in the sample ($z = -4.51$; two-tailed $P < 0.001$) that the population proportion is less than the target of $p = 0.10$ (Korean sample proportion: $\hat{p} = 0.0566$; $n = 972$; approximate $95$% CI from $0.042$ to $0.071$).
 :::
 
 
 ## Statistical validity conditions {#ValidityProportionsTest}
 
-All inference procedures have underlying [conditions to be met](#exm:StatisticalValidityAnalogy) so that the results are statistically valid; that is, the $P$-values can be found accurately because the sampling distribution is an approximate normal distribution.
-For a hypothesis test for one proportion, these conditions are similar to those for the [CI for one proportion](#ValidityProportions).
+All hypothesis tests have underlying conditions to be met so that the results are statistically valid; that is, the $P$-values can be found accurately because the sampling distribution is an approximate normal distribution.
+For a hypothesis test for one proportion, these conditions are similar to those for the CI for one proportion (Sect.\ @ref(ValidityProportions)).
 
 The *statistical validity conditions* for a test for a single proportion is that the *expected* number of individuals in the group of interest (i.e, $n\times p$) and in the group *not* of interest (i.e., $n\times (1 - p)$ both exceed five; that is:
 
 * $n\times p > 5$, *and* $n\times (1 - p) > 5$.
 
-The value of 5 here is a rough figure here, and some books give other values (such as 10 or 15).
-This condition ensures that the *distribution of the sample proportions has an approximate normal distribution* (so that, for example, the [68--95--99.7 rule](#def:EmpiricalRule) can be used).
+The value of\ $5$ here is a rough figure here, and some books give other values (such as $10$ or $15$).
+This condition ensures that the *sampling distribution of the sample proportions has an approximate normal distribution* (so that, for example, the [68--95--99.7 rule](#def:EmpiricalRule) can be used).
 
 
 ::: {.example #StatisticalValidityDice name="Statistical validity"}
-The hypothesis test regarding the dice is statistically valid, since  $n\times p = 100 \times (1/6) = 16.666\dots$ and $n\times (1 - p) = 83.333\dots$, so *both* comfortably exceed five.
-:::
-
-
-::: {.example #StatisticalValidityMeasles name="Statistical validity"}
-The hypothesis test regarding measles in Korea (Example \@ref(exm:POnePropTestMeasles)) is statistically valid, since  $n\times p = 972 \times 0.10 = 97.2$ and $n\times (1 - p) = 874.8$, so *both* easily exceed five.
+The hypothesis test regarding the dice is statistically valid, since $n\times p = 100 \times (1/6) = 16.666\dots$ and $n\times (1 - p) = 83.333\dots$, so *both* comfortably exceed five.
 :::
 
 
 
-## Example: dominance of birds
+## Example: dominance of birds {#OneProportiontestBirds}
 
 A study [@barve2017elevational] compared two types of birds (male green-backed tits; male cinereous tits) to see which was more behaviourally dominant over winter.
-If the species were equally-dominant, then about 50% of the interactions would be won by each species (i.e., $p = 0.50$).
-However, in the 45 interactions observed between the two species, green-backed tits won 37 of these interactions (i.e., $\hat{p} = 0.82222$).
+If the species were equally-dominant, then about $50$% of the interactions would be won by each species (i.e., $p = 0.50$).
+However, in the $45$ interactions observed between the two species, green-backed tits won $37$ of these interactions (i.e., $\hat{p} = 0.82222$).
 
-Of course, every sample of 45 interactions would produce a different sample proportion, so the difference between this sample proportion and $p = 0.5$ could be due to sampling variation.
-To test if the proportion of interactions were equally shared, the hypotheses are:
-
+Of course, every sample of $45$ interactions would produce a different sample proportion, so the difference between this sample proportion and $p = 0.5$ could be due to sampling variation.
+To test if the proportion of interactions were equally shared, the hypotheses are:  
 \[
    \text{$H_0$: } p = 0.5\quad\text{and}\quad\text{$H_1$: } p \ne 0.5 \text{ (two-tailed)}.
 \]
 The test will be statistically valid, since $n\times p = 45\times 0.5 = 22.5$ and $n\times (1 - p) = 22.5$ both exceed five.
-The *standard error* for the sample proportion is
-
+The *standard error* for the sample proportion is  
 \[
    \text{s.e.}(\hat{p}) 
    = \sqrt{\frac{p (1 - p)}{n}} 
    = \sqrt{\frac{0.50 \times (1 - 0.50)}{45}} 
    = 0.0745356...
 \]
-Then, the *test statistic* is:
-
+Then, the *test statistic* is:  
 \[
    z 
    = \frac{\hat{p} - p}{\text{s.e.}(p)}
    = \frac{0.82222 - 0.50}{0.0745356}
    = 4.322.
 \]
-This is a *very* large $z$-score, so expect a very small $P$-value from using the 68--95--99.7 rule or tables.
+This is a *very* large $z$-score, so the $P$-value will be very small, using the 68--95--99.7 rule or tables.
 
-The 95% CI for the proportion requires the standard error computed using the *sample* proportion:
+The $95$% CI for the proportion requires the standard error computed using the *sample* proportion:  
 \[
    \text{s.e.}(\hat{p}) 
    = \sqrt{\frac{\hat{p} (1 - \hat{p})}{n}} 
    = \sqrt{\frac{0.82222 \times (1 - 0.82222)}{45}} 
    = 0.056999...
 \]
-So the approximate 95% CI is $0.82222 \pm(2 \times 0.056999...)$, or from 0.708 to 0.936.
+So the approximate $95$% CI is $0.82222 \pm(2 \times 0.056999...)$, or from $0.708$ to $0.936$.
 We write:
 
-> There is *very* strong evidence in the sample ($P < 0.001$; $z = 4.325$) that the interactions were not won equally between each species ($\hat{p} = 0.8222$ won by green-backed tits; $n = 45$; approximate 95% CI: 0.708 to 0.936) in the population.
+> There is *very* strong evidence in the sample ($P < 0.001$; $z = 4.325$) that the interactions were not won equally between each species ($\hat{p} = 0.8222$ won by green-backed tits; $n = 45$; approximate $95$% CI: $0.708$ to $0.936$) in the population.
 
 
-## Example: obesity
+## Example: obesity REMOVE {#OneProportiontestObesity}
 
 @kolanska2010high compared the rate of obesity in $n = 143$ Polish patients with adrenal tumours to that of the general population of Poland ($p = 0.125$), to test if those with adrenal tumours were *more likely* to be obese that the general population.
-The hypotheses are:
-
+The hypotheses are:  
 \[
    \text{$H_0$: } p = 0.125\quad\text{and}\quad\text{$H_1$: } p > 0.125\text{ (one-tailed)}.
 \]
-Assuming the null hypothesis is true, the standard error is (remembering to use $p$):
-
+Assuming the null hypothesis is true, the standard error is (remembering to use $p$):  
 \[
    \text{s.e.}(\hat{p}) 
    = \sqrt{\frac{p (1 - p)}{n}} 
    = \sqrt{\frac{.125 \times (1 - 0.125)}{143}} 
    = 0.027656...
 \]
-
-In their sample, 57 were obese, so $\hat{p} = 57/143 = 0.3986...$.
-Then, the *test statistic* is:
-
+In their sample, $57$ were obese, so $\hat{p} = 57/143 = 0.3986...$.
+Then, the *test statistic* is:  
 \[
    z 
    = \frac{\hat{p} - p}{\text{s.e.}(p)}
@@ -796,14 +825,14 @@ Then, the *test statistic* is:
 \]
 This is an *extremely* large $z$-score, so expect a very small $P$-value using the 68--95--99.7 rule.
 
-The 95% CI for the proportion requires the standard error computed from the *sample* proportion:
+The $95$% CI for the proportion requires the standard error computed from the *sample* proportion:  
 \[
    \text{s.e.}(\hat{p}) 
    = \sqrt{\frac{\hat{p} (1 - \hat{p})}{n}} 
    = \sqrt{\frac{0.3986 \times (1 - 0.3986)}{143}} 
    = 0.040943...
 \]
-The approximate 95% CI is $0.3986 \pm(2 \times 0.040943...)$.
+The approximate $95$% CI is $0.3986 \pm(2 \times 0.040943...)$.
 We write:
 
 > *Very* strong evidence exists in the sample (one-tailed $P < 0.001$; $z = 9.89$) that the rate of obesity in patients with adrenal tumours ($\hat{p} = 0.3986$; $n = 143$; approximate 95% CI: 0.317 to 0.480) is higher than the general Polish population.
@@ -811,7 +840,7 @@ We write:
 
 
 
-## Summary {#Chapxx-Summary}
+## Summary {#Chap28Summary}
 
 
 To test a hypothesis about a population proportion $p$:
@@ -833,46 +862,37 @@ An approximate *$P$-value* can be estimated using the [68--95--99.7 rule](#def:E
 ## Quick review questions  {#Chapxx-QuickReview}
 
 ::: {.webex-check .webex-box}
-A study of diseases in native Americans [@kizer2006digestive] found 381 obese or overweight patients in 449 patients.
-In the USA general population, the rate of Americans obese or overweight is 65%.
+A study of diseases in native Americans [@kizer2006digestive] found $381$ obese or overweight patients in $449$ patients.
+In the USA general population, the rate of Americans obese or overweight is $65$%.
 The researchers wanted to determine of the rate of obesity/overweight native Americans was *greater* than that of the general population.
 
-1. True or false: The *population* proportion of overweight/obese native Americans is 0.65.\tightlist
+1. True or false: The *population* proportion of overweight/obese native Americans is $0.65$. \tightlist
 `r if( knitr::is_html_output() ) {torf(answer=TRUE)}`
-
 1. True or false: The sample size is $n = 381$.
 `r if( knitr::is_html_output() ) {torf(answer=FALSE)}`
-
 1. The *sample* proportion $\hat{p}$ is (to *four* decimal places):
 `r if( knitr::is_html_output() ) {
    fitb(num=TRUE, tol=0.0001, answer=0.84855)
 } else {
    "________________"
 }`
-
 1. True or false: The *null* hypothesis is $H_0$: $p = 0.65$.
 `r if( knitr::is_html_output() ) {torf(answer=TRUE)}`
-
 1. True or false: The *alternative* hypothesis is *one*-tailed.
 `r if( knitr::is_html_output() ) {torf(answer=TRUE)}`
-
 1. True or false: To compute the standard error for the sample proportion, $\text{s.e.}(\hat{p})$, we use $\hat{p}$ in the formula.
 `r if( knitr::is_html_output() ) {torf(answer=FALSE)}`
-
 1. True or false: In a one-sample test of proportion, the $z$-score is always large.
 `r if( knitr::is_html_output() ) {torf(answer=FALSE)}`
-
 1. For this test, the computed $z$-score is (to *two* decimal places):
 `r if( knitr::is_html_output() ) {
    fitb(num=TRUE, tol=0.005, answer=8.82079)
 } else {
    "________________"
 }`
-
 1. True or false? We always accept the *null* hypothesis.
 `r if( knitr::is_html_output() ) {torf(answer=FALSE)}`
 :::
-
 
 
 ## Exercises {#OneProportionTestExercises}
@@ -883,9 +903,9 @@ Selected answers are available in Sect. \@ref(TestOneProportionAnswer).
 ::: {.exercise #OneProportionTestExercisesPlacebos}
 The study of herbal medicines is complicated as *blinding* subjects is difficult: placebos are often easily-identifiable by eye, by taste, or by smell.
 
-One study [@loyeung2018experimental] examined if subjects could identify  potential placebos, performing *better* than just guessing.
-The 81 subjects were each presented with a choice of five different supplements, and asked to select which one was the legitimate herbal supplement based on the *taste*.
-Of these, 50 correctly selected the true herbal supplement.
+One study [@loyeung2018experimental] examined if subjects could identify potential placebos at *better* rate than just guessing.
+The $81$ subjects were each presented with a choice of five different supplements, and asked to select which one was the legitimate herbal supplement based on the *taste*.
+Of these, $50$ correctly selected the true herbal supplement.
 
 1. If the subjects were selecting the true herbal supplement randomly, what proportion of subjects would be expected to select the correct supplement as the true herbal medicine?
 2. Write the hypotheses for addressing the aims of the study.
@@ -896,20 +916,22 @@ Of these, 50 correctly selected the true herbal supplement.
 :::
 
 
-::: {.exercise #OneProportionTestExercisesEPL}
-In the 2019/2020 English Premier League (EPL), at full-time the home team had won 91 out of 208 games, while the away team won 67.
-(50 games were draws.)
-(Data from: https://sports-statistics.com/sports-data/soccer-datasets/)
-
-*Ignoring draws*, is there evidence of a home-side advantage; that is, that the home-side winning percentage is greater than 50%?
+::: {.exercise #StatisticalValidityMeasles}
+Is the hypothesis test in Example\ \@ref(exm:POnePropTestMeasles)) statistically valid?
 :::
 
 
+::: {.exercise #OneProportionTestExercisesEPL}
+In the 2019/2020 English Premier League (EPL), the home team won $91$ out of $208$ games, while the away team won $67$.
+($50$ games were draws.)
+(Data from: https://sports-statistics.com/sports-data/soccer-datasets/)
+*Ignoring draws*, is there evidence of a home-side advantage; that is, that the home-side winning percentage is greater than $50$%?
+:::
 
 
 ::: {.exercise #OneProportionTestExercisesPedalMachines}
-In a study to increase activity in library users [@maeda2013introducing], pedal machine were introduced on the first floor of Joyner Library at East Carolina University, where 60.2% of all students were females.
-Students were observed using the machine on 589 occasions, of which 295 times were by females
+In a study to increase activity in library users [@maeda2013introducing], pedal machine were introduced on the first floor of Joyner Library at East Carolina University, where $60.2$% of all students were females.
+Students were observed using the machine on $589$ occasions, of which $295$ times were by females
 
 Is there evidence that the proportion of females users of the machines was lower than the overall female proportion at the university?
 What would you conclude?
@@ -917,24 +939,22 @@ What would you conclude?
 
 
 ::: {.exercise #OneProportionTestExercisesCasinos}
-In a 1995 study, 357 visitors to Las Vegas casinos 88 were smokers.
-At the time, 25.5% of the general U.S. population were smokers (based on data from the U.S. National Center for Health Statistics).
-
+In a 1995 study, $357$ visitors to Las Vegas casinos $88$ were smokers.
+At the time, $25.5$% of the general U.S. population were smokers (based on data from the U.S. National Center for Health Statistics).
 Are casino-goers just as likely to be a smokers as the general U.S. population?
 :::
 
 
 :::{.exercise #OneProportionBreadfruitPasta}
 Researchers developed a gluten-free pasta made from breadfruit [@nochera2019development].
-In the study sample, 57 of the 71 participants stated that they liked the pasta.
-
+In the study sample, $57$ of the $71$ participants stated that they liked the pasta.
 Do the researchers have sufficient evidence to claim that the 'majority of people like breadfruit pasta'?
 :::
 
 
 ::: {.exercise #OneProportionTestExercisesIguanas}
 A study of black spiny-tailed iguanas in Florida (an invasive species) compared the snout-vent length (SVL) for iguanas of various sizes [@avery2014invasive].
-275 iguanas with a SVL between 100 and 149mm were found in the study, of which 146 were female.
+$275$ iguanas with a SVL between $100$ and $149$\ mm were found in the study, of which $146$ were female.
 
 Assuming female and male iguanas were equally present in the population, is there evidence that female and male iguanas were equally-likely to found with SVL in this range?
 :::
@@ -943,8 +963,8 @@ Assuming female and male iguanas were equally present in the population, is ther
 ::: {.exercise #OneProportionTestExercisesCTS}
 Carpal Tunnel Syndrome (CTS) is a painful condition in the wrists.
 A study [@boltuch2020palmaris] was interested in whether 'a relationship exists between the palmaris tendon [and] carpal tunnel syndrome (CTS)' (@boltuch2020palmaris, p. 493).
-The palmaris longus (PL) tendon is visually absent in about 15% of the population.
-The researchers found PL was visually absent in 33 of 516 CTS wrists in their sample.
+The palmaris longus (PL) tendon is visually absent in about $15$% of the population.
+The researchers found PL was visually absent in $33$ of $516$ CTS wrists in their sample.
 
 Is there evidence to suggest that rate of PL absence is different in CTS cases? 
 :::
@@ -955,25 +975,25 @@ In a study of resistance of some commercial corn varieties to the European corn 
 
 Researchers aimed to estimate the frequency of resistance to the toxin in the corn.
 By mating borers collected from the field with various resistant laboratory individuals, they could determine what proportion of resistant individuals to expect in the second generation offspring.
-In one study of $n = 172$ second-generation individuals, 24 were found to be resistant. 
-The expectation was that 1-in-16 would be resistant if the field borers were resistant.
+In one study of $n = 172$ second-generation individuals, $24$ were found to be resistant. 
+The expectation was that $1$-in-$16$ would be resistant if the field borers were resistant.
 
 Perform a hypothesis test to determine if the data suggest that the borers were resistant (that is, if the population proportion is $1/16$) as expected.
 :::
 
 
 ::: {.exercise #OneProportionTestExercisesLEDlights}
-In a study of streetlight preferences of drivers [@davidovic2019drivers], drivers were asked to conduct a series of manoeuvres under 3000K LED light and then under 4000K LED lights.
+In a study of streetlight preferences of drivers [@davidovic2019drivers], drivers were asked to conduct a series of manoeuvres under $3000$K LED light and then under $4000$K LED lights.
 They were then asked to decide which streetlight they preferred.
 
-Out of the 52 subjects, 29 preferred the 3000K LED lights.
+Out of the $52$ subjects, $29$ preferred the $3000$K LED lights.
 Is there evidence that the choice between the two streetlights is random, or is there evidence of a preference for one over the other? 
 :::
 
 
 ::: {.exercise #OneProportionTestExercisesPenguins}
-A study of Magellanic penguins [@vanstreels2013female] found dead or stranded on the southern Brazilian coast found 73 adult penguins.
-Of these, 47 were female,
+A study of Magellanic penguins [@vanstreels2013female] found dead or stranded on the southern Brazilian coast found $73$ adult penguins.
+Of these, $47$ were female,
 
 Assuming female and male penguins were equally present in the population, we would expect about half the dead or stranded penguins to be female and male.
 Is this what the data suggest?
