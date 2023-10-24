@@ -82,7 +82,7 @@ Consider the data in
   'Fig.\\ \\@ref(fig:BabyBoomDataHTML),'
 } else
 {
-  'Table\\ \\@ref(tab:BabyBoomDataLATEX) (which shows the first 10 of the total 44 observations).'
+  'Table\\ \\@ref(tab:BabyBoomDataLATEX) (which shows the first $10$ of the total $44$ observations).'
 }`
 The data give the weights (in kg) of babies born in a Brisbane hospital on one day [@mypapers:Dunn:dataset:1999; @data:Steele:BabyBoom].
 The dataset also includes the gender of each baby, and the number of minutes after midnight of the birth.
@@ -103,18 +103,21 @@ data(BabyBoom)
 BB <- BabyBoom
 
 BB2 <- data.frame(Gender = factor(BB$Gender),
-                  "Weight (in kg)" = round( BB$Weight/1000, 1),
+                  "Weight (in kg)" = BB$Weight,
                    Mins.Since.Midnight = BB$Mins.Since.Midnight)
 ```
 
 ```{r BabyBoomDataLATEX}
 if( knitr::is_latex_output() ) {
-  T1 <- kable( BB2[1:5, ],
+  T1 <- kable( surroundMaths(BB2[1:5, ],
+                             cols = 2:3,
+                             decDigits = c(1, 0)),
                format = "latex",
                longtable = FALSE,
                row.names = FALSE,
-               digits = c(0, 1, 0),
                escape = FALSE,
+               align = c("c", "r"),
+               digits = c(0, 1, 0),
                col.names = c("Gender", 
                              "Weight (kg)", 
                              "Time of birth"),
@@ -123,11 +126,15 @@ if( knitr::is_latex_output() ) {
 #    column_spec(1, width = "10mm") %>%
 #    column_spec(2, width = "10mm") %>%
 #    column_spec(3, width = "10mm")
-  T2 <- kable( BB2[6:10, ],
+  T2 <- kable( surroundMaths(BB2[6:10, ],
+                             cols = 2:3,
+                             decDigits = c(1, 0)),
                format = "latex",
                longtable = FALSE,
                row.names = FALSE,
+               escape = FALSE,
                digits = c(0, 1, 0),
+               align = c("c", "r"),
                col.names = c("Gender", 
                              "Weight (kg)", 
                              "Time of birth"),
@@ -174,9 +181,9 @@ are given to one decimal place of a kilogram, so the whole number of kilograms i
 } else {
    'The animation below shows how the stemplot is constructed.'
 }`
-The first weight, of 1.7kg, is entered with the 1 to the right of the stem, and the 7 to the left: `1 | 7`. 
-Similarly, 2.1kg is entered as `2 | 1` and 2.2kg is entered as `2 | 2`, sharing the same stem as for 2.1kg.
-The plots shows that most birthweights are 3-point-something kilograms.
+The first weight, of $1.7$\ kg, is entered with the $1$ to the right of the stem, and the $7$ to the left: `1 | 7`. 
+Similarly, $2.1$\ kg is entered as `2 | 1` and $2.2$\ kg is entered as `2 | 2`, sharing the same stem as for 2.1kg.
+The plots shows that most birthweights are $3$-point-something kilograms.
 
 
 ```{r animation.hook="gifski", interval=0.85, dev=if (is_latex_output()){"pdf"}else{"png"}}
@@ -418,7 +425,7 @@ if (knitr::is_html_output()){
 ```
 
 
-```{r BBStem1, fig.align="center", fig.width=5, fig.cap="Starting to make the stemplot for the baby-weight data: the first 4 observations added. The data are on the left; the stemplot during construction on the right.", fig.width=10, fig.height=3, out.width='95%'}
+```{r BBStem1, fig.align="center", fig.width=5, fig.cap="Starting to make the stemplot for the baby-weight data: the first $4$ observations added. The data are on the left; the stemplot during construction on the right.", fig.width=10, fig.height=3, out.width='95%'}
 if (knitr::is_latex_output()){
   Wts <- sort(BB$Weight)
   
@@ -753,19 +760,19 @@ For stemplots:
   This means the length of each stem is proportional to the number of observations.
 * Within each stem, the observations are *ordered* so patterns can be seen.
 * Add an explanation for reading the stemplot.
-  For example, the stemplot for the baby-birth data says '2 | 6 means 2.6kg'.
-  For instance, '2 | 6' could mean 26kg, or 0.26kg, or 2lb 6oz.
+  For example, the stemplot for the baby-birth data says '2 | 6 means $2.6$\ kg'.
+  For instance, '2 | 6' could mean $26$\ kg, or $0.26$\ kg, or $2$\ lb $6$\ oz.
 
 
 ::: {.example #StemLeafPlots name="Stemplots"}
-A study of krill [@data:Greenacre2016:reporting] produced 15 measurements of the number of eggs.
+A study of krill [@data:Greenacre2016:reporting] produced $15$ measurements of the number of eggs.
 The stemplot 
 `r if (knitr::is_latex_output()) {
    '(Fig.\\ \\@ref(fig:KrillStem44); the online version has an animation)'
 } else {
    'in the animation below shows the stemplot being constructed, and'
 }`
-shows that the number of eggs is usually under 10, but occasionally a large number of eggs are seen.
+shows that the number of eggs is usually under $10$, but occasionally a large number of eggs are seen.
 For the purposes of the stemplot, single-digit observations are treated as `00`, `01`, `02` and so on, using `0` as the stem. 
 :::
 
@@ -1138,7 +1145,7 @@ The dot chart is shown in
 (based on @data:Wetzel2005:McDonalds).
 The mass of fries is almost always *under* the target, and often substantially so.
 
-Notice that observations are *stacked* on top of each other when  multiple observations are the same; for example, two orders of fries were 133g.
+Notice that observations are *stacked* on top of each other when  multiple observations are the same; for example, two orders of fries were $133$\ g.
 *Jittering* is also an option (Example\ \@ref(exm:DotsChartsQuant2)).
 :::
 
@@ -1271,7 +1278,7 @@ A dot chart
 {
   '(Fig\\ \\@ref(fig:FriesBabiesPDF), right panel).'
 }`
-shows that most babies were born between 3 and 4kg.
+shows that most babies were born between $3$ and $4$\ kg.
 Notice that the observations have been *jittered* (i.e., placed with some added randomness in the vertical direction) to avoid overplotting.
 :::
 
@@ -1312,9 +1319,9 @@ Consider again the weights (in kg) of babies born in a Brisbane hospital in one 
   '(Table\ \\@ref(tab:BabyBoomDataLATEX)).'
 }`
 A histogram (below) can be constructed for these data.
-When an observation occurs on a boundary between the boxes, software usually (but not universally) places it in the *higher* box (so 2.5kg would be counted in the '2.5 to 3.0kg' box, not the '2.0 to 2.5kg' box).
+When an observation occurs on a boundary between the boxes, software usually (but not universally) places it in the *higher* box (so $2.5$\ kg would be counted in the '$2.5$ to $3.0$\ kg' box, not the '$2.0$ to $2.5$\ kg' box).
 That is, the boxes *include* the lower limit, but *exclude* the upper limit.
-The histogram shows, for example, that 17 babies weighed 3.0kg or more, but under 3.5kg.
+The histogram shows, for example, that 17 babies weighed $3.0$\ kg or more, but under $3.5$\ kg.
 
 `r if (knitr::is_latex_output()) {
    'Figure\\ \\@ref(fig:BBHist1) shows the histogram starting to be built, and Fig.\\ \\@ref(fig:BBHist44) shows the final histogram. (The online version has an animation.)'
@@ -1411,7 +1418,7 @@ if (knitr::is_html_output()) {
 ```
 
 
-```{r BBHist1, fig.align="center", fig.width=10, fig.height=3, out.width='95%', fig.cap="Starting to make the histogram for the baby-birth data: the first 6 observations added" }
+```{r BBHist1, fig.align="center", fig.width=10, fig.height=3, out.width='95%', fig.cap="Starting to make the histogram for the baby-birth data: the first six observations added" }
 if (knitr::is_latex_output()){
   Wts <- sort(BB$Weight)
 
@@ -1524,14 +1531,15 @@ if (knitr::is_latex_output()){
 ::: {.example #Histograms2 name="Histograms"}
 A study of *brain freezes* after eating cold food or drinking a cold drink measured the duration of the brain freeze [@data:Mages2017:BrainFreeze].
 
-A histogram of the data (Fig.\ \@ref(fig:BrainFreeze), based on @data:Mages2017:BrainFreeze, Fig. 2b), shows 11 people experience HICS symptoms less than 5 seconds in length; nine people experienced symptoms for at least 5 but less than 10 seconds; and 1 person experienced symptoms for at least 35 seconds but under 40 seconds.
+A histogram of the data (Fig.\ \@ref(fig:BrainFreeze), based on @data:Mages2017:BrainFreeze, Fig. 2b), shows $11$ people experience HICS symptoms less than $5$\ s in length; nine people experienced symptoms for at least $5$ but less than $10$\ s; and $1$ person experienced symptoms for at least $35$\ s but under $40$\ s.
 :::
 
 ```{r BrainFreeze, fig.cap="Duration of HICS (brain freeze) after drinking ice water", fig.width=5.5, fig.height=3.5, fig.align="center"}
 # Read from Mages 2017, Figure 2b
 
 Hts <- c(11, 9, 4, 4, 2, 5, 0, 1)
-Borders <- seq(0, 40, by=5)
+Borders <- seq(0, 40, 
+               by = 5)
 
 old.par <- par()
 
@@ -1567,7 +1575,7 @@ After producing a graph for one quantitative variable, describe these features:
 4. Mention any *outliers* (observations unusually large or small) or unusual features.
 
 ::: {.example #DescribeQuantData name="Describing quantitative data"}
-The weights of babies (displayed in Example\ \@ref(exm:Histograms)) are typically between about 2.5kg and 3kg. (the *average*), with most between 1.5kg and 4.5 kg (*variation*).
+The weights of babies (displayed in Example\ \@ref(exm:Histograms)) are typically between about $2.5$\ kg and $3$\ kg. (the *average*), with most between $1.5$\ kg and $4.5$\ kg (*variation*).
 A few babies have very lower weights, probably premature births (*shape*).
 No unusual values are present.
 :::
@@ -1729,7 +1737,7 @@ par(mfrow = c(1, 1))
 
 ::: {.example #BimodalFaithful name="Bimodal data"}
 The *Old Faithful* geyser in Yellowstone National Park (USA) erupts regularly [@hardle1991smoothing].
-The time between eruptions (Fig.\ \@ref(fig:BimodalFaithfulHistoChangeBins), left panel) is bimodal, with peaks near 55 minutes and 80 minutes.
+The time between eruptions (Fig.\ \@ref(fig:BimodalFaithfulHistoChangeBins), left panel) is bimodal, with peaks near $55$\ min and $80$\ min.
 :::
 
 
@@ -1751,11 +1759,11 @@ Describe the histogram in Fig.\ \@ref(fig:BrainFreeze), the brain freeze duratio
 
 `r if (knitr::is_latex_output()) '<!--'`
 `r webexercises::hide()`
-* *Average*: Hard to be sure... maybe between 10 or 15. (More observations appear at the smaller values (as the bars are higher).) 
-* *Variation*: From about 0 to about 40. 
+* *Average*: Hard to be sure... maybe between $10$ or $15$. (More observations appear at the smaller values (as the bars are higher).) 
+* *Variation*: From about $0$ to about $40$. 
 * *Shape*: Slightly skewed right. 
-* *Outliers*: No outliers or unusual observations. The observation between 35 and 40 *may* be an outlier.
-  I suspect it is *not* an outlier, as a larger sample may very well have observations between 30 and 35.
+* *Outliers*: No outliers or unusual observations. The observation between $35$ and $40$ *may* be an outlier.
+  I suspect it is *not* an outlier, as a larger sample may very well have observations between $30$ and $35$.
   Of course, I could be wrong.
 `r webexercises::unhide()`
 `r if (knitr::is_latex_output()) '-->'`
@@ -1790,7 +1798,7 @@ Placing the level names on the vertical axis often makes for easier reading, and
 
 ::: {.example #DotPlotsQual name="Dot plots"}
 A study of spider monkeys [@data:Chapman1990:SpiderMonkeys] examined the types of social groups present (Fig.\ \@ref(fig:SpiderMonkeys)).
-The most common social group has many females plus offspring  (with almost 50 social groups).
+The most common social group has many females plus offspring  (with almost $50$ social groups).
 Also, none of the commonly-observed social group include males.
 :::
 
@@ -1911,7 +1919,7 @@ In pie charts, a circle is divided into segments proportional to the number in e
 
 ::: {.example #PieCharts name="Pie charts"}
 In a study of functional independence [@data:Ocepek2013:SmartHome], the *severity* of the diagnoses were shown in a pie chart (Fig.\ \@ref(fig:IndependencePie)).
-This picture conveys only one piece of information ("69% of patients had a less severe injury"), so a graph of any kind is probably unnecessary.
+This picture conveys only one piece of information ("$69$% of patients had a less severe injury"), so a graph of any kind is probably unnecessary.
 
 The pie chart colours are used in the bar chart in Example\ \@ref(exm:IndependenceBarText), indicating the severity of the diagnoses.
 This is called *encoding* extra information into the bar chart.
@@ -1948,12 +1956,12 @@ In which of these situations is a pie chart *appropriate*?\label{thinkBox:WhenPi
 `r webexercises::hide()`
 1. A pie chart is *not suitable*.
    The three browsers are not *mutually exclusive* (people can use more than one of these browsers) nor *exhaustive* (some people may use browsers not listed). 
-   For example, the percentages *could* be that 65% use Firefox, 84% use Chrome, and 20% use Safari. 
-   These add to more than 100%.
+   For example, the percentages *could* be that $65$% use Firefox, $84$% use Chrome, and $20$% use Safari. 
+   These add to more than $100$%.
 2. A pie chart is *not suitable*, as the percentages are not parts of a whole.
    Each individual (person) has information recorded on *two* qualitative variables: (a) which state the person lives in (many levels); and (b) whether or not they own an iPhone ('yes' or 'no').  
-   For example, the percentages *could* be 53% in Queensland, 61% in NSW, 41% in Victoria, and so on.
-   They could possibly add to more than 100%.
+   For example, the percentages *could* be $53$% in Queensland, $61$% in NSW, $41$% in Victoria, and so on.
+   They could possibly add to more than $100$%.
 `r webexercises::unhide()`
 `r if (knitr::is_latex_output()) '-->'`
 :::
@@ -1979,7 +1987,7 @@ The equivalent bar chart
 } else {
    '(bottom panel)'
 }`
-makes the comparison easy: clearly the age groups '65 to 69' and 'Over 74' have slightly fewer deaths than the other age groups.
+makes the comparison easy: clearly the age groups '$65$ to $69$' and 'Over $74$' have slightly fewer deaths than the other age groups.
 
 
 ```{r LCgraphsHTML, fig.cap="Graphs of deaths from lung cancer in Fredericia (Denmark) from 1968 and 1971", fig.align="center", fig.width=5, fig.height=8}
@@ -2127,7 +2135,7 @@ However, sometimes data can be collated in a table, or a *tabular summary*.
 For *qualitative* data, the tabular summary records the numbers (or percentages, or both) for each level of the variable (Example\ \@ref(exm:NHANESdata)).
 For *quantitative* data, the tabular summary effectively produces a histogram as a table (Example\ \@ref(exm:BabyBoomTable)).
 
-With small amounts of information, sometimes just writing the information is better ('69% of diagnoses were less severe'; Example\ \@ref(exm:PieCharts)).
+With small amounts of information, sometimes just writing the information is better ('$69$% of diagnoses were less severe'; Example\ \@ref(exm:PieCharts)).
 
 
 
@@ -2145,11 +2153,14 @@ simpletab <- t(
 )
 
 if( knitr::is_latex_output() ) {
-  kable(simpletab,
+  kable( surroundMaths(simpletab,
+                       cols = 2:3,
+                       decDigits = c(0, 1)),
         format = "latex",
         longtable = FALSE,
         align = c("r", "r", "r"),
         booktabs = TRUE,
+        escape = FALSE,
         col.names = c("Age group",
                       "Number of people",
                       "Percentage of people"),
@@ -2194,20 +2205,23 @@ BBpercentage <- out$counts / sum(out$counts) * 100
 BBtab <- array(dim = c(6, 3) )
 BBtab[, 2] <- out$counts 
 BBtab[, 3] <- round(BBpercentage) 
-BBtab[, 1] <- c("1.5kg to under 2.0kg",
-                "2.0kg to under 2.5kg",
-                "2.5kg to under 3.0kg",
-                "3.0kg to under 3.5kg",
-                "3.5kg to under 4.0kg",
-                "4.0kg to under 4.5kg") 
+BBtab[, 1] <- c("$1.5$\ kg to under $2.0$\ kg",
+                "$2.0$\ kg to under $2.5$\ kg",
+                "$2.5$\ kg to under $3.0$\ kg",
+                "$3.0$\ kg to under $3.5$\ kg",
+                "$3.5$\ kg to under $4.0$\ kg",
+                "$4.0$\ kg to under $4.5$\ kg") 
 colnames(BBtab) <- c("Weight group", 
                      "Number of babies born",
                      "Percentage of babies born")
 
 if( knitr::is_latex_output() ) {
-  kable(BBtab,
+  kable( surroundMaths(BBtab,
+                       cols = 2:3,
+                       decDigits = 0),
         format = "latex",
         longtable = FALSE,
+        escape = FALSE,
         align = c("c", "r", "r"),
         booktabs = TRUE,
         linesep = c("","","\\addlinespace"),
@@ -2284,11 +2298,14 @@ KrillEggs2 <- cbind( Eggs.T[1:8],
 ```{r KrillDataTable}
 
 if( knitr::is_latex_output() ) {
-  kable( KrillEggs2,
+  kable( surroundMaths(KrillEggs2,
+                       all = TRUE,
+                       decDigits = 0),
          format = "latex",
          longtable = FALSE,
          table.env = "@empty",
          booktabs = TRUE,
+         escape = FALSE,
          linesep = c("", "", "\\addlinespace"),
          align = c("c","c")) %>%
          #col.names = c("Treatment group", "Control group"),
@@ -2565,21 +2582,21 @@ To explain boxplots, first focus on just *one* boxplot from Fig.\ \@ref(fig:Boxp
 Boxplots have five horizontal lines; from the top to the bottom of the plot (Fig.\ \@ref(fig:BoxplotKrillTreatment)):
 
 1. *Top line*:
-   The *largest* number of eggs is `r KrillT.quantiles[5]`.
+   The *largest* number of eggs is $`r KrillT.quantiles[5]`$.
 2. *Second line from top*:
-   75% of the observations are smaller than about `r KrillT.quantiles[4]`, represented by the line at the top of the central box. 
+   $75$% of the observations are smaller than about $`r KrillT.quantiles[4]`$, represented by the line at the top of the central box. 
    This is called the *third quartile* ($Q_3$).
 3. *Middle line*:
-   50% of the observations are smaller than about `r KrillT.quantiles[3]`, represented by the line in the centre of the central box. 
+   $50$% of the observations are smaller than about $`r KrillT.quantiles[3]`$, represented by the line in the centre of the central box. 
    This is an 'average' value for the data, the *second quartile* ($Q_2$).
 4. *Second line from bottom*:
-   25% of the observations are smaller than about `r KrillT.quantiles[2]`, represented by the line at the bottom of the central box. 
+   $25$% of the observations are smaller than about $`r KrillT.quantiles[2]`$, represented by the line at the bottom of the central box. 
    This is called the *first quartile* ($Q_1$).
 5. *Bottom line*:
-   The *smallest* number of eggs is `r KrillT.quantiles[1]`. 
+   The *smallest* number of eggs is $`r KrillT.quantiles[1]`$. 
 
 
-```{r BoxplotKrillTreatment, fig.cap="A boxplot for the krill-egg data; the boxplot and dotplot just for the treatment group. Thwe circled numbers on the left refer to the explantions in-text.", fig.width=6, fig.height=6.5, out.width='60%', fig.align="center" }
+```{r BoxplotKrillTreatment, fig.cap="A boxplot for the krill-egg data; the boxplot and dotplot just for the treatment group. The circled numbers on the left refer to the explantions in-text.", fig.width=6, fig.height=6.5, out.width='60%', fig.align="center" }
 Eggs.quantiles <- quantile(Eggs.T)
 out <- boxplot( list(Treatment = Eggs.T), 
             main = "A boxplot of the number of\neggs laid by krill: Treatment group",
@@ -2692,12 +2709,12 @@ text( x = rep(0.75, length(Eggs.quantiles) ),
 ```
 
 
-The box for the *Control* group krill is slightly different (Fig\. \@ref(fig:BoxplotKrill)): One observation is identified with a point, *above* the top line.
+The box for the *Control* group krill is slightly different (Fig.\ \@ref(fig:BoxplotKrill)): One observation is identified with a point, *above* the top line.
 Computer software has identified this observation as potentially unusual (in this case, unusually *large*), and has plotted this point separately.
 (Unusually large or small observations are called *outliers*.)
 The values of the quantiles ($Q_1$, $Q_2$ and $Q_3$) are computed as usual (with outliers included).
 
-For the *Control* data, the largest observation (31 eggs) is deemed unusually large (explained in Sect.\ \@ref(OutliersIQRrule)), and then the boxplot is constructed as follows (Fig.\ \@ref(fig:BoxplotKrillControl)):
+For the *Control* data, the largest observation ($31$ eggs) is deemed unusually large (explained in Sect.\ \@ref(OutliersIQRrule)), and then the boxplot is constructed as follows (Fig.\ \@ref(fig:BoxplotKrillControl)):
 
 ```{r}
 outC <- boxplot( list(Treatment = Eggs.C),
@@ -2707,22 +2724,22 @@ Eggs.quantiles <- outC$stats
 
 
 * *Top line*:
-  The *largest* number of eggs (*excluding* the outlier of 31) is about `r Eggs.quantiles[5]`: 
+  The *largest* number of eggs (*excluding* the outlier of $31$) is about $`r Eggs.quantiles[5]`$: 
   This is the line at the top of the boxplot.
 * *Second line from top*:
-  75% of the observations (*including* the 31 eggs) are smaller than about `r Eggs.quantiles[4]`, represented by the line at the top of the central box. 
+  $75$% of the observations (*including* the $31$ eggs) are smaller than about $`r Eggs.quantiles[4]`$, represented by the line at the top of the central box. 
   This is called the *third quartile*, or $Q_3$.
 * *Middle line*:
-  50% of the observations (*including* the 31 eggs) are smaller than about `r Eggs.quantiles[3]`,  represented by the line in the centre of the central box.
+  $50$% of the observations (*including* the $31$ eggs) are smaller than about $`r Eggs.quantiles[3]`$,  represented by the line in the centre of the central box.
   This is an 'average' value for the data, the *second quartile*, or $Q_2$.
 * *Second line from bottom*:
-  25% of the observations (*including* the 31 eggs) are smaller than about `r Eggs.quantiles[2]`,  represented by the line at the bottom of the central box.
+  $25$% of the observations (*including* the $31$ eggs) are smaller than about $`r Eggs.quantiles[2]`$,  represented by the line at the bottom of the central box.
   This is called the *first quartile*, or $Q_1$.
 * *Bottom line*:
-  The smallest number of eggs is `r Eggs.quantiles[1]`. 
+  The smallest number of eggs is $`r Eggs.quantiles[1]`$. 
   This is the line at the bottom of the boxplot.
 
-Clearly, decimal numbers of eggs (such as $Q_2 = `r Eggs.quantiles[2]`$) are not observable; however, with `r length(Eggs.C)` observations, finding exactly the value for which 25% of observations are smaller is not possible.
+Clearly, decimal numbers of eggs (such as $Q_2 = `r Eggs.quantiles[2]`$) are not observable; however, with $`r length(Eggs.C)`$ observations, finding exactly the value for which $25$% of observations are smaller is not possible.
 Software uses approximations to compute these values (and different software may use different rules, and hence may produce slightly different values for quartiles).
 
 
@@ -2826,14 +2843,14 @@ For this reason, boxplots are excellent for *comparing* distributions, but histo
 
 
 ::: {.example #BoxplotsExplained name="Boxplots explained"}
-The NHANES study collects large amounts of information from about 10\,000 Americans each year (Sect.\ \@ref(NHANESGraphs)).
+The NHANES study collects large amounts of information from about $10\,000$ Americans each year (Sect.\ \@ref(NHANESGraphs)).
 Consider the boxplot of ages
 `r if (knitr::is_latex_output()) {
    ' from the 1999--2004 participants (Fig.\\ \\@ref(fig:BoxplotAge; the online version has an animation).'
 } else {
    ' from the 1999--2004 participants. The animation below shows how the boxplot of the age of the Americans in the sample is constructed.'
 }`
-The "average" age of the subjects is about 38 years, and the ages range from almost zero to about 80 years of age.
+The "average" age of the subjects is about $38$ years, and the ages range from almost zero to about $80$ years of age.
 :::
 
 
@@ -3130,9 +3147,12 @@ colnames(Percentages) <- c("Unknown", "Males", "Females")
 
 
 if( knitr::is_latex_output() ) {
-  T1 <- knitr::kable(Counts,
+  T1 <- knitr::kable(surroundMaths(Counts,
+                                   all = TRUE,
+                                   decDigits = 0),
                format = "latex",
                longtable = FALSE,
+               escape = FALSE,
                align = c("r", "c", "c", "c"),
                booktabs = TRUE) %>%
     #kable_styling(font_size = 10) %>%
@@ -3142,9 +3162,12 @@ if( knitr::is_latex_output() ) {
                              "Winter",
                              "Spring",
                              "Summer")
-    T2 <- knitr::kable(Percentages,
+    T2 <- knitr::kable(surroundMaths(Percentages,
+                                     all = TRUE,
+                                     decDigits = 1),
                format = "latex",
                longtable = FALSE,
+               escape = FALSE,
                align = c("r", "r", "r"),
                booktabs = TRUE) %>%
     #kable_styling(font_size = 10) %>%
@@ -3748,7 +3771,7 @@ dotchart( t(Counts),
 ```
 
 
-<!-- tables are side-by-side in LaTeX, so oly need separate one for HTML -->
+<!-- tables are side-by-side in LaTeX, so only need separate one for HTML -->
 ```{r PossumRoadkillPercentagesHTML}
 colnames(Percentages) <- c("Unknown", "M", "F")
 
@@ -4088,7 +4111,7 @@ Consider the person in the case-profile plot whose line is at the top in
 } else {
    '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileHTML)).'
 }`
-Their 'pre' IgE level is about 5500 micrograms/L, and their 'post' IgE level is about 4500 micrograms/L, a *change* (or more descriptively, a *reduction*)  of about 1000 micrograms/L.
+Their 'pre' IgE level is about $5500$ $\mu$g/L, and their 'post' IgE level is about $4500$\ $\mu$g/L, a *change* (or more descriptively, a *reduction*)  of about $1000$\ $\mu$g/L.
 These reductions could be computed for each person (Table\ \@ref(tab:IgEChanges)), and a histogram constructed based on these IgE *reductions*s, with one reduction for each person
 `r if (knitr::is_latex_output()) {
    '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileLATEX), right panel).'
@@ -4106,9 +4129,13 @@ IgE <- data.frame( IgE.Pre = Pre,
 
 
 if( knitr::is_latex_output() ) {
-  kable(IgE,
+  kable(surroundMaths(IgE,
+                      all = TRUE,
+                      decDigits = 0),
         format = "latex",
         booktabs = TRUE,
+        escape = FALSE,
+        align = "r",
         col.names = c("IgE (before) in micrograms/L", 
                       "IgE (after) in micrograms/L", 
                       "IgE reduction in micrograms/L"),
@@ -4369,7 +4396,7 @@ For example, consider data recording the number of lung cancer cases in various 
 }`
 
 `r if (knitr::is_latex_output()) {
-   'Figure\\ \\@ref(fig:BarchartTruncated1) (left panel) shows the original bar chart with the count (vertical) axis starting at zero; the counts in each age group look very similar. In contrast, if the vertical axis starts at 9.75, the counts look very different (Fig.\\ \\@ref(fig:BarchartTruncated1), right panel) for two age categories, suggesting large difference between the number of lung cancer cases. (The online version has an animation.)'
+   'Figure\\ \\@ref(fig:BarchartTruncated1) (left panel) shows the original bar chart with the count (vertical) axis starting at zero; the counts in each age group look very similar. In contrast, if the vertical axis starts at $9.75$, the counts look very different (Fig.\\ \\@ref(fig:BarchartTruncated1), right panel) for two age categories, suggesting large difference between the number of lung cancer cases. (The online version has an animation.)'
 } else {
    'The animation below shows a bar chart with the count (vertical axis) starting at zero (when the counts in each age group look similar), and then gradually changing where the vertical axis starts... so that the final bar chart make the number of cases in each age groups look very different.'
 }`
@@ -4736,9 +4763,9 @@ From the NHANES webpage, this survey:
 > --- NHANES webpage (emphasis added): http://www.cdc.gov/nchs/nhanes/about_nhanes.htm
 
 The data are equivalent to a "a simple random sample from the American population" [@data:NHANES:Rpackage].
-In total, 10\,000 observations on scores of variables are available (from the 2009/2010 and the 2011/2012 surveys).
+In total, $10\,000$ observations on scores of variables are available (from the 2009/2010 and the 2011/2012 surveys).
 `r if (knitr::is_html_output()) {
-   'Fig.\\ \\@ref(fig:NHANESFullDataTable) shows the first 1000 observations on the first 40 variables only.'
+   'Fig.\\ \\@ref(fig:NHANESFullDataTable) shows the first $1000$ observations on the first $40$ variables only.'
 }`
 
 
@@ -4758,7 +4785,7 @@ Graphs are an excellent way to do so (especially with large datasets).
 Begin by graphing both the response and explanatory variables involved in the RQ.
 
 For the NHANES data, the *response variable* is direct HDL cholesterol concentration (quantitative continuous).
-The histogram (Fig.\ \@ref(fig:NHANESHDLHistBar), left panel) shows that the direct HDL cholesterol concentration is usually around 1.5mmol/L, and varies between about 0.5 and 3 mmol/L.
+The histogram (Fig.\ \@ref(fig:NHANESHDLHistBar), left panel) shows that the direct HDL cholesterol concentration is usually around $1.5$\ mmol/L, and varies between about $0.5$ and $3$\ mmol/L.
 The data are slightly skewed right.
 
 
@@ -4810,9 +4837,9 @@ box()
 
 
 The *explanatory variable* is 'current smoking status', which could be graphed using a bar chart (Fig.\ \@ref(fig:NHANESHDLHistBar), centre panel) or pie chart, for example.
-Since only *one* piece of information is present, a graph probably isn't necessary: `r round( table(NHANES$SmokeNow)["Yes"] / sum( table(NHANES$SmokeNow) ) * 100, 1)`% (just under half) of the respondents currently smoke.
+Since only *one* piece of information is present, a graph probably isn't necessary: $`r round( table(NHANES$SmokeNow)["Yes"] / sum( table(NHANES$SmokeNow) ) * 100, 1)`$% (just under half) of the respondents currently smoke.
 
-Even though the NHANES data contains 10\,000 respondents, the bar chart clearly does not have 10\,000 responses: Many respondents did not answer this question.
+Even though the NHANES data contains $10\,000$ respondents, the bar chart clearly does not have $10\,000$ responses: Many respondents did not answer this question.
 A bar could be added to the bar chart to show the number of non-responses (though it probably isn't necessary): Fig.\ \@ref(fig:NHANESHDLHistBar), right panel.
   
 The main RQ involves the *relationship* between average direct HDL cholesterol concentration and current smoking status, so a graph displaying this relationship is needed (Fig.\ \@ref(fig:NHANESboxplot)).
@@ -5020,8 +5047,8 @@ if( knitr::is_latex_output() ) {
   row_spec(0, bold = TRUE) %>% # Columns headings (row 0) in bold
   column_spec(1, bold = TRUE) %>%     # Row headings in bold
   column_spec(1, width = "20mm") %>%
-  column_spec(2, width = "40mm") %>%
-  column_spec(3, width = "40mm")
+  column_spec(2, width = "45mm") %>%
+  column_spec(3, width = "55mm")
 }
 
 if( knitr::is_html_output() ) {
@@ -5046,13 +5073,13 @@ In the following scenarios, select the most appropriate graph to use.
    answer = "A boxplot",
    "A stacked bar chart",
    "A histogram") )}`
-2. To compare the proportion of trees with koalas, for trees more than 10 metres tall with trees 10 metres or shorter.
+2. To compare the proportion of trees with koalas, for trees more than $10$ metres tall with trees $10$ metres or shorter.
 `r if( knitr::is_html_output()) {longmcq( c(
    "A pie chart", 
    answer = "A stacked bar chart",
    "A boxplot",
    "A histogram of the differences") )}`
-3. To compare the average number of hours spent on social media for people aged over 30, people aged 30 to under 50, and people over 50.
+3. To compare the average number of hours spent on social media for people aged over $30$, people aged $30$ to under $50$, and people over $50$.
 `r if( knitr::is_html_output()) {longmcq( c(
    "A stacked bar chart",
    "A pie chart", 
@@ -5085,7 +5112,7 @@ In the following scenarios, select the most appropriate graph to use.
 ## Quick review questions {#Chap12-QuickReview}
 
 ::: {.webex-check .webex-box}
-A study on the bruising of apples [@doosti2016development] purposefully hit apples with three different forces (200, 700 and 1200 mJ), in three different regions of the apple (lower; middle; upper). 
+A study on the bruising of apples [@doosti2016development] purposefully hit apples with three different forces ($200$, $700$ and $1200$\ mJ), in three different regions of the apple (lower; middle; upper). 
 The researchers then recorded the depth of the bruising (the *response* variable), to determine if it could be estimated from the surface temperature (the *explanatory* variable) at the bruise location (an *extraneous* variable).
 
 1. What graph would be appropriate to display the *response* variable?\tightlist  
@@ -5149,7 +5176,7 @@ What would be the best graph for displaying the data for these situations?
 	"A histogram of the differences",
 	answer = "A scatterplot",
 	"A side-by-side bar chart"))}`
-2. Suppose, in a research study, the researchers measures the difference between a swimmer's fastest 100m time and their fastest 200m time.
+2. Suppose, in a research study, the researchers measures the difference between a swimmer's fastest $100$\ m time and their fastest $200$\ m time.
 The researchers were interested in the average time *difference*.
 `r if( knitr::is_html_output() ) {longmcq( c(
 	"A bar chart",
@@ -5185,7 +5212,7 @@ Why?
 
 
 ::: {.exercise #GraphsLimeTrees}
-A study of lime trees (*Tilia cordata*) recorded these variables for 385 lime trees in Russia [@data:ForestBiomass2017]:
+A study of lime trees (*Tilia cordata*) recorded these variables for $385$ lime trees in Russia [@data:ForestBiomass2017]:
 
 * the foliage biomass, in kg (the response variable);
 * the tree diameter, in cm (the explanatory variable);
@@ -5198,7 +5225,7 @@ What graphs would be useful?
 
 
 ::: {.exercise #GraphsOrthoses}
-In a study of the influence of using ankle-foot orthoses in children with cerebral palsy [@data:Swinnen2017:orthoses], the data in Table\ \@ref(tab:DescribeAnkleFoot) describe the 15 subjects.
+In a study of the influence of using ankle-foot orthoses in children with cerebral palsy [@data:Swinnen2017:orthoses], the data in Table\ \@ref(tab:DescribeAnkleFoot) describe the $15$ subjects.
 (GMFCS is an *ordinal* variable used to describe the impact of cerebral palsy on their motor function: the
 `r if (knitr::is_latex_output()) {
    'Gross Motor Function Classification System.)'
@@ -5298,7 +5325,7 @@ plot(Minerab ~ Eucs,
 
 
 ::: {.exercise #GraphHorseshoeCrabs}
-A study of 173 female horseshoe crabs [@data:brockmann:crabs; @mypapers:dunnsmyth:glms] recorded, among other things, the colour of the carapace ('Light medium', 'Medium', 'Dark medium' or 'Dark') and the condition of the carapace  ('Both OK', 'One OK', 'None OK').
+A study of $173$ female horseshoe crabs [@data:brockmann:crabs; @mypapers:dunnsmyth:glms] recorded, among other things, the colour of the carapace ('Light medium', 'Medium', 'Dark medium' or 'Dark') and the condition of the carapace  ('Both OK', 'One OK', 'None OK').
 Critique the scatterplot (Fig.\ \@ref(fig:CrabPlot)) used to explore the data.
 :::
 
@@ -5353,7 +5380,9 @@ OfficeTemps[5, ] <- c(25.5, 26.9, 27.2)
 OfficeTemps[6, ] <- c(27.4, 31.0, 30.3)
 
 if( knitr::is_latex_output() ) {
-    kable(OfficeTemps,
+    kable(surroundMaths(OfficeTemps,
+                        all = TRUE,
+                        decDigits = 1),
         format = "latex",
         longtable = FALSE,
         booktabs = TRUE,
@@ -5409,11 +5438,11 @@ barplot(SPT,
 **Answers to in-chapter questions:**
 
 - Sect. \ref{thinkBox:DescribeBrainFreeze}:
-*Average*: Hard to be sure... maybe between 10 or 15. (More observations appear at the smaller values (as the bars are higher).) 
-*Variation*: From about 0 to about 40. 
+*Average*: Hard to be sure... maybe between $10$ or $15$. (More observations appear at the smaller values (as the bars are higher).) 
+*Variation*: From about $0$ to about $40$. 
 *Shape*: Slightly skewed right. 
-*Outliers*: No outliers or unusual observations. The observation between 35 and 40 *may* be an outlier.
-I suspect it is *not* an outlier, as a larger sample may very well have observations between 30 and 35.
+*Outliers*: No outliers or unusual observations. The observation between $35$ and $40$ *may* be an outlier.
+I suspect it is *not* an outlier, as a larger sample may very well have observations between $30$ and $35$.
 Every sample is a bit different, of course.
 Of course, I could be wrong.
 - Sect. \ref{thinkBox:WhenPiechart}:
