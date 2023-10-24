@@ -17,7 +17,7 @@
 \begin{wrapfigure}[10]{R}{.25\textwidth}
   \centering
   \includegraphics[width=.23\textwidth]{Illustrations/LoadedDice.png}
-  \vspace{-50pt} % This removes some white space
+  \vspace{-100pt} % This removes some white space
 \end{wrapfigure}
 `r if (knitr::is_html_output()) '-->'`
 
@@ -289,7 +289,7 @@ What I observed was almost impossible... but I really did observe it.
 A reasonable conclusion is that the assumption I was making---that the die is fair---is not tenable, nor supported by the evidence (i.e., the data).
 
 
-## Computing the test statistic and $z$-scores {#OnePropTestStatistic}
+## Computing the value of the test statistic {#OnePropTestStatistic}
 
 One way to measure how far the sample proportion $\hat{p} = 0.41$ is from the population proportion $p = 1/6$ in $100$ rolls is to use a $z$-score, since the sampling distribution (Fig.\ \@ref(fig:RollsSixesSD)) has an approximate normal distribution, with mean $p$ and standard deviation of $\text{s.e.}(\hat{p})$.
 The $z$-score is  
@@ -299,7 +299,7 @@ The $z$-score is
    &= \frac{\hat{p} - p }{\text{s.e.}(\hat{p})} \\
    &= \frac{0.41 - 0.1666...}{0.037267} = 6.53.
 \end{align*}
-(Remember that the standard deviation of the distribution in Fig.\ \@ref(fig:RollsSixesSD) is the standard error: the amount of variation in the sample proportions.)
+(Remember that the standard deviation of the distribution in Fig.\ \@ref(fig:RollsSixesSD) is the standard error: the amount of variation in the sample statistic.)
 
 In this context, the $z$-score is called a *test statistic*.
 It tells us that the observed sample proportion is more than six standard deviations from the mean, which is *highly unusual* according to the [68--95--99.7 rule](#def:EmpiricalRule).
@@ -311,11 +311,9 @@ The value of the $z$-score shows that the value of $\hat{p}$ is highly very unus
 Quantifying *how* unusual is assessed more precisely using a $P$-value, which is used widely in scientific research. The $P$-value is a way of measuring how unusual an observation is, when $H_0$ is assumed to be true.
 
 $P$-values refer to the area *more extreme* than the calculated $z$-score in the normal distribution; that is, in the *tails* of the distribution.
+For *two-tailed* $P$-values, the $P$-value is the combined area in the two tails.
+For *one-tailed* $P$-values, the $P$-value is the area in one tail only.
 Clearly, from what the $P$-value means, a $P$-value is always between $0$ and $1$.
-
-
-
-### Approximating $P$-values: the 68--95--99.7 rule {#OnePropTestP6895997}
 
 $P$-values can be approximated using the 68--95--99.7 rule with a diagram (Sect.\ \@ref(ApproxProbs)), or more precisely using the $z$-tables
 `r if (knitr::is_latex_output()) {
@@ -324,9 +322,12 @@ $P$-values can be approximated using the 68--95--99.7 rule with a diagram (Sect.
    '(App.\\ \\@ref(ZTablesOnline);'
 }`
 see Sect.\ \@ref(Z-Score-Forestry)).
-$P$-values are also reported by software.
+$P$-values are also reported by software for most statistical tests.
 
-For *two-tailed* $P$-values, the $P$-value is the combined area in the two tails; for *one-tailed* $P$-values, the $P$-value is the area in one tail only.
+
+### Approximating $P$-values: the 68--95--99.7 rule {#OnePropTestP6895997}
+
+The 68--95--99.7 can be used to determine *approximate* $P$-values only.
 For example:
 
 * *If* the calculated $z$-score was $z = 1$, the two-tailed $P$-value would be the shaded area in Fig.\ \@ref(fig:OnePropTestP) (left panel):
@@ -340,12 +341,6 @@ For example:
   The *one-tailed* $P$-value would the the area in one-tail:
   About $2.5$%, based on the 68--95--99.7 rule.
 
-
-If the $z$-score is a little *larger* than $z = 1$, say $z = 1.2$, then the tail area will be a little *smaller* than the tail area when $z = 1$ (Fig.\ \@ref(fig:OnePropTestP2), left panel).
-The two-tailed $P$-value is a little *smaller* than $0.32$.
-
-Similarly, when the $t$-score is a bit *smaller* than $z = 2$, say $z = 1.9$, the tail area will be a little *larger* than the tail area when $z = 2$ (Fig.\ \@ref(fig:OnePropTestP2), right panel).
-The two-tailed $P$-value is a little *larger* than $0.05$.
 
 
 ```{r, OnePropTestP, fig.cap="The two-tailed P-value is the combined area in the two tails of the distribution; left panel: if $z = 1$ (or $z = -1$); right panel: if $z = 2$ (or $z = -2$). (The one-tailed $P$-values are half the two-tailed $P$-values: $P = 0.16$ and $P = 0.025$.)", fig.width=10, fig.height=3, out.width='90%', fig.align="center"}
@@ -417,19 +412,11 @@ text(0,
 ```
 
 
+If the $z$-score is a little *larger* than $z = 1$, say $z = 1.2$, then the tail area will be a little *smaller* than the tail area when $z = 1$ (Fig.\ \@ref(fig:OnePropTestP2), left panel).
+The two-tailed $P$-value is a little *smaller* than $0.32$.
 
-### Exact $P$-values: using tables {#OnePropTestPTables}
-
-Using the tables of areas under normal distributions (`r if ( knitr::is_html_output()) { 'Appendix\\ \\@ref(ZTablesOnline).'} else {'Appendices\\ \\@ref(ZTablesNEG) and \\@ref(ZTablesPOS)'}`), we can be more precise when computing the $P$-values, using the ideas from Sect.\ \@ref(ExactAreasUsingTables).
-For instance (see Fig.\ \@ref(fig:OnePropTestP2)):
-
-* For $z = 1.2$: the area to the *left* of $z = -1.2$ is $0.1151$, and the area to the *right* of $z = 1.2$ is $0.1151$, so the *two-tailed* $P$-value is $0.1151 + 0.1151 = 0.2302$.
-  This is a little smaller than $0.32$, as estimated above.
-* For $z = 1.9$: the area to the *left* of $z = -1.9$ is $0.0287$, and the area to the *right* of $z = 1.9$ is $0.0287$, so the *two-tailed* $P$-value is $0.0287 + 0.0287 = 0.0574$.
-  This is a little larger than $0.05$, as estimated above.
-
-In this die-rolling example, where the $z$-score is $6.53$, the tail area is *very* small (using `r if ( knitr::is_html_output()) { 'Appendix\\ \\@ref(ZTablesOnline)'} else {'Appendices\\ \\@ref(ZTablesNEG) and\\ \\@ref(ZTablesPOS)'}`),
-and zero to four decimal places (Fig.\ \@ref(fig:RollsSixesSD)).
+Similarly, when the $t$-score is a bit *smaller* than $z = 2$, say $z = 1.9$, the tail area will be a little *larger* than the tail area when $z = 2$ (Fig.\ \@ref(fig:OnePropTestP2), right panel).
+The two-tailed $P$-value is a little *larger* than $0.05$.
 
 
 ```{r OnePropTestP2, fig.cap="The two-tailed P-value is the combined area in the two tails of the distribution; left panel: when $z = 1.2$ (or $z = -1.2$); right panel: when $z = 1.9$ (or $z = -1.9$).", fig.align="center", fig.width=10, fig.height=3, out.width='90%'}
@@ -509,11 +496,26 @@ text(x = 2,
 ```
 
 
+
+### Exact $P$-values: using tables {#OnePropTestPTables}
+
+Using the tables of areas under normal distributions (`r if ( knitr::is_html_output()) { 'Appendix\\ \\@ref(ZTablesOnline).'} else {'Appendices\\ \\@ref(ZTablesNEG) and \\@ref(ZTablesPOS)'}`), we can be more precise when computing the $P$-values, using the ideas from Sect.\ \@ref(ExactAreasUsingTables).
+For instance (see Fig.\ \@ref(fig:OnePropTestP2)):
+
+* For $z = 1.2$: the area to the *left* of $z = -1.2$ is $0.1151$, and the area to the *right* of $z = 1.2$ is $0.1151$, so the *two-tailed* $P$-value is $0.1151 + 0.1151 = 0.2302$.
+  This is a little smaller than $0.32$, as estimated above.
+* For $z = 1.9$: the area to the *left* of $z = -1.9$ is $0.0287$, and the area to the *right* of $z = 1.9$ is $0.0287$, so the *two-tailed* $P$-value is $0.0287 + 0.0287 = 0.0574$.
+  This is a little larger than $0.05$, as estimated above.
+
+In this die-rolling example, where the $z$-score is $6.53$, the tail area is *very* small (using `r if ( knitr::is_html_output()) { 'Appendix\\ \\@ref(ZTablesOnline)'} else {'Appendices\\ \\@ref(ZTablesNEG) and\\ \\@ref(ZTablesPOS)'}`),
+and zero to four decimal places (Fig.\ \@ref(fig:RollsSixesSD)).
+
+
 ## Making decisions with $P$-values {#OnePropTestDecisions}
 
 $P$-values tells us the probability of observing the sample statistic (or one even more extreme), assuming the null hypothesis is true.
 In this context, the $P$-value is the probability of observing the value of $\hat{p} = 0.41$ (or more extreme), just through sampling variation (chance) if $p = 1/6$.
-Since the $P$-value is a probability (albeit a probability of something quite specific), so is a value between $0$ and $1$. 
+Since the $P$-value is a probability (of something quite specific), it is a value between $0$ and $1$. 
 Then `r if( knitr::is_html_output() ) {
    "(see Fig.\\ \\@ref(fig:PvaluesAnimation)):"
 }`
@@ -579,8 +581,8 @@ if (knitr::is_html_output()) {
     shadeNormal(out$x,
                 out$y,
                 col = pColours[i],
-                lo = -zScore,
-                hi = -6)
+                hi = -zScore,
+                lo = -6)
     
     abline(v = zScore,
            col = "grey")
@@ -608,7 +610,7 @@ if (knitr::is_latex_output()) {
 #  par( mar = c(0.1, 0.1, 0.1, 0.1) ) # Number of margin lines on each side
 
   zList <- c( 1.25, # Two-tailed P-value: 10% -1.645
-              2.3 ) # Two-tailed P-value: 1% -2.576
+              2.2 ) # Two-tailed P-value: 1% -2.576
 
   pMeaning <- function(pValue){
     if (pValue > 0.10) Meaning <- "Insufficient"
@@ -646,8 +648,8 @@ if (knitr::is_latex_output()) {
     shadeNormal(out$x,
                 out$y,
                 col = pColours[i],
-                lo = -zScore,
-                hi = -10)
+                hi = -zScore,
+                lo = -10)
     
     abline(v = zScore,
            col = "grey")
@@ -706,17 +708,17 @@ Let's recap the decision-making process, in this context about rolling a `r incl
    The sampling distribution describes what values to expect reasonably expect from the sample statistic across all possible samples, *if* the null hypothesis is true.
    Under certain circumstances, the sample proportions will vary with an approximate normal distribution around a mean of $p = 1/6$ with a standard deviation of $\text{s.e.}(\hat{p}) = 0.0372678$.
 3. *Observation*: 
-   Compute the $z$-score: $z = 6.53$ to measure the distance between the assumed population value, and the observed sample value.
+   Compute the $z$-score: $z = 6.53$, a measure of the distance between the assumed population value, and the observed sample value.
 4. *Consistency?*: 
    Determine if the data are consistent with the assumption, by computing the $P$-value. 
   Here, the $P$-value is (much) less than $0.001$.
   The $P$-value can be computed by software, or approximated using the 68--95--99.7 rule.
 
-The *conclusion* is that very strong evidence exists that $p$ is *not* $1/6$, based on the evidence.
+The *conclusion* is that very strong evidence exists that $p$ is *not* $1/6$.
 
 
 ::: {.example #POnePropTestMeasles name="One sample proportion test"}
-A study of the measles-rubella vaccination in Korea [@kim2004sero] compared the proportion of children with measles antibodies to the World Health Organization (WHO) target proportion (for children aged 5 to 9 years old: $10$%).
+A study of the measles-rubella vaccination in Korea [@kim2004sero] compared the proportion of children with measles antibodies to the World Health Organization (WHO) target proportion (for children aged $5$ to $9$ years old: $10$%).
 
 In the study, $55$ children out of $972$ had the antibody present; that is, $\hat{p} = 55/972 = 0.056584...$.
 Of course, every sample of $972$ children would produce a different sample proportion (depending on which children were selected to be in the sample), so the difference between this sample proportion and the target proportion (of $10$%, or $p = 0.10$) could be due to sampling variation.
@@ -732,7 +734,7 @@ The *standard error* for the sample proportion is
    = \sqrt{\frac{p (1 - p)}{n}}
    = 0.0096225...
 \]
-The *test statistic* is:  
+The value of the *test statistic* is:  
 \[
    z 
    = \frac{\hat{p} - p}{\text{s.e.}(p)}
@@ -742,14 +744,14 @@ This is a *very* large (and *negative*) $z$-score, so the $P$-value will be very
 Either way, the evidence very strongly supports the alternative hypothesis.
 We write:
 
-> Very strong evidence exists in the sample ($z = -4.51$; two-tailed $P < 0.001$) that the population proportion is less than the target of $p = 0.10$ (Korean sample proportion: $\hat{p} = 0.0566$; $n = 972$; approximate $95$% CI from $0.042$ to $0.071$).
+> Very strong evidence exists in the sample ($z = -4.51$; one-tailed $P < 0.001$) that the population proportion is less than the target of $p = 0.10$ (Korean sample proportion: $\hat{p} = 0.0566$; $n = 972$; approximate $95$% CI from $0.042$ to $0.071$).
 :::
 
 
 ## Statistical validity conditions {#ValidityProportionsTest}
 
 All hypothesis tests have underlying conditions to be met so that the results are statistically valid; that is, the $P$-values can be found accurately because the sampling distribution is an approximate normal distribution.
-For a hypothesis test for one proportion, these conditions are similar to those for the CI for one proportion (Sect.\ @ref(ValidityProportions)).
+For a hypothesis test for one proportion, these conditions are similar to those for the CI for one proportion (Sect.\ \@ref(ValidityProportions)).
 
 The *statistical validity conditions* for a test for a single proportion is that the *expected* number of individuals in the group of interest (i.e, $n\times p$) and in the group *not* of interest (i.e., $n\times (1 - p)$ both exceed five; that is:
 
@@ -784,7 +786,7 @@ The *standard error* for the sample proportion is
    = \sqrt{\frac{0.50 \times (1 - 0.50)}{45}} 
    = 0.0745356...
 \]
-Then, the *test statistic* is:  
+Then, the value of the *test statistic* is:  
 \[
    z 
    = \frac{\hat{p} - p}{\text{s.e.}(p)}
@@ -806,41 +808,41 @@ We write:
 > There is *very* strong evidence in the sample ($P < 0.001$; $z = 4.325$) that the interactions were not won equally between each species ($\hat{p} = 0.8222$ won by green-backed tits; $n = 45$; approximate $95$% CI: $0.708$ to $0.936$) in the population.
 
 
-## Example: obesity REMOVE {#OneProportiontestObesity}
+<!-- ## Example: obesity REMOVE {#OneProportiontestObesity} -->
 
-@kolanska2010high compared the rate of obesity in $n = 143$ Polish patients with adrenal tumours to that of the general population of Poland ($p = 0.125$), to test if those with adrenal tumours were *more likely* to be obese that the general population.
-The hypotheses are:  
-\[
-   \text{$H_0$: } p = 0.125\quad\text{and}\quad\text{$H_1$: } p > 0.125\text{ (one-tailed)}.
-\]
-Assuming the null hypothesis is true, the standard error is (remembering to use $p$):  
-\[
-   \text{s.e.}(\hat{p}) 
-   = \sqrt{\frac{p (1 - p)}{n}} 
-   = \sqrt{\frac{.125 \times (1 - 0.125)}{143}} 
-   = 0.027656...
-\]
-In their sample, $57$ were obese, so $\hat{p} = 57/143 = 0.3986...$.
-Then, the *test statistic* is:  
-\[
-   z 
-   = \frac{\hat{p} - p}{\text{s.e.}(p)}
-   = \frac{0.3986 - 0.125}{0.027656}
-   = 9.89.
-\]
-This is an *extremely* large $z$-score, so expect a very small $P$-value using the 68--95--99.7 rule.
+<!-- @kolanska2010high compared the rate of obesity in $n = 143$ Polish patients with adrenal tumours to that of the general population of Poland ($p = 0.125$), to test if those with adrenal tumours were *more likely* to be obese that the general population. -->
+<!-- The hypotheses are:   -->
+<!-- \[ -->
+<!--    \text{$H_0$: } p = 0.125\quad\text{and}\quad\text{$H_1$: } p > 0.125\text{ (one-tailed)}. -->
+<!-- \] -->
+<!-- Assuming the null hypothesis is true, the standard error is (remembering to use $p$):   -->
+<!-- \[ -->
+<!--    \text{s.e.}(\hat{p})  -->
+<!--    = \sqrt{\frac{p (1 - p)}{n}}  -->
+<!--    = \sqrt{\frac{.125 \times (1 - 0.125)}{143}}  -->
+<!--    = 0.027656... -->
+<!-- \] -->
+<!-- In their sample, $57$ were obese, so $\hat{p} = 57/143 = 0.3986...$. -->
+<!-- Then, the value of the *test statistic* is:   -->
+<!-- \[ -->
+<!--    z  -->
+<!--    = \frac{\hat{p} - p}{\text{s.e.}(p)} -->
+<!--    = \frac{0.3986 - 0.125}{0.027656} -->
+<!--    = 9.89. -->
+<!-- \] -->
+<!-- This is an *extremely* large $z$-score, so expect a very small $P$-value using the 68--95--99.7 rule. -->
 
-The $95$% CI for the proportion requires the standard error computed from the *sample* proportion:  
-\[
-   \text{s.e.}(\hat{p}) 
-   = \sqrt{\frac{\hat{p} (1 - \hat{p})}{n}} 
-   = \sqrt{\frac{0.3986 \times (1 - 0.3986)}{143}} 
-   = 0.040943...
-\]
-The approximate $95$% CI is $0.3986 \pm(2 \times 0.040943...)$.
-We write:
+<!-- The $95$% CI for the proportion requires the standard error computed from the *sample* proportion:   -->
+<!-- \[ -->
+<!--    \text{s.e.}(\hat{p})  -->
+<!--    = \sqrt{\frac{\hat{p} (1 - \hat{p})}{n}}  -->
+<!--    = \sqrt{\frac{0.3986 \times (1 - 0.3986)}{143}}  -->
+<!--    = 0.040943... -->
+<!-- \] -->
+<!-- The approximate $95$% CI is $0.3986 \pm(2 \times 0.040943...)$. -->
+<!-- We write: -->
 
-> *Very* strong evidence exists in the sample (one-tailed $P < 0.001$; $z = 9.89$) that the rate of obesity in patients with adrenal tumours ($\hat{p} = 0.3986$; $n = 143$; approximate 95% CI: 0.317 to 0.480) is higher than the general Polish population.
+<!-- > *Very* strong evidence exists in the sample (one-tailed $P < 0.001$; $z = 9.89$) that the rate of obesity in patients with adrenal tumours ($\hat{p} = 0.3986$; $n = 143$; approximate 95% CI: 0.317 to 0.480) is higher than the general Polish population. -->
 
 
 
@@ -855,7 +857,7 @@ To test a hypothesis about a population proportion $p$:
    *  an approximate normal distribution,
    *  centered around the hypothesised value of $p$,
    *  with a standard deviation of $\displaystyle \text{s.e.}(\hat{p}) = \sqrt{\frac{p (1 - p)}{n}}$.
-* The *observations* are then summarised, and *test statistic* computed:  
+* The *observations* are summarised, and the value of the *test statistic* computed:  
 \[
    z = \frac{ \hat{p} - p}{\text{s.e.}(p)},
 \]
