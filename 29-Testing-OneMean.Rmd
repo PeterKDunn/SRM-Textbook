@@ -138,16 +138,23 @@ subBodyT <- round(cbind(BodyTemp$BodyTempC[1:10],
                         BodyTemp$BodyTempC[121:130] ), 2)
 
 if( knitr::is_latex_output() ) {
-  T1 <- kable( subBodyT[1:10, 1],
+  subBodyT <- as.data.frame(subBodyT)
+  
+  T1 <- kable( paste0("$", 
+                      subBodyT$V1,
+                      "$"),
          format = "latex",
          booktabs = TRUE,
          longtable = FALSE,
+         escape = FALSE,
          linesep = "",
          align = "c",
          col.names = "Body temp (deg. C)") %>%
 	row_spec(0, bold = TRUE)
 
-  T2 <- kable( subBodyT[1:10, 2],
+  T2 <- kable( paste0("$", 
+                      subBodyT$V2,
+                      "$"),
          format = "latex",
          booktabs = TRUE,
          escape = FALSE,
@@ -582,11 +589,15 @@ RTimeArray <- array( c(RTime$RecTime, NA),
 options(knitr.kable.NA = '')
 
 if( knitr::is_latex_output() ) {
-  kable(RTimeArray,
+  kable( surroundMaths(RTimeArray,
+                       all = TRUE,
+                       decDigits = 0),
         format = "latex",
+        align = "c",
         #col.names = rep(" ", 9),
         booktabs = TRUE,
         longtable = FALSE,
+        escape = FALSE,
         caption = "The recovery times for a new treatment") %>%
     kable_styling(font_size = 10) %>%
     add_header_above(header = c("Recovery times (in days)" = 9), 
@@ -858,12 +869,16 @@ SleepArray[2, ] <- c(39,
                      0.37)
 
 if( knitr::is_latex_output() ) {
-  kable(SleepArray,
+  kable(surroundMaths(SleepArray,
+                      all = TRUE,
+                      decDigits = c(0, 2, 2)),
         format = "latex",
+        align = "c",
         col.names = c("Sample size",
                       "Sample mean",
                       "Sample std. dev."),
         booktabs = TRUE,
+        escape = FALSE,
         caption = "Summary information for the Taiwanese pre-schoolers sleep times (in hours)") %>%
     row_spec(0, bold = TRUE) %>% 
     kable_styling(font_size = 10)  
@@ -891,11 +906,9 @@ A study [@data:Macgregor1979:BrushingDurationKids] of the brushing time for $85$
 
 
 ::: {.exercise #TestOneMeanExercisesAutomatedVehicles}
-A study [@data:greenlee2018:vehicles] of human-automation interaction with automated vehicles aimed to
+A study [@data:greenlee2018:vehicles] of human-automation interaction with automated vehicles aimed to (p. 465):
 
 > ... determine whether monitoring the roadway for hazards during automated driving results in a vigilance decrement [i.e., a reduction].
->
-> --- @data:greenlee2018:vehicles, p. 465
 
 That is, they were interested in whether the average mental demand of 'drivers' of automated vehicles was *higher* than the average mental demand for ordinary tasks.
 
@@ -989,21 +1002,25 @@ Perform a series of tests to determine how well the two instruments perform, for
 
 ```{r QualityControlData}
 if( knitr::is_latex_output() ) {
-  T1 <- kable( rbind( head(QC[1:2], 5),
+  T1 <- kable( rbind( surroundMaths(head(QC[1:2], 5),
+                                    all = TRUE,
+                                    decDigits = 2),
                       c("$\\vdots$", "$\\vdots$") ),
         format = "latex",
         align = "c",
+        escape = FALSE,
         linesep = "",
         col.names = c("High level", 
                       "Mid level"),
         booktabs = TRUE,
-        escape = FALSE,
         longtable = FALSE) %>%
     add_header_above(header = c("Instrument 1" = 2), 
                    bold = TRUE, 
                    align = "c")
 
-    T2 <- kable( rbind( head(QC[, 3:4], 5),
+    T2 <- kable( rbind( surroundMaths(head(QC[, 3:4], 5),
+                                      all = TRUE,
+                                      decDigits = 2),
                          c("$\\vdots$", "$\\vdots$") ),
         format = "latex",
         align = "c",
@@ -1039,11 +1056,15 @@ if( knitr::is_html_output() ) {
 
 ```{r QualityControlDataSummary}
 if( knitr::is_latex_output() ) {
-  kable(DataAndTargets,
+  kable( surroundMaths(DataAndTargets,
+                       all = TRUE,
+                       decDigits = c(2, 3, 3, 3) ),
         format = "latex",
         caption = "Summary of the quality-control data for LH levels (in mIU/mL) for two instruments",
         booktabs = TRUE,
+        align = "r",
         #align = c("p{17mm}", "p{17mm}","p{17mm}","p{17mm}"),
+        escape = FALSE,
         longtable = FALSE) %>%
     row_spec(row = 0,  
              bold = TRUE) %>%
