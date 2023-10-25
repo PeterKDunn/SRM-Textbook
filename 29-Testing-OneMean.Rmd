@@ -310,11 +310,11 @@ About $16$% of the time.
 ## Computing the test statistic and $t$-scores {#Tscores}
 
 The sampling distribution describes how the sample means varies; that is, what to *expect* from the sample means,  *assuming* $\mu = 37.0$.
-The value of $\bar{x}$ that is *observed*, however, is $\bar{x} = 36.8051^\circ$C.
+The value of $\bar{x}$ that is *observed*, however, is $\bar{x} = 36.8052^\circ$C.
 How likely is it that such a value could occur in our sample by chance (by sampling variation)?
 
 The value of the observed sample mean can be located the picture of the sampling distribution (Fig.\ \@ref(fig:BodyTempSamplingDistT)).
-The value $\bar{x} = 36.8051^\circ\text{C}$ is unusually small: a sample mean this low is very unlikely from a sample of $n = 130$ if $\mu$ really was $37$.
+The value $\bar{x} = 36.8052^\circ\text{C}$ is unusually small: a sample mean this low is very unlikely from a sample of $n = 130$ if $\mu$ really was $37$.
 How many standard deviations is $\bar{x}$ away from $\mu = 37$?
 A lot...
 
@@ -352,12 +352,12 @@ text(xbar,
      pos = 4)
 ```
 
-Relatively speaking, the *distance* that the observed sample mean (of $\bar{x} = 36.8051$) is from the mean of the sampling distribution (Fig.\ \@ref(fig:BodyTempSamplingDistT)) is found by computing *how many* standard deviations the value of $\bar{x}$ is from the mean of the distribution; that is, computing something like a $z$-score.
+Relatively speaking, the *distance* that the observed sample mean (of $\bar{x} = 36.8052$) is from the mean of the sampling distribution (Fig.\ \@ref(fig:BodyTempSamplingDistT)) is found by computing *how many* standard deviations the value of $\bar{x}$ is from the mean of the distribution; that is, computing something like a $z$-score.
 
 Figure\ \@ref(fig:BodyTempSamplingDistT) displays the values of $\bar{x}$ that could be expected if $\mu = 37$.
-The number of standard deviations that $\bar{x} = 36.8051$ is from the mean is therefore  
+The number of standard deviations that $\bar{x} = 36.8052$ is from the mean is therefore  
 \[
-   \frac{36.8051 - 37.0}{0.035724} = -5.453.
+   \frac{36.8052 - 37.0}{0.035724} = -5.453.
 \]
 This value is *like* a $z$-score, but is actually called a $t$-score, since *the population standard deviation $\sigma$ is unknown* and we used the *sample* standard deviation to compute $\text{s.e.}(\bar{x})$.
 Both $t$ and $z$ scores measure *the number of standard deviations that an observation is from the mean*.
@@ -379,7 +379,7 @@ Unless sample sizes are small, $z$-scores and $t$-scores are approximately the s
 
 The calculation is therefore:  
 \[
-   t = \frac{36.8051 - 37.0}{0.035724} = -5.453;
+   t = \frac{36.8052 - 37.0}{0.035724} = -5.453;
 \]
 the observed sample mean is *more than five standard deviation below the population mean*, which is *highly* unusual based on the [68--95--99.7 rule](#def:EmpiricalRule) (Fig.\ \@ref(fig:BodyTempSamplingDistT)).
 
@@ -439,7 +439,7 @@ When software reports a $P$-value of `0.000`, it really means (and we should wri
 :::
 
 
-This $P$-value means that, assuming $\mu = 37.0$, observing a sample mean as low as $36.8051$ just through sampling variation (from a sample size of $n = 130$) is almost *impossible*.
+This $P$-value means that, assuming $\mu = 37.0$, observing a sample mean as low as $36.8052$ just through sampling variation (from a sample size of $n = 130$) is almost *impossible*.
 And yet... we did.
 Using the [decision-making process](#DecisionMaking), this implies that the initial assumption (the null hypothesis) is contradicted by the data: The evidence suggests that the *population* mean body temperature is *not* $37.0^\circ\text{C}$.
 
@@ -797,7 +797,66 @@ The $t$-score is
 \]
 
 This is a *huge* $t$-score, which means that a sample mean as large as $111.19$ would be highly unlikely to occur simply by sampling variation in a sample of size $n = 224$ if the population mean really was $100$.
+
+Since the alternative hypothesis is *one-tailed*, and specifically asking if $\mu > 100$, the $P$-value is the area in just the right-side tail if the distribution (Fig.\ \@ref(fig:IQSamplingDistribution)).
 The $P$-value will be extremely small.
+
+   
+```{r IQSamplingDistribution, fig.cap="The sampling distribution for the IQ data", fig.align="center", fig.width=10, fig.height=3, out.width='90%'}
+mn.IQ <- 100
+sd.IQ <- 14.21
+sigma.IQ <- 15
+n.IQ <- 100
+se.IQ <- sd.IQ/sqrt(n.IQ)
+xbar <- 111.19
+
+z <- (xbar - mn.IQ)/se.IQ
+
+out <- plotNormal(mn.IQ,
+                  se.IQ, 
+                  main = "The sampling distribution of the sample mean IQ",
+                  xlab = "",
+                  xlim.hi = 112,
+                  las = 2,
+                  ylim = c(0, 0.4),
+                  round.dec = 2) 
+# xlab, placed better
+mtext(text = expression(Sample~mean~IQ),
+      at = 107,
+      side = 1,
+      line = 1)
+shadeNormal(out$x,
+            out$y,
+            lo = xbar,
+            hi = 110,
+            col = plot.colour)
+
+arrows( x0 = xbar,
+        x1 = xbar,
+        y0 = 0.9 * max(out$y),
+        y1 = 0,
+        length = 0.1,
+        angle = 15)
+text( xbar, 
+      0.9 * max(out$y), 
+      expression( paste(bar(italic(x)) == "111.19")),
+      pos = 3)
+
+arrows(x0 = 101,
+       x1 = 105,
+       y0 = 0.30,
+       y1 = 0.30,
+       angle = 15,
+       length = 0.1)
+text(x = 103,
+     y = 0.30,
+     #pos = 1,
+     labels = expression( atop(The~one*"-"*tailed~italic(P)*"-"*value~is~the,
+                               area~"in"~this~tail~only)))
+
+
+```
+
 
 To conclude (where the CI is found using the ideas in Sect.\ \@ref(OneMeanCI)):
 
