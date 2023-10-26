@@ -1,67 +1,65 @@
-surroundMaths <- function(x, all = FALSE, rows = NA, cols = NA, decDigits = 1){
-  # Takes the "table" in x, surrounds specified rows/cols with $...$
+surroundMaths <- function(x, 
+                          bycols = TRUE, 
+                          byrows = FALSE, 
+                          decDigits = 0, 
+                          ignore = array( FALSE, dim = dim(x))){
+  ### Takes the  array  in x, surrounds numeric elements with $...$
   
-  #if ( !is.na(rows) & !is.na(cols) ) paste("Only rows or cols, one at a time\n")
+  ### The whole table is converted
+  ### if  bycols = TRUE  decDigits  is applied by col.
+  ### if  byrows = TRUE  decDigits  is applied by row.
+  ### if neither  bycols  or  byrow  is give, decDigits is applied by like  bycol.
+  ### decDigits should be a vector of the appropriate size (num of rows or cols), or a single number, to specify the number of decimal digits to round to.
+  ### ignore  is a logic array, the same size a x, of cells to ignore, and return as initially given in x 
+  
+  if ( byrows ) bycols <- FALSE
+  if ( bycols ) byrows <- FALSE
+  
+  library("varhandle") # Provides check.numeric()
+  
   tempTable <- x
+  tempTable[ignore] <- NA # These will be replaced later
   
-  if (all) {
-#    rows <- 1 : dim(x)[1]
-    cols <- 1 : dim(x)[2]
+  dimx <- dim(x)
+  if ( is.na(byrows) & is.na(bycols) ) {
+    bycols <- TRUE
+    byrows <- FALSE
   }
-
-    if ( !is.na(rows[1]) ) { # That is, rows are specified for surrounding by $...$
-    if ( length(decDigits) < length(rows)) decDigits <- rep(decDigits, length(rows))
+  
+  
+  # Need to proceed one col (or row) at a time, to apply decDigits  
+  if ( bycols ){
+    numCols <- dimx[2]
+    if (length(decDigits) == 1) decDigits <- rep(decDigits, numCols)
     
-    for (i in (1 : length(rows))){
-
-      locateNA <- is.na( tempTable[ rows[i], ])
-      # Now temporarily make these 0, so the  round()  can be applied
-      if ( any( locateNA) ) tempTable[ rows[i], locateNA] <- 0
-
-      # Now locate other problematic entries      
-      locateOtherNonNumeric <- is.na(as.numeric( tempTable[ rows[i],]))
+    # Do one col at a time
+    for (i in 1:numCols){
+      locateNumeric <- varhandle::check.numeric( tempTable[, i]) # TRUE where array contains numbers
+      # This return  TRUE  if the cell is NA. So check this separately
+      locateNumeric[ is.na(tempTable[, i])] <- FALSE 
       
-      # Now temporarily make these 0, so the  round()  can be applied
-      if ( any( locateOtherNonNumeric) ) tempTable[ rows[i], locateOtherNonNumeric] <- 0
-      tempTable[ rows[i], ] <- paste0("$", 
-                                      format( round( as.numeric(x[rows[i], ]), 
-                                                    digits = decDigits[i]),
-                                              nsmall = decDigits[i]),
-                                      "$")
-      # Now replace the NA with NA again
-      if ( any( locateNA) ) tempTable[ rows[i], locateNA] <- NA
-      if ( any( locateOtherNonNumeric) ) tempTable[ rows[i], locateOtherNonNumeric] <- NA
+      tempTable[locateNumeric, i] <- paste0("$",
+                                            format( round( as.numeric(tempTable[locateNumeric, i]), 
+                                                           digits = decDigits[i]), 
+                                                    nsmall = decDigits[i]),
+                                            "$")    }
+  } else {
+    numRows <- dimx[1]
+    if (length(decDigits) == 1) decDigits <- rep(decDigits, numRows)
+    
+    # Do one row at a time
+    for (i in 1:numRows){
+      locateNumeric <- varhandle::check.numeric( tempTable[i, ]) # TRUE where array contains numbers
+      # This return  TRUE  if the cell is NA. So check this separately
+      locateNumeric[ is.na(tempTable[i, ])] <- FALSE 
       
+      tempTable[i, locateNumeric] <- paste0("$",
+                                            format( round( as.numeric(tempTable[i, locateNumeric]), 
+                                                           digits = decDigits[i]), 
+                                                    nsmall = decDigits[i]),
+                                            "$")
     }
   }
-  
-  
-  if ( !is.na(cols[1]) ) {
-
-    if ( length(decDigits) < length(cols)) decDigits <- rep(decDigits, length(cols))
-
-    for (i in (1 : length(cols))){
-      locateNA <- is.na( tempTable[ , cols[i] ])
-      # Now temporarily make these 0, so the  round()  can be applied
-      if ( any( locateNA) ) tempTable[ locateNA, cols[i]] <- rep(0, sum(locateNA) )
-      
-      # Now locate other problematic entries      
-      locateOtherNonNumeric <- is.na(as.numeric( tempTable[ , cols[i]]))
-      
-      # Now temporarily make these 0, so the  round()  can be applied
-      if ( any( locateOtherNonNumeric) ) tempTable[ locateOtherNonNumeric, cols[i]] <- 0
-
-      tempTable[, cols[i]] <- paste0("$", 
-                                     format( round( as.numeric(x[, cols[i]]), 
-                                                   digits = decDigits[i]), 
-                                           nsmall = decDigits[i]),
-                                     "$")
-      # Now replace the NA with NA again
-      if ( any( locateNA) ) tempTable[ locateNA, cols[i]] <- NA
-      if ( any( locateOtherNonNumeric) ) tempTable[ locateOtherNonNumeric, cols[i]] <- NA
-      
-    }
-  }
-  
+  tempTable[ignore] <- x[ignore] # Restore the  ignore  elements
   tempTable
 }
