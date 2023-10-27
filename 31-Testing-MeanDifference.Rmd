@@ -23,7 +23,7 @@
 <!-- ``` -->
 
 
-## Introduction: weight gain {#Chap29-Intro}
+## Introduction: total nitrogen {#PairedTTest-Intro}
 
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
@@ -31,66 +31,67 @@
 </div>
 
 
-In Chap.\ \@ref(PairedIntro), data were introduced that studied the mean amount of weight gained between Week\ 1 and Week\ 12 when they began university (@levitsky2004freshman, @DASL:WeightChange).
-We could also ask:
+A study [@lambie2021microbial] compared nitrogen (N) in soils from irrigated and non-irrigated intensively grazed pasture sites.
+The researchers paired irrigated and non-irrigated  sites (p. 338):
 
-> For Cornell University students, does the *mean weight* of students *increase* after $12$ weeks at university?
+> The irrigated and non-irrigated pairs within each site were within $100$\ m of each other and were on the same soil, landform and usually the same farm with the same farm management on both treatments.
 
+The data are *paired* (Sect.\ \@ref(PairedIntro)), which is a form of blocking (Sect.\ \@ref(ExpManagingConfounding)).
+One purpose of the study was:
 
-The data collected are shown in
+> For intensively grazed pastures sites, is there a mean reduction in percentage nitrogen (N) when sites are irrigated, compared to non-irrigated?
+
+The data are shown in
 `r if( knitr::is_latex_output() ) {
-    'Table\\ \\@ref(tab:DataWeightChange2).'
+    'Table\\ \\@ref(tab:SoilCN).'
 } else {
     'the table below.'
 }`
-
-
-For these data, finding the *difference* (or *gain*) in weight between Weeks\ 1 and\ 12 seems sensible.
-The data are *paired* (Sect.\ \@ref(PairedIntro)): the same unit of analysis is measured twice on the same variable (weight in *Week\ 1* and *Week\ 12*), and the *mean* change is of interest.
-That is, the comparison is *within* individuals (Sect.\ \@ref(Comparison)), and *not* between two different groups of individuals.
-The parameter is $\mu_d$, the population mean *gain* in weight.
+The parameter is $\mu_d$, the population mean *reduction* in percentage N when sites are irrigated, compared to non-irrigated.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 Explaining *how* the differences are computed is important.  
 
-Here, the differences could be computed as the *Week\ 1 weight* minus *Week\ 12 weight* (the weight *loss*), or the *Week\ 12 weight* minus the *Week\ 1 weight* (the weight *gain*).
-Either is fine, as long as you are consistent throughout.
+The differences could be computed as the percentage N in *irrigated* sites minus percentage N in *non-irrigated* sites, or the percentage N in *non-irrigated* sites minus percentage N in *irrigated* sites.
+Either is fine, as long as you remain consistent throughout.
 The meaning of any conclusions will be the same.  
 
-Here we discuss weight *gain* as mentioned in the RQ.
+Here we discuss the percentage N in *irrigated* sites minus percentage N in *non-irrigated* sites, the *reduction* in percentage N when sites are irrigated, compared to non-irrigated.
 :::
 
 
-```{r DataWeightChange2}
-data(StudentWt)
+```{r}
+data(SoilCN)
 
-SWlen <- length(StudentWt$Week1) 
+SoilN <- subset(SoilCN, 
+                select = c(IrrigatedN, NonirrigatedN))
+SoilN$Change <- SoilN$NonirrigatedN - SoilN$IrrigatedN
+
+Nlen <- length(SoilN$TotalCI) 
 
 if( knitr::is_latex_output() ) {
   
-  tb1 <- StudentWt[1:5, ] 
-  
-  T1 <- knitr::kable(surroundMaths(tb1,
-                                   decDigits = 1),
+ T1 <- knitr::kable(surroundMaths(SoilN[1:14, ],
+                                   decDigits = 2),
                      format = "latex",
                      valign = 't',
-                     align = c("r", "c", "c", "r"),
+                     align = "r",
                      linesep = "",
-                     col.names = c("Student", "Wk 1", "Wk 12", "Wt gain"),
+                     col.names = c("Not irrigated", "Irrigated", "Reduction"),
                      row.names = FALSE,
                      escape = FALSE,
                      booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) 
   
-  tb2 <- StudentWt[(SWlen - 4):SWlen, ]
-  T2 <- knitr::kable(surroundMaths(tb2,
-                                   decDigits = 1),
+  
+  T2 <-knitr::kable(surroundMaths(SoilN[15:28, ],
+                                   decDigits = 2),
                      format = "latex",
                      valign = 't',
-                     align = c("r", "c", "c", "c"),
+                     align = "r",
                      linesep = "",
-                     col.names = c("Student", "Wk 1", "Wk 12", "Wt gain"),
+                     col.names = c("Irrigated", "Not irrigated", "Reduction"),
                      row.names = FALSE,
                      escape = FALSE,
                      booktabs = TRUE) %>%
@@ -98,34 +99,142 @@ if( knitr::is_latex_output() ) {
   
   out <- knitr::kables(list(T1, T2),
                        format = "latex",
-                       label = "DataWeightChange2",
-                       caption = "The student weight-change data: The weight of students in Week 1 at university, in Week 12, and the weight gain (all in kg). These are the first five and the last five of the 68 observations.") %>% 
+                       label = "SoilCN",
+                       caption = "The percentage total nitrogen in irrigated and non-irrigated soils.") %>% 
     kable_styling(font_size = 10)
   out2 <- prepareSideBySideTable(out) 
   out2 
 }
 
 if( knitr::is_html_output() ) {
-  kable( StudentWt,
+  kable( SoilN,
          format = "html",
          booktabs = TRUE,
          longtable = FALSE,
-         col.names = c("Student", "Week 1", "After 12 weeks", "Weight gain"),
-         caption = "The student weight-change data: The weight of students in Week 1 at university, in Week 12, and the weight gain (all in kg)") %>% 
+         col.names = c("Irrigated", "Not irrigated"),
+         caption = "he percentage total nitrogen in irrigated and non-irrigated soils.") %>% 
     kable_styling(font_size = 10) %>%
     row_spec(0, bold = TRUE)
 }
 ```
 
 
-The data should be summarised numerically using software, such as jamovi or SPSS (Table\ \@ref(tab:WeightGainSummary)), and graphically (Fig.\ \@ref(fig:WeightGainHistogram)).
+Since the raw data are available, the data should be summarised graphically (Fig.\ \@ref(fig:SoilNGraphs)) and numerically (Table\ \@ref(tab:SoilNSummary)), using software (Fig.\ \@ref(fig:Nitrogenjamovi)).
+
+
+
+
+
+```{r SoilNSummary}
+SoilSummary <- array( dim = c(3, 4))
+
+rownames(SoilSummary) <- c("Non-irrigated",
+                           "Irrigated",
+                           "Change")
+colnames(SoilSummary) <- c("Mean",
+                           "Std. dev.",
+                           "Std. error",
+                           "Sample size")
+
+SoilSummary[, 1] <- colMeans(SoilN)
+SoilSummary[, 2] <- apply(SoilN,
+                          2,
+                          "sd")
+SoilSummary[, 3] <- apply(SoilN,
+                          2,
+                          "findStdError")
+SoilSummary[, 4] <- apply(SoilN,
+                          2,
+                          "length")
+
+# Do some appropriate rounding
+SoilSummary <- round(SoilSummary, 4)
+SoilSummary[1:2, 1] <- round(SoilSummary[1:2, 1], 3)
+
+if( knitr::is_latex_output() ) {
+  
+ knitr::kable(surroundMaths(SoilSummary,
+                                   decDigits = NA),
+                     format = "latex",
+                     align = c("l", "c", "c", "c"),
+                     linesep = "",
+              caption = "The total percentage N in irrigated and non-irrigated sites",
+                     col.names = c("Mean", "Std. dev.", "Std. error", "Sample size"),
+                     row.names = TRUE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10)
+  
+}
+
+if( knitr::is_html_output() ) {
+  kable( SoilSummary,
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names = c("Irrigated", "Not irrigated"),
+         caption = "The total nitrogen in irrigated and non-irrigated soils.") %>% 
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+}
+```
+
+
+
+
+```{r, SoilNGraphs, fig.align="center", fig.cap="The reduction in percentage N when sites are irrigated, compared to non-irrigated. Left: A histogram; right: a case-profile plot (solid lines and solid dots for lower percentage N in irrigated sites).", fig.show="hold", out.width='100%', fig.width = 9.25, fig.height = 3.75}
+par( mfrow = c(1, 2))
+
+hist(SoilN$Change,
+     main = "Case-profile plot\nof nitrogen reduction",
+     xlab = "Reduction in %N",
+     ylab = "No. of sites",
+     las = 1)
+
+box()
+
+plot( x = c(0.75, 2.25),
+      y = c(0.15, 0.7),
+      axes = FALSE,
+      type = "n",
+      main = "Case-profile plot\nof nitrogen reduction",
+      xlab = "",
+      ylab = "Change in % N")
+axis(side = 1,
+     at = 1:2,
+     labels = c("Irrigated",
+                "Non-irrigated") )
+axis(side = 2,
+     las = 1)
+box()
+
+delta <- 0.02
+for (i in 1:length(SoilN$Change)){
+  lines( x = c(1 + ifelse(SoilN$Change[i] > 0, delta, -delta), 
+               2 + ifelse(SoilN$Change[i] > 0, delta, -delta)),
+         y = c( SoilN$IrrigatedN[i], 
+                SoilN$NonirrigatedN[i]),
+         lty = ifelse(SoilN$Change[i] > 0, 1, 2),
+         type = "b",
+         pch = ifelse(SoilN$Change[i] > 0, 19, 1))
+}
+box()
+
+```
+
+
+```{r Nitrogenjamovi, fig.cap="jamovi output for the nitrogen data", fig.align="center", out.width=c("60%","100%"), fig.show='hold'}
+knitr::include_graphics("jamovi/SoilCN/SoilCN-Summary.png")
+knitr::include_graphics("jamovi/SoilCN/SoilCN-Testing.png")
+```
 
 
 ## Statistical hypotheses and notation
 
-The RQ asks if the mean weight *in the population* increases; that is, is the mean difference is zero, or greater than zero.
+The RQ asks if the mean total nitrogen *reduces* in the *population* when sites are irrigated; that is, is the mean difference is zero, or less than zero, provided the difference is defined as the percentage N in irrigated sites minus non-irrigated sites.
 The *parameter* is the *population mean difference*. 
-To make things clear, notation is needed (recapping Sect.\ \@ref(PairedNotationCI)) to describe the *data*:
+The notation used (recapping Sect.\ \@ref(PairedNotationCI)) is:
 
 * $\mu_d$: The mean *difference* in the *population*.
 * $\bar{d}$: The mean *difference* in the *sample*.
@@ -133,60 +242,97 @@ To make things clear, notation is needed (recapping Sect.\ \@ref(PairedNotationC
 * $n$: The number of *differences*.
 
 The hypotheses, therefore, can be written in terms of the parameter $\mu_d$.
-The *null* hypothesis is 'there is *no change* in weight, in the population':
+The *null* hypothesis is 'there is *no change* in percentage N, in the population':
 
 * $H_0$: $\mu_d = 0$.
 
-As noted in Sect.\ \@ref(AboutHypotheses), the null hypothesis states that there is 'no difference, no change, no relationship', as measured by a parameter value.
-This hypothesis, the initial *assumption*, postulates that the mean weight difference may not be zero in the *sample* due to sampling variation.
+The null hypothesis states is 'no difference, no change, no relationship' (Sect.\ \@ref(AboutHypotheses)), as measured by a parameter value.
+This hypothesis, the initial *assumption*, postulates that the mean reduction may not be zero in the *sample* due to sampling variation.
 
-Since the RQ asks specifically if weight *increase*, the alternative hypothesis will be a [*one-tailed* hypothesis](#AboutHypotheses):
+Since the RQ asks specifically if mean percentage N *decreases*, the alternative hypothesis is [*one-tailed*](#AboutHypotheses).
+According to how the differences have been defined, the alternative hypothesis is:
 
-* $H_1$: $\mu_d > 0$ (one-tailed).
+* $H_1$: $\mu_d < 0$ (i.e., one-tailed).
 
-This hypothesis says that the mean weight change in the population is *greater than* zero.
-The alternative hypothesis is *one*-tailed because of the wording of the RQ.
-Recall that the differences are defined as weight *gains*.
+This hypothesis says that the mean reduction in the population is *less than* zero, because of the wording of the RQ and because of how the diffference were defined.
+(If the differences had been defined in the opposite way-- as 'the percentage N in *non-irrigated* sites minus *irrigated* sites'--- then the alternative hypothesis would be $\mu_d < 0$, which has the same *meaning*.)
 
 
 ##  Describing the sampling distribution
 
-Initially, assume that $\mu_d = 0$.
-However, the *sample* mean weight gain will vary depending on which one of the many possible samples is randomly obtained, *even if* the mean weight gain in the population is zero.
+The *sample* percentage N reduction will vary depending on which one of the many possible samples is randomly obtained, *even if* the mean reduction in the population is zero.
 That is, the value of $\bar{d}$ will vary across all possible samples even if $\mu_d = 0$.
 
 The possible values of the sample mean differences can, under certain conditions (Sect.\ \@ref(ValiditySampleMeanDiffTest)), be described using an approximate normal distribution.
-The mean of all the possible values of $\bar{d}$ is denoted $\mu(\bar{d})$.
-Since we assume the average value of the mean difference in the population is $0$ (from the null hypothesis), here $\mu(\bar{d}) = 0$.
-
-The standard deviation of all the possible values of $\bar{d}$ (called the *standard error*) is denoted $\text{s.e.}(\bar{d})$; it's value is  
+Hypothesis testing begins by assuming that the null hypothesis is true; i.e., that $\mu_d = 0$.
+The standard deviation of all the possible values of $\bar{d}$ (called the *standard error*) is denoted $\text{s.e.}(\bar{d})$, and it's value is  
 \[
-  \text{s.e.}(\bar{d}) = s_d/\sqrt{n} = 0.3212.
+  \text{s.e.}(\bar{d}) = s_d/\sqrt{n} = 0.062/\sqrt{28} = 0.0117.
 \]
-This describes what can be *expected* from the possible values of $\bar{d}$ (Fig.\ \@ref(fig:WeightGainNormal2)), just through sampling variation if $\mu_d = 0$.
+This describes what can be *expected* from the possible values of $\bar{d}$ (Fig.\ \@ref(fig:PercentageNSamplingDist)), just through sampling variation if $\mu_d = 0$.
 
 
 
-```{r WeightGainNormal2, fig.cap="The sampling distribution is a normal distribution; it shows how the sample mean weight gain varies in samples of size $n = 68$ when the population mean gain is $0$", fig.align="center", fig.width=9.0, fig.height=2.5, out.width='95%'}
-mn <- mean(StudentWt$GainWt)
-n <- length(StudentWt$GainWt)
-stdd <- sd(StudentWt$GainWt)
+```{r PercentageNSamplingDist, fig.cap="The sampling distribution is a normal distribution; it describes how the sample mean reduction in percentage N varies in samples of size $n = 28$ when the population mean reduction is $0$", fig.align="center", fig.width=9.0, fig.height=2.5, out.width='95%'}
+mn <- mean(SoilN$Change)
+n <- length(SoilN$Change)
+stdd <- sd(SoilN$Change)
 
 se <- stdd/sqrt(n)
 
 par( mar = c(4, 0.5, 0.5, 0.5) )
-out <- plotNormal(mn,
+out <- plotNormal(0,
                   se,
-                  xlab = "Weight gain (kg)", 
+                  xlab = "N difference (%)", 
                   cex.axis = 0.95,
+                  ylim = c(0, 55),
                   showXlabels = c( 	
-                    expression( -0.348),
-                    expression( -0.232), 
-                    expression( -0.116), 
+                    expression( -0.0352),
+                    expression( -0.0234), 
+                    expression( -0.0117), 
                     expression( 0 ),
-                    expression( 0.116), 
-                    expression( 0.232), 
-                    expression( 0.348) ) )
+                    expression( 0.0117), 
+                    expression( 0.0234), 
+                    expression( 0.0352) ) )
+
+arrows(x0 = 0,
+       x1 = 0,
+       y0 = 45,
+       y1 = max(out$y),
+       angle = 15,
+       length = 0.1)
+
+text(x = 0,
+     y = 45,
+     pos = 3,
+     labels = expression(Sampling~mean))
+
+
+
+arrows(x0 = 0,
+       x1 = 0 + se,
+       y0 = 0.30 * max(out$y),
+       y1 = 0.30 * max(out$y),
+       code = 3, # Arrows both ends
+       angle = 15,
+       length = 0.1)
+
+text(x = 0 + (se / 2),
+     y = 0.30 * max(out$y),
+     labels = expression( atop(Std.~error,
+                               s.e.(bar(italic(d)))==0.0117)) )
+
+
+arrows(x0 = mn,
+       x1 = mn,
+       y0 = 0.7 * max(out$y),
+       y1 = 0,
+       angle = 15,
+       length = 0.1)
+text(x = mn,
+     y = 0.7 * max(out$y),
+     pos = 3,
+     labels = expression(bar(italic(x)) == 0.0282) )
 ```
 
 
@@ -195,38 +341,27 @@ out <- plotNormal(mn,
 The sample mean difference can be located on the sampling distribution (Fig.\ \@ref(fig:WeightGainNormal2)) by computing the $t$-score:  
 \[
 	t
-	= \frac{\bar{d} - \mu_{\bar{d}}}{\text{s.e.}(\bar{d})}
-	= \frac{0.8618 - 0}{0.1160} = 7.43,
+	= \frac{\bar{d} - \mu_{d}}{\text{s.e.}(\bar{d})}
+	= \frac{0.0282 - 0}{0.0117} = 2.41,
 \]
 following the ideas in Eq.\ \@ref(eq:tscore).
-Software computes the $t$-score too (Fig.\ \@ref(fig:WeightGainTestOutputHT).
-The $t$-score locates the *observed* sample statistic on the sampling distribution.
+Software computes the $t$-score too (Fig.\ \@ref(fig:TotalNOutputHT)).
+The $t$-score locates the *observed* sample statistic on the sampling distribution (Fig.\ \@ref(fig:Nitrogenjamovi)).
 
-
-
-```{r WeightGainTestOutputHT, fig.cap="The weight-gain data: jamovi output (top) and SPSS output(bottom)", fig.align="center", out.width=c("95%","85%"), fig.show="hold"}
-knitr::include_graphics("jamovi/WeightGain/WeightGain-PairedTOutput.jpg")
-knitr::include_graphics( "SPSS/WeightGain/WeightGain-PairedTOutput.png") 
-```
 
 
 ## Determining $P$-values
 
 A $P$-value determines if the sample data are consistent with the assumption (Table\ \@ref(tab:PvaluesInterpretation)).
-Since $t = 7.43$, and since $t$-scores are like $z$-scores, the *one-tailed* $P$-value is *very* small, based on the [68--95--99.7 rule](#def:EmpiricalRule).
-Using Tables also shows that the one-tailed $P$-value is very small.
-Software (Fig.\ \@ref(fig:WeightGainTestOutputHT)) reports that the *two-tailed* $P$-value is less than $0.001$.
-Hence, the one-tailed $P$-value will be smaller than $0.001/2 = 0.0005$; small indeed.
+Since $t = 2.41$, and since $t$-scores are like $z$-scores, the *one-tailed* $P$-value is small, based on the [68--95--99.7 rule](#def:EmpiricalRule).
+Software (Fig.\ \@ref(fig:TotalNOutputHT)) reports that the *two-tailed* $P$-value is $0.02279$.
+Hence, the one-tailed $P$-value is $0.02279/2 = 0.0114$.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The software clarifies *how* the differences have been computed:
+The jamovi software clarifies *how* the differences have been computed:
+At the left of the output, the order implies the differences are found as `NonirrigatedN` minus `IrrigatedN`.
 
-* **jamovi**: 
-  At the left of the output, the order implies the differences are found as `Week12` minus `Week1`.
-
-* **SPSS**: 
-  At the left of the output, the difference is described as `Week12 - Week1`.
 :::
 
 `r if (knitr::is_latex_output()) '<!--'`
@@ -238,52 +373,17 @@ The software clarifies *how* the differences have been computed:
 
 ## Writing conclusions
 
-The *one-tailed* $P$-value is less than $0.0005$, suggesting very strong evidence (Table\ \@ref(tab:PvaluesInterpretation)) to support $H_1$.
-To write a conclusion, an *answer to the RQ* is needed, plus *evidence* leading to that conclusion; and some *summary statistics*, including a CI (indicating the precision of the statistic):
+The *one-tailed* $P$-value is $0.0114$, suggesting moderate evidence (Table\ \@ref(tab:PvaluesInterpretation)) to support $H_1$.
+A conclusion requires an *answer to the RQ*, a summary of the *evidence* leading to that conclusion, and some *summary statistics*, including a CI (indicating the precision of the statistic; Chap.\ \@ref(PairedIntro)):
 
-> very strong evidence exists in the sample (paired $t = 7.43$; one-tailed $P < 0.0005$) of a mean gain in weight in students from Week 1 to Week 12 (mean gain: $0.86$ kg; $n = 68$; $95$% CI from $0.63$ to $1.10$ kg).
+> Moderate evidence exists in the sample (paired $t = 2.41$; one-tailed $P = 0.0114$) of a mean reduction in percentage N  from irrigated to non-irrigated sites (mean reduction: $0.0282$%; $n = 28$; $95$% CI from $0.0042$% to $0.0522$%).
 
-The wording implies the direction of the differences (by talking of 'weight gains').
-
-Statistically validity should be checked, which was done in Sect.\ \@ref(ValidityPaired), but the validity conditions are given again in the next section, for completeness.
-
-
-::: {.example #HTMeanDiffCOVID name="COVID lockdown"}
-A study of $n = 213$ Spanish health students [@romero2020physical] measured the number of minutes of vigorous physical activity (PA) performed by students *during* and *before* the COVID-19 lockdown (from March to April 2020 in Spain).
-These numerical summary of the data are shown in Exercise\ \@ref(exr:MeanDiffCOVIDCI), so are not repeated here.
-Define the *differences* as the number of minutes of vigorous PA *during* the COVID lockdown, minus the number of minutes of vigorous PA *before* the COVID lockdown.
-A difference is computed for each participant, so the data are *paired*.
-
-Using this definition, a *positive* difference means the *during* value is higher; hence, the differences correspond to the *increase* in PA during (compared to before) the COVID lockdown.
-Similarly, a *negative * value means that the *before* value is higher.
-The RQ is
-
-> For Spanish health students, is there a mean change in the amount of vigorous PA during and before the COVID lockdown? 
-  
-In this situation, the *parameter* of interest is the population mean difference $\mu_d$, the mean *decrease* in vigorous PA *during* (compared to before) the lockdown.
-The hypotheses are:  
-\[
-   \text{$H_0$}: \mu_d = 0\quad\text{and}\quad \text{$H_1$}: \mu_d \ne 0 \quad\text{(i.e., two-tailed)}.
-\]
-The mean *difference* is $\bar{d} = 2.68$\ mins, with a standard deviation of $s_d = 51.30$\ mins.
-However, we know that the sample mean difference could vary from sample to sample, so has a standard error:
-$\text{s.e.}(\bar{d}) = s_d\div \sqrt{n} = {51.30}\div{\sqrt{213}} = 3.515018$.
-The test statistic is  
-\[
-  t = \frac{\bar{d} - \mu_{\bar{d}}}{\text{s.e.}(\bar{d})} = \frac{2.68 - 0}{3.515018} = 0.76.
-\]
-
-This is a very small value, so (using the 68--95--99.7 rule) the $P$-value will be very large: a sample mean difference of $2.68$\ mins could easily have happened by chance even if the population mean difference was zero.
-
-We write:
-
-> No evidence (paired $t = 0.76$, $P > 0.10$) exists in the sample of a mean difference in the mean change in vigorous PA *during* (compared to *before*) lockdown (sample mean $2.68$\ mins greater *during* lockdown; standard deviation: $51.30$\ mins; approximate $95$% CI: $-4.35$ to $9.71$) in the population.
-:::
+The wording implies the direction of the differences.
 
 
 ## Statistical validity conditions {#ValiditySampleMeanDiffTest}
 
-As with any inferential procedure, these results apply [under certain conditions](#exm:StatisticalValidityAnalogy).
+As with any hypothesis test, these results apply [under certain conditions](#exm:StatisticalValidityAnalogy).
 For a hypothesis test for the mean of paired data, these conditions are the same as for the CI for the mean difference for paired data (Sect.\ \@ref(ValidityPaired)), and similar to those for one sample mean.
 
 The test above is statistically valid if *one* of these conditions is true:
@@ -299,17 +399,87 @@ That is, when $n > 25$ the sample means generally have an approximate normal dis
 
 
 ::: {.example #StatisticalValidityWeightLossHT name="Statistical validity"}
-For the weight-gain data used above, the sample size is $n = 68$, so the test will be statistically valid.
+For the percentage N data, the sample size is $n = 28$, so the test is statistically valid.
 :::
 
 
-::: {.example #StatisticalValidityHTMeanDiffCOVID name="COVID lockdown"}
-In Example\ \@ref(exm:HTMeanDiffCOVID) concerning COVID lockdowns, the sample size was $213$ Spanish health students.
-Since the sample size is much larger than $25$, the test is statistically valid.
-:::
+## Example: Physical activity
+
+A study of $n = 213$ Spanish health students [@romero2020physical] measured the number of minutes of vigorous physical activity (PA) performed by students *during* and *before* the COVID-19 lockdown (in Spain: March to April 2020).
+These numerical summary of the data are shown in Table\ \@ref(tab:COVIDsummaryTable2).
 
 
-## Example: endangered species {#EndangeredHT}
+
+```{r COVIDsummaryTable2}
+COVID.summary     <- array( dim = c(3, 2))
+colnames(COVID.summary) <- c("Mean (mins)", 
+                             "Std dev (mins)")
+rownames(COVID.summary) <- c("Before",
+                             "During",
+                             "Increase")
+
+
+COVID.summary[1, ] <- c(28.47,
+                        54.13)
+COVID.summary[2, ] <- c(30.66,
+                        30.04)
+COVID.summary[3, ] <- c(2.68,
+                        51.30)
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable( surroundMaths(COVID.summary,
+                              decDigits = 2),
+               format = "latex",
+               booktabs = TRUE,
+               longtable = FALSE,
+               escape = FALSE,
+               caption = "Summary information for the COVID-lockdown exercise data",
+               align = c("r", "r")) %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, italic = TRUE) %>%
+    kable_styling(font_size = 10)
+} 
+if( knitr::is_html_output() ) {
+   knitr::kable( COVID.summary,
+                 format = "html",
+                 caption = "Summary information for the COVID-lockdown exercise data")
+}
+```
+
+
+Define the *differences* as the number of minutes of vigorous PA *during* the COVID lockdown, minus the number of minutes of vigorous PA *before* the COVID lockdown.
+With this definition, a *positive* difference means the *during* value is higher; hence, the differences correspond to the *increase* in PA during (compared to before) the COVID lockdown.
+The RQ is
+
+> For Spanish health students, is there a mean change in the amount of vigorous PA during and before the COVID lockdown? 
+  
+The *parameter* of interest is the population mean difference $\mu_d$, the mean *decrease* in vigorous PA *during* (compared to before) the lockdown.
+The hypotheses are:  
+\[
+   \text{$H_0$: $\mu_d = 0$}\quad\text{and}\quad \text{$H_1$: $\mu_d \ne 0$} \quad\text{(i.e., two-tailed)}.
+\]
+The mean *difference* is $\bar{d} = 2.68$\ mins, with a standard deviation of $s_d = 51.30$\ mins.
+However, the sample mean difference varies from sample to sample, so has a standard error:
+$\text{s.e.}(\bar{d}) = s_d\div \sqrt{n} = {51.30}\div{\sqrt{213}} = 3.515018$.
+The test statistic is  
+\[
+  t = \frac{\bar{d} - \mu_{\bar{d}}}{\text{s.e.}(\bar{d})} = \frac{2.68 - 0}{3.515018} = 0.76.
+\]
+
+This is a very small value; using the 68--95--99.7 rule the $P$-value will be very large (larger than $0.32$); software gives $P = 0.448$.
+Hence, a sample mean difference of $2.68$\ mins is not unlikely when the population mean difference was zero.
+
+We write:
+
+> No evidence (paired $t = 0.76$, $P = 0.448$) exists in the sample of a mean difference in the mean change in vigorous PA *during* (compared to *before*) lockdown (sample mean $2.68$\ mins greater *during* lockdown; standard deviation: $51.30$\ mins; approximate $95$% CI: $-4.35$ to $9.71$\ mins) in the population.
+
+Since $n = 213$, which is much larger than $25$, the test is statistically valid.
+
+
+
+
+## Example: endangered species: REMOVE {#EndangeredHT}
 
 A study of endangered species [@harnish2020attitudes] examined (p. 1703)
 
@@ -398,7 +568,7 @@ We write:
 > There is very strong evidence ($t = 10.43$; one-tailed $P < 0.001$) that the mean difference in support for protecting the Bay Checkerspot Butterfly from illicit trade is greater than support for protecting the Valley Elderberry Longhorn Beetle from illicit trade (mean difference: $0.77$; standard deviation: $1.07$; $95$% CI for the difference: $0.62$ to $0.92$).
 
 
-## Example: blood pressure {#Diabetes}
+## Example: blood pressure: REMOVE {#Diabetes}
 
 
 ```{r}
@@ -651,7 +821,7 @@ The same participants ($n = 34$) were assessed *before* and *after* treatment.
 
 The mean *improvement* in joint pain after $13$ weeks was $1.27$ (with a standard error of $0.57$) using a standardised tool.
 
-1. True or false? Only 'before and after' studies can be \tightlist
+1. True or false? Only 'before and after' studies can be paired. \tightlist
 `r if( knitr::is_html_output() ) { torf( answer=FALSE )}`
 1. True or false? The null hypothesis is about the population mean *difference*.
 `r if( knitr::is_html_output() ) { torf( answer=TRUE )}`
