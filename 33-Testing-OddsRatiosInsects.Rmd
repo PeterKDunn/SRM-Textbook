@@ -10,12 +10,11 @@
 
 ## Introduction: eating insects {#EatingInsects}
 
-A study examined the Australian's acceptance to eating insects [@hopkins2023food].
-The researchers asked participants about their levels of education and whether they had previously eaten insects to cross-classified the $n = 601$ respondents.
-
-Since both variables are qualitative, *means are not appropriate* for summarising the data.
-A two-way table of counts is appropriate (Table\ \@ref(tab:EatInsectsTableHT)), called a *contingency table*.
+A study examined Australians acceptance to eating insects [@hopkins2023food].
+The researchers asked $601$ participants about their levels of education and whether they had previously eaten insects.
+The data can be displayed in a two-way table of counts (Table\ \@ref(tab:EatInsectsDataTable)), called a *contingency table*.
 Both qualitative variables have two levels, so the table is a $2\times 2$ table.
+Since both variables are qualitative, *means are not appropriate* for summarising the data.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -23,14 +22,14 @@ Every cell in the $2\times 2$ table contain different participants, so the compa
 :::
 
 
-```{r EatInsectsDataTableHT}
-Education <- c("Uni", 
-               "Uni",
-               "No Uni",
-               "No Uni")
+```{r EatInsectsDataTable}
+Education <- c("University education", 
+               "University education",
+               "No university education",
+               "No university education")
 Education <- ordered(Education,
-                     levels = c("Uni",
-                                "No Uni"))
+                     levels = c("University education",
+                                "No university education"))
 Insects <- c("Yes",
              "No",
              "Yes",
@@ -103,9 +102,33 @@ if( knitr::is_html_output() ) {
 ```
 
 
-Since both qualitative variables have two levels, the table is a $2\times 2$ table.
-A *graphical summary* is shown in Fig.\ \@ref(fig:EatInsectsGraphsCI) (left panel), and a *numerical summary* in Table\ \@ref(tab:EatInsectsNumericalSummaryHT).
-(The details of the computations appear in Sect.\ \@ref(OddsRatioIntro) NO THEY DO NOT!!).
+A *graphical summary* is shown in Fig.\ \@ref(fig:EatInsectsBarplot) (left panel).
+Odds and percentages are needed to prepare a numerical summary.
+The odds of having eaten insects before are:
+
+* $132\div 223 = 0.592$ for those *with* a university education; and
+* $81\div 165 = 0.491$ for those *without* a university education.
+
+The odds are computed this way since having eaten insects is Column\ 1 in Table\ \@ref(tab:EatInsectsDataTable).
+The corresponding percentages are $132\div 355 \times 100 = 37.2$% and $81/246\times 100 = 32.9$%.  
+
+The odds ratio is $0.592/0.491 = 1.206$, comparing  those with a university education to those without.
+The odds ratio is computed this way since having a university education is Row\ 1 in Table\ \@ref(tab:EatInsectsDataTable).
+The resulting *numerical summary* appears in Table\ \@ref(tab:EatInsectsNumericalSummaryHT).
+
+
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+Understanding how software computes the odds ratio is important for understanding output.
+In a $2\times 2$ table, jamovi output can be interpreted in *either* of these ways (i.e., both are correct):
+
+* The *odds* compare Row\ 1 counts to Row\ 2 counts, for both columns.  
+  Then the odds ratio compares the odds for Column\ 1 to the odds for Column\ 2.
+* The *odds* compare Column\ 1 counts to Column\ 2 counts.  
+  Then the odds ratio compares the odds for Row\ 1 to the odds for Row\ 2.
+  
+Odds and odds ratios are computed with the *last row* and *last column* values on the *bottom* of the fraction.
+:::
+
 
 
 ```{r EatInsectsNumericalSummaryHT}
@@ -120,8 +143,8 @@ EatInsectsNumericalSummary[2, ] <- c(round(EatInsects.tab.Counts[2,1]/EatInsects
 EatInsectsNumericalSummary[3, ] <- c(round( (EatInsects.tab.Counts[1, 1] / EatInsects.tab.Counts[1, 2] ) / (EatInsects.tab.Counts[2, 1] / EatInsects.tab.Counts[2, 2]), 3), 
                                  NA,
                                  NA)
-rownames(EatInsectsNumericalSummary) <- c("Uni education",
-                                          "No uni eduication",
+rownames(EatInsectsNumericalSummary) <- c("University education",
+                                          "No university eduication",
                                           "Odds ratio")
     
 if( knitr::is_latex_output() ) {
@@ -162,77 +185,50 @@ if( knitr::is_html_output() ) {
 ```
 
 
-The parameter is the population OR, comparing the odds of eating most meals *off*-campus, for students living with their parents, to students *not* living with their parents.
+The parameter is the population OR of having eaten insects, comparing those with a university education to those without.
+(The parameter could also be the population OR of having a university education, comparing those who have eaten insects to those who have not, but the former is easier understand.)
 
 
-::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-Understanding how software computes the odds ratio is important for understanding the output.
-In a two-by-two table, jamovi and SPSS output can be interpreted in *either* of these ways (i.e., both are correct):
-
-* The *odds* compare Row\ 1 counts to Row\ 2 counts, for both columns.  
-  Then the odds ratio compares the odds for Column\ 1 to the odds for Column\ 2.
-
-* The *odds* compare Column\ 1 counts to Column\ 2 counts.  
-  Then the odds ratio compares the odds for Row\ 1 to the odds for Row\ 2.
-  
-Odds and odds ratios are computed with the **last row** and **last column** values on the *bottom* of the fraction.
-:::
+```{r EatInsectsBarplot, out.width='50%', fig.cap="Bar chart showing the number having previously eaten insects by education level", fig.align="center" }
+barplot( t(EatInsects.tab.Counts),
+        las = 1,
+        legend.text = c("Never eaten insects",
+                        "Have eaten insects"),
+        ylab = "No. of people",
+        xlab = "Education",
+        main = "Bar chart of education, and\nhaving previously eaten insects")
+```
 
 
-:::{.example name="Odds and odds ratio in software"}
-For the data in Table\ \@ref(tab:EatInsectsDataTableHT), the software output can be interpreted in *either* of these ways (i.e., both are correct): 
+The RQ can be written in terms of comparing proportions, odds, or odds ratios (but means are not appropriate!); these are all equivalent:
 
-* The *odds* are the odds of eating most meals *off-campus* (Row\ 1) compared to *on-campus* (Row\ 2; on the bottom of the fraction)
-  * for students living with their parents (Column\ 1): $52/2 = 26$;
-  * for students not living with their parents (Column\ 2): $105/24 = 4.375$. 
-  
-  So the OR is $26/4.375 = 5.943$ (Column\ 2 on bottom of the fraction), as in the output (Fig.\ \@ref(fig:EatInsectsTestOutputHTjamovi)).
+* Is the *population odds ratio* of having eaten insects before, comparing those with a university education to those without,  equal to one?
+* Is the *population odds* of having eaten insects before the same for those with a university education to those without?
+* Is the *population proportion (or percentage) of having eaten insects before the same for those with a university education to those without?
 
-* The *odds* are the odds of living with parents (Column\ 1) compared to not living with parents (Column\ 2; on the bottom of the fraction):
+However, for consistency with the output, writing the RQ in terms of odds or odds ratios is recommended.
+Another option for writing the RQ, which sounds less direct but is useful for two-way tables larger than $2\times 2$ (see Sect.\ \@ref(ORTestDumping)), is worded in terms of *relationships* or *associations* between the variables:
 
-  * for those eating most meals off-campus: $52/105 = 0.49524$;
-  * for those eating most meals on-campus: and $2/24 = 0.083333$.
-  
-  So the OR is $0.49524/0.083333 = 5.943$ (Row2  on bottom of the fraction), as in the output (Fig.\ \@ref(fig:EatInsectsTestOutputHTjamovi)).
+* Is there a relationship (in the population) between having eaten insects before, and having a university education?
 
-In other words, the odds and odds ratios use the last row or last column on the bottom of the fraction.
-:::
-
-
-The RQ can be written in terms of comparing proportions, odds, or odds ratios.
-Importantly, means are not appropriate (the data contain two *qualitative* variables.)
-Usually the odds ratio (OR) is used as the parameter; one reason is that software produces output related to testing the OR. 
-Using the OR, the RQ could be written as
-
-> Is the *population odds ratio* of eating most meals off-campus, comparing students who live *with their* parents to students *not living with* their parents, equal to one?
-
-Alternatively, but probably easier to understand, is to write the RQ in terms of comparing the odds in the two groups explicitly:
-
-> Are the *population odds* of students eating most meals off-campus the same for students *living with* their parents and for students *not living with* their parents?
-
-The RQ can also be worded as comparing the percentage (or proportion) of students eating meals off-campus in each group.
-This is equivalent to the RQs above, but is not directly related to the software output (which works with odds ratios).
-
-Another alternative, which sounds less direct but is useful for two-way tables larger than $2\times 2$ (see Sect.\ \@ref(ORTestDumping)), is worded in terms of *relationships* or *associations* between the variables:
-
-> Is there a relationship (or association) between where students eat most of their meals and whether or not the student lives with their parents?
-
-All of these are equivalent.
-Usually, for $2 \times2$ tables, working with *odds* or *odds ratios* is best, because most software (including jamovi and SPSS) readily produce CIs for the odds ratio.
+All of these are equivalent, but the second (comparing the odds in the two groups) is probably the easiest to write that remains consistent with the output.
 
 
 ## Statistical hypotheses and notation
 
 For two-way tables of counts, the *parameter* is the population odds ratio.
-As usual, the null hypothesis is the 'no difference, no change, no relationship' position. So, in this context:
+As usual, the null hypothesis is that the difference between the sample and population OR is due to sampling variation (the 'no difference, no change, no relationship' position). 
+In this context, the hypotheses are (when written in terms of odds):
 
-* $H_0$: The *population* OR is one; or (equivalently):  The *population* odds are the same in each group.
+* $H_0$: The *population* odds of having eaten insects before are *the same* for those with and without a university education.
+* $H_1$: The *population* odds of having eaten insects before are *not the same* for those with and without a university education.
 
 This hypothesis proposes that the *sample* odds are not the same due to sampling variation.
-This is the initial *assumption*.
-The alternative hypothesis is
+The hypotheses can also be written in terms of differences in percentages (or proportions), though the software output is usually expressed in terms of odds.
+The hypotheses can also be written in terms of associations:
 
-* $H_1$: The *population* OR is not one; or (equivalently):  The *population* odds are *not* the same in each group.
+* $H_0$: In the *population*, there *is no association* between having eaten insects before, and having a university education.
+* $H_1$: In the *population*, there *is an association* between having eaten insects before, and having a university education.
 
 The alternative hypothesis is *always* two-tailed for analysing two-way tables of counts.
 
@@ -240,13 +236,6 @@ The alternative hypothesis is *always* two-tailed for analysing two-way tables o
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 For analysing two-way tables of counts, the alternative hypotheses *are always two-tailed*.
 :::
-
-
-The hypotheses can also be written in terms of differences in percentages (or proportions), though the software output is usually expressed in terms of odds.
-The hypotheses can also be written in terms of associations:
-
-* $H_0$: In the *population*, there is *no association* between the two variables
-* $H_1$: In the *population*, there is *an association* between the two variables
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -260,77 +249,60 @@ As usual, the [decision-making process](#DecisionMaking) starts by *assuming* th
 
 ## Finding expected values {#ExpectedValues}
 
-Assuming that the odds of having most meals off-campus is the same for both groups (that is, the population OR is one), how would the sample OR be *expected* to vary from sample to sample just because of *sampling variation*?
-If the null hypothesis is true, the odds are the same in both groups (and the percentages are the same in both groups).
-That is, the percentage of students eating most meals off-campus is the same for students *living with* and *not living with* their parents.
+Assuming that the odds of having eaten insects is the same for both groups (that is, the population OR is one), how would the sample OR be *expected* to vary from sample to sample just because of *sampling variation*?
+
+If the null hypothesis is true, the odds (and the percentage) of having eaten insects before is the same in both groups.
+That is, the percentage having eaten insects is the same for those with and without a university education.
 
 Let's consider the implication.
-From Table\ \@ref(tab:EatInsectsDataTableHT), $157$ students out of $183$ ate most meals off-campus, so that  
+From Table\ \@ref(tab:EatInsectsDataTable), $213$ participants out of $601$ had previously eaten insects; that is,  
 \[
-   \frac{157}{183} \times 100 = 85.79\%
+   \frac{213}{601} \times 100 = 35.44\%
 \]
-of the students in the entire sample  ate most of their meals off-campus.
+had previously eaten insects.
 
-If the percentage of students who eat most of their meals off-campus is the *same* for those who live with their parents and those who don't, then we'd **expect** $85.79$% of students in *both* groups to be eating most meals off-campus.
+If the odds (or percentage) who had previously eaten insects is the same for those with and without a university education, then we'd *expect* $35.44$% of participants in *both* groups to have eaten insects before.
 That is, we would *expect*:
 
-* $85.79$% of the $54$ students who *live with their parents*  (i.e., $46.33$) to eat most meals off-campus; and
-* $85.79$% of the $129$ students who *don't live with their parents* (i.e., $110.67$) to eat most meals off-campus.
+* $35.44$% of the $355$ *with* a university education (i.e., $125.812$) to have eaten insects before; and
+* $35.44$% of the $246$ *without* a university education (i.e., $87.182$) to have eaten insects before.
 
-In other words, the percentage (and hence the odds) is the same in each group.
-Those are the *expected* numbers if the percentage was exactly the same in each group (Table\ \@ref(tab:EatInsectsDataTableHTExpected)), if the null hypothesis (the assumption) was true.
-
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Consider the expected counts in Table\ \@ref(tab:EatInsectsDataTableHTExpected).
-Confirm that the *odds* of having most meals off-campus is the same for students living with their parents, and for students not living with their parents.\label{thinkBox:ExpectedOddsSame}
-
-`r if (knitr::is_latex_output()) '<!--'`
-`r webexercises::hide()`
-* Living with parents: 46.333/7.667 = 6.043$.
-* Not living with parents: 110.667/18.333 = 6.036$.
-
-The odds are the same (the small difference is because the expected counts are only given to three decimal places).
-`r webexercises::unhide()`
-`r if (knitr::is_latex_output()) '-->'`
-:::
-
-How do those *expected values* (Table\ \@ref(tab:EatInsectsDataTableHTExpected)) compare to what was *observed* (Table\ \@ref(tab:EatInsectsDataTableHT))?
-
-* $46.333$ of the $54$ students who *live with their parents* are *expected* to eat most meals off-campus; yet we observed $52$.
-* $110.667$ of the $129$ students who *don't live with their parents* are *expected* to eat most meals off-campus; yet we observed $105$.
-
-The observed and expected counts are similar, but not the exactly same.
-The difference between the observed and expected counts *may* be explained by sampling variation (that is, the null hypothesis explanation).
+Those are the *expected* numbers if the odds (and percentage) was exactly the same in each group, if the null hypothesis (the assumption) was true.
+Continuing for all the combinations produces Table\ \@ref(tab:EatInsectsDataTableExpected).
 
 
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-You **do not** have to compute the expected values when you answer one of these types of RQs (software does it in the background).
-However, seeing how the decision-making process works in this context is helpful.
-:::
 
-
-In previous hypothesis tests, the *sampling distribution* of the sample statistic was described, as having an approximate normal distribution (whose standard deviation is called the *standard error*).
-However, the sampling distribution of the odds ratio is more complicated^[For those interested: The *logarithm* of the sample ORs have an approximate normal distribution, and a *standard error*.] so will not be presented.
-
-
-```{r EatInsectsDataTableHTExpected}
+```{r EatInsectsDataTableExpected}
 EatInsects.ExpCounts <- chisq.test(EatInsects.tab.Counts)$expected
 EatInsects.ExpCounts <- cbind( EatInsects.ExpCounts, 
                                "Total" = round( rowSums(EatInsects.ExpCounts)) )
-EatInsect.ExpCounts <- rbind( EatInsects.ExpCounts, 
+EatInsects.ExpCounts <- rbind( EatInsects.ExpCounts, 
                                "Total" = round( colSums(EatInsects.ExpCounts)) )
 
+
+
+
+
+
 if( knitr::is_latex_output() ) {
-  kable( surroundMaths(EatInsects.ExpCounts,
-                       decDigits = c(3, 3, 0)),
+
+  ignore <- array( FALSE, dim = dim(EatInsects.ExpCounts))
+  ignore[ 3, 1 ] <- ignore[ 3, 2 ] <- TRUE # This keeps the Total row with no decimals
+  tab1 <- surroundMaths(EatInsects.ExpCounts,
+                        decDigits = c(3, 3, 0), 
+                        ignore = ignore)
+  tab1[3, 1] <- paste0("$", as.numeric(tab1[3, 1]), "$")
+  tab1[3, 2] <- paste0("$", as.numeric(tab1[3, 2]), "$")
+  tab1[2, 1] <- paste0("\\phantom{0}", tab1[2, 1])
+  
+    kable( tab1,
         format = "latex",
         booktabs = TRUE,
         longtable = FALSE,
         escape = FALSE,
         digits = 3,
-        align = "r",
-        caption = "Where university students live and eat: Expected counts"
+        align = c("l", "l", "c"),
+        caption = "Eating insects and university education: Expected counts"
   ) %>%
      column_spec(4, bold = TRUE)  %>%
      row_spec(3, bold = TRUE) %>%
@@ -345,7 +317,7 @@ if( knitr::is_html_output() ) {
                longtable = FALSE,
                digits = 3,
                align = "r",
-               caption = "Where university students live and eat: Expected counts"
+               caption = "Eating insects and university education: Expected counts"
   ) %>%
      column_spec(4, bold = TRUE)  %>%
      row_spec(3, bold = TRUE)
@@ -354,13 +326,47 @@ if( knitr::is_html_output() ) {
 ```
 
 
+
+::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
+Consider the expected counts in Table\ \@ref(tab:EatInsectsDataTable).
+Confirm that the *odds* of having eaten insects before is the same for those with and without a university education.\label{thinkBox:ExpectedOddsSame}
+
+`r if (knitr::is_latex_output()) '<!--'`
+`r webexercises::hide()`
+* With university education:  $125.815/229.185 = 0.549$; 
+* Without university education: $87.185/158.815 = 0.549$.
+
+The odds are the same.
+`r webexercises::unhide()`
+`r if (knitr::is_latex_output()) '-->'`
+:::
+
+How do those *expected values* (Table\ \@ref(tab:EatInsectsDataTableExpected)) compare to what was *observed* (Table\ \@ref(tab:EatInsectsDataTable))?
+
+* $125.815$ of $355$ with a university education are *expected* to have previously eaten insects; yet we observed $132$.
+* $87.185$ of the $129$ without a university education are *expected* to have previously eaten insects; yet we observed $81$.
+
+The observed and expected counts are similar, but not the exactly same.
+The difference between the observed and expected counts *may* be explained by sampling variation (that is, the null hypothesis explanation).
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+You *do not* have to compute the expected values when you answer one of these types of RQs (software does it in the background).
+However, seeing how the decision-making process works in this context is helpful.
+:::
+
+
+In previous hypothesis tests, the *sampling distribution* of the sample statistic was described, as having an approximate normal distribution (whose standard deviation is called the *standard error*).
+However, the sampling distribution of the odds ratio is more complicated^[For those interested: The *logarithm* of the sample ORs have an approximate normal distribution, and a *standard error*.] so will not be presented.
+
+
 ## Computing the test statistic: comparing odds {#TestStatObs}
 
-The [decision-making process](#DecisionMaking) compares what is *expected* if the null hypothesis about the parameter is true (Table\ \@ref(tab:EatInsectsDataTableHTExpected)) to what is **observed** in the sample (Table\ \@ref(tab:EatInsectsDataTableHT)).
+The [decision-making process](#DecisionMaking) compares what is *expected* if the null hypothesis about the parameter is true (Table\ \@ref(tab:EatInsectsDataTableExpected)) to what is **observed** in the sample (Table\ \@ref(tab:EatInsectsDataTable)).
 Previously, when the summary statistics were means, $t$-tests were used as the test statistic.
 However, the data here are not summarised by means, and a different test statistic (related to a normal distribution) is needed.
 
-Here, the test-statistic is a 'chi-squared' statistic,  written $\chi^2$.
+The test-statistic here is a 'chi-squared' statistic, written $\chi^2$.
 A $\chi^2$ statistic measures the overall size of the differences between the expected counts and observed counts, over the entire table.
 
 
@@ -387,22 +393,23 @@ htmltools::tags$video(src = "./Movies/chi.mp4",
 
 
 
-From the software (Fig.\ \@ref(fig:EatInsectsTestOutputHTjamovi)), $\chi^2 = 1.15$.
+From the software (Fig.\ \@ref(fig:EatInsectTestOutputjamovi)), $\chi^2 = 1.15$.
 In a $2\times 2$ table of counts (when the 'degrees of freedom', or `df`, is equal to 1, as in the computer output), the *square root* of the $\chi^2$ value is approximately equivalent to a $z$-score. 
 So here, the equivalent $z$-score is about $\sqrt{1.15} = 1.07$, which is very small for a $z$-score: a large $P$-value is expected.
 
-More generally, for two-way tables of any size, $\sqrt{\chi^2 \div \text{df}}$ is like a $z$-score, where df is the 'degrees of freedom' (related to the size of the table^[For those interested: the degrees of freedom in a two-way table is the number of rows of data less one, times the number of columns of data less one. So, for a $2\times 2$ table, $\text{df} = (2 - 1) \times (2 - 1) = 1$.]), as shown in the software output.
+More generally, for two-way tables of any size, $\sqrt{\chi^2 \div \text{df}}$ is like a $z$-score, where df is the 'degrees of freedom' (related to the size of the table^[For those interested: the degrees of freedom in a two-way table is the number of rows of data less one, times the number of columns of data less one. For a $2\times 2$ table, $\text{df} = (2 - 1) \times (2 - 1) = 1$.]), as in the software output.
 This allows a $P$-value to be estimated using the 68--95--99.7 rule from the value of the $\chi^2$ statistic.
 
 
-```{r EatInsectTestOutputHTjamovi, fig.show="hold", fig.cap="The jamovi output for computing a CI and conducting a test", fig.align="center", out.width="50%"}
-knitr::include_graphics( "jamovi/UniStudents/UniStudents-Chisq-All.png")
+```{r EatInsectTestOutputjamovi, fig.show="hold", fig.cap="The jamovi output for computing a CI (left) and conducting a test (right) for an OR", fig.align="center", out.width=c("50%", "45%"), fig.show='hold'}
+knitr::include_graphics( "jamovi/EatInsects/EatInsects-CI.png")
+knitr::include_graphics( "jamovi/EatInsects/EatInsects-Test.png")
 ```
 
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-In a chi-squared test, with a given number of 'degrees of freedom' (`df` in the software output), the value of
+In a chi-squared test, with a given number of 'degrees of freedom' (`df` in the software output), the value of  
 \[
   \sqrt{ \chi^2 \div {\text{df}}}
 \]
@@ -413,10 +420,9 @@ This allows the $P$-value to be estimated using the [68--95--99.7 rule](#def:Emp
 
 ## Determining $P$-values
 
-The differences between the observed sample statistic (the sample OR) and the hypothesised population parameter (the population OR of one) is summarised by $\chi^2 = 6.934$, approximately equivalent to $z = 2.63$.
-Using the [68--95--99.7 rule](#def:EmpiricalRule), a small $P$-value is expected.
-
-The two-tailed $P$-value reported by jamovi (Fig.\ \@ref(fig:UniMealsTestOutputHTjamovi), under the `p` column) is very small: $0.008$ to three decimals.
+The differences between the observed sample statistic (the sample OR) and the hypothesised population parameter (the population OR of one) is summarised by $\chi^2 = 1.1505$, approximately equivalent to $z = 1.07$.
+Using the [68--95--99.7 rule](#def:EmpiricalRule), a large $P$-value is expected.
+The two-tailed $P$-value reported by jamovi (Fig.\ \@ref(fig:EatInsectTestOutputjamovi), under the `p` column) is indeed large: $0.283$ to three decimal places.
 
    
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -441,21 +447,20 @@ Recall that, for two-way tables of counts, the alternative hypotheses *are alway
 
 ## Writing conclusions
 
-As usual, a very small $P$-value ($0.008$ to three decimals) means [very strong evidence](#tab:PvaluesInterpretation) exists to supporting $H_1$: the evidence suggests a difference in the *population* odds in the two groups.
+As usual, a large small $P$-value ($0.283$ to three decimals) means [no evidence](#tab:PvaluesInterpretation) exists to supporting $H_1$: no evidence suggests a difference in the *population* odds for those with and without a university education.
 We write:
 
-> The *sample* provides strong evidence ($\chi^2 = 6.934$; two-tailed $P = 0.008$) that the odds in the *population* of having most meals off-campus is different for students living with their parents (odds: $26$) and students *not* living with their parents (odds: $4.375$; OR: $5.94$; $95$% CI from $1.35$ to $26.1$).
+> The *sample* provides no evidence ($\chi^2 = 1.15$; two-tailed $P = 0.283$) that the odds in the *population* of having previously eaten insects is different for those with  (odds: $0.592$) and without (odds: $0.491$) a university education (OR: $1.206$; $95$% CI from $0.856$ to $1.70$).
 
-Again, as seen in Sect.\ \@ref(WordingConclusion), the conclusion includes three components:
-(a) The *answer to the RQ*; (b) the *evidence* used to reach that conclusion  ('$\chi^2 = 6.934$; two-tailed $P = 0.008$'); and (c) some *sample summary statistics*  (including the $95$% CI for the odds ratio).
+As seen in Sect.\ \@ref(WordingConclusion), the conclusion includes three components:
+(a) The *answer to the RQ*; (b) the *evidence* used to reach that conclusion  ('$\chi^2 = 1.15$; two-tailed $P = 0.283$'); and (c) some *sample summary statistics*  (including the $95$% CI for the odds ratio).
 
 The conclusion also makes clear what the odds and the odds ratio *mean*.
-The odds are describing as the 'odds... of having most meals off-campus', and the OR as then comparing these odds between 'students living with their parents...  and students *not* living with their parents'.
+The odds are describing as the 'odds... of having previously eaten insects', and the OR as then comparing these odds between those with and without a university education'.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 For two-way tables, RQs are best framed in terms of ORs or odds (but can be framed in terms of proportions or percentages, or associations or relationships).
-\smallskip
 
 For consistency: if the RQ is about the odds ratio, the hypotheses and conclusion should be about the odds ratio; if the RQ is about odds, the hypotheses and conclusion should be about the odds; and so on.
 :::
@@ -521,22 +526,15 @@ The test above is statistically valid if:
 
 Some books may give other (but similar) conditions.
 
-The statistical validity condition refers to the *expected* (not the *observed*) counts.
-SPSS tells us if this condition is not satisfied, underneath the *first* output table in Fig.\ \@ref(fig:UniMealsTestOutputHTSPSS).
-In jamovi, the *expected* counts must be explicitly requested to see if this condition is satisfied (Fig.\ \@ref(fig:UniMealsTestExpectedjamovi)).
+The statistical validity condition refers to the *expected* (not *observed*) counts.
+In jamovi, the *expected* counts can be requested to see if this condition is satisfied (Fig.\ \@ref(fig:EatInsectsExpectedjamovi)).
 
 
-```{r UniMealsTestExpectedjamovi, fig.cap="The expected values, as computed in jamovi", fig.align="center", out.width="70%"}
-knitr::include_graphics("jamovi/UniStudents/UniStudents-Expected.png")
+```{r EatInsectsExpectedjamovi, fig.cap="The expected values, as computed in jamovi", fig.align="center", out.width="60%"}
+knitr::include_graphics("jamovi/EatInsects/EatInsects-Expected.png")
 ```
 
-For the student-eating data, the smallest *observed* count is $2$ (living with parents; most meals off-campus), but the smallest *expected* count is $7.67$, which is greater than five.
-The size of the *expected* counts is important for the statistical validity condition.
-
-
-::: {.example #StatisticalValidityEatingHT name="Statistical validity"}
-For the university-student eating data, *all* the cells have an expected count of at least five so the statistical validity condition is satisfied.
-:::
+For the insect-eating data, the smallest *expected* count is $87.1847$, which is greater than five, so the CI and the test are statistical validity condition.
 
 
 ```{r}
@@ -1621,8 +1619,7 @@ if( knitr::is_html_output() ) {
 ::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
 **Answers to in-chapter questions:**
 
-- Sect. \ref{thinkBox:ExpectedOddsSame}: Living with parents: $46.333/7.667 = 6.043$; not living with parents: $110.667/18.333 = 6.036$.
-  The odds are the same (the small difference is because the expected counts are only given to three decimal places).
+- Sect. \ref{thinkBox:ExpectedOddsSame}: With university education: $125.815/229.185 = 0.549$; Without university education: $87.185/158.815 = 0.549$.
 - Sect. \ref{thinkBox:NotCauseCancer}: Because the study *observational*. 
   Confounders may explain the relationship (can you think of one?).
   In addition, maybe having lung cancer means that people seek companionship in the form of a pet (i.e., having lung cancer often comes before having the pet bird).
