@@ -13,15 +13,24 @@ surroundMaths <- function(x,
   ###   If decDigits is NA, then whatever is provided is used as-is. 
   ### ignore  is a logic array, the same size a x, of cells to ignore, and return as initially given in x 
   
+  
   if ( byrows ) bycols <- FALSE
   if ( bycols ) byrows <- FALSE
   
   library("varhandle") # Provides check.numeric()
   
+  # If x is a vector, turn into an array
+  if ( is.vector(x)){
+    dim(x) <- c(length(x), 1)
+  }
+  
   tempTable <- x
   tempTable[ignore] <- NA # These will be replaced later
   
   dimx <- dim(x)
+  numCols <- dimx[2]
+  numRows <- dimx[1]
+
   if ( is.na(byrows) & is.na(bycols) ) {
     bycols <- TRUE
     byrows <- FALSE
@@ -33,7 +42,6 @@ surroundMaths <- function(x,
   # Need to proceed one col (or row) at a time, to apply decDigits!
   
   if ( bycols ){
-    numCols <- dimx[2]
     if ( doRounding ){ 
       if (length(decDigits) == 1) decDigits <- rep(decDigits, numCols)
     }
@@ -57,7 +65,6 @@ surroundMaths <- function(x,
                                               "$")    }
     }
   } else {
-    numRows <- dimx[1]
     if ( doRounding){ 
       if (length(decDigits) == 1) decDigits <- rep(decDigits, numRows)
     }
