@@ -154,3 +154,6 @@ makeTransparent <- function(someColor, alpha = 100){
 findStdError <- function(x, na.rm = TRUE){
   sd(x, na.rm = TRUE) / sqrt( length(x) - sum(is.na(x)) )
 }
+realLength <- function(x, na.rm = TRUE){
+  length(x) - sum(is.na(x))
+}
