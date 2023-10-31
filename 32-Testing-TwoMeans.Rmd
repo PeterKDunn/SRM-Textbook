@@ -7,80 +7,85 @@
 ```
 
 
-## Introduction: reaction times {#Chap30-Intro}
+## Introduction: garter snakes {#TwoMeansHT-intro}
 
+Some Mexican garter snakes (*Thamnophis melanogaster*) have been observed eating crayfish, while some live in habitats with no crayfish.
+Researchers [@manjarrez2017morphological] were interested in whether the snakes in these two regions were different:
 
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/pexels-splitshire-2224.jpg" width="200px"/>
-</div>
+> For females Mexican garter snakes, is the snout-to-vent (SVL) different for those in regions with and without crayfish?
 
-
-To study the reaction times of students while driving, two different groups of students were used: one group *used* a mobile phone, and a different group *did not use* a mobile phone.
-Their reaction times were measured in a driving simulator [@data:Strayer2001:phones].
-These data were seen previously in Sect.\ \@ref(MeansIndSamples).
-
-The two groups of students receive different treatments: one group *used* a mobile phone while driving, and a different group *did not use* a mobile phone while driving.
-This is an example of a [*between-individuals comparison*](#Comparison).
-The data are not paired; instead, the means of two separate (or independent) samples are being compared.
-The data would be [paired](#TestPairedMeans) if *each* student was measured twice: once using a phone, and once without using a phone.
-
-
-Consider the RQ:
-
-> For students, is the mean reaction time while driving the same for students who *are using* a mobile phone and students who *are not using* a mobile phone?
-
-
+Two different groups of crayfish must be studied, so the data are *not paired*.
 `r if (knitr::is_latex_output()) {
-   'Part of the data are shown in Table\\ \\@ref(tab:PhoneDataTableTest).'
+   'Part of the data are shown in Table\\ \\@ref(tab:SnakesDataTableTest).'
 } else {
    'The data are shown below.'
 }`
 
 
 
-```{r PhoneDataTableTest}
-data(ReactionTimePhoneInd)
+```{r SnakesDataTableTest}
+data("Snakes")
 
-RT.DataTable   <- cbind( ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"],
-                         ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"] )
-RT.DataTable10 <- cbind( head(ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"], 10), 
-                         head(ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"], 10) ) 
+# Extract just the female snakes, for example, n \approx 50
+SNF <- subset(Snakes, 
+              Sex == "female")
+
+
+
+# t.test( SVL ~ Crayfish, 
+#         data = SNF)
+# tapply(SNF$SVL, 
+#        list(SNF$Crayfish), 
+#        mean, 
+#        na.rm = TRUE)
+# tapply(SNF$SVL, 
+#        list(SNF$Crayfish), 
+#        sd, 
+#        na.rm = TRUE)
+# tapply(SNF$SVL, 
+#        list(SNF$Crayfish), 
+#        findStdError, 
+#        na.rm = TRUE)
+# tapply(SNF$SVL, 
+#        list(SNF$Crayfish), 
+#        "realLength")
 
 if( knitr::is_latex_output() ) {
-  tb1 <- cbind( ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][1:5],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][6:10],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][11:15],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][16:20],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][21:25],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][26:30],
-                c( ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][31:32], NA, NA, NA) )
+
+tb1 <- c( na.omit( SNF$SVL[ SNF$Crayfish == "Y" ] ) )
+tb1 <- cbind (tb1[1:6],
+              tb1[7:12],
+              tb1[13:18],
+              tb1[19:24],
+              tb1[25:30],
+              tb1[31:36],
+              c( tb1[37:41], NA) )
+
+tb2 <- c( na.omit( SNF$SVL[ SNF$Crayfish == "N" ] ) )
+tb2 <- cbind (tb2[1:6],
+              tb2[7:12],
+              tb2[13:18],
+              tb2[19:24],
+              tb2[25:30],
+              tb2[31:35], NA )
+
+
   T1 <- knitr::kable( surroundMaths(tb1),
                       format = "latex",
-                      #col.names = c("Using phone",
-                      #              "Not using phone"),
                       valign = 't',
-                      align = c("c", "c"),
+                      align = "c",
                       #table.env = "@empty",
                       linesep = "",
                       row.names = FALSE,
                       escape = FALSE,
                       booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Using phone" = 7),
+    add_header_above( c("Non-crayfish region" = 7),
                       bold = TRUE)
 
-  tb2 <- cbind( ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][1:5],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][6:10], 
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][11:15], 
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][16:20], 
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][21:25], 
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][26:30], 
-                c( ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][31:32], NA, NA, NA))
   T2 <- knitr::kable( surroundMaths(tb2),
                       format = "latex",
-                      #col.names = c("Using phone",
-                      #              "Not using phone"),
-                      align = c("c", "c"),
+                      align = "c",
                       valign = 't',
                       #table.env = "@empty",
                       linesep = "",
@@ -88,22 +93,22 @@ if( knitr::is_latex_output() ) {
                       escape = FALSE,
                       booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Not using phone" = 7),
+    add_header_above( c("Crayfish region" = 6),
                       bold = TRUE)
   
-  out <- knitr::kables(list(T1, T2),
+  out <- knitr::kables(list(T2, T1), # Notice order swapped!
                        format = "latex",
-                       label = "PhoneDataTableTest",
-                       caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones") %>% 
+                       label = "SnakesDataTableTest",
+                       caption = "SVL (in cm) for female Mexican garter snakes living in crayfish and non-crayfish regions") %>% 
     kable_styling(font_size = 10)
   out2 <- prepareSideBySideTable(out)
   out2
 }
 if( knitr::is_html_output() ) {
-  DT::datatable( RT.DataTable,
+  DT::datatable( SNF,
                  colnames = c("Using phone", 
                               "Not using phone"),
-         caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones; 32 students are in each group",
+         caption = "SVL (in cm) for female Mexican garter snakes living in crayfish and non-crayfish regions",
          fillContainer = FALSE, # Make more room, so we don't just have ten values
                  #filter="top", 
                  #selection="multiple", 
@@ -116,7 +121,7 @@ if( knitr::is_html_output() ) {
 
 ## Hypotheses and notation
 
-Since two groups are being compared, using subscripts to distinguish between the statistics for the two groups (in general, Group A and Group B) is important (recapping Sect.\ \@ref(TwoMeansNotationCI)); see Table\ \@ref(tab:IndSampleNotationHT).
+Since two groups are being compared, using subscripts to distinguish between the statistics for the two groups (in general, Group\ A and Group\ B) is important (recapping Sect.\ \@ref(TwoMeansNotationCI)); see Table\ \@ref(tab:IndSampleNotationHT).
 Using this notation, the *parameter* in the RQ is the difference between population means: $\mu_A - \mu_B$.
 As usual, the population values are unknown, so this is estimated using the statistic $\bar{x}_A - \bar{x}_B$.
 
@@ -178,27 +183,27 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-For these data, the differences are computed as the mean reaction time for phone users ($P$), *minus* the mean reaction time for non-phone users ($C$; the control group): $\mu_P - \mu_C$.
-By this definition, the differences refer to how much greater (on average) the reaction times are when students are using phones.
-The parameter is $\mu_P - \mu_C$, the difference between the population mean reaction times (using phone, minus *not* using a phone).
+For these data, the differences are computed as the mean SVL for the females snakes living in non-crayfish regions ($N$), *minus* the SVL for the female snakes in not crayfish regions ($C$): $\mu_N - \mu_C$.
+By this definition, the differences refer to how much larger (on average) the SVL is for snakes living in non-crayfish regions.
+The parameter is $\mu_N - \mu_C$, the difference between the population SVL (using $N$ minus $C$).
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Here the difference is computed as the mean reaction time for phone users,  *minus* the mean reaction time for non-phone users.
-Computing the difference as the mean reaction time for non-phone users, *minus* the mean reaction time for phone users is also correct.
+Here the difference is computed as the mean SVL for snakes living in non-crayfish regions, *minus* the mean SVL for snakes living in crayfish regions.
+Computing the difference as the mean SVL for snakes living in crayfish regions, *minus* the mean SVL for snakes living in non-crayfish regions is also correct.
 You need to be clear about how the difference is computed, and be consistent throughout.
 :::
 
 
 As always (Sect.\ \@ref(AboutHypotheses)), the null hypothesis is the default 'no difference, no change, no relationship' position; any difference is due to sampling variation.
-Hence, the null hypothesis is that there is 'no difference' between the population means of the two groups:
+Hence, the null hypothesis is that there is 'no difference' between the population means SVL of the two groups:
 
-* $H_0$: $\mu_P - \mu_C = 0$ (or $\mu_P = \mu_C$).
+* $H_0$: $\mu_N - \mu_C = 0$ (or $\mu_N = \mu_C$).
 
 This hypothesis proposes that any difference between the *sample* means is due to *sampling variation*, and is the initial *assumption*.
 From the RQ, the alternative hypothesis will be *two*-tailed:
 
-* $H_1$: $\mu_P - \mu_C\ne 0$ (or $\mu_P \ne \mu_C$).
+* $H_1$: $\mu_N - \mu_C\ne 0$ (or $\mu_N \ne \mu_C$).
 
 This hypothesis proposes that any difference between the *sample* means is because a difference really exists between the *population means*. 
 
@@ -207,39 +212,33 @@ This hypothesis proposes that any difference between the *sample* means is becau
 
 The data for testing the hypothesis are shown 
 `r if( knitr::is_latex_output() ) {
-  'in Table\\ \\@ref(tab:PhoneDataTableTest).'
+  'in Table\\ \\@ref(tab:SnakesDataTableTest).'
 } else {
   'below.'
 }`
 The numerical summary (Sect.\ \@ref(MeansIndSamples)) *must* summarise the difference between the means (since the RQ is about the difference), and should summarise each group.
 
-All this information is found using software (jamovi: Fig.\ \@ref(fig:ReactionPhoneSummaryTestjamovi); SPSS: Fig.\ \@ref(fig:ReactionPhoneSummaryTestSPSS)), and can be compiled into a table (Table\ \@ref(tab:PhoneNumericalTest)).
+All this information is found using software (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)), and can be compiled into a table (Table\ \@ref(tab:SnakesNumericalTest)).
 The appropriate summary for graphically summarising the *data* is a boxplot (though a dot chart is also acceptable).
-An error bar chart (Fig.\ \@ref(fig:PhoneErrorbar)), which compares the *sample means*, should also be produced.
+An error bar chart (Fig.\ \@ref(fig:SnakesErrorbar)), which compares the *sample means*, should also be produced.
 
 
-```{r ReactionPhoneSummaryTestjamovi, fig.cap="jamovi output for the phone reaction time data", fig.align="center", out.width="90%"}
-knitr::include_graphics("jamovi/ReactionPhone/ReactionPhone-Test-All.png")
+```{r SnakesSummaryTestjamovi, fig.cap="jamovi output for the snakes data", fig.align="center", out.width="95%"}
+knitr::include_graphics("jamovi/Snakes/Snakes-Test.png")
 ```
 
 
-```{r ReactionPhoneSummaryTestSPSS, fig.cap="SPSS output for the phone reaction time data", fig.align="center", out.width="85%"}
-knitr::include_graphics("SPSS/ReactionPhone/ReactionPhone-Test.png")
-```
-
-
-The difference between the sample means is $51.59$\ ms... but this value will vary from sample to sample; that is, there is *sampling variation*.
-The sampling variation (*expectation*) for the values of $\bar{x}_A - \bar{x}_B$ can be described as having:
+The difference between the sample means is $8.394$\ cm... but this value will vary from sample to sample; that is, there is *sampling variation*.
+The sampling variation (*expectation*) for the values of $\bar{x}_N - \bar{x}_C$ can be described as having:
 
 * an approximate normal distribution;
-* centred around a sampling mean whose value is ${\mu_{P}} - {\mu_{C}} = 0$, the difference between the means (from $H_0$);
-* with a standard deviation of $\displaystyle\text{s.e.}(\bar{x}_P - \bar{x}_C)$, called the *standard error for the difference between the means*.
+* centred around a sampling mean whose value is ${\mu_{N}} - {\mu_{C}} = 0$, the difference between the means (from $H_0$);
+* with a standard deviation of $\displaystyle\text{s.e.}(\bar{x}_N - \bar{x}_C)$, called the *standard error for the difference between the means*.
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-jamovi and SPSS give results from *two* similar hypothesis tests.
-In this book, we will always use the second row of information: the "Welch's $t$" row in jamovi, and the "Equal variance not assumed" row in SPSS (these two are equivalent).
-\smallskip
+jamovi gives results from *two* similar hypothesis tests.
+In this book, we will always use the second row of information: the "Welch's $t$" row in jamovi.
 
 In both cases, this row of information *does not* assume that the population standard deviation are equal.
 The top row of information *does* assume the population standard deviation are equal.
@@ -247,60 +246,50 @@ In most cases, the information in both rows are similar anyway.
 :::
 
 
-```{r PhoneNumericalTest}
-Phone.DataSummary <- array(NA, 
-                           dim = c(3, 4) )
+```{r SnakesNumericalTest}
+SN.summary <- array(NA,                  
+                    dim = c(3, 4) )
 
-Phone.DataSummary[1:2, 1] <- aggregate( Reaction ~ Group, 
-                                        data = ReactionTimePhoneInd, 
-					                              FUN = "mean")[, 2]
-Phone.DataSummary[1:2, 2] <- aggregate( Reaction ~ Group, 
-                                        data = ReactionTimePhoneInd, 
-					                              FUN = "length")[, 2] 
-Phone.DataSummary[1:2, 3] <- aggregate( Reaction ~ Group, 
-                                        data = ReactionTimePhoneInd, 
-					                              FUN = "sd")[, 2]
-Phone.DataSummary[1:2, 4] <- aggregate( Reaction ~ Group, 
-                                        data = ReactionTimePhoneInd, 
-					FUN = function(x){ sd(x) / sqrt(length(x))})[, 2] 
+SN.summary[1:2, 1] <- aggregate(SVL ~ Crayfish, 
+                                data = SNF, 
+                                FUN = "mean")[, 2]
+SN.summary[1:2, 2] <- aggregate(SVL ~ Crayfish, 
+                                data = SNF, 
+                                FUN = "sd")[, 2]
+SN.summary[1:2, 3] <- aggregate(SVL ~ Crayfish, 
+                                data = SNF, 
+                                FUN = "realLength")[, 2]
+SN.summary[1:2, 4] <- aggregate(SVL ~ Crayfish, 
+                                data = SNF, 
+                                FUN = "findStdError")[, 2]
 
-Phone.DataSummary[3, 1] <- Phone.DataSummary[1, 1] - Phone.DataSummary[2, 1]
-Phone.DataSummary[3, 4] <- sqrt( Phone.DataSummary[1, 3]^2/Phone.DataSummary[1, 2] +
-                                 Phone.DataSummary[2, 3]^2/Phone.DataSummary[2, 2]  )
+SN.summary[3, 1] <- SN.summary[1, 1] - SN.summary[2, 1]
+SN.summary[3, 4] <- sqrt( SN.summary[1, 2]^2/SN.summary[1, 3] +
+                                 SN.summary[2, 2]^2/SN.summary[2, 3]  )
 
-Phone.DataSummary[, 1] <- round( Phone.DataSummary[, 1], 
-                                  2)
-Phone.DataSummary[, 2] <- round( Phone.DataSummary[, 2], 
-                                  0)
-Phone.DataSummary[, 3] <- round( Phone.DataSummary[, 3], 
-                                  2)
-Phone.DataSummary[, 4] <- round( Phone.DataSummary[, 4], 
-                                  3)
-
-Phone.DataSummary[3, 2] <- NA
-Phone.DataSummary[3, 3] <- NA
-rownames(Phone.DataSummary) <- c("Using phone", 
-                                 "Not using phone", 
-                                 "All students")
+rownames(SN.summary) <- c("Eating crayfish", 
+                          "Not eating crayfish", 
+                          "Difference")
 
 if( knitr::is_latex_output() ) {
-  kable(surroundMaths(Phone.DataSummary,
-                      decDigits = c(2, 0, 2, 3)),
+  kable(surroundMaths(SN.summary,
+                      decDigits = c(2, 2, 0, 3)),
         format = "latex",
         booktabs = TRUE,
         longtable = FALSE,
         escape = FALSE,
         align = "r",
         col.names = c("Mean", 
-                      "Sample size", 
                       "Standard deviation", 
+                      "Sample size", 
                       "Standard error"),
-        caption = "Numerical summaries of the reaction-time data (in milliseconds)") %>%
+        caption = "Numerical summaries of SVL (in cm) for female snakes in two regions") %>%
    row_spec(0, bold = TRUE) %>%
+   row_spec(3, italic = TRUE) %>%
    kable_styling(font_size = 10) 
 }
 if( knitr::is_html_output() ) {
-  kable(Phone.DataSummary,
+  kable(SN.summary,
         format = "html",
         booktabs = TRUE,
         longtable = FALSE,
@@ -309,15 +298,69 @@ if( knitr::is_html_output() ) {
                       "Sample size", 
                       "Standard deviation", 
                       "Standard error"),
-        caption = "Numerical summaries of the reaction-time data (in milliseconds)")  
+        caption = "Numerical summaries of SVL (in cm) for female snakes in two regions")  
 }
 ```
+
+
+
+```{r, SnakesErrorbar, fig.width=8.75, fig.height=3, fig.cap="Bar chart (left) and error bar chart (right) of SVL for female snakes in two regions", fig.align="center", out.width='95%'}
+ci.lo <- SN.summary[, 1] - 2 * SN.summary[, 4] 
+ci.hi <- SN.summary[, 1] + 2 * SN.summary[, 4] 
+
+par(mfrow = c(1, 2))
+boxplot(SVL ~ Crayfish,
+        data = Snakes,
+        las = 1,
+        names = c("No", 
+                  "Yes"),
+        xlab = "Crayfish region?",
+        main = "Boxplot: Snout--vent length ",
+        ylab = "SVL (in cm)")
+
+###
+
+plot( range( c( ci.lo, ci.hi) ) ~ c(0.9, 2.1), 
+      data = Snakes,
+      type = "n",
+      xlim = c(0.5, 2.5),
+      ylim = c(30, 45),
+      pch = 19,
+      axes = FALSE,
+      main = "Error bars chart:\nSnout--vent length ",
+      xlab = "Crayfish region?", 
+      ylab = "SVL (in cm)",
+      sub = "(Error bars are 95% confidence intervals)",
+      las = 1)
+axis(side = 1, 
+     at = 1:2, 
+     labels = c("No", 
+                "Yes"),
+     las = 1) 
+axis(side = 2, 
+     las = 1)
+box()
+
+mns <- SN.summary[1:2, 1]
+
+points( mns ~ c(1:2), 
+        pch = 19)
+
+arrows(x0 = 1:2, 
+       y0 = ci.lo[1:2], 
+       x1 = 1:2, 
+       y1 = ci.hi[1:2], 
+  length = 0.05, 
+  angle = 90, 
+  code = 3)
+```
+
 
 
 ## Computing the test statistic
 
 The observed difference between sample means (*observations*), relative to what was expected, is found by computing the test statistic; in this case, a $t$-score.
-The software output (jamovi: Fig.\ \@ref(fig:ReactionPhoneSummaryTestjamovi); SPSS: Fig.\ \@ref(fig:ReactionPhoneSummaryTestSPSS)) can be used, but the $t$-score can also be computed manually:  
+The jamovi output (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)) can be used, but the $t$-score can also be computed manually:  
 \begin{align*}
    t
   &= 
@@ -326,7 +369,7 @@ The software output (jamovi: Fig.\ \@ref(fig:ReactionPhoneSummaryTestjamovi); SP
    &= 
    \frac{ (\bar{x}_P - \bar{x}_C) - (\mu_P - \mu_C)}
         {\text{s.e.}(\bar{x}_P - \bar{x}_C)}\\
-  &= \frac{51.594 - 0}{19.612} = 2.631,
+  &= \frac{8.3944 - 0}{2.4368} = 3.445,
 \end{align*}
 as in the software output.
 
@@ -336,7 +379,7 @@ as in the software output.
 A $P$-value determines if the sample statistic is consistent with the assumption.
 Since the $t$-score is large, the $P$-value will be small using the [68--95--99.7 rule](#def:EmpiricalRule).
 
-This is confirmed by the software (jamovi: Fig.\ \@ref(fig:ReactionPhoneSummaryTestjamovi); SPSS: Fig.\ \@ref(fig:ReactionPhoneSummaryTestSPSS)): the two-tailed $P$-value is $0.011$.
+This is confirmed by the software (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)): the two-tailed $P$-value is $0.0011$.
 The small $P$-value suggests the observations are *inconsistent* with the assumption (Table\ \@ref(tab:PvaluesInterpretation)), and the difference between the sample means could be reasonably explained by sampling variation.
 
 
@@ -355,9 +398,9 @@ The small $P$-value suggests the observations are *inconsistent* with the assump
 
 In conclusion, write:
 
-> Moderate evidence exists in the sample (two independent samples $t = 2.631$; two-tailed $P = 0.011$) that the population mean reaction time is different for students using a mobile phone (mean: $585.19$\ ms; $n = 32$) and students *not* using a mobile phone (mean: $533.59$\ ms; $n = 32$; $95$% CI for the difference: $12.4$ to $90.9$\ ms longer for phone users).
+> Strong evidence exists in the sample (two independent samples $t = 3.445$; two-tailed $P = 0.0011$) that the population mean SVL is different for female snakes living in crayfish regions (mean: $34.17$\ cm; $n = 35$) and non-crayfish regions (mean: $542.57$\ cm; $n = 41$; $95$% CI for the difference: $3.51$ to $13.28$\ cm longer for those in non-crayfish regions).
 
-Again, the conclusions contains an *answer to the RQ*, the *evidence* leading to this conclusion ($t = 2.631$; two-tailed $P = 0.011$), and some *sample summary statistics*, including a CI.
+Again, the conclusions contains an *answer to the RQ*, the *evidence* leading to this conclusion ($t = 3.445$; two-tailed $P = 0.0011$), and some *sample summary statistics*, including a CI.
 
 
 ## Statistical validity conditions {#Validity-Test-DiffMeans}
@@ -374,7 +417,7 @@ We can explore the histograms of the *samples* to determine if normality of the 
 
 
 ::: {.example #StatisticalValidityReactionHT name="Statistical validity"}
-For the reaction-time data, both samples sizes are $n = 32$, so the results will be statistically valid.
+For the reaction-time data, both samples sizes are $41$ and $35$, so the results will be statistically valid.
 The data in each group do not need be normally distributed, since both sample sizes are larger than $25$.
 :::
 
@@ -469,6 +512,7 @@ if( knitr::is_latex_output() ) {
         caption = "The signage data summary (in km/h)"
   ) %>%
   row_spec(0, bold = TRUE) %>%
+  row_spec(3, italic = TRUE) %>%
   kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
@@ -593,6 +637,7 @@ if( knitr::is_latex_output() ) {
         caption = "The BHADP data summary"
   ) %>%
   row_spec(0, bold = TRUE) %>%
+  row_spec(3, italic = TRUE) %>%
   kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
