@@ -4,7 +4,6 @@ surroundMaths <- function(x,
                           decDigits = 0, 
                           ignore = array( FALSE, dim = dim(x))){
   ### Takes the  array  in x, surrounds numeric elements with $...$
-  
   ### The whole table is converted
   ### if  bycols = TRUE  decDigits  is applied by col.
   ### if  byrows = TRUE  decDigits  is applied by row.
@@ -36,7 +35,7 @@ surroundMaths <- function(x,
     byrows <- FALSE
   }
   
-  doRounding <- TRUE # The defualt, when decDigits given
+  doRounding <- TRUE # The default, when decDigits given
   if (any(is.na(decDigits))) doRounding <- FALSE
     
   # Need to proceed one col (or row) at a time, to apply decDigits!
