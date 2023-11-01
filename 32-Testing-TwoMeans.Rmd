@@ -9,16 +9,17 @@
 
 ## Introduction: garter snakes {#TwoMeansHT-intro}
 
-Some Mexican garter snakes (*Thamnophis melanogaster*) have been observed eating crayfish, while some live in habitats with no crayfish.
+Some Mexican garter snakes (*Thamnophis melanogaster*) live in habitats with no crayfish, while some live in habitats with crayfish and use crayfish as a food source.
 Researchers [@manjarrez2017morphological] were interested in whether the snakes in these two regions were different:
 
-> For females Mexican garter snakes, is the snout-to-vent (SVL) different for those in regions with and without crayfish?
+> For females Mexican garter snakes, is the snout--vent length (SVL) different for those in regions with and without crayfish?
 
-Two different groups of crayfish must be studied, so the data are *not paired*.
+Two different groups of crayfish are studied, so the data are *not paired*.
+The data are shown 
 `r if (knitr::is_latex_output()) {
-   'Part of the data are shown in Table\\ \\@ref(tab:SnakesDataTableTest).'
+   'in Table\\ \\@ref(tab:SnakesDataTableTest).'
 } else {
-   'The data are shown below.'
+   'below.'
 }`
 
 
@@ -26,48 +27,36 @@ Two different groups of crayfish must be studied, so the data are *not paired*.
 ```{r SnakesDataTableTest}
 data("Snakes")
 
-# Extract just the female snakes, for example, n \approx 50
+# Extract just the female snakes, for example; n \approx 50
 SNF <- subset(Snakes, 
               Sex == "female")
 
-
-
-# t.test( SVL ~ Crayfish, 
-#         data = SNF)
-# tapply(SNF$SVL, 
-#        list(SNF$Crayfish), 
-#        mean, 
-#        na.rm = TRUE)
-# tapply(SNF$SVL, 
-#        list(SNF$Crayfish), 
-#        sd, 
-#        na.rm = TRUE)
-# tapply(SNF$SVL, 
-#        list(SNF$Crayfish), 
-#        findStdError, 
-#        na.rm = TRUE)
-# tapply(SNF$SVL, 
-#        list(SNF$Crayfish), 
-#        "realLength")
+SNF$Crayfish <- ordered(SNF$Crayfish, 
+                        levels = c("Y", "N"),
+                        labels = c("Yes",
+                                   "No"))
 
 if( knitr::is_latex_output() ) {
 
-tb1 <- c( na.omit( SNF$SVL[ SNF$Crayfish == "Y" ] ) )
-tb1 <- cbind (tb1[1:6],
-              tb1[7:12],
-              tb1[13:18],
-              tb1[19:24],
-              tb1[25:30],
-              tb1[31:36],
-              c( tb1[37:41], NA) )
+tb1 <- c( na.omit( SNF$SVL[ SNF$Crayfish == "No" ] ) )
+tb1 <- cbind (tb1[1:5],
+              tb1[6:10],
+              tb1[11:15],
+              tb1[16:20],
+              tb1[21:25],
+              tb1[26:30],
+              tb1[31:35],
+              tb1[36:34],
+              c( tb1[41], NA, NA, NA, NA) )
 
-tb2 <- c( na.omit( SNF$SVL[ SNF$Crayfish == "N" ] ) )
-tb2 <- cbind (tb2[1:6],
-              tb2[7:12],
-              tb2[13:18],
-              tb2[19:24],
-              tb2[25:30],
-              tb2[31:35], NA )
+tb2 <- c( na.omit( SNF$SVL[ SNF$Crayfish == "Yes" ] ) )
+tb2 <- cbind (tb2[1:5],
+              tb2[6:10],
+              tb2[11:15],
+              tb2[16:20],
+              tb2[21:25],
+              tb2[26:30],
+              tb2[31:35] )
 
 
   T1 <- knitr::kable( surroundMaths(tb1),
@@ -80,7 +69,7 @@ tb2 <- cbind (tb2[1:6],
                       escape = FALSE,
                       booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Non-crayfish region" = 7),
+    add_header_above( c("Non-crayfish region" = 9),
                       bold = TRUE)
 
   T2 <- knitr::kable( surroundMaths(tb2),
@@ -93,7 +82,7 @@ tb2 <- cbind (tb2[1:6],
                       escape = FALSE,
                       booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Crayfish region" = 6),
+    add_header_above( c("Crayfish region" = 7),
                       bold = TRUE)
   
   out <- knitr::kables(list(T2, T1), # Notice order swapped!
@@ -121,20 +110,20 @@ if( knitr::is_html_output() ) {
 
 ## Hypotheses and notation
 
-Since two groups are being compared, using subscripts to distinguish between the statistics for the two groups (in general, Group\ A and Group\ B) is important (recapping Sect.\ \@ref(TwoMeansNotationCI)); see Table\ \@ref(tab:IndSampleNotationHT).
+Since two groups are being compared, using subscripts to distinguish between the statistics for the two groups (in general, Group\ A and Group\ B) is important; see Table\ \@ref(tab:IndSampleNotationHT).
 Using this notation, the *parameter* in the RQ is the difference between population means: $\mu_A - \mu_B$.
 As usual, the population values are unknown, so this is estimated using the statistic $\bar{x}_A - \bar{x}_B$.
 
 
 ```{r IndSampleNotationHT}
-Diff2Notation <- array(dim=c(5, 2))
+Diff2Notation <- array(dim = c(5, 2))
 colnames(Diff2Notation) <- c("Group A", 
                              "Group B")
 rownames(Diff2Notation) <- c("Population means:",
                              "Sample means:",
-			     "Standard deviations:",
-			     "Standard errors:",
-			     "Sample sizes:")
+                             "Standard deviations:",
+                             "Standard errors:",
+                             "Sample sizes:")
 
 if( knitr::is_latex_output() ) {
   Diff2Notation[1, ] <- c(	"$\\mu_A$", 	
@@ -144,10 +133,10 @@ if( knitr::is_latex_output() ) {
   Diff2Notation[3, ] <- c(	"$s_A$", 			
                            "$s_B$")
   Diff2Notation[4, ] <- c(	"$\\displaystyle\\text{s.e.}(\\bar{x}_A) = \\frac{s_A}{\\sqrt{n_A}}$",
-  							            "$\\displaystyle\\text{s.e.}(\\bar{x}_B) = \\frac{s_B}{\\sqrt{n_B}}$")
+                           "$\\displaystyle\\text{s.e.}(\\bar{x}_B) = \\frac{s_B}{\\sqrt{n_B}}$")
   Diff2Notation[5, ] <- c(	"$n_A$",
-  							            "$n_B$")
-
+                           "$n_B$")
+  
   kable( Diff2Notation,
          format = "latex",
          booktabs = TRUE,
@@ -160,7 +149,7 @@ if( knitr::is_latex_output() ) {
     kable_styling(font_size = 10)
 }
 if( knitr::is_html_output() ) {
-
+  
   Diff2Notation[1, ] <- c(	"$\\mu_A$", 	
                            "$\\mu_B$")
   Diff2Notation[2, ] <- c(	"$\\bar{x}_A$",		
@@ -168,40 +157,39 @@ if( knitr::is_html_output() ) {
   Diff2Notation[3, ] <- c(	"$s_A$", 			
                            "$s_B$")
   Diff2Notation[4, ] <- c(	"$\\displaystyle\\text{s.e.}(\\bar{x}_A) = \\frac{s_A}{\\sqrt{n_A}}$",
-  							            "$\\displaystyle\\text{s.e.}(\\bar{x}_B) = \\frac{s_B}{\\sqrt{n_B}}$")
+                           "$\\displaystyle\\text{s.e.}(\\bar{x}_B) = \\frac{s_B}{\\sqrt{n_B}}$")
   Diff2Notation[5, ] <- c(	"$n_A$",
-  							            "$n_B$")
-
+                           "$n_B$")
+  
   kable( Diff2Notation,
-                format = "html",
-                booktabs = TRUE,
-                longtable = FALSE,
-                align = c("c", "c"),
-                col.names = colnames(Diff2Notation),
-               caption = "Notation used to distinguish between the two independent groups") %>%
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         align = c("c", "c"),
+         col.names = colnames(Diff2Notation),
+         caption = "Notation used to distinguish between the two independent groups") %>%
     row_spec(0, bold = TRUE) 
 }
 ```
 
-For these data, the differences are computed as the mean SVL for the females snakes living in non-crayfish regions ($N$), *minus* the SVL for the female snakes in not crayfish regions ($C$): $\mu_N - \mu_C$.
+For these data, we will use the differences defined as the mean for females snakes living in non-crayfish regions ($N$), *minus* the mean for female snakes in crayfish regions ($C$): $\mu_N - \mu_C$.
+This is the *parameter*.
 By this definition, the differences refer to how much larger (on average) the SVL is for snakes living in non-crayfish regions.
-The parameter is $\mu_N - \mu_C$, the difference between the population SVL (using $N$ minus $C$).
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 Here the difference is computed as the mean SVL for snakes living in non-crayfish regions, *minus* the mean SVL for snakes living in crayfish regions.
-Computing the difference as the mean SVL for snakes living in crayfish regions, *minus* the mean SVL for snakes living in non-crayfish regions is also correct.
+Computing the difference in the reverse direction (i.e., crayfish regions, *minus* non-crayfish regions) is also correct.
 You need to be clear about how the difference is computed, and be consistent throughout.
 :::
 
 
-As always (Sect.\ \@ref(AboutHypotheses)), the null hypothesis is the default 'no difference, no change, no relationship' position; any difference is due to sampling variation.
-Hence, the null hypothesis is that there is 'no difference' between the population means SVL of the two groups:
+As always (Sect.\ \@ref(AboutHypotheses)), the null hypothesis is the default 'no difference, no change, no relationship' position; any difference between the parameter and statistic is due to sampling variation.
+Hence, the null hypothesis is 'no difference' between the population means SVL of the two groups:
 
 * $H_0$: $\mu_N - \mu_C = 0$ (or $\mu_N = \mu_C$).
 
-This hypothesis proposes that any difference between the *sample* means is due to *sampling variation*, and is the initial *assumption*.
-From the RQ, the alternative hypothesis will be *two*-tailed:
+From the RQ, the alternative hypothesis is *two*-tailed:
 
 * $H_1$: $\mu_N - \mu_C\ne 0$ (or $\mu_N \ne \mu_C$).
 
@@ -210,20 +198,21 @@ This hypothesis proposes that any difference between the *sample* means is becau
 
 ## Describing the sampling distribution {#sampling-distribution-expectation-twosampleHT}
 
-The data for testing the hypothesis are shown 
+Since the data are available
 `r if( knitr::is_latex_output() ) {
-  'in Table\\ \\@ref(tab:SnakesDataTableTest).'
+  '(Table\\ \\@ref(tab:SnakesDataTableTest)),'
 } else {
-  'below.'
+  '(see above),'
 }`
-The numerical summary (Sect.\ \@ref(MeansIndSamples)) *must* summarise the difference between the means (since the RQ is about the difference), and should summarise each group.
+a numerical summary *must* summarise the difference between the means, as the RQ is about the difference.
+Each group can be summarised too.
+The information is found using software (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)), and can be compiled into a table (Table\ \@ref(tab:SnakesNumericalTest)).
+The appropriate summary for graphically summarising the *data* is (for example) a boxplot (Fig.\ \@ref(fig:SnakesErrorbar), left panel).
+An error bar chart (Fig.\ \@ref(fig:SnakesErrorbar), right panel), which compares the *sample means*, should also be produced.
 
-All this information is found using software (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)), and can be compiled into a table (Table\ \@ref(tab:SnakesNumericalTest)).
-The appropriate summary for graphically summarising the *data* is a boxplot (though a dot chart is also acceptable).
-An error bar chart (Fig.\ \@ref(fig:SnakesErrorbar)), which compares the *sample means*, should also be produced.
 
-
-```{r SnakesSummaryTestjamovi, fig.cap="jamovi output for the snakes data", fig.align="center", out.width="95%"}
+```{r SnakesSummaryTestjamovi, fig.cap="jamovi output for the snakes data", fig.align="center", out.width=c("60%","100%"), fig.show='hold'}
+knitr::include_graphics("jamovi/Snakes/Snakes-Summary.png")
 knitr::include_graphics("jamovi/Snakes/Snakes-Test.png")
 ```
 
@@ -240,8 +229,8 @@ The sampling variation (*expectation*) for the values of $\bar{x}_N - \bar{x}_C$
 jamovi gives results from *two* similar hypothesis tests.
 In this book, we will always use the second row of information: the "Welch's $t$" row in jamovi.
 
-In both cases, this row of information *does not* assume that the population standard deviation are equal.
-The top row of information *does* assume the population standard deviation are equal.
+This row of information *does not* assume that the population standard deviation are equal.
+The first row of information *does* assume the population standard deviation are equal.
 In most cases, the information in both rows are similar anyway.
 :::
 
@@ -263,12 +252,12 @@ SN.summary[1:2, 4] <- aggregate(SVL ~ Crayfish,
                                 data = SNF, 
                                 FUN = "findStdError")[, 2]
 
-SN.summary[3, 1] <- SN.summary[1, 1] - SN.summary[2, 1]
+SN.summary[3, 1] <- SN.summary[2, 1] - SN.summary[1, 1]
 SN.summary[3, 4] <- sqrt( SN.summary[1, 2]^2/SN.summary[1, 3] +
-                                 SN.summary[2, 2]^2/SN.summary[2, 3]  )
+                            SN.summary[2, 2]^2/SN.summary[2, 3]  )
 
-rownames(SN.summary) <- c("Eating crayfish", 
-                          "Not eating crayfish", 
+rownames(SN.summary) <- c("Crayfish region", 
+                          "Not-crayfish region", 
                           "Difference")
 
 if( knitr::is_latex_output() ) {
@@ -284,9 +273,9 @@ if( knitr::is_latex_output() ) {
                       "Sample size", 
                       "Standard error"),
         caption = "Numerical summaries of SVL (in cm) for female snakes in two regions") %>%
-   row_spec(0, bold = TRUE) %>%
-   row_spec(3, italic = TRUE) %>%
-   kable_styling(font_size = 10) 
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, italic = TRUE) %>%
+    kable_styling(font_size = 10) 
 }
 if( knitr::is_html_output() ) {
   kable(SN.summary,
@@ -310,10 +299,9 @@ ci.hi <- SN.summary[, 1] + 2 * SN.summary[, 4]
 
 par(mfrow = c(1, 2))
 boxplot(SVL ~ Crayfish,
-        data = Snakes,
+        data = SNF,
         las = 1,
-        names = c("No", 
-                  "Yes"),
+        ylim = c(15, 60),
         xlab = "Crayfish region?",
         main = "Boxplot: Snout--vent length ",
         ylab = "SVL (in cm)")
@@ -321,10 +309,10 @@ boxplot(SVL ~ Crayfish,
 ###
 
 plot( range( c( ci.lo, ci.hi) ) ~ c(0.9, 2.1), 
-      data = Snakes,
+      data = SNF,
       type = "n",
       xlim = c(0.5, 2.5),
-      ylim = c(30, 45),
+      ylim = c(29, 46),
       pch = 19,
       axes = FALSE,
       main = "Error bars chart:\nSnout--vent length ",
@@ -334,8 +322,8 @@ plot( range( c( ci.lo, ci.hi) ) ~ c(0.9, 2.1),
       las = 1)
 axis(side = 1, 
      at = 1:2, 
-     labels = c("No", 
-                "Yes"),
+     labels = c("Yes", 
+                "No"),
      las = 1) 
 axis(side = 2, 
      las = 1)
@@ -359,8 +347,8 @@ arrows(x0 = 1:2,
 
 ## Computing the test statistic
 
-The observed difference between sample means (*observations*), relative to what was expected, is found by computing the test statistic; in this case, a $t$-score.
-The jamovi output (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)) can be used, but the $t$-score can also be computed manually:  
+The observed difference between sample means, relative to what was expected, is found by computing the test statistic; in this case, a $t$-score.
+The jamovi output (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)) gives the $t$-score, but the $t$-score can also be computed using the information in Table\ \@ref(tab:SnakesNumericalTest):  
 \begin{align*}
    t
   &= 
@@ -369,18 +357,18 @@ The jamovi output (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)) can be used, but th
    &= 
    \frac{ (\bar{x}_P - \bar{x}_C) - (\mu_P - \mu_C)}
         {\text{s.e.}(\bar{x}_P - \bar{x}_C)}\\
-  &= \frac{8.3944 - 0}{2.4368} = 3.445,
+  &= \frac{8.39 - 0}{2.437} = 3.44,
 \end{align*}
 as in the software output.
 
 
 ## Determining $P$-values
 
-A $P$-value determines if the sample statistic is consistent with the assumption.
+A $P$-value determines if the sample statistic is consistent with the assumption (i.e., $H_0$).
 Since the $t$-score is large, the $P$-value will be small using the [68--95--99.7 rule](#def:EmpiricalRule).
-
 This is confirmed by the software (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)): the two-tailed $P$-value is $0.0011$.
-The small $P$-value suggests the observations are *inconsistent* with the assumption (Table\ \@ref(tab:PvaluesInterpretation)), and the difference between the sample means could be reasonably explained by sampling variation.
+
+A small $P$-value suggests the observations are *inconsistent* with the assumption (Table\ \@ref(tab:PvaluesInterpretation)), and the difference between the sample means could *not* be reasonably explained by sampling variation.
 
 
 `r if (knitr::is_latex_output()) '<!--'`
@@ -400,7 +388,7 @@ In conclusion, write:
 
 > Strong evidence exists in the sample (two independent samples $t = 3.445$; two-tailed $P = 0.0011$) that the population mean SVL is different for female snakes living in crayfish regions (mean: $34.17$\ cm; $n = 35$) and non-crayfish regions (mean: $542.57$\ cm; $n = 41$; $95$% CI for the difference: $3.51$ to $13.28$\ cm longer for those in non-crayfish regions).
 
-Again, the conclusions contains an *answer to the RQ*, the *evidence* leading to this conclusion ($t = 3.445$; two-tailed $P = 0.0011$), and some *sample summary statistics*, including a CI.
+The conclusion contains an *answer to the RQ*, the *evidence* leading to this conclusion ($t = 3.44$; two-tailed $P = 0.0011$), and *sample summary statistics*, including a CI.
 
 
 ## Statistical validity conditions {#Validity-Test-DiffMeans}
@@ -413,11 +401,11 @@ The test above is statistically valid if *one* of these conditions is true:
   
 The sample size of $25$ is a rough figure here, and some books give other values (such as $30$).
 This condition ensures that the *distribution of the difference between sample means has an approximate normal distribution* (so that, for example, the [68--95--99.7 rule](#def:EmpiricalRule) can be used).
-We can explore the histograms of the *samples* to determine if normality of the *populations* seems reasonable.
+The histograms of the *sample data* can be used to determine if normality of the *populations* seems reasonable.
 
 
 ::: {.example #StatisticalValidityReactionHT name="Statistical validity"}
-For the reaction-time data, both samples sizes are $41$ and $35$, so the results will be statistically valid.
+For the snake data, the samples sizes exceed $25$ ($41$ and $35$), so the results will be statistically valid.
 The data in each group do not need be normally distributed, since both sample sizes are larger than $25$.
 :::
 
@@ -434,8 +422,8 @@ The data in each group do not need be normally distributed, since both sample si
 
 
 In an attempt to reduce vehicle speeds on freeway exit ramps, a Chinese study added signage [@ma2019impacts].
-At one site studied (Ningxuan Freeway), speeds were recorded for $38$ vehicles before the extra signage was added, and then for $41$ vehicles after the extra signage was added (data with Sect.\ \@ref(SpeedSignage)).
-
+At one site studied (Ningxuan Freeway), speeds were recorded for $38$ vehicles before ($B$) the extra signage was added, and then for $41$ vehicles after ($A$) the extra signage was added (data in Sect.\ \@ref(SpeedSignage)).
+(This study was seen in  Sect.\ \@ref(SpeedSignage).)
 
 
 ```{r}
@@ -456,6 +444,7 @@ The RQ is:
 
 The data are *not* paired: different vehicles are measured before and after the extra signage is added.
 The data are summarised in Table\ \@ref(tab:SignageSummaryHT).
+Define $\mu$ at the mean speed (in km.h^-1^) on the exit ramp.
 
 
 ```{r SignageSummaryHT}
@@ -531,28 +520,28 @@ if( knitr::is_html_output() ) {
 ```
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-You cannot *easily* calculate the standard error of the difference (i.e., $\text{s.e.}(\bar{x}_{\text{Before}} - \bar{x}_{\text{After}})$) from the other information.
+You cannot *easily* calculate the standard error of the difference (i.e., $\text{s.e.}(\bar{x}_{B} - \bar{x}_{A})$) from the other information.
 You are not expected to do so; the *standard error must given* (e.g., from software output).
 :::
 
 
 A graphical summary of the data is a boxplot (Fig.\ \@ref(fig:SignageErrorBar), left panel); an error bar chart compares the means, with a CI for each group (Fig.\ \@ref(fig:SignageErrorBar), right panel).
 
-The parameter is $\mu_{\text{Before}} - \mu_{\text{After}}$, the *reduction* in the populations mean speed after signage is added.
+The parameter is $\mu_B - \mu_A$, the *reduction* in the populations mean speed after signage is added.
 The hypotheses are:
 
-* $H_0$: $\mu_{\text{Before}} - \mu_{\text{After}} = 0$: There is no change in the population mean speeds.
-* $H_1$: $\mu_{\text{Before}} - \mu_{\text{After}} > 0$: The population mean speed has *reduced*.
+* $H_0$: $\mu_B - \mu_A = 0$: There is no change in the population mean speeds.
+* $H_1$: $\mu_B - \mu_A > 0$: The population mean speed has *reduced*.
 
-The best estimate of the difference in *population* means is the difference between the *sample* means: $(\bar{x}_{\text{Before}} - \bar{x}_{\text{After}}) = 5.68$.
-The table gives the standard error for estimating this *difference* as $\text{s.e.}(\bar{x}_{\text{Before}} - \bar{x}_{\text{After}}) = 0.472$.
+The best estimate of the difference in *population* means is the difference between the *sample* means: $(\bar{x}_B - \bar{x}_A) = 5.68$.
+Table\ \@ref(tab:SignageSummaryHT) gives the standard error for estimating this *difference* as $\text{s.e.}(\bar{x}_B - \bar{x}_A) = 0.472$.
 Using the summary information in Table\ \@ref(tab:SignageSummaryHT), the $t$-score (using Eq.\ \@ref(eq:tscore)) is  
 \[
   t
   = \frac{(\bar{x}_B - \bar{x}_A) - (\mu_B - \mu_A)}{\text{s.e.}(\bar{x}_B - \bar{x}_{A})}
   = \frac{5.68 - 0}{2.96} = 1.92.
 \]
-(Recall that $\mu_{\text{Before}} - \mu_{\text{After}} = 0$ from the null hypothesis.)
+(Recall that $\mu_B - \mu_A = 0$ from the null hypothesis.)
 
 Remembering that the alternative hypothesis is *one-tailed*, the $P$-value (using the [68--95--99.7 rule](#def:EmpiricalRule)) is larger than $0.025$, but smaller than $0.32$... so making a clear decision is difficult without using software.
 However, since the $t$-score is *just* less than 2, we suspect that the $P$-value is likely to be closer to $0.025$ than $0.32$.
@@ -561,7 +550,7 @@ From software, $P = 0.02968$ (you cannot be this precise just using the 68--95--
 Using Table\ \@ref(tab:PvaluesInterpretation), this $P$-value only provides moderate evidence of a reduction in mean speeds.
 We conclude:
 
-> Moderate evidence exists in the sample ($t = 1.92$; one-tailed $P = 0.030$) that mean speeds have reduced after the addition of extra signage (Before: mean speed: $98.02$ km/h; $n = 38$; standard deviation: $13.18$ km/h; After:  mean speed: $92.34$ km/h; $n = 41$; standard deviation: $13.13$ km/h; 95% CI for the difference: -0.24 to 11.6 km/h).
+> Moderate evidence exists in the sample ($t = 1.92$; one-tailed $P = 0.030$) that mean speeds have reduced after the addition of extra signage (Before: mean speed: $98.02$\ km.h^-1^; $n = 38$; standard deviation: $13.18$\ km.h^-1^; After:  mean speed: $92.34$\ km.h^-1^; $n = 41$; standard deviation: $13.13$\ km.h^-1^; 95% CI for the difference: $-0.24$ to $11.6$\ km.h^-1^).
 
 Whether the mean speed reduction of $5.68$ has [*practical importance*](#PracticalSignificance) is a different issue.
 Using the [validity conditions](#ValidityTwoMeans), the CI is statistically valid.
@@ -593,11 +582,11 @@ The RQ is:
 
 > Is the mean BHADP score the same for people with and without a disability?
 
-The parameter is $\mu_D - \mu_N$, the difference between the population mean BHADP score (people with disabilities, minus people without disabilities).
+Defining $\mu$ as the mean BHADP score, the parameter is $\mu_D - \mu_N$, the difference between the two population means (disability $D$, minus non-disability $N$).
 
-In this case, only numerical summary data are available (Table\ \@ref(tab:BHADPSummaryTest)), not the original data.
+In this case, only summary data are available (Table\ \@ref(tab:BHADPSummaryTest)), not the original data.
 (An appropriate graphical summary, an error bar chart, can be constructed from the summary information (Fig.\ \@ref(fig:BHADPErrorBar)), though a boxplot cannot be constructed from the information.)
-Denoting those with and without a disability with subscripts $D$ and $N$ respectively, the hypotheses are:
+The hypotheses are:
 
 * $H_0$: $\mu_D - \mu_N = 0$: There *is no* difference in the population mean BHADP scores.
 * $H_1$: $\mu_D - \mu_N \ne 0$: There *is a* difference in the population mean BHADP scores.
@@ -655,8 +644,8 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-The best estimate of the difference between the *population* means is the difference between the *sample* means: $(\bar{x}_D - \bar{x}_{ND}) = 6.76$.
-The table also gives the standard error for estimating this *difference* as $\text{s.e.}(\bar{x}_D - \bar{x}_{ND}) = 0.80285$ (*given* in the article), since the difference will vary for all possible samples.
+The best estimate of the difference between the *population* means is the difference between the *sample* means: $(\bar{x}_D - \bar{x}_N) = 6.76$.
+The table also gives the standard error for estimating this *difference* as $\text{s.e.}(\bar{x}_D - \bar{x}_N) = 0.80285$ (*given* in the article), since the difference will vary for all possible samples.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
@@ -668,7 +657,7 @@ You are not expected to do so.
 Using the summary information in Table\ \@ref(tab:BHADPSummaryTest), the $t$-score is computed using  Eq.\ \@ref(eq:tscore):  
 \[
   t 
-  = \frac{(\bar{x}_D - \bar{x}_{ND}) - (\mu_D - \mu_{ND})}{\text{s.e.}(\bar{x}_D - \bar{x}_{ND})}
+  = \frac{(\bar{x}_D - \bar{x}_N) - (\mu_D - \mu_N)}{\text{s.e.}(\bar{x}_D - \bar{x}_N)}
   = \frac{6.76 - 0}{0.80285} = 8.42.
 \]
 (Recall that $\mu_D - \mu_N = 0$ from the null hypothesis.)
