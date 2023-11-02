@@ -23,7 +23,7 @@ Or perhaps they lose weight, as they cannot afford to purchase sufficient food.
 One approach to studying this is to obtain some students' weights as they begin university, and then obtain some students' weight at some later time.
 If the *same* students have their weights measured at both times, we would be comparing *within* individuals (Sect.\ \@ref(Comparison)).
 
-This would be a *descriptive RQ*: the *Outcome* is the mean *change* in weight, and the response variable is the weight *change* for each individual student.
+The RQ would be a *descriptive RQ*: the *Outcome* is the mean *change* in weight, and the response variable is the weight *change* for each individual student.
 There is *no* between-individuals comparison.
 Each students gets a *pair* of weight measurements.
 The study produces *paired data*, which is the subject of this chapter.
@@ -600,7 +600,239 @@ knitr::include_graphics("jamovi/WeightGain/WeightGain-PairedTOutput.jpg")
 
 
 
-## Example: soil nitrogen {#PairedCI-SoilN}
+## Example: competing plants {#PairedCI-SoilN}
+
+Skypilot (*Polemonium viscosum*) is a native alpine wildflower growing in the Colorado Rocky Mountains (USA).
+In recent years, a willow shrub (*Salix*) has been encroaching on skypilot territory.
+Researchers studied the impacts on this encroachment on pollination on the native skypilot [@kettenbach2017shrub].
+One RQ was:
+
+> In the Colorado Rocky Mountains, what is the mean difference between first-flowering time for the native skypilot and encroaching willow?
+
+The data are *paired* (Sect.\ \@ref(PairedIntro)), which is a form of blocking (Sect.\ \@ref(ExpManagingConfounding)).
+One RQ in the study was:
+
+> For intensively grazed pastures sites, is there a mean reduction in percentage soil nitrogen (N) when sites are irrigated, compared to non-irrigated?
+
+The data are shown in
+`r if( knitr::is_latex_output() ) {
+    'Table\\ \\@ref(tab:FloweringData).'
+} else {
+    'the table below.'
+}`
+The parameter is $\mu_d$, which we define as the population mean *difference* in day of first flowering.
+
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+Explaining *how* the differences are computed is important.  
+
+The differences here are the percentage N in *irrigated* sites minus percentage N in *non-irrigated* sites.
+However, the differences could be computed as the percentage N in *non-irrigated* sites minus percentage N in *irrigated* sites.
+*Either is fine*, as long as you remain consistent throughout.
+The meaning of any conclusions will be the same.  
+:::
+
+
+```{r, FloweringData}
+data(Flowering)
+
+Flen <- length(Flowering$Willow) 
+
+if( knitr::is_latex_output() ) {
+  
+ T1 <- knitr::kable(surroundMaths(Flowering[1:9, 1:2],
+                                   decDigits = 0),
+                     format = "latex",
+                     valign = 't',
+                     align = "r",
+                     linesep = "",
+                     col.names = c("Willow", "Skypilot"),
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+   add_header_above( c( "Day of first flowering" = 2),
+                     bold = TRUE)
+
+ T2 <- knitr::kable(surroundMaths( rbind(Flowering[10:17, 1:2],
+                                         c(NA, NA)),
+                                   decDigits = 0),
+                     format = "latex",
+                     valign = 't',
+                     align = "r",
+                     linesep = "",
+                     col.names = c("Willow", "Skypilot"),
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+   add_header_above( c( "Day of first flowering" = 2),
+                     bold = TRUE)
+  
+      
+  T3 <- knitr::kable(surroundMaths( rbind(Flowering[18:25, 1:2],
+                                          c(NA, NA)),
+                                   decDigits = 0),
+                     format = "latex",
+                     valign = 't',
+                     align = "r",
+                     linesep = "",
+                     col.names = c("Willow", "Skypilot"),
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+       add_header_above( c( "Day of first flowering" = 2),
+                     bold = TRUE)
+
+  
+  out <- knitr::kables(list(T1, T2, T3),
+                       format = "latex",
+                       label = "FloweringData",
+                       caption = "The Julian dates of first flowering by encroaching willow and native skypilot.") %>% 
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out) 
+  out2 
+}
+
+if( knitr::is_html_output() ) {
+  kable( Flowering,
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names = c("Irrigated", "Not irrigated"),
+         caption = "The Julian dates of first flowering by encroaching willow and native skypilot.") %>% 
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+}
+```
+
+
+Since the raw data are available, the data should be summarised graphically (Fig.\ \@ref(fig:FloweringPlots)) and numerically (Table\ \@ref(tab:FloweringSummary)), using software (Fig.\ \@ref(fig:Floweringjamovi)).
+
+
+```{r Floweringjamovi, fig.cap="jamovi output for the flowering-day data", fig.align="center", out.width=c("100%"), fig.show='hold'}
+knitr::include_graphics("jamovi/Flowering/FloweringAll.png")
+```
+
+
+
+```{r FloweringSummary}
+FloweringSummary <- array( dim = c(3, 4))
+
+FloweringTab <- cbind( Flowering[, 1:2], 
+                       Change = Flowering[, 2] - Flowering[, 1])
+
+rownames(FloweringSummary) <- c("Willow (encroaching)",
+                            "Skypilot (native)",
+                            "Differences")
+colnames(FloweringSummary) <- c("Mean",
+                            "Std. dev.",
+                            "Std. error",
+                            "Sample size")
+
+FloweringSummary[, 1] <- colMeans(FloweringTab,
+                              na.rm = TRUE)
+FloweringSummary[, 2] <- apply(FloweringTab,
+                           2,
+                           "sd",
+                           na.rm = TRUE)
+FloweringSummary[, 3] <- apply(FloweringTab,
+                           2,
+                           "findStdError",
+                           na.rm = TRUE)
+FloweringSummary[, 4] <- apply(FloweringTab,
+                           2,
+                           "realLength")
+
+# Do some appropriate rounding
+FloweringSummary <- round(FloweringSummary, 4)
+FloweringSummary[1:2, 1] <- round(FloweringSummary[1:2, 1], 3)
+
+if( knitr::is_latex_output() ) {
+  
+  knitr::kable(surroundMaths(FloweringSummary,
+                             decDigits = c(2, 3, 3, 0)),
+               format = "latex",
+               align = c("r", "r", "r", "c"),
+               linesep = "",
+               caption = "The day of first flowering for encroaching willow and native skypilot",
+               col.names = c("Mean", "Std. dev.", "Std. error", "Sample size"),
+               row.names = TRUE,
+               escape = FALSE,
+               booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, italic = TRUE) %>%
+    kable_styling(font_size = 10)
+  
+}
+
+if( knitr::is_html_output() ) {
+  kable( FruitSummary,
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names =  c("Mean", "Std. dev.", "Std. error", "Sample size"),
+         caption = "The day of first flowering for encroaching willow and native skypilot") %>% 
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+}
+```
+
+
+```{r, FloweringPlots, out.width='90%', fig.width=9, fig.height=3.5, fig.align=TRUE, fig.cap="The flowering-day data. Left: A histogram of the difference between the first-flowering days; right: a case-profile plot of days of first flowering (??????unfilled points and dashed lines indicate a decrease)"}
+par( mfrow = c(1, 2))
+
+ hist(FloweringTab$Change,
+      las = 1,
+      xlab = "Difference in day number",
+      ylab = "Number of locations",
+      main = "Histogram of day of\nfirst-flowering")
+ 
+ ###
+ 
+ plot( x = c(0.75, 2.25),
+       y = c(160, 225),
+       type = "n",
+       las = 1,
+       xlab = "",
+       main = "Case-profile plot of day of\nfirst-flowering",
+       ylab = "Day of first flowering",
+       axes = FALSE)
+ axis(side = 1,
+      at = c(1, 2),
+      labels = c("Willow",
+                 "Skypilot"))
+ axis(side = 2,
+      las = 1)
+ box()
+ 
+ 
+ for (i in (1:length(FloweringTab$Change))){
+     delta <- ifelse(FloweringTab$Change[i] > 0, 0.025, -0.025)
+     lines( x = c(1 + delta, 2 - delta),
+            y = c( FloweringTab$Willow[i],
+                   FloweringTab$Skypilot[i]),
+            lty = ifelse(FloweringTab$Change[i] > 0, 1, 2),
+            pch = ifelse(FloweringTab$Change[i] > 0, 19, 1),
+            type = "b",
+            lwd = 1)
+ }
+
+```
+
+The standard error of the mean difference is $\text{s.e.}(\bar{d}) = 0.940$, from Fig.\ \@ref(fig:Floweringjamovi) or Table\ \@ref(tab:FloweringSummary)).
+The approximate $95$% CI is $1.36 \pm (2\times 0.940)$, or from $-0.52$ to $3.24$ days.
+Figure\ \@ref(fig:Floweringjamovi) gives the $95$% CI as $-0.58$ to $3.30$ days.
+Remembering that *positive* differences mean willow flowers earlier, we write (using the exact CI):
+
+> From the sample, the mean difference in the day of first flowering is $1.36$ days earlier for the willow ($\text{s.e.} = 0.940$; $n = 25$), with an approximate $95$% CI between $0.52$ days earlier for skypilot to $3.24$ days earlier for willow.
+
+The CI should be statistically valid as the sample size since $n = 25$.
+
+
+
+## Example: soil nitrogen: REMOVE  {#PairedCI-SoilN}
 
 A study [@lambie2021microbial] compared the percentage nitrogen (N) in soils from irrigated and non-irrigated intensively grazed pasture sites.
 The researchers paired irrigated and non-irrigated  sites (p. 338):
@@ -1046,7 +1278,6 @@ if( knitr::is_latex_output() ) {
                        caption = "The Captopril data: before after after systolic blood pressures (in mm Hg)") %>% 
     kable_styling(font_size = 10)  
   out2 <- prepareSideBySideTable(out, 
-                                 numberOfTables = 2,
                                  gap = "\\quad") 
   out2
 }
