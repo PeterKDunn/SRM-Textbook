@@ -1,12 +1,17 @@
 prepareSideBySideTable <- function(twoTables, 
-                                   numberOfTables = 2,
-                                   gap = "\\quad\\quad") { # The gap between the two side-by-side tables
+                                   gap = "\\quad\\quad") { # The gap between the side-by-side tables
   
   # Takes two tables that are joined using  kables
   # and adds a space between them, and centres them, 
   # which I could not get to work any other way.
   # The output should NOT need to be  print()-ed.
   
+  # How many tables?
+  # Search for the stroingf "begin{tabular}": That's how many:
+  out <- gregexpr('begin\\{tabular\\}', 
+                  twoTables)
+  numberOfTables <- length(out[[1]])
+
   # CENTRE TABLES
   # A hack: Add \centering, but need to make space for it first
   
