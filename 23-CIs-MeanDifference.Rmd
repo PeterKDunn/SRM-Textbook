@@ -600,34 +600,31 @@ knitr::include_graphics("jamovi/WeightGain/WeightGain-PairedTOutput.jpg")
 
 
 
-## Example: competing plants {#PairedCI-SoilN}
+## Example: invasive plants {#PairedInvasivePlants}
 
 Skypilot (*Polemonium viscosum*) is a native alpine wildflower growing in the Colorado Rocky Mountains (USA).
-In recent years, a willow shrub (*Salix*) has been encroaching on skypilot territory.
-Researchers studied the impacts on this encroachment on pollination on the native skypilot [@kettenbach2017shrub].
+In recent years, a willow shrub (*Salix*) has been encroaching on skypilot territory and, because willow often flowers early, researchers [@kettenbach2017shrub] are concerned that the willow may 'negatively affect pollination regimes of resident alpine wildflower species' (p.\ 6965).
 One RQ was:
 
-> In the Colorado Rocky Mountains, what is the mean difference between first-flowering time for the native skypilot and encroaching willow?
+> In the Colorado Rocky Mountains, what is the mean difference between first-flowering day for the native skypilot and encroaching willow?
 
-The data are *paired* (Sect.\ \@ref(PairedIntro)), which is a form of blocking (Sect.\ \@ref(ExpManagingConfounding)).
-One RQ in the study was:
-
-> For intensively grazed pastures sites, is there a mean reduction in percentage soil nitrogen (N) when sites are irrigated, compared to non-irrigated?
-
+Data for both species was collected at $25$ different sites, so the data are *paired* (Sect.\ \@ref(PairedIntro)), a form of blocking (Sect.\ \@ref(ExpManagingConfounding)).
 The data are shown in
 `r if( knitr::is_latex_output() ) {
     'Table\\ \\@ref(tab:FloweringData).'
 } else {
     'the table below.'
 }`
-The parameter is $\mu_d$, which we define as the population mean *difference* in day of first flowering.
+The 'first-flowering day' is the number of days since the start of the year (e.g., January\ 12 is 'day\ 12') when flowers were first first observed.
 
+The parameter is $\mu_d$, which we define as the population mean *difference* in day of first flowering for skypilot, less the day of first flowering for willow.
+Hence, a *positive* value for the difference means that the skypilot values are larger, and hence that willow flowered first.
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 Explaining *how* the differences are computed is important.  
 
-The differences here are the percentage N in *irrigated* sites minus percentage N in *non-irrigated* sites.
-However, the differences could be computed as the percentage N in *non-irrigated* sites minus percentage N in *irrigated* sites.
+The differences here are skypilot first-flowering days minus willow first-flowering days.
+However, the differences could be computed as willow first-flowering days minus skypilot first-flowering days.
 *Either is fine*, as long as you remain consistent throughout.
 The meaning of any conclusions will be the same.  
 :::
@@ -637,71 +634,75 @@ The meaning of any conclusions will be the same.
 data(Flowering)
 
 Flen <- length(Flowering$Willow) 
+Flowering$Site <- 1:Flen
 
 if( knitr::is_latex_output() ) {
   
- T1 <- knitr::kable(surroundMaths(Flowering[1:9, 1:2],
+ T1 <- knitr::kable(surroundMaths(Flowering[1:9, c(5, 1, 2)],
                                    decDigits = 0),
                      format = "latex",
                      valign = 't',
                      align = "r",
                      linesep = "",
-                     col.names = c("Willow", "Skypilot"),
+                     col.names = c("Site", "Willow", "Skypilot"),
                      row.names = FALSE,
                      escape = FALSE,
                      booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-   add_header_above( c( "Day of first flowering" = 2),
+   add_header_above( c( " " = 1,
+                        "First-flowering day" = 2),
                      bold = TRUE)
 
- T2 <- knitr::kable(surroundMaths( rbind(Flowering[10:17, 1:2],
+ T2 <- knitr::kable(surroundMaths( rbind(Flowering[10:17, c(5, 1, 2)],
                                          c(NA, NA)),
                                    decDigits = 0),
                      format = "latex",
                      valign = 't',
                      align = "r",
                      linesep = "",
-                     col.names = c("Willow", "Skypilot"),
+                     col.names = c("Site", "Willow", "Skypilot"),
                      row.names = FALSE,
                      escape = FALSE,
                      booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-   add_header_above( c( "Day of first flowering" = 2),
+   add_header_above( c( " " = 1,
+                        "First-flowering day" = 2),
                      bold = TRUE)
   
       
-  T3 <- knitr::kable(surroundMaths( rbind(Flowering[18:25, 1:2],
+  T3 <- knitr::kable(surroundMaths( rbind(Flowering[18:25, c(5, 1, 2)],
                                           c(NA, NA)),
                                    decDigits = 0),
                      format = "latex",
                      valign = 't',
                      align = "r",
                      linesep = "",
-                     col.names = c("Willow", "Skypilot"),
+                     col.names = c("Site", "Willow", "Skypilot"),
                      row.names = FALSE,
                      escape = FALSE,
                      booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-       add_header_above( c( "Day of first flowering" = 2),
+       add_header_above( c( " " = 1,
+                            "First-flowering day" = 2),
                      bold = TRUE)
 
   
   out <- knitr::kables(list(T1, T2, T3),
                        format = "latex",
                        label = "FloweringData",
-                       caption = "The Julian dates of first flowering by encroaching willow and native skypilot.") %>% 
+                       caption = "The day of the year of first flowering by encroaching willow and native skypilot.") %>% 
     kable_styling(font_size = 10)
   out2 <- prepareSideBySideTable(out) 
   out2 
 }
 
 if( knitr::is_html_output() ) {
-  kable( Flowering,
+  kable( Flowering[, c(5, 1, 2)],
          format = "html",
          booktabs = TRUE,
          longtable = FALSE,
-         col.names = c("Irrigated", "Not irrigated"),
-         caption = "The Julian dates of first flowering by encroaching willow and native skypilot.") %>% 
+         col.names = c("Site", "Willow", "Skypilot"),
+         caption = "The day of the year of first flowering by encroaching willow and native skypilot.") %>% 
     kable_styling(font_size = 10) %>%
     row_spec(0, bold = TRUE)
 }
@@ -780,15 +781,41 @@ if( knitr::is_html_output() ) {
 ```
 
 
-```{r, FloweringPlots, out.width='90%', fig.width=9, fig.height=3.5, fig.align=TRUE, fig.cap="The flowering-day data. Left: A histogram of the difference between the first-flowering days; right: a case-profile plot of days of first flowering (??????unfilled points and dashed lines indicate a decrease)"}
+```{r, FloweringPlots, out.width='90%', fig.width=9, fig.height=3.5, fig.align=TRUE, fig.cap="The flowering-day data. Left: A histogram of the difference between the first-flowering days (skypilot minus willow) ; right: a case-profile plot of days of first flowering (unfilled points and dashed lines indicate earlier dates (smaller values) for willow)"}
 par( mfrow = c(1, 2))
 
  hist(FloweringTab$Change,
       las = 1,
-      xlab = "Difference in day number",
+      ylim = c(0, 20),
+      xlab = "Difference in day number\n(skypilot minus willow)",
       ylab = "Number of locations",
       main = "Histogram of day of\nfirst-flowering")
  
+arrows (x0 = 1,
+         x1 = 14,
+         y0 = 16,
+         y1 = 16,
+         angle = 15,
+         length = 0.1)
+text(x = 7.5,
+     y = 16,
+     pos = 3,
+     cex = 0.9,
+     labels = "Willow earlier")
+ 
+arrows (x0 = -1,
+         x1 = -9,
+         y0 = 16,
+         y1 = 16,
+         angle = 15,
+         length = 0.1)
+text(x = -5,
+     y = 16,
+     pos = 3,
+     cex = 0.9,
+     labels = "Skypilot earlier")
+
+
  ###
  
  plot( x = c(0.75, 2.25),
@@ -828,102 +855,13 @@ Remembering that *positive* differences mean willow flowers earlier, we write (u
 
 > From the sample, the mean difference in the day of first flowering is $1.36$ days earlier for the willow ($\text{s.e.} = 0.940$; $n = 25$), with an approximate $95$% CI between $0.52$ days earlier for skypilot to $3.24$ days earlier for willow.
 
-The CI should be statistically valid as the sample size since $n = 25$.
+The CI should be statistically valid since $n = 25$.
 
 
-
-## Example: soil nitrogen: REMOVE  {#PairedCI-SoilN}
-
-A study [@lambie2021microbial] compared the percentage nitrogen (N) in soils from irrigated and non-irrigated intensively grazed pasture sites.
-The researchers paired irrigated and non-irrigated  sites (p. 338):
-
-> The irrigated and non-irrigated pairs within each site were within $100$\ m of each other and were on the same soil, landform and usually the same farm with the same farm management on both treatments.
-
-The data are *paired* (Sect.\ \@ref(PairedIntro)), which is a form of blocking (Sect.\ \@ref(ExpManagingConfounding)).
-One RQ in the study was:
-
-> For intensively grazed pastures sites, is there a mean reduction in percentage soil nitrogen (N) when sites are irrigated, compared to non-irrigated?
-
-The data are shown in
-`r if( knitr::is_latex_output() ) {
-    'Table\\ \\@ref(tab:SoilCN).'
-} else {
-    'the table below.'
-}`
-The parameter is $\mu_d$, which we define as the population mean *reduction* in percentage N when sites are irrigated, compared to non-irrigated.
-
-
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-Explaining *how* the differences are computed is important.  
-
-The differences here are the percentage N in *irrigated* sites minus percentage N in *non-irrigated* sites.
-However, the differences could be computed as the percentage N in *non-irrigated* sites minus percentage N in *irrigated* sites.
-*Either is fine*, as long as you remain consistent throughout.
-The meaning of any conclusions will be the same.  
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Be clear in your conclusion about *how* the differences are computed.
+Make sure to interpret the CI consistent with how the differences were defined.
 :::
-
-
-```{r}
-data(SoilCN)
-
-SoilN <- subset(SoilCN, 
-                select = c(IrrigatedN, NonirrigatedN))
-SoilN$Change <- SoilN$NonirrigatedN - SoilN$IrrigatedN
-
-Nlen <- length(SoilN$TotalCI) 
-
-if( knitr::is_latex_output() ) {
-  
- T1 <- knitr::kable(surroundMaths(SoilN[1:14, ],
-                                   decDigits = 2),
-                     format = "latex",
-                     valign = 't',
-                     align = "r",
-                     linesep = "",
-                     col.names = c("Not irrigated", "Irrigated", "Reduction"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) 
-  
-  
-  T2 <-knitr::kable(surroundMaths(SoilN[15:28, ],
-                                   decDigits = 2),
-                     format = "latex",
-                     valign = 't',
-                     align = "r",
-                     linesep = "",
-                     col.names = c("Irrigated", "Not irrigated", "Reduction"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE)
-  
-  out <- knitr::kables(list(T1, T2),
-                       format = "latex",
-                       label = "SoilCN",
-                       caption = "The percentage total nitrogen in irrigated and non-irrigated soils.") %>% 
-    kable_styling(font_size = 10)
-  out2 <- prepareSideBySideTable(out) 
-  out2 
-}
-
-if( knitr::is_html_output() ) {
-  kable( SoilN,
-         format = "html",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names = c("Irrigated", "Not irrigated"),
-         caption = "he percentage total nitrogen in irrigated and non-irrigated soils.") %>% 
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE)
-}
-```
-
-
-Since the raw data are available, the data should be summarised graphically (Fig.\ \@ref(fig:SoilNGraphs)) and numerically (Table\ \@ref(tab:SoilNSummary)), using software (Fig.\ \@ref(fig:Nitrogenjamovi)).
-
-
 
 
 ## Example: growing squash
@@ -1164,6 +1102,93 @@ It is difficult to be certain.
 `r webexercises::unhide()`
 `r if (knitr::is_latex_output()) '-->'`
 :::
+
+
+
+## Green coffee bean extract {#CoffeeExtractCI}
+
+A study of patients with nonalcoholic fatty liver disease (NAFLD) randomly allocated $23$ patients into a control group, and $23$ to receive green coffee extract (GCE) [@hosseinabadi2020effects].
+The fasting blood glucose (FBG) was measured for each individual, in both groups, both before the intervention and after the intervention.
+
+> Over eight weeks, patients received 2 × 200 mg GCE daily (one 200 mg capsule after breakfast and one after lunch), and a placebo capsule that was similar to GCE supplement in terms of dosage, color and size containing 200 mg starch as the same manner, in the intervention and control groups, respectively. (on page 2)
+
+The data are not available so a graphical summary cannot be produced; however, the data summary is shown in the article (Table\ \@ref(tab:GCBsummaryTable)).
+For the *green coffee group*, the standard error of the *reduction* in FBG is $\text{s.e.}(\bar{d}) = 14.21/\sqrt{21} = 3.10$, so an approximate $95$% CI for the *reduction* in fasting blood glucose (FBG) is  
+\[
+  12.50\pm (2\times 3.10), \text{or from $6.29$ to $18.70$ mg.dl$^{-1}$}.
+\]
+For the *control group*, the standard error of the *reduction* in FBG is $\text{s.e.}(\bar{d}) = 13.69/\sqrt{23} = 2.855$, so an approximate $95$% CI for the *reduction* in fasting blood glucose (FBG) is  
+\[
+  2.00\pm (2\times 2.855), \text{or from $-3.71$ to $7.71$ mg.dl$^{-1}$}.
+\]
+
+
+
+```{r GCBsummaryTable}
+GCBsummary <- array(dim = c(3, 7) )
+
+rownames(GCBsummary) <- c("Green coffee beans",
+                          "Control",
+                          "Difference")
+colnames(GCBsummary) <- c("n",
+                          "BaselineMean",
+                          "BaselinesSD",
+                          "PostMean",
+                          "PostSD",
+                          "ChangeMean",
+                          "ChangeSD")
+
+GCBsummary[1, ] <- c(21, 
+                     104.65, 9.09,
+                     92.15, 11.40,
+                     12.50, 12.60)
+GCBsummary[2, ] <- c(23,
+                     101.72, 12.30,
+                     99.72, 11.84,
+                     2.0, 13.69)
+GCBsummary[3, ] <- c(NA,
+                     2.93, 3.24,
+                     NA, NA,
+                     "-11.50?", 2.385)
+
+if( knitr::is_latex_output() ) {
+  
+  knitr::kable(surroundMaths(GCBsummary,
+                             decDigits = c(0, 2, 2, 2, 2, 2, 2)),
+               format = "latex",
+               align = c("r", "r", "r", "c"),
+               linesep = "",
+               caption = "The fasting blood glucose (in mg.dl$^{-1}$)",
+               col.names = c("$n$",
+                             "Mean", "Std. dev.", 
+                             "Mean", "Std. dev",
+                             "Mean", "Std.dev"),
+               row.names = TRUE,
+               escape = FALSE,
+               booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, italic = TRUE) %>%
+    kable_styling(font_size = 10) %>%
+    add_header_above( c(" " = 2,
+                        "Baseline" = 2,
+                        "After 8 weeks" = 2,
+                        "Reduction" = 2),
+                      bold = TRUE)
+  
+}
+
+if( knitr::is_html_output() ) {
+  kable( GCBsummary,
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names =  c("Mean", "Std. dev.", "Std. error", "Sample size"),
+         caption = "The fruit weight (in g) at farms for two different years") %>% 
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+}
+
+```
 
 
 ## Quick review questions {#Chap23-QuickReview}
