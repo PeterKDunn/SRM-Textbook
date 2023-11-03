@@ -410,7 +410,408 @@ For the percentage N data, the sample size is $n = 28$, so the test is statistic
 :::
 
 
-## Example: physical activity
+
+
+
+## Example: invasive plants {#PairedInvasivePlantsHT}
+
+Skypilot (*Polemonium viscosum*) is a native alpine wildflower growing in the Colorado Rocky Mountains (USA).
+In recent years, a willow shrub (*Salix*) has been encroaching on skypilot territory and, because willow often flowers early, researchers [@kettenbach2017shrub] are concerned that the willow may 'negatively affect pollination regimes of resident alpine wildflower species' (p.\ 6965).
+This example was first seen in Sect.\ \@ref(PairedInvasivePlantsCI).
+
+Data for both species was collected at $25$ different sites, so the data are *paired* (Sect.\ \@ref(PairedIntro)) and shown in
+`r if( knitr::is_latex_output() ) {
+    'Table\\ \\@ref(tab:FloweringData).'
+} else {
+    'Sect.\\ \\@ref(PairedInvasivePlantsCI).'
+}`
+The parameter is $\mu_d$, which we define as the population mean *difference* in day of first flowering for skypilot, less the day of first flowering for willow.
+Hence, a *positive* value for the difference means that the skypilot values are larger, and hence that willow flowered first.
+
+In addition to learning about the difference in flowering time, another RQ is:
+
+> In the Colorado Rocky Mountains, is there a mean difference between first-flowering day for the native skypilot and encroaching willow?
+
+The hypotheses are:  
+\[
+   \text{$H_0$: $\mu_d = 0$}\quad\text{and}\quad\text{$H_1$: $\mu_d\ne 0$}
+\]
+where the alternative hypothesis is two-tailed.
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+Explaining *how* the differences are computed is important.  
+
+The differences here are skypilot first-flowering days minus willow first-flowering days.
+However, the differences could be computed as willow first-flowering days minus skypilot first-flowering days.
+*Either is fine*, as long as you remain consistent throughout.
+The meaning of any conclusions will be the same.  
+:::
+
+Since the raw data are available, the data were summarised graphically in Fig.\ \@ref(fig:FloweringPlots).
+The numerical summary (Table\ \@ref(tab:FloweringSummaryHT)) and software output (Fig.\ \@ref(fig:FloweringjamoviHT)) are repeated here.
+
+
+```{r FloweringjamoviHT, fig.cap="jamovi output for the flowering-day data", fig.align="center", out.width=c("100%"), fig.show='hold'}
+knitr::include_graphics("jamovi/Flowering/FloweringAll.png")
+```
+
+
+
+```{r FloweringSummaryHT}
+data(Flowering)
+FloweringSummary <- array( dim = c(3, 4))
+
+FloweringTab <- cbind( Flowering[, 1:2], 
+                       Change = Flowering[, 2] - Flowering[, 1])
+
+rownames(FloweringSummary) <- c("Willow (encroaching)",
+                            "Skypilot (native)",
+                            "Differences")
+colnames(FloweringSummary) <- c("Mean",
+                            "Std. dev.",
+                            "Std. error",
+                            "Sample size")
+
+FloweringSummary[, 1] <- colMeans(FloweringTab,
+                              na.rm = TRUE)
+FloweringSummary[, 2] <- apply(FloweringTab,
+                           2,
+                           "sd",
+                           na.rm = TRUE)
+FloweringSummary[, 3] <- apply(FloweringTab,
+                           2,
+                           "findStdError",
+                           na.rm = TRUE)
+FloweringSummary[, 4] <- apply(FloweringTab,
+                           2,
+                           "realLength")
+
+# Do some appropriate rounding
+FloweringSummary <- round(FloweringSummary, 4)
+FloweringSummary[1:2, 1] <- round(FloweringSummary[1:2, 1], 3)
+
+if( knitr::is_latex_output() ) {
+  
+  knitr::kable(surroundMaths(FloweringSummary,
+                             decDigits = c(2, 3, 3, 0)),
+               format = "latex",
+               align = c("r", "r", "r", "c"),
+               linesep = "",
+               caption = "The day of first flowering for encroaching willow and native skypilot",
+               col.names = c("Mean", "Std. dev.", "Std. error", "Sample size"),
+               row.names = TRUE,
+               escape = FALSE,
+               booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, italic = TRUE) %>%
+    kable_styling(font_size = 10)
+  
+}
+
+if( knitr::is_html_output() ) {
+  kable( FruitSummary,
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names =  c("Mean", "Std. dev.", "Std. error", "Sample size"),
+         caption = "The day of first flowering for encroaching willow and native skypilot") %>% 
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+}
+```
+
+The standard error of the mean difference is $\text{s.e.}(\bar{d}) = 0.9396$, from Fig.\ \@ref(fig:Floweringjamovi) or Table\ \@ref(tab:FloweringSummary)).
+The value of the test statistic (i.e., the $t$-score) is  
+\begin{align*}
+  t 
+  = \frac{\bar{d} - \mu_d}{\text{s.e.}(\bar{d})}
+  = \frac{1.36 - 0}{0.9396} = 1.45,
+\end{align*}
+as in the output.
+This is a small value of $t$, so expect a large $P$-value using the 68--95--99.7 rule.
+Indeed, the output shows that $P = 0.161$, so there is no evidence of a mean difference in flowering day.
+We write:
+
+> No evidence exists ($t = 1.45$; two-tailed $P = 0.161$) that the day of first-flowering is different for the encroaching willow and the native skypilot (mean difference: $1.36$ days earlier for willow; s.e.: $0.940$).
+
+The CI should be statistically valid since $n = 25$.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Be clear in your conclusion about *how* the differences are computed.
+Make sure to interpret the CI consistent with how the differences were defined.
+:::
+
+
+## Example: growing squash
+
+The effect of rainfall on growing Chayote squash (*Sechium edule*) studied the size of the fruit in a year with normal rainfall (2015) compared to fruit in a dry year (2014) on 24 farms [@mukherjee2019diversity]:
+
+> For Chayote squash grown in Bangalore, what is the mean difference in fruit weight between a normal and dry year?
+
+Ten fruits were gathered from each farm in both years, and the average weight recorded for the farm.
+(The farm is the *unit of analysis*, but the individual fruits are the *units of observation*.)
+Since the same farms are used in both years, the data are *paired* (Table\ \@ref(tab:FruitsData)).
+Data is missing for Farm\ 20 in the dry year (2014), so there are $n = 23$ differences.
+
+```{r FruitsData, echo=FALSE}
+data(Fruit)
+
+Fruit$Farm <- 1 : length(Fruit$FWeight2014)
+
+FruitTab <- dplyr::select(Fruit,
+                          Farm,
+                          FWeight2014,
+                          FWeight2015)
+FruitTab$Change <- FruitTab$FWeight2015 - FruitTab$FWeight2014
+
+if( knitr::is_latex_output() ) {
+  
+ T1 <- knitr::kable(surroundMaths(FruitTab[1:5, ],
+                                   decDigits = c(0, 2, 2, 2)),
+                     format = "latex",
+                     valign = 't',
+                     align = c("r", "c","c", "r"),
+                     linesep = "",
+                     col.names = c("Farm", 
+                                   "Dry", 
+                                   "Normal",
+                                   "Change (in g)"),
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+   add_header_above(c( " " = 1,
+                       "Fruit weight (in g)" = 2,
+                       " " = 1),
+                    bold = TRUE) %>%
+    row_spec(0, bold = TRUE) 
+  
+  
+  T2 <- knitr::kable(surroundMaths(FruitTab[20:24, ],
+                                   decDigits = c(0, 2, 2, 2)),
+                     format = "latex",
+                     valign = 't',
+                     align = c("r", "c","c", "r"),
+                     linesep = "",
+                     col.names = c("Farm", 
+                                   "Dry", 
+                                   "Normal",
+                                   "Change (in g)"),
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE)  %>%
+   add_header_above(c( " " = 1,
+                       "Fruit weight (in g)" = 2,
+                       " " = 1),
+                    bold = TRUE) %>%
+    row_spec(0, bold = TRUE) 
+  
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "FruitsData",
+                       caption = "The weight of fruits (in g) in two different years. One observation is missing for Field\ 20.") %>% 
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out) 
+  out2 
+}
+
+if( knitr::is_html_output() ) {
+  kable( FruitTab,
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names = c("Irrigated", "Not irrigated"),
+         caption = "The weight of fruits (in g) in two different years. One observation is missing for Field\ 20.") %>% 
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+}
+```
+
+In Table\ \@ref(tab:FruitsData), the changes refer to the *increase* in fruit weight from 2014 (dry) to 2015 (normal).
+(Computing the changes as the 2015 (normal) values less the 2014 (dry) values is fine, permitted this is used consistently throughout the analysis.)
+The parameter is $\mu_d$, the population *increase* in fruit weight (in g) from 2014 to 2015.
+
+Since the data are available
+`r if( knitr::is_latex_output() ) {
+  '(Table\\ \\@ref(tab:FruitsData)),'
+} else {
+  '(see above),'
+}`
+a numerical summary *must* summarise the differences, as the RQ is about the mea difference.
+Each group can be summarised too.
+The information is found using software (Fig.\ \@ref(fig:Fruitjamovi)), and can be compiled into a table (Table\ \@ref(tab:FruitSummary)).
+The appropriate plot for graphically summarising the *data* is (for example) a histogram of the differences (Fig.\ \@ref(fig:FruitPlots), left panel) or a case-profile plot (Fig.\ \@ref(fig:FruitPlots), right panel).
+A small increase is seen from 2014 to 2015, with lots of variation from farm to farm.
+
+
+```{r Fruitjamovi, fig.cap="jamovi output for the fruit-weight data", fig.align="center", out.width=c("100%"), fig.show='hold'}
+knitr::include_graphics("jamovi/Fruit/Fruit-Differences.png")
+```
+
+
+
+```{r FruitSummary}
+FruitSummary <- array( dim = c(3, 4))
+
+rownames(FruitSummary) <- c("Dry year (2014)",
+                            "Normal year (2015)",
+                            "Change")
+colnames(FruitSummary) <- c("Mean",
+                            "Std. dev.",
+                            "Std. error",
+                            "Sample size")
+
+FruitSummary[, 1] <- colMeans(FruitTab[, 2:4],
+                              na.rm = TRUE)
+FruitSummary[, 2] <- apply(FruitTab[, 2:4],
+                           2,
+                           "sd",
+                           na.rm = TRUE)
+FruitSummary[, 3] <- apply(FruitTab[, 2:4],
+                           2,
+                           "findStdError",
+                           na.rm = TRUE)
+FruitSummary[, 4] <- apply(FruitTab[, 2:4],
+                           2,
+                           "realLength")
+
+# Do some appropriate rounding
+FruitSummary <- round(FruitSummary, 4)
+FruitSummary[1:2, 1] <- round(FruitSummary[1:2, 1], 3)
+
+if( knitr::is_latex_output() ) {
+  
+  knitr::kable(surroundMaths(FruitSummary,
+                             decDigits = c(3, 3, 3, 0)),
+               format = "latex",
+               align = c("r", "r", "r", "c"),
+               linesep = "",
+               caption = "The fruit weight (in g) at farms for two different years",
+               col.names = c("Mean", "Std. dev.", "Std. error", "Sample size"),
+               row.names = TRUE,
+               escape = FALSE,
+               booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, italic = TRUE) %>%
+    kable_styling(font_size = 10)
+  
+}
+
+if( knitr::is_html_output() ) {
+  kable( FruitSummary,
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names =  c("Mean", "Std. dev.", "Std. error", "Sample size"),
+         caption = "The fruit weight (in g) at farms for two different years") %>% 
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+}
+```
+
+
+
+```{r, FruitPlots, out.width='90%', fig.width=9, fig.height=3.5, fig.align=TRUE, fig.cap="The fruit-weight data. Left: A histogram of the weight changes on each farm; right: a case-profile plot of the weight changes (unfilled points and dashed lines indicate a decrease)"}
+par( mfrow = c(1, 2))
+
+ hist(FruitTab$Change,
+      las = 1,
+      xlab = "Weight increase (in g)",
+      ylab = "Number of farms",
+      main = "Histogram of fruit weight\nincrease from 2014 to 2015")
+ 
+ ###
+ 
+ plot( x = c(0.75, 2.25),
+       y = c(150, 400),
+       type = "n",
+       las = 1,
+       xlab = "",
+       main = "Case-profile plot of fruit weight\nincreases from 2014 to 2015",
+       ylab = "Farm fruit weight (in g)",
+       axes = FALSE)
+ axis(side = 1,
+      at = c(1, 2),
+      labels = c("2014 (dry)",
+                 "2015 (normal)"))
+ axis(side = 2,
+      las = 1)
+ box()
+ 
+ 
+ for (i in (1:length(FruitTab$Change))){
+   if (!is.na(FruitTab$Change[i])){
+     delta <- ifelse(FruitTab$Change[i] > 0, 0.025, -0.025)
+     lines( x = c(1 + delta, 2 - delta),
+            y = c( FruitTab$FWeight2014[i],
+                   FruitTab$FWeight2015[i]),
+            lty = ifelse(FruitTab$Change[i] > 0, 1, 2),
+            pch = ifelse(FruitTab$Change[i] > 0, 19, 1),
+            type = "b",
+            lwd = 1)
+   }
+ }
+
+```
+
+The standard error of the mean increase is $\text{s.e.}(\bar{d}) = 10.879$, from Fig.\ \@ref(fig:Fruitjamovi) or Table\ \@ref(tab:FruitSummary)).
+The approximate $95$% CI is from $2.230 \pm (2\times 10.879)$, or from $-19.528$ to $23.988$\ g.
+Figure\ \@ref(fig:Fruitjamovi) gives the $95$% CI as $-24.79$ to $20.33$\ g.
+The two CIs are a bit different since the sample size is not large ($n = 23$).
+Using the exact CI, we write:
+
+> From the sample, the mean increase in fruit weight from 2014 (dry year) to 2015 (normal year) is $2.230$\ g ($\text{s.e.} = 0.10.879$; $n = 23$), with an approximate $95$% CI between $24.79$\ g lighter in 2014 to $20.33$\ g higher in 2015.
+
+The sample size ($n = 23$) is only *slightly* smaller than $25$.
+Since Fig.\ \@ref(fig:FruitPlots) shows the *sample* differences are approximately symmetrically, so the CI should be reasonably statistically valid.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Be clear in your conclusion about *how* the differences are computed.
+Make sure to interpret the CI consistent with how the differences were defined.
+:::
+
+::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
+Is there a mean difference in fruit weight from 2014 to 2015 *in the population*?\label{thinkBox:MeanDifferenceFruit}
+
+`r if (knitr::is_latex_output()) '<!--'`
+`r webexercises::hide()`
+The RQ is about the mean difference in the **population**... but we only have the mean difference from one of many possible **samples**.
+It is difficult to be certain.
+`r webexercises::unhide()`
+`r if (knitr::is_latex_output()) '-->'`
+:::
+
+
+
+
+
+
+## Green coffee bean extract {#CoffeeExtractHT}
+
+(This study was seen in Sect.\ \@ref(CoffeeExtractHT).)
+A study of patients with nonalcoholic fatty liver disease (NAFLD) randomly allocated $23$ patients into a control group, and $23$ to receive green coffee extract (GCE) [@hosseinabadi2020effects].
+The summary data are given in Table\ \@ref(tab:GCBsummaryTable).
+
+For the *green coffee group*, the mean *reduction* of FBG is $12.50$, and the standard error is $\text{s.e.}(\bar{d}) = 3.10$ (found in Sect.\ \@ref(CoffeeExtractHT).)
+The test statistic is  
+\[
+  t = \frac{12.50 - 0}{3.10} = 4.03,
+\]
+which is a huge $t$-score, so the $P$-value will be very small (using the 68--95--99.7 rule), and certainly smaller than $0.001$.
+
+For the *control group*, the mean *reduction* of FBG is $2.00$, and the standard error is $\text{s.e.}(\bar{d}) = 2.855$ (found in Sect.\ \@ref(CoffeeExtractHT).)
+The test statistic is  
+\[
+  t = \frac{2.00 - 0}{2.855} = 0.700,
+\]
+which is a small $t$-score, so the $P$-value will be very large (using the 68--95--99.7 rule), and certainly larger than $p = 0.10$.
+We conclude:
+
+> There is very strong evidence $t = 4.03$; two-tailed $P < 0.001$) of a mean reduction in FBG for the green coffee extract group ($12.50$\ mg.dl^-1^; $95$% CI from $6.29$ to $18.70$\ mg.dl^-1^), but *no* evidence ($t = 0.70$; two-tailed $P > 0.10$) for the control group ($2.00$\ mg.dl^-1^; $95$% CI from $-3.71$ to $7.71$\ mg.dl^-1^).
+
+
+## Example: physical activity: REMOVE
 
 A study of $n = 213$ Spanish health students [@romero2020physical] measured the number of minutes of vigorous physical activity (PA) performed by students *during* and *before* the COVID-19 lock down (in Spain: March to April 2020).
 The data are not available, but a numerical summary of the data are shown in Table\ \@ref(tab:COVIDsummaryTable2).
@@ -483,299 +884,6 @@ We write:
 Since $n = 213$, which is much larger than $25$, the test is statistically valid.
 
 
-## Example: endangered species: REMOVE {#EndangeredHT}
-
-A study of endangered species [@harnish2020attitudes] examined (p. 1703)
-
-> ...whether perceived physical attractiveness of a species impacted participants' attitudes toward supporting and protecting the species...
-
-To do so, $210$ undergraduate students were surveyed about $14$ animals on various aspects of supporting and protecting them.
-Part of the data are summarised in Table\ \@ref(tab:AnimalsData), for two animals when asked about 'support to protect the animal from illicit trade'.
-*Larger* values means *greater* support for protecting the animal from illicit trade.
-
-
-
-
-```{r AnimalsData}
-AnimalsArray <- array( dim = c(3, 2))
-
-AnimalsArray[1, ] <- c(3.10,
-                       1.06)
-AnimalsArray[2, ] <- c(2.33,
-                       1.13)
-AnimalsArray[3, ] <- c(0.77,
-                       1.07)
-rownames(AnimalsArray) <- c("Bay Checkerspot Butterfly",
-                            "Valley Elderberry Longhorn Beetle",
-                            "Difference")
-
-if( knitr::is_latex_output() ) {
-  kable(surroundMaths(AnimalsArray,
-                      decDigits = 2),
-        format = "latex",
-        booktabs = TRUE,
-        longtable = FALSE,
-        align = "c",
-        escape = FALSE,
-        col.names = c("Mean of scores",
-                      "Standard deviation of scores"),
-        caption = "The support for protecting two animals from illicit trade") %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE) %>%
-    row_spec(3, italic = TRUE)
-}
-
-if( knitr::is_html_output() ) {
-  kable(AnimalsArray,
-        format = "html",
-        booktabs = TRUE,
-        longtable = FALSE,
-        col.names = c("Mean of scores",
-                      "Standard deviation of scores"),
-        caption = "The support for protecting two animals from illicit trade") %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE) %>%
-    row_spec(3, italic = TRUE)
-}
-```
-
-
-(Notice that the standard deviation of the difference is **not** the difference between the two given values of the standard deviation.)
-
-The *difference* is defined as each student's score for the butterfly (deemed more attractive) *minus* their score for the beetle (deemed less attractive).
-A positive value therefore means more support (on average) for the butterfly.
-The RQ is whether there is a mean difference between support for each animal, so the parameter is $\mu_d$, the population mean difference.
-
-The researchers wished to test if (p. 1704)
-
-> ...animals perceived as more physically attractive [i.e., the butterfly] compared to those which are perceived as less physically attractive [i.e., the beetle] will receive relatively more support to prevent the species from illicit trade
-
-Given how the difference are defined, the hypotheses are:  
-\[
-   H_0: \mu_d = 0\quad\text{and}\quad H_1: \mu_d > 0 \quad\text{(i.e., one-tailed, based on the researchers' purpose)}
-\]
-The mean difference is $\bar{d} = 0.77$ and $s_d = 1.07$.
-The value of $\bar{d}$ will vary from sample to sample with a mean of $\mu(\bar{d}) = 0$, and a standard error of:  
-\[
-   \text{s.e.}(\bar{d}) = \frac{s_d}{\sqrt{n}} = \frac{1.07}{\sqrt{210}} = 0.073837.
-\]
-The value of the test statistic is  
-\[
-   t = \frac{\bar{d} - \mu_{\bar{d}}}{\text{s.e.}(\bar{d})} = \frac{0.77 - 0}{0.073837} = 10.43,
-\]
-which is a *very* large value. 
-Hence, the $P$-value will be very small, certainly less than $0.05$.
-Since the sample size is much larger than $25$, the test will be statistically valid.
-
-We write:
-
-> There is very strong evidence ($t = 10.43$; one-tailed $P < 0.001$) that the mean difference in support for protecting the Bay Checkerspot Butterfly from illicit trade is greater than support for protecting the Valley Elderberry Longhorn Beetle from illicit trade (mean difference: $0.77$; standard deviation: $1.07$; $95$% CI for the difference: $0.62$ to $0.92$).
-
-
-## Example: blood pressure: REMOVE {#Diabetes}
-
-
-```{r}
-data(Diabetes)
-
-Diabetes$Diff <- Diabetes$SBPfirst - Diabetes$SBPsecond
-
-n.D.diff <- length( Diabetes$Diff ) - sum( is.na(Diabetes$Diff) )
-se.D.diff <- sd(Diabetes$Diff) / sqrt(n.D.diff)
-```
-
-
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/hush-naidoo-pA0uoltkwao-unsplash.jpg" width="200px"/>
-</div>
-
-
-A US study [@data:Willems1997:CHD; @data:Schorling1997:smoking] was conducted to determine how CHD risk factors were assessed among parts of the population.
-Subjects were required to report to the clinic on multiple occasions.
-
-One RQ of interest is:
-
-> Is there a mean difference in blood pressure measurements between the first and second visits? 
-
-The parameter is $\mu_d$, the population mean *reduction* in blood pressure.
-Each person has a *pair* of diastolic blood pressure (DBP) measurements: One each from their first and second visits.
-The data
-`r if (knitr::is_latex_output()) {
-   '(Table\\ \\@ref(tab:DiabetesDataTable))'
-} else {
-   'shown below,'
-}`
-are from $141$ people.
-(These data were also seen in Sect.\ \@ref(BloodPressure).)
-The differences could be computed in one of two ways:   
-
-* The observation from the first visit, minus the observation from the second visit: the *reduction* in BP; or
-* The observation from the second visit, minus the observation from the first visit: the *increase* in BP.
-
-Either way is fine, as long as the order remains consistent, and the direction is made clear.
-Here, the observations from the *first* visit minus the observation from the *second* visit will be used, so that the differences represent the *decrease* in BP
-from the first to second measurement.
-
-
-```{r DiabetesDataTable2}
-DiffExists <- complete.cases(Diabetes[, c("DBPfirst", 
-                                      "DBPsecond", 
-                                      "Diff")])
-diabData <- Diabetes[DiffExists, c("DBPfirst", 
-                               "DBPfirst", 
-                               "Diff")]
-
-if( knitr::is_latex_output() ) {
-  diabData <- rbind( head(diabData),
-                     c("$\\vdots$", "$\\vdots$", "$\\vdots$") )
-
-knitr::kable(surroundMaths(diabData),
-             format = "latex",
-             booktabs = TRUE,
-             longtable = FALSE,
-             escape = FALSE,
-             linesep = "",
-             row.names = FALSE,
-             align = "r",
-             label = "DiabetesDataTable2",
-             caption = "The diastolic blood pressure data; the first six patients only",
-             col.names = c("DBP: 1st visit", "DBP: 2nd visit", "Reduction in DBP") ) %>%
-  row_spec(row = 0, bold = TRUE) %>%
-  #row_spec(row = 3, bold = TRUE) %>%
-  kable_styling(font = 10)
-}
-
-if( knitr::is_html_output() ) {
-  kable( head(diabData, 15),
-         format = "html",
-         booktabs = TRUE,
-         longtable = FALSE,
-             col.names = c("DBP: 1st visit", "DBP: 2nd visit", "Reduction in DBP"), 
-             caption = "The diastolic blood pressure data; the first fifteen patients only") %>%
-  kable_styling(font_size = 10) %>%
-  #row_spec(row = 3, bold = TRUE) %>%
-  row_spec(0, bold = TRUE)
-}
-```
-
-The appropriate graphical summary is a histogram of differences 
-`r if (knitr::is_latex_output()) {
-   '(Fig.\\ \\@ref(fig:DiabetesHIST));'
-} else {
-   '(Fig.\\ \\@ref(fig:DiabetesHIST2));'
-}`
-the numerical summary is shown in  Table\ \@ref(tab:DiabSummTable2).
-Notice that having the information about the differences is essential, as the RQ is about the differences.
-
-
-```{r DiabSummTable2}
-Diab.Table <- array( dim = c(3, 4))
-
-n.diab <- function(x){
-  length(x) - sum( is.na(x))
-}
-
-se.diab <- function(x) {
-  sd(x, na.rm = TRUE) / sqrt(n.diab(x) )
-}
-
-Diab.Table[1, 1] <- mean(Diabetes$DBPfirst[DiffExists], na.rm = TRUE)
-Diab.Table[2, 1] <- mean(Diabetes$DBPsecond[DiffExists], na.rm = TRUE)
-Diab.Table[3, 1] <- mean(Diabetes$Diff[DiffExists], na.rm = TRUE)
-
-Diab.Table[1, 2] <- sd(Diabetes$DBPfirst[DiffExists], na.rm = TRUE)
-Diab.Table[2, 2] <- sd(Diabetes$DBPsecond[DiffExists], na.rm = TRUE)
-Diab.Table[3, 2] <- sd(Diabetes$Diff[DiffExists], na.rm = TRUE)
-
-Diab.Table[1, 3] <- se.diab(Diabetes$DBPfirst[DiffExists])
-Diab.Table[2, 3] <- se.diab(Diabetes$DBPsecond[DiffExists])
-Diab.Table[3, 3] <- se.diab(Diabetes$Diff[DiffExists])
-
-Diab.Table[1, 4] <- n.diab(Diabetes$DBPfirst[DiffExists])
-Diab.Table[2, 4] <- n.diab(Diabetes$DBPsecond[DiffExists])
-Diab.Table[3, 4] <- n.diab(Diabetes$Diff[DiffExists])
-
-rownames(Diab.Table) <- c("DBP: First visit", 
-                          "DBP: Second visit", 
-                          "Decrease in DBP")
-
-if( knitr::is_latex_output() ) {
-kable(surroundMaths(Diab.Table,
-                    decDigits = c(2, 3, 3, 0)),
-      format = "latex",
-      booktabs = TRUE,
-      longtable = FALSE,
-      escape = FALSE,
-      align = "r",
-      col.names = c("Mean", 
-                    "Standard deviation", 
-                    "Standard error", 
-                    "Sample size"),
-      digits = c(2, 3, 3, 0),
-      caption = "The numerical summary for the diabetes data (in mm Hg). The differences are the second visit value minus the first visit value: the decreases in diastolic blood pressure from the first to second visit") %>%
-    row_spec(0, bold = TRUE) %>%
-    row_spec(3, italic = TRUE) %>%
-    kable_styling(font_size = 10)
-}
-if( knitr::is_html_output() ) {
-kable(Diab.Table,
-      format = "html",
-      booktabs = TRUE,
-      longtable = FALSE,
-      col.names = c("Mean", 
-                    "Standard deviation", 
-                    "Standard error", 
-                    "Sample size"),
-      digits = c(2, 3, 3, 0),
-      caption = "The numerical summary for the diabetes data (in mm Hg). The differences are the second visit value minus the first visit value: the decreases in diastolic blood pressure from the first to second visit") %>%
-    row_spec(3, italic = TRUE)
-}
-```
-
-
-As always (Sect.\ \@ref(AboutHypotheses)), the null hypothesis is the 'no difference, no change, no relationship' position, proposing that the mean difference in the population is non-zero due to sampling variation:
-
-* $H_0$: $\mu_d = 0$ (differences: $\text{first} - \text{second}$); \quad\text{and}\quad $H_1$: $\mu_d \ne 0$.
-
-The alternative hypothesis is *two-tailed* because of the wording of the RQ.
-As usual, *assume* that $H_0$ is true, and then the evidence is evaluated to determine if it contradicts this assertion.
-
-The sampling distribution describes how the sample mean difference is *expected*  to vary from sample to sample due to sampling variation, when $\mu_d = 0$.
-Under certain circumstances, the sample mean differences are likely to vary with a normal distribution, with a mean of $\mu_{\bar{d}} = 0$ (from $H_0$) and a standard deviation of $\text{s.e.}(\bar{d}) = 0.676$.
-
-The relative value of the *observed* sample statistic is found by computing a $t$-score, using software (jamovi: Fig.\ \@ref(fig:DiabetesTestjamovi); SPSS: Fig.\ \@ref(fig:DiabetesTestSPSS)), or manually (Eq.\ \@ref(eq:tscore), using the information in Table\ \@ref(tab:DiabSummTable2)):  
-\begin{align*}
-  t 
-  &= \frac{\text{sample statistic} - \text{mean of all sample statistics}}
-         {\text{standard error of the statistic}}\\
-  &= \frac{\bar{d} - \mu_{\bar{d}}}{\text{s.e.}(\bar{d})} \\
-  &= \frac{1.950 - 0}{0.676} = 2.885.
-\end{align*}
-Either way, the $t$-score is the same.
-
-
-```{r DiabetesTestjamovi, fig.cap="jamovi output for the diabetes data", fig.align="center",  out.width="90%"}
-knitr::include_graphics("jamovi/Diabetes/Diabetes-Test-All.png")
-```
-
-```{r DiabetesTestSPSS, fig.cap="SPSS output for the diabetes data", fig.align="center", out.width="80%"}
-knitr::include_graphics("SPSS/Diabetes/Diabetes-Test-NoCorr.png")
-```
-
-
-A $P$-value is then needed to decide if the sample is *consistent* with the assumption.
-Using the [68--95--99.7 rule](#def:EmpiricalRule), the approximate two-tailed $P$-value is much smaller than $0.05$.
-Alternatively, the software output (Fig.\ \@ref(fig:DiabetesTestjamovi); Fig.\ \@ref(fig:DiabetesTestSPSS)) reports the two-tailed $P$-value as $P = 0.005$.
-We conclude:
-
-> Strong evidence exists in the sample (paired $t = 2.855$; two-tailed $P = 0.005$) of a population mean difference between the first and second DBP readings (mean difference $1.95$\ mm Hg higher for first reading; $95$% CI\ from $0.61$ to $3.3$\ mm Hg; $n = 141$).
-
-Since $n > 25$, the results are statistically valid.
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Just saying 'there is evidence of a difference' is insufficient.
-You must state *which* measurement is, on average, higher (that is, what the differences *mean*).
-:::
 
 
 <iframe src="https://learningapps.org/watch?v=pj3pt56fk22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
