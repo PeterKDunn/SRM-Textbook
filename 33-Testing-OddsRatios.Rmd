@@ -548,207 +548,6 @@ PB2.exp <- chisq.test(PB2)$expected
 ```
 
 
-## Example: pet birds REMOVE {#ExampleHTPetBirds}
-
-
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/pexels-andre-lisatchok-2226006.jpg" width="200px"/>
-</div>
-
-
-A study examined people with lung cancer, and a matched set of similar controls who did not have lung cancer, and compared the proportion in each group that had pet birds [@data:Kohlmeier1992:BirdsCancer].
-These data were studied in Sect.\ \@ref(PetBirdsOR); the data are shown again in Table\ \@ref(tab:BirdsData2), and the numerical summary in Table\ \@ref(tab:BirdsDataSummary) (the computations are in Sect.\ \@ref(PetBirdsOR)).
-
-
-```{r BirdsData2}
-PB2T <- cbind( PB2, 
-               "Total" = rowSums(PB2))
-PB2T <- rbind( PB2T, 
-               "Total" = colSums(PB2T))
-
-if( knitr::is_latex_output() ) {
-  kable( surroundMaths(PB2T),
-        format = "latex",
-        booktabs = TRUE,
-        longtable = FALSE,
-        escape = FALSE,
-        align = "r",
-        caption = "The pet bird data") %>% 
-    column_spec(4, bold = TRUE) %>%
-    row_spec(3, bold = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-    row_spec(2, hline_after = TRUE) %>%
-    kable_styling(font_size = 10)
-}
-if( knitr::is_html_output() ) {
-  kable(PB2T,
-               format = "html",
-               booktabs = TRUE,
-               longtable = FALSE,
-               caption = "The pet bird data") %>%
-     column_spec(4, bold = TRUE)
-}
-```
-
-Consider this RQ:
-
-> Are the **odds** of having a pet bird the same for people *with* lung cancer (cases) and for people *without* lung cancer (controls)?
-
-The parameter is the population OR, comparing the odds of keeping a pet bird, for adults with lung cancer to adults who do not have lung cancer.
-
-
-
-```{r BirdsDataSummary}
-PBsummary <- array( dim = c(3, 3) )
-
-colnames(PBsummary) <- c( "Odds of keeping pet bird",
-                          "Percentage keeping pet bird",
-                          "Sample size")
-rownames(PBsummary) <- c("With lung cancer:",
-                         "Without lung cancer:",
-                         "Odds ratio:")
-  
-  
-PBsummary[1, ] <- c(0.6950, 
-                    41.0, 
-                    239)
-PBsummary[2, ] <- c(0.3079, 
-                    25.5, 
-                    429)
-PBsummary[3, ] <- c(2.26, 
-                    NA, 
-                    NA)
-
-
-if( knitr::is_latex_output() ) {
-  kable(surroundMaths(PBsummary,
-                      decDigits = c(4, 1, 0)),
-        format = "latex",
-        booktabs = TRUE,
-        longtable = FALSE,
-        escape = FALSE,
-        align = "c",
-        #align=c("p{28mm}", "p{28mm}", "c"),
-        caption = "The odds and percentage of subjects keeping pet birds") %>%
-    row_spec(0, bold = TRUE) %>%
-    row_spec(3, italic = TRUE) %>%
-    kable_styling(font_size = 10)
-}
-if( knitr::is_html_output() ) {
-  kable(PBsummary,
-        format = "html",
-        booktabs = TRUE,
-        longtable = FALSE,
-        align = c("l", "r", "c"),
-        caption = "The odds and percentage of subjects keeping pet birds")
-}
-```
-
-
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-The RQ could also be written in terms of comparing the *percentage* in each groups; in terms of the *odds ratio* being one; or in terms of a *relationship* between the two variables
-:::
-
-
-From this RQ (written in terms of *odds*), the hypotheses could be written as:
-
-* $H_0$: The *odds* of having a pet bird is *the same* for people *with* lung cancer (cases) and for people *without* lung cancer (controls).
-* $H_1$: The *odds* of having a pet bird is *not the same* for people *with* lung cancer (cases) and for people *without* lung cancer (controls).
-
-
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-The null hypothesis could also be written as:
-  
-*  The **percentage** of people having a pet bird is *the same* for people *with* lung cancer (cases) and for people *without* lung cancer (controls).
-*  The **odds ratio** of people having a pet bird, comparing people *with* lung cancer (cases) and for people *without* lung cancer (controls), is equal to one.
-*  There is **no relationship** between having a pet bird and having lung cancer.
-:::
-
-
-Begin *assuming* the null hypothesis is true: no difference exists between the odds in the *population*.
-Based on this assumption, the *expected* counts can be found (though, in practice, you do not have to compute these).
-From the data (Table\ \@ref(tab:BirdsData2)), overall $199\div 668 = 29.79$% of people own a pet bird.
-
-If there really was no difference in the odds (or the percentages) of owning a pet bird between those with and without lung cancer, about $29.79$% of the people in *both* lung cancer groups would be *expected* to own a pet bird.
-
-About $29.79$% of the $239$ lung-cancer cases (or $71.20$ people) would be expected to have a pet bird, and about $29.79$% of the $429$ non-lung-cancer cases (or $127.80$ people) would be expected to have a pet bird.
-A table of these *expected counts* (Table\ \@ref(tab:PetBirdsExpected)) shows that all are greater than five.
-In practice, software computes these expected counts automatically.
-
-
-```{r PetBirdsExpected}
-PBExp <- PB2T 
-
-PBExp[1, ] <- c(71.20, 
-                127.80, 
-		199)
-PBExp[2, ] <- c(167.80,
-                301.20, 
-		469) 
-
-if( knitr::is_latex_output() ) {
-  kable( surroundMaths(PBExp,
-                       decDigits = c(1, 1, 0)),
-        format = "latex",
-        booktabs = TRUE,
-        longtable = FALSE,
-        align = "r",
-        escape = FALSE,
-        caption = "The expected counts for the pet bird data, if the proportion owning pet birds was the same for lung cancer cases and non-lung-cancer cases") %>%
-   column_spec(4, bold = TRUE) %>%
-   row_spec(3, bold = TRUE) %>%
-   row_spec(2, hline_after = TRUE) %>%
-   row_spec(0, bold = TRUE) %>%
-   kable_styling(font_size = 10)
-}
-if( knitr::is_html_output() ) {
-  kable(PBExp,
-               format = "html",
-               booktabs = TRUE,
-               longtable = FALSE,
-               caption = "The expected counts for the pet bird data, if the proportion owning pet birds was the same for lung cancer cases, and non-lung-cancer cases") %>%
-     column_spec(4, bold = TRUE) %>%
-     row_spec(3, bold = TRUE)
-}
-```
-
-
-The counts in Table\ \@ref(tab:PetBirdsExpected) are what are *expected*, *if* the percentage of people owning a pet bird is the same for lung cancer and non-lung cancer cases.
-How close are the expected and observed counts (Table\ \@ref(tab:BirdsData2))?
-
-To compare the sample statistic (what we *observed*) with the hypothesised population parameter, software computes the $\chi^2$ value (jamovi: Fig.\ \@ref(fig:PetBirdsjamovi); SPSS: Fig.\ \@ref(fig:PetBirdsSPSS)): $\chi^2 = 22.374$, approximately equivalent to a $z$-score of $\sqrt{22.374/1} = 4.730$, which is very large.
-Hence, a small $P$-value is expected.
-
-The software shows the $P$-value is very small indeed ($P < 0.001$).
-As usual, this means that [very strong evidence](#tab:PvaluesInterpretation) exists to support $H_1$, if $H_0$ is assumed true.
-That is, the evidence suggests a *difference* exists between the two odds in the *population*.
-We write:
-
-> The *sample* provides very strong evidence ($\chi^2 = 22.374$; two-tailed  $P < 0.001$) that the odds in the *population* of having a pet bird is not the same for people with lung cancer (odds: $0.695$) and for people without lung cancer (odds: $0.308$; OR: $2.26$; $95$% CI from $1.6$ to $3.2$).
-
-
-```{r PetBirdsjamovi, fig.show="hold", fig.cap="jamovi output for the pet-birds data", fig.align="center", out.width="50%"}
-knitr::include_graphics("jamovi/PetBirds/Pets-All.png") 
-```
-
-
-```{r PetBirdsSPSS, fig.show="hold", fig.cap="SPSS output for the pet-birds data", fig.align="center", out.width="75%"}
-knitr::include_graphics("SPSS/PetBirds/Pets-Chisq-OR.png") 
-```
-
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-This doesn't imply that owning a pet bird *causes* lung cancer.
-Why not?\label{thinkBox:NotCauseCancer}
-
-`r if (knitr::is_latex_output()) '<!--'`
-`r webexercises::hide()`
-Because the study *observational*. 
-Confounders may explain the relationship (can you think of one?).
-In addition, maybe having lung cancer means that people seek companionship in the form of a pet.
-`r webexercises::unhide()`
-`r if (knitr::is_latex_output()) '-->'`
-:::
 
 
 ## Example: B12 deficiency {#B12Deficiency}
@@ -1610,7 +1409,195 @@ if( knitr::is_html_output() ) {
 ```
 
 
+::: {.exercise #PetBirdsTest}
 
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-andre-lisatchok-2226006.jpg" width="200px"/>
+</div>
+
+
+A study examined people with lung cancer, and a matched set of similar controls who did not have lung cancer, and compared the proportion in each group that had pet birds [@data:Kohlmeier1992:BirdsCancer].
+These data were studied in Sect.\ \@ref(PetBirdsOR); the data are shown again in Table\ \@ref(tab:BirdsData2), and the numerical summary in Table\ \@ref(tab:BirdsDataSummary) (the computations are in Sect.\ \@ref(PetBirdsOR)).
+
+
+```{r BirdsData2}
+PB2T <- cbind( PB2, 
+               "Total" = rowSums(PB2))
+PB2T <- rbind( PB2T, 
+               "Total" = colSums(PB2T))
+
+if( knitr::is_latex_output() ) {
+  kable( surroundMaths(PB2T),
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        escape = FALSE,
+        align = "r",
+        caption = "The pet bird data") %>% 
+    column_spec(4, bold = TRUE) %>%
+    row_spec(3, bold = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(2, hline_after = TRUE) %>%
+    kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  kable(PB2T,
+               format = "html",
+               booktabs = TRUE,
+               longtable = FALSE,
+               caption = "The pet bird data") %>%
+     column_spec(4, bold = TRUE)
+}
+```
+
+Consider this RQ:
+
+> Are the **odds** of having a pet bird the same for people *with* lung cancer (cases) and for people *without* lung cancer (controls)?
+
+The parameter is the population OR, comparing the odds of keeping a pet bird, for adults with lung cancer to adults who do not have lung cancer.
+
+
+
+```{r BirdsDataSummary}
+PBsummary <- array( dim = c(3, 3) )
+
+colnames(PBsummary) <- c( "Odds of keeping pet bird",
+                          "Percentage keeping pet bird",
+                          "Sample size")
+rownames(PBsummary) <- c("With lung cancer:",
+                         "Without lung cancer:",
+                         "Odds ratio:")
+  
+  
+PBsummary[1, ] <- c(0.6950, 
+                    41.0, 
+                    239)
+PBsummary[2, ] <- c(0.3079, 
+                    25.5, 
+                    429)
+PBsummary[3, ] <- c(2.26, 
+                    NA, 
+                    NA)
+
+
+if( knitr::is_latex_output() ) {
+  kable(surroundMaths(PBsummary,
+                      decDigits = c(4, 1, 0)),
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        escape = FALSE,
+        align = "c",
+        #align=c("p{28mm}", "p{28mm}", "c"),
+        caption = "The odds and percentage of subjects keeping pet birds") %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, italic = TRUE) %>%
+    kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  kable(PBsummary,
+        format = "html",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = c("l", "r", "c"),
+        caption = "The odds and percentage of subjects keeping pet birds")
+}
+```
+
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+The RQ could also be written in terms of comparing the *percentage* in each groups; in terms of the *odds ratio* being one; or in terms of a *relationship* between the two variables
+:::
+
+
+From this RQ (written in terms of *odds*), the hypotheses could be written as:
+
+* $H_0$: The *odds* of having a pet bird is *the same* for people *with* lung cancer (cases) and for people *without* lung cancer (controls).
+* $H_1$: The *odds* of having a pet bird is *not the same* for people *with* lung cancer (cases) and for people *without* lung cancer (controls).
+
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+The null hypothesis could also be written as:
+  
+*  The **percentage** of people having a pet bird is *the same* for people *with* lung cancer (cases) and for people *without* lung cancer (controls).
+*  The **odds ratio** of people having a pet bird, comparing people *with* lung cancer (cases) and for people *without* lung cancer (controls), is equal to one.
+*  There is **no relationship** between having a pet bird and having lung cancer.
+:::
+
+
+Begin *assuming* the null hypothesis is true: no difference exists between the odds in the *population*.
+Based on this assumption, the *expected* counts can be found (though, in practice, you do not have to compute these).
+From the data (Table\ \@ref(tab:BirdsData2)), overall $199\div 668 = 29.79$% of people own a pet bird.
+
+If there really was no difference in the odds (or the percentages) of owning a pet bird between those with and without lung cancer, about $29.79$% of the people in *both* lung cancer groups would be *expected* to own a pet bird.
+
+About $29.79$% of the $239$ lung-cancer cases (or $71.20$ people) would be expected to have a pet bird, and about $29.79$% of the $429$ non-lung-cancer cases (or $127.80$ people) would be expected to have a pet bird.
+A table of these *expected counts* (Table\ \@ref(tab:PetBirdsExpected)) shows that all are greater than five.
+In practice, software computes these expected counts automatically.
+
+
+```{r PetBirdsExpected}
+PBExp <- PB2T 
+
+PBExp[1, ] <- c(71.20, 
+                127.80, 
+		199)
+PBExp[2, ] <- c(167.80,
+                301.20, 
+		469) 
+
+if( knitr::is_latex_output() ) {
+  kable( surroundMaths(PBExp,
+                       decDigits = c(1, 1, 0)),
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = "r",
+        escape = FALSE,
+        caption = "The expected counts for the pet bird data, if the proportion owning pet birds was the same for lung cancer cases and non-lung-cancer cases") %>%
+   column_spec(4, bold = TRUE) %>%
+   row_spec(3, bold = TRUE) %>%
+   row_spec(2, hline_after = TRUE) %>%
+   row_spec(0, bold = TRUE) %>%
+   kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  kable(PBExp,
+               format = "html",
+               booktabs = TRUE,
+               longtable = FALSE,
+               caption = "The expected counts for the pet bird data, if the proportion owning pet birds was the same for lung cancer cases, and non-lung-cancer cases") %>%
+     column_spec(4, bold = TRUE) %>%
+     row_spec(3, bold = TRUE)
+}
+```
+
+
+The counts in Table\ \@ref(tab:PetBirdsExpected) are what are *expected*, *if* the percentage of people owning a pet bird is the same for lung cancer and non-lung cancer cases.
+How close are the expected and observed counts (Table\ \@ref(tab:BirdsData2))?
+
+To compare the sample statistic (what we *observed*) with the hypothesised population parameter, software computes the $\chi^2$ value (jamovi: Fig.\ \@ref(fig:PetBirdsjamovi); SPSS: Fig.\ \@ref(fig:PetBirdsSPSS)): $\chi^2 = 22.374$, approximately equivalent to a $z$-score of $\sqrt{22.374/1} = 4.730$, which is very large.
+Hence, a small $P$-value is expected.
+
+The software shows the $P$-value is very small indeed ($P < 0.001$).
+As usual, this means that [very strong evidence](#tab:PvaluesInterpretation) exists to support $H_1$, if $H_0$ is assumed true.
+That is, the evidence suggests a *difference* exists between the two odds in the *population*.
+We write:
+
+> The *sample* provides very strong evidence ($\chi^2 = 22.374$; two-tailed  $P < 0.001$) that the odds in the *population* of having a pet bird is not the same for people with lung cancer (odds: $0.695$) and for people without lung cancer (odds: $0.308$; OR: $2.26$; $95$% CI from $1.6$ to $3.2$).
+
+
+```{r PetBirdsjamovi, fig.show="hold", fig.cap="jamovi output for the pet-birds data", fig.align="center", out.width="50%"}
+knitr::include_graphics("jamovi/PetBirds/Pets-All.png") 
+```
+
+
+```{r PetBirdsSPSS, fig.show="hold", fig.cap="SPSS output for the pet-birds data", fig.align="center", out.width="75%"}
+knitr::include_graphics("SPSS/PetBirds/Pets-Chisq-OR.png") 
+```
+
+:::
 
 <!-- QUICK REVIEW ANSWERS -->
 `r if (knitr::is_html_output()) '<!--'`
@@ -1619,10 +1606,6 @@ if( knitr::is_html_output() ) {
 
 - Sect. \ref{thinkBox:ExpectedOddsSame}: Living with parents: $46.333/7.667 = 6.043$; not living with parents: $110.667/18.333 = 6.036$.
   The odds are the same (the small difference is because the expected counts are only given to three decimal places).
-- Sect. \ref{thinkBox:NotCauseCancer}: Because the study *observational*. 
-  Confounders may explain the relationship (can you think of one?).
-  In addition, maybe having lung cancer means that people seek companionship in the form of a pet (i.e., having lung cancer often comes before having the pet bird).
-
 - \textbf{\textit{Quick Revision} questions:}
 **1.** $1.31$.
 **2.** $1.144$.
