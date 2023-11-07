@@ -96,8 +96,8 @@ if( knitr::is_html_output() ) {
          format = "html",
          booktabs = TRUE,
          longtable = FALSE,
-         col.names = c("Irrigated", "Not irrigated"),
-         caption = "he percentage total nitrogen in irrigated and non-irrigated soils.") %>% 
+         col.names = c("Irrigated", "Not irrigated", "Reduction"),
+         caption = "The percentage total nitrogen in irrigated and non-irrigated soils.") %>% 
     kable_styling(font_size = 10) %>%
     row_spec(0, bold = TRUE)
 }
@@ -338,15 +338,15 @@ text(x = mn,
 
 ## Computing the test statistic
 
-The sample mean difference can be located on the sampling distribution (Fig.\ \@ref(fig:WeightGainNormal2)) by computing the $t$-score:  
+The sample mean difference can be located on the sampling distribution (Fig.\ \@ref(fig:PercentageNSamplingDist)) by computing the $t$-score:  
 \[
 	t
 	= \frac{\bar{d} - \mu_{d}}{\text{s.e.}(\bar{d})}
 	= \frac{0.0282 - 0}{0.0117} = 2.41,
 \]
 following the ideas in Eq.\ \@ref(eq:tscore).
-Software also displays the $t$-score (Fig.\ \@ref(fig:TotalNOutputHT)).
-The $t$-score locates the *observed* sample statistic on the sampling distribution (Fig.\ \@ref(fig:Nitrogenjamovi)).
+Software also displays the $t$-score (Fig.\ \@ref(fig:Nitrogenjamovi)).
+The $t$-score locates the *observed* sample statistic on the sampling distribution (Fig.\ \@ref(fig:PercentageNSamplingDist)).
 
 
 
@@ -510,7 +510,7 @@ if( knitr::is_latex_output() ) {
 }
 
 if( knitr::is_html_output() ) {
-  kable( FruitSummary,
+  kable( FloweringSummary,
          format = "html",
          booktabs = TRUE,
          longtable = FALSE,
@@ -553,10 +553,10 @@ The effect of rainfall on growing Chayote squash (*Sechium edule*) studied the s
 
 Ten fruits were gathered from each farm in both years, and the average weight recorded for the farm.
 (The farm is the *unit of analysis*, but the individual fruits are the *units of observation*.)
-Since the same farms are used in both years, the data are *paired* (Table\ \@ref(tab:FruitsData)).
+Since the same farms are used in both years, the data are *paired* (Table\ \@ref(tab:FruitsDataHT)).
 Data is missing for Farm\ 20 in the dry year (2014), so there are $n = 23$ differences.
 
-```{r FruitsData, echo=FALSE}
+```{r FruitsDataHT, echo=FALSE}
 data(Fruit)
 
 Fruit$Farm <- 1 : length(Fruit$FWeight2014)
@@ -610,7 +610,7 @@ if( knitr::is_latex_output() ) {
   
   out <- knitr::kables(list(T1, T2),
                        format = "latex",
-                       label = "FruitsData",
+                       label = "FruitsDataHT",
                        caption = "The weight of fruits (in g) in two different years. One observation is missing for Field\ 20.") %>% 
     kable_styling(font_size = 10)
   out2 <- prepareSideBySideTable(out) 
@@ -622,37 +622,40 @@ if( knitr::is_html_output() ) {
          format = "html",
          booktabs = TRUE,
          longtable = FALSE,
-         col.names = c("Irrigated", "Not irrigated"),
+         col.names = c("Farm", 
+                       "Dry", 
+                       "Normal",
+                       "Change (in g)"),
          caption = "The weight of fruits (in g) in two different years. One observation is missing for Field\ 20.") %>% 
     kable_styling(font_size = 10) %>%
     row_spec(0, bold = TRUE)
 }
 ```
 
-In Table\ \@ref(tab:FruitsData), the changes refer to the *increase* in fruit weight from 2014 (dry) to 2015 (normal).
+In Table\ \@ref(tab:FruitsDataHT), the changes refer to the *increase* in fruit weight from 2014 (dry) to 2015 (normal).
 (Computing the changes as the 2015 (normal) values less the 2014 (dry) values is fine, permitted this is used consistently throughout the analysis.)
 The parameter is $\mu_d$, the population *increase* in fruit weight (in g) from 2014 to 2015.
 
 Since the data are available
 `r if( knitr::is_latex_output() ) {
-  '(Table\\ \\@ref(tab:FruitsData)),'
+  '(Table\\ \\@ref(tab:FruitsDataHT)),'
 } else {
   '(see above),'
 }`
 a numerical summary *must* summarise the differences, as the RQ is about the mea difference.
 Each group can be summarised too.
-The information is found using software (Fig.\ \@ref(fig:Fruitjamovi)), and can be compiled into a table (Table\ \@ref(tab:FruitSummary)).
+The information is found using software (Fig.\ \@ref(fig:FruitjamoviHT)), and can be compiled into a table (Table\ \@ref(tab:FruitSummaryHT)).
 The appropriate plot for graphically summarising the *data* is (for example) a histogram of the differences (Fig.\ \@ref(fig:FruitPlots), left panel) or a case-profile plot (Fig.\ \@ref(fig:FruitPlots), right panel).
 A small increase is seen from 2014 to 2015, with lots of variation from farm to farm.
 
 
-```{r Fruitjamovi, fig.cap="jamovi output for the fruit-weight data", fig.align="center", out.width=c("100%"), fig.show='hold'}
+```{r FruitjamoviHT, fig.cap="jamovi output for the fruit-weight data", fig.align="center", out.width=c("100%"), fig.show='hold'}
 knitr::include_graphics("jamovi/Fruit/Fruit-Differences.png")
 ```
 
 
 
-```{r FruitSummary}
+```{r FruitSummaryHT}
 FruitSummary <- array( dim = c(3, 4))
 
 rownames(FruitSummary) <- c("Dry year (2014)",
@@ -713,7 +716,7 @@ if( knitr::is_html_output() ) {
 
 
 
-```{r, FruitPlots, out.width='90%', fig.width=9, fig.height=3.5, fig.align=TRUE, fig.cap="The fruit-weight data. Left: A histogram of the weight changes on each farm; right: a case-profile plot of the weight changes (unfilled points and dashed lines indicate a decrease)"}
+```{r, FruitPlotsHT, out.width='90%', fig.width=9, fig.height=3.5, fig.align=TRUE, fig.cap="The fruit-weight data. Left: A histogram of the weight changes on each farm; right: a case-profile plot of the weight changes (unfilled points and dashed lines indicate a decrease)"}
 par( mfrow = c(1, 2))
 
  hist(FruitTab$Change,
@@ -765,7 +768,7 @@ Using the exact CI, we write:
 > From the sample, the mean increase in fruit weight from 2014 (dry year) to 2015 (normal year) is $2.230$\ g ($\text{s.e.} = 0.10.879$; $n = 23$), with an approximate $95$% CI between $24.79$\ g lighter in 2014 to $20.33$\ g higher in 2015.
 
 The sample size ($n = 23$) is only *slightly* smaller than $25$.
-Since Fig.\ \@ref(fig:FruitPlots) shows the *sample* differences are approximately symmetrically, so the CI should be reasonably statistically valid.
+Since Fig.\ \@ref(fig:FruitPlotsHT) shows the *sample* differences are approximately symmetrically, so the CI should be reasonably statistically valid.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -774,7 +777,7 @@ Make sure to interpret the CI consistent with how the differences were defined.
 :::
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Is there a mean difference in fruit weight from 2014 to 2015 *in the population*?\label{thinkBox:MeanDifferenceFruit}
+Is there a mean difference in fruit weight from 2014 to 2015 *in the population*?\label{thinkBox:MeanDifferenceFruitHT}
 
 `r if (knitr::is_latex_output()) '<!--'`
 `r webexercises::hide()`
