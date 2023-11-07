@@ -492,19 +492,6 @@ knitr::include_graphics( "jamovi/UniStudents/UniStudents-ExpectedOnly.png")
 ```
 
 
-
-```{r}
-PB <- structure(list(LC = structure(c(1L, 1L, 2L, 2L), .Label = c("Adults with lung cancer", 
-"Adults without lung cancer"), class = "factor"), Pets = structure(c(1L, 
-2L, 1L, 2L), .Label = c("Kept pet birds", "Did not keep pet birds"
-), class = "factor"), Counts = c(98, 141, 101, 328)), .Names = c("LC", 
-"Pets", "Counts"), row.names = c(NA, -4L), class = "data.frame", variable.labels = structure(character(0), .Names = character(0)), codepage = 28591L)
-
-PB2 <- xtabs( Counts ~ Pets + LC, 
-              data = PB)
-```
-
-
 ::: {.example #CIORcrashesValidity name="Car crashes in China"}
 In Example\ \@ref(exm:CIORcrashes), all the *observed* counts are larger than five.
 The *expected* counts are shown in Table\ \@ref(tab:ExpCrashDataTable).
@@ -1279,36 +1266,25 @@ knitr::include_graphics( c("SPSS/Sunglasses/SunglassesSPSS-CI.png") )
 
 
 ::: {.exercise #PetBirdsCI}
-
-
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/pexels-andre-lisatchok-2226006.jpg" width="200px"/>
-</div>
-
-
-
 A study examined people with lung cancer, and a matched set of controls who did not have lung cancer, and compared the proportion in each group that kept pet birds [@data:Kohlmeier1992:BirdsCancer]. 
 One RQ of the study was:
 
 > What is the odds ratio of keeping a pet bird, comparing people *with* lung cancer (cases) compared to people *without* lung cancer (controls)?
 
-The parameter is the population OR, comparing the odds of keeping a pet bird, for adults with lung cancer to adults who do not have lung cancer.
 The data, compiled in a $2\times2$ *contingency table*, are given in Table \@ref(tab:BirdsData).
 
-The numerical summary (Table \@ref(tab:BirdsNumericalSummary)) contains percentages, odds and the odds ratios; some of these may need to be computed *manually* from the data.
-The graphical summary (Fig.&nbsp;\@ref(fig:BirdsGraphs)) shows a difference between the two groups *in the sample*.
-
-Software computes the CI for the *population* odds ratio (Fig.&nbsp;\@ref(fig:PetBirdsCIjamovi)) based on the sample.
-The *sample* OR is 2.257, and the 95% CI  is from 1.605 to 3.174.
-
-We write:
-
-> Based on the sample, a 95% CI for the OR of keeping a pet bird is from 1.605 to 3.174 (comparing people *with* lung cancer to those *without* lung cancer).
-
-That is, the plausible values for the population OR that could have produced the sample OR are between 1.605 and 3.174.
-
+1. Construct a numerical summary table.
+1. Sketch a graphical summary.
+1. Use the software output to find a $95$% CI, making to to describe the odds ratio carefully.
+1. Is the CI likely to be statistically valid?
+:::
 
 ```{r BirdsData}
+data(PetBirds)
+
+PB2 <- xtabs( Counts ~ Pets + LC, 
+              data = PetBirds)
+
 if( knitr::is_latex_output() ) {
   kable(PB2,
         format = "latex",
@@ -1329,88 +1305,10 @@ if( knitr::is_html_output() ) {
 
 
 
-```{r BirdsNumericalSummary}
-PBsummary <- array( dim = c(3, 3) )
 
-colnames(PBsummary) <- c( "Odds of keeping pet bird",
-                          "Percentage keeping pet bird",
-                          "Sample size")
-rownames(PBsummary) <- c("With lung cancer:",
-                         "Without lung cancer:",
-                         "Odds ratio:")
-  
-  
-PBsummary[1, ] <- c("0.6950", 
-                    "41.0", 
-                    "238")
-PBsummary[2, ] <- c("0.3079", 
-                    "25.5", 
-                    "429")
-PBsummary[3, ] <- c("2.26", 
-                    "", 
-                    "")
-
-
-if( knitr::is_latex_output() ) {
-  kable( surroundMaths(PBsummary,
-                       decDigits = c(3, 1, 0)),
-        format = "latex",
-        booktabs = TRUE,
-        longtable = FALSE,
-        escape = FALSE,
-        caption = "The odds and percentage of subjects keeping pet birds") %>%
-    row_spec(0, bold = TRUE) %>%
-    row_spec(3, italic = TRUE) %>%
-    kable_styling(font_size = 10)
-}
-if( knitr::is_html_output() ) {
-  kable(PBsummary,
-        format = "html",
-        booktabs = TRUE,
-        longtable = FALSE,
-        align = c("l", "r", "c"),
-        caption = "The odds and percentage of subjects keeping pet birds")
-}
-```
-:::
-
-
-```{r BirdsGraphs, fig.cap="A plot of the pet-birds data", fig.align="center", fig.width=5.5, fig.height=3.5, out.width='55%'}
-par(xpd = TRUE,
-    mar = c(5, 4, 4, 8) + 0.1) # DEFAULT: c(5, 4, 4, 2) + 0.1
-
-barplot(PB2, 
-	las = 1,
-	ylab = "Count",
-	xlab = "Lung cancer?",
-	beside = TRUE,
-	names.arg = c("With lung\ncancer", 
-	              "Without lung\ncancer"),
-	ylim = c(0, 400),
-	col =  viridis::viridis(10)[c(3, 8)]
-)
-box()
-
-legend(6.2, 
-       400, 
-	     fill =  viridis::viridis(10)[c(3, 8)],
-	     title = "Kept pets?",
-	     legend = c("Kept pet birds", 
-	                "Did not keep\npet birds"), 
-	     bty = "n")
-```
-
-
-
-```{r PetBirdsCIjamovi, fig.show="hold", fig.cap="jamovi output (left) and SPSS output (right) for the pet-birds data", fig.align="center", out.width="49%"}
+```{r PetBirdsCIjamovi, fig.show="hold", fig.cap="jamovi output for the pet-birds data", fig.align="center", out.width="49%"}
 knitr::include_graphics( "jamovi/PetBirds/PetsOR.png")
-knitr::include_graphics( "SPSS/PetBirds/PetsOR.png")
 ```
-
-
-
-The CI will be statistically valid if all expected counts exceed five.
-From the jamovi output (Fig.\ \@ref(fig:PetBirdsCIjamoviExpected)), the expected-counts condition is met.
 
 
 ```{r PetBirdsCIjamoviExpected, fig.show="hold", fig.cap="The expected (and observed) counts as computed by jamovi for the pet-birds data", fig.align="center", out.width="80%"}
@@ -1418,7 +1316,7 @@ From the jamovi output (Fig.\ \@ref(fig:PetBirdsCIjamoviExpected)), the expected
 knitr::include_graphics("jamovi/PetBirds/Pets-ExpectedCounts.png")
 ```
 
-:::
+
 
 
 
