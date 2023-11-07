@@ -110,8 +110,7 @@ BB2 <- data.frame(Gender = factor(BB$Gender),
 ```{r BabyBoomDataLATEX}
 if( knitr::is_latex_output() ) {
   T1 <- kable( surroundMaths(BB2[1:5, ],
-                             cols = 2:3,
-                             decDigits = c(1, 0)),
+                             decDigits = c(0, 1, 0)),
                format = "latex",
                longtable = FALSE,
                row.names = FALSE,
@@ -127,8 +126,7 @@ if( knitr::is_latex_output() ) {
 #    column_spec(2, width = "10mm") %>%
 #    column_spec(3, width = "10mm")
   T2 <- kable( surroundMaths(BB2[6:10, ],
-                             cols = 2:3,
-                             decDigits = c(1, 0)),
+                             decDigits = c(0, 1, 0)),
                format = "latex",
                longtable = FALSE,
                row.names = FALSE,
@@ -147,7 +145,6 @@ if( knitr::is_latex_output() ) {
                        caption = "The first ten observations (of 44) of the baby-births data. The 'time of birth is the number of minutes since midnight.") %>% 
     kable_styling(font_size = 10)
   out2 <- prepareSideBySideTable(out, 
-                                 numberOfTables = 2,
                                  gap = "\\quad") 
   out2
   
@@ -768,7 +765,7 @@ For stemplots:
 A study of krill [@data:Greenacre2016:reporting] produced $15$ measurements of the number of eggs.
 The stemplot 
 `r if (knitr::is_latex_output()) {
-   '(Fig.\\ \\@ref(fig:KrillStem44); the online version has an animation)'
+   '(Fig.\\ \\@ref(fig:KrillStem44)'
 } else {
    'in the animation below shows the stemplot being constructed, and'
 }`
@@ -1273,10 +1270,10 @@ Consider again the weights (in kg) of babies born in a Brisbane hospital
 }`
 A dot chart
 `r if( knitr::is_html_output() ) {
-  '(Fig.\\ \\@ref(fig:BabyBoomDotTML)).'
+  '(Fig.\\ \\@ref(fig:BabyBoomDotHTML)).'
 } else
 {
-  '(Fig\\ \\@ref(fig:FriesBabiesPDF), right panel).'
+  '(Fig\\ \\@ref(fig:FriesBabiesPDF), right panel)'
 }`
 shows that most babies were born between $3$ and $4$\ kg.
 Notice that the observations have been *jittered* (i.e., placed with some added randomness in the vertical direction) to avoid overplotting.
@@ -2154,8 +2151,7 @@ simpletab <- t(
 
 if( knitr::is_latex_output() ) {
   kable( surroundMaths(simpletab,
-                       cols = 2:3,
-                       decDigits = c(0, 1)),
+                       decDigits = c(0, 0, 1)),
         format = "latex",
         longtable = FALSE,
         align = c("r", "r", "r"),
@@ -2217,7 +2213,6 @@ colnames(BBtab) <- c("Weight group",
 
 if( knitr::is_latex_output() ) {
   kable( surroundMaths(BBtab,
-                       cols = 2:3,
                        decDigits = 0),
         format = "latex",
         longtable = FALSE,
@@ -2299,7 +2294,6 @@ KrillEggs2 <- cbind( Eggs.T[1:8],
 
 if( knitr::is_latex_output() ) {
   kable( surroundMaths(KrillEggs2,
-                       all = TRUE,
                        decDigits = 0),
          format = "latex",
          longtable = FALSE,
@@ -2418,8 +2412,23 @@ if( knitr::is_latex_output() ) {
 
 
 `r if (knitr::is_latex_output()) '<!--'`
-```{r KrillEggsDoubleStemHTML, fig.width=6.0, out.width='100%'}
+```{r KrillDataTableHTML}
+  kable( KrillEggs2,
+         format = "html",
+         longtable = FALSE,
+         booktabs = TRUE,
+         escape = FALSE,
+         caption = "The number of eggs from krill, for treatment and control groups",
+         linesep = c("", "", "\\addlinespace"),
+         align = c("c","c")) %>%
+    add_header_above(header = c("Treatment group " = 2, 
+                                " Control group" = 2), 
+                     bold = TRUE, 
+                     align = "c")
+```
 
+
+```{r KrillEggsDoubleStemHTML, fig.width=6.0, out.width='100%', fig.cap="The number of eggs from krill, for treatment and control groups", fig.cap="center"}
   stemgrid.x <- 1
   stemgrid.y <- 6
   stemcounts <- array(1, dim=stemgrid.y)
@@ -3148,7 +3157,6 @@ colnames(Percentages) <- c("Unknown", "Males", "Females")
 
 if( knitr::is_latex_output() ) {
   T1 <- knitr::kable(surroundMaths(Counts,
-                                   all = TRUE,
                                    decDigits = 0),
                format = "latex",
                longtable = FALSE,
@@ -3163,7 +3171,6 @@ if( knitr::is_latex_output() ) {
                              "Spring",
                              "Summer")
     T2 <- knitr::kable(surroundMaths(Percentages,
-                                     all = TRUE,
                                      decDigits = 1),
                format = "latex",
                longtable = FALSE,
@@ -3317,7 +3324,7 @@ A table is also possible, of either counts
 `r if (knitr::is_latex_output()) {
    '(Table\\ \\@ref(tab:PossumRoadkillNumber), left table) or percentages (right  table).'
 } else {
-   'Table\\ \\@ref(tab:PossumRoadkillPercentages) or percentages (Table\\ \\@ref(PossumRoadkillPercentagesHTML)).'
+   'Table\\ \\@ref(tab:PossumRoadkillPercentagesHTML) or percentages (Table\\ \\@ref(tab:PossumRoadkillPercentagesHTML)).'
 }`
 
 
@@ -3550,7 +3557,7 @@ dotchart( t(Counts),
 ```{r PossumBarChartsHTML, fig.height=10, fig.width=4.0, fig.cap="Four graphs: The number or percentage of possums found as road kill, by sex and season, and a dot chart", fig.align="center"}
 
 if (knitr::is_html_output()) {
-  par( mfrow = c(3, 1))
+  par( mfrow = c(4, 1))
 
   colnames(Counts2) <- c("?", 
                          "M", 
@@ -4130,7 +4137,6 @@ IgE <- data.frame( IgE.Pre = Pre,
 
 if( knitr::is_latex_output() ) {
   kable(surroundMaths(IgE,
-                      all = TRUE,
                       decDigits = 0),
         format = "latex",
         booktabs = TRUE,
@@ -5381,7 +5387,6 @@ OfficeTemps[6, ] <- c(27.4, 31.0, 30.3)
 
 if( knitr::is_latex_output() ) {
     kable(surroundMaths(OfficeTemps,
-                        all = TRUE,
                         decDigits = 1),
         format = "latex",
         longtable = FALSE,
