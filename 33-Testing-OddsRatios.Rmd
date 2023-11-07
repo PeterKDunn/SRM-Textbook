@@ -531,13 +531,10 @@ For the university-student eating data, *all* the cells have an expected count o
 
 
 ```{r}
-PB <- structure(list(LC = structure(c(1L, 1L, 2L, 2L), .Label = c("Adults with lung cancer", 
-"Adults without lung cancer"), class = "factor"), Pets = structure(c(1L, 
-2L, 1L, 2L), .Label = c("Kept pet birds", "Did not keep pet birds"
-), class = "factor"), Counts = c(98, 141, 101, 328)), .Names = c("LC", 
-"Pets", "Counts"), row.names = c(NA, -4L), class = "data.frame", variable.labels = structure(character(0), .Names = character(0)), codepage = 28591L)
+data(PetBirds)
 
-PB2 <- xtabs( Counts ~ Pets + LC, data=PB)
+PB2 <- xtabs( Counts ~ Pets + LC, 
+              data = PetBirds)
 
 PB2.exp <- chisq.test(PB2)$expected 
 ```
@@ -636,9 +633,9 @@ if( knitr::is_html_output() ) {
 The parameter is the odds ratio of infection, comparing natural to relocated nests.
 A graphical summary is shown in Fig.\ \@ref(fig:TurtleNestsGraphs).
 A numerical summary table (Table\ \@ref(tab:TurtleNestDataTable), right table) shows that the odds of natural nest being infected is $1.657$ times the odds of a relocated nest being infected.
-From the jamovi output (Fig.\ \@ref(fig:TurtleNestsOutputjamovi)), the $\chi^2$-value is $0.777$; this is like a $z$-score of $z = \sqrt{0.777/1} = 0.88$, which is very small, so expect a large $P$-value.
+From the jamovi output (Fig.\ \@ref(fig:TurtleNestsOutputjamoviHT)), the $\chi^2$-value is $0.777$; this is like a $z$-score of $z = \sqrt{0.777/1} = 0.88$, which is very small, so expect a large $P$-value.
 Indeed, the $P$-value is $0.378$ on the output.
-The smallest *expected* count is $6.49$ (Fig.\ \@ref(fig:TurtleNestsOutputjamovi)), so this test is statistically valid.
+The smallest *expected* count is $6.49$ (Fig.\ \@ref(fig:TurtleNestsOutputjamoviHT)), so this test is statistically valid.
 We write:
 
 > There is no evidence of a difference in the odds of infection ($\chi^2$: $0.777$; $P$-value: $0.378$; odds ratio: $1.657$; $95$% CI: $0.537$ to $5.12$) between natural nests (odds: $2.90$; $n = 39$) and relocated nests (relocated nests (odds: $1.75$; $n = 22$).
@@ -647,7 +644,7 @@ We write:
 <!-- and Table 5 (BTW, Table 6 is  not $2\times 2$): -->
 
 
-```{r TurtleNestsOutputjamovi, fig.show="hold", fig.cap="The jamovi output for the turtle-nesting data", fig.align="center", out.width=c("48%", "48%")}
+```{r TurtleNestsOutputjamoviHT, fig.show="hold", fig.cap="The jamovi output for the turtle-nesting data", fig.align="center", out.width=c("48%", "48%")}
 knitr::include_graphics("jamovi/TurtleNests/TurtleNests-Chisq.png")
 knitr::include_graphics("jamovi/TurtleNests/TurtleNests-Expected.png")
 ```
@@ -777,10 +774,10 @@ One RQ was:
 > For residents of Klang Valley, is age associated with whether people bring their own bags when shopping? 
 
 
-The data (Table\ \@ref(tab:BagsTable)) are given in a $3\times 2$ table of counts.
+The data (Table\ \@ref(tab:BagsTableHT)) are given in a $3\times 2$ table of counts.
 
 
-```{r BagsTable}
+```{r BagsTableHT}
 BagsTab <- array( dim = c(3, 2))
 
 BagsTab[1, ] <- c(126, 138)
@@ -806,7 +803,7 @@ if( knitr::is_latex_output() ) {
     column_spec(1, bold = TRUE)
 }
 if( knitr::is_html_output() ) {
-  kable(BasTab,
+  kable(BagsTab,
         format = "html",
         longtable = FALSE,
         caption = "Whether shoppers bring their own bags, and the shoppers age",
@@ -817,6 +814,7 @@ if( knitr::is_html_output() ) {
 
 The software output is shown in Fig.\ \@ref(fig:BagsChisqjamovi); a graphical summary in Fig.\ \@ref(fig:BagsSidebysideBar).
 Most of the numerical summary must be produced manually (Table\ \@ref(tab:BagsHTNumerical)), since jamovi only produces odds ratios for $2\times 2$ tables.
+Here are the details of the calculations (notice that Row\ 1 is on the bottom of the fraction):
 
 
 ```{r BagsChisqjamovi, fig.show="hold", fig.cap="jamovi output for the shopping-bags data", fig.align="center", out.width=c("43%", "56%")}
@@ -825,7 +823,7 @@ knitr::include_graphics( "jamovi/ShoppingBags/ShoppingBags-Expected.png")
 ```
 
 
-```{r BagsSidebysideBar, fig.cap="A side-by-side bar chart for the shopping-bags data", fig.align="center", out.width="75%", fig.height=4, fig.width=7}
+```{r BagsSidebysideBar, fig.cap="A side-by-side bar chart for the shopping-bags data", fig.align="center", out.width="75%", fig.height=3.5, fig.width=7}
 barplot(t(BagsTab), 
         beside = TRUE,
         las = 1,
@@ -889,23 +887,22 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-Here are the details of the calculations (notice that Row\ 1 is on the bottom of the fraction):
 
-* For those '30 or under': the *odds* that they bring their own bag is $126/138 = 0.913$.
-* For those '31 to 40': the *odds* that they bring their own bag is $50/32 = 1.712$.
-* For those 'Over 40': the *odds* that they bring their own bag is $41/13 = 3.154$.
+* For those '30 or under': the *odds* of bringing a shopping bag is $126/138 = 0.913$.
+* For those '31 to 40': the *odds* of bringing a shopping bag is $50/32 = 1.712$.
+* For those 'Over 40': the *odds* of bringing a shopping bag is $41/13 = 3.154$.
 
 Then the *odds ratios* can be computed:
 
-* Comparing the odds of bringin a shopping bag, comparing people '31--40' to people '30 and under': $1.563/0.913 = 1.712$.
+* Comparing the odds of bringing a shopping bag, comparing people '31--40' to people '30 and under': $1.563/0.913 = 1.712$.
 * Comparing the odds of bringing a shopping bag, comparing people 'Over 40' to people '30 and under': $3.154/0.913 = 3.455$.
 
-In Table\ \@ref(tab:BasHTNumerical), the odds of bringing a shopping bag are relative to those '30 and under'.
+In Table\ \@ref(tab:BagsHTNumerical), the odds of bringing a shopping bag are relative to those '30 and under'.
 
-Since Table\ \@ref(tab:BasHTNumerical) has *three* groups to compare, three odds are needed.
+Since Table\ \@ref(tab:BagsHTNumerical) has *three* groups to compare, three odds are needed.
 However, the summary has $3 - 1 = 2$ odds ratios, since odds *ratios* compare pairs of odds.
 The level to which the other two are compared is called the *Reference level*.
-In Table\ \@ref(tab:BasHTNumerical), the reference level is '30 and under' the *Reference level* (i.e., on the bottom of the fraction when computing the odds ratios).
+In Table\ \@ref(tab:BagsHTNumerical), the reference level is '30 and under' the *Reference level* (i.e., on the bottom of the fraction when computing the odds ratios).
 (In a $2\times 2$ table, with *two* groups to compare, the summary has only $2 - 1 = 1$ odds ratio.)
 
 These odds ratios mean:
@@ -1461,14 +1458,20 @@ if( knitr::is_html_output() ) {
 
 ::: {.exercise #PetBirdsTest}
 
-
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/pexels-andre-lisatchok-2226006.jpg" width="200px"/>
-</div>
-
-
+(This study also appeared in Exercise \@ref(exr:PetBirdsCI).)
 A study examined people with lung cancer, and a matched set of similar controls who did not have lung cancer, and compared the proportion in each group that had pet birds [@data:Kohlmeier1992:BirdsCancer].
-These data were studied in Sect.\ \@ref(PetBirdsOR); the data are shown again in Table\ \@ref(tab:BirdsData2), and the numerical summary in Table\ \@ref(tab:BirdsDataSummary) (the computations are in Sect.\ \@ref(PetBirdsOR)).
+The data are shown again in Table\ \@ref(tab:BirdsData2).
+
+Consider this RQ:
+
+> Are the **odds** of having a pet bird the same for people *with* lung cancer (cases) and for people *without* lung cancer (controls)?
+
+1. Carefully describe the parameter.
+1. Write the hypotheses in terms of odds.
+1. Determine the value of $z$ that is approximately the same as this $\chi^2$-value.
+1. Use the software output to conduct a hypothesis test.
+:::
+
 
 
 ```{r BirdsData2}
@@ -1501,153 +1504,12 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-Consider this RQ:
-
-> Are the **odds** of having a pet bird the same for people *with* lung cancer (cases) and for people *without* lung cancer (controls)?
-
-The parameter is the population OR, comparing the odds of keeping a pet bird, for adults with lung cancer to adults who do not have lung cancer.
-
-
-
-```{r BirdsDataSummary}
-PBsummary <- array( dim = c(3, 3) )
-
-colnames(PBsummary) <- c( "Odds of keeping pet bird",
-                          "Percentage keeping pet bird",
-                          "Sample size")
-rownames(PBsummary) <- c("With lung cancer:",
-                         "Without lung cancer:",
-                         "Odds ratio:")
-  
-  
-PBsummary[1, ] <- c(0.6950, 
-                    41.0, 
-                    239)
-PBsummary[2, ] <- c(0.3079, 
-                    25.5, 
-                    429)
-PBsummary[3, ] <- c(2.26, 
-                    NA, 
-                    NA)
-
-
-if( knitr::is_latex_output() ) {
-  kable(surroundMaths(PBsummary,
-                      decDigits = c(4, 1, 0)),
-        format = "latex",
-        booktabs = TRUE,
-        longtable = FALSE,
-        escape = FALSE,
-        align = "c",
-        #align=c("p{28mm}", "p{28mm}", "c"),
-        caption = "The odds and percentage of subjects keeping pet birds") %>%
-    row_spec(0, bold = TRUE) %>%
-    row_spec(3, italic = TRUE) %>%
-    kable_styling(font_size = 10)
-}
-if( knitr::is_html_output() ) {
-  kable(PBsummary,
-        format = "html",
-        booktabs = TRUE,
-        longtable = FALSE,
-        align = c("l", "r", "c"),
-        caption = "The odds and percentage of subjects keeping pet birds")
-}
-```
-
-
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-The RQ could also be written in terms of comparing the *percentage* in each groups; in terms of the *odds ratio* being one; or in terms of a *relationship* between the two variables
-:::
-
-
-From this RQ (written in terms of *odds*), the hypotheses could be written as:
-
-* $H_0$: The *odds* of having a pet bird is *the same* for people *with* lung cancer (cases) and for people *without* lung cancer (controls).
-* $H_1$: The *odds* of having a pet bird is *not the same* for people *with* lung cancer (cases) and for people *without* lung cancer (controls).
-
-
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-The null hypothesis could also be written as:
-  
-*  The **percentage** of people having a pet bird is *the same* for people *with* lung cancer (cases) and for people *without* lung cancer (controls).
-*  The **odds ratio** of people having a pet bird, comparing people *with* lung cancer (cases) and for people *without* lung cancer (controls), is equal to one.
-*  There is **no relationship** between having a pet bird and having lung cancer.
-:::
-
-
-Begin *assuming* the null hypothesis is true: no difference exists between the odds in the *population*.
-Based on this assumption, the *expected* counts can be found (though, in practice, you do not have to compute these).
-From the data (Table\ \@ref(tab:BirdsData2)), overall $199\div 668 = 29.79$% of people own a pet bird.
-
-If there really was no difference in the odds (or the percentages) of owning a pet bird between those with and without lung cancer, about $29.79$% of the people in *both* lung cancer groups would be *expected* to own a pet bird.
-
-About $29.79$% of the $239$ lung-cancer cases (or $71.20$ people) would be expected to have a pet bird, and about $29.79$% of the $429$ non-lung-cancer cases (or $127.80$ people) would be expected to have a pet bird.
-A table of these *expected counts* (Table\ \@ref(tab:PetBirdsExpected)) shows that all are greater than five.
-In practice, software computes these expected counts automatically.
-
-
-```{r PetBirdsExpected}
-PBExp <- PB2T 
-
-PBExp[1, ] <- c(71.20, 
-                127.80, 
-		199)
-PBExp[2, ] <- c(167.80,
-                301.20, 
-		469) 
-
-if( knitr::is_latex_output() ) {
-  kable( surroundMaths(PBExp,
-                       decDigits = c(1, 1, 0)),
-        format = "latex",
-        booktabs = TRUE,
-        longtable = FALSE,
-        align = "r",
-        escape = FALSE,
-        caption = "The expected counts for the pet bird data, if the proportion owning pet birds was the same for lung cancer cases and non-lung-cancer cases") %>%
-   column_spec(4, bold = TRUE) %>%
-   row_spec(3, bold = TRUE) %>%
-   row_spec(2, hline_after = TRUE) %>%
-   row_spec(0, bold = TRUE) %>%
-   kable_styling(font_size = 10)
-}
-if( knitr::is_html_output() ) {
-  kable(PBExp,
-               format = "html",
-               booktabs = TRUE,
-               longtable = FALSE,
-               caption = "The expected counts for the pet bird data, if the proportion owning pet birds was the same for lung cancer cases, and non-lung-cancer cases") %>%
-     column_spec(4, bold = TRUE) %>%
-     row_spec(3, bold = TRUE)
-}
-```
-
-
-The counts in Table\ \@ref(tab:PetBirdsExpected) are what are *expected*, *if* the percentage of people owning a pet bird is the same for lung cancer and non-lung cancer cases.
-How close are the expected and observed counts (Table\ \@ref(tab:BirdsData2))?
-
-To compare the sample statistic (what we *observed*) with the hypothesised population parameter, software computes the $\chi^2$ value (jamovi: Fig.\ \@ref(fig:PetBirdsjamovi); SPSS: Fig.\ \@ref(fig:PetBirdsSPSS)): $\chi^2 = 22.374$, approximately equivalent to a $z$-score of $\sqrt{22.374/1} = 4.730$, which is very large.
-Hence, a small $P$-value is expected.
-
-The software shows the $P$-value is very small indeed ($P < 0.001$).
-As usual, this means that [very strong evidence](#tab:PvaluesInterpretation) exists to support $H_1$, if $H_0$ is assumed true.
-That is, the evidence suggests a *difference* exists between the two odds in the *population*.
-We write:
-
-> The *sample* provides very strong evidence ($\chi^2 = 22.374$; two-tailed  $P < 0.001$) that the odds in the *population* of having a pet bird is not the same for people with lung cancer (odds: $0.695$) and for people without lung cancer (odds: $0.308$; OR: $2.26$; $95$% CI from $1.6$ to $3.2$).
-
 
 ```{r PetBirdsjamovi, fig.show="hold", fig.cap="jamovi output for the pet-birds data", fig.align="center", out.width="50%"}
 knitr::include_graphics("jamovi/PetBirds/Pets-All.png") 
 ```
 
 
-```{r PetBirdsSPSS, fig.show="hold", fig.cap="SPSS output for the pet-birds data", fig.align="center", out.width="75%"}
-knitr::include_graphics("SPSS/PetBirds/Pets-Chisq-OR.png") 
-```
-
-:::
 
 <!-- QUICK REVIEW ANSWERS -->
 `r if (knitr::is_html_output()) '<!--'`
