@@ -750,7 +750,7 @@ With one of each: boxplot.
 See Fig.\ \@ref(fig:CPalsyPlots) for some examples.
 :::
 
-```{r CPalsyPlots, fig.align="center", fig.cap="Some graphs from the cerebral palsy data", fig.width=9, fig.height=4, out.width='100%'}
+```{r CPalsyPlots, fig.align="center", fig.cap="Some graphs from the cerebral palsy data", fig.width=7, fig.height=2.75, out.width='100%'}
 NumP <- 15
 Gender <- rep("M", 
               NumP)
@@ -1107,7 +1107,7 @@ Answers to exercises in Sect.\ \@ref(MakingDecisionsExercises).
 ::: {.answer data-latex=""}
 **Answer to Exercise\ \@ref(exr:MakingDecisionsDice)**:
 **1.** Yes! Seems likely there is a problem (we can't be certain).
-**2.** **Assuming** the die was fair, I would not **expect** to get a **6** ten times in a row; sounds highly unusual.
+**2.** Assuming the die was fair, I would *not* expect to get a **6** ten times in a row; sounds highly unusual.
 :::
 
 
@@ -1352,7 +1352,7 @@ Standard error: $\text{s.e.}(\hat{p}) = 0.01308604$; approximate 95% CI is $0.81
 The CI is statistically valid.
 :::
 
-```{r, fig.cap="The sampling distribution of the proportion of males in samples of 864 people with hiccups", fig.width=6, fig.height=3.5, fig.align="center"}
+```{r, fig.cap="The sampling distribution of the proportion of males in samples of $864$ people with hiccups", fig.width=6, fig.height=3.25, fig.align="center"}
 z <- seq(-3.5, 3.5, 
          length = 100)
 mn <-  0.8194444
@@ -1401,11 +1401,7 @@ abline(v = c(-3, 3),
 **Answer to Exercise\ \@ref(exr:CIParamedic)**:
 
 $\hat{p} = 791/1766 = 0.4479049$ and $n = 1766$, hence, $\text{s.e.}(\hat{p}) =  0.01183326$.
-The *approximate* $95$% CI is from   
-\[
-   0.4479049 - (2\times 0.0118332) = 0.424238 \text{\ \  to\ \   } 
-   0.4479049 + (2\times 0.0118332) = 0.471571,
-\]
+The *approximate* $95$% CI is from $0.4479049 - (2\times 0.0118332) = 0.424238$ to $0.4479049 + (2\times 0.0118332) = 0.471571$,
 or from $0.424$ to $0.472$.
 (Many decimal places were kept in the working, but final answers were rounded.)
 :::
@@ -1419,7 +1415,7 @@ The statistical validity conditions are satisfied.
 
 After $400$\ hrs: $\hat{p} = 0$; $\text{s.e.}(\hat{p}) = 0$.
 The CI is from $0$ to $0$: clearly silly (implies no sampling variation).
-This is because the statistical validity conditions are **not** satisfied.
+This is because the statistical validity conditions are *not* satisfied.
 :::
 
 
@@ -1588,17 +1584,20 @@ BrocolliSummaryTable[2, ] <- c(61.2,
                                28.7, 
                                round(28.7/sqrt(101), 2))
 BrocolliSummaryTable[3, ] <- c(5.2, 
-                               "", 
+                               NA, 
                                3.06)
 
 tab.cap.br <- "A  numerical summary for the brocilli data"
 
 if( knitr::is_latex_output() ) {
-  kable( BrocolliSummaryTable,
+  kable( surroundMaths(BrocolliSummaryTable,
+                       decDigits = c(1, 1, 2)),
          format="latex",
          booktabs = TRUE,
+         align = "r",
          digits = c(1, 1, 2),
          longtable = FALSE,
+         escape = FALSE,
          col.names = colnames(BrocolliSummaryTable),
          caption = tab.cap.br) %>%
     column_spec(1, bold = TRUE)  %>%
@@ -1682,7 +1681,7 @@ The estimate: $\bar{x}_F - \bar{x}_M = 4.66 - 4.60 = 0.06$\ m.
 :::
 
 
-```{r WhalesErrorbar, fig.cap="Error bar chart comparing the lengths of female and male gray whales", fig.align="center", fig.width=4.5, fig.height=3.5}
+```{r WhalesErrorbar, fig.cap="Error bar chart comparing the lengths of female and male gray whales", fig.align="center", fig.width=4.5, fig.height=3.25}
 
 ciF <- c(4.66 - 2 * (0.379 / sqrt(26)),
          4.66 + 2 * (0.379 / sqrt(26)) )
@@ -1696,7 +1695,7 @@ plot( range( c( ciF, ciM) ) ~ c(1, 2),
       ylim = c(4.45, 4.85),
       pch = 19,
       axes = FALSE,
-      main = "Error bars chart:\n length of gray whales at birth",
+      main = "Error bars chart:\n length of female gray whales at birth",
       xlab = "Sex", 
       ylab = "Length (in metres)",
       sub = "(Error bars are 95% confidence intervals)",
@@ -1750,22 +1749,24 @@ NHANESSummaryTable[2, ] <- c(1.3077,
                              0.01137, 
                              1388)
 NHANESSummaryTable[3, ] <- c(0.08470, 
-                             "", 
+                             NA ,
                              0.01546, 
-                             "")
+                             NA)
 
 
 if( knitr::is_latex_output() ) {
-  kable(NHANESSummaryTable, 
+  kable(surroundMaths(NHANESSummaryTable,
+                      decDigits = c(3, 4, 4, 0)), 
         format = "latex",
         longtable = FALSE,
-#        escape = FALSE,
+        escape = FALSE,
         col.names = colnames(NHANESSummaryTable),
         booktabs = TRUE,
         #linesep = c("\\addlinespace",  # Otherwise adds a space after five lines... 
         align = c("r", "r", "r", "r"),
         caption = "A summary table for the NHANES data; statistics in mm Hg") %>%
     column_spec(1, bold = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
     kable_styling(font_size = 9)
 }
 if( knitr::is_html_output() ) {
@@ -1857,15 +1858,17 @@ FF.Summary2[, 1] <- round(FF.Summary[, 1], 1)
 FF.Summary2[, 2] <- round(FF.Summary[, 2], 2) 
 FF.Summary2[, 3] <- round(FF.Summary[, 3], 2) 
 FF.Summary2[, 4] <- round(FF.Summary[, 4], 0)
-FF.Summary2[3, 2] <- ""
-FF.Summary2[3, 4] <- ""
+FF.Summary2[3, 2] <- NA
+FF.Summary2[3, 4] <- NA
   
   
 if( knitr::is_latex_output() ) {
-  kable(FF.Summary2,
+  kable(surroundMaths(FF.Summary2,
+                      decDigits = c(1, 2, 2, 0)),
       format = "latex",
       booktabs = TRUE,
       align = "r",
+         escape = FALSE,
       col.names = c("Mean", 
                     "Standard deviation", 
                     "Standard error", 
@@ -1873,7 +1876,7 @@ if( knitr::is_latex_output() ) {
       caption = "Numerical summary for the face-plant data (means, standard deviations and standard errors are in degrees)"
       ) %>%
     row_spec(0, bold = TRUE) %>%
-    kable_styling(font_size = 10)
+    kable_styling(font_size = 9)
 }
 if( knitr::is_html_output() ) {
   kable(FF.Summary2,
@@ -1923,8 +1926,8 @@ ScarTable[2, ] <- c("1.88",
                     "65.3%", 
                     "331")
 ScarTable[3, ] <- c("0.850", 
-                    "", 
-                    "")
+                    NA, 
+                    NA)
 
 colnames(ScarTable) <- c("Odds with smooth scars",
                          "Percentage with smooth scars", 
@@ -1933,10 +1936,21 @@ rownames(ScarTable) <- c("Women:",
                          "Men:",
                          "Odds ratio:")
 if( knitr::is_latex_output() ) {
-  kable(ScarTable, 
+ScarTable[1, ] <- c("1.60", 
+                    "$61.5$\\%", 
+                    "161")
+ScarTable[2, ] <- c("1.88", 
+                    "$65.3$\\%", 
+                    "331")
+ScarTable[3, ] <- c("0.850", 
+                    NA, 
+                    NA)
+
+kable(surroundMaths(ScarTable,
+                      decDigits = c(2, 1, 0)), 
         format = "latex",
         longtable = FALSE,
-#        escape = FALSE,
+        escape = FALSE,
         col.names = colnames(ScarTable),
         booktabs = TRUE,
       #linesep = c("\\addlinespace",  # Otherwise adds a space after five lines... 
@@ -1999,11 +2013,13 @@ rownames(TurbineCITable) <- c("About 1800 hours",
                               "Total")
 
 if( knitr::is_latex_output() ) {
-  kable(TurbineCITable, 
+  kable(surroundMaths(TurbineCITable,
+                      decDigits = 0),
         format = "latex",
         longtable = FALSE,
         col.names = colnames(TurbineCITable),
         booktabs = TRUE,
+         escape = FALSE,
         #linesep = c("\\addlinespace",  # Otherwise adds a space after five lines... 
         align = c("r", "r", "r"),
         caption = tab.cap) %>%
@@ -2037,8 +2053,8 @@ TurbineCISumTable[2, ] <- c("0.2727",
                             "21.43%", 
                             "42")
 TurbineCISumTable[3, ] <- c("0.389", 
-                            "", 
-                            "")
+                            NA, 
+                            NA)
 
 colnames(TurbineCISumTable) <- c("Odds with fissures",
                                  "Percentage with fissures", 
@@ -2048,11 +2064,23 @@ rownames(TurbineCISumTable) <- c("About 1800 hours",
                                  "Odds ratio")
 
 if( knitr::is_latex_output() ) {
-  kable(TurbineCISumTable, 
+  TurbineCISumTable[1, ] <- c("0.1061", 
+                            "$9.59$\\%", 
+                            "73")
+TurbineCISumTable[2, ] <- c("0.2727", 
+                            "$21.43$\\%", 
+                            "42")
+TurbineCISumTable[3, ] <- c("0.389", 
+                            NA, 
+                            NA)
+
+  kable(surroundMaths(TurbineCISumTable,
+                      decDigits = c(4, 2, 0)),
         format = "latex",
         longtable = FALSE,
         col.names = colnames(TurbineCISumTable),
         booktabs = TRUE,
+         escape = FALSE,
         #linesep = c("\\addlinespace",  # Otherwise adds a space after five lines... 
         align = c("r", "r", "r"),
         caption = tab.cap) %>%
@@ -2126,8 +2154,8 @@ PBsummary[2, ] <- c("0.3079",
                     "25.5", 
                     "429")
 PBsummary[3, ] <- c("2.26", 
-                    "", 
-                    "")
+                    NA, 
+                    NA)
 
 
 if( knitr::is_latex_output() ) {
@@ -2192,9 +2220,9 @@ Answers to exercises in Sect.\ \@ref(EstimatingSampleSizeExercises).
 ::: {.answer data-latex=""}
 **Answer to Exercise\ \@ref(exr:SampleSizeProp1)**:
 
-**1.** Use $\displaystyle n = \frac{1}{0.04^2} = 625$; at least $625$ needed.
-**2.** Use $\displaystyle n = \frac{1}{0.02^2} = 2500$; at least $2500$ needed. That is *four times as many* as when the margin-of-error was $0.04$.
-**3.** Use $\displaystyle n = \frac{1}{0.01^2} = 10,00$; at least $10\ 000$ needed. That is *sixteen times as many* as when the margin-of-error was $0.04$.
+**1.** Use $n = 1/0.04^2 = 625$; at least $625$ needed.
+**2.** Use $n = 1/0.02^2 = 2500$; at least $2500$ needed. That is *four times as many* as when the margin-of-error was $0.04$.
+**3.** Use $n = 1/0.01^2 = 10,00$; at least $10\ 000$ needed. That is *sixteen times as many* as when the margin-of-error was $0.04$.
 **4.** To get an estimate *half* as wide, we need *four* times as many units of analysis in the sample.
 **5.** To get an estimate *a quarter* as wide, how many *sixteen* more units of analysis in the sample.
 :::
@@ -2609,7 +2637,7 @@ $t$ is 'small'; $P > 0.05$ (actually $P = 0.376$): the evidence doesn't support 
 Since $n < 25$, the test may not be statistically valid (the histogram of data (Fig.\ \@ref(fig:FerritinGraph)) suggests that the population *might* have a normal distribution), though the $P$-value is very large so it probably makes little difference.
 :::
 
-```{r FerritinGraph, fig.align="center", fig.cap="A histogram of the change in ferritin concentration", fig.width=5, height=2}
+```{r FerritinGraph, fig.align="center", fig.cap="A histogram of the change in ferritin concentration", out.width='70%', fig.width=6, height=2}
 FR <- structure(list(September = c(6630L, 4590L, 3510L, 6375L, 2500L, 
 1400L, 4580L, 6885L, 4200L, 5600L, 5360L, 6110L, 5300L, 3120L, 
 3300L, 11400L, 3100L, 2800L, 3500L, 12700L), March = c(5100L, 
@@ -2720,9 +2748,11 @@ rownames(ParaTable) <- c("Sample size",
                          "Standard deviation", 
                          "Standard error")
 if( knitr::is_latex_output() ) {
-  kable(ParaTable, 
+  kable(surroundMaths(ParaTable,
+                      decDigits = 2),
         format = "latex",
         longtable = FALSE,
+         escape = FALSE,
         col.names = colnames(ParaTable),
         booktabs = TRUE,
         align = c("r", "r"),
@@ -2873,10 +2903,13 @@ rownames(PhoneTable) <- c("Low exposure",
                           "High exposure")
 
 if( knitr::is_latex_output() ) {
-  kable(round(chisq.test(PhoneTable)$expected, 2),
+  kable(surroundMaths(round(chisq.test(PhoneTable)$expected, 2),
+                      decDigits = 2),
         format = "latex",
         longtable = FALSE,
         booktabs = TRUE,
+         escape = FALSE,
+        align = "r",
         digits = 2,
         col.names = c("Answer call", 
                       "Respond to text", 
