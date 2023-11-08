@@ -36,7 +36,7 @@ htmltools::tags$video(src = "./Movies/rho.mp4",
 ::::
 
 
-Here, the *Pearson* correlation coefficient is discussed, which is appropriate for describing *linear* relationships between *quantitative* data^[Other types of correlation coefficients also exist, such as the *Spearman* correlation, which may be used for monotonic, non-linear relationships.].
+Here, the *Pearson* correlation coefficient is discussed, which is appropriate for describing *linear* relationships between *quantitative* data^[Other correlation coefficients also exist, such as the *Spearman* correlation, which may be used for monotonic, non-linear relationships.].
 Pearson correlation coefficients only apply if the form is approximately *linear* (so check with a scatterplot first).
 
 
@@ -46,17 +46,21 @@ The Pearson correlation coefficient only make sense if the relationship is appro
 
 
 The values of $\rho$ and $r$ are *always* between $-1$ and $+1$.
-The *sign* indicates whether the relationship has a positive or negative linear association, and the *value* of the correlation coefficient describes the strength of the relationship:
+The *sign* indicates whether the relationship has a positive or negative linear association, and the *value* of the correlation coefficient describes the *strength* of the relationship:
 
+* $r = -1$ means a *perfect, negative* relationship:
+  knowing the value of $x$ produces a perfect prediction of the value of $y$, and *larger* values of $y$ are associated with *smaller* values of $x$.
+* Values of $r$ between $-1$ and $0$ mean a *negative* relationship:
+  knowing the value of $x$ produces a prediction of the value of $y$, and *larger* values of $y$ are associated with *smaller* values of $x$ (in general).
 * $r = 0$ means *no linear relationship* between the variables:
   Knowing how the value of $x$ changes tells us nothing about how the corresponding value of $y$ changes.
   The best prediction for *any* value of $x$ is the mean of $y$.
+* Values of $r$ between $0$ and $+1$ mean a *positive* relationship:
+  knowing the value of $x$ produces a prediction of the value of $y$, and *larger* values of $y$ are associated with *larger* values of $x$ (in general).
 * $r = +1$ means a *perfect, positive* relationship:
-  knowing the value of $x$ produces a perfect prediction of the value of $y$, and *larger* values of $y$ are associated with *larger* values of $x$ (in general).
-* $r = -1$ means a *perfect, negative* relationship:
-  knowing the value of $x$ produces a perfect prediction of the value of $y$, and *larger* values of $y$ are associated with *smaller* values of $x$ (in general).
+  knowing the value of $x$ produces a perfect prediction of the value of $y$, and *larger* values of $y$ are associated with *larger* values of $x$.
 
-Most values of $r$ are between these extremes of $r = -1$ and $r = +1$.
+Most values of $r$ are between the extremes of $r = -1$ and $r = +1$.
 `r if (knitr::is_html_output()) {
    'The animation below demonstrates how the values of the correlation coefficient work.'
 }`
@@ -140,7 +144,8 @@ plot( SDsub$SD.temperatures, SDsub$SD.fertilization,
       ylab = "Fertilization rate (in %)")
 text(x = 15,
      y = 40,
-     labels = expression( italic(r)==-0.49))
+     labels = expression( atop(italic(r)==-0.49),
+                          group("(", Not~appropriate,")")) )
 
 abline( coef( lm( SD.fertilization ~ SD.temperatures,
                   data =  SDsub ) ),
@@ -273,7 +278,7 @@ par( mfrow = c(1, 2))
 plot( K ~ P,
       data = Peas,
       xlab = "Phosporus (mg/g)",
-      ylab = "Pottasium (mg/g)",
+      ylab = "Potassium (mg/g)",
       xlim = c(3, 8),
       ylim = c(10, 17),
       las = 1,
@@ -303,7 +308,7 @@ abline( coef( lm( Ca ~ Zn, data = Peas)),
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 The web page [http://guessthecorrelation.com](http://guessthecorrelation.com) makes a game out of trying to guess the correlation coefficient from a scatterplot.
-It's quite difficult!
+It's very difficult!
 :::
 
 
@@ -319,7 +324,7 @@ It's quite difficult!
 </div>
 
 
-While formulas exist to compute the value of $r$, they tedious to use manually.
+Formulas exist to compute the value of $r$, but are tedious to use manually.
 We will used software to obtain values of $r$.
 For the red-deer data
 `r if( knitr::is_latex_output() ) {
@@ -354,12 +359,13 @@ It is usually multiplied by $100$ and expressed as a percentage.
 :::
 
 
-::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+<!-- need to watch! Unfortunate line breaks can happen! -->
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"} 
 Even though the value of $R^2$ is never negative, you need to be careful when using your calculator!
-With most calculators, entering `-0.5^2` returns `-0.25`.
+With most calculators, entering `-0.5^2` returns an answer of `-0.25`.
 The calculator interprets your input as meaning `-(0.5^2)`.
 
-You need to use brackets: enter `(-0.5)^2`, which will give the correct answer of `0.25`.
+You must use brackets: `(-0.5)^2` gives the correct answer of `0.25`.
 :::
 
 
@@ -408,7 +414,7 @@ The value of $R^2$ is the reduction in the unexplained variation of $y$ because 
 Without knowing anything about the relationship between the values of $x$ and $y$, the best estimate of the values of $y$ is the mean of the $y$ values.
 However, knowing the relationship between the values of $x$ and $y$ means we (potentially) can make better estimates of the value of $y$, and there should be less variation unexplained.
 When expressed as a percentage, $R^2$ measures how much the unexplained variation reduces due to our knowledge of the linear relationship.
-If $R$-squared is zero, then the amount of unexplained variation has not reduced at all, and the relationship has no value.
+If $R$-squared is zero, then the amount of unexplained variation has not reduced at all, and exploring the relationship has no value.
 
 
 
@@ -562,12 +568,31 @@ A correlation coefficient is not appropriate, so a hypothesis tests about $r$ is
 :::
 
 
+::: {.example #CorTestDrug name="Drug calculations"}
+A study of $n = 30$ paramedicine students examined the relationship between the amount of stress experienced while performing drug-dose calculations (measured using the State–Trait Anxiety Inventory (STAI)), and length of work experience [@leblanc2005paramedic].
+The hypotheses are:  
+\[
+   \text{$H_0$: } \rho = 0\quad\text{and}\quad \text{$H_1$: } \rho \ne 0.
+\]
+The article gives the correlation coefficient as $r = 0.346$ and $P = 0.18$.
+No scatterplot is provided, so the test is statistically valid only if the relationship is approximately linear, and if the variation in STAI scores does not change for different levels of work experience.
+The sample size is larger than $25$, however.
+We write:
 
-::: {.example #CorTestDogs name="Phu Quoc ridgeback dogs"}
+> No evidence exists ($r = 0.346$; two-tailed $P = 0.18$) that the length of work experience is associated with STAI stress levels when performing drug-dose calculations.
+:::
+
+
+<iframe src="https://learningapps.org/watch?v=pd07ft8ec22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+
+
+
+## Example: Phu Quoc ridgeback dogs
+
 A study of Phu Quoc Ridgeback dogs (*Canis familiaris*) recorded many measurements of the dogs, including body length and body height [@quan2017relation].
 The scatterplot (Fig.\ \@ref(fig:DogsScatter), left panel) shows an approximate linear relationship.
-Each sample of dogs could produce a different value for $r$.
 In this example, it does not matter which variable is used as $x$ or $y$.
+Each sample of dogs could produce a different value for $r$, so sampling variation exists.
 
 Since taller dogs might be expected to be longer, we may ask:
 
@@ -583,7 +608,7 @@ We write:
 > Very strong evidence exists that longer Phu Quoc ridgeback dogs are also taller ($r = 0.837$; one-tailed $P < 0.001$; $n = 30$).
 
 Since (a) the relationship is approximately linear; (b) the variation in heights do not seem to differ for different lengths; and (c) the sample size is larger than $25$, the test is statistically valid.
-:::
+
 
 
 ```{r DogsScatter, fig.align = "center", fig.cap = "Phu Quoc ridgeback dogs: Left: a scatterplot of the body height vs body length; right: jamovi output", fig.width=5, fig.height=3.25, out.width=c("55%", "5%", "35%"), fig.show="hold"}
@@ -603,23 +628,6 @@ knitr::include_graphics("jamovi/Dogs/Dogs-correlation-jamovi.png")
 ```
 
 
-::: {.example #CorTestDrug name="Drug calculations"}
-A study of $n = 30$ paramedicine students examined (among other things) the relationship between the amount of stress experienced (measured using the State–Trait Anxiety Inventory (STAI)) while performing drug-dose calculation, and length of work experience [@leblanc2005paramedic].
-The hypotheses are:  
-\[
-   \text{$H_0$: } \rho = 0\quad\text{and}\quad \text{$H_1$: } \rho \ne 0.
-\]
-The correlation coefficient is given as $r = 0.346$ and $P = 0.18$ (from software).
-No scatterplot is provided, so the test is statistically valid only if the relationship is approximately linear, and if the variation in STAI scores does not change for different levels of work experience.
-The sample size is larger than $25$, however.
-We write:
-
-> No evidence exists ($r = 0.346$; two-tailed $P = 0.18$) that the length of work experience is associated with STAI stress levels when performing drug-dose calculations.
-:::
-
-
-<iframe src="https://learningapps.org/watch?v=pd07ft8ec22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
-
 
 ## Example: removal efficiency {#Removal-Efficiency}
 
@@ -636,13 +644,13 @@ A RQ is
 > In treating biofiltation wastewater, is the removal efficiency associated with the inlet temperature?
 
 The population parameter is $\rho$, the correlation between the removal efficiency and inlet temperature.
-A scatterplot of $n = 32$ samples (Fig.\ \@ref(fig:CorrelationRemovalEfficiency)) suggests an approximately linear relationship [@chitwood2001treatment; @DevoreBerk2007].
+A scatterplot of $n = 32$ samples (Fig.\ \@ref(fig:CorrelationRemovalEfficiency), left panel) suggests an approximately linear relationship [@chitwood2001treatment; @DevoreBerk2007].
 
-The output (Fig.\ \@ref(fig:RemovalEfficiencyjamoviSPSS)) shows that the sample correlation coefficient is $r = 0.891$, and so $R^2 = (0.891)^2 = 79.4$%.
+The output (Fig.\ \@ref(fig:CorrelationRemovalEfficiency), right panel) shows that the sample correlation coefficient is $r = 0.891$, and so $R^2 = (0.891)^2 = 79.4$%.
 This means that about $79.4$% of the variation in removal efficiency can be explained by knowing the inlet temperature.
 
 
-```{r CorrelationRemovalEfficiency, fig.cap="The relationship between removal efficiency and inlet temperature", fig.align="center", fig.width=5, fig.height=3.5}
+```{r CorrelationRemovalEfficiency, fig.cap="The relationship between removal efficiency and inlet temperature", fig.align="center", fig.width=5, fig.height=3.25, out.width=c("55%", "5%", "35%"), fig.show="hold"}
 data(Removal)
 
 plot(Removal ~ Temp, 
@@ -655,6 +663,8 @@ plot(Removal ~ Temp,
      xlim = c(5, 18),
      las = 1
      )
+knitr::include_graphics("OtherImages/SPACER.png")
+knitr::include_graphics("jamovi/Removal/RemovalCorrelation.png")
 ```
 
 To test if a relationship exists in the population, write:  
@@ -662,19 +672,12 @@ To test if a relationship exists in the population, write:
    \text{$H_0$: } \rho = 0;\quad\text{and}\quad \text{$H_1$: } \rho \ne 0.
 \]
 The alternative hypothesis is two-tailed (as implied by the RQ).
-The software output (Fig.\ \@ref(fig:RemovalEfficiencyjamoviSPSS) shows that $P < 0.001$.
+The software output (Fig.\ \@ref(fig:CorrelationRemovalEfficiency), right panel) shows that $P < 0.001$.
 We conclude:
 
 > The sample presents very strong evidence (two-tailed $P < 0.001$) that removal efficiency depends on the inlet temperature ($r = 0.891$; $n = 32$) in the population.
 
 The relationship is approximately linear, there is no obvious non-constant variance, and the sample size is larger than $25$, so the hypothesis test results will be statistically valid.
-
-
-
-```{r RemovalEfficiencyjamoviSPSS, fig.cap="Output for the removal-efficiency data", fig.align="center", out.width=c("40%", "55%"), fig.show="hold"}
-knitr::include_graphics("jamovi/Removal/RemovalCorrelation.png")
-#knitr::include_graphics("SPSS/Removal/RemovalCorrelation.png") 
-```
 
 
 ## Summary {#Chap34-Summary}
@@ -973,7 +976,7 @@ plot(CBR ~ PI,
 
 - Sect. \ref{thinkBox:EstimateR}: These are *very* hard to estimate! You are not expected to be very accurate (you cannot be). 
   The actual values (from software) are $r = 0.71$ and $r = -0.13$.
-  Realistically, the best you can probably do is 'a reasonably high positive $r$ value' and 'an $r$ value slightly negative'.
+  Realistically, the best you can probably do is 'a reasonably high positive $r$ value' and 'a slightly negative $r$ value '.
 - Sect. \ref{thinkBox:MeaningOfR2}: $R^2 = (-0.682)^2 = 0.465$: about $46.5$% of the variation in the number if cyclones is due to knowing the value of the ONI averaged over October to December; extraneous variables explain the remaining $54.5$% of the variation in the number of cyclones.
 - \textbf{Answers to \textit{Quick Revision} questions:}
 **1.** $6$MWD.
