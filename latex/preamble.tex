@@ -8,22 +8,16 @@
 
 %\usepackage{times,pifont} % Nice fonts
 
-
 \usepackage[x11names]{xcolor}
-
-
 
 %%% HEADER
 \usepackage{fancyhdr}
-
-
 
 % \DeclareUnicodeCharacter{0301}{ZZZZZZZZZZZ}
 
 \usepackage{stackengine} % Stacking things on top of each other (used in table, in the selecting a test chapter)
 \renewcommand\stacktype{L}
 \def\stackalignment{l}
-
 
 \usepackage{multicol}
 \usepackage{tabularx} % For column specifications, using the kable_styling function  column_spec()
@@ -38,7 +32,6 @@
 \usepackage{array}
 \usepackage{ragged2e}
 \newcolumntype{P}[1]{>{\RaggedLeft\hspace{0pt}}p{#1}} % This allows right-aligned, fixed with cols
-
 
 
 % FIGURE PLACEMENT: https://tex.stackexchange.com/questions/140568/how-to-set-default-positioning-of-figure-table-document-wide
@@ -381,29 +374,44 @@
 %%%   https://stackoverflow.com/questions/1565988/making-a-small-modification-to-a-latex-environment
 
 % REDEFINE some standard environments
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Redefine DEFINITION
 \AtBeginDocument{%
 \let\origenddefinition=\enddefinition%
 \let\origdefinition=\definition%
 \renewenvironment{definition}%
-  {\begingroup\definecolor{shadecolor}{RGB}{242, 242, 242}\vspace{2mm}\begin{quote}\setlength{\parskip}{2mm}\vspace{-7mm}\origdefinition}%
-  {\origenddefinition\end{quote}\vspace{2mm}\endgroup}}
+  {\begingroup\definecolor{shadecolor}{RGB}{242, 242, 242}\vspace{2mm}% Gap between above text, and top of box/shading  
+   \begin{quote}\setlength{\parskip}{2mm}%
+   \vspace{-7mm}% Gap between top of box/shading and the start of the text that is inside the box
+   \origdefinition}%
+  {\origenddefinition\end{quote}\vspace{2mm}\endgroup}}% Gap between bottom of box/shading and the start of the text below
 
-\AtBeginDocument{%
-\let\origendexercise=\endexercise%
-\let\origexercise=\exercise%
-\renewenvironment{exercise}%
-  {\small\begingroup\setlist{nosep,topsep=-0.8\parskip}\vspace{5mm}\setlength{\parskip}{1.5mm}\vspace{-6mm}\origexercise}%
-  {\origendexercise\vspace{-2mm}\endgroup}}
-    
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Redefine EXAMPLE
 \AtBeginDocument{%
 \let\origendexample=\endexample%
 \let\origexample=\example%
 \renewenvironment{example}%
-  {\begingroup\definecolor{shadecolor}{RGB}{242, 242, 242}\vspace{3mm}\begin{quote}\setlength{\parskip}{2mm}\vspace{-7mm}\origexample}% Last vspace adjusts space between start of gray box, and start of text
-  {\origendexample\end{quote}\vspace{2mm}\endgroup}}
+  {\begingroup\definecolor{shadecolor}{RGB}{242, 242, 242}\vspace{2mm}% Gap between above text, and top of box/shading  
+  \begin{quote}\setlength{\parskip}{2mm}%
+  \vspace{-7mm}% Gap between top of box/shading and the start of the text that is inside the box
+  \origexample}% Last vspace adjusts space between start of gray box, and start of text
+  {\origendexample\end{quote}\vspace{2mm}\endgroup}}% Gap between bottom of box/shading and the start of the text below
 
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% Redefine EXERCISE
+\AtBeginDocument{%
+\let\origendexercise=\endexercise%
+\let\origexercise=\exercise%
+\renewenvironment{exercise}%
+  {\small\begingroup\setlist{nosep,topsep=-0.8\parskip}\vspace{5mm}%
+  \setlength{\parskip}{1.5mm}%
+  \vspace{-6mm}\origexercise}%
+  {\origendexercise\vspace{-2mm}\endgroup}}
+    
 
 % % Fix the itemize/enumerate spacing in exercises:
 % \let\origexercise=\exercise
@@ -420,9 +428,12 @@
 % -QUOTE
 \makeatletter
 \renewenvironment{quote}
-               {\list{}{\vspace{-0.5em}\begin{kframe}\small%
-                        \itemindent    \listparindent
-                        \rightmargin   \leftmargin
+               {\list{}{%
+               \vspace{-0.5em}% Top spacing, before the quote box itself
+               \begin{kframe}\small%
+                        \itemindent%
+                        \listparindent
+                        \rightmargin\leftmargin
                         \parsep        \z@ \@plus\p@}%
                 \item\relax}
                {\end{kframe}\endlist\vspace{-0.25em}}
@@ -431,10 +442,12 @@
 \let\origquote\quote
 \let\origendquote\endquote
 \renewenvironment{quote}{%
-  \vspace{-0.25\parskip}
+  \vspace{0\parskip} % Gap between text above, and start of quote shading
   \origquote
 }%
-{\origendquote\vspace{-1\parskip}}
+{\origendquote\vspace{-0.25\parskip}}% Gap between text below, and bottom of quote shading
+
+
 
 % Fold environment for LaTeX
 \newenvironment{fold}
