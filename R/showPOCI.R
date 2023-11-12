@@ -6,11 +6,11 @@ showPOCI <- function(addC = ifelse(addI, TRUE, FALSE), # Always have PO; add C?
                      Yname = "Response\nvariable",
                      addArrows = FALSE,
                      addOCXYArrows = FALSE){
-
+  
   # CANVAS
   par( mar = c(0.5, 0.5, 0.5, 0.5))
   diagram::openplotmat()
-
+  
   
   # SETUP  
   pos <- array(NA, dim = c(6, 2))
@@ -20,14 +20,14 @@ showPOCI <- function(addC = ifelse(addI, TRUE, FALSE), # Always have PO; add C?
   pos[4, ] <- c(0.80, 0.75)   # I
   pos[5, ] <- c(0.20, 0.25)   # Response
   pos[6, ] <- c(0.80, 0.25)   # Explanatory
-
+  
   # Need to show arrows first, so that POCI overplot  
   if ( addOCXYArrows | (addArrows & (addX & addY) ) ) {
     diagram::straightarrow(from = pos[6, ], # From X to Y
-                  to = pos[5, ], 
-                  #segment = c(0.4, 0.6),
-                  lty = 1, 
-                  lwd = 2)
+                           to = pos[5, ], 
+                           #segment = c(0.4, 0.6),
+                           lty = 1, 
+                           lwd = 2)
   }
   if (addArrows & addI) {
     diagram::straightarrow(from = pos[3, ],  # From C to I
@@ -60,10 +60,10 @@ showPOCI <- function(addC = ifelse(addI, TRUE, FALSE), # Always have PO; add C?
   }
   if (addOCXYArrows){
     diagram::straightarrow(from = pos[3, ], # From C to Explanatory
-                         to = pos[6, ], 
-                         lcol = "grey",
-                         #segment = c(0.25, 0.75),
-                         lty = 2)
+                           to = pos[6, ], 
+                           lcol = "grey",
+                           #segment = c(0.25, 0.75),
+                           lty = 2)
   }
   
   diagram::textrect( pos[1, ], 
@@ -108,9 +108,9 @@ showPOCI <- function(addC = ifelse(addI, TRUE, FALSE), # Always have PO; add C?
                        cex = 2)
   } else {
     diagram::textplain( pos[4, ], 
-               lab = "I", 
-               col = "grey",
-               cex = 2)
+                        lab = "I", 
+                        col = "grey",
+                        cex = 2)
   }
   if (addX){
     diagram::textrect( pos[6, ], 
