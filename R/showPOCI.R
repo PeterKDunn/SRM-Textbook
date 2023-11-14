@@ -8,7 +8,7 @@ showPOCI <- function(addC = ifelse(addI, TRUE, FALSE), # Always have PO; add C?
                      addOCXYArrows = FALSE){
   
   # CANVAS
-  par( mar = c(0.5, 0.5, 0.5, 0.5))
+  par( mar = c(0.25, 0.25, 0.25, 0.25))
   diagram::openplotmat()
   
   

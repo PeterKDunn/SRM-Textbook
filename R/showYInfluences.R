@@ -49,12 +49,12 @@ showYInfluences <- function (showY = TRUE,
   }
   if (showConfounding) {
     text(x = 0.666,
-         y = pos[4, 2],
+         y = pos[4, 2] - 0.02,
          cex = 0.85,
          pos = 3,
          labels = "No real")
     text(x = 0.666,
-         y = pos[4, 2],
+         y = pos[4, 2] + 0.02,
          cex = 0.85,
          pos = 1,
          labels = "link")
