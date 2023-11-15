@@ -3,14 +3,17 @@ showVariationExplained <- function(){
   par( mar = c(4.75, 0.5, 2.5, 0.5))
   diagram::openplotmat()
   
+  ### SETUP
+  
   xLoc <- seq(0.15, 0.80, 
               len = 4) 
-  barWidths <- 0.07
+  barWidths <- 0.06
   
   yNames <- c("Explan.",   
               "Chance", 
               "Extraneous",
               "Design") # Bottom to top
+  
   yRelative <- c(1.0, 0.9, 1.3, 0.8) / 4 # Bottom to top
   yHeights <- cumsum(yRelative)
   
@@ -39,8 +42,6 @@ showVariationExplained <- function(){
         line = 1,
         padj = 1, # Top aligned
         at = xLoc[1:4])
-  
-  ###
   
   
   #################################################################################
@@ -71,13 +72,37 @@ showVariationExplained <- function(){
   )      
   text(x = xLoc[1],
        y = mean(yHeights[1:4]),
-       labels = c("All variation\nappears\nto be chance"),
+       labels = c("All other\nvariation\nappears to\nbe chance"),
        #srt = 90,
        cex = 0.90
   )      
   
+  # Arrows
+  arrows(x0 = xLoc[1] + (1.2 * barWidths),
+         x1 = xLoc[1] + (1.2 * barWidths),
+         y0 = 0, 
+         y1 = yHeights[1],
+         code = 3,
+         length = 0.10,
+         angle = 15)
+  text(x = xLoc[1] + (1.3 * barWidths),
+       y = yHeights[1]/2,
+       labels = "Small amount\nof interest",
+       pos = 1,
+       srt = 90)
   
-  
+  arrows(x0 = xLoc[1] + (1.2 * barWidths),
+         x1 = xLoc[1] + (1.2 * barWidths),
+         y0 = yHeights[1],
+         y1 = yHeights[4],
+         code = 3,
+         length = 0.10,
+         angle = 15)
+  text(x = xLoc[1] + (1.3 * barWidths),
+       y = mean( yHeights[ c(1, 4)] ),
+       labels = "Large amount of\nother variation",
+       pos = 1,
+       srt = 90)
   
   
   
@@ -116,15 +141,15 @@ showVariationExplained <- function(){
   
   
   #Outline
-  polygon( x = c( xLoc[2] - barWidths,
-                  xLoc[2] - barWidths,
-                  xLoc[2] + barWidths,
-                  xLoc[2] + barWidths),
-           y = c(yHeights[1], 
-                 yHeights[2], 
-                 yHeights[2], 
-                 yHeights[1]),
-           lwd = 2)
+  #polygon( x = c( xLoc[2] - barWidths,
+  #                xLoc[2] - barWidths,
+  #                xLoc[2] + barWidths,
+  #                xLoc[2] + barWidths),
+  #         y = c(yHeights[1], 
+  #               yHeights[2], 
+  #               yHeights[2], 
+  #               yHeights[1]),
+  #         lwd = 2)
   # Text
   text(x = xLoc[2],
        y = mean( c(0, yHeights[1]) ),
@@ -147,7 +172,7 @@ showVariationExplained <- function(){
   )
   text(x = xLoc[2],
        y = mean( yHeights[3:4]),
-       labels = c("Explained by\ndesign"),
+       labels = c("Due to poor\ndesign"),
        #col = "grey",
        #     srt = 90,
        cex = 0.90
@@ -157,12 +182,6 @@ showVariationExplained <- function(){
   
   
   
-  #################################################################################
-  #  Text on right
-  text( x = xLoc[5],
-        y = yHeights[3],
-        labels = "xxx")
-
   #################################################################################
   ### Remove design component
   diagram::textrect( mid = c( xLoc[3], 
@@ -196,16 +215,16 @@ showVariationExplained <- function(){
   #                   lwd = 2)
   
   
-  #Outline
-  polygon( x = c( xLoc[2] - barWidths,
-                  xLoc[2] - barWidths,
-                  xLoc[2] + barWidths,
-                  xLoc[2] + barWidths),
-           y = c(yHeights[1], 
-                 yHeights[2], 
-                 yHeights[2], 
-                 yHeights[1]),
-           lwd = 2)
+  # #Outline
+  # polygon( x = c( xLoc[2] - barWidths,
+  #                 xLoc[2] - barWidths,
+  #                 xLoc[2] + barWidths,
+  #                 xLoc[2] + barWidths),
+  #          y = c(yHeights[1], 
+  #                yHeights[2], 
+  #                yHeights[2], 
+  #                yHeights[1]),
+  #          lwd = 2)
   # Text
   text(x = xLoc[3],
        y = mean( c(0, yHeights[1]) ),
@@ -274,15 +293,15 @@ showVariationExplained <- function(){
   
   
   #Outline
-  polygon( x = c( xLoc[2] - barWidths,
-                  xLoc[2] - barWidths,
-                  xLoc[2] + barWidths,
-                  xLoc[2] + barWidths),
-           y = c(yHeights[1], 
-                 yHeights[2], 
-                 yHeights[2], 
-                 yHeights[1]),
-           lwd = 2)
+  # polygon( x = c( xLoc[2] - barWidths,
+  #                 xLoc[2] - barWidths,
+  #                 xLoc[2] + barWidths,
+  #                 xLoc[2] + barWidths),
+  #          y = c(yHeights[1], 
+  #                yHeights[2], 
+  #                yHeights[2], 
+  #                yHeights[1]),
+  #          lwd = 2)
   # Text
   text(x = xLoc[4],
        y = mean( c(0, yHeights[1]) ),
