@@ -1,20 +1,24 @@
 showVariationExplained <- function(){
   
   par( mar = c(4.75, 0.5, 2.5, 0.5))
+
   diagram::openplotmat()
+
+  #axis(side=1); axis(side=2) 
   
   ### SETUP
   
   xLoc <- seq(0.15, 0.80, 
               len = 4) 
-  barWidths <- 0.06
+  barWidths <- 0.055
   
   yNames <- c("Explan.",   
               "Chance", 
               "Extraneous",
               "Design") # Bottom to top
   
-  yRelative <- c(1.0, 0.9, 1.3, 0.8) / 4 # Bottom to top
+  yRelative <- c(1.3, 0.9, 1.3, 0.8)  # Bottom to top: Explanatory var" is first
+  yRelative <- yRelative/ sum(yRelative)
   yHeights <- cumsum(yRelative)
   
   
@@ -23,12 +27,11 @@ showVariationExplained <- function(){
                    ExtraneousColourTransparent,
                    DesignColourTransparent )
   
-  #axis(side=1); axis(side=2) 
   
   mtext(text = c("Part of the\ntotal variation is\ndue to explanatory", 
                  "Total variation\nhas other\ncomponents too",
                  "Using good\ndesign reduces\nvariation",
-                 "Extraneous\nvariables\nexplain some\n variation"),
+                 "Extraneous vars.\nexplain some\nvariation"),
         side = 1,
         line = 1,
         padj = 1, # Top aligned
@@ -42,6 +45,8 @@ showVariationExplained <- function(){
         line = 1,
         padj = 1, # Top aligned
         at = xLoc[1:4])
+  
+  delta <- 0.01 # Amount by which to shrink arrows a little, so both are visible where they meet
   
   
   #################################################################################
@@ -81,14 +86,14 @@ showVariationExplained <- function(){
   arrows(x0 = xLoc[1] + (1.2 * barWidths),
          x1 = xLoc[1] + (1.2 * barWidths),
          y0 = 0, 
-         y1 = yHeights[1],
+         y1 = yHeights[1] - delta,
          code = 3,
          length = 0.10,
          angle = 15)
-  text(x = xLoc[1] + (1.3 * barWidths),
+  text(x = xLoc[1] + (1.65 * barWidths),
        y = yHeights[1]/2,
-       labels = "Small amount\nof interest",
-       pos = 1,
+       labels = "Quite\nsmall",
+       cex = 0.9,
        srt = 90)
   
   arrows(x0 = xLoc[1] + (1.2 * barWidths),
@@ -98,10 +103,10 @@ showVariationExplained <- function(){
          code = 3,
          length = 0.10,
          angle = 15)
-  text(x = xLoc[1] + (1.3 * barWidths),
+  text(x = xLoc[1] + (1.65 * barWidths),
        y = mean( yHeights[ c(1, 4)] ),
-       labels = "Large amount of\nother variation",
-       pos = 1,
+       labels = "Relatively large\namount of other variation",
+       cex = 0.9,
        srt = 90)
   
   
@@ -139,17 +144,6 @@ showVariationExplained <- function(){
                      box.col = boxColours[4],
                      lwd = 2)
   
-  
-  #Outline
-  #polygon( x = c( xLoc[2] - barWidths,
-  #                xLoc[2] - barWidths,
-  #                xLoc[2] + barWidths,
-  #                xLoc[2] + barWidths),
-  #         y = c(yHeights[1], 
-  #               yHeights[2], 
-  #               yHeights[2], 
-  #               yHeights[1]),
-  #         lwd = 2)
   # Text
   text(x = xLoc[2],
        y = mean( c(0, yHeights[1]) ),
@@ -165,7 +159,7 @@ showVariationExplained <- function(){
   )
   text(x = xLoc[2],
        y = mean( yHeights[2:3]),
-       labels = c("Explained by\nextraneous\nvariables"),
+       labels = c("Due to\nextraneous\nvariables"),
        #col = "grey",
        #     srt = 90,
        cex = 0.90
@@ -177,9 +171,33 @@ showVariationExplained <- function(){
        #     srt = 90,
        cex = 0.90
   )
+
+  # Arrows
+  arrows(x0 = xLoc[2] + (1.2 * barWidths),
+         x1 = xLoc[2] + (1.2 * barWidths),
+         y0 = 0, 
+         y1 = yHeights[1] - delta,
+         code = 3,
+         length = 0.10,
+         angle = 15)
+  text(x = xLoc[2] + (1.65 * barWidths),
+       y = yHeights[1]/2,
+       labels = "Still\nsmall",
+       cex = 0.9,
+       srt = 90)
   
-  
-  
+  arrows(x0 = xLoc[2] + (1.2 * barWidths),
+         x1 = xLoc[2] + (1.2 * barWidths),
+         y0 = yHeights[1],
+         y1 = yHeights[4],
+         code = 3,
+         length = 0.10,
+         angle = 15)
+  text(x = xLoc[2] + (1.65 * barWidths),
+       y = mean( yHeights[ c(1, 4)] ),
+       labels = "Still relatively large\namount of other variation",
+       cex = 0.9,
+       srt = 90)
   
   
   #################################################################################
@@ -206,25 +224,18 @@ showVariationExplained <- function(){
                      lcol = boxColours[3],
                      box.col = boxColours[3],
                      lwd = 2)
-  #diagram::textrect( mid = c( xLoc[2], mean( yHeights[3:4] ) ),
-  #                   radx = barWidths,
-  #                   rady =  yRelative[4] / 2,
-  #                   shadow.size = 0,
-  #                   lcol = boxColours[4],
-  #                   box.col = "white",
-  #                   lwd = 2)
   
-  
-  # #Outline
-  # polygon( x = c( xLoc[2] - barWidths,
-  #                 xLoc[2] - barWidths,
-  #                 xLoc[2] + barWidths,
-  #                 xLoc[2] + barWidths),
-  #          y = c(yHeights[1], 
-  #                yHeights[2], 
-  #                yHeights[2], 
-  #                yHeights[1]),
-  #          lwd = 2)
+  # "Shadow" missing bit
+  polygon( x = c(xLoc[3] - barWidths, 
+                 xLoc[3] - barWidths, 
+                 xLoc[3] + barWidths, 
+                 xLoc[3] + barWidths),
+           y = c(yHeights[3],
+                 yHeights[4],
+                 yHeights[4],
+                 yHeights[3]),
+           border = "grey")
+
   # Text
   text(x = xLoc[3],
        y = mean( c(0, yHeights[1]) ),
@@ -240,7 +251,7 @@ showVariationExplained <- function(){
   )
   text(x = xLoc[3],
        y = mean( yHeights[2:3]),
-       labels = c("Explained by\nextraneous\nvariables"),
+       labels = c("Due to\nextraneous\nvariables"),
        #col = "grey",
        #     srt = 90,
        cex = 0.90
@@ -248,11 +259,39 @@ showVariationExplained <- function(){
   text(x = xLoc[3],
        y = mean( yHeights[3:4]),
        labels = c("Reduced by\ngood design"),
-       #col = "grey",
+       col = grey(0.3),
        #     srt = 90,
        cex = 0.90
   )
   
+  
+  
+  # Arrows
+  arrows(x0 = xLoc[3] + (1.2 * barWidths),
+         x1 = xLoc[3] + (1.2 * barWidths),
+         y0 = 0, 
+         y1 = yHeights[1] - delta,
+         code = 3,
+         length = 0.10,
+         angle = 15)
+  text(x = xLoc[3] + (1.65 * barWidths),
+       y = yHeights[1]/2,
+       labels = "Still\nsmall",
+       cex = 0.9,
+       srt = 90)
+  
+  arrows(x0 = xLoc[3] + (1.2 * barWidths),
+         x1 = xLoc[3] + (1.2 * barWidths),
+         y0 = yHeights[1],
+         y1 = yHeights[3],
+         code = 3,
+         length = 0.10,
+         angle = 15)
+  text(x = xLoc[3] + (1.65 * barWidths),
+       y = mean( yHeights[ c(1, 3)] ),
+       labels = "Moderate amount\nof other variation",
+       cex = 0.9,
+       srt = 90)
   
   
   
@@ -275,33 +314,7 @@ showVariationExplained <- function(){
                      shadow.size = 0,
                      lcol = boxColours[2],
                      box.col = boxColours[2])
-  # diagram::textrect( mid = c( xLoc[3], 
-  #                             mean( yHeights[2:3] ) ),
-  #                    radx = barWidths,
-  #                    rady = yRelative[3] / 2,
-  #                    shadow.size = 0,
-  #                    lcol = boxColours[3],
-  #                    box.col = boxColours[3],
-  #                    lwd = 2)
-  #diagram::textrect( mid = c( xLoc[2], mean( yHeights[3:4] ) ),
-  #                   radx = barWidths,
-  #                   rady =  yRelative[4] / 2,
-  #                   shadow.size = 0,
-  #                   lcol = boxColours[4],
-  #                   box.col = "white",
-  #                   lwd = 2)
-  
-  
-  #Outline
-  # polygon( x = c( xLoc[2] - barWidths,
-  #                 xLoc[2] - barWidths,
-  #                 xLoc[2] + barWidths,
-  #                 xLoc[2] + barWidths),
-  #          y = c(yHeights[1], 
-  #                yHeights[2], 
-  #                yHeights[2], 
-  #                yHeights[1]),
-  #          lwd = 2)
+
   # Text
   text(x = xLoc[4],
        y = mean( c(0, yHeights[1]) ),
@@ -318,71 +331,63 @@ showVariationExplained <- function(){
   text(x = xLoc[4],
        y = mean( yHeights[2:3]),
        labels = c("Explained by\nextraneous\nvariables"),
-       #col = "grey",
+       col = grey(0.3),
        #     srt = 90,
        cex = 0.90
   )
   text(x = xLoc[4],
        y = mean( yHeights[3:4]),
        labels = c("Reduced by\ngood design"),
-       #col = "grey",
+       col = grey(0.3),
        #     srt = 90,
        cex = 0.90
   )
   
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+  # "Shadow" missing bit
+  polygon( x = c(xLoc[4] - barWidths, 
+                 xLoc[4] - barWidths, 
+                 xLoc[4] + barWidths, 
+                 xLoc[4] + barWidths),
+           y = c(yHeights[3],
+                 yHeights[4],
+                 yHeights[4],
+                 yHeights[3]),
+           border = "grey")
+  polygon( x = c(xLoc[4] - barWidths, 
+                 xLoc[4] - barWidths, 
+                 xLoc[4] + barWidths, 
+                 xLoc[4] + barWidths),
+           y = c(yHeights[3],
+                 yHeights[2],
+                 yHeights[2],
+                 yHeights[3]),
+           border = "grey")
 
-  
-  ### Arrow 
-  arrows(y0 = 0,
-         y1 = 1,
-         x0 = 0.06,
-         x1 = 0.06,
-         code = 3, # Arrow both ends
-         length = 0.15,
+    
+  # Arrows
+  arrows(x0 = xLoc[4] + (1.2 * barWidths),
+         x1 = xLoc[4] + (1.2 * barWidths),
+         y0 = 0, 
+         y1 = yHeights[1] - delta,
+         code = 3,
+         length = 0.10,
          angle = 15)
-  text(x = 0.03,
-       y = 0.5,
-       labels = "Total variation in the response",
-       srt = 90,
-       cex = 0.90)
+  text(x = xLoc[4] + (1.65 * barWidths),
+       y = yHeights[1]/2,
+       labels = "Can be\ndetected",
+       cex = 0.9,
+       srt = 90)
   
-  
-  ### Arrow
-  delta <- 0.01
-  arrows(y0 = yHeights[2] + delta,
-         y1 = 1,
-         x0 = 0.92,
-         x1 = 0.92,
-         code = 3, # Arrow both ends
-         length = 0.15,
+  arrows(x0 = xLoc[4] + (1.2 * barWidths),
+         x1 = xLoc[4] + (1.2 * barWidths),
+         y0 = yHeights[1],
+         y1 = yHeights[2],
+         code = 3,
+         length = 0.10,
          angle = 15)
-  text(x = 0.97,
-       y = mean(yHeights[c(2, 4)]),
-       labels = "These effects\nexplained",
-       srt = 90,
-       cex = 0.90)
-  
-  ### Arrow
-  arrows(y0 = yHeights[2] - delta,
-         y1 = 0,
-         x0 = 0.92,
-         x1 = 0.92,
-         code = 3, # Arrow both ends
-         length = 0.15,
-         angle = 15)
-  text(x = 0.97,
-       y = mean(yHeights[1]),
-       labels = "Impact of explanatory\neasier to detect",
-       srt = 90,
-       cex = 0.90)
+  text(x = xLoc[4] + (1.65 * barWidths),
+       y = mean( yHeights[ 1:2] ),
+       labels = "Small\namount",
+       cex = 0.9,
+       srt = 90)
 }
