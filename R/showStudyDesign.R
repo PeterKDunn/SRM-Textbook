@@ -262,19 +262,6 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   }
 
   
-    # Arrows from Treatments/Conditions to Compare
-#  diagram::straightarrow(from = pos[3,], 
-#                         to = pos[5,], 
-#                         lcol = "black",
-#                         lty = 1, 
-#                         lwd = 2)
-#  diagram::straightarrow(from = pos[4,], 
-#                         to = pos[5,], 
-#                         lcol = "black",
-#                         lwd = 2,
-#                         lty = 1)
-  
-  
   # ADD GROUPS
   numGroups <- length(addGroupNames)
   # Only works for two at the moment!!
@@ -511,7 +498,8 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
              lwd = 2,
              border = "grey")
     text( x = 0.725,
-          y =  0.05,
+          y =  0.95,
+          cex = 1.1,
           labels = "Internal validity")  }
   
   if (addExternalValidityText) {
@@ -520,7 +508,8 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
              lwd = 2,
              border = "grey")
     text( x = 0.225,
-          y =  0.05,
+          y =  0.95,
+          cex = 1.1,
           labels = "External validity")
     
     
