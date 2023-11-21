@@ -1,0 +1,1192 @@
+# Comparing qualitative data {#SummariseQuantData}
+
+## Graphing qualitative data
+
+
+When a *qualitative* variable is compared across different groups (i.e., comparing between individuals), options for plotting include:
+
+* *Stacked bar charts* (Sect.\ \@ref(StackedBarCharts));
+* *Side-by-side bar charts* (Sect.\ \@ref(SideBySideBarCharts)); or
+* *Dot charts* (Sect.\ \@ref(TwoWayCountsDotCharts)).
+
+As an example, a study of road kill [@data:Russell2009:Possums] produced the data in Table\ \@ref(tab:PossumRoadkillNumber).
+The two qualitative variables are the *season* (ordinal, with four levels) and the *sex* (nominal, with three levels including 'Unknown').
+
+
+```{r PossumRoadkillNumber}
+## Russell2009
+
+Counts <- matrix( c(75, 25, 21,   
+                    74, 27, 22,   
+                    71, 10, 18,   
+                    58, 10, 12), 
+                  nrow = 4, 
+		  ncol = 3, 
+		  byrow = TRUE) 
+rownames(Counts) <- c("Autumn", 
+                      "Winter", 
+                      "Spring", 
+                      "Summer")
+colnames(Counts) <- c("Unknown", 
+                      "M", 
+                      "F")
+
+Counts2 <- Counts
+rownames(Counts2) <- c("Aut.", 
+                       "Wint.", 
+                       "Spr.", 
+                       "Sum.")
+
+Percentages <- t( apply(Counts2, 1,
+                  function(x){ round(x / sum(x) * 100, 1)}))
+colnames(Percentages) <- c("Unknown", "Males", "Females")
+
+
+if( knitr::is_latex_output() ) {
+  T1 <- knitr::kable(surroundMaths(Counts,
+                                   decDigits = 0),
+               format = "latex",
+               longtable = FALSE,
+               escape = FALSE,
+               align = c("r", "c", "c", "c"),
+               booktabs = TRUE) %>%
+    #kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+  
+  rownames(Percentages) <- c("Autumn", 
+                             "Winter",
+                             "Spring",
+                             "Summer")
+    T2 <- knitr::kable(surroundMaths(Percentages,
+                                     decDigits = 1),
+               format = "latex",
+               longtable = FALSE,
+               escape = FALSE,
+               align = c("r", "r", "r"),
+               booktabs = TRUE) %>%
+    #kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+    
+   out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "PossumRoadkillNumber",
+                       caption = "The number of possums found as road kill, by sex and season (left). The percentages of possums found as road kill by sex, within each season (i.e., rows sum to 100\\%) (right).") %>% 
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out) 
+  out2  
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(Counts,
+               format = "html",
+               longtable = FALSE,
+               align = c("r", "c", "c", "c"),
+               booktabs = TRUE,
+               caption = "The number of possums found as road kill, by sex and season") %>%
+     kable_styling(full_width = FALSE)
+}
+```
+
+
+### Stacked bar charts {#StackedBarCharts}
+
+The data can be graphed by using a bar for each season, *stacking* the bars by sex on top of each other, within each season (Fig.\ \@ref(fig:PossumStackedBarChart), left panel).
+
+
+```{r PossumStackedBarChart, fig.height=3.75, fig.width=9, out.width='100%', fig.align="center", fig.cap="The number of possums found as road kill, by sex and season. Left panel: A stacked barchart; right panel: A side-by-side barchart"}
+
+par(mfrow = c(1, 2))
+
+colnames(Counts2) <- c("?", "M", "F")
+
+out <- barplot( t(Counts2), 
+   beside = FALSE,
+   ylab = "Number of possums",
+   xlab = "Season",
+   main = "Stacked barchart of\nroadkill possums",
+   col = viridis(3),
+   #space = c(0.15, 1),
+   ylim = c(0, 125),
+   xlim = c(0, 5),
+   las = 1)
+grid(nx = NA, 
+     ny = NULL)
+
+text( out[4] + 0.6, 70, 
+      "F", 
+      adj = 0)
+text( out[4] + 0.6, 60, 
+      "M",
+      adj = 0)
+text( out[4] + 0.6, 30, 
+      "?",
+      adj = 0)
+
+text( out[1] - 0.8, 110, 
+      "F", 
+      adj = 0)
+text( out[1] - 0.8,  90, 
+      "M", 
+      adj = 0)
+text( out[1] - 0.8,  40,
+      "?", 
+      adj = 0)
+
+
+######
+
+out <- barplot( t(Counts2), 
+   beside = TRUE,
+   ylab = "Number of possums",
+   xlab = "Season",
+   main = "Side-by-side barchart of\nroadkill possums",
+   col = viridis(3),
+   space = c(0.15, 1),
+   ylim = c(0, 80),
+   las = 1)
+grid(nx = NA, 
+     ny = 6)
+
+mtext( "?", 
+       at = out[1, ], 
+       side = 1, 
+       line = 0, 
+       cex = 0.8, 
+       padj = 0.5)
+mtext( "M", 
+       at = out[2, ], 
+       side = 1, 
+       line = 0, 
+       cex = 0.8, 
+       padj = 0.5)
+mtext( "F", 
+       at = out[3, ], 
+       side = 1, 
+       line = 0, 
+       cex = 0.8, 
+       padj = 0.5)
+```
+
+
+
+### Side-by-side bar charts {#SideBySideBarCharts}
+
+Instead of stacking the bars within each season on top of each other, the bars can be placed *side-by-side* within each season (Fig.\ \@ref(fig:PossumStackedBarChart), right panel).
+
+
+
+### Dot charts {#TwoWayCountsDotCharts}
+
+Instead of bars, dots (or other symbols) can be used in place of a side-by-side bar chart (Fig.\ \@ref(fig:PossumDotCharts)).
+
+
+```{r PossumDotCharts, fig.height=4.5, fig.width=5.0, fig.cap="A dot chart of the number of possums found as road kill, by sex and season", fig.align="center"}
+colnames(Counts) <- c("Unknown", 
+                      "Males", 
+                      "Females")
+
+dotchart(Counts,
+         main = "Dot chart of possum road deaths\nby season and sex of possum",
+         xlim = c(0, 80),
+ 	       xlab = "Number of possums",
+	       pch = c(1, 2, 3, 4))
+```
+
+
+### Other variations {#OtherVariations}
+
+Many variations of these charts are possible, such as using:
+
+* a stacked bar chart, side-by-side bar chart, or dot chart can be used;
+* percentages or counts can be used;
+* the counts (or percentage) can appear on either the horizontal or vertical axis;
+* either the sex of the possum or the season can be used as the first division of the data.
+
+Some of these variations are shown in 
+`r if (knitr::is_latex_output()) {
+   'Fig.\\ \\@ref(fig:PossumBarChartsLATEX).'
+} else {
+   'Fig.\\ \\@ref(fig:PossumBarChartsHTML).'
+}`
+A table is also possible, of either counts
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:PossumRoadkillNumber), left table) or percentages (right  table).'
+} else {
+   'Table\\ \\@ref(tab:PossumRoadkillPercentagesHTML) or percentages (Table\\ \\@ref(tab:PossumRoadkillPercentagesHTML)).'
+}`
+
+
+```{r PossumBarChartsLATEX, fig.height=8, fig.width=8.0, out.width='100%', fig.cap="Four graphs: The number or percentage of possums found as road kill, by sex and season, and a dot chart", fig.align="center"}
+
+if (knitr::is_latex_output()) {
+  par( mfrow = c(2, 2))
+  
+  colnames(Counts2) <- c("?", 
+                         "M", 
+                         "F")
+  
+  barplot( Counts2, 
+     beside = TRUE,
+     xlab = "Number of possums",
+     main = "Roadkill possums",
+     #ylab = "Season",
+     space = c(0.15, 1),
+     ylim = c(0, 16),
+     xlim = c(0, 80),
+     horiz = TRUE,
+     axes = FALSE,
+     names.arg = c("", "", ""),
+     las = 1)
+  grid(ny = NA, 
+       nx = 8)
+  
+  out <- barplot( Counts2, # Plot again to cover the lines added by  grid()
+     beside =TRUE,
+     xlab = "Number of possums",
+     #ylab = "Season",
+     main = "Bar chart of possum road deaths\nby season and sex of possum",
+     col = viridis(4),
+     space = c(0.15, 1),
+     ylim = c(0, 16),
+     xlim = c(0, 80),
+     las = 1,
+     horiz = TRUE,
+     names.arg = c("", "", ""),
+     add = TRUE)
+  
+  mtext( "Au", 
+         at = out[1, ], 
+         side = 2, 
+         line = 1, 
+         las = 1)
+  mtext( "Wn",
+          at = out[2, ], 
+  	side = 2, 
+  	line = 1, 
+  	las = 1)
+  mtext( "Sp", 
+         at = out[3, ], 
+         side = 2, 
+         line = 1, 
+         las = 1)
+  mtext( "Su", 
+          at = out[4, ], 
+  	side = 2, 
+  	line = 1, 
+  	las = 1)
+  
+  mtext( "Females", 
+          at = 14, 
+  	side = 2, 
+  	line = 3, 
+  	las = 3)
+  mtext( "Males",   
+         at = 8, 
+         side = 2, 
+         line = 3, 
+         las = 3)
+  mtext( "Unknown", 
+         at = 3, 
+         side = 2, 
+         line = 3, 
+         las = 3)
+  
+  
+  Percentages <- t( apply(Counts2, 1,
+                          function(x){ round(x / sum(x) * 100, 1)}))
+  colnames(Percentages) <- c("Unknown", "Males", "Females")
+  
+  barplot( Percentages, 
+     beside = TRUE,
+     ylab = "Percentages of possums",
+     main = "Roadkill possums",
+     #xlab = "Season",
+     space = c(0.15,1),
+     names.arg = rep("", 3),
+     ylim = c(0,80),
+     las = 1)
+  grid(nx = NA, 
+       ny = 8)
+  
+  out <- barplot( Percentages, 
+     beside = TRUE,
+     ylab = "Percentages of possums",
+     #xlab =" Season",
+     main = "Bar chart of possum road deaths\nby season and sex of possum",
+     space = c(0.15, 1),
+     col = viridis(4),
+     names.arg = rep("", 3),
+     ylim=c(0, 80),
+     las = 1,
+     add = TRUE)
+  
+  mtext( "Au", 
+         at = out[1, ], 
+         side = 1, 
+         line = 1, 
+         cex = 0.8, 
+         padj = 0.5)
+  mtext( "Wn", 
+         at = out[2, ], 
+         side = 1, 
+         line = 1, 
+         cex = 0.8, 
+         padj = 0.5)
+  mtext( "Sp", 
+         at = out[3, ], 
+         side = 1, 
+         line = 1, 
+         cex = 0.8, 
+         padj = 0.5)
+  mtext( "Su", 
+         at = out[4, ], 
+         side = 1, 
+         line = 1, 
+         cex = 0.8, 
+         padj = 0.5)
+  
+  mtext( "Unknown", 
+         at = mean(out[, 1]), 
+         side = 1, 
+         line = 3, 
+         cex = 1, 
+         padj = 0.5)
+  mtext( "Males",   
+         at = mean(out[, 2]), 
+         side = 1, 
+         line = 3, 
+         cex = 1, 
+         padj = 0.5)
+  mtext( "Females", 
+         at = mean(out[, 3]), 
+         side = 1, 
+         line = 3, 
+         cex = 1, 
+         padj = 0.5)
+  
+  barplot( Percentages, 
+     beside = TRUE,
+     ylab = "Percentages of possums",
+     main = "Roadkill possums",
+     #xlab = "Season",
+     space = c(0.15, 1),
+     names.arg = rep("", 3),
+     ylim = c(0, 80),
+     las = 1)
+  grid(nx = NA, 
+       ny = 8)
+  
+  out <- barplot( Percentages, 
+     beside = TRUE,
+     ylab = "Percentages of possums",
+     #xlab = "Season",
+     main = "Bar chart of possum road deaths\nby season and sex of possum",
+     space = c(0.15, 1),
+     names.arg = rep("", 3),
+     col = viridis(4),
+     #horiz = TRUE,
+     ylim = c(0, 80),
+     las = 1,
+     add = TRUE)
+  
+  mtext( "Au", 
+         at = out[1, ], 
+         side = 1, 
+         line = 1, 
+         cex = 0.8, 
+         padj = 0.5)
+  mtext( "Wn", 
+         at = out[2, ], 
+         side = 1, 
+         line = 1, 
+         cex = 0.8, 
+         padj = 0.5)
+  mtext( "Sp", 
+         at = out[3, ], 
+         side = 1, 
+         line = 1, 
+         cex = 0.8, 
+         padj = 0.5)
+  mtext( "Su", 
+         at = out[4, ], 
+         side = 1, 
+         line = 1, 
+         cex = 0.8, 
+         padj = 0.5)
+  
+  mtext( "Unknown", 
+         at = mean(out[, 1]), 
+         side = 1, 
+         line = 3, 
+         cex = 1, 
+         padj = 0.5)
+  mtext( "Males",   
+         at = mean(out[, 2]), 
+         side = 1, 
+         line = 3, 
+         cex = 1, 
+         padj = 0.5)
+  mtext( "Females", 
+         at = mean(out[, 3]), 
+         side = 1, 
+         line = 3, 
+         cex = 1, 
+         padj = 0.5)
+  
+  
+  
+colnames(Counts) <- c("Unknown", 
+                      "Males", 
+                      "Females")
+
+dotchart( t(Counts),
+         main = "Dot chart of possum road deaths\nby season and sex of possum",
+         xlim = c(0, 80),
+ 	       xlab = "Number of possums",
+	       pch = c(1, 2, 3, 4))
+}
+```
+
+```{r PossumBarChartsHTML, fig.height=10, fig.width=4.0, fig.cap="Four graphs: The number or percentage of possums found as road kill, by sex and season, and a dot chart", fig.align="center"}
+
+if (knitr::is_html_output()) {
+  par( mfrow = c(4, 1))
+
+  colnames(Counts2) <- c("?", 
+                         "M", 
+                         "F")
+  
+  barplot( Counts2, 
+     beside = TRUE,
+     xlab = "Number of possums",
+     #ylab = "Season",
+     main = "Roadkill possums",
+     space = c(0.15, 1),
+     ylim = c(0, 16),
+     xlim = c(0, 80),
+     horiz = TRUE,
+     axes = FALSE,
+     names.arg = c("", "", ""),
+     las = 1)
+  grid(ny = NA, 
+       nx = 8)
+  
+  out <- barplot( Counts2, # Plot again to cover the lines added by  grid()
+     beside =TRUE,
+     xlab = "Number of possums",
+     #ylab = "Season",
+     main = "Bar chart of possum road deaths\nby season and sex of possum",
+     space = c(0.15, 1),
+     ylim = c(0, 16),
+     xlim = c(0, 80),
+     las = 1,
+     horiz = TRUE,
+     names.arg = c("", "", ""),
+     add = TRUE)
+  
+  mtext( "Au", 
+         at = out[1, ], 
+         side = 2, 
+         line = 1, 
+         las = 1)
+  mtext( "Wn",
+          at = out[2, ], 
+  	side = 2, 
+  	line = 1, 
+  	las = 1)
+  mtext( "Sp", 
+         at = out[3, ], 
+         side = 2, 
+         line = 1, 
+         las = 1)
+  mtext( "Su", 
+          at = out[4, ], 
+  	side = 2, 
+  	line = 1, 
+  	las = 1)
+  
+  mtext( "Females", 
+          at = 14, 
+  	side = 2, 
+  	line = 3, 
+  	las = 3)
+  mtext( "Males",   
+         at = 8, 
+         side = 2, 
+         line = 3, 
+         las = 3)
+  mtext( "Unknown", 
+         at = 3, 
+         side = 2, 
+         line = 3, 
+         las = 3)
+  
+  
+  Percentages <- t( apply(Counts2, 1,
+                          function(x){ round(x / sum(x) * 100, 1)}))
+  colnames(Percentages) <- c("Unknown", "Males", "Females")
+  
+  barplot( Percentages, 
+     beside = TRUE,
+     ylab = "Percentages of possums",
+     main = "Roadkill possums",
+     #xlab = "Season",
+     space = c(0.15,1),
+     names.arg = rep("", 3),
+     ylim = c(0,80),
+     las = 1)
+  grid(nx = NA, 
+       ny = 8)
+  
+  out <- barplot( Percentages, 
+     beside = TRUE,
+     ylab = "Percentages of possums",
+     #xlab =" Season",
+     main = "Bar chart of possum road deaths\nby season and sex of possum",
+     space = c(0.15, 1),
+     names.arg = rep("", 3),
+     ylim=c(0, 80),
+     las = 1,
+     add = TRUE)
+  
+  mtext( "Au", 
+         at = out[1, ], 
+         side = 1, 
+         line = 1, 
+         cex = 0.8, 
+         padj = 0.5)
+  mtext( "Wn", 
+         at = out[2, ], 
+         side = 1, 
+         line = 1, 
+         cex = 0.8, 
+         padj = 0.5)
+  mtext( "Sp", 
+         at = out[3, ], 
+         side = 1, 
+         line = 1, 
+         cex = 0.8, 
+         padj = 0.5)
+  mtext( "Su", at=out[4,], side=1, line=1, cex=0.8, padj=0.5)
+  
+  mtext( "Unknown", 
+         at = mean(out[, 1]), 
+         side = 1, 
+         line = 3, 
+         cex = 1, 
+         padj = 0.5)
+  mtext( "Males",   
+         at = mean(out[, 2]), 
+         side = 1, 
+         line = 3, 
+         cex = 1, 
+         padj = 0.5)
+  mtext( "Females", 
+         at = mean(out[, 3]), 
+         side = 1, 
+         line = 3, 
+         cex = 1, 
+         padj = 0.5)
+  
+  barplot( Percentages, 
+     beside = TRUE,
+     ylab = "Percentages of possums",
+     main = "Roadkill possums",
+     #xlab = "Season",
+     space = c(0.15, 1),
+     names.arg = rep("", 3),
+     ylim = c(0, 80),
+     las = 1)
+  grid(nx = NA, 
+       ny = 8)
+  
+  out <- barplot( Percentages, 
+     beside = TRUE,
+     ylab = "Percentages of possums",
+     #xlab = "Season",
+     main = "Bar chart of possum road deaths\nby season and sex of possum",
+     space = c(0.15, 1),
+     names.arg = rep("", 3),
+     #horiz = TRUE,
+     ylim = c(0, 80),
+     las = 1,
+     add = TRUE)
+  
+  mtext( "Au", 
+         at = out[1, ], 
+         side = 1, 
+         line = 1, 
+         cex = 0.8, 
+         padj = 0.5)
+  mtext( "Wn", 
+         at = out[2, ], 
+         side = 1, 
+         line = 1, 
+         cex = 0.8, 
+         padj = 0.5)
+  mtext( "Sp", 
+         at = out[3, ], 
+         side = 1, 
+         line = 1, 
+         cex = 0.8, 
+         padj = 0.5)
+  mtext( "Su", 
+         at = out[4, ], 
+         side = 1, 
+         line = 1, 
+         cex = 0.8, 
+         padj = 0.5)
+  
+  mtext( "Unknown", 
+         at = mean(out[, 1]), 
+         side = 1, 
+         line = 3, 
+         cex = 1, 
+         padj = 0.5)
+  mtext( "Males",   
+         at = mean(out[, 2]), 
+         side = 1, 
+         line = 3, 
+         cex = 1, 
+         padj = 0.5)
+  mtext( "Females", 
+         at = mean(out[, 3]), 
+         side = 1, 
+         line = 3, 
+         cex = 1, 
+         padj = 0.5)
+  
+  
+  
+  colnames(Counts) <- c("Unknown", 
+                      "Males", 
+                      "Females")
+
+dotchart( t(Counts),
+         main = "Dot chart of possum road deaths\nby season and sex of possum",
+         xlim = c(0, 80),
+ 	       xlab = "Number of possums",
+	       pch = c(1, 2, 3, 4))
+}
+```
+
+
+<!-- tables are side-by-side in LaTeX, so only need separate one for HTML -->
+```{r PossumRoadkillPercentagesHTML}
+colnames(Percentages) <- c("Unknown", "M", "F")
+
+if( knitr::is_html_output() ) {
+  knitr::kable(Percentages,
+               format = "html",
+               longtable = FALSE,
+               align = c("r", "r", "r"),
+               booktabs = TRUE,
+               caption = "The percentages of possums found as road kill by sex, within each season (i.e., rows sum to 100%)") %>%
+    kable_styling(full_width = FALSE)
+}
+```
+
+::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
+Of all these displays, which one do you think best communicates the message in the data?
+:::
+
+
+<iframe src="https://learningapps.org/watch?v=pgn3q7ptv22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+
+
+
+### Two-way table and percentages
+
+### Comparing odds: odds ratios {#OdddsRatios}
+
+To summarise the *small* kidney stone data (Table\ \@ref(tab:KS-Small)):
+
+* *Method\ A*: the odds of success are $13.5$ ($13.5$ *times* as many successes as failures).
+* *Method\ B*: the odds of success are  $6.5$ ($6.5$ *times* as many successes as failures).
+
+The odds of success for Method\ A and Method\ B are very different.
+In the sample, the odds of success for Method\ A is many *times* greater than for Method\ B.
+In fact, in the sample, the odds of success for Method\ A is $13.5\div 6.5 = 2.08$ *times* the odds of a success for Method\ B.
+This value is the *odds ratio* (OR).
+The sample odds ratio is a *statistic*, and the population odds ratio is a *parameter*.
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Pics/iconmonstr-cursor-21-240.png" width="50px"/>
+</div>
+
+
+::: {.definition #OddsRatio name="Odds Ratio (OR)"}
+The *odds ratio* is the ratio of the odds of an event in one group, compared to the odds of the *same* event in a *different* group:  
+\[
+   \text{Odds ratio} = 
+   \frac{\text{Odds of an event in Group A}}
+        {\text{Odds of the same event in Group B}}.
+\]
+:::
+
+
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
+Understanding how software computes the odds ratio is important for understanding the output. 
+jamovi output can be interpreted in *either* of these ways (i.e., both are correct):
+\vspace{-2ex}
+
+* The *odds* compare Row\ 1 counts to Row\ 2 counts, for both columns.  
+  The *odds ratio* then compares the Column\ 1 odds to the Column\ 2 odds.
+* The *odds* compare Column\ 1 counts to Column\ 2 counts.  
+  The *odds ratio* then compares the Row\ 1 odds to the Row\ 2 odds.
+\vspace{-2ex}
+  
+Odds and odds ratios are computed with the *first row* and *first column* values on the *top* of the fraction.
+:::
+
+
+The OR compares the odds of the same event in two different groups.
+This means that a $2\times 2$ table can be summarised using one number: the odds ratio (OR).
+
+Take care interpreting odds ratios (or ORs):
+  
+* odds ratio is *greater than $1$*:
+  the odds of the event is *greater* for the group in the top of the division compared to the group in the bottom of the division.
+* odds ratio is *equal to $1$*:
+  the odds of the event is the *same* for both groups (in the top and the bottom of the division).
+* odds ratio is *less than $1$*:
+  the odds of the event is *less* for the group in the top of the division compared to the group in the bottom of the division.
+
+
+`r if (knitr::is_html_output()){
+  'The following short video may help explain some of these concepts:'
+}`
+
+
+<div style="text-align:center;">
+```{r}
+htmltools::tags$video(src ="./videos/oddsratios.mp4", 
+                      width="550", 
+                      controls="controls", 
+                      loop="loop", 
+                      style="padding:5px; border: 2px solid gray;")
+```
+</div>
+
+
+<iframe src="https://learningapps.org/watch?v=pcyn538fj22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+
+
+
+## Observing relationships {#OddsObserveRelationships}
+
+For the *small* kidney stone data, the odds of a success for Method\ A ($13.5$) is different than the odds of a successes for Method\ B ($6.52$), in the *sample*.
+Is there a difference in the *population* odds?
+
+Broadly, two possible reasons exist to explain the differences *in the sample odds*:
+
+* The *population odds* are the same for Method\ A and Method\ B, but the *sample odds* are difference simply because of sample obtained.
+  After all, we have just one of the many possible samples, and every sample is likely to be different; the *sample* we studied just happened to show a difference.
+  That is, *sampling variation* explains the *difference in the sample odds*.
+       
+* The *population odds* are different for Method\ A and Method\ B, and so the *sample odds* are difference, simply reflects this difference between the *population* odds.
+
+The difficulty, of course, is knowing which of these two reasons ('hypotheses') is the most likely reason for the difference between the sample odds.
+This question is of prime importance (after all, it answers the RQ), and is addressed at length later in this book.
+
+
+## Example: skipping breakfast {#Skipping-Breakfast}
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-daria-shevtsova-949067.jpg" width="200px"/>
+</div>
+
+
+The data in Table\ \@ref(tab:SkipBreakfast) come from a study of Iranian children aged $6$--$18$ years old [@data:kelishadi2017:snack].
+From this table:	
+
+* The *proportion* of females who skipped breakfast is $\hat{p}_F = 2\,383/6\,640 = 0.359$;
+* The *proportion* of   males who skipped breakfast is $\hat{p}_M = 1\,944/6\,846 = 0.284$.
+
+Alternatively,
+
+* $\text{Odds}(\text{Skips breakfast, among F}) = 2\,383/4\,257 = 0.5598$;
+* $\text{Odds}(\text{Skips breakfast, among M}) = 1\,944/4\,902 = 0.3966$.
+
+(Notice that the number on *top* of the fraction in each case is from the *first* column.)
+So, about $55.98$ females *skip* breakfast for every $100$ females who *do eat* breakfast (i.e., Column\ 1).
+The *odds ratio* (OR) comparing the odds of skipping breakfast, comparing females (Row\ 1) to males (Row\ 2), is  
+\begin{align*}
+    \text{OR}
+  &= \frac{\text{Odds}(\text{Skipping breakfast, for females})}{\text{Odds}(\text{Skipping breakfast, for males})}\\ 
+  &= \frac{0.5598}{0.3966} 
+  = 1.41.
+\end{align*}
+(Notice that the number of *top* of the fraction is the odds computed from the *first* row.)
+The odds of females skipping breakfast are $1.41$ *times* the odds of males skipping breakfast.
+The information can be summarised numerically (Table\ \@ref(tab:BreakSum)).
+
+
+```{r SkipBreakfast}
+Counts <- c(2383, 
+            1944, 
+            4257, 
+            4902)
+Gender <- c("Females", 
+            "Males", 
+            "Females", 
+            "Males")
+Breakfast <- c("Skip", 
+               "Skip", 
+               "Doesn't skip", 
+               "Doesn't skip")
+
+Brek <- xtabs(Counts ~ Gender + Breakfast)[, c(2, 1)]
+Brek2 <- cbind(Brek, "Total" = rowSums(Brek))
+
+if( knitr::is_latex_output() ) {
+  kable(surroundMaths(Brek2,
+                      decDigits = 0),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        align = c("r", "r", "r"),
+        digits = 0,
+        col.names = c("Skips breakfast", 
+                      "Doesn't skip breakfast", 
+                      "Total"),
+        caption = "The number of Iranian children aged 6 to 18 who skip and do not skip breakfast" ) %>%
+   row_spec(0, bold = TRUE) %>%
+   kable_styling(font_size = 10) %>%
+   column_spec(column = 4, 
+               bold = TRUE)
+}
+
+if( knitr::is_html_output() ) {
+  kable(Brek2,
+        format = "html",
+        longtable = FALSE,
+        booktabs = TRUE,
+        align = c("r", "r", "r"),
+        digits = 0,
+        col.names = c("Skips breakfast", 
+                      "Doesn't skip breakfast", 
+                      "Total"),
+        caption = "The number of Iranian children aged 6 to 18 who skip and do not skip breakfast" ) %>%
+    column_spec(column = 4, 
+                bold = TRUE)
+}
+```
+
+
+```{r BreakSum}
+Brek.Sum <- array( NA, 
+                   dim = c(3, 3))
+rownames(Brek.Sum) <- c("Females", 
+                        "Males", 
+                        "Odds ratio")
+
+Brek.Sum[1, 1] <- Brek[1, 1] / sum(Brek[1,]) * 100
+Brek.Sum[2, 1] <- Brek[2, 1] / sum(Brek[2,]) * 100
+
+Brek.Sum[1, 2] <- Brek[1, 1] /Brek[1, 2]
+Brek.Sum[2, 2] <- Brek[2, 1] /Brek[2, 2]
+
+Brek.Sum[3, 2] <- Brek.Sum[1, 2] / Brek.Sum[2, 2]
+
+Brek.Sum[1, 3] <- sum(Brek[1, ])
+Brek.Sum[2, 3] <- sum(Brek[2, ])
+
+if( knitr::is_latex_output() ) {
+  kable(surroundMaths(Brek.Sum,
+                      decDigits = c(1, 3, 0)),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        align = c("r", "r", "r"),
+        digits = c(1, 3),
+        col.names = c("Percentage", 
+                      "Odds", 
+                      "Sample size"),
+        caption = "Numerical summary of the Iranian-breakfast data: odds and percentage of those who skip breakfast") %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(3, bold = TRUE) %>%
+    row_spec(row = 2, 
+             hline_after = TRUE)
+}
+if( knitr::is_html_output() ) {
+  kable(Brek.Sum,
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               align = c("r", "r", "r"),
+               digits = c(1, 3),
+               col.names = c("Percentage", 
+                             "Odds", 
+                             "Sample size"),
+               caption = "Numerical summary of the Iranian-breakfast data: Odds and percentage of those who skip breakfast") %>%
+    row_spec(3, bold = TRUE) %>%
+    row_spec(row = 2, 
+             hline_after = TRUE)
+}
+```
+
+The odds of skipping breakfast is different for females ($0.560$) and males ($0.397$).
+Two possible reason could explain this difference:
+
+* the *population* odds are the same, but the *sample* odds are different simply because of the people selected in this sample (sampling variation); or 
+* the *population* odds are different, which is reflected in the sample.
+
+The difficulty is knowing which of these two reasons ('hypotheses') is the most likely explanation for the difference between the sample means.
+This question is of prime importance (after all, it answers the RQ), and is addressed at length later in this book.
+
+
+## WHERE TO PLACE NOW, if at all: Case Study: the NHANES data {#NHANESCaseStudyQual}
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/hamburger-2253349_640.jpg" width="200px"/>
+</div>
+
+
+In Sect.\ \@ref(NHANESGraphs), the NHANES data were introduced (@data:NHANES3:Data; @data:NHANES3), and graphs and numerical summaries used to understand the data relevant to answering this RQ:
+
+> Among Americans, is the mean direct HDL cholesterol concentration different for current smokers and non-smokers?
+
+The data, including potential confounding variables, can be summarised numerically (Table\ \@ref(tab:NHANESBigSummary)).
+Different summaries are needed for quantitative (means and standard deviations; medians and IQR) and qualitative (percentages; odds) variables (Table\ \@ref(tab:NHANESBigSummary)).
+Interesting questions emerge from Table\ \@ref(tab:NHANESBigSummary):
+
+* How can the mean age of all respondents be $36.7$ years, when the mean age for non-smokers and smokers are *both* much larger than this ($54.3$ and $42.7$ years respectively)?
+* Why is the percentage of females in the sample $50.2$%, but the percentage of females is less than this for both non-smokers and smokers ($43.8$% and $43.5$% respectively)?
+
+
+```{r}
+data(NHANES)
+NHANESSmoker <- subset(NHANES, 
+                       SmokeNow == "Yes")
+NHANESNonSmoker <- subset(NHANES, 
+                          SmokeNow == "No")
+
+rowinfo <- function(variable, fn, dat = NHANES){
+  one <- tapply(NHANES, )
+}
+NHANESdemogr <- array( dim = c(22, 5))
+colnames(NHANESdemogr) <- c("Quantity", 
+                            "Statistic", 
+                            "Overall", 
+                            "Non-smokers", 
+                            "Smokers")
+
+NHANESdemogr[1, ] <- c( "Sample size",
+                        " ",
+                        dim(NHANES)[1],
+                        sum( NHANES$SmokeNow == "No", na.rm = TRUE),
+                        sum( NHANES$SmokeNow == "Yes", na.rm = TRUE) )
+NHANESdemogr[2, ] <- c( "Direct HDL (mmol/L)",
+                       "n",
+                        sum( !is.na(NHANES$DirectChol) ),
+                        sum( !is.na(NHANES$DirectChol[NHANES$SmokeNow == "No"]) ),
+                        sum( !is.na(NHANES$DirectChol[NHANES$SmokeNow == "Yes"]) ) ) 
+NHANESdemogr[3, ] <- c( " ",
+                       "Mean",
+                        round( mean(NHANES$DirectChol, na.rm = TRUE), 2),
+                        round( mean( NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
+                        round( mean( NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2) )
+NHANESdemogr[4, ] <- c( " ",
+                       "Std. dev.",
+                        round( sd(NHANES$DirectChol, na.rm=TRUE), 2),
+                        round( sd( NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
+                        round( sd( NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE),  2) )
+
+NHANESdemogr[5, ] <- c( "Gender",
+                       "n",
+                        sum( !is.na(NHANES$Gender) ),
+                        sum( !is.na(NHANES$Gender[NHANES$SmokeNow == "No"]) ),
+                        sum( !is.na(NHANES$Gender[NHANES$SmokeNow == "Yes"]) ) ) 
+NHANESdemogr[6, ] <- c( " ",
+                       "\\% Female",
+                        round( sum(NHANES$Gender == "female") / sum( !is.na(NHANES$Gender) ) * 100, 1),
+                        round( sum(NHANESNonSmoker$Gender == "female") / sum( !is.na(NHANESNonSmoker$Gender) ) * 100, 1),
+                        round( sum(NHANESSmoker$Gender == "female") / sum( !is.na(NHANESSmoker$Gender) ) * 100, 1) )
+NHANESdemogr[7, ] <- c( " ",
+                       "Odds Female",
+                        round( sum(NHANES$Gender == "female") / sum(NHANES$Gender == "male"), 3),
+                        round( sum(NHANESNonSmoker$Gender == "female") / sum(NHANESNonSmoker$Gender == "male"), 3),
+                        round( sum(NHANESSmoker$Gender == "female") / sum(NHANESSmoker$Gender == "male"), 3) )
+
+
+NHANESdemogr[8, ] <- c( "Age (years)",
+                       "n",
+                        sum( !is.na(NHANES$Age) ),
+                        sum( !is.na(NHANES$Age[NHANES$SmokeNow == "No"]) ),
+                        sum( !is.na(NHANES$Age[NHANES$SmokeNow == "Yes"]) ) ) 
+NHANESdemogr[9, ] <- c( " ",
+                       "Mean",
+                        round( mean(NHANES$Age, na.rm = TRUE), 2),
+                        round( mean( NHANES$Age[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
+                        round( mean( NHANES$Age[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2) )
+NHANESdemogr[10, ] <- c( " ",
+                       "Std. dev.",
+                        round( sd(NHANES$Age, na.rm = TRUE), 2),
+                        round( sd( NHANES$Age[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
+                        round( sd( NHANES$Age[NHANES$SmokeNow == "Yes"], na.rm = TRUE),  2) )
+
+NHANESdemogr[11, ] <- c( "Height (cm)",
+                       "n",
+                        sum( !is.na(NHANES$Height) ),
+                        sum( !is.na(NHANES$Height[NHANES$SmokeNow == "No"]) ),
+                        sum( !is.na(NHANES$Height[NHANES$SmokeNow == "Yes"]) ) ) 
+NHANESdemogr[12, ] <- c( " ",
+                       "Mean",
+                        round( mean(NHANES$Height, na.rm=TRUE), 2),
+                        round( mean( NHANES$Height[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
+                        round( mean( NHANES$Height[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2) )
+NHANESdemogr[13, ] <- c( " ",
+                       "Std. dev.",
+                        round( sd(NHANES$Height, na.rm = TRUE), 2),
+                        round( sd( NHANES$Height[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
+                        round( sd( NHANES$Height[NHANES$SmokeNow == "Yes"], na.rm = TRUE),  2) )
+
+NHANESdemogr[14, ] <- c( "Weight (kg)",
+                       "n",
+                        sum( !is.na(NHANES$Weight) ),
+                        sum( !is.na(NHANES$Weight[NHANES$SmokeNow == "No"]) ),
+                        sum( !is.na(NHANES$Weight[NHANES$SmokeNow == "Yes"]) ) ) 
+NHANESdemogr[15, ] <- c( " ",
+                       "Mean",
+                        round( mean(NHANES$Weight, na.rm = TRUE), 2),
+                        round( mean( NHANES$Weight[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
+                        round( mean( NHANES$Weight[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2) )
+NHANESdemogr[16, ] <- c( " ",
+                       "Std. dev.",
+                        round( sd(NHANES$Weight, na.rm = TRUE), 2),
+                        round( sd( NHANES$Weight[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
+                        round( sd( NHANES$Weight[NHANES$SmokeNow == "Yes"], na.rm = TRUE),  2) )
+
+NHANESdemogr[17, ] <- c( "BMI (kg/m-sq)",
+                       "n",
+                        sum( !is.na(NHANES$BMI) ),
+                        sum( !is.na(NHANES$BMI[NHANES$SmokeNow == "No"]) ),
+                        sum( !is.na(NHANES$BMI[NHANES$SmokeNow == "Yes"]) ) ) 
+NHANESdemogr[18, ] <- c( " ",
+                       "Mean",
+                        round( mean(NHANES$BMI, na.rm = TRUE), 2),
+                        round( mean( NHANES$BMI[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
+                        round( mean( NHANES$BMI[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2) )
+NHANESdemogr[19, ] <- c( " ",
+                       "Std. dev.",
+                        round( sd(NHANES$BMI, na.rm = TRUE), 2),
+                        round( sd( NHANES$BMI[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
+                        round( sd( NHANES$BMI[NHANES$SmokeNow == "Yes"], na.rm = TRUE),  2) )
+
+NHANESdemogr[20, ] <- c( "Diabetes",
+                       "n",
+                        sum( !is.na(NHANES$Diabetes) ),
+                        sum( !is.na(NHANES$Diabetes[NHANES$SmokeNow == "No"]) ),
+                        sum( !is.na(NHANES$Diabetes[NHANES$SmokeNow == "Yes"]) ) ) 
+NHANESdemogr[21, ] <- c( " ",
+                       "\\% Yes",
+                        round( sum(NHANES$Diabetes == "Yes", na.rm = TRUE) / sum( !is.na(NHANES$Diabetes) ) * 100, 1),
+                        round( sum(NHANESNonSmoker$Diabetes == "Yes", na.rm = TRUE) / sum( !is.na(NHANESNonSmoker$Diabetes) ) * 100, 1),
+                        round( sum(NHANESSmoker$Diabetes == "Yes", na.rm = TRUE) / sum( !is.na(NHANESSmoker$Diabetes) ) * 100, 1) )
+NHANESdemogr[22, ] <- c( " ",
+                       "Odds Yes",
+                        round( sum(NHANES$Diabetes == "Yes", na.rm = TRUE) / sum(NHANES$Diabetes == "No", na.rm = TRUE) , 3),
+                        round( sum(NHANESNonSmoker$Diabetes == "Yes", na.rm = TRUE) / sum(NHANESNonSmoker$Diabetes == "No", na.rm = TRUE), 3),
+                        round( sum(NHANESSmoker$Diabetes == "Yes", na.rm = TRUE) / sum(NHANESSmoker$Diabetes == "No", na.rm = TRUE), 3) )
+
+```
+
+
+```{r NHANESBigSummary}
+tab.cap <- paste("A summary of some variables in the NHANES dataset,",
+             "according to current smoking status",
+             "(not reported for 6789 respondents;",
+             "other variables also not reported for all respondents).",
+             "Quantitative variables are summarised using either the mean and standard deviation;",
+             "qualitative variables using percentages and odds.")
+	
+if( knitr::is_latex_output() ) {
+  
+  for (i in (1:dim(NHANESdemogr)[1])){
+    NHANESdemogr[i, 1] <- paste0("\\textbf{", 
+                                 NHANESdemogr[i, 1],
+                                 "}")
+    NHANESdemogr[i, 2] <- paste0("\\em{", 
+                                 NHANESdemogr[i, 2],
+                                 "}")
+  }
+  
+  NHANESdemogr[ , 3:5] <- surroundMaths(NHANESdemogr[ , 3:5], # REMOVE BMI
+                      decDigits = c(0, 
+                                    0, 2, 1,
+                                    0, 1, 3,
+                                    0, 2, 2,
+                                    0, 2, 2,
+                                    0, 2, 2,
+                                    0, 2, 2,
+                                    0, 2, 2,
+                                    0, 2, 2))
+  
+  
+  
+  kable(NHANESdemogr[ -c(17:19), ], # REMOVE BMI
+        format = "latex",
+        longtable = FALSE,
+        col.names = colnames(NHANESdemogr),
+        booktabs = TRUE,
+        escape = FALSE,
+        linesep = c("\\addlinespace",  # Otherwise addes a space after five lines... 
+                    "", "", "\\addlinespace",
+                    "", "", "\\addlinespace",
+                    "", "", "\\addlinespace",
+                    "", "", "\\addlinespace",
+                    "", "", "\\addlinespace",
+                    "", "", "\\addlinespace",
+                    "", "", "\\addlinespace",
+                    "", "", "", ""),
+        align = "r",
+        caption = tab.cap) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) #%>%
+    #column_spec(1, 
+    #            bold = TRUE) %>%    # Row headings in bold
+    #column_spec(2, 
+    #            italic = TRUE)     # Row headings in bold
+}
+if( knitr::is_html_output() ) {
+  kable(NHANESdemogr[ -c(17:19), ], # REMOVE BMI , 
+               format = "html",
+               longtable = FALSE,
+               col.names = colnames(NHANESdemogr),
+               booktabs = TRUE,
+               align = "r",
+               caption = tab.cap) %>%
+    kable_styling(full_width = FALSE) %>%
+    column_spec(1, 
+                bold = TRUE) %>%     # Row headings in bold
+    column_spec(2, 
+                bold = TRUE)     # Row headings in bold
+}
+```
+
+
+
+Consider the diabetes percentage of participants with diabetes:
+
+* the odds of a current non-smokers being diabetic is $0.181$.
+* the odds of a current smokers being diabetic is $0.078$.
+
+The odds of finding a diabetic *in the sample* is different for non-smokers and smokers.
+Why?
+Two possible reasons could explain this difference in percentages and odds *in the sample* (Sect.\ \@ref(OddsObserveRelationships)):
+
+* *Sampling variation*:
+  The percentages (and odds) are the *same* in the population, but difference in the *sample* occur because of the people that happened to end up with the sample.
+  *Sampling variation* explains the *difference in the sample percentages (and odds)*.
+       
+* The percentages (and odds) are *different* in *the population*: for non-smokers and smokers, and the difference in the sample percentages (and odds) simply reflects *a difference* between non-smokers and smokers in the population.
+
+In the next chapters, tools are introduced for deciding which of these explanations is the most likely.
+
+
+

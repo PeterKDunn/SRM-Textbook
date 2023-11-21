@@ -1,0 +1,691 @@
+# Comparing quantitative data between individuals {#SummariseQuantData}
+
+
+## Introduction
+
+Relational and interventional RQs often require comparing groups.
+Graphs are very useful this purpose, and a table of the numerical summaries usually are also produced.
+
+
+## Graphs
+
+When a *quantitative* variable is compared across different groups (i.e., comparing between individuals), options for plotting include: 
+
+* [*Back-to-back stemplots*](#BackToBackStem):
+  Best for small amounts of data when the qualitative variable has *two levels*; 
+* [*2-D dot charts*](#TwoDDot): 
+  Best choice for small to moderate amounts of data;
+* [*Boxplots*](#Boxplot):
+  Best choice, except for small amounts of data.        
+
+These situations have *one qualitative variable* and *one quantitative variable*.
+
+
+### Back-to-back stemplot {#BackToBackStem}
+
+Back-to-back stemplots are two stemplots (Sect.\ \@ref(StemAndLeafPlots)) sharing the same stems; one group has the leaves emerging left-to-right from the stem, and the second group has the leaves emerging right-to-left from the stem.
+Back-to-back stemplots can only be used when *two* groups are being compared.
+Again, one advantage of using stemplots over other plots is that the original data are retained.
+
+
+
+::: {.example #KrillData name="Back-to-back stemplots"}
+A study recorded the number chest-beats by gorillas [@wright2021chest], for gorillas under 20 years old (young) and 20 years and over (older)
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:KrillDataTable)).'
+} else {
+   '(Table\\ \\@ref(tab:KrillDataTableHTML)).'
+}`
+A back-to-back stemplot allows the two groups to be compared visually 
+`r if (knitr::is_latex_output()) {
+   '(Fig.\\ \\@ref(fig:KrillEggsDoubleStem)).'
+} else {
+   '(Fig.\\ \\@ref(fig:KrillEggsDoubleStemHTML)).'
+}`
+The leaves for younger gorillas go from right-to-left, and the leaves for older gorillas go left-to-right, sharing the same stems.
+The younger groups has a faster chest-beating rate.
+One older gorilla has a much faster rate that the other older gorillas. 
+:::
+
+
+```{r}
+data(Gorillas)
+CBRyounger <- sort( Gorillas$ChestBeatRate[Gorillas$Age20 == "Younger"] )
+CBRolder <- sort( Gorillas$ChestBeatRate[Gorillas$Age20 == "Older"] )
+
+Gorilla2 <- cbind( CBRyounger[1:7],
+                   CBRyounger[8:14],
+                   CBRolder[1:7],
+                   c(CBRolder[8:11], NA, NA, NA ) )
+```
+
+`r if (knitr::is_html_output()) '<!--'`
+\begin{figure}
+\begin{minipage}{0.4\textwidth}
+\captionof{table}{The chest-beating rate for gorillas\label{tab:KrillDataTable}}
+\fontsize{10}{12}\selectfont
+```{r KrillDataTable}
+
+if( knitr::is_latex_output() ) {
+  kable( surroundMaths(Gorilla2,
+                       decDigits = 1),
+         format = "latex",
+         longtable = FALSE,
+         table.env = "@empty",
+         booktabs = TRUE,
+         escape = FALSE,
+         linesep = c("", "", "", "\\addlinespace"),
+         align = c("c","c")) %>%
+         #col.names = c("Treatment group", "Control group"),
+    add_header_above(header = c("Younger " = 2, 
+                                "Older" = 2), 
+                     bold = TRUE, 
+                     align = "c")
+}
+```
+\end{minipage}
+\hspace{0.05\textwidth}
+\begin{minipage}{0.60\textwidth}%
+\centering
+```{r KrillEggsDoubleStem, fig.width=6.5, fig.height=3, out.width='100%'}
+
+  stemgrid.x <- 1
+  stemgrid.y <- 6
+  stemcounts <- array(1, 
+                      dim = stemgrid.y)
+
+  par( mar = c(0.25, 0.25, 4, 0.25) + 0.1)
+
+  plot( expand.grid(1:stemgrid.x, 0:stemgrid.y), 
+      type = "n",
+      xlab = "",
+      ylab = "",
+      main = "Chest-beating rate of gorillas\n(1|6 means 1.6 beats per 10 hours)",
+      xlim = c(-11, 8),
+      ylim = c(-0.2, 5.2),
+      axes = FALSE)
+  
+### Treatment data in cols 1  to 11 (x = -11 to x = -1)
+### Stems in col 12  (x=0)
+### Control data in cols 13 to 19 (x= 1 to x = 7)
+  
+  # Divide the stems and leaves
+  lines(c(-0.5, -0.5),
+        c(0.5, 6.5),
+         lwd = 2,
+         col = "grey")
+  lines(c(0.5, 0.5),
+        c(0.5, 6.5),
+         lwd = 2,
+         col = "grey")
+  text(-5, 0, 
+       "Younger", 
+       font = 2)
+  text( 4, 0, 
+        "Older", 
+	font = 2)
+  
+  # Plot stems
+  points( c(0, 0, 0, 0, 0), 
+          1:5,
+          pch = as.character(4:0))
+  
+  
+  ### Plot leaves
+  for (j in (1:2) ){
+
+    if (j == 1) { # Right-hand side
+      CBR <- CBRolder
+      step <- 1
+      stemcounts <- array(1, dim = stemgrid.y)
+    }
+    if (j == 2) { # Left-hand side
+      CBR <- CBRyounger
+      step <- -1
+      stemcounts <- array(-1, dim = stemgrid.y)
+    }
+    
+    for (i in 1:length(CBR)){
+    
+      if ( CBR[i] < 1) {
+        points( stemcounts[1], 5, 
+	        pch = substr( sprintf("%1.1f", CBR[i]), 3, 3)) 
+        stemcounts[1] <- stemcounts[1] + step
+      }
+
+    if ( (CBR[i] >= 1) & (CBR[i] < 2) ) {
+      points( stemcounts[2], 4, 
+              pch = substr( sprintf("%1.1f", CBR[i] - 1), 3, 3)) 
+      stemcounts[2] <- stemcounts[2] + step
+    }
+
+    if ( (CBR[i] >= 2) & (CBR[i] < 3) ) {
+      points( stemcounts[3], 3, 
+              pch = substr( sprintf("%1.1f", CBR[i] - 2), 3, 3)) 
+      stemcounts[3] <- stemcounts[3] + step
+    }
+    if ( ( CBR[i] >= 3 ) & (CBR[i] < 4) ) {
+      points( stemcounts[4], 2, 
+              pch = substr( sprintf("%1.1f", CBR[i] - 3), 3, 3)) 
+      stemcounts[4] <- stemcounts[4] + step
+    }
+    if ( ( CBR[i] >= 4 ) & (CBR[i] < 5) ) {
+      points( stemcounts[5], 1, 
+              pch = substr( sprintf("%1.1f", CBR[i] - 4), 3, 3)) 
+      stemcounts[5] <- stemcounts[5] + step
+    }
+  }
+}
+```
+\caption{The number of eggs from krill, for treatment and control groups}\label{fig:KrillEggsDoubleStem}
+\end{minipage}
+\end{figure}
+`r if (knitr::is_html_output()) '-->'`
+
+
+
+
+
+
+`r if (knitr::is_latex_output()) '<!--'`
+```{r KrillDataTableHTML}
+if (knitr::is_html_output()) {
+  kable( Gorilla2,
+         format = "html",
+         longtable = FALSE,
+         booktabs = TRUE,
+         escape = FALSE,
+         caption = "The chest-beating rate for gorillas, for younger and older gorillas",
+         linesep = c("", "", "\\addlinespace"),
+         align = c("c","c")) %>%
+    add_header_above(header = c("Younger " = 2, 
+                                "Older" = 2), 
+                     bold = TRUE, 
+                     align = "c")
+}
+```
+
+
+
+
+```{r KrillEggsDoubleStemHTML, fig.width=6.0, out.width='100%', fig.cap="The number of eggs from krill, for treatment and control groups", fig.cap="center"}
+
+data(Gorillas)
+CBRyounger <- sort( Gorillas$ChestBeatRate[Gorillas$Age20 == "Younger"] )
+CBRolder <- sort( Gorillas$ChestBeatRate[Gorillas$Age20 == "Older"] )
+
+Gorilla2 <- cbind( CBRyounger[1:7],
+                   CBRyounger[8:14],
+                   CBRolder[1:7],
+                   c(CBRolder[8:11], NA, NA, NA ) )
+
+stemgrid.x <- 1
+stemgrid.y <- 6
+stemcounts <- array(1, dim=stemgrid.y)
+
+par( mar = c(0.5, 0.5, 4, 0.5) + 0.1)
+
+plot( expand.grid(1:stemgrid.x, 0:stemgrid.y), 
+      type = "n",
+      xlab = "",
+      ylab = "",
+      main = "Stemplot of egg counts of krill\n(1|6 means 16 eggs)",
+      xlim = c(-11, 7),
+      ylim = c(-0.2, 6.2),
+      axes = FALSE)
+
+### Treatment data in cols 1  to 11 (x = -11 to x = -1)
+### Stems in col 12  (x=0)
+### Control data in cols 13 to 19 (x= 1 to x = 7)
+
+# Divide the stems and leaves
+lines(c(-0.5, -0.5),
+      c(0.5, 5.5),
+      lwd = 2,
+      col = "grey")
+lines(c(0.5, 0.5),
+      c(0.5, 6.5),
+      lwd = 2,
+      col = "grey")
+text(-5, 0, 
+     "Younger", 
+     font = 2)
+text( 4, 0, 
+      "Older", 
+      font = 2)
+
+# Plot stems
+points( c(0, 0, 0, 0, 0), 
+        1:5,
+        pch = as.character(4:0))
+# Plot leaves
+for (j in (1:2) ){
+  
+  if (j == 1) { # Right-hand side
+    CBR <- CBRolder
+    step <- 1
+    stemcounts <- array(1, dim=stemgrid.y)
+  }
+  if (j == 2) { # Left-hand side
+    CBR <- CBRyounger
+      step <- -1
+      stemcounts <- array(-1, dim = stemgrid.y)
+    }
+    
+    for (i in 1:length(CBR)){
+    
+      if ( CBR[i] < 10) {
+        points( stemcounts[1], 6, 
+	        pch = as.character(CBR[i]))
+        stemcounts[1] <- stemcounts[1] + step
+      }
+
+    if ( (CBR[i] >= 10) & (CBR[i] < 20) ) {
+      points( stemcounts[2], 5, 
+              pch = as.character(CBR[i] - 10) )
+      stemcounts[2] <- stemcounts[2] + step
+    }
+
+    if ( (CBR[i] >= 20) & (CBR[i] < 30) ) {
+      points( stemcounts[3], 4, 
+              pch = as.character(CBR[i] - 20))
+      stemcounts[3] <- stemcounts[3] + step
+    }
+    if ( ( CBR[i] >= 30 ) & (CBR[i] < 40) ) {
+      points( stemcounts[4], 3, 
+              pch = as.character(CBR[i] - 30))
+      stemcounts[4] <- stemcounts[4] + step
+    }
+    if ( ( CBR[i] >= 40 ) & (CBR[i] < 50) ) {
+      points( stemcounts[5], 2, 
+              pch = as.character(CBR[i] - 40))
+      stemcounts[5] <- stemcounts[5] + step
+    }
+    if ( ( CBR[i] >= 50 ) & (CBR[i] < 60) ) {
+      points( stemcounts[6], 1, 
+              pch = as.character(CBR[i] - 50))
+      stemcounts[6] <- stemcounts[6] + step
+    }
+  }
+}
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+
+### 2-D dot charts {#TwoDDot}
+
+A 2-dimensional (2-D) dot chart places a dot for each observation, separated for each level of the qualitative variable (also see Sect.\ \@ref(DotChartsOneQual)).
+For the same krill data in Example\ \@ref(exm:KrillData), a dot chart is shown in Fig.\ \@ref(fig:TwoDDotchart).
+
+Many observations are the same, so some points would be *over-plotted* if points were not *stacked* (left panel), or some randomness added (a 'jitter') in the vertical direction, before plotting (right panel).
+
+
+```{r TwoDDotchart, fig.height=6, out.width='100%',fig.cap="Two variations of a 2-D dot chart for the chest-beating data to avoid overplotting: stacking (left) and jittering (right)", fig.align="center", fig.width=8.75, fig.height=2.5}
+old.par <- par()
+par(mar = c(5, 6, 4, 2) + 0.1)
+par(mfrow = c(1,2))
+
+stripchart( list(Younger = CBRyounger, 
+                 Older = CBRolder), 
+            main = "A 2-D dot chart; the chest-beating\nrate of gorillas (points stacked)",
+            method = "stack", 
+            las = 1,
+            pch = 19,
+            xlim = c(0, 5),
+            cex = 0.7,
+            ylim = c(0.6, 2.4),
+            xlab = "Chest-beating rate")
+
+stripchart( list(Treatment = CBRyounger,
+                 Control = CBRolder), 
+            main = "A 2-D dot chart; the chest-beating\nrate of gorillas (points jittered)",
+            method = "jitter",
+            jitter = 0.18, 
+            las = 1,
+            pch = 19,
+            xlim = c(0, 5),
+            cex = 0.7,
+            ylim = c(0.6, 2.4),
+            xlab = "Chest-beating rate")
+
+#par( old.par )
+```
+
+
+### Boxplots {#Boxplot}
+
+A boxplot is a picture of the quantiles (Sect.\ \@ref(VariationIQR)).
+The distribution for each group is summarised by five numbers: the minimum value, $Q_1$, the median, $Q_3$ and the maximum value.
+Outliers, identified using the IQR rule (Sect. \@ref(OutliersIQRrule)), are also shown.
+Distributions can be compared by comparing the values of $Q_1$, the medians, and the values of $Q_3$.
+Since each distribution is summarised by just five numbers, a lot of detail of the distribution is lost.
+For this reason, boxplots are best for *comparing* distributions. 
+Software uses approximations to compute these values (and different software may use different rules, and hence may produce slightly different values for quartiles).
+
+An example of a boxplot, for the chest-beating data in Example\ \@ref(exm:KrillData), is shown in Fig.\ \@ref(fig:BoxplotGorillas).
+No outliers are identified for younger gorillas; one large outlier is identified for the older gorillas.
+The boxplot shows a distinct difference between the chest-beating rates of older and younger gorillas.
+
+
+```{r BoxplotGorillas, fig.cap="A boxplot for the chest-beating data", fig.align="center",  fig.height=3.5, , fig.width=4.5, out.width='50%'}
+CBRyounger.quantiles <- quantile(CBRyounger)
+CBR.C2 <- CBRolder[ -which.max(CBRolder)]
+KrillC2.quantiles <- quantile(CBR.C2)
+
+par( mar = c(4.5, 3, 4, 2) + 0.1 )
+Gorillas$Age20 <- ordered(Gorillas$Age20,
+                          levels = c("Younger", 
+                                     "Older"))
+boxplot( ChestBeatRate ~ Age20,
+         data = Gorillas,
+         col = plot.colour,
+         las = 1,
+         pch = 19,
+         ylim = c(0, 4.5),
+         xlab = "Age group",
+         ylab = "Chest-beating rate\n (per 110 h)",
+         main = "Chest-beating rate\nor gorillas")
+
+```
+
+
+The boxplots are explained in Fig.\ \@ref(fig:BoxplotGorillasExplain).
+First focus on just the boxplot for the *younger* gorillas (i.e., the left box).
+Boxplots have five horizontal lines; from the top to the bottom of the plot:
+
+1. *Top line*:
+   The *fastest* chest-beating rate is $`r CBRyounger.quantiles[5]`$ per $10$\ h.
+2. *Second line from top*:
+   $75$% of observations are smaller than about $`r CBRyounger.quantiles[4]`$, represented by the line at the top of the central box. 
+   This is the *third quartile* ($Q_3$).
+3. *Middle line*:
+   $50$% of observations are smaller than about $`r CBRyounger.quantiles[3]`$, represented by the line inside the central box. 
+   This is an 'average' value, the *second quartile* ($Q_2$).
+4. *Second line from bottom*:
+   $25$% of observations are smaller than about $`r CBRyounger.quantiles[2]`$, represented by the line at the bottom of the central box. 
+   This is the *first quartile* ($Q_1$).
+5. *Bottom line*:
+   The *slowest* chest-beating rate is $`r CBRyounger.quantiles[1]`$ per $10$\ h. 
+
+
+
+
+```{r BoxplotGorillasExplain, fig.cap="Explaining the boxplots for the chest-beating data", fig.align="center",  fig.height=4.25, , fig.width=10.5, out.width='100%'}
+
+source("R/showExplainBoxplots.R")
+```
+
+
+The box for the *older* gorillas is slightly different
+`r if (knitr::is_latex_output()) {
+   '(Fig.\\ \\@ref(fig:BoxplotKrill), left panel):'
+} else {
+   '(Fig.\\ \\@ref(BoxplotKrillHTML)):'
+}`
+one observation is identified with a point, *above* the top line.
+Computer software has identified this observation as a potentially *outlier* (in this case, unusually *large*), and has plotted this point separately, using the IQR rule (Sect.\ \@ref(OutliersIQRrule)).
+Mild and extreme outliers are plotted in this way (Sect.\ \@ref(OutliersIQRrule)) then then the values of the quantiles ($Q_1$, $Q_2$ and $Q_3$) are computed as usual.
+
+```{r}
+outC <- boxplot( list(Older = CBRolder),
+                 plot = FALSE)
+CBR.quantiles <- outC$stats
+```
+
+The values of $Q_1$, the median and $Q_3$ are all substantially larger for the younger gorillas, suggesting that younger gorillas have, in general, faster chest-beating rates.
+
+
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Boxplots summarise data with only five numbers, so a lot of detail of the distribution is lost.
+For this reason, boxplots are excellent for *comparing* distributions, but histograms are better for displaying a single quantitative distribution.
+:::
+
+
+::: {.example #BoxplotsHorizontal name="Boxplots"}
+Boxplots can be plotted horizontally too, which leaves space for long labels.
+In Fig.\ \@ref(fig:CementBuildBoxplot) (left panel; based on @data:Silva2016:rootcanal), the three dental cements are very different regarding their push-out forces.
+:::
+
+
+```{r CementBuildBoxplot, fig.cap="Comparing three push-out values for three dental cements", fig.align="center", fig.height=2.75, fig.width=8.5, fig.show='hold', out.width='100%'}
+MTA    <- c(0.05, 0.1, 0.2, 0.25, 0.45)
+Endo   <- c(0.1, 0.2, 0.4,   1.0, 2.05)
+AHplus <- c(0.5, 1.1, 2.25, 2.9, 4.4)
+
+CementStats <- list( n = c(5, 5, 5),
+                     stats = matrix( cbind(MTA, 
+                                           Endo, 
+                                           AHplus), 
+                                     ncol = 3, 
+                                     byrow = FALSE),
+                     conf = matrix( c(-1.5, 7, -2, 10, 3, 3), 
+		                 ncol = 2, 
+				             byrow = FALSE),  ### NOT USEFUL, only for notches
+                  out = NULL,
+                  group = NULL,
+                  names = c("MTA Fillapex", 
+		                        "Endo Seal", 
+			                      "AH Plus"))
+
+par( mfrow = c(1, 2),
+     mar = c(4, 6, 3, 2) + 0.1)
+plot( c(0, 5), 
+      c(0.4, 3.6),
+      type = "n",
+      axes = FALSE,
+      main = "Boxplot of push-out force",
+      ylab = "",
+      xlab = "Push-out force (MPa)")
+
+axis(side = 1,
+     las = 1)
+abline(h = 0, 
+       col = "grey", 
+       lwd = 2)
+bxp(CementStats,
+    las = 1,
+    horizontal = TRUE,
+    add = TRUE,
+    boxfill = plot.colour)
+
+######
+
+DB  <-  c( 7,   3, 1.5, 1, -1.5)
+DBB <- c(10, 5.5, 3.5, 2, -2)
+
+EngStats <- list( n = c(5, 5),
+                  stats = matrix( cbind(DB, DBB), 
+                                  ncol = 2, 
+                                  byrow = FALSE),
+                  conf = matrix( c(-1.5, 7, -2, 10), 
+                                 ncol = 2, 
+                                 byrow = FALSE),
+                  out = c(8, 20, 12.5, 11.5, -7),
+                  group = c(1, 2, 2, 2, 2),
+                  names = c("DB", 
+                            "DBB"))
+plot( c(0.4, 2.6), 
+      c(-10, 20),
+      type = "n",
+      axes = FALSE,
+      main = "Boxplot of project costs",
+      ylab = "Cost increase (%)",
+      xlab = "Project delivery method")
+
+axis(side = 2,
+     las = 1)
+abline(h = 0, 
+       col = "grey", 
+       lwd = 2)
+bxp(EngStats,
+    las = 1,
+    add = TRUE,
+    boxfill = plot.colour)
+```
+
+
+::: {.example #Boxplots2 name="Boxplots"}
+A study of different engineering project delivery methods [@data:Hale2009:ProjectDelivery] produced the boxplot in Fig.\ \@ref(fig:CementBuildBoxplot) (right panel): the increase in the costs of projects seem to differ between the two methods.
+The quantitative variable is the percentage increase in costs, and the qualitative variable is the method used.
+
+The Design/Build (DB) method produces a smaller project cost growth on average (the centre line of the boxplot), but the Design/Bid/Build (DBB) method produces more variation in project cost growth.
+Outliers are present for both methods, as indicated by the dots.
+:::
+
+
+
+```{r}
+htmltools::tags$video(src = "./videos/Boxplots.mp4", 
+                      width = "550", 
+                      controls = "controls", 
+                      loop = "loop", 
+                      style = "padding:5px; border: 2px solid gray;")
+```
+
+
+
+
+## Summary tables
+
+In Sect.\ \@ref(NHANESGraphs), the NHANES data were introduced (@data:NHANES3:Data, @data:NHANES3), and graphs were used to understand the data relevant to answering this RQ:
+
+> Among Americans, is the mean direct HDL cholesterol concentration different for current smokers and non-smokers?
+
+Using the software output (Fig.\ \@ref(fig:NHANEDescriptives)), the direct HDL cholesterol concentration in the *sample* can be summarised numerically:
+
+* *Average*: $\bar{x} = `r round( mean(NHANES$DirectChol, na.rm=TRUE), 2)`$\ mmol/L; the sample median: $`r round( median(NHANES$DirectChol, na.rm=TRUE), 2)`$\ mmol/L.
+* *Variation*: $s = `r round( sd(NHANES$DirectChol, na.rm=TRUE), 3)`$\ mmol/L; IQR: $`r round( IQR(NHANES$DirectChol, na.rm=TRUE), 3)`$\ mmol/L.
+* *Shape*:
+  Slightly skewed right (from Fig.\ \@ref(fig:NHANESboxplot) or\ \@ref(fig:NHANESdirectHDLHisto)).
+* *Outliers*: 
+  Software identified some outliers (Fig.\ \@ref(fig:NHANESboxplot)), mostly large values.
+
+
+```{r NHANEDescriptives, fig.cap="Output for direct HDL cholesterol concentration", fig.align="center",  out.width=c('80%', '80%'), fig.show="hold"}
+knitr::include_graphics("jamovi/NHANES/NHANES-DirectHDL-Explore-Horizontal.png")
+#knitr::include_graphics("OtherImages/SPACER.png")
+#knitr::include_graphics("SPSS/NHANES/NHANES-DirectHDL-SpecialTable.png")
+```
+
+The RQ is about *comparing* the mean direct HDL cholesterol concentration in the two smoking groups, so tabulating a summary for each group is useful.
+Using different output (Fig.\ \@ref(fig:NHANEDescriptivesBySmoking)), Table\ \@ref(tab:NHANESSummaryQuant) can be constructed to show the numerical summaries of direct HDL cholesterol concentration for each group, and the difference.
+
+When creating numerical summary tables:
+
+* Round numbers appropriately (don't necessarily use all significant figures provided by software).
+* Place captions *above* tables.
+* Use *no* vertical lines (in general) and *very few* horizontal lines.
+* Align numbers in the table by decimal point when possible, for easier reading.
+* Construct the table to allow readers to easily make the important comparisons, as far as possible.
+
+
+```{r NHANEDescriptivesBySmoking, fig.cap="Output for direct HDL cholesterol concentration, by current smoking status", fig.align="center",fig.show="hold", out.width='80%'}
+knitr::include_graphics("jamovi/NHANES/NHANES-DirectHDL-Smoke-Explore-Horizontal.png")
+#knitr::include_graphics("SPSS/NHANES/NHANES-DirectHDL-Chol-SpecialTable.png")
+```
+
+
+```{r NHANESSummaryQuant}
+NHANESQuant <- array(dim = c(4, 6))
+colnames(NHANESQuant) <- c("Group", 
+                           "Sample size", 
+                           "Mean",
+                           "Median",
+                           "Standard deviation",
+                           "IQR")
+
+NHANESQuant[1, ] <- c("\\textit{All participants:}",
+                      sum( !is.na(NHANES$DirectChol)),
+                      round(   mean( NHANES$DirectChol, na.rm = TRUE) , 2),
+                      round( median( NHANES$DirectChol, na.rm = TRUE) , 2),
+                      round(     sd( NHANES$DirectChol, na.rm = TRUE) , 3),
+                      round(    IQR( NHANES$DirectChol, na.rm = TRUE) , 3) )
+
+NHANESQuant[2, ] <- c("Smokers:", 
+                      sum( !is.na(NHANES$DirectChol[NHANES$SmokeNow == "Yes"])),
+                      round(   mean(   NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE) , 2),
+                      round(   median( NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE) , 2),
+                      round(   sd(     NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE) , 3),
+                      round(   IQR(    NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE) , 3) )
+
+NHANESQuant[3, ] <- c("Non-smokers:",
+                      sum( !is.na(NHANES$DirectChol[NHANES$SmokeNow == "No"])),
+                      round(   mean(   NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) , 2),
+                      round(   median( NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) , 2) ,
+                      round(   sd(     NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) , 3),
+                      round(   IQR(    NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) , 3) )
+NHANESQuant[4, ] <- 
+  c("Difference:",
+    NA,
+    round( mean(   NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) -
+    mean(   NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2),
+    round( median(   NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) -
+    median(   NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2),                 NA,
+    NA)
+
+if( knitr::is_latex_output() ) {
+  kable(surroundMaths(NHANESQuant, 
+                      decDigits = c(0, 0, 2, 2, 3, 2)),
+        format = "latex",
+        longtable = FALSE,
+        escape = FALSE,
+        col.names = colnames(NHANESQuant),
+        booktabs = TRUE,
+        linesep = c("\\addlinespace",
+                    "",
+                    "\\addlinespace",
+                    ""),
+        align = "r",
+        caption = "The direct HDL cholesterol, summarised for smokers and non-smokers") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c( " " = 2,
+                         "Direct HDL cholesterol concentration (in mmol/L)" = 4),
+                      bold = TRUE,
+                      line = TRUE)
+  
+}
+if( knitr::is_html_output() ) {
+  NHANESQuant[1, 1] <- "*All participants:*"
+  kable(NHANESQuant, 
+        format = "html",
+        longtable = FALSE,
+        col.names = colnames(NHANESQuant),
+        booktabs = TRUE,
+        align = "r",
+        caption = "The direct HDL cholesterol, summarised for smokers and non-smokers") %>%
+    kable_styling(full_width = FALSE)  %>%
+    add_header_above( c( " " = 2,
+                         "Direct HDL cholesterol concentration (in mmol/L)" = 4),
+                      bold = TRUE,
+                      line = TRUE)
+}
+```
+
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+Information about current smoking status is unavailable for very person in the study.
+This could impact the results if those who provide data and those who do not are different regarding direct HDL cholesterol concentration (non-response bias; Sect.\ \@ref(SelectionBias)).
+:::
+
+
+The RQ, as usual, asks about the *population*.
+The RQ cannot be answered with certainty, since *we only have data from one of the many possible samples*, and every sample is likely to be different.
+Clearly, the *sample* means are different, but the RQ asks if the *population* means are different.
+Broadly, two possible reasons could explain why the *sample* mean direct HDL cholesterol concentration is different for current smokers and non-smokers:
+
+* *the **population** means are the same*. 
+  The *sample* means are *different* simply because of the people selected in this sample.
+  Another sample, with different people, might produce different sample means.
+  *Sampling variation explains the difference in the sample means*.
+       
+* *the **population** means are different*.
+   The difference between the *sample* means reflects this difference between the *population* means.
+
+The difficulty is knowing which of these reasons ('hypotheses') is the most likely explanation for the difference between the sample means.
+This question is of prime importance (it answers the RQ), and is addressed at length later in this book.
+
+

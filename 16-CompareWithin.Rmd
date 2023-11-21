@@ -1,0 +1,302 @@
+# Summarising comparing within individuals {#SummariseWithin}
+
+## Graphs
+
+When a *quantitative* variable is compared *within* individuals, options for plotting include: 
+
+* Histograms of differences (Sect.\ \@ref(HistoDiffPlot)):
+  useful to compare two levels.
+* Case-profile plots (Sect.\ \@ref(CaseProfilePlot)): 
+  useful when the same units are measured over a small number of time points, or are otherwise connected.
+* Time plots (Sect.\ \@ref(TimePlots)):
+  a special type of case-profile plot, when the measurements vary over a large number of time points.
+
+
+### Histogram of differences {#HistoDiffPlot}
+
+Sometimes the same variable is measured on each unit of analysis more than once (i.e., *within*-individual comparisons) but only twice. 
+(Within-individuals data that is measured only twice is also called 'paired' data.)
+In these cases, a histogram of the *changes* for each individual can be produced.
+
+
+::: {.example #CaseProfileHistDiffPlots name="Within-individual comparisons"}
+A study of children with atopic asthma [@data:Lothian2006:Whey] measured the immunogoblin\ E concentrations (IgE) before and after an intervention for each child (Table\ \@ref(tab:IgEChanges)).
+The *reduction* in IgE for each child can be shown using a histogram
+`r if (knitr::is_latex_output()) {
+   '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileLATEX), left panel).'
+} else {
+   '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileHTML), top panel).'
+}`
+:::
+
+
+
+```{r IgEChanges}
+Pre <-  c( 83, 292, 293, 623, 792, 1543, 1668, 1960, 2877, 2961, 5504)
+Post <- c( 83, 292, 292, 542, 709, 1000, 1000, 1626, 2502, 2711, 4504)
+
+
+WhichTime <- c(
+  rep(1, length(Pre)),
+  rep(2, length(Post))
+)
+
+Reduction <- Pre - Post
+  
+IgE <- data.frame( IgE.Pre = Pre, 
+                   IgE.Post = Post,
+                   IgE.Reduction = Reduction)
+
+if( knitr::is_latex_output() ) {
+  kable(surroundMaths(IgE,
+                      decDigits = 0),
+        format = "latex",
+        booktabs = TRUE,
+        escape = FALSE,
+        align = "r",
+        col.names = c("IgE (before) in micrograms/L", 
+                      "IgE (after) in micrograms/L", 
+                      "IgE reduction in micrograms/L"),
+        linesep = c("", "", "", "\\addlinespace", "", "", "\\addlinespace", "", "", "", ""), # Otherwise adds a space after five lines... 
+        caption = "The IgE before and after an intervention, and the reduction in IgE (in micrograms/L)",
+        digits = 0)  %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+}
+if( knitr::is_html_output() ) {
+  kable(IgE,
+        format = "html",
+        longtable = TRUE,
+        booktabs = TRUE,
+        col.names = c("IgE (before) in micrograms/L", 
+                      "IgE (after) in micrograms/L", 
+                      "IgE reduction in micrograms/L"),
+        linesep = c("", "", "", "\\addlinespace", "", "", "\\addlinespace", "", "", "", ""), # Otherwise addes a space after five lines... 
+        caption = "The IgE before and after an intervention, and the change in IgE (in micrograms/L)",
+        digits = 0)
+}
+```
+
+
+```{r PairedGraphCaseProfileLATEX, fig.cap="The IgE data. Left: A histogram of the differences; right: A case-profile plot. Each line represents one subject, joining that person's pre-intervention score to their post-intervention score", fig.align="center", fig.width=9.25, fig.height=3.25, out.width='100%'}
+
+if( knitr::is_latex_output() ) {
+  par(mfrow  = c(1, 2) )
+  
+  Reduction <- Pre - Post
+  
+  IgE <- data.frame( IgE.Pre = Pre, 
+                     IgE.Post = Post,
+                     IgE.Reduction = Reduction)
+  
+  hist(Reduction,
+       col = plot.colour,
+       las = 1,
+       breaks = seq(0, 1000, by = 100),
+       ylab = "Number of subjects",
+       xlab = "Reduction in IgE (in micrograms/L)",
+       main = "Reduction in IgE\n pre and post supplementation")
+  box()
+  
+  
+  ###
+  
+  
+  plot( c(Pre, Post) ~ WhichTime,
+        pch = 19,
+        las = 1,
+        axes = FALSE,
+        ylim = c(0, 6000),
+        xlim = c(0.8, 2.2),
+        main = "Case-profile plot\nof the IgE data",
+        xlab = "Time",
+        ylab = "IgE (in micrograms/L)")
+  axis(side = 1, 
+       at = 1:2, 
+       labels = c("Pre-intervention", "Post-intervention"))
+  box()
+  
+  axis(side = 2, 
+       las = 1)
+  for (i in 1:length(Pre)){
+    lines( c(1, 2),
+           c(Pre[i], Post[i]),
+           col = grey(0.6)
+    )
+  }
+}
+```
+
+
+
+```{r PairedGraphCaseProfileHTML, fig.cap="The IgE data. Top: A case-profile plot. Each line represents one subject, joining that person's pre-intervention score to their post-intervention score; bottom: A histogram of the differences", fig.align="center", fig.width=5, fig.height=7.5}
+Pre <-  c( 83, 292, 293, 623, 792, 1543, 1668, 1960, 2877, 2961, 5504)
+Post <- c( 83, 292, 292, 542, 709, 1000, 1000, 1626, 2502, 2711, 4504)
+
+
+WhichTime <- c(
+  rep(1, length(Pre)),
+  rep(2, length(Post))
+)
+
+if( knitr::is_html_output() ) {
+  
+  par(mfrow  = c(2, 1) )
+  
+  Reduction <- Pre - Post
+  
+  IgE <- data.frame( IgE.Pre = Pre, 
+                     IgE.Post = Post,
+                     IgE.Reduction = Reduction)
+  
+  hist(Reduction,
+       col = plot.colour,
+       las = 1,
+       breaks = seq(0, 1000, by = 100),
+       ylab = "Number of subjects",
+       xlab = "Reduction in IgE (in micrograms/L)",
+       main = "Reduction in IgE\n pre and post supplementation")
+  box()
+  
+  
+  ###
+  
+  
+  plot( c(Pre, Post) ~ WhichTime,
+        pch = 19,
+        las = 1,
+        axes = FALSE,
+        ylim = c(0, 6000),
+        xlim = c(0.8, 2.2),
+        xlab = "Time",
+        ylab = "IgE (in micrograms/L)")
+  axis(side = 1, 
+       at = 1:2, 
+       labels = c("Pre-intervention", "Post-intervention"))
+  box()
+  
+  axis(side = 2, 
+       las = 1)
+  for (i in 1:length(Pre)){
+    lines( c(1, 2),
+           c(Pre[i], Post[i]),
+           col = grey(0.6)
+    )
+  }
+}
+```
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/cake-916253_640.jpg" width="200px"/>
+</div>
+
+
+
+::: {.example #GraphPairedData name="Graphing paired data"}
+A study [@data:Dawson2017:BirthdayCakes] examined the average number of bacteria on birthday cakes *before* and *after* blowing out the candles.
+This RQ could be studied by taking two measurements from each cake: before and after blowing out candles.
+The *change* in the number of bacteria could be computed for each cake, and a histogram of the differences plotted.
+:::
+
+
+### Case-profile plots {#CaseProfilePlot}
+
+Sometimes the same variable is measured on each unit of analysis more than once (i.e., *within*-individual comparisons for each unit of analysis) but only a small number of times.
+A *case-profile plot* can be used: a plot showing how the response variable changes for each unit of analysis.
+Examples of this type of data include:
+
+* Measurements of household water consumption *before* and *after* installing water-saving devices, for many households.
+* Blood pressure measurements for many people at $8$am, $1$pm and $8$pm each day.
+
+In both cases, the same variable is measured multiple times for each unit of analysis.
+
+
+::: {.example #CaseProfilePlots name="Within-individual comparisons"}
+A study of children with atopic asthma [@data:Lothian2006:Whey] measured the immunogoblin\ E concentrations (IgE) before and after an intervention for each child (Table\ \@ref(tab:IgEChanges)).
+The measurements of IgE for each child at both times can be shown using a case-profile plot
+`r if (knitr::is_latex_output()) {
+   '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileLATEX), right panel).'
+} else {
+   '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileHTML), bottomn panel).'
+}`
+:::
+
+
+
+
+
+
+## Tabular summaries {#GraphNeeded}
+ 
+Graphs are generally excellent for summarising data.
+However, sometimes data can be collated in a table, or a *tabular summary*.
+For *qualitative* data, the tabular summary records the numbers (or percentages, or both) for each level of the variable (Example\ \@ref(exm:NHANESdata)).
+For *quantitative* data, the tabular summary effectively produces a histogram as a table (Example\ \@ref(exm:BabyBoomTable)).
+
+With small amounts of information, sometimes just writing the information is better ('$69$% of diagnoses were less severe'; Example\ \@ref(exm:PieCharts)).
+
+
+
+::: {.example #NHANESdata name="Tables for data"}
+The NHANES age data in Example\ \@ref(exm:ComparingGraphs) may be displayed using a tabular summary (Table\ \@ref(tab:SimpleTable)) rather than a graphical summary.
+:::
+
+```{r SimpleTable}
+data(NHANES) # NHANES package
+AgeD <- NHANES$AgeDecade
+AgeD.levels <- levels(NHANES$AgeDecade)
+num.levels <- length(AgeD.levels)
+
+levels(AgeD) <- c( AgeD.levels[1:(num.levels - 2)],
+                   rep(" 60+", 2))
+
+
+
+simpletab <- t(
+  rbind("Age group" = levels(AgeD),
+        Number = table(AgeD), 
+        Percentage = format(table(AgeD)/sum(table(AgeD)) * 100, 
+                            nsmall = 1, # Number of digits to right of decimal point
+                            digits = 3))
+)
+
+if( knitr::is_latex_output() ) {
+  kable( surroundMaths(simpletab,
+                       decDigits = c(0, 0, 1)),
+        format = "latex",
+        longtable = FALSE,
+        align = c("r", "r", "r"),
+        booktabs = TRUE,
+        escape = FALSE,
+        col.names = c("Age group",
+                      "Number of people",
+                      "Percentage of people"),
+        linesep = c("","","", "\\addlinespace"),
+        row.names = FALSE,
+        caption = "The NHANES age distribution, displayed in a tabular summary") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+}
+if( knitr::is_html_output() ) {
+  kable(simpletab,
+        format = "html",
+        longtable = FALSE,
+        align = c("r", "r", "r"),
+        booktabs = TRUE,
+        col.names = c("Age group",
+                      "Number of people",
+                      "Percentage of people"),
+        row.names = FALSE,
+        caption = "The NHANES age distribution, displayed in a tabular summary") %>%
+    kable_styling(full_width = FALSE)
+}
+```
+
+
+
+
+## Summary tables
+
+
+

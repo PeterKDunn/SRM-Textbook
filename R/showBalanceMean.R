@@ -9,20 +9,20 @@ BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
   
   
   # Data
-  milk <- c(4.8, 6.5, 5.2, 4.5, 5.2, 5.7, 5.4, 4.8, 5.2, 5.2) 
-  mean.x <- mean(milk)
+  beat <- c(0.7, 0.9, 1.3, 1.5, 1.5, 1.5, 1.7, 1.7, 1.8, 2.6, 3, 4.1, 4.4, 4.4)
+  mean.x <- mean(beat)
   
   
   # Ruler details
   extra <- 0.05
-  l.ruler <- max(milk) - min(milk) + 2 * extra   # The length of the ruler
-  min.ruler <- min(milk) - extra
-  max.ruler <- max(milk) + extra
+  l.ruler <- max(beat) - min(beat) + 2 * extra   # The length of the ruler
+  min.ruler <- min(beat) - extra
+  max.ruler <- max(beat) + extra
   h.ruler <- 0.05    # The height of the ruler
   
   
   # Create matrix
-  Pos <- array( dim = c(4 + 5 * length(unique(milk)), 2) )
+  Pos <- array( dim = c(4 + 5 * length(unique(beat)), 2) )
   
   ## Ruler: polygon in order (1, 2, 3, 4, 1)
   Pos[1, ] <- c( min.ruler, 0)
@@ -34,7 +34,7 @@ BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
   ## Position the data on top of ruler 
   data.ht <- 0.06
   data.width <- 0.02
-  data.table <- table(milk)
+  data.table <- table(beat)
   
   data.counter <- array( 0, 
                          dim = length(data.table) )
@@ -115,9 +115,10 @@ BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
     Pos[, 1] <- Pos[, 1] - horizontal.shift
   }  
   
+  ###################################
   # Canvas
   par( mar = c(0.5, 0.5, 3.5, 0.5) )
-  plot( x = c(4, 7), 
+  plot( x = c(0.5, 4.5), 
         y = c(-0.5, 1.15),
         type = "n",
         axes = FALSE,
@@ -145,8 +146,8 @@ BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
   }
   
   # Draw "number line"
-  xLineLabs <- seq( min(milk), 
-                    max(milk), 
+  xLineLabs <- seq( min(beat), 
+                    max(beat), 
                     by = 0.5)
   segments( x0 = xLineLabs,
             y0 = 0,
@@ -165,7 +166,7 @@ BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
   text( x = Pos[plotDataPlaces, 1] + data.width,
         y = Pos[plotDataPlaces, 2] + data.ht,
         labels = names(data.table),
-        srt = -180 * theta / pi,
+        srt = (-180 * theta / pi) + 90,
         cex = 0.75,
         col = grey(0.2))
   
@@ -175,7 +176,7 @@ BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
            col = plot.colour)
   text(locate.fulcrum, -0.2, 
        #sprintf("%.3f", locate.fulcrum),
-       expression(bar(italic(x)) == 5.25),
+       expression(bar(italic(x)) == 2.221),
        pos = 1)
   
   
