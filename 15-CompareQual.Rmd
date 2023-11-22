@@ -1,5 +1,100 @@
 # Comparing qualitative data {#SummariseQuantData}
 
+
+## Introduction
+
+Relational and interventional RQs often require comparing groups.
+This chapter considers how to compare *qualitative* variables in different groups.
+Graphs are very useful this purpose.
+
+
+
+
+
+
+## Two-way tables {#QualitativeTwoWaytables}
+
+Since qualitative data is typically collated in a table, more than one qualitative variable can be combined into tables also.
+When two qualitative variables are cross-tabulated, this is called a *two-way table*.
+As always, the categories should be *exhaustive* (cover all values) and *exclusive* (observations belong to one and only one category).
+
+
+
+
+:::{.example #SmallKidneyStones name="Two-way tables"}
+A medical study [@data:Charig:stones] compared two treatments for kidney stones to determine which had a high success rate.
+Data were collected from $700$ UK patients, on two qualitative variables:
+
+* the treatment method ('A' or 'B'): The explanatory variable.
+* the result ('success' or 'failure' of the procedure): The response variable.
+
+Both variables are *qualitative* with two *levels*, and each treatment was used on $350$ patients.
+Treatment\ A was used from 1972--1980, and Treatment B\ from 1980--1985; that is, *treatments were not randomly* allocated, and so *confounding* may be present.
+For this reason, the researchers also recorded the *size* of the kidney stone ('small' or 'large') as one possible confounding variable.
+Firstly, consider just the *small stones* [@julious1994confounding], displayed in the two-way table in Table\ \@ref(tab:KS-Small).
+:::
+
+
+(ref:KStonesNumbersSmall) **Numbers** for **small** kidney stones
+
+```{r KS-Small}
+data(KStones)
+
+KS.small <- xtabs( Counts ~ Method + Result, 
+                   data = subset(KStones, Size == "Small"))[, c(2, 1)]
+
+KS.small2 <- cbind(KS.small, 
+                   "Total" = rowSums(KS.small))
+
+KS.small2.full <- rbind( KS.small2,
+                         "Total" = colSums(KS.small2) )
+
+if( knitr::is_latex_output() ) {
+  kable(surroundMaths(KS.small2.full,
+                      decDigits = 0),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE, 
+        escape = FALSE,
+        digits = 0,
+        align = c("r", "r", "r", "r"),
+        col.names = c("Success", 
+                      "Failure", 
+                      "Total"),
+        caption = "(ref:KStonesNumbersSmall)"
+      ) %>%
+    column_spec(1, bold = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, bold = TRUE) %>%
+    row_spec(2, hline_after = TRUE) %>%
+   kable_styling(full_width = FALSE) %>%
+  kable_styling(font_size = 10) %>%
+  column_spec(column = 4, 
+               bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  kable(KS.small2.full,
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               digits = 0,
+               align = c("r", "r", "r", "r"),
+               col.names = c("Success", 
+                             "Failure", 
+                             "Total"),
+               caption = "(ref:KStonesNumbersSmall)"
+      ) %>%
+    kable_styling(full_width = FALSE) %>%
+    column_spec(column = 4, 
+                bold = TRUE) %>% 
+    row_spec(3, 
+             bold = TRUE)
+}
+```
+
+
+
+
 ## Graphing qualitative data
 
 
@@ -13,158 +108,60 @@ As an example, a study of road kill [@data:Russell2009:Possums] produced the dat
 The two qualitative variables are the *season* (ordinal, with four levels) and the *sex* (nominal, with three levels including 'Unknown').
 
 
-```{r PossumRoadkillNumber}
-## Russell2009
-
-Counts <- matrix( c(75, 25, 21,   
-                    74, 27, 22,   
-                    71, 10, 18,   
-                    58, 10, 12), 
-                  nrow = 4, 
-		  ncol = 3, 
-		  byrow = TRUE) 
-rownames(Counts) <- c("Autumn", 
-                      "Winter", 
-                      "Spring", 
-                      "Summer")
-colnames(Counts) <- c("Unknown", 
-                      "M", 
-                      "F")
-
-Counts2 <- Counts
-rownames(Counts2) <- c("Aut.", 
-                       "Wint.", 
-                       "Spr.", 
-                       "Sum.")
-
-Percentages <- t( apply(Counts2, 1,
-                  function(x){ round(x / sum(x) * 100, 1)}))
-colnames(Percentages) <- c("Unknown", "Males", "Females")
 
 
-if( knitr::is_latex_output() ) {
-  T1 <- knitr::kable(surroundMaths(Counts,
-                                   decDigits = 0),
-               format = "latex",
-               longtable = FALSE,
-               escape = FALSE,
-               align = c("r", "c", "c", "c"),
-               booktabs = TRUE) %>%
-    #kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE)
-  
-  rownames(Percentages) <- c("Autumn", 
-                             "Winter",
-                             "Spring",
-                             "Summer")
-    T2 <- knitr::kable(surroundMaths(Percentages,
-                                     decDigits = 1),
-               format = "latex",
-               longtable = FALSE,
-               escape = FALSE,
-               align = c("r", "r", "r"),
-               booktabs = TRUE) %>%
-    #kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE)
-    
-   out <- knitr::kables(list(T1, T2),
-                       format = "latex",
-                       label = "PossumRoadkillNumber",
-                       caption = "The number of possums found as road kill, by sex and season (left). The percentages of possums found as road kill by sex, within each season (i.e., rows sum to 100\\%) (right).") %>% 
-    kable_styling(font_size = 10)
-  out2 <- prepareSideBySideTable(out) 
-  out2  
-}
-if( knitr::is_html_output() ) {
-  knitr::kable(Counts,
-               format = "html",
-               longtable = FALSE,
-               align = c("r", "c", "c", "c"),
-               booktabs = TRUE,
-               caption = "The number of possums found as road kill, by sex and season") %>%
-     kable_styling(full_width = FALSE)
-}
-```
 
 
 ### Stacked bar charts {#StackedBarCharts}
 
-The data can be graphed by using a bar for each season, *stacking* the bars by sex on top of each other, within each season (Fig.\ \@ref(fig:PossumStackedBarChart), left panel).
+The data can be graphed by using a bar for each level of one variable, and *stacking* the bars the levels of the second variable.
 
 
-```{r PossumStackedBarChart, fig.height=3.75, fig.width=9, out.width='100%', fig.align="center", fig.cap="The number of possums found as road kill, by sex and season. Left panel: A stacked barchart; right panel: A side-by-side barchart"}
+::: {.example #BarStacked name="Stacked bar charts"}
+For the data in Example\ \@ref(exm:SmallKidneyStones), a stacked bar chart can be created by producing a bar for each method, and *stacking* the successes and failures for each method (Fig.\ \@ref(fig:QualGraphsStones), top left panel).
 
-par(mfrow = c(1, 2))
+Rather than using *numbers*, the *percentages* within each group can be used too (Fig.\ \@ref(fig:QualGraphsStones), top right panel).
 
-colnames(Counts2) <- c("?", "M", "F")
-
-out <- barplot( t(Counts2), 
-   beside = FALSE,
-   ylab = "Number of possums",
-   xlab = "Season",
-   main = "Stacked barchart of\nroadkill possums",
-   col = viridis(3),
-   #space = c(0.15, 1),
-   ylim = c(0, 125),
-   xlim = c(0, 5),
-   las = 1)
-grid(nx = NA, 
-     ny = NULL)
-
-text( out[4] + 0.6, 70, 
-      "F", 
-      adj = 0)
-text( out[4] + 0.6, 60, 
-      "M",
-      adj = 0)
-text( out[4] + 0.6, 30, 
-      "?",
-      adj = 0)
-
-text( out[1] - 0.8, 110, 
-      "F", 
-      adj = 0)
-text( out[1] - 0.8,  90, 
-      "M", 
-      adj = 0)
-text( out[1] - 0.8,  40,
-      "?", 
-      adj = 0)
+:::
 
 
-######
+```{r QualGraphsStones, fig.align="center", fig.cap="Four plots for the small kidney-stone data", out.width='100%', fig.width = 8.5, fig.height=6}
+par( mfrow = c(2, 2))
 
-out <- barplot( t(Counts2), 
-   beside = TRUE,
-   ylab = "Number of possums",
-   xlab = "Season",
-   main = "Side-by-side barchart of\nroadkill possums",
-   col = viridis(3),
-   space = c(0.15, 1),
-   ylim = c(0, 80),
-   las = 1)
-grid(nx = NA, 
-     ny = 6)
 
-mtext( "?", 
-       at = out[1, ], 
-       side = 1, 
-       line = 0, 
-       cex = 0.8, 
-       padj = 0.5)
-mtext( "M", 
-       at = out[2, ], 
-       side = 1, 
-       line = 0, 
-       cex = 0.8, 
-       padj = 0.5)
-mtext( "F", 
-       at = out[3, ], 
-       side = 1, 
-       line = 0, 
-       cex = 0.8, 
-       padj = 0.5)
+barplot( t(KS.small),
+         las = 1,
+         main = "Results of procedures\nfor small kidney stones",
+         ylab = "Number of patients",
+         legend.text = TRUE,
+         args.legend = list(x = "topleft") )
+
+barplot( prop.table( t(KS.small), 
+                     margin = 2 ) * 100,
+         las = 1,
+         main = "Results of procedures\nfor small kidney stones",
+         ylab = "Percentage of patients" ,
+         legend.text = TRUE,
+         args.legend = list(x = "right"))
+
+barplot( prop.table( t(KS.small), 
+                     margin = 2 ) * 100,
+         las = 1,
+         ylim = c(0, 100),
+         main = "Results of procedures\nfor small kidney stones",
+         ylab = "Percentage of patients",
+         beside = TRUE,
+         legend.text = TRUE,
+         args.legend = list(x = "top"))
+
+
+dotchart(t (KS.small),
+         main = "Results of procedures\nfor small kidney stones",
+         xlab = "Number of patients",
+         xlim = c(0, 250),
+         pch = c(19, 0))
 ```
+
 
 
 
@@ -172,529 +169,239 @@ mtext( "F",
 
 Instead of stacking the bars within each season on top of each other, the bars can be placed *side-by-side* within each season (Fig.\ \@ref(fig:PossumStackedBarChart), right panel).
 
+::: {.example #BarStacked name="Stacked bar charts"}
+For the data in Example\ \@ref(exm:SmallKidneyStones), a side-by-side bar chart can be created by producing two bars for each method (one for failures; one for successes), and placing these side-by-side (Fig.\ \@ref(fig:QualGraphsStones), bottom left panel).
+Again, numbers or percentages can be used.
+:::
 
 
 ### Dot charts {#TwoWayCountsDotCharts}
 
-Instead of bars, dots (or other symbols) can be used in place of a side-by-side bar chart (Fig.\ \@ref(fig:PossumDotCharts)).
+Instead of bars, dots (or other symbols) can be used in place of a side-by-side bar chart.
 
 
-```{r PossumDotCharts, fig.height=4.5, fig.width=5.0, fig.cap="A dot chart of the number of possums found as road kill, by sex and season", fig.align="center"}
-colnames(Counts) <- c("Unknown", 
-                      "Males", 
-                      "Females")
+::: {.example #BarStacked name="Stacked bar charts"}
+For the data in Example\ \@ref(exm:SmallKidneyStones), a side-by-side bar chart can be created by producing two bars for each method (one for failures; one for successes), and placing these side-by-side (Fig.\ \@ref(fig:QualGraphsStones), bottom left panel).
+Again, numbers or percentages can be used.
+:::
 
-dotchart(Counts,
-         main = "Dot chart of possum road deaths\nby season and sex of possum",
-         xlim = c(0, 80),
- 	       xlab = "Number of possums",
-	       pch = c(1, 2, 3, 4))
-```
 
 
 ### Other variations {#OtherVariations}
 
-Many variations of these charts are possible, such as using:
+Many variations of these charts are possible, by making certain choices:
 
 * a stacked bar chart, side-by-side bar chart, or dot chart can be used;
 * percentages or counts can be used;
 * the counts (or percentage) can appear on either the horizontal or vertical axis;
-* either the sex of the possum or the season can be used as the first division of the data.
+* either variable can be used as the first division of the data.
 
-Some of these variations are shown in 
-`r if (knitr::is_latex_output()) {
-   'Fig.\\ \\@ref(fig:PossumBarChartsLATEX).'
-} else {
-   'Fig.\\ \\@ref(fig:PossumBarChartsHTML).'
-}`
-A table is also possible, of either counts
-`r if (knitr::is_latex_output()) {
-   '(Table\\ \\@ref(tab:PossumRoadkillNumber), left table) or percentages (right  table).'
-} else {
-   'Table\\ \\@ref(tab:PossumRoadkillPercentagesHTML) or percentages (Table\\ \\@ref(tab:PossumRoadkillPercentagesHTML)).'
-}`
+The guiding principle remains: *the purpose of a graph is to display information in the clearest, simplest possible way, to help the reader understand the message(s) in the data*.
 
-
-```{r PossumBarChartsLATEX, fig.height=8, fig.width=8.0, out.width='100%', fig.cap="Four graphs: The number or percentage of possums found as road kill, by sex and season, and a dot chart", fig.align="center"}
-
-if (knitr::is_latex_output()) {
-  par( mfrow = c(2, 2))
-  
-  colnames(Counts2) <- c("?", 
-                         "M", 
-                         "F")
-  
-  barplot( Counts2, 
-     beside = TRUE,
-     xlab = "Number of possums",
-     main = "Roadkill possums",
-     #ylab = "Season",
-     space = c(0.15, 1),
-     ylim = c(0, 16),
-     xlim = c(0, 80),
-     horiz = TRUE,
-     axes = FALSE,
-     names.arg = c("", "", ""),
-     las = 1)
-  grid(ny = NA, 
-       nx = 8)
-  
-  out <- barplot( Counts2, # Plot again to cover the lines added by  grid()
-     beside =TRUE,
-     xlab = "Number of possums",
-     #ylab = "Season",
-     main = "Bar chart of possum road deaths\nby season and sex of possum",
-     col = viridis(4),
-     space = c(0.15, 1),
-     ylim = c(0, 16),
-     xlim = c(0, 80),
-     las = 1,
-     horiz = TRUE,
-     names.arg = c("", "", ""),
-     add = TRUE)
-  
-  mtext( "Au", 
-         at = out[1, ], 
-         side = 2, 
-         line = 1, 
-         las = 1)
-  mtext( "Wn",
-          at = out[2, ], 
-  	side = 2, 
-  	line = 1, 
-  	las = 1)
-  mtext( "Sp", 
-         at = out[3, ], 
-         side = 2, 
-         line = 1, 
-         las = 1)
-  mtext( "Su", 
-          at = out[4, ], 
-  	side = 2, 
-  	line = 1, 
-  	las = 1)
-  
-  mtext( "Females", 
-          at = 14, 
-  	side = 2, 
-  	line = 3, 
-  	las = 3)
-  mtext( "Males",   
-         at = 8, 
-         side = 2, 
-         line = 3, 
-         las = 3)
-  mtext( "Unknown", 
-         at = 3, 
-         side = 2, 
-         line = 3, 
-         las = 3)
-  
-  
-  Percentages <- t( apply(Counts2, 1,
-                          function(x){ round(x / sum(x) * 100, 1)}))
-  colnames(Percentages) <- c("Unknown", "Males", "Females")
-  
-  barplot( Percentages, 
-     beside = TRUE,
-     ylab = "Percentages of possums",
-     main = "Roadkill possums",
-     #xlab = "Season",
-     space = c(0.15,1),
-     names.arg = rep("", 3),
-     ylim = c(0,80),
-     las = 1)
-  grid(nx = NA, 
-       ny = 8)
-  
-  out <- barplot( Percentages, 
-     beside = TRUE,
-     ylab = "Percentages of possums",
-     #xlab =" Season",
-     main = "Bar chart of possum road deaths\nby season and sex of possum",
-     space = c(0.15, 1),
-     col = viridis(4),
-     names.arg = rep("", 3),
-     ylim=c(0, 80),
-     las = 1,
-     add = TRUE)
-  
-  mtext( "Au", 
-         at = out[1, ], 
-         side = 1, 
-         line = 1, 
-         cex = 0.8, 
-         padj = 0.5)
-  mtext( "Wn", 
-         at = out[2, ], 
-         side = 1, 
-         line = 1, 
-         cex = 0.8, 
-         padj = 0.5)
-  mtext( "Sp", 
-         at = out[3, ], 
-         side = 1, 
-         line = 1, 
-         cex = 0.8, 
-         padj = 0.5)
-  mtext( "Su", 
-         at = out[4, ], 
-         side = 1, 
-         line = 1, 
-         cex = 0.8, 
-         padj = 0.5)
-  
-  mtext( "Unknown", 
-         at = mean(out[, 1]), 
-         side = 1, 
-         line = 3, 
-         cex = 1, 
-         padj = 0.5)
-  mtext( "Males",   
-         at = mean(out[, 2]), 
-         side = 1, 
-         line = 3, 
-         cex = 1, 
-         padj = 0.5)
-  mtext( "Females", 
-         at = mean(out[, 3]), 
-         side = 1, 
-         line = 3, 
-         cex = 1, 
-         padj = 0.5)
-  
-  barplot( Percentages, 
-     beside = TRUE,
-     ylab = "Percentages of possums",
-     main = "Roadkill possums",
-     #xlab = "Season",
-     space = c(0.15, 1),
-     names.arg = rep("", 3),
-     ylim = c(0, 80),
-     las = 1)
-  grid(nx = NA, 
-       ny = 8)
-  
-  out <- barplot( Percentages, 
-     beside = TRUE,
-     ylab = "Percentages of possums",
-     #xlab = "Season",
-     main = "Bar chart of possum road deaths\nby season and sex of possum",
-     space = c(0.15, 1),
-     names.arg = rep("", 3),
-     col = viridis(4),
-     #horiz = TRUE,
-     ylim = c(0, 80),
-     las = 1,
-     add = TRUE)
-  
-  mtext( "Au", 
-         at = out[1, ], 
-         side = 1, 
-         line = 1, 
-         cex = 0.8, 
-         padj = 0.5)
-  mtext( "Wn", 
-         at = out[2, ], 
-         side = 1, 
-         line = 1, 
-         cex = 0.8, 
-         padj = 0.5)
-  mtext( "Sp", 
-         at = out[3, ], 
-         side = 1, 
-         line = 1, 
-         cex = 0.8, 
-         padj = 0.5)
-  mtext( "Su", 
-         at = out[4, ], 
-         side = 1, 
-         line = 1, 
-         cex = 0.8, 
-         padj = 0.5)
-  
-  mtext( "Unknown", 
-         at = mean(out[, 1]), 
-         side = 1, 
-         line = 3, 
-         cex = 1, 
-         padj = 0.5)
-  mtext( "Males",   
-         at = mean(out[, 2]), 
-         side = 1, 
-         line = 3, 
-         cex = 1, 
-         padj = 0.5)
-  mtext( "Females", 
-         at = mean(out[, 3]), 
-         side = 1, 
-         line = 3, 
-         cex = 1, 
-         padj = 0.5)
-  
-  
-  
-colnames(Counts) <- c("Unknown", 
-                      "Males", 
-                      "Females")
-
-dotchart( t(Counts),
-         main = "Dot chart of possum road deaths\nby season and sex of possum",
-         xlim = c(0, 80),
- 	       xlab = "Number of possums",
-	       pch = c(1, 2, 3, 4))
-}
-```
-
-```{r PossumBarChartsHTML, fig.height=10, fig.width=4.0, fig.cap="Four graphs: The number or percentage of possums found as road kill, by sex and season, and a dot chart", fig.align="center"}
-
-if (knitr::is_html_output()) {
-  par( mfrow = c(4, 1))
-
-  colnames(Counts2) <- c("?", 
-                         "M", 
-                         "F")
-  
-  barplot( Counts2, 
-     beside = TRUE,
-     xlab = "Number of possums",
-     #ylab = "Season",
-     main = "Roadkill possums",
-     space = c(0.15, 1),
-     ylim = c(0, 16),
-     xlim = c(0, 80),
-     horiz = TRUE,
-     axes = FALSE,
-     names.arg = c("", "", ""),
-     las = 1)
-  grid(ny = NA, 
-       nx = 8)
-  
-  out <- barplot( Counts2, # Plot again to cover the lines added by  grid()
-     beside =TRUE,
-     xlab = "Number of possums",
-     #ylab = "Season",
-     main = "Bar chart of possum road deaths\nby season and sex of possum",
-     space = c(0.15, 1),
-     ylim = c(0, 16),
-     xlim = c(0, 80),
-     las = 1,
-     horiz = TRUE,
-     names.arg = c("", "", ""),
-     add = TRUE)
-  
-  mtext( "Au", 
-         at = out[1, ], 
-         side = 2, 
-         line = 1, 
-         las = 1)
-  mtext( "Wn",
-          at = out[2, ], 
-  	side = 2, 
-  	line = 1, 
-  	las = 1)
-  mtext( "Sp", 
-         at = out[3, ], 
-         side = 2, 
-         line = 1, 
-         las = 1)
-  mtext( "Su", 
-          at = out[4, ], 
-  	side = 2, 
-  	line = 1, 
-  	las = 1)
-  
-  mtext( "Females", 
-          at = 14, 
-  	side = 2, 
-  	line = 3, 
-  	las = 3)
-  mtext( "Males",   
-         at = 8, 
-         side = 2, 
-         line = 3, 
-         las = 3)
-  mtext( "Unknown", 
-         at = 3, 
-         side = 2, 
-         line = 3, 
-         las = 3)
-  
-  
-  Percentages <- t( apply(Counts2, 1,
-                          function(x){ round(x / sum(x) * 100, 1)}))
-  colnames(Percentages) <- c("Unknown", "Males", "Females")
-  
-  barplot( Percentages, 
-     beside = TRUE,
-     ylab = "Percentages of possums",
-     main = "Roadkill possums",
-     #xlab = "Season",
-     space = c(0.15,1),
-     names.arg = rep("", 3),
-     ylim = c(0,80),
-     las = 1)
-  grid(nx = NA, 
-       ny = 8)
-  
-  out <- barplot( Percentages, 
-     beside = TRUE,
-     ylab = "Percentages of possums",
-     #xlab =" Season",
-     main = "Bar chart of possum road deaths\nby season and sex of possum",
-     space = c(0.15, 1),
-     names.arg = rep("", 3),
-     ylim=c(0, 80),
-     las = 1,
-     add = TRUE)
-  
-  mtext( "Au", 
-         at = out[1, ], 
-         side = 1, 
-         line = 1, 
-         cex = 0.8, 
-         padj = 0.5)
-  mtext( "Wn", 
-         at = out[2, ], 
-         side = 1, 
-         line = 1, 
-         cex = 0.8, 
-         padj = 0.5)
-  mtext( "Sp", 
-         at = out[3, ], 
-         side = 1, 
-         line = 1, 
-         cex = 0.8, 
-         padj = 0.5)
-  mtext( "Su", at=out[4,], side=1, line=1, cex=0.8, padj=0.5)
-  
-  mtext( "Unknown", 
-         at = mean(out[, 1]), 
-         side = 1, 
-         line = 3, 
-         cex = 1, 
-         padj = 0.5)
-  mtext( "Males",   
-         at = mean(out[, 2]), 
-         side = 1, 
-         line = 3, 
-         cex = 1, 
-         padj = 0.5)
-  mtext( "Females", 
-         at = mean(out[, 3]), 
-         side = 1, 
-         line = 3, 
-         cex = 1, 
-         padj = 0.5)
-  
-  barplot( Percentages, 
-     beside = TRUE,
-     ylab = "Percentages of possums",
-     main = "Roadkill possums",
-     #xlab = "Season",
-     space = c(0.15, 1),
-     names.arg = rep("", 3),
-     ylim = c(0, 80),
-     las = 1)
-  grid(nx = NA, 
-       ny = 8)
-  
-  out <- barplot( Percentages, 
-     beside = TRUE,
-     ylab = "Percentages of possums",
-     #xlab = "Season",
-     main = "Bar chart of possum road deaths\nby season and sex of possum",
-     space = c(0.15, 1),
-     names.arg = rep("", 3),
-     #horiz = TRUE,
-     ylim = c(0, 80),
-     las = 1,
-     add = TRUE)
-  
-  mtext( "Au", 
-         at = out[1, ], 
-         side = 1, 
-         line = 1, 
-         cex = 0.8, 
-         padj = 0.5)
-  mtext( "Wn", 
-         at = out[2, ], 
-         side = 1, 
-         line = 1, 
-         cex = 0.8, 
-         padj = 0.5)
-  mtext( "Sp", 
-         at = out[3, ], 
-         side = 1, 
-         line = 1, 
-         cex = 0.8, 
-         padj = 0.5)
-  mtext( "Su", 
-         at = out[4, ], 
-         side = 1, 
-         line = 1, 
-         cex = 0.8, 
-         padj = 0.5)
-  
-  mtext( "Unknown", 
-         at = mean(out[, 1]), 
-         side = 1, 
-         line = 3, 
-         cex = 1, 
-         padj = 0.5)
-  mtext( "Males",   
-         at = mean(out[, 2]), 
-         side = 1, 
-         line = 3, 
-         cex = 1, 
-         padj = 0.5)
-  mtext( "Females", 
-         at = mean(out[, 3]), 
-         side = 1, 
-         line = 3, 
-         cex = 1, 
-         padj = 0.5)
-  
-  
-  
-  colnames(Counts) <- c("Unknown", 
-                      "Males", 
-                      "Females")
-
-dotchart( t(Counts),
-         main = "Dot chart of possum road deaths\nby season and sex of possum",
-         xlim = c(0, 80),
- 	       xlab = "Number of possums",
-	       pch = c(1, 2, 3, 4))
-}
-```
-
-
-<!-- tables are side-by-side in LaTeX, so only need separate one for HTML -->
-```{r PossumRoadkillPercentagesHTML}
-colnames(Percentages) <- c("Unknown", "M", "F")
-
-if( knitr::is_html_output() ) {
-  knitr::kable(Percentages,
-               format = "html",
-               longtable = FALSE,
-               align = c("r", "r", "r"),
-               booktabs = TRUE,
-               caption = "The percentages of possums found as road kill by sex, within each season (i.e., rows sum to 100%)") %>%
-    kable_styling(full_width = FALSE)
-}
-```
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Of all these displays, which one do you think best communicates the message in the data?
-:::
+Using a computer to create graphs is recommended, and using a computer makes it easy to try different variations to find the grah that best displays the message in the data.
 
 
 <iframe src="https://learningapps.org/watch?v=pgn3q7ptv22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
 
 
 
-### Two-way table and percentages
+## Numerical summaries of two-way tables
+
+Each variable in a two-way table can be analysed separately, using percentage, proportions or odds (Sect.\ \@ref(QualitativeNumbers)).
+For example, the two variables in Table\ \@ref(tab:KS-Small) (Method; Result) can be analysed separately, using percentages, proportions or odds (Sect.\ \@ref(QualitativeNumbers)).
+For instance:
+
+* the percentage of procedures that were successful is $315/357\times 100 = 88.2$%.
+* the odds that a procedure was successful is $315/42 = 7.5$; that is, there were $7.5$ times as many successful procedures as unsuccessful procedures.
+
+However, to *compare* Methods\ A and\ B, these odds and percentages can be computed for each row (or column) separately.
+
+
+### Summarising by rows {#RowPercentages}
+
+
+::: {.example}
+The data in Table\ \@ref(tab:KS-Small) can be numerically summarised by computing *proportions* or *percentages* by *row totals*.
+The rows refer to the different Methods, this will compare the two methods.
+
+For the small kidney stones (Table\ \@ref(tab:KS-Small)), the *row proportions*
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:KidneyRowColLATEX), right table)'
+} else {
+   '(Table\\ \\@ref(tab:KS-Small-rowPC)'
+}`
+give the proportion of successes for each *Method*, since the rows represent the counts for Methods\ A and\ B.
+*Row* proportions allow the proportions *within the rows* (i.e., for each Method) to be compared:
+
+* Method\ A: $81 \div 87 = 0.931$ (or $93.1$%) of operations in the sample were successful; and
+* Method\ B: $0.867$ (or $86.7$%) of operations in the sample were successful.
+
+This suggests that, for small kidney stones, Method\ A is slightly more successful ($93.1$%) than Method\ B ($86.7$%) in the *sample*.
+These can be collated into a table
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:KidneyRowColLATEX), right table).'
+} else {
+   '(Table\\ \\@ref(tab:KS-Small-rowPC).'
+}`
+
+
+Odds can also be computed:
+
+* Method\ A: The odds of success is $81/6 = 13.5$. 
+  This means there are $13.5$ more successful procedures than failures for Method\ A.
+* Method\ B: The odds of success is $234/36 = 6.5$.
+  This means there are $6.5$ more successful procedures than failures for Method\ B.
+
+This shows that the odds of a success is far greater for Method\ A.
+:::
+
+
+(ref:KStonesRowPercentSmall) **Row percentages** for **small** kidney stones (from Table\ \@ref(tab:KS-Small))
+
+```{r KS-Small-rowPC}
+KS.small.rowPC <- prop.table(KS.small, 
+                             margin = 1) * 100
+KS.small.rowPC2 <- cbind(KS.small.rowPC, 
+                         "Total" = c(100, 100) )
+
+if( knitr::is_html_output() ) {
+  kable(KS.small.rowPC2,
+        format = "html",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        digits = 1,
+        align = c("r", "r", "r", "r"),
+        col.names = c("Success", 
+                      "Failure", 
+                      "Total"),
+        caption = "(ref:KStonesRowPercentSmall)") %>%
+    kable_styling(full_width = FALSE) %>%
+    column_spec(column = 4, 
+                bold = TRUE) 
+}
+```
+  
+
+
+(ref:KStonesColPercentSmall) **Column percentages** for **small** kidney stones (from Table\ \@ref(tab:KS-Small))
+
+```{r KS-Small-colPC}
+KS.small.colPC <- prop.table(KS.small, 
+                             margin = 2) * 100
+KS.small.colPC2 <- rbind(KS.small.colPC, 
+                         "Total" = c(100, 100) )
+  
+
+
+if( knitr::is_html_output() ) {
+  kable(surroundMaths(KS.small.colPC2,
+                      decDigits = 0),
+               format = "html",
+               longtable = FALSE,
+               digits = 1,
+               booktabs = TRUE,
+               align = c("r", "r", "r"),
+               col.names = c("Success", 
+                             "Failure"),
+               caption = "(ref:KStonesColPercentSmall)") %>%
+    kable_styling(full_width = FALSE) %>%
+    row_spec(row = 3, 
+             bold = TRUE) 
+}
+```
+
+
+
+(ref:KStonesRowColPercentSmall) **Small** kidney stones: left: **Row percentages**; right, **column percentages** (from Table\ \@ref(tab:KS-Small)).
+
+```{r}
+KS.small.rowPC <- prop.table(KS.small, 
+                             margin = 1) * 100
+KS.small.rowPC <- round(KS.small.rowPC, 1)
+KS.small.rowPC2 <- cbind(KS.small.rowPC, 
+                         "Total" = c("$100$", "$100$") )
+
+KS.small.colPC <- prop.table(KS.small, 
+                             margin = 2) * 100
+KS.small.colPC2 <- rbind(KS.small.colPC, 
+                         "Total" = c(100, 100) )
+KS.small.colPC <- round(KS.small.colPC, 1)
+  
+if( knitr::is_latex_output() ) {
+  T1 <- kable(surroundMaths(KS.small.rowPC2,
+                      decDigits = 1),
+        format  ="latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        digits = 1,
+        align = c("r", "r", "r", "r"),
+        col.names = c("Success", 
+                      "Failure", 
+                      "Total")) %>%
+    row_spec(0, bold = TRUE)  
+
+  T2 <- kable(surroundMaths(KS.small.colPC2,
+                            decDigits = 1),
+        format = "latex",
+        longtable = FALSE,
+        digits = 1,
+        booktabs = TRUE,
+        escape = FALSE,
+        align = c("r", "r", "r"),
+        col.names = c("Success", 
+                      "Failure"))  %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, bold = TRUE)
+  
+  out <- knitr::kables(list(T2, T1),
+                       format = "latex",
+                       label = "KidneyRowColLATEX",
+                       caption = "(ref:KStonesRowColPercentSmall)") %>% 
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out, 
+                                 gap = "\\qquad\\qquad\\qquad") 
+  out2
+  
+}
+```
+
+
+
+### Summarising by columns {#ColumnPercentages}
+
+Rather then comparing methods (in the rows), the procedure results can be compare (i.e., the columns).
+
+
+
+::: {.example}
+For the *small* kidney stones (Table\ \@ref(tab:KS-Small)), the *column proportions* 
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:KidneyRowColLATEX), left table)'
+} else {
+   '(Table\\ \\@ref(tab:KS-Small-colPC)'
+}`
+give the proportion of successes within each column (i.e., for successes and for failures), since the columns contain the procedure results.
+*Column* proportions allow the proportions (or percentages) within *columns* to be compared:
+
+* Successful operations: $81 \div (81 + 234) = 0.257$ (or $25.7$%) in the sample were with Method\ A; and
+* Unsuccessful operations: $0.143$ (or $14.3$%) in the sample were with Method\ A.
+
+Row percentages seems more intuitive than column percentages here: they compare the success percentage for each treatment method.
+
+Odds can also be computed:
+
+* Successes: The odds of a success coming from Method\ A is $81/234 = 0.346$. 
+  This means there are $0.346$ more Method\ A procedures than Method\ B procedures among the successes.
+* Failures: The odds of failure coming from Method\ A is $6/36 = 0.167$.
+  This means there are $0.167$ more Method\ A procedures than Method\ B procedures among the failures.
+
+This shows that the odds of a success being a Method\ A procedure is quite different than the odds of a success being a Method\ B procedure.
+:::
+
+
+
 
 ### Comparing odds: odds ratios {#OdddsRatios}
 
@@ -773,21 +480,239 @@ htmltools::tags$video(src ="./videos/oddsratios.mp4",
 
 
 
-## Observing relationships {#OddsObserveRelationships}
+NUMERICL SUMMARY TABLE!!!!!
 
-For the *small* kidney stone data, the odds of a success for Method\ A ($13.5$) is different than the odds of a successes for Method\ B ($6.52$), in the *sample*.
-Is there a difference in the *population* odds?
 
-Broadly, two possible reasons exist to explain the differences *in the sample odds*:
 
-* The *population odds* are the same for Method\ A and Method\ B, but the *sample odds* are difference simply because of sample obtained.
-  After all, we have just one of the many possible samples, and every sample is likely to be different; the *sample* we studied just happened to show a difference.
-  That is, *sampling variation* explains the *difference in the sample odds*.
-       
-* The *population odds* are different for Method\ A and Method\ B, and so the *sample odds* are difference, simply reflects this difference between the *population* odds.
 
-The difficulty, of course, is knowing which of these two reasons ('hypotheses') is the most likely reason for the difference between the sample odds.
-This question is of prime importance (after all, it answers the RQ), and is addressed at length later in this book.
+
+
+## Example: large kidney stones {#KidneyExample}
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/surgery-3034133_640.jpg" width="200px"/>
+</div>
+
+
+The data in Table\ \@ref(tab:KS-Small) are for *small* kidney stones.
+Data were also recorded for the *large* kidney stones 
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:KStonesNumbersLargeAll), left table).'
+} else {
+   '(Table\\ \\@ref(tab:KS-Large)).'
+}`
+As for small kidney stones, the *success proportions* can be computed for large kidney stones for Methods\ A and\ B (i.e., row percentages):
+
+* Method\ A: Success proportion for large kidney stones: $192/263 = 0.730$, or $73.0$%; and
+* Method\ B: Success proportion for large kidney stones: $55/80 = 0688$, or $68.8$%.
+
+For large kidney stones, then, *Method\ A* has a higher success proportion than Method\ B, just as with the small kidney stones.
+
+
+
+(ref:KStonesNumbersLarge) **Numbers** for **large** kidney stones
+
+```{r KS-Large}
+KS.large <- xtabs( Counts ~ Method + Result, 
+                   data = subset(KStones, Size == "Large"))[, c(2, 1)]
+KS.large2 <- cbind(KS.large, 
+                   "Total" = rowSums(KS.large))
+
+if( knitr::is_html_output() ) {
+  kable(KS.large2,
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               digits = 0,
+               align = c("r", "r", "r", "r"),
+               col.names = c("Success", 
+                             "Failure", 
+                             "Total"),
+               caption = "(ref:KStonesNumbersLarge)") %>%
+    column_spec(column = 4, 
+		            bold = TRUE)
+}
+```
+
+
+So... could the data for small (Table\ \@ref(tab:KS-Small)) and large kidney stones 
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:KStonesNumbersLargeAll), left table)'
+} else {
+   '(Table\\ \\@ref(tab:KS-Large))'
+}`
+be combined, to produce a single two-way table of just Method and Result
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:KStonesNumbersLargeAll), right table),'
+} else {
+   '(Table\\ \\@ref(tab:KSAll)),'
+}`
+ignoring size?
+
+
+(ref:KStonesNumbersAll) **Numbers** for **all** kidney stones combined, ignoring the size of the kidney stone
+
+```{r KSAll}
+KS.all <- KS.small + KS.large
+KS.all2 <- cbind(KS.all, 
+                 "Total" = rowSums(KS.all))
+
+if( knitr::is_html_output() ) {
+  kable(KS.all2,
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               digits = 0,
+               align = c("r", "r", "r", "r"),
+               col.names = c("Success", 
+                             "Failure", 
+                             "Total"),
+               caption = "(ref:KStonesNumbersAll)") %>%
+    column_spec(column = 4, 
+            		bold = TRUE)
+}
+```
+
+
+
+(ref:KStonesNumbersLargeAll) The kidney stones data: left:  **Numbers** for **large** stones only; right: **numbers** for **all** kidney stones combined, ignoring the size of the kidney stone
+
+```{r}
+if( knitr::is_latex_output() ) {
+  T1 <- kable(surroundMaths(KS.large2,
+                            decDigits = 0),
+        format  ="latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        digits = 1,
+        align = c("r", "r", "r"),
+        col.names = c("Success", 
+                      "Failure", 
+                      "Total")) %>%
+    row_spec(0, bold = TRUE)  
+
+  T2 <- kable(surroundMaths(KS.all2,
+                            decDigits = 0),
+        format = "latex",
+        longtable = FALSE,
+        digits = 1,
+        booktabs = TRUE,
+        escape = FALSE,
+        align = c("r", "r", "r"),
+        col.names = c("Success", 
+                      "Failure",
+                      "Total"))  %>%
+    row_spec(0, bold = TRUE)
+  
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "KStonesNumbersLargeAll",
+                       caption = "(ref:KStonesNumbersLargeAll)") %>% 
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out, 
+                                 gap = "\\qquad\\qquad\\qquad") 
+  out2
+  
+}
+```
+
+
+
+
+::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
+Compute the success proportions for Method\ A and Method\ B when *small* and *large* stones are combined\label{thinkBox:AllStonesSuccess}
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:KStonesNumbersLargeAll), right table):'
+} else {
+   '(Table\\ \\@ref(tab:KSAll)):'
+}`\vspace{-2ex}
+
+* For all stones combined, what is the success proportion for Method\ A?
+* For all stones combined, what is the success proportion for Method\ B?
+
+Which method has the higher success proportion for all stones combined?
+
+`r if (knitr::is_latex_output()) '<!--'`
+`r webexercises::hide()`
+Method\ A has a higher success proportion ($273/350 = 0.780$) than Method\ B ($289/350 = 0.826$), for all kidney stones combined.
+`r webexercises::unhide()`
+`r if (knitr::is_latex_output()) '-->'`
+:::
+
+
+To summarise:
+
+* *Method\ A* is better for small stones ($93.1$% vs $86.7$%);
+* *Method\ A* is better for large stones ($73.0$% vs $68.8$%); but
+* *Method\ B* is better when all stones are combined ($78.0$% vs $82.6$%)...
+
+That seems strange...
+Method\ A performs better for small *and* large kidney stones... but Method\ B performs better when size is unknown (i.e., ignoring size).
+
+The *size of the stone* is a *confounding variable* (Fig.\ \@ref(fig:SimpsonRulesStones)), as it is associated with the method (small stones are treated more often with Method\ B) *and* with the result (small stones have a greater success proportion).
+
+This confounding could have been avoided by randomly allocating a treatment method to patients.
+However, random allocation was not possible in this study, so the researchers used a different method to manage confounding: *recording* the size of the kidney stones; see Sect.\ \@ref(ObsManagingConfounding).
+
+In this example, incorporating information about a potential confounder (the size of the kidney stone) is important, otherwise the wrong (opposite) conclusion is reached: Method\ B would be considered better if the size of the stones was ignored, when the better method really is Method\ A.
+
+This is called
+`r if (knitr::is_latex_output()) {
+   "*Simpson's paradox*."
+} else {
+   "[*Simpson's paradox*](https://en.wikipedia.org/wiki/Simpson%27s_paradox)."
+}`
+If the size of the kidney stone had not been recorded, size would be a *lurking variable*, and the incorrect conclusion would have been reached.
+
+
+```{r SimpsonRulesStones, fig.cap="The size of the stones is related to both the success percentage and the method", fig.align="center", fig.height=2.25, out.width='55%'}
+par( mar = c(0.05, 0.05, 0.05, 0.05))
+openplotmat()
+
+pos <- array(NA, dim = c(3, 2))
+pos[1, ] <- c(0.25, 0.20) # Success 
+pos[2, ] <- c(0.75, 0.20) # Method
+pos[3, ] <- c(0.5, 0.75)   # Size
+
+straightarrow(from = pos[2,], 
+              to = pos[1,], 
+              lty = 1, 
+              lwd = 2)
+straightarrow(from = pos[3,],
+              to = pos[1,], 
+              lty=2,
+              lcol="grey")
+straightarrow(from = pos[3,], 
+              to = pos[2,], 
+              lty = 2,
+              lcol = "grey")
+
+textrect( pos[1,], 
+           lab = "Success", 
+           radx = 0.07, 
+           rady = 0.075, 
+           shadow.size = 0,
+           box.col = ResponseColour,
+           lcol = ResponseColour)
+textrect( pos[2,], 
+           lab = "Method", 
+           radx = 0.07, 
+           rady = 0.075, 
+           shadow.size = 0,
+           box.col = ExplanatoryColour,
+           lcol = ExplanatoryColour)
+textrect( pos[3,], 
+           lab = "Size", 
+           radx = 0.07, 
+           rady = 0.075, 
+           shadow.size = 0,
+           box.col = ExtraneousColour,
+           lcol = ExtraneousColour)
+```
+
+
 
 
 ## Example: skipping breakfast {#Skipping-Breakfast}
@@ -940,253 +865,274 @@ The difficulty is knowing which of these two reasons ('hypotheses') is the most 
 This question is of prime importance (after all, it answers the RQ), and is addressed at length later in this book.
 
 
-## WHERE TO PLACE NOW, if at all: Case Study: the NHANES data {#NHANESCaseStudyQual}
+## Exercises
 
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/hamburger-2253349_640.jpg" width="200px"/>
-</div>
+Selected answers are available in Sect
 
 
-In Sect.\ \@ref(NHANESGraphs), the NHANES data were introduced (@data:NHANES3:Data; @data:NHANES3), and graphs and numerical summaries used to understand the data relevant to answering this RQ:
+::: {.exercise #NumericalQualHangovers}
+A study of hangovers [@data:Kochling2019:Hangover] recorded, among other information, when people vomited after consuming alcohol.
+Table\ \@ref(tab:VomitTable) shows how many people vomited after consuming beer followed by wine, and how many people vomited after consuming only wine.
 
-> Among Americans, is the mean direct HDL cholesterol concentration different for current smokers and non-smokers?
+1. Compute the *row proportions*.  
+   What do these mean?
+1. Compute the *column percentages*. 
+   What do these mean?
+1. Compute the *overall percentage* of drinkers who vomited.
+1. Compute the *odds* a wine-only drinker vomited.
+1. Compute the *odds* that a beer-then-wine drinker vomited.
+1. Compute the *odds ratio*, comparing the odds of vomiting for wine-only drinkers to beer-then-wine drinkers.
+1. Compute the *odds ratio*, comparing the odds of vomiting for beer-then-wine drinkers to wine-only drinkers.
+:::
 
-The data, including potential confounding variables, can be summarised numerically (Table\ \@ref(tab:NHANESBigSummary)).
-Different summaries are needed for quantitative (means and standard deviations; medians and IQR) and qualitative (percentages; odds) variables (Table\ \@ref(tab:NHANESBigSummary)).
-Interesting questions emerge from Table\ \@ref(tab:NHANESBigSummary):
+```{r VomitTable}
+VomitT <- matrix( c(6, 
+                    6, 
+                    62, 
+                    22), 
+                  ncol = 2, 
+                  byrow=TRUE)
+rownames(VomitT) <- c("Vomited", 
+                      "Didn't vomit")
+colnames(VomitT) <- c("Beer, then wine", 
+                      "Wine only")
 
-* How can the mean age of all respondents be $36.7$ years, when the mean age for non-smokers and smokers are *both* much larger than this ($54.3$ and $42.7$ years respectively)?
-* Why is the percentage of females in the sample $50.2$%, but the percentage of females is less than this for both non-smokers and smokers ($43.8$% and $43.5$% respectively)?
+if (knitr::is_latex_output()){
+  kable(surroundMaths(VomitT,
+                      decDigits = 0),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        align = c("r", "r", "r"),
+        col.names = c("Beer then wine", 
+                      "Wine only"),
+        caption = "How many people vomited and did not vomit, by type of alcohol consumed")  %>%
+        kable_styling(font_size = 10) %>%
+        row_spec(0, bold = TRUE)
+  }
+if (knitr::is_html_output()){
+  kable(VomitT,
+        format = "html",
+        longtable = FALSE,
+        booktabs = TRUE,
+	align = c("r", "r", "r"),
+        col.names = c("Beer then wine", 
+	                    "Wine only"),
+        caption = "How many people vomited and did not vomit, by type of alcohol consumed") %>%
+    kable_styling(full_width = FALSE) 
+}
+```
+
+
+::: {.exercise #Wallabies}
+In a study of wallabies at the East Point Reserve, Darwin, the sex of adult and young wallabies was recorded [@data:Stirrat2008:wallabies].
+In December 1993, $91$ males and $188$ female *adult* wallabies were recorded, and $13$ male and $22$ female *young* wallabies were recorded.
+
+1. Create the two-way table of counts.
+1. For *adult* wallabies, what *proportion* of adult wallabies were males?
+1. For *adult* wallabies, what are the *odds* that a female was observed?
+1. For *young* wallabies, what are the *odds* that a female was observed?
+1. For *young* wallabies, what *percentage* of  wallabies were males?
+1. What is the odds ratio of observing an adult wallaby, comparing females to males?
+:::
 
 
 ```{r}
-data(NHANES)
-NHANESSmoker <- subset(NHANES, 
-                       SmokeNow == "Yes")
-NHANESNonSmoker <- subset(NHANES, 
-                          SmokeNow == "No")
+data(EmeraldAug)
 
-rowinfo <- function(variable, fn, dat = NHANES){
-  one <- tapply(NHANES, )
-}
-NHANESdemogr <- array( dim = c(22, 5))
-colnames(NHANESdemogr) <- c("Quantity", 
-                            "Statistic", 
-                            "Overall", 
-                            "Non-smokers", 
-                            "Smokers")
+EmeraldAug$SOIpos <- factor( EmeraldAug$SOI > 0 )
 
-NHANESdemogr[1, ] <- c( "Sample size",
-                        " ",
-                        dim(NHANES)[1],
-                        sum( NHANES$SmokeNow == "No", na.rm = TRUE),
-                        sum( NHANES$SmokeNow == "Yes", na.rm = TRUE) )
-NHANESdemogr[2, ] <- c( "Direct HDL (mmol/L)",
-                       "n",
-                        sum( !is.na(NHANES$DirectChol) ),
-                        sum( !is.na(NHANES$DirectChol[NHANES$SmokeNow == "No"]) ),
-                        sum( !is.na(NHANES$DirectChol[NHANES$SmokeNow == "Yes"]) ) ) 
-NHANESdemogr[3, ] <- c( " ",
-                       "Mean",
-                        round( mean(NHANES$DirectChol, na.rm = TRUE), 2),
-                        round( mean( NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
-                        round( mean( NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2) )
-NHANESdemogr[4, ] <- c( " ",
-                       "Std. dev.",
-                        round( sd(NHANES$DirectChol, na.rm=TRUE), 2),
-                        round( sd( NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
-                        round( sd( NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE),  2) )
+SOI.tab <- xtabs( ~ (SOIpos) + (Rain > 0), 
+                  data = EmeraldAug)
 
-NHANESdemogr[5, ] <- c( "Gender",
-                       "n",
-                        sum( !is.na(NHANES$Gender) ),
-                        sum( !is.na(NHANES$Gender[NHANES$SmokeNow == "No"]) ),
-                        sum( !is.na(NHANES$Gender[NHANES$SmokeNow == "Yes"]) ) ) 
-NHANESdemogr[6, ] <- c( " ",
-                       "\\% Female",
-                        round( sum(NHANES$Gender == "female") / sum( !is.na(NHANES$Gender) ) * 100, 1),
-                        round( sum(NHANESNonSmoker$Gender == "female") / sum( !is.na(NHANESNonSmoker$Gender) ) * 100, 1),
-                        round( sum(NHANESSmoker$Gender == "female") / sum( !is.na(NHANESSmoker$Gender) ) * 100, 1) )
-NHANESdemogr[7, ] <- c( " ",
-                       "Odds Female",
-                        round( sum(NHANES$Gender == "female") / sum(NHANES$Gender == "male"), 3),
-                        round( sum(NHANESNonSmoker$Gender == "female") / sum(NHANESNonSmoker$Gender == "male"), 3),
-                        round( sum(NHANESSmoker$Gender == "female") / sum(NHANESSmoker$Gender == "male"), 3) )
+colnames(SOI.tab) <- c("No rainfall recorded", 
+                       "Rainfall recorded")
+rownames(SOI.tab) <- c("Non-positive SOI", 
+                       "Positive SOI")
 
+#prop.table(SOI.tab, margin=1 )
 
-NHANESdemogr[8, ] <- c( "Age (years)",
-                       "n",
-                        sum( !is.na(NHANES$Age) ),
-                        sum( !is.na(NHANES$Age[NHANES$SmokeNow == "No"]) ),
-                        sum( !is.na(NHANES$Age[NHANES$SmokeNow == "Yes"]) ) ) 
-NHANESdemogr[9, ] <- c( " ",
-                       "Mean",
-                        round( mean(NHANES$Age, na.rm = TRUE), 2),
-                        round( mean( NHANES$Age[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
-                        round( mean( NHANES$Age[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2) )
-NHANESdemogr[10, ] <- c( " ",
-                       "Std. dev.",
-                        round( sd(NHANES$Age, na.rm = TRUE), 2),
-                        round( sd( NHANES$Age[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
-                        round( sd( NHANES$Age[NHANES$SmokeNow == "Yes"], na.rm = TRUE),  2) )
-
-NHANESdemogr[11, ] <- c( "Height (cm)",
-                       "n",
-                        sum( !is.na(NHANES$Height) ),
-                        sum( !is.na(NHANES$Height[NHANES$SmokeNow == "No"]) ),
-                        sum( !is.na(NHANES$Height[NHANES$SmokeNow == "Yes"]) ) ) 
-NHANESdemogr[12, ] <- c( " ",
-                       "Mean",
-                        round( mean(NHANES$Height, na.rm=TRUE), 2),
-                        round( mean( NHANES$Height[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
-                        round( mean( NHANES$Height[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2) )
-NHANESdemogr[13, ] <- c( " ",
-                       "Std. dev.",
-                        round( sd(NHANES$Height, na.rm = TRUE), 2),
-                        round( sd( NHANES$Height[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
-                        round( sd( NHANES$Height[NHANES$SmokeNow == "Yes"], na.rm = TRUE),  2) )
-
-NHANESdemogr[14, ] <- c( "Weight (kg)",
-                       "n",
-                        sum( !is.na(NHANES$Weight) ),
-                        sum( !is.na(NHANES$Weight[NHANES$SmokeNow == "No"]) ),
-                        sum( !is.na(NHANES$Weight[NHANES$SmokeNow == "Yes"]) ) ) 
-NHANESdemogr[15, ] <- c( " ",
-                       "Mean",
-                        round( mean(NHANES$Weight, na.rm = TRUE), 2),
-                        round( mean( NHANES$Weight[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
-                        round( mean( NHANES$Weight[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2) )
-NHANESdemogr[16, ] <- c( " ",
-                       "Std. dev.",
-                        round( sd(NHANES$Weight, na.rm = TRUE), 2),
-                        round( sd( NHANES$Weight[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
-                        round( sd( NHANES$Weight[NHANES$SmokeNow == "Yes"], na.rm = TRUE),  2) )
-
-NHANESdemogr[17, ] <- c( "BMI (kg/m-sq)",
-                       "n",
-                        sum( !is.na(NHANES$BMI) ),
-                        sum( !is.na(NHANES$BMI[NHANES$SmokeNow == "No"]) ),
-                        sum( !is.na(NHANES$BMI[NHANES$SmokeNow == "Yes"]) ) ) 
-NHANESdemogr[18, ] <- c( " ",
-                       "Mean",
-                        round( mean(NHANES$BMI, na.rm = TRUE), 2),
-                        round( mean( NHANES$BMI[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
-                        round( mean( NHANES$BMI[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2) )
-NHANESdemogr[19, ] <- c( " ",
-                       "Std. dev.",
-                        round( sd(NHANES$BMI, na.rm = TRUE), 2),
-                        round( sd( NHANES$BMI[NHANES$SmokeNow == "No"], na.rm = TRUE), 2),
-                        round( sd( NHANES$BMI[NHANES$SmokeNow == "Yes"], na.rm = TRUE),  2) )
-
-NHANESdemogr[20, ] <- c( "Diabetes",
-                       "n",
-                        sum( !is.na(NHANES$Diabetes) ),
-                        sum( !is.na(NHANES$Diabetes[NHANES$SmokeNow == "No"]) ),
-                        sum( !is.na(NHANES$Diabetes[NHANES$SmokeNow == "Yes"]) ) ) 
-NHANESdemogr[21, ] <- c( " ",
-                       "\\% Yes",
-                        round( sum(NHANES$Diabetes == "Yes", na.rm = TRUE) / sum( !is.na(NHANES$Diabetes) ) * 100, 1),
-                        round( sum(NHANESNonSmoker$Diabetes == "Yes", na.rm = TRUE) / sum( !is.na(NHANESNonSmoker$Diabetes) ) * 100, 1),
-                        round( sum(NHANESSmoker$Diabetes == "Yes", na.rm = TRUE) / sum( !is.na(NHANESSmoker$Diabetes) ) * 100, 1) )
-NHANESdemogr[22, ] <- c( " ",
-                       "Odds Yes",
-                        round( sum(NHANES$Diabetes == "Yes", na.rm = TRUE) / sum(NHANES$Diabetes == "No", na.rm = TRUE) , 3),
-                        round( sum(NHANESNonSmoker$Diabetes == "Yes", na.rm = TRUE) / sum(NHANESNonSmoker$Diabetes == "No", na.rm = TRUE), 3),
-                        round( sum(NHANESSmoker$Diabetes == "Yes", na.rm = TRUE) / sum(NHANESSmoker$Diabetes == "No", na.rm = TRUE), 3) )
-
+#chisq.test(SOI.tab)
+#chisq.test(SOI.tab, correct=FALSE)
+#chisq.test(SOI.tab, correct=FALSE)$expected
 ```
 
+::: {.exercise #OddsAugustRainfall}
+The *Southern Oscillation Index* (SOI) is a standardised measure of the air pressure difference between Tahiti and Darwin, shown to be related to rainfall in some parts of the world [@climate:stone:1996], and especially Queensland, Australia [@climate:stone:1992; @mypapers:Dunn:bootstrap:2001].
 
-```{r NHANESBigSummary}
-tab.cap <- paste("A summary of some variables in the NHANES dataset,",
-             "according to current smoking status",
-             "(not reported for 6789 respondents;",
-             "other variables also not reported for all respondents).",
-             "Quantitative variables are summarised using either the mean and standard deviation;",
-             "qualitative variables using percentages and odds.")
-	
+The rainfall at Emerald (Queensland) was recorded for Augusts between 1889 to 2002 inclusive [@mypapers:dunnsmyth:glms], for months when the monthly average SOI was positive and non-positive (zero or negative); see Table\ \@ref(tab:SOItable).
+
+1. Compute the *percentage* of Augusts with no rainfall.
+1. Compute the *percentage* of Augusts with no rainfall, in Augusts with a *non-positive SOI*.
+1. Compute the *percentage* of Augusts with no rainfall, in Augusts with a *positive SOI*.
+1. Compute the *odds* of no August rainfall.
+1. Compute the *odds* of no August rainfall, in Augusts with a *non-positive SOI*.
+1. Compute the *odds* of no August rainfall, in Augusts with a *positive SOI*.
+1. Compute the *odds ratio* of no August rainfall, comparing Augusts with *non-positive SOI* to Augusts with a *positive SOI*.
+1. Interpret this OR.
+:::
+
+
+```{r SOItable}
 if( knitr::is_latex_output() ) {
-  
-  for (i in (1:dim(NHANESdemogr)[1])){
-    NHANESdemogr[i, 1] <- paste0("\\textbf{", 
-                                 NHANESdemogr[i, 1],
-                                 "}")
-    NHANESdemogr[i, 2] <- paste0("\\em{", 
-                                 NHANESdemogr[i, 2],
-                                 "}")
-  }
-  
-  NHANESdemogr[ , 3:5] <- surroundMaths(NHANESdemogr[ , 3:5], # REMOVE BMI
-                      decDigits = c(0, 
-                                    0, 2, 1,
-                                    0, 1, 3,
-                                    0, 2, 2,
-                                    0, 2, 2,
-                                    0, 2, 2,
-                                    0, 2, 2,
-                                    0, 2, 2,
-                                    0, 2, 2))
-  
-  
-  
-  kable(NHANESdemogr[ -c(17:19), ], # REMOVE BMI
-        format = "latex",
-        longtable = FALSE,
-        col.names = colnames(NHANESdemogr),
-        booktabs = TRUE,
-        escape = FALSE,
-        linesep = c("\\addlinespace",  # Otherwise addes a space after five lines... 
-                    "", "", "\\addlinespace",
-                    "", "", "\\addlinespace",
-                    "", "", "\\addlinespace",
-                    "", "", "\\addlinespace",
-                    "", "", "\\addlinespace",
-                    "", "", "\\addlinespace",
-                    "", "", "\\addlinespace",
-                    "", "", "", ""),
-        align = "r",
-        caption = tab.cap) %>%
+  kable( surroundMaths(t(SOI.tab),
+                       decDigits = 0),
+         format = "latex",
+         booktabs = TRUE,
+         longtable = FALSE,
+         escape = FALSE,
+         caption = "The SOI, and whether rainfall was recorded in Augusts between 1889 and 2002 inclusive") %>%
+    row_spec(0, bold = TRUE) %>%
     kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE) #%>%
-    #column_spec(1, 
-    #            bold = TRUE) %>%    # Row headings in bold
-    #column_spec(2, 
-    #            italic = TRUE)     # Row headings in bold
+    kableExtra::kable_styling(latex_options = "hold_position")
 }
 if( knitr::is_html_output() ) {
-  kable(NHANESdemogr[ -c(17:19), ], # REMOVE BMI , 
-               format = "html",
-               longtable = FALSE,
-               col.names = colnames(NHANESdemogr),
-               booktabs = TRUE,
-               align = "r",
-               caption = tab.cap) %>%
-    kable_styling(full_width = FALSE) %>%
-    column_spec(1, 
-                bold = TRUE) %>%     # Row headings in bold
-    column_spec(2, 
-                bold = TRUE)     # Row headings in bold
+  kable( t(SOI.tab),
+         format = "html",
+         booktabs = TRUE,
+         longtable=FALSE,
+         caption = "The SOI, and whether rainfall was recorded in Augusts between 1889 and 2002 inclusive") %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(full_width = FALSE) 
 }
 ```
 
 
+```{r}
+Bags.tab <- array(dim = c(2, 2))
+colnames(Bags.tab) <- c("Males", 
+                      "Females")
+rownames(Bags.tab) <- c("No back pain",
+                      "Back pain")
 
-Consider the diabetes percentage of participants with diabetes:
+Bags.tab[1, ] <- c(330, 226)
+Bags.tab[2, ] <- c(280, 359)
+```
 
-* the odds of a current non-smokers being diabetic is $0.181$.
-* the odds of a current smokers being diabetic is $0.078$.
 
-The odds of finding a diabetic *in the sample* is different for non-smokers and smokers.
-Why?
-Two possible reasons could explain this difference in percentages and odds *in the sample* (Sect.\ \@ref(OddsObserveRelationships)):
+::: {.exercise #OddsBackpacks}
+A study [@haselgrove2008perceived] asked boys and girls in Western Australia about back pain from carrying school bags (Table\ \@ref(tab:BagsTable)).
 
-* *Sampling variation*:
-  The percentages (and odds) are the *same* in the population, but difference in the *sample* occur because of the people that happened to end up with the sample.
-  *Sampling variation* explains the *difference in the sample percentages (and odds)*.
-       
-* The percentages (and odds) are *different* in *the population*: for non-smokers and smokers, and the difference in the sample percentages (and odds) simply reflects *a difference* between non-smokers and smokers in the population.
+1. Compute the *percentage* of boys reporting back pain from carrying school bags.
+1. Compute the *percentage* of girls reporting back pain from carrying school bags.
+1. Compute the *odds* of boys reporting back pain from carrying school bags.
+1. Compute the *odds* of girls reporting back pain from carrying school bags.
+1. Compute the *odds* of a child reporting back pain.
+1. Compute the *odds ratio* of reporting back pain, comparing boys to girls.
+1. Interpret this OR.
+:::
 
-In the next chapters, tools are introduced for deciding which of these explanations is the most likely.
 
+```{r BagsTable}
+if( knitr::is_latex_output() ) {
+  kable( surroundMaths(Bags.tab,
+                       decDigits = 0),
+         format = "latex",
+         booktabs = TRUE,
+         longtable = FALSE,
+         escape = FALSE,
+         caption = "The number of boys and girls reporting back pain from carrying school bags") %>%   
+  row_spec(0, 
+           bold = TRUE) %>%
+  kable_styling(font_size = 10) %>%
+  kableExtra::kable_styling(latex_options = "hold_position")
+}
+
+if( knitr::is_html_output() ) {
+  kable( Bags.tab,
+                format = "html",
+                booktabs = TRUE,
+                longtable = FALSE,
+                caption = "The number of boys and girls reporting back pain from carrying school bags") %>%
+    row_spec(0, 
+	     bold = TRUE) %>%
+    kable_styling(full_width = FALSE) 
+}
+```
+
+
+::: {.exercise}
+A study of road kill [@data:Russell2009:Possums] produced the data in Table\ \@ref(tab:PossumRoadkillNumber).
+
+1. Identify the two variables, and classify them as nominal or ordinal.
+1. Sketch some graphs to display the data.
+1. What is the main message in the data?
+   What graph shows this best?
+:::
+
+
+```{r PossumRoadkillNumber}
+## Russell2009
+
+Counts <- matrix( c(75, 25, 21,   
+                    74, 27, 22,   
+                    71, 10, 18,   
+                    58, 10, 12), 
+                  nrow = 4, 
+		  ncol = 3, 
+		  byrow = TRUE) 
+rownames(Counts) <- c("Autumn", 
+                      "Winter", 
+                      "Spring", 
+                      "Summer")
+colnames(Counts) <- c("Unknown", 
+                      "M", 
+                      "F")
+
+Counts2 <- Counts
+rownames(Counts2) <- c("Aut.", 
+                       "Wint.", 
+                       "Spr.", 
+                       "Sum.")
+
+Percentages <- t( apply(Counts2, 1,
+                  function(x){ round(x / sum(x) * 100, 1)}))
+colnames(Percentages) <- c("Unknown", "Males", "Females")
+
+
+if( knitr::is_latex_output() ) {
+  T1 <- knitr::kable(surroundMaths(Counts,
+                                   decDigits = 0),
+               format = "latex",
+               longtable = FALSE,
+               escape = FALSE,
+               align = c("r", "c", "c", "c"),
+               booktabs = TRUE) %>%
+    #kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+  
+  rownames(Percentages) <- c("Autumn", 
+                             "Winter",
+                             "Spring",
+                             "Summer")
+    T2 <- knitr::kable(surroundMaths(Percentages,
+                                     decDigits = 1),
+               format = "latex",
+               longtable = FALSE,
+               escape = FALSE,
+               align = c("r", "r", "r"),
+               booktabs = TRUE) %>%
+    #kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+    
+   out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "PossumRoadkillNumber",
+                       caption = "The number of possums found as road kill, by sex and season (left). The percentages of possums found as road kill by sex, within each season (i.e., rows sum to 100\\%) (right).") %>% 
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out) 
+  out2  
+}
+if( knitr::is_html_output() ) {
+  knitr::kable(Counts,
+               format = "html",
+               longtable = FALSE,
+               align = c("r", "c", "c", "c"),
+               booktabs = TRUE,
+               caption = "The number of possums found as road kill, by sex and season") %>%
+     kable_styling(full_width = FALSE)
+}
+```
 
 

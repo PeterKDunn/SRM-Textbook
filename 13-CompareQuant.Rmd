@@ -4,12 +4,14 @@
 ## Introduction
 
 Relational and interventional RQs often require comparing groups.
+This chapter considers how to compare *qualitative* variables in different groups.
 Graphs are very useful this purpose, and a table of the numerical summaries usually are also produced.
 
 
 ## Graphs
 
-When a *quantitative* variable is compared across different groups (i.e., comparing between individuals), options for plotting include: 
+When a *quantitative* variable is compared across different groups (i.e., comparing between individuals), the individual variables can be plotted.
+However, to *compare* the quantitative variable in different groups, options for plotting include: 
 
 * [*Back-to-back stemplots*](#BackToBackStem):
   Best for small amounts of data when the qualitative variable has *two levels*; 
@@ -546,146 +548,145 @@ htmltools::tags$video(src = "./videos/Boxplots.mp4",
 ```
 
 
+## Summary tables {#CompareQuantTables}
 
+The numerical summary information can be collated in a table, or a *tabular summary*.
+The data should be summarised the quantitative variable for each group, and (when appropriate) the changes should also be summarised.
 
-## Summary tables
+::: {.example #GorillaSummarytable name="Numerical summary table"}
+For the gorill data, the summary of the data can be tabulated as in Table\ \@ref(tab:GorillaTable).
+Notice that no standard deviation or sample size is provided; these make no sense.
 
-In Sect.\ \@ref(NHANESGraphs), the NHANES data were introduced (@data:NHANES3:Data, @data:NHANES3), and graphs were used to understand the data relevant to answering this RQ:
+Based on the table, do you think a difference exists between the mean chest-beating rate for younger and older gorillas?
+Remember, the data in Table\ \@ref(tab:GorillaTable) is for a *sample*, but the RQ is asking about the *population*.
+:::
 
-> Among Americans, is the mean direct HDL cholesterol concentration different for current smokers and non-smokers?
+```{r GorillaTable}
+GorillaSummaryTable <- array( dim = c(3, 3))
 
-Using the software output (Fig.\ \@ref(fig:NHANEDescriptives)), the direct HDL cholesterol concentration in the *sample* can be summarised numerically:
+rownames(GorillaSummaryTable) <- c("Younger",
+                        "Older",
+                        "Difference") 
+colnames(GorillaSummaryTable) <- c("Mean",
+                        "Std. dev.",
+                        "Sample size") 
 
-* *Average*: $\bar{x} = `r round( mean(NHANES$DirectChol, na.rm=TRUE), 2)`$\ mmol/L; the sample median: $`r round( median(NHANES$DirectChol, na.rm=TRUE), 2)`$\ mmol/L.
-* *Variation*: $s = `r round( sd(NHANES$DirectChol, na.rm=TRUE), 3)`$\ mmol/L; IQR: $`r round( IQR(NHANES$DirectChol, na.rm=TRUE), 3)`$\ mmol/L.
-* *Shape*:
-  Slightly skewed right (from Fig.\ \@ref(fig:NHANESboxplot) or\ \@ref(fig:NHANESdirectHDLHisto)).
-* *Outliers*: 
-  Software identified some outliers (Fig.\ \@ref(fig:NHANESboxplot)), mostly large values.
+GorillaSummaryTable[, 1] <- c( round( mean(CBRyounger), 2),
+                               round( mean(CBRolder), 2),
+                               round( mean(CBRyounger) - mean(CBRolder), 2) )
+GorillaSummaryTable[, 2] <- c( round( sd(CBRyounger), 2),
+                                  round( sd(CBRolder), 2),
+                                  NA )
+GorillaSummaryTable[, 3] <- c( length(CBRyounger),
+                                  length(CBRolder), 
+                                  NA )
 
-
-```{r NHANEDescriptives, fig.cap="Output for direct HDL cholesterol concentration", fig.align="center",  out.width=c('80%', '80%'), fig.show="hold"}
-knitr::include_graphics("jamovi/NHANES/NHANES-DirectHDL-Explore-Horizontal.png")
-#knitr::include_graphics("OtherImages/SPACER.png")
-#knitr::include_graphics("SPSS/NHANES/NHANES-DirectHDL-SpecialTable.png")
-```
-
-The RQ is about *comparing* the mean direct HDL cholesterol concentration in the two smoking groups, so tabulating a summary for each group is useful.
-Using different output (Fig.\ \@ref(fig:NHANEDescriptivesBySmoking)), Table\ \@ref(tab:NHANESSummaryQuant) can be constructed to show the numerical summaries of direct HDL cholesterol concentration for each group, and the difference.
-
-When creating numerical summary tables:
-
-* Round numbers appropriately (don't necessarily use all significant figures provided by software).
-* Place captions *above* tables.
-* Use *no* vertical lines (in general) and *very few* horizontal lines.
-* Align numbers in the table by decimal point when possible, for easier reading.
-* Construct the table to allow readers to easily make the important comparisons, as far as possible.
-
-
-```{r NHANEDescriptivesBySmoking, fig.cap="Output for direct HDL cholesterol concentration, by current smoking status", fig.align="center",fig.show="hold", out.width='80%'}
-knitr::include_graphics("jamovi/NHANES/NHANES-DirectHDL-Smoke-Explore-Horizontal.png")
-#knitr::include_graphics("SPSS/NHANES/NHANES-DirectHDL-Chol-SpecialTable.png")
-```
-
-
-```{r NHANESSummaryQuant}
-NHANESQuant <- array(dim = c(4, 6))
-colnames(NHANESQuant) <- c("Group", 
-                           "Sample size", 
-                           "Mean",
-                           "Median",
-                           "Standard deviation",
-                           "IQR")
-
-NHANESQuant[1, ] <- c("\\textit{All participants:}",
-                      sum( !is.na(NHANES$DirectChol)),
-                      round(   mean( NHANES$DirectChol, na.rm = TRUE) , 2),
-                      round( median( NHANES$DirectChol, na.rm = TRUE) , 2),
-                      round(     sd( NHANES$DirectChol, na.rm = TRUE) , 3),
-                      round(    IQR( NHANES$DirectChol, na.rm = TRUE) , 3) )
-
-NHANESQuant[2, ] <- c("Smokers:", 
-                      sum( !is.na(NHANES$DirectChol[NHANES$SmokeNow == "Yes"])),
-                      round(   mean(   NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE) , 2),
-                      round(   median( NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE) , 2),
-                      round(   sd(     NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE) , 3),
-                      round(   IQR(    NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE) , 3) )
-
-NHANESQuant[3, ] <- c("Non-smokers:",
-                      sum( !is.na(NHANES$DirectChol[NHANES$SmokeNow == "No"])),
-                      round(   mean(   NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) , 2),
-                      round(   median( NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) , 2) ,
-                      round(   sd(     NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) , 3),
-                      round(   IQR(    NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) , 3) )
-NHANESQuant[4, ] <- 
-  c("Difference:",
-    NA,
-    round( mean(   NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) -
-    mean(   NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2),
-    round( median(   NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) -
-    median(   NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2),                 NA,
-    NA)
-
-if( knitr::is_latex_output() ) {
-  kable(surroundMaths(NHANESQuant, 
-                      decDigits = c(0, 0, 2, 2, 3, 2)),
-        format = "latex",
-        longtable = FALSE,
-        escape = FALSE,
-        col.names = colnames(NHANESQuant),
-        booktabs = TRUE,
-        linesep = c("\\addlinespace",
-                    "",
-                    "\\addlinespace",
-                    ""),
-        align = "r",
-        caption = "The direct HDL cholesterol, summarised for smokers and non-smokers") %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE) %>%
-    add_header_above( c( " " = 2,
-                         "Direct HDL cholesterol concentration (in mmol/L)" = 4),
-                      bold = TRUE,
-                      line = TRUE)
-  
-}
-if( knitr::is_html_output() ) {
-  NHANESQuant[1, 1] <- "*All participants:*"
-  kable(NHANESQuant, 
-        format = "html",
-        longtable = FALSE,
-        col.names = colnames(NHANESQuant),
-        booktabs = TRUE,
-        align = "r",
-        caption = "The direct HDL cholesterol, summarised for smokers and non-smokers") %>%
-    kable_styling(full_width = FALSE)  %>%
-    add_header_above( c( " " = 2,
-                         "Direct HDL cholesterol concentration (in mmol/L)" = 4),
-                      bold = TRUE,
-                      line = TRUE)
-}
+knitr::kable( surroundMaths(GorillaSummaryTable,
+                            decDigits = c(1, 2, 0)),
+              format = "latex",
+              longtable = FALSE,
+              booktabs = TRUE,
+              escape = FALSE,
+              digits = 1,
+              align = c("r", "r", "r", "r"),
+              caption = "A numerical summary of the gorillas data") %>%
+  kable_styling(full_width = FALSE) %>%
+  row_spec(row = 0, 
+           bold = TRUE) %>%
+  row_spec(row = 3,
+           italic = TRUE) %>%
+  kable_styling(font_size = 10)
 ```
 
 
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-Information about current smoking status is unavailable for very person in the study.
-This could impact the results if those who provide data and those who do not are different regarding direct HDL cholesterol concentration (non-response bias; Sect.\ \@ref(SelectionBias)).
+
+## Exercises
+
+Selected answers are available in Sect
+
+::: {.exercise #GraphsAIS}
+A study of athletes at the *Australian Institute of Sport* (AIS) measured numerous physical and blood measurements from high performance athletes [@data:Telford1991:sexsportsize].
+The graph in Fig.\ \@ref(fig:AISfemalesport) compares the heights of females in two similar sports: basketball and netball.
+(Netball was derived from basketball.)
+How would you interpret the graph, regarding the heights of the athletes in the two sports?
+:::
+
+```{r}
+data(AISsub)
+
+subAIS <- subset(AISsub, 
+                 Sex=="F" & (Sport=="BBall" | Sport=="Netball"))
+subAIS$Sport <- factor(subAIS$Sport)
+```
+
+```{r AISfemalesport, fig.cap="The heights of female basketball and netball players attending the AIS", fig.align="center", fig.width=5, fig.height=3.5}
+boxplot(Ht ~ Sport, 
+        data = subAIS,
+        las = 1,
+        ylim = c(165, 200),
+        col = plot.colour,
+        xlab = "Sport",
+        ylab = "Height (in cm)",
+        main = "Boxplot of heights:\nbasketballers and netballers",
+        names = c("Basketball", 
+                  "Netball")
+)
+```
+
+
+
+
+::: {.exercise #GreenBuilding}
+In a study of the temperature in offices, @data:Paul2008:Comfort compared the temperature in three offices (during working hours) at Charles Sturt University (Australia); the data are summarised in Table\ \@ref(tab:OfficeTemps).
+Using this information, draw the boxplot comparing the three offices.
+What do we learn from this graph? 
 :::
 
 
-The RQ, as usual, asks about the *population*.
-The RQ cannot be answered with certainty, since *we only have data from one of the many possible samples*, and every sample is likely to be different.
-Clearly, the *sample* means are different, but the RQ asks if the *population* means are different.
-Broadly, two possible reasons could explain why the *sample* mean direct HDL cholesterol concentration is different for current smokers and non-smokers:
+```{r OfficeTemps}
+OfficeTemps <- array( dim = c(6, 3) )
+colnames(OfficeTemps) <- c( "Office A", 
+                            "Office B", 
+                            "Office C")
+rownames(OfficeTemps) <- c("Mean", 
+                           "Minimum", 
+                           "$Q_1$", 
+                           "Median", 
+                           "$Q_3$", 
+                           "Maximum")
 
-* *the **population** means are the same*. 
-  The *sample* means are *different* simply because of the people selected in this sample.
-  Another sample, with different people, might produce different sample means.
-  *Sampling variation explains the difference in the sample means*.
-       
-* *the **population** means are different*.
-   The difference between the *sample* means reflects this difference between the *population* means.
+OfficeTemps[1, ] <- c(24.1, 25.3, 25.7)
+OfficeTemps[2, ] <- c(16.4, 15.9, 20.1)
+OfficeTemps[3, ] <- c(22.8, 23.8, 24.6)
+OfficeTemps[4, ] <- c(24.4, 25.5, 26.1)
+OfficeTemps[5, ] <- c(25.5, 26.9, 27.2)
+OfficeTemps[6, ] <- c(27.4, 31.0, 30.3)
 
-The difficulty is knowing which of these reasons ('hypotheses') is the most likely explanation for the difference between the sample means.
-This question is of prime importance (it answers the RQ), and is addressed at length later in this book.
+if( knitr::is_latex_output() ) {
+    kable(surroundMaths(OfficeTemps,
+                        decDigits = 1),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE, # For latex to work
+        linesep = c( "", "", "", "", "", ""), # Add a bit of space between all rows. 
+        caption = "A summary of the temperature (in degrees C) in three offices at CSU during working hours
+according to current smoking status",
+        align = c("c", "c"))   %>%
+   kable_styling(full_width = FALSE, 
+                 font_size = 10) %>%
+  row_spec(0, bold = TRUE) %>% # Columns headings (row 0) in bold
+  column_spec(0, bold = TRUE)     # Row headings in bold
+}
+
+if( knitr::is_html_output() ) {
+  kable(OfficeTemps,
+        format = "html",
+        align = c("c", "c"),
+        longtable = FALSE,
+        caption = "A summary of the temperature (in degrees C) in three offices at CSU during working hours according to current smoking status",
+        booktabs = TRUE) 
+}
+```
 
 
