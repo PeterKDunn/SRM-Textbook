@@ -31,18 +31,18 @@ Again, one advantage of using stemplots over other plots is that the original da
 
 
 
-::: {.example #KrillData name="Back-to-back stemplots"}
+::: {.example #GorillaData name="Back-to-back stemplots"}
 A study recorded the number chest-beats by gorillas [@wright2021chest], for gorillas under 20 years old (young) and 20 years and over (older)
 `r if (knitr::is_latex_output()) {
-   '(Table\\ \\@ref(tab:KrillDataTable)).'
+   '(Table\\ \\@ref(tab:GorillaDataTable)).'
 } else {
-   '(Table\\ \\@ref(tab:KrillDataTableHTML)).'
+   '(Table\\ \\@ref(tab:GorillaDataTableHTML)).'
 }`
 A back-to-back stemplot allows the two groups to be compared visually 
 `r if (knitr::is_latex_output()) {
-   '(Fig.\\ \\@ref(fig:KrillEggsDoubleStem)).'
+   '(Fig.\\ \\@ref(fig:krillEggsDoubleStem)).'
 } else {
-   '(Fig.\\ \\@ref(fig:KrillEggsDoubleStemHTML)).'
+   '(Fig.\\ \\@ref(fig:krillEggsDoubleStemHTML)).'
 }`
 The leaves for younger gorillas go from right-to-left, and the leaves for older gorillas go left-to-right, sharing the same stems.
 The younger groups has a faster chest-beating rate.
@@ -55,7 +55,7 @@ data(Gorillas)
 CBRyounger <- sort( Gorillas$ChestBeatRate[Gorillas$Age20 == "Younger"] )
 CBRolder <- sort( Gorillas$ChestBeatRate[Gorillas$Age20 == "Older"] )
 
-Gorilla2 <- cbind( CBRyounger[1:7],
+Gorilla2 <- cbind( CBRyounger[1:7], 
                    CBRyounger[8:14],
                    CBRolder[1:7],
                    c(CBRolder[8:11], NA, NA, NA ) )
@@ -64,14 +64,14 @@ Gorilla2 <- cbind( CBRyounger[1:7],
 `r if (knitr::is_html_output()) '<!--'`
 \begin{figure}
 \begin{minipage}{0.4\textwidth}
-\captionof{table}{The chest-beating rate for gorillas\label{tab:KrillDataTable}}
+\captionof{table}{The chest-beating rate for gorillas\label{tab:GorillaDataTable}}
 \fontsize{10}{12}\selectfont
-```{r KrillDataTable}
+```{r GorillaDataTable}
 
 if( knitr::is_latex_output() ) {
   kable( surroundMaths(Gorilla2,
                        decDigits = 1),
-         format = "latex",
+         format = "latex", 
          longtable = FALSE,
          table.env = "@empty",
          booktabs = TRUE,
@@ -89,7 +89,7 @@ if( knitr::is_latex_output() ) {
 \hspace{0.05\textwidth}
 \begin{minipage}{0.60\textwidth}%
 \centering
-```{r KrillEggsDoubleStem, fig.width=6.5, fig.height=3, out.width='100%'}
+```{r krillEggsDoubleStem, fig.width=6.5, fig.height=3, out.width='100%'}
 
   stemgrid.x <- 1
   stemgrid.y <- 6
@@ -179,7 +179,7 @@ if( knitr::is_latex_output() ) {
   }
 }
 ```
-\caption{The number of eggs from krill, for treatment and control groups}\label{fig:KrillEggsDoubleStem}
+\caption{The chest-beating rate for gorillas}\label{fig:krillEggsDoubleStem}
 \end{minipage}
 \end{figure}
 `r if (knitr::is_html_output()) '-->'`
@@ -190,7 +190,7 @@ if( knitr::is_latex_output() ) {
 
 
 `r if (knitr::is_latex_output()) '<!--'`
-```{r KrillDataTableHTML}
+```{r GorillaDataTableHTML}
 if (knitr::is_html_output()) {
   kable( Gorilla2,
          format = "html",
@@ -210,7 +210,7 @@ if (knitr::is_html_output()) {
 
 
 
-```{r KrillEggsDoubleStemHTML, fig.width=6.0, out.width='100%', fig.cap="The number of eggs from krill, for treatment and control groups", fig.cap="center"}
+```{r krillEggsDoubleStemHTML, fig.width=6.0, out.width='100%', fig.cap="The chest-beating rate for gorillas", fig.cap="center"}
 
 data(Gorillas)
 CBRyounger <- sort( Gorillas$ChestBeatRate[Gorillas$Age20 == "Younger"] )
@@ -231,7 +231,7 @@ plot( expand.grid(1:stemgrid.x, 0:stemgrid.y),
       type = "n",
       xlab = "",
       ylab = "",
-      main = "Stemplot of egg counts of krill\n(1|6 means 16 eggs)",
+      main = "Stemplot of chest-beating rates for gorillas\n(1|6 means 1.6 beats per 10 h)",
       xlim = c(-11, 7),
       ylim = c(-0.2, 6.2),
       axes = FALSE)
@@ -318,10 +318,14 @@ for (j in (1:2) ){
 ### 2-D dot charts {#TwoDDot}
 
 A 2-dimensional (2-D) dot chart places a dot for each observation, separated for each level of the qualitative variable (also see Sect.\ \@ref(DotChartsOneQual)).
-For the same krill data in Example\ \@ref(exm:KrillData), a dot chart is shown in Fig.\ \@ref(fig:TwoDDotchart).
+
+
+
+:::{.example #Dotchart2DGorillas name="Boxplots"}
+For the same data seen in Example\ \@ref(exm:GorillaData), a dot chart is shown in Fig.\ \@ref(fig:TwoDDotchart).
 
 Many observations are the same, so some points would be *over-plotted* if points were not *stacked* (left panel), or some randomness added (a 'jitter') in the vertical direction, before plotting (right panel).
-
+:::
 
 ```{r TwoDDotchart, fig.height=6, out.width='100%',fig.cap="Two variations of a 2-D dot chart for the chest-beating data to avoid overplotting: stacking (left) and jittering (right)", fig.align="center", fig.width=8.75, fig.height=2.5}
 old.par <- par()
@@ -358,22 +362,24 @@ stripchart( list(Treatment = CBRyounger,
 ### Boxplots {#Boxplot}
 
 A boxplot is a picture of the quantiles (Sect.\ \@ref(VariationIQR)).
-The distribution for each group is summarised by five numbers: the minimum value, $Q_1$, the median, $Q_3$ and the maximum value.
+The distribution for each group is summarised by five numbers: the minimum value, $Q_1$, the median ($Q_2$), $Q_3$ and the maximum value.
 Outliers, identified using the IQR rule (Sect. \@ref(OutliersIQRrule)), are also shown.
 Distributions can be compared by comparing the values of $Q_1$, the medians, and the values of $Q_3$.
 Since each distribution is summarised by just five numbers, a lot of detail of the distribution is lost.
 For this reason, boxplots are best for *comparing* distributions. 
 Software uses approximations to compute these values (and different software may use different rules, and hence may produce slightly different values for quartiles).
 
-An example of a boxplot, for the chest-beating data in Example\ \@ref(exm:KrillData), is shown in Fig.\ \@ref(fig:BoxplotGorillas).
+
+:::{.example #BoxplotGorillas name="Boxplots"}
+An example of a boxplot, for the chest-beating data in Example\ \@ref(exm:GorillaData), is shown in Fig.\ \@ref(fig:BoxplotGorillas).
 No outliers are identified for younger gorillas; one large outlier is identified for the older gorillas.
 The boxplot shows a distinct difference between the chest-beating rates of older and younger gorillas.
-
+:::
 
 ```{r BoxplotGorillas, fig.cap="A boxplot for the chest-beating data", fig.align="center",  fig.height=3.5, , fig.width=4.5, out.width='50%'}
 CBRyounger.quantiles <- quantile(CBRyounger)
 CBR.C2 <- CBRolder[ -which.max(CBRolder)]
-KrillC2.quantiles <- quantile(CBR.C2)
+krillC2.quantiles <- quantile(CBR.C2)
 
 par( mar = c(4.5, 3, 4, 2) + 0.1 )
 Gorillas$Age20 <- ordered(Gorillas$Age20,
@@ -421,9 +427,9 @@ source("R/showExplainBoxplots.R")
 
 The box for the *older* gorillas is slightly different
 `r if (knitr::is_latex_output()) {
-   '(Fig.\\ \\@ref(fig:BoxplotKrill), left panel):'
+   '(Fig.\\ \\@ref(fig:Boxplotkrill), left panel):'
 } else {
-   '(Fig.\\ \\@ref(BoxplotKrillHTML)):'
+   '(Fig.\\ \\@ref(BoxplotkrillHTML)):'
 }`
 one observation is identified with a point, *above* the top line.
 Computer software has identified this observation as a potentially *outlier* (in this case, unusually *large*), and has plotted this point separately, using the IQR rule (Sect.\ \@ref(OutliersIQRrule)).
@@ -510,7 +516,7 @@ EngStats <- list( n = c(5, 5),
                   names = c("DB", 
                             "DBB"))
 plot( c(0.4, 2.6), 
-      c(-10, 20),
+      c(-10, 21),
       type = "n",
       axes = FALSE,
       main = "Boxplot of project costs",
@@ -554,8 +560,8 @@ The numerical summary information can be collated in a table, or a *tabular summ
 The data should be summarised the quantitative variable for each group, and (when appropriate) the changes should also be summarised.
 
 ::: {.example #GorillaSummarytable name="Numerical summary table"}
-For the gorill data, the summary of the data can be tabulated as in Table\ \@ref(tab:GorillaTable).
-Notice that no standard deviation or sample size is provided; these make no sense.
+For the gorilla data, the summary of the data can be tabulated as in Table\ \@ref(tab:GorillaTable).
+Notice that no standard deviation or sample size is provided for the *difference*; these make no sense.
 
 Based on the table, do you think a difference exists between the mean chest-beating rate for younger and older gorillas?
 Remember, the data in Table\ \@ref(tab:GorillaTable) is for a *sample*, but the RQ is asking about the *population*.
@@ -567,22 +573,22 @@ GorillaSummaryTable <- array( dim = c(3, 3))
 rownames(GorillaSummaryTable) <- c("Younger",
                         "Older",
                         "Difference") 
-colnames(GorillaSummaryTable) <- c("Mean",
-                        "Std. dev.",
-                        "Sample size") 
+colnames(GorillaSummaryTable) <- c("(in beats per 10 h)",
+                        "(in beats per 10 h)",
+                        "size") 
 
-GorillaSummaryTable[, 1] <- c( round( mean(CBRyounger), 2),
-                               round( mean(CBRolder), 2),
-                               round( mean(CBRyounger) - mean(CBRolder), 2) )
-GorillaSummaryTable[, 2] <- c( round( sd(CBRyounger), 2),
-                                  round( sd(CBRolder), 2),
+GorillaSummaryTable[, 1] <- c( round( mean(CBRyounger), 3),
+                               round( mean(CBRolder), 3),
+                               round( mean(CBRyounger) - mean(CBRolder), 3) )
+GorillaSummaryTable[, 2] <- c( round( sd(CBRyounger), 4),
+                                  round( sd(CBRolder), 4),
                                   NA )
 GorillaSummaryTable[, 3] <- c( length(CBRyounger),
                                   length(CBRolder), 
                                   NA )
 
 knitr::kable( surroundMaths(GorillaSummaryTable,
-                            decDigits = c(1, 2, 0)),
+                            decDigits = c(2, 3, 0)),
               format = "latex",
               longtable = FALSE,
               booktabs = TRUE,
@@ -595,7 +601,13 @@ knitr::kable( surroundMaths(GorillaSummaryTable,
            bold = TRUE) %>%
   row_spec(row = 3,
            italic = TRUE) %>%
-  kable_styling(font_size = 10)
+  kable_styling(font_size = 10) %>%
+  add_header_above( c( " " = 1,
+                       "Mean" = 1,
+                      "Standard deviation" = 1,
+                      "Sample" = 1),
+                    bold = TRUE,
+                    line = FALSE)
 ```
 
 

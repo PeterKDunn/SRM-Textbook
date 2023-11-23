@@ -136,6 +136,24 @@ blueTransparent0 <- rgb(0, 0, 1,
                         maxColorValue = 1)
 plot.colour0 <- blueTransparent0
 
+
+
+
+
+### FUNCTIONS ###
+
+###
+findStdError <- function(x, na.rm = TRUE){
+  sd(x, na.rm = TRUE) / sqrt( length(x) - sum(is.na(x)) )
+}
+
+###
+realLength <- function(x, na.rm = TRUE){
+  length(x) - sum(is.na(x))
+}
+
+###
+### From: https://stackoverflow.com/questions/8047668/transparent-equivalent-of-given-color
 makeTransparent <- function(someColor, alpha = 100){
   newColor <- col2rgb( someColor )
   apply(newColor, 
@@ -147,13 +165,4 @@ makeTransparent <- function(someColor, alpha = 100){
                                   maxColorValue = 255)
         }
   )
-}
-
-
-### FUNCTIONS
-findStdError <- function(x, na.rm = TRUE){
-  sd(x, na.rm = TRUE) / sqrt( length(x) - sum(is.na(x)) )
-}
-realLength <- function(x, na.rm = TRUE){
-  length(x) - sum(is.na(x))
 }

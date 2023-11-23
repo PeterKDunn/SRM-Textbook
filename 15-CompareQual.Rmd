@@ -5,7 +5,7 @@
 
 Relational and interventional RQs often require comparing groups.
 This chapter considers how to compare *qualitative* variables in different groups.
-Graphs are very useful this purpose.
+Tables and graphs are very useful this purpose.
 
 
 
@@ -63,10 +63,14 @@ if( knitr::is_latex_output() ) {
                       "Total"),
         caption = "(ref:KStonesNumbersSmall)"
       ) %>%
-    column_spec(1, bold = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-    row_spec(3, bold = TRUE) %>%
-    row_spec(2, hline_after = TRUE) %>%
+    column_spec(1, 
+                bold = TRUE) %>%
+    row_spec(0, 
+             bold = TRUE) %>%
+    row_spec(3, 
+             bold = TRUE) %>%
+    row_spec(2, 
+             hline_after = TRUE) %>%
    kable_styling(full_width = FALSE) %>%
   kable_styling(font_size = 10) %>%
   column_spec(column = 4, 
@@ -103,13 +107,6 @@ When a *qualitative* variable is compared across different groups (i.e., compari
 * *Stacked bar charts* (Sect.\ \@ref(StackedBarCharts));
 * *Side-by-side bar charts* (Sect.\ \@ref(SideBySideBarCharts)); or
 * *Dot charts* (Sect.\ \@ref(TwoWayCountsDotCharts)).
-
-As an example, a study of road kill [@data:Russell2009:Possums] produced the data in Table\ \@ref(tab:PossumRoadkillNumber).
-The two qualitative variables are the *season* (ordinal, with four levels) and the *sex* (nominal, with three levels including 'Unknown').
-
-
-
-
 
 
 ### Stacked bar charts {#StackedBarCharts}
@@ -167,7 +164,7 @@ dotchart(t (KS.small),
 
 ### Side-by-side bar charts {#SideBySideBarCharts}
 
-Instead of stacking the bars within each season on top of each other, the bars can be placed *side-by-side* within each season (Fig.\ \@ref(fig:PossumStackedBarChart), right panel).
+Instead of stacking the bars within each season on top of each other, the bars can be placed *side-by-side* within each season (Fig.\ \@ref(fig:QualGraphsStones), right panel).
 
 ::: {.example #BarStacked name="Stacked bar charts"}
 For the data in Example\ \@ref(exm:SmallKidneyStones), a side-by-side bar chart can be created by producing two bars for each method (one for failures; one for successes), and placing these side-by-side (Fig.\ \@ref(fig:QualGraphsStones), bottom left panel).
@@ -340,7 +337,8 @@ if( knitr::is_latex_output() ) {
         col.names = c("Success", 
                       "Failure", 
                       "Total")) %>%
-    row_spec(0, bold = TRUE)  
+    row_spec(0, bold = TRUE)   %>%
+    column_spec(1, bold = TRUE)  
 
   T2 <- kable(surroundMaths(KS.small.colPC2,
                             decDigits = 1),
@@ -352,8 +350,7 @@ if( knitr::is_latex_output() ) {
         align = c("r", "r", "r"),
         col.names = c("Success", 
                       "Failure"))  %>%
-    row_spec(0, bold = TRUE) %>%
-    row_spec(3, bold = TRUE)
+    row_spec(0, bold = TRUE) 
   
   out <- knitr::kables(list(T2, T1),
                        format = "latex",
@@ -480,7 +477,76 @@ htmltools::tags$video(src ="./videos/oddsratios.mp4",
 
 
 
-NUMERICL SUMMARY TABLE!!!!!
+### Summary tables {#CompareQualTables}
+
+The numerical summary information can be collated in a table, or a *tabular summary*.
+The data should be summarised by one of the qualitative variables, producing percentages and odds for the other.
+
+
+::: {.example #GorillaSummarytable name="Numerical summary table"}
+For the small kidney-stone data, the summary of the data can be tabulated as in Table\ \@ref(tab:KidneySmallSum).
+
+Based on the table, do you think a difference exists between the success rate for each method?
+Remember, the data in Table\ \@ref(tab:KidneySmallSum) is for a *sample*, but the RQ is asking about the *population*.
+:::
+
+
+
+
+
+```{r KidneySmallSum}
+KidneySmall.Sum <- array( NA, 
+                          dim = c(3, 3))
+rownames(KidneySmall.Sum) <- c("Method A",
+                               "Method B",
+                               "Odds ratio")
+
+KidneySmall.Sum[1, 1] <- KS.small[1, 1] / sum(KS.small[1,]) * 100
+KidneySmall.Sum[2, 1] <- KS.small[2, 1] / sum(KS.small[2,]) * 100
+
+KidneySmall.Sum[1, 2] <- KS.small[1, 1] /KS.small[1, 2]
+KidneySmall.Sum[2, 2] <- KS.small[2, 1] /KS.small[2, 2]
+
+KidneySmall.Sum[3, 2] <- KidneySmall.Sum[1, 2] / KidneySmall.Sum[2, 2]
+
+KidneySmall.Sum[1, 3] <- sum(KS.small[1, ])
+KidneySmall.Sum[2, 3] <- sum(KS.small[2, ])
+
+if( knitr::is_latex_output() ) {
+  kable(surroundMaths(KidneySmall.Sum,
+                      decDigits = c(1, 1, 0)),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        align = c("r", "r", "r"),
+        digits = c(1, 3),
+        col.names = c("Percentage", 
+                      "Odds", 
+                      "Sample size"),
+        caption = "Numerical summary of the small kidney-stone data: Odds and percentage of successes") %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(3, bold = TRUE) %>%
+    row_spec(row = 2, 
+             hline_after = TRUE)
+}
+if( knitr::is_html_output() ) {
+  kable(KidneySmall.Sum,
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               align = c("r", "r", "r"),
+               digits = c(1, 3),
+               col.names = c("Percentage", 
+                             "Odds", 
+                             "Sample size"),
+               caption = "Numerical summary of the small kidney-stone data: Odds and percentage of successes") %>%
+    row_spec(3, bold = TRUE) %>%
+    row_spec(row = 2, 
+             hline_after = TRUE)
+}
+```
 
 
 
@@ -874,7 +940,7 @@ Selected answers are available in Sect
 A study of hangovers [@data:Kochling2019:Hangover] recorded, among other information, when people vomited after consuming alcohol.
 Table\ \@ref(tab:VomitTable) shows how many people vomited after consuming beer followed by wine, and how many people vomited after consuming only wine.
 
-1. Compute the *row proportions*.  
+1. Compute the *row proportions*.
    What do these mean?
 1. Compute the *column percentages*. 
    What do these mean?
@@ -1009,6 +1075,11 @@ rownames(Bags.tab) <- c("No back pain",
 Bags.tab[1, ] <- c(330, 226)
 Bags.tab[2, ] <- c(280, 359)
 ```
+
+
+:::{.exercise #AVquestions}
+Using the information in Table\ \@ref(tab:AVtable2), create a stacked bar chart to display the responses to the three questions.
+:::
 
 
 ::: {.exercise #OddsBackpacks}
