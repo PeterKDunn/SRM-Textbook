@@ -1,24 +1,13 @@
-### From: https://stackoverflow.com/questions/8047668/transparent-equivalent-of-given-color
-makeTransparent <- function(someColor, alpha = 100)
-{
-  newColor <- col2rgb(someColor)
-  apply(newColor, 
-        2, 
-        function(curcoldata){ rgb(red = curcoldata[1], 
-                                  green = curcoldata[2],
-                                  blue = curcoldata[3],
-                                  alpha = alpha, 
-                                  maxColorValue = 255)})
-}
 transparentGrey <- makeTransparent(grey(0.90))
 
 
 ######################################
 
-data(Perm)
+
 
 par( mar = c(4.5, 2.0, 4, 2.0) + 0.1)
 
+data(Perm)
 Perm.quantiles <- quantile(Perm$Perm)
 
 
@@ -59,7 +48,7 @@ x.nooutliers <- xsort[ -(1:3)]
 ### PLOT
 stripchart( Perm$Perm,
             method = "jitter",
-            main = "A dot chart of permeability",
+            main = "A dot chart of permeability:\nusing the IQR rule",
             las = 1,
             pch = 19,
             #col = "grey",
@@ -68,14 +57,15 @@ stripchart( Perm$Perm,
             xlim = c(0, 175),
             xlab = "Permeability (in s)")
 axis(side = 1, 
-     at = c(0, Perm.quantiles[2], 50, Perm.quantiles[4], 100, 150),
+     at = c(0, Perm.quantiles[2], 50, Perm.quantiles[4], 100, 150, 175),
      cex = 0.95,
      labels =  c(0,
                  expression(italic(Q)[1]), 
                  "",
                  expression(italic(Q)[3]),
                  100,
-                 150)
+                 150,
+                 175)
      )
 
 lines( x = c( Perm.quantiles[2],
