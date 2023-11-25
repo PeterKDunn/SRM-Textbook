@@ -88,6 +88,7 @@ surroundMaths <- function(x,
       }
     }
   }
+
   tempTable[ignore] <- x[ignore] # Restore the  ignore  elements
   tempTable
 }

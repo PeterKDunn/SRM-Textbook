@@ -1,0 +1,757 @@
+# Summarising qualitative data {#SummariseQuantData}
+
+
+<!-- Introductions; easier to separate by format -->
+```{r, child = if (knitr::is_html_output()) {'./introductions/15-SummariseQual-HTML.Rmd'} else {'./introductions/15-SummariseQual-LaTeX.Rmd'}}
+```
+
+
+## Introduction
+
+As with quantitative data, data are difficult to understanding unless the data set is very small.
+For qualitative data, like quantitative data, a graph shows the *distribution* of the data (Def.\ \@ref(def:Distribution)): the values taken by the variable, and how often they appear.
+However, the ways in which qualitative data are summarised is different than with quantitative data.
+
+
+## Tables for qualitative data {#QualitativeTables}
+
+
+Qualitative data is typically collated in a table.
+The categories should be *exhaustive* (cover all values) and *exclusive* (observations belong to one and only one category).
+
+
+::: {.example #AVstudy name="Opinions of AV vehicles"}
+@pyrialakou2020perceptions surveyed 400 residents of Phoenix (Arizona) about their opinions of sharing roads with autonomous vehicles (AVs).
+Some demographic information was collected (Table\ \@ref(tab:AVtable1)), as well as respondents opinions of sharing roads with AVs (Table\ \@ref(tab:AVtable2)).
+
+The gender of the respondent is *nominal*, while the age group is *ordinal*.
+The three questions about safety (Table\ \@ref(tab:AVtable2)) all yield *ordinal* responses. 
+:::
+
+```{r}
+AVtable1 <- array( dim = c(8, 2) )
+
+rownames(AVtable1) <- c("Female",
+                        "Male",
+                        "18 to 24",
+                        "25 to 34",
+                        "35 to 44",
+                        "45 to 54",
+                        "55 to 64",
+                        "65 and over")
+colnames(AVtable1) <- c("Number",
+                        "Percentage")
+AVtable1[1, ] <- c(204, 51)
+AVtable1[2, ] <- c(196, 49)
+AVtable1[3, ] <- c(52, 13)
+AVtable1[4, ] <- c(76, 19)
+AVtable1[5, ] <- c(76, 19)
+AVtable1[6, ] <- c(72, 18)
+AVtable1[7, ] <- c(56, 14)
+AVtable1[8, ] <- c(68, 17)
+
+###########
+
+AVtable2 <- array( dim = c(10, 4) )
+
+colnames(AVtable2) <- c("",
+                        "Driving near an AV",
+                        "Cycling near an AV",
+                        "Walking near an AV")
+#rownames(AVtable2) <- c("Unsafe",
+#                        "Somewhat unsafe",
+#                        "Neutral",
+#                        "Somewhat safe",
+#                        "Safe")
+
+rownames(AVtable2) <- c("Unsafe", "",
+                   "Somewhat unsafe", "",
+                   "Neutral", "",
+                   "Somewhat safe", "",
+                   "Safe", "")
+
+AVtable2[ c(1, 3, 5, 7, 9), 2] <- c(58, 79, 96, 97, 70)
+AVtable2[ c(1, 3, 5, 7, 9), 3] <- c(77, 104, 87, 76, 56)
+AVtable2[ c(1, 3, 5, 7, 9), 4] <- c(63, 86, 103, 82, 66)
+
+AVtable2[ c(2, 4, 6, 8, 10), 2] <- round( AVtable2[ c(1, 3, 5, 7, 9), 2] / 400 * 100, 0)
+AVtable2[ c(2, 4, 6, 8, 10), 3] <- round( AVtable2[ c(1, 3, 5, 7, 9), 3] / 400 * 100, 0)
+AVtable2[ c(2, 4, 6, 8, 10), 4] <- round( AVtable2[ c(1, 3, 5, 7, 9), 4] / 400 * 100, 0)
+
+AVtable2[, 1] <- c("$n$", "Percent",
+                        "$n$", "Percent",
+                        "$n$", "Percent",
+                        "$n$", "Percent",
+                        "$n$", "Percent")
+
+AVdemographics <- AVtable1[, 1]
+
+AVquestions <- as.numeric( AVtable2[ c(1, 3, 5, 7, 9), 2:4] )
+dim(AVquestions) <- c(5, 3)
+rownames(AVquestions) <- rownames(AVtable2)[ c(1, 3, 5, 7, 9)]
+colnames(AVquestions) <- colnames(AVtable2)[2:4]
+```
+
+```{r AVtable1}
+if (knitr::is_html_output()) {
+   knitr::kable(AVtable1,
+               format = "html")
+} else {
+  knitr::kable(surroundMaths(AVtable1),
+               format = "latex",
+               longtable = FALSE,
+               escape = FALSE,
+               align = c("r", "c", "c", "c"),
+               booktabs = TRUE,
+               caption = "Demographic information for the AV data for $400$ respondents") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) %>%
+    pack_rows( "Gender",
+               start_row = 1,
+               end_row = 2) %>%
+    pack_rows( "Age group",
+               start_row = 3,
+               end_row = 8)
+
+}
+```
+
+
+```{r AVtable2}
+if (knitr::is_html_output()) {
+   knitr::kable(AVtable2,
+               format = "html")
+} else {
+  
+  knitr::kable(surroundMaths(AVtable2),
+               format = "latex",
+               longtable = FALSE,
+               escape = FALSE,
+               align = c("r", "c", "c", "c"),
+               linesep = c("", 
+                           "\\addlinespace",
+                           "", 
+                           "\\addlinespace",
+                           "", 
+                           "\\addlinespace",
+                           "", 
+                           "\\addlinespace",
+                           "", 
+                           "\\addlinespace"),  # Otherwise adds a space after five lines... 
+               booktabs = TRUE,
+               caption = "Responses to three scenarios for the AV data for $400$ respondent") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(1, bold = TRUE) 
+  
+}
+```          
+
+## Graphing qualitive data {#QualitativeGraphs}
+
+
+The three options for graphing qualitative data are:
+
+* [*Dot chart*](#DotChartsOneQual):
+  Usually a good choice.
+* [*Bar chart*](#BarCharts):
+  Usually a good choice.
+* [*Pie chart*](#PieCharts):
+  Only useful in special circumstances, and can be harder to interpret.
+
+For *nominal* data, the levels of the variables could be displayed alphabetically, by size, by personal preference, or any other way: use the order most likely to be useful to readers.
+For *ordinal* data, the natural order of the levels should almost always be used.
+
+Sometimes these graphs are also used for quantitative data with a small number of possible options.
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The purpose of a graph is to display the information in the clearest, simplest possible way, to facilitate understanding the message(s) in the data.
+:::
+
+
+### Dot charts (qualitative data) {#DotChartsOneQual}
+
+Dot charts indicate the counts (or the corresponding percentages) in each level, using dots on a line *starting at zero*.
+The levels can be on the horizontal or vertical axis, and the counts or percentages in the other direction.
+Placing the level names on the vertical axis often makes for easier reading, and space for long labels. 
+
+
+::: {.example #DotPlotsQual name="Dot plots"}
+For the AV study in Example\ \@ref(exm:AVstudy), a dot chart of the age group of respondents is shown in Fig.\ \@ref(fig:AVDotBarPie) (top left panel).
+:::
+
+```{r, AVDotBarPie, fig.align='center', fig.cap="The age group of respondents in the AV study. All the graphs present the same data.", out.width='100%', fig.width=9, fig.height=6.25, fig.show='hold'}
+
+par(mfrow = c(2, 2))
+par( mar = c(6, 4, 4, 2) + 0.1 )
+cols <- viridis(9)[3:8]
+
+dotchart(AVdemographics[3:8],
+         pch = 19, 
+         xlim = c(0, 80),
+         xlab = "Numbers of respondents",
+         main = "Age group of respondents\nin the AV study",
+                col = cols)
+
+###
+
+barplot(AVdemographics[3:8],
+        las = 2,
+        ylim = c(0, 80),
+        ylab = "Numbers of respondents",
+        main = "Age group of respondents\nin the AV study",
+                col = cols)
+
+###
+par( mar = c(0.4, 0.4, 3.4, 0.4) + 0.1 )
+
+pie(AVdemographics[3:8],
+        main = "Age group of respondents\nin the AV study",
+                col = cols)
+
+###
+
+par( mar = c(0.4, 0.4, 3.4, 0.4) + 0.1 )
+plotrix::pie3D( AVdemographics[3:8],
+                main = "Age group of respondents\nin the AV study",
+                theta = pi/4,
+                labels = names(AVdemographics[3:8]),
+                labelcex = 0.9,
+                col = cols)
+```
+
+For dot charts:
+
+* Place the qualitative variable on the horizontal or vertical axis (and label with the levels of the variable).
+* Use counts or percentages on the other axis.
+* For nominal data, *think about the most helpful order* for the levels.
+
+
+### Bar charts {#BarCharts}
+
+Bar charts indicate the counts in each category using a bar *starting from zero*.
+As with dot charts, the levels can be on the horizontal or vertical axis, but placing the level names on the vertical axis often makes for easier reading, and room for long labels. 
+
+
+::: {.example #BarchartQual name="Dot plots"}
+For the AV study in Example\ \@ref(exm:AVstudy), a bar chart of the age group of respondents is shown in Fig. \@ref(fig:AVDotBarPie) (top right panel).
+:::
+
+For bar charts:
+
+* Place the qualitative variable on the horizontal or vertical axis (and label with the levels of the variable).
+* Use counts or percentages on the other axis.
+* For nominal data, levels can be ordered any way: *Think about the most helpful order*.
+* Bars have gaps between bars, as the bars represent distinct categories.
+  In contrast, the bars in histograms are butted together (except when an interval has a count of zero), as the bars represent a numerical scale.
+
+
+
+### Pie charts {#PieCharts}
+
+In pie charts, a circle is divided into segments proportional to the number in each level of the qualitative variable.
+
+
+::: {.example #DotPlotsQual name="Dot plots"}
+For the AV study in Example\ \@ref(exm:AVstudy), a pie chart of the age group of respondents is shown in Fig. \@ref(fig:AVDotBarPie) (bottom left panel).
+:::
+
+
+Pie charts present challenges:
+
+* Pie charts only work when graphing parts of a whole.
+* Pie charts only work when *all* options are present ('exhaustive').
+* Pie charts are difficult to use with levels having zero counts, or small counts.
+* Pie charts are difficult to read with many categories present.
+* Pie charts are hard to read: Humans compare *lengths* (as in bar and dot charts) better than *angles* (as in pie charts) [@data:Friel:Graphs].
+
+
+::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
+Would a pie chart be *appropriate* for graphing the percentage of people who use Firefox, Chrome, and Safari as web browsers?\label{thinkBox:WhenPiechart}
+
+`r if (knitr::is_latex_output()) '<!--'`
+`r webexercises::hide()`
+A pie chart is *not suitable*.
+The three browsers are not *mutually exclusive* (people can use more than one of these browsers) nor *exhaustive* (some people may use browsers not listed). 
+For example, the percentages *could* be that $65$% use Firefox, $84$% use Chrome, and $20$% use Safari. 
+These add to more than $100$%.
+`r webexercises::unhide()`
+`r if (knitr::is_latex_output()) '-->'`
+:::
+
+
+
+### Comparing pie charts and bar charts {#CompareBarPie}
+
+Consider the pie chart in Fig.\ \@ref(fig:AVDotBarPie) (bottom left panel).
+Determining *which* age groups have the most respondents is hard.
+The equivalent bar chart makes the comparison easy: clearly the youngest age group has the smallest representation, while the\ $25$ to\ $34$ and the\ $35$ to\ $44$ age groups have the most respondents.
+The *tilted* pie charts makes this even harder (Fig.\ \@ref(fig:AVDotBarPie) (bottom right panel)).
+
+Recall that the *purpose of a graph is to display information in the clearest, simplest possible way, to help the reader understand the message(s) in the data*.
+A pie chart often makes the message hard to see [@siegrist1996use].
+
+
+
+<iframe src="https://learningapps.org/watch?v=pf4om4k5t22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+
+
+
+## Numerical summaries for quantitative data {#QualitativeNumbers}
+
+
+### Proportions and percentages
+
+Qualitative data can be summarised using *proportions* or *percentages*.
+These can be given instead of, or with, the counts (as in Tables\ \@ref(tab:AVtable1) and\ \@ref(tab:AVtable2)).
+
+
+::: {.definition #Proportion name="Proportion"}
+A *proportion* is a fraction out of a total, and is a number between\ $0$ and\ $1$.
+:::
+
+
+::: {.definition #Percentage name="Percentages"}
+A *percentage* is a proportion, multiplied by $100$.
+In this context, percentages are numbers between $0$% and $100$%.
+:::
+
+
+*Population* proportions are almost always unknown. 
+Instead, a population proportion, denoted $p$, is estimated by a *sample* proportion, denoted by $\hat{p}$. 
+
+
+::: {.pronounceBox .pronounce data-latex="{iconmonstr-microphone-7-240.png}"}
+The symbol $\hat{p}$ is pronounced 'pee-hat', and refers to the *sample* proportion.
+:::
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+As always, only one of the many possible samples is studied.
+*Statistics* are estimates of *parameters*, and the value of the *statistic* is not the same for every possible *sample*.
+:::
+
+
+
+
+::: {.example #AVProportionsPercentages name="Proportions and percentages"}
+Consider the AV data in Table\ \@ref(tab:AVtable1), summarising results from a sample of $n = 400$ respondents.
+The *sample proportion* of respondents aged $25$ to $34$ is $76\div 400$, or $0.19$.
+The *sample percentage* of respondents aged $25$ to $34$ is $76\div 400 \times 100$, or $19$%, as given in the table.
+:::
+
+
+
+### Odds {#QualOdds}
+
+For the AV data in Table\ \@ref(tab:AVtable1), the number of females is almost the same as the number of males.
+More specifically, the *ratio* of females to males is $204\div 196 = 1.04$; that is, there are $1.04$ *times* as many females as males.
+This value of $1.04$ is the *odds* that a respondent is female.
+
+While proportions and percentages are computed as the number of interest divided by the *total number*, the *odds* are computed as the number of interest divided by *the remaining number*.
+
+
+::: {.definition #Odds name="Odds"}
+The *odds* are the number (or proportion, or percentage) of times that an event *happens*, divided by the number (or proportion, or percentage) of times that the event does *not happen*:  
+\[
+         \text{Odds} = \frac{\text{Number of times event happens}}{\text{Number of times event doesn't happen}}
+\]
+or (equivalently)  
+\[
+         \text{Odds} 
+          = 
+            \frac{\text{Proportion of times event happens}}
+                 {\text{Proportion of times event doesn't happen}}.
+\]
+The *odds* show how many *times* an event *happens* compared to the event *not happening*.
+:::
+
+
+::: {.example #AVOdds name="Odds"}
+Consider the AV data in Table\ \@ref(tab:AVtable1), summarising results from a sample of $n = 400$ respondents.
+
+The *percentage* of respondents that are female is $204\div400\times 100 = 51$%.
+The *odds* that a respondents is female is $204\div(400 - 204) = 1.04$%.
+
+Similarly, the percentage of respondents aged $18$\ to $24$ is $52/400\times 400 = 13$.
+The *odds* that a respondent is aged $18$\ to $24$ is $52/(400 - 52) = 0.15$; that is, the odds that a respondent is aged $18$\ to\ $24$ is $0.15$.
+This means that the number of respondents aged $18$\ to $24$ is $0.15$ times (i.e., less) than the number of respondents aged over  $24$
+
+The *odds* that a respondent is aged $18$\ to $54$ is $(52 + 76 + 76 + 72)/(56 + 68) = 2.23$; that is, the odds that a respondent is aged $18$\ to\ $54$ is $2.23$.
+This means that the number of respondents aged $18$\ to $54$ is $2.23$ times (i.e., greater) than the number of respondents aged over  $54$
+
+:::
+
+
+Take care interpreting odds:
+  
+* odds are *greater* than $1$: the event is *more* likely to happen than to not happen.
+* odds are *equal to* $1$: the event is just as likely to happen as it is to not happen.
+* odds are *less* than $1$: the event is *less* likely to happen than to not happen.
+
+
+::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
+What are the odds of rolling a `r include_graphics("Dice/die2.png", dpi=1500)` on a die?\label{thinkBox:Roll2}
+`r if( knitr::is_html_output()) {
+longmcq( c(
+   "About 0.1666", 
+   "6",
+   "0.5",
+   "1/6",
+   answer = "0.2") )}`
+:::
+
+### Modes {#Modes}
+
+Because qualitative data has *levels* (Sect.\ \@ref(Levels)), all qualitative data (nominal; ordinal) can be numerically summarised by *counting* the number of observations in each level (or computing the percentage of observations in each level).
+The *mode* is the category with the most observations.
+Apart from a tabular summary, the mode is the only way to summarise *nominal* data.
+
+
+::: {.definition #Mode name="Mode"}
+A *mode* is a level (or category) of a qualitative variable with the most observations.
+:::
+
+
+
+::: {.example #OrdinalModes name="Modes" }
+Consider again the data in Tables\ \@ref(tab:AVtable1) and\ \@ref(tab:AVtable2).
+'Gender' is *nominal* qualitative; age group is *ordinal* qualitative.
+The responses to the question are *ordinal*.
+The mode could be used to summarise each variable:
+
+* The *mode* for gender is 'Female' (with $204$ respondents).
+* The *mode* age groups are $25$ to\ $34$ and $35$ to\ $44$ (both with $76$ respondents).
+* The *modal* response to the question about *driving* near AVs is 'Somewhat safe' ($97$ respondents).
+* The *modal* response to the question about *cycling* near AVs is 'Somewhat unsafe' ($104$ respondents).
+* The *modal* response to the question about *walking* near AVs is 'Neutral' ($103$ respondents).
+:::
+
+
+
+### Medians (and means) for ordinal data {#QualitativeMedianMeans}
+
+*Ordinal* data can be summarised in ways that nominal data cannot be, since *ordinal* data has levels with a natural order. 
+Ordinal qualitative data, but *not* nominal qualitative data, can be summarised using *medians*, by finding the location of the response that is in the middle if the levels from all individuals are placed in order.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Medians can be used to summarise *quantitative data* and *ordinal* data, but *never* for nominal data.
+:::
+
+
+::: {.example #OrdinalMedians name="Medians"}
+Consider again the data in Tables\ \@ref(tab:AVtable1) and\ \@ref(tab:AVtable2).
+'Gender' is *nominal* qualitative, so medians are not appropriate.
+However, the other variables are *ordinal*, so medians could be used to summarise each variable.
+Since $n = 400$, the median response will be halfway between the location of the $200$th and $201$st response when ordered:
+
+* The *median* age groups is $35$ to\ $44$ (observations $200$ and $201$ fall into this level).
+* The *median* response to the question about driving near AVs is 'Neutral'  (observations $200$ and $201$ fall into this level).
+* The *median* response to the question about cycling near AVs is 'Neutral'  (observations $200$ and $201$ fall into this level).
+* The *median* response to the question about walking near AVs is 'Neutral'  (observations $200$ and $201$ fall into this level).
+:::
+
+
+Means are generally not suitable for numerically summarising qualitative data.
+However, *ordinal* data *may be* [numerically summarised like quantitative data](#NumericalQuant) in *special circumstances*: only when
+
+* the categories are considered 'equally spaced'; *and*
+* assigning a number to each category is appropriate (perhaps using a mid-point for numerical groups).
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Means can sometimes be used to summarise *quantitative ordinal* data, in very special circumstances.
+Means are *never* appropriate for nominal data.
+:::
+
+
+::: {.example #OrdinalMeans name="Means of ordinal data"}
+Consider again the data in Tables\ \@ref(tab:AVtable1) and\ \@ref(tab:AVtable2).
+Means are *not* suitable for summarising Gender, since it is *nominal*.
+Means are also *not* suitable for summarising Age, since the final age group is open-ended (so computing a midpoint is not possible).
+However, the mean response to the statements *may* be sensible *only if the levels are considered equally spaced* (i.e., the distances between successive points on the five-point scale are considered equal).
+Then, assigning $1$ to 'Unsafe', $3$ to 'Neutral', up to $5$ for 'Safe':
+
+* The *mean* response to the question about driving near AVs is $3.11$ (slightly safer than 'Neutral').
+* The *mean* response to the question about cycling near AVs is $2.83$ (slighty unsafer than 'Neutral').
+* The *mean* response to the question about walking near AVs is $3.01$ (very close to 'Neutral').
+:::
+
+
+
+## Exercises
+
+Selected answers are available in Sect
+
+
+::: {.exercise #SpiderMonkeys}
+A study of spider monkeys [@data:Chapman1990:SpiderMonkeys] examined the types of social groups present (Table\ \@ref(tab:SpiderMonkeysData)).
+Construct a suitable plot, and explain what the data reveal about the social groups of spider monkeys.
+:::
+
+
+```{r SpiderMonkeysData}
+names <- c("Solitary", 
+           "All males", 
+           "Female + no young", 
+           "Mixed young", 
+           "Mixed + no young", 
+           "One female + offspring", 
+           "Many females + offspring")
+
+SpiderMonkeyTable <- array( dim = c(7, 2) )
+SpiderMonkeyTable[, 2] <- c(8, 3, 2, 15, 1, 23, 48)
+SpiderMonkeyTable[, 1] <- names
+
+rownames(SpiderMonkeyTable) <- names
+
+kable( surroundMaths( (SpiderMonkeyTable)), 
+       format = "latex",
+       longtable = FALSE,
+       booktabs = TRUE,
+       escape = FALSE,
+       digits = 1,
+       align = "r",
+       row.names = FALSE,
+       col.names = c("Social group",
+                     "Number"),
+       caption = "Social groups in spider monkeys") %>%
+  kable_styling(full_width = FALSE) %>%
+  row_spec(row = 0, 
+           bold = TRUE) %>%
+  kable_styling(font_size = 10)
+
+```
+
+
+```{r LCgraphsHTML, fig.cap="Graphs of deaths from lung cancer in Fredericia (Denmark) from 1968 and 1971", fig.align="center", fig.width=5, fig.height=8}
+if (knitr::is_html_output()) {
+  
+  data(DanishLC)
+  
+  par( mfrow = c(2, 1), 
+       mar = c(5.5, 5, 4.1, 1))
+  
+  pie( DanishLC$Cases[DanishLC$City == "Fredericia"],
+       labels = c("40 to 54", 
+                  "55 to 59", 
+                  "60 to 64", 
+                  "65 to 69", 
+                  "70 to 74", 
+                  "Over 74"),
+       col = viridis(6),
+       mar = c(0.5, 0.5, 4.1, 0.5),
+       main = "Pie chart of lung cancer deaths\nby age group")
+  
+  barplot(DanishLC$Cases[DanishLC$City == "Fredericia"], 
+          las = 2, 
+          names.arg = c("40 to 54", 
+                        "55 to 59", 
+                        "60 to 64", 
+                        "65 to 69", 
+                        "70 to 74", 
+                        "Over 74"),
+          col = viridis(6),
+          ylim = c(0, 12),
+          sub = "Age group", 
+          ylab = "Number of deaths", 
+          main = "Bar chart of lung cancer deaths\nby age group")
+}
+```
+
+```{r LCgraphsPDF, fig.cap="Graphs of deaths from lung cancer in Fredericia (Denmark) from 1968 and 1971", fig.align="center", fig.width=10, fig.height=3.5, out.width='95%'}
+if (knitr::is_latex_output()) {
+  data(DanishLC)
+  
+  par( mar = c(0.5, 0.5, 0.5, 0.5) )
+  
+  nf <- layout( matrix(c(1, 2), 
+                       ncol = 1),
+                widths = c(3, 1) )
+  
+  par( mfrow = c(1, 2), 
+       mar = c(5.5, 5, 4.1, 1))
+  
+  pie( DanishLC$Cases[DanishLC$City == "Fredericia"],
+       labels = c("40 to 54", 
+                  "55 to 59", 
+                  "60 to 64", 
+                  "65 to 69", 
+                  "70 to 74", 
+                  "Over 74"),
+       col = viridis(6),
+       main = "Pie chart of lung cancer deaths\nby age group")
+  
+  barplot(DanishLC$Cases[DanishLC$City == "Fredericia"], 
+          las = 2, 
+          names.arg = c("40 to 54", 
+                        "55 to 59", 
+                        "60 to 64", 
+                        "65 to 69", 
+                        "70 to 74", 
+                        "Over 74"),
+          col = viridis(6),
+          ylim = c(0, 12),
+          sub = "Age group", 
+          ylab = "Number of deaths", 
+          main = "Bar chart of lung cancer deaths\nby age group")
+}
+```
+
+
+::: {.exercise #GraphsCars}
+A study [@henderson1981building] recorded the number of cylinders in many models of cars: eleven cars had four cylinders, seven had six cylinders, and fourteen had eight cylinders.
+The *number* of cylinders is quantitative discrete, but with so few different values, this data could be plotted with some of the graphs used for qualitative data.
+For these data:
+
+:::::: {.cols data-latex=""}
+::: {.col data-latex="{0.45\textwidth}"}
+
+1. Produce a dot chart.
+2. Produce a histogram.
+
+:::
+
+::: {.col data-latex="{0.05\textwidth}"}
+\ 
+<!-- an empty Div (with a white space), serving as
+a column separator -->
+:::
+
+::: {.col data-latex="{0.45\textwidth}"}
+
+
+3. Produce a bar chart.
+4. Produce a pie chart.
+
+:::
+::::::
+
+\null\smallskip
+What graph do you think is best?
+Why?
+:::
+
+
+
+
+
+::: {.exercise #GraphSurveyData}
+A 
+`r if (knitr::is_latex_output()) {
+   'survey of voice assistants'
+} else {
+   '[survey of voice assistants](https://www.nielsen.com/us/en/insights/news/2018/smart-speaking-my-language-despite-their-vast-capabilities-smart-speakers-all-about-the-music.print.html)'
+}`
+(such as Amazon Echo; Google Home; etc.) conducted by
+`r if (knitr::is_latex_output()) {
+   'Nielsen'
+} else {
+   '[Nielsen](https://www.nielsen.com/au/en.html)'
+}`
+asked respondents to indicate how they used their voice assistant.
+The options were:
+
+* Listening to music;
+* Search for real-time info (e.g., traffic; weather);
+* Search for factual info (e.g., trivia; history);
+* Listen to news;
+* Chat with voice assistant for fun;
+* Use alarms, timer.
+
+What would be the best graph for displaying respondents answers?
+Would a pie chart be suitable? Explain your answer.
+:::
+
+
+
+
+
+::: {.exercise #OrdinalMedians name="Modes and medians" }
+In a study of the taste of bread with varying salt and fibre content [@gkebski2019impact], researchers recorded information from the $300$ subjects, including gender, place of residence, and the subjects' responses to the statement 'Rolls with lower salt content taste worse than regular ones', on a five-point ordinal scale from 'Strongly Agree' to 'Strongly Disagree'.
+
+1. Identify the variables, then classift them as nominal or ordinal.
+1. For which variables is a mode an appropriate summary (if any)?
+1. For which variables is a median an appropriate summary (if any)?
+1. For which variables is a mean an appropriate summary (if any)?
+1. Compute the above where appropriate.
+:::
+
+
+```{r Bread}
+BreadTable  <- array( dim = c(11, 3))
+
+colnames(BreadTable) <- c("",
+                          "Number",
+                          "Percentage")
+
+BreadTable[, 1] <- c("Female",
+                     "Male",
+                     "Rural",
+                     "City up to $20\\, 000$ residents",
+                     "City $20\\, 000$ to $100\\, 000$ residents",
+                     "City $> 100\\, 000$ residents",
+                     "Strongly agree",
+                     "Agree",
+                     "Neutral",
+                     "Disagree","Strongly disagree"
+                     )
+BreadTable[, 2] <- c(150,
+                     150,
+                     49,
+                     38,
+                     83,
+                     130,
+                     30,
+                     84,
+                     78,
+                     66,
+                     42)
+BreadTable[, 3] <- c(50,
+                     50,
+                     16,
+                     13,
+                     28,
+                     43,
+                     10,
+                     28,
+                     26,
+                     22,
+                     14)
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(surroundMaths(BreadTable,
+                             decDigits = 0),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        align = "r",
+        linesep = c("", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), 
+        caption = "The bread-tasting data") %>%
+   kable_styling(font_size = 10) %>%
+   pack_rows("Gender", 1, 2) %>%
+   pack_rows("Place of residence", 3, 6) %>%
+   pack_rows("Response to statement", 7, 11) %>%
+   row_spec(0, bold = TRUE)
+}
+
+if( knitr::is_html_output() ) {
+  knitr::kable(BreadTable,
+        format = "html",
+        longtable = FALSE,
+        booktabs = TRUE,
+        align = "r",
+        caption = "The bread-tasting data")%>%
+   #kable_styling(font_size = 10) %>%
+   pack_rows("Gender", 1, 2) %>%
+   pack_rows("Place of residence", 3, 6) %>%
+   pack_rows("Response to statement", 7, 11) %>%
+   row_spec(0, bold = TRUE)
+}
+```
+
+
+
+

@@ -1,0 +1,448 @@
+# Comparing quantitative data within individuals {#SummariseWithin}
+
+
+
+<!-- Introductions; easier to separate by format -->
+```{r, child = if (knitr::is_html_output()) {'./introductions/13-CompareWithin-HTML.Rmd'} else {'./introductions/13-CompareWithin-LaTeX.Rmd'}}
+```
+
+
+## Introduction
+
+Sometimes the same variable is measured on each unit of analysis more than once (i.e., *within*-individual comparisons for each unit of analysis) but only a small number of times.
+A *case-profile plot* can be used: a plot showing how the response variable changes for each unit of analysis.
+Examples of this type of data include:
+
+* Measurements of household water consumption *before* and *after* installing water-saving devices, for many households.
+* Blood pressure measurements for many people at $8$am, $1$pm and $8$pm each day.
+
+In both cases, the same variable is measured multiple times for each unit of analysis.
+
+
+When comparisons are made *within* individuals, different ways are needed for analysiimg the data.
+This chapter considers how to compare *qualitative* variables in different groups.
+Graphs are very useful this purpose.
+
+
+
+## Graphs
+
+When a *quantitative* variable is compared *within* individuals, options for plotting include: 
+
+* Histograms of differences (Sect.\ \@ref(HistoDiffPlot)):
+  useful to compare two levels.
+* Case-profile plots (Sect.\ \@ref(CaseProfilePlot)): 
+  useful when the same units are measured over a small number of time points, or are otherwise connected.
+* Time plots (Sect.\ \@ref(TimePlots)):
+  a special type of case-profile plot, when the measurements vary over a large number of time points.
+
+
+### Histogram of differences {#HistoDiffPlot}
+
+Sometimes the same variable is measured on each unit of analysis more than once (i.e., *within*-individual comparisons) but only twice. 
+(Within-individuals data that is measured only twice is also called 'paired' data.)
+In these cases, a histogram of the *changes* for each individual can be produced.
+
+
+::: {.example #CaseProfileHistDiffPlots name="Within-individual comparisons"}
+A study of children with atopic asthma [@data:Lothian2006:Whey] measured the immunogoblin\ E concentrations (IgE) before and after an intervention for each child (Table\ \@ref(tab:IgEChanges)).
+The *reduction* in IgE for each child can be shown using a histogram
+`r if (knitr::is_latex_output()) {
+   '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileLATEX), left panel).'
+} else {
+   '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileHTML), top panel).'
+}`
+:::
+
+
+
+```{r IgEChanges}
+data(IgE)
+Pre <-  c( 83, 292, 293, 623, 792, 1543, 1668, 1960, 2877, 2961, 5504)
+Post <- c( 83, 292, 292, 542, 709, 1000, 1000, 1626, 2502, 2711, 4504)
+
+
+WhichTime <- c(
+  rep(1, length(IgE$Before)),
+  rep(2, length(IgE$Before))
+)
+
+IgE$Reduction <- IgE$Before - IgE$After
+  
+
+if( knitr::is_latex_output() ) {
+  kable(surroundMaths(IgE,
+                      decDigits = 0),
+        format = "latex",
+        booktabs = TRUE,
+        escape = FALSE,
+        align = "r",
+        col.names = c("IgE (before) in micrograms/L", 
+                      "IgE (after) in micrograms/L", 
+                      "IgE reduction in micrograms/L"),
+        linesep = c("", "", "", "\\addlinespace", "", "", "\\addlinespace", "", "", "", ""), # Otherwise adds a space after five lines... 
+        caption = "The IgE before and after an intervention, and the reduction in IgE (in micrograms/L)",
+        digits = 0)  %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+}
+if( knitr::is_html_output() ) {
+  kable(IgE,
+        format = "html",
+        longtable = TRUE,
+        booktabs = TRUE,
+        col.names = c("IgE (before) in micrograms/L", 
+                      "IgE (after) in micrograms/L", 
+                      "IgE reduction in micrograms/L"),
+        linesep = c("", "", "", "\\addlinespace", "", "", "\\addlinespace", "", "", "", ""), # Otherwise addes a space after five lines... 
+        caption = "The IgE before and after an intervention, and the change in IgE (in micrograms/L)",
+        digits = 0)
+}
+```
+
+
+```{r PairedGraphCaseProfileLATEX, fig.cap="The IgE data. Left: A histogram of the differences; right: A case-profile plot. Each line represents one subject, joining that person's pre-intervention score to their post-intervention score", fig.align="center", fig.width=9.25, fig.height=3.25, out.width='100%'}
+
+if( knitr::is_latex_output() ) {
+  par(mfrow  = c(1, 2) )
+  
+  hist(IgE$Reduction,
+       col = plot.colour,
+       las = 1,
+       breaks = seq(0, 1000, by = 100),
+       ylab = "Number of subjects",
+       xlab = "Reduction in IgE (in micrograms/L)",
+       main = "Reduction in IgE\n pre and post supplementation")
+  box()
+  
+  
+  ###
+  
+  
+  plot( c(IgE$Before, IgE$After) ~ WhichTime,
+        pch = 19,
+        las = 1,
+        axes = FALSE,
+        ylim = c(0, 6000),
+        xlim = c(0.8, 2.2),
+        main = "Case-profile plot\nof the IgE data",
+        xlab = "Time",
+        ylab = "IgE (in micrograms/L)")
+  axis(side = 1, 
+       at = 1:2, 
+       labels = c("Pre-intervention", "Post-intervention"))
+  box()
+  
+  axis(side = 2, 
+       las = 1)
+  for (i in 1:length(IgE$Before)){
+    lines( c(1, 2),
+           c( IgE$Before[i], IgE$After[i]),
+           col = grey(0.6)
+    )
+  }
+}
+```
+
+
+
+```{r PairedGraphCaseProfileHTML, fig.cap="The IgE data. Top: A case-profile plot. Each line represents one subject, joining that person's pre-intervention score to their post-intervention score; bottom: A histogram of the differences", fig.align="center", fig.width=5, fig.height=7.5}
+
+WhichTime <- c(
+  rep(1, length(IgE$Before)),
+  rep(2, length(IgE$After))
+)
+
+if( knitr::is_html_output() ) {
+  
+  par(mfrow  = c(2, 1) )
+  
+  hist(IgE$Reduction,
+       col = plot.colour,
+       las = 1,
+       breaks = seq(0, 1000, 
+                    by = 100),
+       ylab = "Number of subjects",
+       xlab = "Reduction in IgE (in micrograms/L)",
+       main = "Reduction in IgE\n pre and post supplementation")
+  box()
+  
+  
+  ###
+  
+  
+  plot( c(IgE$Before, IgE$After) ~ WhichTime,
+        pch = 19,
+        las = 1,
+        axes = FALSE,
+        ylim = c(0, 6000),
+        xlim = c(0.8, 2.2),
+        xlab = "Time",
+        ylab = "IgE (in micrograms/L)")
+  axis(side = 1, 
+       at = 1:2, 
+       labels = c("Pre-intervention", "Post-intervention"))
+  box()
+  
+  axis(side = 2, 
+       las = 1)
+  for (i in 1:length(IgE$Before)){
+    lines( c(1, 2),
+           c(PIgE$Beforere[i], IgE$After[i]),
+           col = grey(0.6)
+    )
+  }
+}
+```
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/cake-916253_640.jpg" width="200px"/>
+</div>
+
+
+### Case-profile plots {#CaseProfilePlot}
+
+Sometimes the within-individual comparison is made more than two times, and so a histogram of differences cannot be constructed.
+In these cases, the values for each individual can be be plotted using a case-profile plot.
+
+
+::: {.example #CaseProfilePlots name="Within-individual comparisons"}
+A study of children with atopic asthma [@data:Lothian2006:Whey] measured the immunogoblin\ E concentrations (IgE) before and after an intervention for each child (Table\ \@ref(tab:IgEChanges)).
+The measurements of IgE for each child at both times can be shown using a case-profile plot
+`r if (knitr::is_latex_output()) {
+   '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileLATEX), right panel).'
+} else {
+   '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileHTML), bottom panel).'
+}`
+Each line corresponds to a unit of analysis (i.e., a child).
+:::
+
+
+
+
+
+::: {.example #GraphPairedData name="Graphing paired data"}
+A study [@data:Dawson2017:BirthdayCakes] examined the average number of bacteria on birthday cakes *before* and *after* blowing out the candles.
+This RQ could be studied by taking two measurements from each cake: before and after blowing out candles.
+The *change* in the number of bacteria could be computed for each cake, and a histogram of the differences plotted.
+:::
+
+
+
+
+## Summary tables {#WithinSummaryTables}
+
+The numerical summary information from a within-individuals study can collated in a table, or a *tabular summary*.
+The data should be summarised at each within-individual comparison, and (when appropriate) the changes should also be summarised.
+
+
+```{r IgETable}
+IgETable <- array( dim = c(3, 3))
+
+rownames(IgETable) <- c("Before",
+                        "After",
+                        "Reduction") 
+colnames(IgETable) <- c("Mean",
+                        "Std. dev.",
+                        "Sample size") 
+
+
+IgETable[, 1] <- round(colMeans(IgE), 1)
+IgETable[, 2] <- round(apply(IgE, 2, "sd"), 2)
+IgETable[, 3] <- round(apply(IgE, 2, "realLength"), 0)
+
+knitr::kable( surroundMaths(IgETable,
+                            decDigits = c(1, 2, 0)),
+              format = "latex",
+              longtable = FALSE,
+              booktabs = TRUE,
+              escape = FALSE,
+              digits = 1,
+              align = c("r", "r", "r", "r"),
+              caption = "A numerical summary of the IgE dataUNITS!!!!!") %>%
+  kable_styling(full_width = FALSE) %>%
+  row_spec(row = 0, 
+           bold = TRUE) %>%
+  row_spec(row = 3,
+           italic = TRUE) %>%
+  kable_styling(font_size = 10)
+```
+
+
+
+## Example
+
+
+A study examined the effect of using Kinesio Tape [@naugle2021effect] to alleviate pain in athletes.
+Pain was measured by applying a slow constant rate of pressure on the left arm, and subjects pressed a button when the sensation moved from pressure to pain.
+The pressure when this occurred was recorded.
+This was repeated $5$\ mins before applying the tape, $5$\ min after applying the tape, and again $15$--$20$\ min after applying the tape.
+
+Figure\ \@ref(fig:TapeRepeated) shows the reported an for $16$ subjects.
+A summary table is shown in Table\ \@ref(tab:TapeTable).
+
+
+
+```{r TapeRepeated, fig.cap="Pain threshold (left arm) at three time points when using Kinesio Tape, without applying tension, for $n = 26$ subjects. The horizontal lines for each time point represent the mean at those times.", fig.align="center", out.width='80%', fig.width=7, fig.height=3.25}
+data(Tape)
+
+Pre <- Tape$Pre.Left.KT.NoTension
+Post1 <- Tape$Post1.Left.KT.NoTension
+Post2 <- Tape$Post2.Left.KT.NoTension
+PPT <- cbind( Pre, Post1, Post2)
+
+Time <- 1:3
+
+
+plot( x = c(0.75, 3.25), 
+      y = c(0, 1000),
+      type = "n",
+      las = 1,
+      axes = FALSE,
+      main = "Pain threshold (left arm) at three time points\nwhen using Kinesio Tape without applying tension UNITS!!!!!",
+      xlab = "When measured",
+      ylab = "Pain threshold (kPa)")
+axis(side = 2,
+     las = 1)
+axis(side = 1,
+     at = 1:3,
+     labels = c("Pre: 5 mins",
+                "Post: 5 mins",
+                "Post: 15-20 mins"))
+box()
+
+for (i in 1: length(Pre)){
+  lines( x = Time,
+         y = PPT[i, ],
+         type = "b")  
+}
+
+meanPPT <- colMeans(PPT)
+
+widthLine <- 0.15
+for (i in 1:length(Time)){
+  lines( x = c( Time[i] - widthLine,
+                Time[i] + widthLine),
+         y = c( meanPPT[i],
+                meanPPT[i]),
+         lwd = 4)
+}
+
+```
+
+
+
+```{r TapeTable}
+TapeTable <- array( dim = c(3, 3))
+
+rownames(TapeTable) <-c( "Pre: 5 mins",
+                         "Post: 5 mins",
+                         "Post: 15-20 mins" )
+colnames(TapeTable) <- c("Mean",
+                        "Std. dev.",
+                        "Sample size") 
+
+
+TapeTable[, 1] <- round(colMeans(PPT), 1)
+TapeTable[, 2] <- round(apply(PPT, 2, "sd"), 2)
+TapeTable[, 3] <- round(apply(PPT, 2, "realLength"), 0)
+
+knitr::kable( surroundMaths(TapeTable,
+                            decDigits = c(1, 2, 0)),
+              format = "latex",
+              longtable = FALSE,
+              booktabs = TRUE,
+              escape = FALSE,
+              digits = 1,
+              align = c("r", "r", "r", "r"),
+              caption = "A numerical summary of the Tape data") %>%
+  kable_styling(full_width = FALSE) %>%
+  row_spec(row = 0, 
+           bold = TRUE) %>%
+  kable_styling(font_size = 10)
+```
+
+1. What do the differences *mean*?
+2. Construct a summary table.
+3. Construct a case-profile plot.
+4. Construct a stemplot of the differences.
+:::
+
+
+```{r DataInsulationTest, echo=FALSE}
+data(InsulationBeforeAfter)
+InsulationBeforeAfter$Diff <- InsulationBeforeAfter$Before - InsulationBeforeAfter$After
+InsulationBeforeAfter$Home <- paste("Home", 
+                                    LETTERS[1:10])
+InsulationBeforeAfter <- InsulationBeforeAfter[, c(4, 1:3)] # Reorder with HOME first column
+  
+if( knitr::is_latex_output() ) {
+  
+  tb1 <- InsulationBeforeAfter[1:5, ]
+  T1 <- knitr::kable( surroundMaths(tb1,
+                                    decDigits = c(0, 1, 1, 1)),
+                     format = "latex",
+                     valign = 't',
+                     align = c("r", "c", "c", "c"),
+                     linesep = "",
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+  tb2 <- InsulationBeforeAfter[6:10, ]
+  T2 <- knitr::kable(surroundMaths(tb2,
+                                   decDigits = c(0, 1, 1, 1)),
+                     format = "latex",
+                     valign = 't',
+                     align = c("r", "c", "c", "c"),
+                     linesep = "",
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+    out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "DataInsulation",
+                       caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") %>% 
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out) 
+  out2
+}
+if( knitr::is_html_output(exclude = "epub") ) {
+  DT::datatable( round(insulate, 1),
+                 fillContainer = FALSE, # Make more room, so we don't just have ten values
+                 options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
+                 caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)")
+}
+if( knitr::is_html_output() ) {
+  kable( InsulationBeforeAfter,
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names = c("Home", "Before", "After", "Energy savings"),
+         caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") %>%
+  kable_styling(font_size = 10) %>%
+  row_spec(0, bold = TRUE)
+}
+```
+
+
+
+:::{.exercse}
+PainRelief in Dodoma in Tanzania.
+:::
+
+```{r}
+data(PainRelief)
+
+PR <- subset(PainRelief,
+             Group == "paracetamol")
+
+PTwide <- tidyr::pivot_wider(PR, 
+                             names_from = Time,
+                             values_from = Score)
+colMeans(PTwide[7:10], na.rm=TRUE)
+```
+
+
