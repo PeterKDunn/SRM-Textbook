@@ -1,4 +1,4 @@
-# Summarising qualitative data {#CompareQuantData}
+# Summarising qualitative data {#SummariseQualData}
 
 
 <!-- Introductions; easier to separate by format -->
@@ -403,7 +403,7 @@ longmcq( c(
 
 ### Modes {#Modes}
 
-Because qualitative data has *levels* (Sect.\ \@ref(Levels)), all qualitative data (nominal; ordinal) can be numerically summarised by *counting* the number of observations in each level (or computing the percentage of observations in each level).
+Because qualitative data has *levels* (Def.\ \@ref(def:Levels)), all qualitative data (nominal; ordinal) can be numerically summarised by *counting* the number of observations in each level (or computing the percentage of observations in each level).
 The *mode* is the category with the most observations.
 Apart from a tabular summary, the mode is the only way to summarise *nominal* data.
 
@@ -526,7 +526,7 @@ In other words, for every $100$ students that *use active transport*, about $100
 Similarly, the odds that a student walks to campus is $35/(284 - 35) = 0.141$; that is, for every $100$ students that *do not walk* to campus, about $100\times 0.141 = 14.1$ *do walk* to campus.
 
 
-```{r TransportPlots, fig.align="center", fig.cap="Methods of transport to campus. White refers to active methods of transport; shaded to motorised methods of transport.", out.width='100%', fig.width=8, fig.height=3}
+```{r TransportPlots, fig.align="center", fig.cap="Methods of transport to campus. White refers to active methods of transport; shaded to motorised methods of transport.", out.width='90%', fig.width=8, fig.height=3}
 par( mfrow = c(1, 2) )
 
 par( mar = c(3.1, 5.5, 4.1, 2.25) )
@@ -592,7 +592,12 @@ Selected answers are available in Sect
 
 
 ::: {.exercise #SpiderMonkeys}
-A study of spider monkeys [@data:Chapman1990:SpiderMonkeys] examined the types of social groups present (Table\ \@ref(tab:SpiderMonkeysData)).
+A study of spider monkeys [@data:Chapman1990:SpiderMonkeys] examined the types of social groups present
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:SpiderMonkeysLATEX)).'
+} else {
+   '(Table\\ \\@ref(tab:SpiderMonkeysHTML)).'
+}`
 Construct a suitable plot, and explain what the data reveal about the social groups of spider monkeys.
 :::
 
@@ -604,13 +609,60 @@ names <- c("Solitary",
            "Mixed young", 
            "Mixed + no young", 
            "One female + offspring", 
-           "Many females + offspring")
+           "Many females + offspring",
+           NA)
 
-SpiderMonkeyTable <- array( dim = c(7, 2) )
-SpiderMonkeyTable[, 2] <- c(8, 3, 2, 15, 1, 23, 48)
+SpiderMonkeyTable <- array( dim = c(8, 2) )
+SpiderMonkeyTable[, 2] <- c(8, 3, 2, 15, 1, 23, 48, NA)
 SpiderMonkeyTable[, 1] <- names
 
 rownames(SpiderMonkeyTable) <- names
+```
+
+```{r}
+if( knitr::is_latex_output() ) {
+   T1 <- kable( surroundMaths( (SpiderMonkeyTable[1:4,])), 
+       format = "latex",
+       longtable = FALSE,
+       booktabs = TRUE,
+       escape = FALSE,
+       digits = 1,
+       align = "r",
+       row.names = FALSE,
+       col.names = c("Social group",
+                     "Number")) %>%
+  row_spec(row = 0, 
+           bold = TRUE) 
+
+   
+  T2 <- kable( surroundMaths( (SpiderMonkeyTable[5:8,])), 
+       format = "latex",
+       longtable = FALSE,
+       booktabs = TRUE,
+       escape = FALSE,
+       digits = 1,
+       align = "r",
+       row.names = FALSE,
+       col.names = c("Social group",
+                     "Number")) %>%
+  row_spec(row = 0, 
+           bold = TRUE)   
+  
+  
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "SpiderMonkeysLATEX",
+                       caption = "Social groups for soldier monkeys") %>% 
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out, 
+                                 gap = "\\qquad") 
+  out2
+}
+```
+
+
+```{r SpiderMonkeysHTML}
+if( knitr::is_html_output() ) {
 
 kable( surroundMaths( (SpiderMonkeyTable)), 
        format = "latex",
@@ -625,9 +677,8 @@ kable( surroundMaths( (SpiderMonkeyTable)),
        caption = "Social groups in spider monkeys") %>%
   kable_styling(full_width = FALSE) %>%
   row_spec(row = 0, 
-           bold = TRUE) %>%
-  kable_styling(font_size = 10)
-
+           bold = TRUE) 
+}
 ```
 
 

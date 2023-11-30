@@ -13,7 +13,7 @@
 A summary of the data is important for understanding the data, and for planning the direction of the analysis.
 
 
-## Graphing {#GraphsConstructing}
+## Preparing graphs {#GraphsConstructing}
 
 Always remember:
 
@@ -397,7 +397,7 @@ legend("top",
 
 
 
-## Tables
+## Preparing tables
 
 A computer is helpful for constructing tables.
 Using a computer also makes it easy to try different graphs, and to change features of graphs.
@@ -407,109 +407,170 @@ Tables, like graphs, need to be clear and well-labelled with captions.
 
 When creating numerical summary tables, ensure that you:
 
+* *Do* add units of measurement and value labels where appropriate.
+* *Do* make sure text and details are easy to read.
 * *Do* round numbers appropriately (don't necessarily use all significant figures provided by software).
 * *Do* place captions *above* tables.
 * *Do* align numbers in the table by decimal point when possible, for easier reading.
-* *Do* Construct the table to allow readers to easily make the important comparisons, as far as possible.
+* *Do* construct the table to allow readers to easily make the important comparisons, as far as possible.
 * *Do not* use distracting colours and fonts.
 * *Do not* use vertical lines (in general), and use *very few* horizontal lines.
 
 
+## Example {#NHANESSummaryTable}
 
-
-## Example
-
-Studies usually involve many variable, some quantitative and some qualitative.
+Studies usually involve many variables, some quantitative and some qualitative.
 In addition, numerous comparisons are often of interest.
+A table of summary information is often presented, separated by the comparison of most interest.
+
+As an example, consider this RQ:
+
+> Among Americans, is the mean direct HDL cholesterol different for current smokers and non-smokers?
+
+Data to answer this RQ is available from the American NHANES study, which 
+
+> ... examines a nationally *representative* sample of about $5\ 000$ persons each year... located in counties across the country, $15$ of which are visited each year.
+
+The data are equivalent to a 'a simple random sample from the American population' [@data:NHANES:Rpackage].
+In total, $10\ 000$ observations on scores of variables are available (from the 2009/2010 and the 2011/2012 surveys).
+`r if (knitr::is_html_output()) {
+   'Fig.\\ \\@ref(fig:NHANESFullDataTable) shows the first $1000$ observations on the first $40$ variables only.'
+}`
+
+```{r NHANESFullDataTable, fig.cap="The full NHANES dataset", fig.align="center"}
+if( knitr::is_html_output() ) {
+  DT::datatable(NHANES[1:1000, 1:40 ],
+               list(scrollX = TRUE,
+                     scrollY = TRUE,
+                     ordering = FALSE),
+               caption = "Part of the large NHANES dataset")
+}
+```
+
+The direct HDL concentration can be summarised for all respondents, and for smokers and non-smokers (Table\ \@ref(tab:NHANESSummaryQuant)).
+Notice that many respondents did not provide their smoking status, and so the total number of respondents with a HDL cholesterol concentration ($n = 8474$) is far less than the number whose smoking status is known ($1388 + 1668 = 3056$).
+Similar information can be included in a summary table for other quantitative variables (such as age).
+
+Relationships with qualitative data can also be included (Table\ \@ref(tab:NHANESSummaryQuant)), where the diabetes status is given.
+Again, lots of data are missing.
+Similar information can be included in a summary table for other quantitative variables (such as sex).
 
 
-```{r NHANEDescriptivesBySmoking, fig.cap="Output for direct HDL cholesterol concentration, by current smoking status", fig.align="center",fig.show="hold", out.width='80%'}
+```{r NHANEDescriptivesBySmoking, fig.cap="Output for direct HDL cholesterol concentration and presence of diabetes, by current smoking status", fig.align="center",fig.show="hold", out.width=c('80%', '45%')}
 knitr::include_graphics("jamovi/NHANES/NHANES-DirectHDL-Smoke-Explore-Horizontal.png")
-#knitr::include_graphics("SPSS/NHANES/NHANES-DirectHDL-Chol-SpecialTable.png")
+knitr::include_graphics("jamovi/NHANES/NHANES-Smoke-Diabetes.png")
 ```
 
 
-```{r NHANESSummaryQuant}
-NHANESQuant <- array(dim = c(4, 6))
-colnames(NHANESQuant) <- c("Group", 
-                           "Sample size", 
+```{r}
+NHANESComparison <- array(dim = c(8, 4))
+
+NHANESComparison[1, ] <- c(NA,
+                           "$n$",
                            "Mean",
-                           "Median",
-                           "Standard deviation",
-                           "IQR")
+                           "Std. dev.")
+NHANESComparison[2, ] <- c("All",
+                           realLength(NHANES$DirectChol),
+                           mean(NHANES$DirectChol, na.rm = TRUE),
+                           sd(NHANES$DirectChol, na.rm = TRUE) )
 
-NHANESQuant[1, ] <- c("\\textit{All participants:}",
-                      sum( !is.na(NHANES$DirectChol)),
-                      round(   mean( NHANES$DirectChol, na.rm = TRUE) , 2),
-                      round( median( NHANES$DirectChol, na.rm = TRUE) , 2),
-                      round(     sd( NHANES$DirectChol, na.rm = TRUE) , 3),
-                      round(    IQR( NHANES$DirectChol, na.rm = TRUE) , 3) )
+NHANESComparison[3, ] <- c("Smokers",
+                           realLength(NHANES$DirectChol[NHANES$SmokeNow == "Yes"]),
+                           mean(NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE),
+                           sd(NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE) )
 
-NHANESQuant[2, ] <- c("Smokers:", 
-                      sum( !is.na(NHANES$DirectChol[NHANES$SmokeNow == "Yes"])),
-                      round(   mean(   NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE) , 2),
-                      round(   median( NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE) , 2),
-                      round(   sd(     NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE) , 3),
-                      round(   IQR(    NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE) , 3) )
+NHANESComparison[4, ] <- c("Non-smokers",
+                           realLength(NHANES$DirectChol[NHANES$SmokeNow == "No"]),
+                           mean(NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE),
+                           sd(NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) )
 
-NHANESQuant[3, ] <- c("Non-smokers:",
-                      sum( !is.na(NHANES$DirectChol[NHANES$SmokeNow == "No"])),
-                      round(   mean(   NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) , 2),
-                      round(   median( NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) , 2) ,
-                      round(   sd(     NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) , 3),
-                      round(   IQR(    NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) , 3) )
-NHANESQuant[4, ] <- 
-  c("Difference:",
-    NA,
-    round( mean(   NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) -
-    mean(   NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2),
-    round( median(   NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) -
-    median(   NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE), 2),                 NA,
-    NA)
+NHANES.DiabetesTab <- xtabs( ~ NHANES$Diabetes + NHANES$SmokeNow)
+NHANES.DiabetesTab.Colsum <- colSums(NHANES.DiabetesTab)
+
+NHANESComparison[5, ] <- c(NA,
+                           "$n$",
+                           "Percentage",
+                           "Odds")
+
+NHANESComparison[6, ] <- c("All",
+                           realLength(NHANES$Diabetes),
+                           sum(NHANES$Diabetes == "Yes", 
+                               na.rm = TRUE)/realLength(NHANES$Diabetes) * 100,
+                           NA)
+NHANESComparison[7, ] <- c("Smokers",
+                           NHANES.DiabetesTab.Colsum[2], 
+                           realLength(NHANES$Diabetes[NHANES$SmokeNow == "Yes"])/realLength(NHANES$Diabetes) * 100,
+                           NHANES.DiabetesTab[2, 2]/NHANES.DiabetesTab[1, 2])
+NHANESComparison[8, ] <- c("Non-smokers",
+                           NHANES.DiabetesTab.Colsum[1], 
+                           realLength(NHANES$Diabetes[NHANES$SmokeNow == "No"])/realLength(NHANES$Diabetes) * 100,
+                           NHANES.DiabetesTab[2, 1]/NHANES.DiabetesTab[1, 1])
 
 if( knitr::is_latex_output() ) {
-  kable(surroundMaths(NHANESQuant, 
-                      decDigits = c(0, 0, 2, 2, 3, 2)),
+
+  kable(surroundMaths(NHANESComparison, 
+                      decDigits = c(0, 0, 2, 3)),
         format = "latex",
         longtable = FALSE,
         escape = FALSE,
-        col.names = colnames(NHANESQuant),
+        #col.names = colnames(NHANESComparison),
         booktabs = TRUE,
-        linesep = c("\\addlinespace",
+        linesep = c("",
                     "",
-                    "\\addlinespace",
-                    ""),
+                    "\\addlinespace"),
         align = "r",
-        caption = "The direct HDL cholesterol, summarised for smokers and non-smokers") %>%
+        caption = "The direct HDL cholesterol and presence of diabetes, summarised for smokers and non-smokers. (Many respondents did not provide their smoking status.)") %>%
     kable_styling(font_size = 10) %>%
     row_spec(0, bold = TRUE) %>%
-    add_header_above( c( " " = 2,
-                         "Direct HDL cholesterol concentration (in mmol/L)" = 4),
-                      bold = TRUE,
-                      line = TRUE)
-  
-}
+    row_spec(1, italic = TRUE) %>%
+    row_spec(5, italic = TRUE) %>%
+    pack_rows(  "Direct HDL cholesterol concentration",
+                start_row = 1,
+                end_row = 4,
+                bold = TRUE,
+              hline_after = TRUE) %>%
+    pack_rows("Presence of diabetes",
+              start_row = 5,
+              end_row = 8,
+              bold = TRUE,
+              hline_after = TRUE,
+              hline_before = TRUE)
+}            
 if( knitr::is_html_output() ) {
-  NHANESQuant[1, 1] <- "*All participants:*"
-  kable(NHANESQuant, 
+
+  kable(surroundMaths(NHANESComparison, 
+                      decDigits = c(0, 0, 2, 3)),
         format = "html",
         longtable = FALSE,
-        col.names = colnames(NHANESQuant),
+        escape = FALSE,
+        #col.names = colnames(NHANESComparison),
         booktabs = TRUE,
+        linesep = c("",
+                    "",
+                    "\\addlinespace"),
         align = "r",
-        caption = "The direct HDL cholesterol, summarised for smokers and non-smokers") %>%
-    kable_styling(full_width = FALSE)  %>%
-    add_header_above( c( " " = 2,
-                         "Direct HDL cholesterol concentration (in mmol/L)" = 4),
-                      bold = TRUE,
-                      line = TRUE)
+        caption = "The direct HDL cholesterol and presence of diabetes, summarised for smokers and non-smokers. (Many respondents did not provide their smoking status.)") %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(1, italic = TRUE) %>%
+    row_spec(5, italic = TRUE) %>%
+    pack_rows(  "Direct HDL cholesterol concentration",
+                start_row = 1,
+                end_row = 4,
+                bold = TRUE) %>%
+    pack_rows("Presence of diabetes",
+              start_row = 5,
+              end_row = 8,
+              bold = TRUE)
 }
-```
 
+```
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 Information about current smoking status is unavailable for very person in the study.
 This could impact the results if those who provide data and those who do not are different regarding direct HDL cholesterol concentration (non-response bias; Sect.\ \@ref(SelectionBias)).
+
+Some respondents do not have their HDL concentration recorded either.
 :::
 
 
@@ -528,6 +589,27 @@ Broadly, two possible reasons could explain why the *sample* mean direct HDL cho
 
 The difficulty is knowing which of these reasons ('hypotheses') is the most likely explanation for the difference between the sample means.
 This question is of prime importance (it answers the RQ), and is addressed at length later in this book.
+
+We can also ask: 
+
+> Is the percentage of people with diabetes the same for smokers and non-smokers?
+
+The RQ again asks about the *population*.
+Again, the RQ cannot be answered with certainty, since *we only have data from one of the many possible samples*, and every sample is likely to be different.
+However, the *sample* percentages are clearly different.
+Broadly, two possible reasons could explain why the *sample* percentage of diabetics is different for current smokers and non-smokers:
+
+* *the **population** percentages are the same*. 
+  The *sample* percentages are *different* simply because of the people selected in this sample.
+  Another sample, with different people, might produce different sample percentages
+  *Sampling variation explains the difference in the sample percentages*.
+       
+* *the **population** percentages are different*.
+   The difference between the *sample* percentages reflects this difference between the *population* percentages
+
+The difficulty is knowing which of these reasons ('hypotheses') is the most likely explanation for the difference between the sample percentages.
+
+
 
 
 

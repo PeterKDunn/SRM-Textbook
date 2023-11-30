@@ -176,7 +176,7 @@ if( knitr::is_html_output() ) {
 ## Graphs
 
 The graphs discussed in this section are appropriate for *continuous* quantitative data, but may sometimes be useful for discrete quantitative data if many values are possible.
-Sometimes, quantitative data with very few recorded values are best graphed using different graphs (Sect.\ \@ref(GraphsOneQual)).
+Sometimes, quantitative data with very few recorded values are best graphed using different graphs (Sect.\ \@ref(QualitativeGraphs)).
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -3640,12 +3640,12 @@ records the
 } else {
    '[age at death of Australians](http://www.abs.gov.au/AUSSTATS/subscriber.nsf/log?openagent&33020do008_2012.xls&3302.0&Data%20Cubes&19D242509768F63BCA257C1B000D6ECA&0&2012&07.11.2013&Latest).'
 }`
-The histograms of the age of death for females in 2012 is shown in Fig.\ \@ref(fig:DeathAgeHist).
+The histograms of the age of death for females in 2012 is shown in Fig.\ \@ref(fig:DeathAgeNHANESHist) (left panel).
 Describe the distribution.
 :::
 
 
-```{r DeathAgeHist, fig.cap="Histograms of age at death for female Australians in 2012", fig.align="center", fig.width=6.75, fig.height=3.25, out.width='65%'}
+```{r}
 deathCounts <- c(565, 116, 69, 78, 319, 501, 633, 655, 848, 1226, 1633, 2459, 3375, 4669, 6152, 7436, 9526, 12619, 12455, 7113, 2104, 241) # Taken from ABS
 ageBreaks <- c(0, 1, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100, 110)
 
@@ -3655,6 +3655,32 @@ ageBreaks <- c(0, 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80,
 
 # dCountsM2 <-  c(565 + 116  + 69, 78+ 319, 501+ 633, 655+ 848, 1226+ 1633, 2459+ 3375, 4669+ 6152, 7436+ 9526, 12619+ 12455, 7113+ 2104, 241)
 dCountsF2 <- c(466+87+ 59, 63+ 181, 202+ 218, 328+ 454, 750+ 1024, 1569+ 2093, 2909+ 3745, 4810+ 6914, 11290+ 15430, 12946+ 5637, 1128)
+
+ # outM <- barplot(dCountsM2/1000, 
+ #                 space = 0.0, 
+ #                 las = 1,
+ #                 col = plot.colour,
+ #                 ylim = c(0, 28),
+ #                 axes = FALSE,
+ #                 axisnames = FALSE,
+ #                 main = "Age at death of\nmales in 2012")
+ # axis(side = 1, 
+ #      at = 0:(length(ageBreaks2) - 1), 
+ #      labels = ageBreaks2 )
+ # axis(side = 2, 
+ #      las = 1)
+ # title(xlab = "Age (in years)", 
+ #       ylab = "Number (in thousands)", 
+ #       sub = paste("(Total deaths: ", 
+ #                   formatC( sum(dCountsM2), big.mark=",", format="fg"),")", 
+ #                   sep = "") )
+ # box()
+```
+
+
+```{r DeathAgeNHANESHist, fig.cap="Left: Histograms of age at death for female Australians in 2012. Right: The histogram of the direct HDL cholesterol concentration from the NHANES study (large outliers exist but are hard to see).", fig.align="center", fig.width=8.75, fig.height=3.25, out.width='100%'}
+par(mfrow = c(1, 2))
+
 
 ageBreaks2 <- seq(0, 110, 
                   by = 10)
@@ -3686,34 +3712,25 @@ ageBreaks2 <- seq(0, 110,
                             format = "fg"),")", 
                    sep=""))
  box()
- 
- 
- # outM <- barplot(dCountsM2/1000, 
- #                 space = 0.0, 
- #                 las = 1,
- #                 col = plot.colour,
- #                 ylim = c(0, 28),
- #                 axes = FALSE,
- #                 axisnames = FALSE,
- #                 main = "Age at death of\nmales in 2012")
- # axis(side = 1, 
- #      at = 0:(length(ageBreaks2) - 1), 
- #      labels = ageBreaks2 )
- # axis(side = 2, 
- #      las = 1)
- # title(xlab = "Age (in years)", 
- #       ylab = "Number (in thousands)", 
- #       sub = paste("(Total deaths: ", 
- #                   formatC( sum(dCountsM2), big.mark=",", format="fg"),")", 
- #                   sep = "") )
- # box()
+
+#########
+
+hist(NHANES$DirectChol,
+	xlab = "Direct HDL cholesterol conc. (mmol/L)",
+	ylab = "Number of people",
+	las = 1,
+	ylim = c(0, 2500),
+	xlim = c(0, 4.5),
+	main = "Distribution of direct HDL cholesterol\nconcentration in the NHANES data",
+	breaks = seq(0, 4.5, by = 0.25),
+	col = plot.colour)
+box()
 ```
 
 
 
-
 ::: {.exercise #NumericalQuantNHANES}
-The histogram of the direct HDL cholesterol concentration from the NHANES study is shown  in Fig.\ \@ref(fig:NHANESdirectHDLHisto).
+The histogram of the direct HDL cholesterol concentration from the NHANES study is shown  in Fig.\ \@ref(fig:DeathAgeNHANESHist) (right panel).
 Should the mean or median be used to measure the 'average' HDL cholesterol concentration? Explain.
 :::
 
@@ -3740,8 +3757,8 @@ The
    '[average monthly SOI](http://www.bom.gov.au/climate/current/soihtm1.shtml)'
 }`
 in August from $1995$ to $2000$ are shown in Table\ \@ref(tab:SOIvalues).
-
-Draw a stemplot of the data, then use your calculator (where possible) to calculate the:
+Draw a stemplot of the data.
+Then, use your calculator (where possible) to calculate the:
 
 :::::: {.cols data-latex=""}
 ::: {.col data-latex="{0.4\textwidth}"}

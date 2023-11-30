@@ -832,12 +832,12 @@ The RQ is:
 > At this freeway exit, how much is the mean vehicle speed *reduced* after extra signage is added?
 
 The data are *not* paired: different vehicles are measured before (B$) and after ($A$) the extra signage is added.
-The data are summarised in Table\ \@ref(tab:SignageSummary) using the jamovi output (Fig.\ \@ref(fig:SpeedjamoviCI)).
+The data are summarised in Table\ \@ref(tab:SignageSummary) using the jamovi output (Fig.\ \@ref(fig:SpeedjamoviCI2)).
 Define $\mu$ at the mean speed (in km.h^-1^) on the exit ramp.
 Then, the parameter is $\mu_B - \mu_A$, the *reduction* in the mean speed.
 
 
-```{r SpeedjamoviCI, fig.cap="jamovi output for the speed data", fig.align="center", out.width="100%"}
+```{r SpeedjamoviCI2, fig.cap="jamovi output for the speed data", fig.align="center", out.width="100%"}
 knitr::include_graphics("jamovi/Speed/Speed-ALL.png")
 ```
 
@@ -846,6 +846,50 @@ A useful graphical summary of the *data* is a boxplot (Fig.\ \@ref(fig:SignageEr
 
 
 ```{r SignageErrorBar, fig.cap="Boxplot (left); error bar chart (right) showing the mean speed before and after the addition of extra signage, and the 95\\% CIs", fig.align="center", out.width='70%',fig.width=6.0, fig.height=3.25}
+data(Speed)
+
+SignageSummary <- array(dim = c(3, 5))
+rownames(SignageSummary) <- c("Before", 
+                              "After",
+                              "Speed reduction")
+colnames(SignageSummary) <- c("Mean",
+                              "Median",
+                              "Std deviation",
+                              "IQR",
+                              "Sample size")
+
+Speed.n <- tapply(Speed$Speed, 
+                  list(Speed$When), 
+                  "length") 
+Speed.sd <- tapply(Speed$Speed, 
+                   list(Speed$When), 
+                   "sd") 
+
+SignageSummary[1:2, 1] <- round( tapply(Speed$Speed, 
+                                        list(Speed$When), 
+                                        "mean"),
+                                 2)
+SignageSummary[1:2, 2] <- tapply(Speed$Speed,
+                                 list(Speed$When), 
+                                 "median") 
+
+SignageSummary[1:2, 3] <- round( Speed.sd, 2)
+SignageSummary[1:2, 4] <- tapply(Speed$Speed,
+                                 list(Speed$When), 
+                                 "IQR") 
+SignageSummary[1:2,5] <- Speed.n 
+
+SignageSummary[3, 1] <- SignageSummary[1, 1] -  
+                        SignageSummary[2, 1] 
+
+sdB <- round( Speed.sd[1], 2)
+sdA <- round( Speed.sd[2], 2)
+
+SignageSummary[3, 4] <- NA 
+SignageSummary[3, 2] <- NA
+                          
+
+
 
 par( mfrow = c(1, 2) )
 
@@ -1259,7 +1303,7 @@ Earlier, we used the NHANES study data (Sect.\ \@ref(NHANESGraphs)), and conside
 > Among Americans, is the mean direct HDL cholesterol different for current smokers and non-smokers?
 
 Use the jamovi output (Fig.\ \@ref(fig:NHANESTwoSample)) to answer these questions.
-A numerical summary and jamovi output is given in Exercise\ \@ref(exr:CompareQuant).
+A numerical summary and jamovi output is given in Exercise\ \@ref(exr:CompareQuantExercisesNHANES).
 
 Determine, and suitably communicate, the $95$% CI for the difference between the direct HDL cholesterol values between current smokers and non-smokers.
 :::
@@ -1441,55 +1485,15 @@ The data are shown in Table\ \@ref(tab:FacePlant).
 1. What is the parameter?
    Describe what this *means*.
 2. What is an appropriate graph to display the *data*?
-3. Construct an appropriate numerical summary from the software output (Fig.\ \@ref(fig:FallFowardTTestjamovi)).
+3. Construct an appropriate numerical summary from the software output (Fig.\ \@ref(fig:FallFowardTTestjamovi2)).
 4. Construct *approximate* and *exact* $95$% CIs.
    Explain any differences.
 5. Is the CI expected to be statistically valid?
 6. Write a conclusion.
 :::
 
-```{r FacePlant}
-FacePlant <- array(dim = c(2, 10), # COL 6 is a gap
-                   NA)
-FacePlant[1, ] <- c( ForwardFall$LeanAngle[ForwardFall$Group == "Younger"][1:5],
-                       ForwardFall$LeanAngle[ForwardFall$Group == "Older"][1:5] )
-FacePlant[2, 1:5] <- ForwardFall$LeanAngle[ForwardFall$Group == "Younger"][6:10]
 
-if( knitr::is_latex_output() ) {
-  
-  kable( surroundMaths(FacePlant,
-                       decDigits = 0),
-         format = "latex",
-         longtable = FALSE,
-         booktabs = TRUE,
-         escape = FALSE,
-         align = "c",
-         caption = "Lean-forward angles for older women ($n = 10$) and younger women ($n = 5$)") %>%
-    add_header_above(header = c("Younger women " = 5, "Older women " = 5), 
-                     bold = TRUE, 
-		     align = "c") %>%
-    kable_styling(font_size = 10)
-    
-}
-if( knitr::is_html_output() ) {
-  out <- kable( FacePlant,
-                format = "html",
-                longtable = FALSE,
-                booktabs = TRUE,
-                align = "c",
-                caption = "Lean-forward angles for older and younger women")
-    kable_styling(out, 
-                  full_width = FALSE) %>%
-    add_header_above(header = c("Younger women " = 5, "Older women " = 5), 
-                     bold = TRUE, 
-		     align = "c")
-}
-```
-
-
-
-
-```{r FallFowardTTestjamovi, fig.cap="jamovi output for the lean-forward angles data", fig.align="center", out.width='95%'}
+```{r FallFowardTTestjamovi2, fig.cap="jamovi output for the lean-forward angles data", fig.align="center", out.width='95%'}
 knitr::include_graphics("jamovi/FallForward/FallForwardTTestOutput.png")
 ```
 
