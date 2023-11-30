@@ -980,10 +980,10 @@ median(Fulmars)
 
 ::: {.answer data-latex=""}
 **Answer to Exercise\ \@ref(exr:NumericalQuantFulmars)**:
-**1.** $643$\ g.
-**2.** $12.884$\ g.
-**3.** $637.5$\ g.
-**4.** We do not know.
+**2.** $643$\ g.
+**3.** $12.884$\ g.
+**4.** $637.5$\ g.
+**5.** We do not know.
 :::
 
 
@@ -1077,10 +1077,10 @@ IQR(Microplastics)
 
 ::: {.answer data-latex=""}
 **Answer to Exercise\ \@ref(exr:NumericalQuantMatchingMicroPlastics)**:
-**1.** $\bar{x} = 3.09$.
-**2.** median: $2.0$.
-**3.** $s = 2.77$.
-**4.** IQR: $4$.
+**2.** $\bar{x} = 3.09$.
+**3.** median: $2.0$.
+**4.** $s = 2.77$.
+**5.** IQR: $4$.
 :::
 
 
@@ -3528,4 +3528,164 @@ text( x = c(25, 110, 200, 300, 375),
                  "Somewhat\nsafe",
                  "Safe") )
 
+```
+
+
+
+
+::: {.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:CompareQuantDeceleration).**
+
+See Table\ @ref(tab:SignageSummaryDec).
+:::
+
+
+```{r SignageSummaryDec}
+data(Deceleration)
+
+SignageSummaryDec <- array(dim = c(3, 4))
+rownames(SignageSummaryDec) <- c("Before", 
+                            "After",
+                            "Change")
+colnames(SignageSummaryDec) <- c("Mean",
+                              "Std deviation",
+                              "Std error",
+                              "Sample size")
+
+Speed.n <- tapply(Deceleration$Deceleration, 
+                  list(Deceleration$When), 
+                  "length") 
+Speed.sd <- tapply(Deceleration$Deceleration, 
+                   list(Deceleration$When), 
+                   "sd") 
+
+SignageSummaryDec[1:2, 1] <- round( tapply(Deceleration$Deceleration, 
+                                        list(Deceleration$When), 
+                                        "mean"),
+                                 4)
+SignageSummaryDec[1:2, 2] <- round( Speed.sd, 4)
+SignageSummaryDec[1:2, 3] <- round( Speed.sd / sqrt(Speed.n), 5)
+SignageSummaryDec[1:2, 4] <- Speed.n 
+
+SignageSummaryDec[3, 1] <- SignageSummaryDec[1, 1] -  
+                           SignageSummaryDec[2, 1] 
+
+sdB <- round( SignageSummaryDec[1, 3], 4)
+sdA <- round( SignageSummaryDec[2, 3], 4)
+SignageSummaryDec[3, 3] <- round( sqrt( sdB^2/Speed.n[1] + 
+                                     sdA^2/Speed.n[2] ), 
+                               5)
+
+SignageSummaryDec[3, 4] <- NA 
+SignageSummaryDec[3, 2] <- NA
+                          
+
+
+if( knitr::is_latex_output() ) {
+  kable(surroundMaths(SignageSummaryDec,
+                     decDigits = c(3, 3, 5, 0)),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        align = c("r", "r", "r", "l"),
+        col.names = c("Mean", 
+                      "Std deviation", 
+                      "Sample size", 
+                      "Std error"),
+        caption = "The signage data summary (in m/s-squared)"
+  ) %>%
+  row_spec(0, bold = TRUE) %>%
+  row_spec(3, italic = TRUE) %>%
+  kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  kable(SignageSummaryDec,
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               align = c("r", "r", "r", "l"),
+               col.names = c("Mean", 
+                            "Std deviation", 
+                            "Sample size", 
+                            "Std error"),
+    caption = "The signage data summary (in m/s-squared)" ) %>%
+    kable_styling(full_width = FALSE)
+}
+```
+
+
+
+
+::: {.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:ReclaimedWater).**
+
+See Fig.\ \@ref(fig:ReclaimedWaterPlots) for some plots.
+**4.** Advantage: Availability. Disadvantage: High price.
+**5.** See Table\ \@ref(tab:ReclaimedWaterPercent) for the table of percentages.
+**6.** $40/(231 - 40) = 0.209.
+**7.** $40/(12 + 21) = 1.21$.
+:::
+
+```{r ReclaimedWaterPlots}
+Advantages <- c(15, 27, 16)
+namesAdvantages <- c("Water reutilization",
+                     "Availabiity",
+                     "Sustainability")
+Disadvantages <- c(40, 12, 21)
+namesDisadvantages <- c("High price",
+                        "Growing conductivity",
+                        "Lack of proper filtering")
+AdTable <- DisadTable <- array( dim = c(3, 2))
+
+AdTable[, 1] <- namesAdvantages
+AdTable[, 2] <- Advantages
+DisadTable[, 1] <- namesDisadvantages
+DisadTable[, 2] <- Disadvantages
+
+
+par( mfrow = c(2, 2))
+barplot(Advantages)
+pie(Advantages)
+
+barplot(Disadvantages)
+dotchart(Disadvantages)
+```
+
+```{r}
+AdTable[, 2] <- round(Advantages/sum(Advantages) * 100, 1)
+DisadTable[, 2] <- round(Disadvantages/sum(Disadvantages) * 100, 1)
+
+T1 <-  knitr::kable(surroundMaths(AdTable),
+                     format = "latex",
+                     valign = 't',
+                     align = "r",
+                     linesep = "",
+                     col.names = c("Advantage", "No. farmers"),
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+
+
+T2 <-  knitr::kable(surroundMaths(DisadTable),
+                     format = "latex",
+                     valign = 't',
+                     align = "r",
+                     linesep = "",
+                     col.names = c("Disadvantage", "No. farmers"),
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+  
+  
+  
+out <- knitr::kables( list(T1, T2),
+                      format = "latex",
+                      label = "ReclaimedWaterPercent",
+                      caption = "The advantages and disadvantages of using reclaimed water, reported by $231$ farmers.") %>% 
+  kable_styling(font_size = 10)
+out2 <- prepareSideBySideTable(out) 
+out2
 ```

@@ -1,4 +1,4 @@
-# Comparing qualitative data {#SummariseQuantData}
+# Comparing qualitative data {#CompareQualData}
 
 
 
@@ -9,7 +9,7 @@
 
 ## Introduction
 
-Relational and interventional RQs often require comparing groups.
+Relational and interventional RQs require comparing groups.
 This chapter considers how to compare *qualitative* variables in different groups.
 Tables and graphs are very useful this purpose.
 
@@ -105,7 +105,7 @@ if( knitr::is_html_output() ) {
 
 
 
-## Graphing qualitative data
+## Graphing 
 
 
 When a *qualitative* variable is compared across different groups (i.e., comparing between individuals), options for plotting include:
@@ -161,7 +161,7 @@ barplot( prop.table( t(KS.small),
 dotchart(t (KS.small),
          main = "Results of procedures\nfor small kidney stones",
          xlab = "Number of patients",
-         cex = 1.3,
+         pt.cex = 1.3,
          xlim = c(0, 250),
          pch = c(19, 0))
 ```
@@ -173,7 +173,7 @@ dotchart(t (KS.small),
 
 Instead of stacking the bars within each season on top of each other, the bars can be placed *side-by-side* within each season (Fig.\ \@ref(fig:QualGraphsStones), right panel).
 
-::: {.example #BarStacked name="Stacked bar charts"}
+::: {.example #BarSideBySide name="Side-by-side bar charts"}
 For the data in Example\ \@ref(exm:SmallKidneyStones), a side-by-side bar chart can be created by producing two bars for each method (one for failures; one for successes), and placing these side-by-side (Fig.\ \@ref(fig:QualGraphsStones), bottom left panel).
 Again, numbers or percentages can be used.
 :::
@@ -184,7 +184,7 @@ Again, numbers or percentages can be used.
 Instead of bars, dots (or other symbols) can be used in place of a side-by-side bar chart.
 
 
-::: {.example #BarStacked name="Stacked bar charts"}
+::: {.example #BarSideBySide2 name="Side-by-side bar charts"}
 For the data in Example\ \@ref(exm:SmallKidneyStones), a side-by-side bar chart can be created by producing two bars for each method (one for failures; one for successes), and placing these side-by-side (Fig.\ \@ref(fig:QualGraphsStones), bottom left panel).
 Again, numbers or percentages can be used.
 :::
@@ -490,7 +490,7 @@ The numerical summary information can be collated in a table, or a *tabular summ
 The data should be summarised by one of the qualitative variables, producing percentages and odds for the other.
 
 
-::: {.example #GorillaSummarytable name="Numerical summary table"}
+::: {.example #GorillaComparisonTable name="Numerical summary table"}
 For the small kidney-stone data, the summary of the data can be tabulated as in Table\ \@ref(tab:KidneySmallSum).
 
 Based on the table, do you think a difference exists between the success rate for each method?
@@ -938,6 +938,106 @@ The difficulty is knowing which of these two reasons ('hypotheses') is the most 
 This question is of prime importance (after all, it answers the RQ), and is addressed at length later in this book.
 
 
+
+## Summary {#Chap16-Summary}
+
+Qualitative data can be compared between different groups (between individuals comparisons) using a  dot chart, bar chart or pie chart.
+The data can be displayed in a two-way table, then summarised by comparing proportions, percentages and odds.
+Odds ratio can be used to compare odds in two different groups.
+
+
+
+## Quick revision questions {#Chap16-QuickReview}
+
+::: {.webex-check .webex-box}
+A study [@data:Alley2017:SocialMedia] examined social media (SM) use, using a representative sample of Queenslanders at least 18 years of age (from the 2013 Queensland Social Survey; Table\ \@ref(tab:SocialMedia)).
+
+1. Compute the *sample proportion* of *urban* residents who use social media, $\hat{p}_U$.\tightlist
+`r if( knitr::is_html_output() ) {mcq( c(
+	"416/984 = 0.423",
+	answer = "568/984 = 0.577",
+	"416/568 = 0.732",
+	"568/416 = 1.365"))}`
+1. Compute the *sample proportion* of *rural* residents who use social media, $\hat{p}_R$.
+`r if( knitr::is_html_output() ) {mcq( c(
+	"78/89 = 0.876",
+	"89/78 = 1.141",
+	"78/167 = 0.467",
+	answer = "89/167 = 0.533"))}`
+1. Compute the *sample odds* of *urban* residents who use social media.
+`r if( knitr::is_html_output() ) {mcq( c(
+	"416/984 = 0.423",
+	"568/984 = 0.577",
+	"416/568 = 0.732",
+	answer = "568/416 = 1.365"))}`
+1. Compute the *sample odds* of *rural* residents who use social media.
+`r if( knitr::is_html_output() ) {mcq( c(
+	"78/89 = 0.876",
+	answer = "89/78 = 1.141",
+	"78/167 = 0.467",
+	"89/167 = 0.533"))}`
+1. Compute the *sample odds ratio* of using social media, comparing *urban* to *rural* residents.
+`r if( knitr::is_html_output() ) {mcq( c(
+	answer = "1.365/1.141 = 1.196",
+	"1.1411/1.365 = 0.836"))}`
+:::
+
+
+```{r SocialMedia}
+Counts <- c(416, 
+            568, 
+            78, 
+            89)
+Location <- c("Urban residents", 
+              "Urban residents", 
+              "Rural residents", 
+              "Rural residents")
+SMedia <- c("Don't use SM", 
+            "Use SM", 
+            "Don't use SM", 
+            "Use SM")
+
+SM <- xtabs(Counts ~ Location + SMedia)
+SM2 <- cbind(SM, 
+             "Total" = rowSums(SM))
+
+if( knitr::is_latex_output() ) {
+  kable(surroundMaths(SM2,
+                      decDigits = 0),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        align = c("r", "r", "r"),
+        digits = 0,
+        col.names = c("Doesn't use SM", 
+	                    "Uses SM", 
+                      "Total"),
+        caption = "The number of Queenslanders using and not using social media (SM) in rural and urban locations in a sample" ) %>%
+     row_spec(0, bold = TRUE) %>%
+     kable_styling(font_size = 10) %>%
+     column_spec(column = 4, 
+                 bold = TRUE)
+}
+
+if( knitr::is_html_output() ) {
+  kable(SM2,
+        format = "html",
+        longtable = FALSE,
+        booktabs = TRUE,
+        align = c("r", "r", "r"),
+        digits = 0,
+        col.names = c("Doesn't use SM", 
+	                    "Uses SM", 
+		                  "Total"),
+        caption = "The number of Queenslanders using and not using social media (SM) in rural and urban locations in a sample" ) %>%
+     row_spec(0, bold = TRUE) %>%
+    column_spec(column = 4, 
+                bold = TRUE)
+}
+```
+
+
 ## Exercises
 
 Selected answers are available in Sect
@@ -1214,3 +1314,14 @@ if( knitr::is_html_output() ) {
 ```
 
 
+<!-- QUICK REVIEW ANSWERS -->
+`r if (knitr::is_html_output()) '<!--'`
+::: {.EOCanswerBox data-latex="{iconmonstr-check-mark-14-240.png}"}
+- \textbf{\textit{Quick Revision} questions:}
+**1.** $0.577$.
+**2.** $0.533$.
+**3.** $1.365$.
+**4.** $1.141$.
+**5.** $1.196$.
+:::
+`r if (knitr::is_html_output()) '-->'`

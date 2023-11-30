@@ -27,10 +27,10 @@ showVar <- function(){
   
   ################### 
   # Canvas
-  par( mar = c(0.5, 0.5, 3, 0.5) + 0.1)
+  par( mar = c(0.15, 0.5, 3, 0.5) + 0.1)
   
   plot( x = c(0.5, 9), 
-        y = c(-1, 2.9),
+        y = c(-0.25, 2.9),
         type = "n",
         #asp = 1,
         axes = FALSE,

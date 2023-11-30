@@ -17,12 +17,9 @@ Examples of this type of data include:
 * Blood pressure measurements for many people at $8$am, $1$pm and $8$pm each day.
 
 In both cases, the same variable is measured multiple times for each unit of analysis.
-
-
-When comparisons are made *within* individuals, different ways are needed for analysiimg the data.
+*Within*-individuals comparisons require different methods than *between*-individuals comparisons.
 This chapter considers how to compare *qualitative* variables in different groups.
 Graphs are very useful this purpose.
-
 
 
 ## Graphs
@@ -39,9 +36,10 @@ When a *quantitative* variable is compared *within* individuals, options for plo
 
 ### Histogram of differences {#HistoDiffPlot}
 
-Sometimes the same variable is measured on each unit of analysis more than once (i.e., *within*-individual comparisons) but only twice. 
-(Within-individuals data that is measured only twice is also called 'paired' data.)
+Sometimes the same variable is measured on each unit of analysis twice. 
+(Within-individuals data that is measured twice is also called 'paired' data.)
 In these cases, a histogram of the *changes* for each individual can be produced.
+The direction of the differences should be clear (e.g., first measurement minus second, or second measurement minus first).
 
 
 ::: {.example #CaseProfileHistDiffPlots name="Within-individual comparisons"}
@@ -58,9 +56,6 @@ The *reduction* in IgE for each child can be shown using a histogram
 
 ```{r IgEChanges}
 data(IgE)
-Pre <-  c( 83, 292, 293, 623, 792, 1543, 1668, 1960, 2877, 2961, 5504)
-Post <- c( 83, 292, 292, 542, 709, 1000, 1000, 1626, 2502, 2711, 4504)
-
 
 WhichTime <- c(
   rep(1, length(IgE$Before)),
@@ -101,7 +96,7 @@ if( knitr::is_html_output() ) {
 ```
 
 
-```{r PairedGraphCaseProfileLATEX, fig.cap="The IgE data. Left: A histogram of the differences; right: A case-profile plot. Each line represents one subject, joining that person's pre-intervention score to their post-intervention score", fig.align="center", fig.width=9.25, fig.height=3.25, out.width='100%'}
+```{r PairedGraphCaseProfileLATEX, fig.cap="The IgE data. Left: A histogram of the differences; right: A case-profile plot. Each line represents one subject, joining that person's pre-intervention measurement to their post-intervention measurement.", fig.align="center", fig.width=9.25, fig.height=3.25, out.width='100%'}
 
 if( knitr::is_latex_output() ) {
   par(mfrow  = c(1, 2) )
@@ -207,6 +202,61 @@ Sometimes the within-individual comparison is made more than two times, and so a
 In these cases, the values for each individual can be be plotted using a case-profile plot.
 
 
+:::{.example}
+Runners use wearable devices to measure many performance indicators, including vertical oscillation (VO). 
+VO contributes to running economy and injury risk, so reliable VO measurements are crucial.
+@smith2022validity compared four devices, and obtained data from video analysis; that is, each participant had the same runs measured using five methods.
+The case-profile plot is shown in Fig.\ \@ref(fig:RunningRM), where solid points show the means for each method.
+:::
+
+```{r RunningRM, fig.cap="Vertical oscillation measured using five methods for $15 runners. The solid black points represent the means for each method.", fig.align="center", out.width='70%', fig.width=6, fig.height=4}
+data(Running)
+
+par( mar = c(5.1, 5.1, 4.1, 2.1) )
+
+plot( x = c(0.75, 5.25),
+      y = c(0, 150),
+      type = "n",
+      ylab = "Average vertical\noscillation (cm)",
+      xlab = "Method",
+      main = "Case-profile plot for the vertical oscillations\nusin five methods, for 15 runners",
+      axes = FALSE)
+
+axis(side = 1,
+     at = 1:5, 
+     labels = c("HRM", 
+                "NOVA",
+                "RDP",
+                "Footpod",
+                "Video"))
+axis(side = 2,
+     las = 1,
+     at = seq(0, 150, 
+              by = 25))
+box()
+
+for (i in 1:length(Running$HRM)){
+  points( x = 1:5,
+          y = c(Running$HRM[i],
+                Running$NOVA[i],
+                Running$RDP[i],
+                Running$Footpod[i],
+                Running$Video[i] ),
+          type = "b",
+          col = "grey")
+  
+}
+
+Mns <- colMeans( Running[, 4:8])
+
+lines( x = 1:5,
+       y = Mns,
+       type ="b",
+       col = "black",
+       pch = 19)
+```
+
+
 ::: {.example #CaseProfilePlots name="Within-individual comparisons"}
 A study of children with atopic asthma [@data:Lothian2006:Whey] measured the immunogoblin\ E concentrations (IgE) before and after an intervention for each child (Table\ \@ref(tab:IgEChanges)).
 The measurements of IgE for each child at both times can be shown using a case-profile plot
@@ -217,18 +267,6 @@ The measurements of IgE for each child at both times can be shown using a case-p
 }`
 Each line corresponds to a unit of analysis (i.e., a child).
 :::
-
-
-
-
-
-::: {.example #GraphPairedData name="Graphing paired data"}
-A study [@data:Dawson2017:BirthdayCakes] examined the average number of bacteria on birthday cakes *before* and *after* blowing out the candles.
-This RQ could be studied by taking two measurements from each cake: before and after blowing out candles.
-The *change* in the number of bacteria could be computed for each cake, and a histogram of the differences plotted.
-:::
-
-
 
 
 ## Summary tables {#WithinSummaryTables}
@@ -260,7 +298,7 @@ knitr::kable( surroundMaths(IgETable,
               escape = FALSE,
               digits = 1,
               align = c("r", "r", "r", "r"),
-              caption = "A numerical summary of the IgE dataUNITS!!!!!") %>%
+              caption = "A numerical summary of the IgE data (in micrograms/L)") %>%
   kable_styling(full_width = FALSE) %>%
   row_spec(row = 0, 
            bold = TRUE) %>%
@@ -271,20 +309,260 @@ knitr::kable( surroundMaths(IgETable,
 
 
 
-## Example
 
+## Example: invasive plants {#CompareWithinInvasivePlantsCI}
+
+Skypilot (*Polemonium viscosum*) is a native alpine wildflower growing in the Colorado Rocky Mountains (USA).
+In recent years, a willow shrub (*Salix*) has been encroaching on skypilot territory and, because willow often flowers early, researchers [@kettenbach2017shrub] are concerned that the willow may 'negatively affect pollination regimes of resident alpine wildflower species' (p.\ 6965).
+One RQ was:
+
+> In the Colorado Rocky Mountains, what is the mean difference between first-flowering day for the native skypilot and the encroaching willow?
+
+Data for both species was collected at $25$ different sites, so the data are *paired* (Sect.\ \@ref(PairedIntro)), a form of blocking (Sect.\ \@ref(ExpManagingConfounding)).
+The data are shown in
+`r if( knitr::is_latex_output() ) {
+    'Table\\ \\@ref(tab:FloweringData).'
+} else {
+    'the table below.'
+}`
+The 'first-flowering day' is the number of days since the start of the year (e.g., January\ 12 is 'day\ 12') when flowers were first first observed.
+
+
+
+```{r, FloweringData}
+data(Flowering)
+
+Flen <- length(Flowering$Willow) 
+Flowering$Site <- 1:Flen
+
+if( knitr::is_latex_output() ) {
+  
+ T1 <- knitr::kable(surroundMaths(Flowering[1:9, c(5, 1, 2)],
+                                   decDigits = 0),
+                     format = "latex",
+                     valign = 't',
+                     align = "r",
+                     linesep = "",
+                     col.names = c("Site", "Willow", "Skypilot"),
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+   add_header_above( c( " " = 1,
+                        "First-flowering day" = 2),
+                     bold = TRUE)
+
+ T2 <- knitr::kable(surroundMaths( rbind(Flowering[10:17, c(5, 1, 2)],
+                                         c(NA, NA)),
+                                   decDigits = 0),
+                     format = "latex",
+                     valign = 't',
+                     align = "r",
+                     linesep = "",
+                     col.names = c("Site", "Willow", "Skypilot"),
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+   add_header_above( c( " " = 1,
+                        "First-flowering day" = 2),
+                     bold = TRUE)
+  
+      
+  T3 <- knitr::kable(surroundMaths( rbind(Flowering[18:25, c(5, 1, 2)],
+                                          c(NA, NA)),
+                                   decDigits = 0),
+                     format = "latex",
+                     valign = 't',
+                     align = "r",
+                     linesep = "",
+                     col.names = c("Site", "Willow", "Skypilot"),
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+       add_header_above( c( " " = 1,
+                            "First-flowering day" = 2),
+                     bold = TRUE)
+
+  
+  out <- knitr::kables(list(T1, T2, T3),
+                       format = "latex",
+                       label = "FloweringData",
+                       caption = "The day of the year of first flowering by encroaching willow and native skypilot.") %>% 
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out) 
+  out2 
+}
+
+if( knitr::is_html_output() ) {
+  kable( Flowering[, c(5, 1, 2)],
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names = c("Site", "Willow", "Skypilot"),
+         caption = "The day of the year of first flowering by encroaching willow and native skypilot.") %>% 
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+}
+```
+
+
+Since the raw data are available, the data should be summarised graphically (Fig.\ \@ref(fig:FloweringPlots)) and numerically (Table\ \@ref(tab:FloweringSummary)), using software (Fig.\ \@ref(fig:Floweringjamovi)).
+
+
+```{r Floweringjamovi, fig.cap="jamovi output for the flowering-day data", fig.align="center", out.width=c("100%"), fig.show='hold'}
+knitr::include_graphics("jamovi/Flowering/FloweringAll.png")
+```
+
+
+
+```{r FloweringSummary}
+FloweringSummary <- array( dim = c(3, 4))
+
+FloweringTab <- cbind( Flowering[, 1:2], 
+                       Change = Flowering[, 2] - Flowering[, 1])
+
+rownames(FloweringSummary) <- c("Willow (encroaching)",
+                            "Skypilot (native)",
+                            "Differences")
+colnames(FloweringSummary) <- c("Mean",
+                            "Std. dev.",
+                            "Std. error",
+                            "Sample size")
+
+FloweringSummary[, 1] <- colMeans(FloweringTab,
+                              na.rm = TRUE)
+FloweringSummary[, 2] <- apply(FloweringTab,
+                           2,
+                           "sd",
+                           na.rm = TRUE)
+FloweringSummary[, 3] <- apply(FloweringTab,
+                           2,
+                           "findStdError",
+                           na.rm = TRUE)
+FloweringSummary[, 4] <- apply(FloweringTab,
+                           2,
+                           "realLength")
+
+# Do some appropriate rounding
+FloweringSummary <- round(FloweringSummary, 4)
+FloweringSummary[1:2, 1] <- round(FloweringSummary[1:2, 1], 3)
+
+if( knitr::is_latex_output() ) {
+  
+  knitr::kable(surroundMaths(FloweringSummary,
+                             decDigits = c(2, 3, 3, 0)),
+               format = "latex",
+               align = c("r", "r", "r", "c"),
+               linesep = "",
+               caption = "The day of first flowering for encroaching willow and native skypilot",
+               col.names = c("Mean", "Std. dev.", "Std. error", "Sample size"),
+               row.names = TRUE,
+               escape = FALSE,
+               booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, italic = TRUE) %>%
+    kable_styling(font_size = 10)
+  
+}
+
+if( knitr::is_html_output() ) {
+  kable( FloweringSummary,
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names =  c("Mean", "Std. dev.", "Std. error", "Sample size"),
+         caption = "The day of first flowering for encroaching willow and native skypilot") %>% 
+    kable_styling(font_size = 10) %>%
+    row_spec(0, bold = TRUE)
+}
+```
+
+
+```{r, FloweringPlots, out.width='90%', fig.width=9, fig.height=3.5, fig.align="center", fig.cap="The flowering-day data. Left: A histogram of the difference between the first-flowering days (skypilot minus willow) ; right: a case-profile plot of days of first flowering (unfilled points and dashed lines indicate earlier dates (smaller values) for willow)"}
+par( mfrow = c(1, 2))
+
+ hist(FloweringTab$Change,
+      las = 1,
+      ylim = c(0, 20),
+      xlab = "Difference in day number\n(skypilot minus willow)",
+      ylab = "Number of locations",
+      main = "Histogram of day of\nfirst-flowering")
+ 
+arrows (x0 = 1,
+         x1 = 14,
+         y0 = 16,
+         y1 = 16,
+         angle = 15,
+         length = 0.1)
+text(x = 7.5,
+     y = 16,
+     pos = 3,
+     cex = 0.9,
+     labels = "Willow earlier")
+ 
+arrows (x0 = -1,
+         x1 = -9,
+         y0 = 16,
+         y1 = 16,
+         angle = 15,
+         length = 0.1)
+text(x = -5,
+     y = 16,
+     pos = 3,
+     cex = 0.9,
+     labels = "Skypilot earlier")
+
+
+ ###
+ 
+ plot( x = c(0.75, 2.25),
+       y = c(160, 225),
+       type = "n",
+       las = 1,
+       xlab = "",
+       main = "Case-profile plot of day of\nfirst-flowering",
+       ylab = "Day of first flowering",
+       axes = FALSE)
+ axis(side = 1,
+      at = c(1, 2),
+      labels = c("Willow",
+                 "Skypilot"))
+ axis(side = 2,
+      las = 1)
+ box()
+ 
+ 
+ for (i in (1:length(FloweringTab$Change))){
+     delta <- ifelse(FloweringTab$Change[i] > 0, 0.025, -0.025)
+     lines( x = c(1 + delta, 2 - delta),
+            y = c( FloweringTab$Willow[i],
+                   FloweringTab$Skypilot[i]),
+            lty = ifelse(FloweringTab$Change[i] > 0, 1, 2),
+            pch = ifelse(FloweringTab$Change[i] > 0, 19, 1),
+            type = "b",
+            lwd = 1)
+ }
+
+```
+
+
+
+## Example: pain-relieving tape
 
 A study examined the effect of using Kinesio Tape [@naugle2021effect] to alleviate pain in athletes.
 Pain was measured by applying a slow constant rate of pressure on the left arm, and subjects pressed a button when the sensation moved from pressure to pain.
 The pressure when this occurred was recorded.
 This was repeated $5$\ mins before applying the tape, $5$\ min after applying the tape, and again $15$--$20$\ min after applying the tape.
 
-Figure\ \@ref(fig:TapeRepeated) shows the reported an for $16$ subjects.
+Figure\ \@ref(fig:TapeRepeated) shows the reported pain for $16$ subjects.
+When the number of individuals is large, sometimes just the means are shown (the black lines and points in the figure)
 A summary table is shown in Table\ \@ref(tab:TapeTable).
 
 
 
-```{r TapeRepeated, fig.cap="Pain threshold (left arm) at three time points when using Kinesio Tape, without applying tension, for $n = 26$ subjects. The horizontal lines for each time point represent the mean at those times.", fig.align="center", out.width='80%', fig.width=7, fig.height=3.25}
+```{r TapeRepeated, fig.cap="Pain threshold (left arm) at three time points when using Kinesio Tape, without applying tension, for $n = 26$ subjects. The black points represent the means for each time point.", fig.align="center", out.width='80%', fig.width=7, fig.height=3.25}
 data(Tape)
 
 Pre <- Tape$Pre.Left.KT.NoTension
@@ -294,13 +572,12 @@ PPT <- cbind( Pre, Post1, Post2)
 
 Time <- 1:3
 
-
-plot( x = c(0.75, 3.25), 
+plot( x = c(0.85, 3.15), 
       y = c(0, 1000),
       type = "n",
       las = 1,
       axes = FALSE,
-      main = "Pain threshold (left arm) at three time points\nwhen using Kinesio Tape without applying tension UNITS!!!!!",
+      main = "Pain threshold (left arm) at three time points\nwhen using Kinesio Tape without applying tension",
       xlab = "When measured",
       ylab = "Pain threshold (kPa)")
 axis(side = 2,
@@ -315,22 +592,36 @@ box()
 for (i in 1: length(Pre)){
   lines( x = Time,
          y = PPT[i, ],
+         col = "grey",
          type = "b")  
 }
 
 meanPPT <- colMeans(PPT)
 
-widthLine <- 0.15
-for (i in 1:length(Time)){
-  lines( x = c( Time[i] - widthLine,
-                Time[i] + widthLine),
-         y = c( meanPPT[i],
-                meanPPT[i]),
-         lwd = 4)
-}
+points( x = 1:3,
+        y = meanPPT,
+        type= "b",
+        pch = 19,
+        lwd = 2
+        )
+# widthLine <- 0.15
+# for (i in 1:length(Time)){
+#   lines( x = c( Time[i] - widthLine,
+#                 Time[i] + widthLine),
+#          y = c( meanPPT[i],
+#                 meanPPT[i]),
+#          lwd = 4)
+# }
 
 ```
 
+
+
+1. What do the differences *mean*?
+2. Construct a summary table.
+3. Construct a case-profile plot.
+4. Construct a stemplot of the differences.
+:::
 
 
 ```{r TapeTable}
@@ -339,8 +630,8 @@ TapeTable <- array( dim = c(3, 3))
 rownames(TapeTable) <-c( "Pre: 5 mins",
                          "Post: 5 mins",
                          "Post: 15-20 mins" )
-colnames(TapeTable) <- c("Mean",
-                        "Std. dev.",
+colnames(TapeTable) <- c("Mean (in kPa)",
+                        "Std. dev. (in kPa)",
                         "Sample size") 
 
 
@@ -363,10 +654,49 @@ knitr::kable( surroundMaths(TapeTable,
   kable_styling(font_size = 10)
 ```
 
-1. What do the differences *mean*?
-2. Construct a summary table.
-3. Construct a case-profile plot.
-4. Construct a stemplot of the differences.
+
+## Summary {#Chap13-Summary}
+   
+Quantitative data measured within individuals can be summarised using a histogram of differences (with two comparisons) or a case-profile plot (with two or more comparisons).
+A summary table should show the numerical summaries for the quantitative variable at each comparison and, if appropriate, the within-individual differences. 
+
+
+## Quick review questions {#Chap13-QuickReview}
+
+::: {.webex-check .webex-box}
+Are the following statements *true* or *false*?
+
+1. A histogram of the differences is only appropriate for showing within-individuals comparisons measured twice. \tightlist
+`r if( knitr::is_html_output() ) {torf(answer = TRUE)}`
+2. A case-profile plot is only appropriate for showing within-individuals comparisons measured twice.
+`r if( knitr::is_html_output() ) {torf(answer = FALSE)}`
+3. The median and IQR are *not* appropriate for summarising differences.
+`r if( knitr::is_html_output() ) {torf(answer = FALSE)}`
+4. Explaining how the differences are computed is important.
+`r if( knitr::is_html_output() ) {torf(answer = TRUE)}`
+:::
+
+
+
+
+## Exercises
+
+
+:::{.exercise #CompareWithinInsulation}
+The *Electricity Council* in Bristol wanted to determine if a certain type of wall-cavity insulation reduced energy consumption in winter (@data:OpenUni:insulationBA, @data:hand:handbook).
+Their RQ was:
+
+> In Bristol homes, what is the *mean reduction* in energy consumption after adding home insulation?
+
+1. Use the collected data
+`r if (knitr::is_latex_output()) {
+   '(Table \\@ref(tab:DataInsulation))'
+} else {
+   '(shown below)'
+}`
+   to sketch a case-profile plot.
+2. Use the data to sketch a histogram of the differences.
+2. Use software or a calculator to prepare a summary table.
 :::
 
 
@@ -428,21 +758,242 @@ if( knitr::is_html_output() ) {
 ```
 
 
+:::{.exercse #CompareWithinPainRelief}
+Researchers measured the reported pain of new mothers in Dodoma (Tanzania) at four times: near giving birth, then $20$, $40$ and $60$ minutes after giving birth (after being administered either paracetamol or a cold pack as pain relief) [@augustino2023dataset].
+Pain was recorded using a 'numeric rating scale represented by the horizontal line marked from zero to ten', where higher scores mean greater pain.
 
-:::{.exercse}
-PainRelief in Dodoma in Tanzania.
+Since the number of individuals in large, use the summary data in Table\ \@ref(tab:PainReliefTable) to sketch a plot of the means, like that in Figure\ \@ref(fig:TapeRepeated).
 :::
 
-```{r}
+
+```{r PainReliefTable}
 data(PainRelief)
 
-PR <- subset(PainRelief,
-             Group == "paracetamol")
-
-PTwide <- tidyr::pivot_wider(PR, 
+PTwide <- tidyr::pivot_wider(PainRelief, 
                              names_from = Time,
                              values_from = Score)
-colMeans(PTwide[7:10], na.rm=TRUE)
+
+PRtable <- array( dim = c(4, 5))
+rownames(PRtable) <- c("Paracetamol",
+                       "",
+                       "Cold pack",
+                       "")
+
+
+colnames(PRtable) <- c("",
+                       "At birth",
+                       "After 20 mins",
+                       "After 40 mins",
+                       "After 60 mins")
+PRtable[1:4, 1] <-   c("Mean",
+                       "Std. deviation",
+                       "Mean",
+                       "Std. deviation")
+
+PRtable[1, 2:5] <- colMeans( subset(PTwide[7:10], 
+                                    PTwide$Group == "paracetamol"), 
+                             na.rm = TRUE)
+PRtable[2, 2:5] <- apply( subset(PTwide[7:10], 
+                                 PTwide$Group == "paracetamol"), 
+                          2, 
+                          "sd",
+                          na.rm = TRUE)
+PRtable[3, 2:5] <- colMeans( subset(PTwide[7:10], 
+                                    PTwide$Group == "coldpack"), 
+                             na.rm = TRUE)
+PRtable[4, 2:5] <- apply( subset(PTwide[7:10], 
+                                 PTwide$Group == "coldpack"), 
+                          2, 
+                          "sd",
+                          na.rm = TRUE)
+
+knitr::kable( surroundMaths(PRtable,
+                            decDigits = c(0, 2, 2, 2, 2)),
+              format = "latex",
+              align = c("r", "c", "c", "c", "c"),
+              linesep = c("", "\\addlinespace"),
+              row.names = TRUE,
+              escape = FALSE,
+              caption = "Reported pain for mothers after giving birth",
+              booktabs = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = TRUE) %>%
+  kable_styling(font_size = 10)
+
 ```
+
+
+::: {.exercise #CompareWithinExercisesCaptopril}
+In a study of hypertension [@data:hand:handbook; @data:macgregor:essential], $15$ patients were given a drug (Captopril) and their systolic blood pressure measured (in mm Hg) immediately before and two hours after being given the drug (Table\ \@ref(tab:CICaptoprilData)).
+
+1. Explain why this is a within-individuals comparison.
+1. Construct a histogram of the differences.
+1. Construct a case-profile plot for the data.
+:::
+
+
+```{r}
+data(Captopril)
+
+Captopril$Differences <- Captopril$Before - Captopril$After
+
+bloodS <- subset(Captopril, BP == "S")
+bloodS <- bloodS[, c("Before", 
+                     "After", 
+		     "Differences")]
+
+bloodS2 <- cbind( "Before" = bloodS$Before[1:8], 
+                  "After" = bloodS$After[1:8],
+                  "Before" = c(bloodS$Before[9:15], NA), 
+                  "After" = c(bloodS$After[9:15], NA) )
+```
+
+
+```{r CICaptoprilData}
+if( knitr::is_latex_output() ) {
+  bloodS <- rbind( bloodS, 
+                   c(NA, NA, NA) )
+  T1 <- kable( surroundMaths(bloodS[1:8, ],
+                             decDigits = 0),
+               format = "latex",
+               row.names = FALSE,
+               booktabs = TRUE,
+               align = c("c", "c", "r"),
+               escape = FALSE,
+               longtable = FALSE) %>%
+    row_spec(0, bold = TRUE)
+  T2 <- kable( surroundMaths(bloodS[9:16, ],
+                             decDigits = 0),
+               format = "latex",
+               row.names = FALSE,
+               booktabs = TRUE,
+               align = c("c", "c", "r"),
+               escape = FALSE,
+               longtable = FALSE) %>%
+    row_spec(0, bold = TRUE)
+
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "CICaptoprilData",
+                       caption = "The Captopril data: before after after systolic blood pressures (in mm Hg)") %>% 
+    kable_styling(font_size = 10)  
+  out2 <- prepareSideBySideTable(out, 
+                                 gap = "\\quad") 
+  out2
+}
+if( knitr::is_html_output() ) {
+  kable( bloodS2,
+                format = "html",
+                booktabs = TRUE,
+                caption = "The Captopril data: before after after systolic blood pressures (in mm Hg)",
+                longtable = FALSE
+                ) %>%
+    add_header_above(header = c("  " = 2, "  " = 2), 
+		     bold = TRUE, 
+		     align = "c")
+}
+```
+
+```{r out.width='80%'}
+data(Anorexia)
+
+ANCB <- subset(Anorexia, 
+               Treatment=="CB")
+```
+
+
+::: {.exercise #CompareWithinStressSurgeryCI}
+The concentration of beta-endorphins in the blood is a sign of stress.
+One study (@data:hand:handbook, Dataset 232; @hoaglin2011exploring) measured the beta-endorphin concentration for $19$ patients about to undergo surgery.
+
+Each patient had their beta-endorphin concentrations measured $12$--$14$ hours before surgery, and also $10$ minutes before surgery.
+A numerical summary (from the jamovi output) is in Table\ \@ref(tab:StressTable).
+
+
+```{r StressTable}
+data(Stress)
+
+Stress$Diff <- Stress$BeforeMins - Stress$BeforeHours
+
+STtable <- array( dim = c(3, 4) )
+
+rownames(STtable) <- c("12--14 hours before surgery",
+                       "10 minutes before surgery",
+                       "Increase")
+colnames(STtable) <- c("Sample mean",
+                       "Std deviation",
+                       "Std error",
+                       "Sample size")
+
+STtable[, 1] <- c(mean(Stress$BeforeHours),
+                  mean(Stress$BeforeMins),
+                  mean(Stress$Diff))
+STtable[, 2] <- c(sd(Stress$BeforeHours),
+                  sd(Stress$BeforeMins),
+                  sd(Stress$Diff))
+STtable[, 4] <- c(length(Stress$BeforeHours),
+                  length(Stress$BeforeMins),
+                  length(Stress$Diff))
+STtable[, 3] <- STtable[, 2] / sqrt( STtable[, 4])     
+
+
+if( knitr::is_latex_output() ) {
+kable(surroundMaths(STtable,
+                    decDigits = c(2, 2, 2, 0) ),
+      format = "latex",
+      booktabs = TRUE,
+      longtable = FALSE,
+      escape = FALSE,
+      align = c("r", "r", "r", "c"),
+      col.names = c("Mean", "Std deviation", "Std error", "Sample size"),
+      #digits = c(2, 2, 2, 0),
+      caption = "The numerical summary for the presurgical stress data") %>%
+  row_spec(0, bold = TRUE) %>%
+  row_spec(3, italic = TRUE) %>%
+  kable_styling(font = 10)
+}
+if( knitr::is_html_output() ) {
+kable(STtable,
+      format = "html",
+      booktabs = TRUE,
+      longtable = FALSE,
+      col.names = c("Mean", "Std deviation", "Std error", "Sample size"),
+      digits = c(2, 3, 3, 0),
+      caption = "The numerical summary for the presurgical stress data")
+}
+
+```
+
+
+1. Explain why this is a within-individuals comparison.
+1. Construct a histogram of the differences.
+1. Construct a case-profile plot for thd data.
+:::
+
+
+
+
+::: {.exercise #CompareWithinCOVIDCI}
+A study of $n = 213$ Spanish health students [@romero2020physical] measured (among other things) the number of minutes of vigorous physical activity (PA) performed by students *before* and *during* the COVID-19 lockdown (from March to April 2020 in Spain).
+Since the *before* and *during* lockdown were both measured on *each* participant, the data are *paired* (within individuals).
+The data are summarised in Table\ \@ref(tab:COVIDsummaryTable).
+
+1. Explain why this is a within-individuals comparison.
+1. Construct a histogram of the differences.
+1. Construct a case-profile plot for the data.
+:::
+
+
+
+<!-- QUICK REVIEW ANSWERS -->
+`r if (knitr::is_html_output()) '<!--'`
+::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
+- \textbf{\textit{Quick Revision} questions:}
+**1.** True.
+**2.** False; a case-profile plot can be used for *two or more* within-individual comparisons.
+**3.** False; use whatever numerical summaries are appropriate.
+**4.** True.
+:::
+`r if (knitr::is_html_output()) '-->'`
 
 

@@ -1,4 +1,4 @@
-# Comparing quantitative data between individuals {#SummariseQuantData}
+# Comparing quantitative data between individuals {#WithinQuantData}
 
 
 
@@ -8,7 +8,7 @@
 
 ## Introduction
 
-Relational and interventional RQs often require comparing groups.
+Relational and interventional RQs require comparing groups.
 This chapter considers how to compare *qualitative* variables in different groups.
 Graphs are very useful this purpose, and a table of the numerical summaries usually are also produced.
 
@@ -33,7 +33,7 @@ These situations have *one qualitative variable* and *one quantitative variable*
 Back-to-back stemplots are two stemplots (Sect.\ \@ref(StemAndLeafPlots)) sharing the same stems; one group has the leaves emerging left-to-right from the stem, and the second group has the leaves emerging right-to-left from the stem.
 Back-to-back stemplots can only be used when *two* groups are being compared.
 Again, one advantage of using stemplots over other plots is that the original data are retained.
-
+One disadvantage is that only two groups can be compared.
 
 
 ::: {.example #GorillaData name="Back-to-back stemplots"}
@@ -323,11 +323,11 @@ for (j in (1:2) ){
 ### 2-D dot charts {#TwoDDot}
 
 A 2-dimensional (2-D) dot chart places a dot for each observation, separated for each level of the qualitative variable (also see Sect.\ \@ref(DotChartsOneQual)).
-
+Any number of groups can be compared.
 
 
 :::{.example #Dotchart2DGorillas name="Boxplots"}
-For the same data seen in Example\ \@ref(exm:GorillaData), a dot chart is shown in Fig.\ \@ref(fig:TwoDDotchart).
+For the chest-beating data seen in Example\ \@ref(exm:GorillaData), a dot chart is shown in Fig.\ \@ref(fig:TwoDDotchart).
 
 Many observations are the same, so some points would be *over-plotted* if points were not *stacked* (left panel), or some randomness added (a 'jitter') in the vertical direction, before plotting (right panel).
 :::
@@ -367,6 +367,8 @@ stripchart( list(Treatment = CBRyounger,
 ### Boxplots {#Boxplot}
 
 A boxplot is a picture of the quantiles (Sect.\ \@ref(VariationIQR)).
+Any number of groups can be compared usin a boxplot.
+
 The distribution for each group is summarised by five numbers: the minimum value, $Q_1$, the median ($Q_2$), $Q_3$ and the maximum value.
 Outliers, identified using the IQR rule (Sect. \@ref(OutliersIQRrule)), are also shown.
 Distributions can be compared by comparing the values of $Q_1$, the medians, and the values of $Q_3$.
@@ -616,6 +618,225 @@ knitr::kable( surroundMaths(GorillaSummaryTable,
 ```
 
 
+## Summary {#Chap14-Summary}
+   
+Quantitative data can be compared between different groups (between individuals comparisons) using a back-to-back stemplot, boxplot or $2$-D dot chart.
+A summary table should show the numerical summaries for the quantitative variable at each comparison and, if appropriate, the between-group differences. 
+
+
+
+## Example: speed signage {#CompareQuantSpeedSignage}
+
+To reduce vehicle speeds on freeway exit ramps, a Chinese study studied adding additional signage [@ma2019impacts].
+At one site (Ningxuan Freeway), speeds were recorded for 38 vehicles before the extra signage was added, and then for 41 different vehicles after the extra signage was added
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:SignageHT)).'
+} else {
+   '(data below).'
+}`
+
+
+```{r Signage}
+data(Speed)
+
+Speed$When <- factor(Speed$When,
+                     levels = c("Before", "After"),
+                     ordered = TRUE)
+
+Speed2 <- data.frame( Before = Speed$Speed[ Speed$When == "Before" ][1:10],
+                      After = Speed$Speed[ Speed$When == "After" ][1:10])
+```
+
+```{r}
+if( knitr::is_latex_output() ) {
+  tb1 <- cbind( Speed$Speed[Speed$When == "Before"][1:7],
+                Speed$Speed[Speed$When == "Before"][8:14],
+                Speed$Speed[Speed$When == "Before"][15:21],
+                Speed$Speed[Speed$When == "Before"][22:28],
+                Speed$Speed[Speed$When == "Before"][29:35],
+                c( Speed$Speed[Speed$When == "Before"][36:38], NA, NA, NA, NA ) )
+  T1 <- knitr::kable( surroundMaths(tb1,
+                                    decDigits = 1),
+                      format = "latex",
+                      valign = 't',
+                      align = "r",
+                      linesep = "",
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Speeds before signage added" = 6),
+                      bold = TRUE)
+
+  tb2 <- cbind( Speed$Speed[Speed$When == "After"][1:7],
+                Speed$Speed[Speed$When == "After"][8:14], 
+                Speed$Speed[Speed$When == "After"][15:21], 
+                Speed$Speed[Speed$When == "After"][22:28], 
+                Speed$Speed[Speed$When == "After"][29:35], 
+                c( Speed$Speed[Speed$When == "After"][36:41], NA) )
+  T2 <- knitr::kable( surroundMaths(tb2,
+                                    decDigits = 1),
+                      format = "latex",
+                      align = "r",
+                      valign = 't',
+                      linesep = "",
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Speeds after signage added" = 6),
+                      bold = TRUE)
+  
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "SignageHT",
+                       caption = "Vehicle speeds (in km/h) before and after adding extra signage") %>%
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out, gap = "\\enskip")
+  out2
+}
+
+if( knitr::is_html_output() ) {
+  
+   DT::datatable( Speed,
+                 fillContainer = FALSE, # Make more room, so we don't just have ten values
+                 colnames = c("When measured", "Speed (km/h)"),
+                 options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
+                 caption = "The observations from the signage data")
+}
+```
+
+
+The researchers are hoping that the addition of extra signage will *reduce* the mean speed of the vehicles.
+The RQ is:
+
+> At this freeway exit, how much is the mean vehicle speed *reduced* after extra signage is added?
+
+The data are summarised in Table\ \@ref(tab:SignageSummary) (using the jamovi output in Fig.\ \@ref(fig:SpeedjamoviCI)), and in Fig.\ \@ref(fig:SpeedBoxplot).
+
+
+```{r SignageSummary}
+SignageSummary <- array(dim = c(3, 5))
+rownames(SignageSummary) <- c("Before", 
+                              "After",
+                              "Speed reduction")
+colnames(SignageSummary) <- c("Mean",
+                              "Median",
+                              "Std deviation",
+                              "IQR",
+                              "Sample size")
+
+Speed.n <- tapply(Speed$Speed, 
+                  list(Speed$When), 
+                  "length") 
+Speed.sd <- tapply(Speed$Speed, 
+                   list(Speed$When), 
+                   "sd") 
+
+SignageSummary[1:2, 1] <- round( tapply(Speed$Speed, 
+                                        list(Speed$When), 
+                                        "mean"),
+                                 2)
+SignageSummary[1:2, 2] <- tapply(Speed$Speed,
+                                 list(Speed$When), 
+                                 "median") 
+
+SignageSummary[1:2, 3] <- round( Speed.sd, 2)
+SignageSummary[1:2, 4] <- tapply(Speed$Speed,
+                                 list(Speed$When), 
+                                 "IQR") 
+SignageSummary[1:2,5] <- Speed.n 
+
+SignageSummary[3, 1] <- SignageSummary[1, 1] -  
+                        SignageSummary[2, 1] 
+
+sdB <- round( Speed.sd[1], 2)
+sdA <- round( Speed.sd[2], 2)
+
+SignageSummary[3, 4] <- NA 
+SignageSummary[3, 2] <- NA
+                          
+
+
+if( knitr::is_latex_output() ) {
+  kable(surroundMaths(SignageSummary,
+                      decDigits = c(2, 2, 3, 2, 0)),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        align = c("r", "r", "r", "r", "r", "r"),
+        col.names = c("Mean", 
+                      "Median",
+                      "Std deviation", 
+                      "IQR",
+                      "Sample size"),
+        caption = "The signage data summary (in km/h)"
+  ) %>%
+  row_spec(0, bold = TRUE) %>%
+  row_spec(3, italic = TRUE) %>%
+  kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  kable(SignageSummary,
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               align = c("r", "r", "r", "r"),
+               col.names = c("Mean", 
+                             "Median",
+                            "Std deviation",
+                            "IQR",
+                            "Sample size"),
+    caption = "The signage data summary (in km/h)") %>%
+    kable_styling(full_width = FALSE)
+}
+```
+
+```{r SpeedjamoviCI, fig.cap="jamovi output for the speed data", fig.align="center", out.width="100%"}
+knitr::include_graphics("jamovi/Speed/Speed-ALL.png")
+```
+
+```{r SpeedBoxplot, fig.cap="Boxplot of speed beefore and after adding signage", fig.align="center", out.width='50%', fig.width=5, fig.height=3.25  }
+par(mar = c(5, 4, 4, 4) + 0.1)
+boxplot( Speed2, 
+         col = plot.colour,
+         las = 1,
+         ylab = "Speed (in km/h)",
+         xlab = "When speed measured",
+         main = "Speeds before and after adding speed signage",
+         names = c("", "") )
+abline( h = 100,
+        lwd = 2)
+axis(side = 4,
+     at = 100,
+     las = 1,
+     labels = "Speed\nlimit")
+mtext(text = c(expression( atop(Before, group("(",italic(n) == 38, ")")) ),
+               expression( atop(After, group("(", italic(n) == 41, ")")) ) ),
+      side = 1,
+      at = 1:2,
+      las = 1,
+      line = 2 )
+```
+
+
+
+## Quick review questions {#Chap14-QuickReview}
+
+::: {.webex-check .webex-box}
+Are the following statements *true* or *false*?
+
+1. A boxplot is an appropriate graph for comparing a quantitative variable in two *or more* groups. \tightlist
+`r if( knitr::is_html_output() ) {torf(answer = TRUE)}`
+2. A back-to-back stemplot is an appropriate graph for comparing a quantitative variable in two *or more* groups.
+`r if( knitr::is_html_output() ) {torf(answer = FALSE)}`
+3. A case-profile plot is an appropriate graph for comparing a quantitative variable in two *or more* groups.
+`r if( knitr::is_html_output() ) {torf(answer = FALSE)}`
+4. When comparing a quantitative variable in two *or more* groups, the sample size for the difference should be included
+`r if( knitr::is_html_output() ) {torf(answer = FALSE)}`
+:::
+
 
 ## Exercises
 
@@ -650,6 +871,133 @@ boxplot(Ht ~ Sport,
 )
 ```
 
+
+
+::: {.exercise #NumericalQuantMatchingHistogramsAndBoxplots}
+
+`r if (knitr::is_latex_output()) {
+   'Consider  the histograms and boxplots in Fig.\\ \\@ref(fig:MatchHistoBox).'
+} else {
+   'Match the histograms with the corresponding boxplots in the activity below.'
+}`
+
+
+`r if (knitr::is_html_output()) '<!--'`
+1. Match the histogram with the corresponding boxplot.
+1. For which datasets would the mean and standard deviation be the appropriate numerical summary?
+   For which datasets would the median and IQR be the appropriate numerical summary?
+`r if (knitr::is_html_output()) '-->'`
+:::
+
+
+```{r MatchHistoBox, fig.align = "center", fig.cap="Match the histogram with the boxplot", out.width = '100%', fig.width = 5.5, fig.height=2.0}
+if( knitr::is_latex_output() ) {
+  set.seed(20032009)
+  num <- 400
+  
+  # Skewed right
+  dt1 <- rgamma(num,
+                scale = 0.2,
+                shape = 2)
+  # Normal
+  dt2 <- rnorm(num,
+               mean = max(dt1) / 2,
+               sd = max(dt1) / 6)
+  # Uniform
+  dt3 <- runif(num, 
+               min = 0, 
+               max = max(dt1))
+  
+  par( mfrow = c(1, 3),
+       mar = c(0.5, 0.5, 0.5, 0.5) )
+  
+  hist(dt1,
+       axes = FALSE,
+       col = plot.colour,
+       las = 1,
+       xlim = c(0, 2),
+       ylim = c(0, 235),
+       xlab = "",
+       ylab = "Number",
+       main = "")
+  text(x = 0.85,
+       y = 140,
+       labels = "Histogram A",
+       font = 2)
+  abline(h = 160, col="grey")
+  
+  boxplot(dt2,
+          at = 200,
+          horizontal = TRUE,
+          col = plot.colour,
+          add = TRUE,
+          axes = FALSE,
+          boxwex = 30)
+  text(x = 0.75,
+       y = 220,
+       labels = "Boxplot I",
+       font = 2)
+  
+  ########################
+  
+  
+  hist(dt2,
+       axes = FALSE,
+       col = plot.colour,
+       las = 1,
+       xlim = c(0, 2),
+       ylim = c(0, 235),
+       xlab = "",
+       ylab = "Number",
+       main = "")
+  text(x = 0.75,
+       y = 140,
+       labels = "Histogram B",
+       font = 2)
+  abline(h = 160, col="grey")
+  boxplot(dt1,
+          at = 195,
+          horizontal = TRUE,
+          col = plot.colour,
+          add = TRUE,
+          axes = FALSE,
+          boxwex = 30)
+  text(x = 0.75,
+       y = 220,
+       labels = "Boxplot II",
+       font = 2)
+  
+  ########################
+  
+  hist(dt3,
+       axes = FALSE,
+       col = plot.colour,
+       las = 1,
+       xlim = c(0, 2),
+       ylim = c(0, 235),
+       xlab = "",
+       ylab = "Number",
+       main = "")
+  text(x = 0.75,
+       y = 140,
+       labels = "Histogram C",
+       font = 2)
+  abline(h = 160, col="grey")
+  boxplot(dt3,
+          at = 195,
+          horizontal = TRUE,
+          col = plot.colour,
+          add = TRUE,
+          axes = FALSE,
+          boxwex = 30)
+  text(x = 0.75,
+       y = 220,
+       labels = "Boxplot III",
+       font = 2)
+  
+  
+}
+```
 
 
 
@@ -718,3 +1066,212 @@ In a study of the influence of using ankle-foot orthoses in children with cerebr
 
 Sketch a graphs to explore the *relationships* between the children's weight and GMGCS.
 :::
+
+
+
+::: {.exercise #CompareQuantExercisesNHANES}
+Earlier, we used the NHANES study data (Sect.\ \@ref(NHANESGraphs)), and considered this RQ:
+
+> Among Americans, is the mean direct HDL cholesterol different for current smokers and non-smokers?
+
+Use the jamovi output (Fig.\ \@ref(fig:NHANESTwoSample)) to answer these questions.
+ Construct an appropriate table showing the numerical summary.
+:::
+
+```{r NHANESTwoSample, fig.cap="jamovi output for the NHANES data", fig.align="center", out.width='100%'}
+knitr::include_graphics("jamovi/NHANES/NHANES-DirectHDL-Smoke-ALL.png")
+```
+
+
+
+::: {.exercise #CompareQuantDeceleration}
+To reduce vehicle speeds on freeway exit ramps, a Chinese study studied using additional signage [@ma2019impacts].
+At one site (Ningxuan Freeway), speeds were recorded at various points on the freeway exit for $38$ vehicles before the extra signage was added, and then for $41$ vehicles after the extra signage was added.
+
+From this data, the *deceleration* of each vehicle was determined
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:SignageDec))'
+} else {
+   '(data below)'
+}`
+as the vehicle left the $120$\ km/h speed zone and approached the $80$\ km/hr speed zone. 
+Use the data, and the summary in Table\ \@ref(tab:SignageSummaryDec), to address this RQ:
+
+> At this freeway exit, what is the difference between the mean vehicle deceleration, comparing the times before the extra signage is added and after extra signage is added?
+
+In this context, the researchers are hoping that the extra signage might cause cars to slow down *faster* (i.e., they will decelerate more, on average, after adding the extra signage).
+
+1. Construct a numerical summary table for the data.
+2. Use software to construct a boxplot of the data.
+:::
+
+
+
+```{r}
+data(Deceleration)
+
+Deceleration$When <- factor(Deceleration$When,
+                     levels = c("Before", "After"),
+                     ordered = TRUE)
+```
+```{r}
+if( knitr::is_latex_output() ) {
+  tb1 <- cbind( Deceleration$Deceleration[Deceleration$When == "Before"][1:9],
+                Deceleration$Deceleration[Deceleration$When == "Before"][10:18],
+                Deceleration$Deceleration[Deceleration$When == "Before"][19:27],
+                Deceleration$Deceleration[Deceleration$When == "Before"][28:36],
+                c(Deceleration$Deceleration[Deceleration$When == "Before"][37:38], NA, NA, NA, NA, NA, NA, NA) )
+  T1 <- knitr::kable( surroundMaths(tb1,
+                                    decDigits = 3),
+                      format = "latex",
+                      valign = 't',
+                      align = "r",
+                      linesep = "",
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Deceleration before signage added" = 5),
+                      bold = TRUE)
+
+  tb2 <- cbind( Deceleration$Deceleration[Deceleration$When == "After"][1:9],
+                Deceleration$Deceleration[Deceleration$When == "After"][10:18], 
+                Deceleration$Deceleration[Deceleration$When == "After"][19:27], 
+                Deceleration$Deceleration[Deceleration$When == "After"][28:36], 
+                c(Deceleration$Deceleration[Deceleration$When == "After"][37:41], NA, NA, NA, NA) ) 
+  T2 <- knitr::kable( surroundMaths(tb2,
+                                    decDigits = 3),
+                      format = "latex",
+                      align = "r",
+                      valign = 't',
+                      linesep = "",
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Deceleration after signage added" = 5),
+                      bold = TRUE)
+  
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "SignageDec",
+                       caption = "Vehicle decleration  (in m/s-squared) before and after adding extra signage") %>%
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out, gap = "\\enskip")
+  out2
+
+}
+
+if( knitr::is_html_output() ) {
+  
+   DT::datatable( Deceleration,
+                 fillContainer = FALSE, # Make more room, so we don't just have ten values
+                 colnames = c("When measured", "Deceleration (m/s-squared)"),
+                 options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
+                 caption = "The observations from the signage data (negative values mean the vehicle has accelerated)")
+}
+```
+
+
+
+
+
+
+
+```{r}
+data(ForwardFall)
+
+ForwardFall$Group <- factor(ForwardFall$Group,
+                   levels = 1:2,
+                   labels = c("Younger",
+                              "Older"))
+```
+::: {.exercise #FacePlantCI}
+A study [@data:Wojcik:ForwardFall] compared the lean-forward angle in younger and older women.
+An elaborate set-up was constructed to measure this angle, using a harnesses.
+Consider the RQ:
+
+> Among healthy women, what is difference between the mean lean-forward angle for younger women compared to older women?
+
+The data are shown in Table\ \@ref(tab:FacePlant).
+
+1. What is the parameter?
+   Describe what this *means*.
+2. What is an appropriate graph to display the *data*?
+3. Construct an appropriate numerical summary from the software output (Fig.\ \@ref(fig:FallFowardTTestjamovi)).
+4. Construct *approximate* and *exact* $95$% CIs.
+   Explain any differences.
+5. Is the CI expected to be statistically valid?
+6. Write a conclusion.
+:::
+
+```{r FacePlant}
+FacePlant <- array(dim = c(2, 10), # COL 6 is a gap
+                   NA)
+FacePlant[1, ] <- c( ForwardFall$LeanAngle[ForwardFall$Group == "Younger"][1:5],
+                       ForwardFall$LeanAngle[ForwardFall$Group == "Older"][1:5] )
+FacePlant[2, 1:5] <- ForwardFall$LeanAngle[ForwardFall$Group == "Younger"][6:10]
+
+if( knitr::is_latex_output() ) {
+  
+  kable( surroundMaths(FacePlant,
+                       decDigits = 0),
+         format = "latex",
+         longtable = FALSE,
+         booktabs = TRUE,
+         escape = FALSE,
+         align = "c",
+         caption = "Lean-forward angles for older women ($n = 10$) and younger women ($n = 5$)") %>%
+    add_header_above(header = c("Younger women " = 5, "Older women " = 5), 
+                     bold = TRUE, 
+		     align = "c") %>%
+    kable_styling(font_size = 10)
+    
+}
+if( knitr::is_html_output() ) {
+  out <- kable( FacePlant,
+                format = "html",
+                longtable = FALSE,
+                booktabs = TRUE,
+                align = "c",
+                caption = "Lean-forward angles for older and younger women")
+    kable_styling(out, 
+                  full_width = FALSE) %>%
+    add_header_above(header = c("Younger women " = 5, "Older women " = 5), 
+                     bold = TRUE, 
+		     align = "c")
+}
+```
+
+
+
+
+```{r FallFowardTTestjamovi, fig.cap="jamovi output for the lean-forward angles data", fig.align="center", out.width='95%'}
+knitr::include_graphics("jamovi/FallForward/FallForwardTTestOutput.png")
+```
+
+
+::: {.exercise #NumericalQuantTyping}
+The `Typing` dataset contains four variables: typing speed (`mTS`), typing accuracy (`mAcc`), age (`Age`). and sex (`Sex`) for $1301$ students.
+
+1. Produce appropriate numerical summaries for the quantitative variables.
+1. Produce appropriate numerical summaries for *comparing* the quantitative variables for different values of the qualitative variable.
+1. What do you learn from these numerical summaries?
+:::
+
+
+
+
+<!-- QUICK REVIEW ANSWERS -->
+`r if (knitr::is_html_output()) '<!--'`
+::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
+- \textbf{\textit{Quick Revision} questions:}
+**1.** True.
+**2.** False; only compares two groups.
+**3.** False; a case-profile plot is appropriate for *within*-individual comparisons.
+**4.** False; a sample size is meaningless.
+:::
+`r if (knitr::is_html_output()) '-->'`
+
+
+

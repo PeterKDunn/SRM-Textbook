@@ -826,78 +826,6 @@ For the reaction-time data, both samples are larger than $25$, so the CI will be
 To reduce vehicle speeds on freeway exit ramps, a Chinese study studied adding additional signage [@ma2019impacts].
 At one site (Ningxuan Freeway), speeds were recorded for 38 vehicles before the extra signage was added, and then for 41 different vehicles after the extra signage was added.
 
-
-```{r Signage}
-data(Speed)
-
-Speed$When <- factor(Speed$When,
-                     levels = c("Before", "After"),
-                     ordered = TRUE)
-
-Speed2 <- data.frame( Before = Speed$Speed[ Speed$When == "Before" ][1:10],
-                      After = Speed$Speed[ Speed$When == "After" ][1:10])
-```
-
-```{r}
-if( knitr::is_latex_output() ) {
-  tb1 <- cbind( Speed$Speed[Speed$When == "Before"][1:7],
-                Speed$Speed[Speed$When == "Before"][8:14],
-                Speed$Speed[Speed$When == "Before"][15:21],
-                Speed$Speed[Speed$When == "Before"][22:28],
-                Speed$Speed[Speed$When == "Before"][29:35],
-                c( Speed$Speed[Speed$When == "Before"][36:38], NA, NA, NA, NA ) )
-  T1 <- knitr::kable( surroundMaths(tb1,
-                                    decDigits = 1),
-                      format = "latex",
-                      valign = 't',
-                      align = "r",
-                      linesep = "",
-                      row.names = FALSE,
-                      escape = FALSE,
-                      booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Speeds before signage added" = 6),
-                      bold = TRUE)
-
-  tb2 <- cbind( Speed$Speed[Speed$When == "After"][1:7],
-                Speed$Speed[Speed$When == "After"][8:14], 
-                Speed$Speed[Speed$When == "After"][15:21], 
-                Speed$Speed[Speed$When == "After"][22:28], 
-                Speed$Speed[Speed$When == "After"][29:35], 
-                c( Speed$Speed[Speed$When == "After"][36:41], NA) )
-  T2 <- knitr::kable( surroundMaths(tb2,
-                                    decDigits = 1),
-                      format = "latex",
-                      align = "r",
-                      valign = 't',
-                      linesep = "",
-                      row.names = FALSE,
-                      escape = FALSE,
-                      booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Speeds after signage added" = 6),
-                      bold = TRUE)
-  
-  out <- knitr::kables(list(T1, T2),
-                       format = "latex",
-                       label = "SignageHT",
-                       caption = "Vehicle speeds (in km/h) before and after adding extra signage") %>%
-    kable_styling(font_size = 10)
-  out2 <- prepareSideBySideTable(out, gap = "\\enskip")
-  out2
-}
-
-if( knitr::is_html_output() ) {
-  
-   DT::datatable( Speed,
-                 fillContainer = FALSE, # Make more room, so we don't just have ten values
-                 colnames = c("When measured", "Speed (km/h)"),
-                 options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
-                 caption = "The observations from the signage data")
-}
-```
-
-
 The researchers are hoping that the addition of extra signage will *reduce* the mean speed of the vehicles.
 The RQ is:
 
@@ -907,83 +835,6 @@ The data are *not* paired: different vehicles are measured before (B$) and after
 The data are summarised in Table\ \@ref(tab:SignageSummary) using the jamovi output (Fig.\ \@ref(fig:SpeedjamoviCI)).
 Define $\mu$ at the mean speed (in km.h^-1^) on the exit ramp.
 Then, the parameter is $\mu_B - \mu_A$, the *reduction* in the mean speed.
-
-
-```{r SignageSummary}
-SignageSummary <- array(dim = c(3, 4))
-rownames(SignageSummary) <- c("Before", 
-                              "After",
-                              "Speed reduction")
-colnames(SignageSummary) <- c("Mean",
-                              "Std deviation",
-                              "Sample size",
-                              "Std error")
-
-Speed.n <- tapply(Speed$Speed, 
-                  list(Speed$When), 
-                  "length") 
-Speed.sd <- tapply(Speed$Speed, 
-                   list(Speed$When), 
-                   "sd") 
-
-SignageSummary[1:2, 1] <- round( tapply(Speed$Speed, 
-                                        list(Speed$When), 
-                                        "mean"),
-                                 2)
-SignageSummary[1:2, 2] <- round( Speed.sd, 2)
-SignageSummary[1:2, 3] <- round( Speed.sd / sqrt(Speed.n), 3)
-SignageSummary[1:2, 4] <- Speed.n 
-
-SignageSummary[3, 1] <- SignageSummary[1, 1] -  
-                        SignageSummary[2, 1] 
-
-sdB <- round( Speed.sd[1], 2)
-sdA <- round( Speed.sd[2], 2)
-SignageSummary[3, 3] <- round( sqrt( sdB^2/Speed.n[1] + 
-                                     sdA^2/Speed.n[2] ), 
-                               3)
-
-SignageSummary[3, 4] <- NA 
-SignageSummary[3, 2] <- NA
-                          
-
-
-if( knitr::is_latex_output() ) {
-  kable(surroundMaths(SignageSummary,
-                      decDigits = c(2, 2, 3, 0)),
-        format = "latex",
-        longtable = FALSE,
-        booktabs = TRUE,
-        escape = FALSE,
-        align = c("r", "r", "r", "r"),
-        col.names = c("Mean", 
-                      "Std deviation", 
-                      "Sample size",
-                      "Std error"),
-        caption = "The signage data summary (in km/h)"
-  ) %>%
-  row_spec(0, bold = TRUE) %>%
-  row_spec(3, italic = TRUE) %>%
-  kable_styling(font_size = 10)
-}
-if( knitr::is_html_output() ) {
-  kable(SignageSummary,
-               format = "html",
-               longtable = FALSE,
-               booktabs = TRUE,
-               align = c("r", "r", "r", "r"),
-               col.names = c("Mean", 
-                            "Std deviation", 
-                            "Sample size",
-                            "Std error"),
-    caption = "The signage data summary (in km/h)") %>%
-    kable_styling(full_width = FALSE)
-}
-```
-
-
-
-
 
 
 ```{r SpeedjamoviCI, fig.cap="jamovi output for the speed data", fig.align="center", out.width="100%"}
@@ -1338,7 +1189,7 @@ lines(x = c(2 - delta,
 
 ## Exercises {#MeansIndSamplesExercises}
 
-Selected answers are available in Sect.&nbsp;\@ref(MeansIndSamplesAnswer).
+Selected answers are available in Sect.\ \@ref(MeansIndSamplesAnswer).
 
 
 ::: {.exercise #MeansIndSamplesExercisesWhalesCI}
@@ -1408,14 +1259,10 @@ Earlier, we used the NHANES study data (Sect.\ \@ref(NHANESGraphs)), and conside
 > Among Americans, is the mean direct HDL cholesterol different for current smokers and non-smokers?
 
 Use the jamovi output (Fig.\ \@ref(fig:NHANESTwoSample)) to answer these questions.
+A numerical summary and jamovi output is given in Exercise\ \@ref(exr:CompareQuant).
 
-1. Construct an appropriate table showing the numerical summary.
-1. Determine, and suitably communicate, the $95$% CI for the difference between the direct HDL cholesterol values between current smokers and non-smokers.
+Determine, and suitably communicate, the $95$% CI for the difference between the direct HDL cholesterol values between current smokers and non-smokers.
 :::
-
-```{r NHANESTwoSample, fig.cap="jamovi output for the NHANES data", fig.align="center", out.width='100%'}
-knitr::include_graphics("jamovi/NHANES/NHANES-DirectHDL-Smoke-ALL.png")
-```
 
 
 ::: {.exercise #MeansIndSamplesExercisesEchinacea}
@@ -1571,149 +1418,6 @@ In this context, the researchers are hoping that the extra signage might cause c
 2. Compute and interpret the CI for this parameter.
 :::
 
-
-
-```{r}
-data(Deceleration)
-
-Deceleration$When <- factor(Deceleration$When,
-                     levels = c("Before", "After"),
-                     ordered = TRUE)
-```
-```{r}
-if( knitr::is_latex_output() ) {
-  tb1 <- cbind( Deceleration$Deceleration[Deceleration$When == "Before"][1:9],
-                Deceleration$Deceleration[Deceleration$When == "Before"][10:18],
-                Deceleration$Deceleration[Deceleration$When == "Before"][19:27],
-                Deceleration$Deceleration[Deceleration$When == "Before"][28:36],
-                c(Deceleration$Deceleration[Deceleration$When == "Before"][37:38], NA, NA, NA, NA, NA, NA, NA) )
-  T1 <- knitr::kable( surroundMaths(tb1,
-                                    decDigits = 3),
-                      format = "latex",
-                      valign = 't',
-                      align = "r",
-                      linesep = "",
-                      row.names = FALSE,
-                      escape = FALSE,
-                      booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Deceleration before signage added" = 5),
-                      bold = TRUE)
-
-  tb2 <- cbind( Deceleration$Deceleration[Deceleration$When == "After"][1:9],
-                Deceleration$Deceleration[Deceleration$When == "After"][10:18], 
-                Deceleration$Deceleration[Deceleration$When == "After"][19:27], 
-                Deceleration$Deceleration[Deceleration$When == "After"][28:36], 
-                c(Deceleration$Deceleration[Deceleration$When == "After"][37:41], NA, NA, NA, NA) ) 
-  T2 <- knitr::kable( surroundMaths(tb2,
-                                    decDigits = 3),
-                      format = "latex",
-                      align = "r",
-                      valign = 't',
-                      linesep = "",
-                      row.names = FALSE,
-                      escape = FALSE,
-                      booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Deceleration after signage added" = 5),
-                      bold = TRUE)
-  
-  out <- knitr::kables(list(T1, T2),
-                       format = "latex",
-                       label = "SignageDec",
-                       caption = "Vehicle decleration  (in m/s-squared) before and after adding extra signage") %>%
-    kable_styling(font_size = 10)
-  out2 <- prepareSideBySideTable(out, gap = "\\enskip")
-  out2
-
-}
-
-if( knitr::is_html_output() ) {
-  
-   DT::datatable( Deceleration,
-                 fillContainer = FALSE, # Make more room, so we don't just have ten values
-                 colnames = c("When measured", "Deceleration (m/s-squared)"),
-                 options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
-                 caption = "The observations from the signage data (negative values mean the vehicle has accelerated)")
-}
-```
-
-
-
-
-
-
-```{r SignageSummaryDec}
-SignageSummaryDec <- array(dim = c(3, 4))
-rownames(SignageSummaryDec) <- c("Before", 
-                            "After",
-                            "Change")
-colnames(SignageSummaryDec) <- c("Mean",
-                              "Std deviation",
-                              "Std error",
-                              "Sample size")
-
-Speed.n <- tapply(Deceleration$Deceleration, 
-                  list(Deceleration$When), 
-                  "length") 
-Speed.sd <- tapply(Deceleration$Deceleration, 
-                   list(Deceleration$When), 
-                   "sd") 
-
-SignageSummaryDec[1:2, 1] <- round( tapply(Deceleration$Deceleration, 
-                                        list(Deceleration$When), 
-                                        "mean"),
-                                 4)
-SignageSummaryDec[1:2, 2] <- round( Speed.sd, 4)
-SignageSummaryDec[1:2, 3] <- round( Speed.sd / sqrt(Speed.n), 5)
-SignageSummaryDec[1:2, 4] <- Speed.n 
-
-SignageSummaryDec[3, 1] <- SignageSummaryDec[1, 1] -  
-                           SignageSummaryDec[2, 1] 
-
-sdB <- round( SignageSummaryDec[1, 3], 4)
-sdA <- round( SignageSummaryDec[2, 3], 4)
-SignageSummaryDec[3, 3] <- round( sqrt( sdB^2/Speed.n[1] + 
-                                     sdA^2/Speed.n[2] ), 
-                               5)
-
-SignageSummaryDec[3, 4] <- NA 
-SignageSummaryDec[3, 2] <- NA
-                          
-
-
-if( knitr::is_latex_output() ) {
-  kable(surroundMaths(SignageSummaryDec,
-                     decDigits = c(3, 3, 5, 0)),
-        format = "latex",
-        longtable = FALSE,
-        booktabs = TRUE,
-        escape = FALSE,
-        align = c("r", "r", "r", "l"),
-        col.names = c("Mean", 
-                      "Std deviation", 
-                      "Sample size", 
-                      "Std error"),
-        caption = "The signage data summary (in m/s-squared)"
-  ) %>%
-  row_spec(0, bold = TRUE) %>%
-  row_spec(3, italic = TRUE) %>%
-  kable_styling(font_size = 10)
-}
-if( knitr::is_html_output() ) {
-  kable(SignageSummaryDec,
-               format = "html",
-               longtable = FALSE,
-               booktabs = TRUE,
-               align = c("r", "r", "r", "l"),
-               col.names = c("Mean", 
-                            "Std deviation", 
-                            "Sample size", 
-                            "Std error"),
-    caption = "The signage data summary (in m/s-squared)" ) %>%
-    kable_styling(full_width = FALSE)
-}
-```
 
 
 

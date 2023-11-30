@@ -1,4 +1,4 @@
-# Summarising qualitative data {#SummariseQuantData}
+# Summarising qualitative data {#CompareQuantData}
 
 
 <!-- Introductions; easier to separate by format -->
@@ -147,7 +147,7 @@ if (knitr::is_html_output()) {
 }
 ```          
 
-## Graphing qualitive data {#QualitativeGraphs}
+## Graphing {#QualitativeGraphs}
 
 
 The three options for graphing qualitative data are:
@@ -252,7 +252,7 @@ For bar charts:
 In pie charts, a circle is divided into segments proportional to the number in each level of the qualitative variable.
 
 
-::: {.example #DotPlotsQual name="Dot plots"}
+::: {.example #PieChartsQual name="Dot plots"}
 For the AV study in Example\ \@ref(exm:AVstudy), a pie chart of the age group of respondents is shown in Fig. \@ref(fig:AVDotBarPie) (bottom left panel).
 :::
 
@@ -479,6 +479,112 @@ Then, assigning $1$ to 'Unsafe', $3$ to 'Neutral', up to $5$ for 'Safe':
 :::
 
 
+## Example: student transport to campus
+
+A study of $284$ university students in Joinville, Brazil, tabulated how students get to campus (Table\ \@ref(tab:TransportTable);  @henning2020modelling).
+The mode means of transport is by bus. 
+Medians are not appropriate.
+
+
+```{r TransportTable}
+TransportTable <- array( dim = c(5, 2) )
+
+rownames(TransportTable) <- c("Bicycle",
+                              "Walking",
+                              "Car",
+                              "Bus",
+                              "Other")
+colnames(TransportTable) <- c("Number",
+                              "Percentage")
+TransportTable[, 1] <- c(29, 35, 70, 117, 33)
+TransportTable[, 2] <- c(10.2, 12.3, 24.7, 41.2, 11.6)
+
+knitr::kable(TransportTable,
+             format = "latex",
+             longtable = FALSE,
+             escape = FALSE,
+             caption = "Modes of transport for students getting to campus",
+             align = c("r", "c", "c", "c"),
+             booktabs = TRUE) %>%
+  kable_styling(font_size = 10) %>%
+  row_spec(0, bold = TRUE) %>%
+  pack_rows("Active", 
+            start_row = 1,
+            end_row = 2) %>%
+  pack_rows("Motorised", 
+            start_row = 3,
+            end_row = 5)
+```
+
+The methods of transport are displayed in Fig.\ \@ref(fig:TransportPlots).
+The colours in the two plots are related:  white refers to active methods of transport.
+The left panel shows the specific methods, and the right panel shows the methods of transport grouped more coarsely.
+
+The *odds* of a students getting to campus using motorised transport is $220 / (284 - 220) = 3.44$; that is, students are $3.44$ times as likely to use motorised transport than to use active transport.
+In other words, for every $100$ students that *use active transport*, about $100\times 3.44 = 344$ use motorised transport.
+
+Similarly, the odds that a student walks to campus is $35/(284 - 35) = 0.141$; that is, for every $100$ students that *do not walk* to campus, about $100\times 0.141 = 14.1$ *do walk* to campus.
+
+
+```{r TransportPlots, fig.align="center", fig.cap="Methods of transport to campus. White refers to active methods of transport; shaded to motorised methods of transport.", out.width='100%', fig.width=8, fig.height=3}
+par( mfrow = c(1, 2) )
+
+par( mar = c(3.1, 5.5, 4.1, 2.25) )
+
+barplot( TransportTable[, 1],
+         las = 1,
+         xlim = c(0, 120),
+         horiz = TRUE,
+         xlab = "Number of students",
+         ylab = "",
+         main = "Methods of transport",
+         col = c("white",
+                 "white",
+                 plot.colour,
+                 plot.colour,
+                 plot.colour) )
+box()
+
+###
+
+Mode <- c( Active    = sum(TransportTable[1:2, 1]),
+           Motorised = sum(TransportTable[3:5, 1]))
+pie( Mode,
+     xlim = c(-2, 2),
+     ylim = c(-2, 2),
+     col = c("white",
+             plot.colour),
+     main = "Methods of\ntransport")
+```
+
+
+
+## Summary {#Chap15-Summary}
+
+A qualitative variable can compared numerically summarized using the *mode*, *percentages* or *odds*.
+Ordinal qualitative variables maybe numerically summarised using a *median* or, under special circumstances, a *mean*.
+
+
+
+
+
+## Quick review questions {#Chap15-QuickReview}
+
+Are the following statements *true* or *false*?
+
+::: {.webex-check .webex-box}
+1. Nominal data can be summarised using a median. \tightlist
+`r if( knitr::is_html_output() ) {torf(answer = FALSE)}`
+1. Ordinal data can be summarised using a mode.
+`r if( knitr::is_html_output() ) {torf(answer = TRUE)}`
+1. Odds compute the ratio of how often an event occurs, to how often it does *not* occur.
+`r if( knitr::is_html_output() ) {torf(answer = TRUE)}`
+1. Proportions and percentages are the same.
+`r if( knitr::is_html_output() ) {torf(answer = FALSE)}`
+:::
+
+
+
 
 ## Exercises
 
@@ -621,7 +727,6 @@ a column separator -->
 
 ::: {.col data-latex="{0.45\textwidth}"}
 
-
 3. Produce a bar chart.
 4. Produce a pie chart.
 
@@ -653,19 +758,33 @@ A
 asked respondents to indicate how they used their voice assistant.
 The options were:
 
+:::::: {.cols data-latex=""}
+::: {.col data-latex="{0.45\textwidth}"}
+
 * Listening to music;
-* Search for real-time info (e.g., traffic; weather);
-* Search for factual info (e.g., trivia; history);
 * Listen to news;
 * Chat with voice assistant for fun;
 * Use alarms, timer.
 
+:::
+
+::: {.col data-latex="{0.05\textwidth}"}
+\ 
+<!-- an empty Div (with a white space), serving as
+a column separator -->
+:::
+
+::: {.col data-latex="{0.45\textwidth}"}
+
+* Search for real-time info (e.g., traffic; weather);
+* Search for factual info (e.g., trivia; history);
+
+:::
+::::::
+
 What would be the best graph for displaying respondents answers?
 Would a pie chart be suitable? Explain your answer.
 :::
-
-
-
 
 
 ::: {.exercise #OrdinalMedians name="Modes and medians" }
@@ -753,5 +872,82 @@ if( knitr::is_html_output() ) {
 ```
 
 
+::: {.exercise #ReclaimedWater name="Nominal" }
+A study asked $231$ farmers what they considered to be the advantages and disadvantages of using reclaimed water [@lopez2022farmers].
+The responses are shown in Table\ \@ref(tab:ReclaimedWater) (not all farmers responded).
 
+1. Produce two bar charts to display the data.
+1. Produce two dot charts to display the data.
+1. Produce two pie charts to display the data
+1. Determine the mode for the advantages and disadvantages.
+1. Compute the percentages for the advantages and disadvantages.
+1. Compute the odds of a farmer stating 'high price' as a disadvantage, among all farmers in the study.
+1. Compute the odds of a farmer stating 'high price' as a disadvantage, among all farmers who listed a disadvantage.
+:::
+
+```{r}
+Advantages <- c(15, 27, 16)
+namesAdvantages <- c("Water reutilization",
+                     "Availabiity",
+                     "Sustainability")
+Disadvantages <- c(40, 12, 21)
+namesDisadvantages <- c("High price",
+                        "Growing conductivity",
+                        "Lack of proper filtering")
+
+AdTable <- DisadTable <- array( dim = c(3, 2))
+
+AdTable[, 1] <- namesAdvantages
+AdTable[, 2] <- Advantages
+DisadTable[, 1] <- namesDisadvantages
+DisadTable[, 2] <- Disadvantages
+
+T1 <-  knitr::kable(surroundMaths(AdTable),
+                     format = "latex",
+                     valign = 't',
+                     align = "r",
+                     linesep = "",
+                     col.names = c("Advantage", "No. farmers"),
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+
+
+
+T2 <-  knitr::kable(surroundMaths(DisadTable),
+                     format = "latex",
+                     valign = 't',
+                     align = "r",
+                     linesep = "",
+                     col.names = c("Disadvantage", "No. farmers"),
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+  
+  
+  
+out <- knitr::kables( list(T1, T2),
+                      format = "latex",
+                      label = "ReclaimedWater",
+                      caption = "The advantages and disadvantages of using reclaimed water, reported by $231$ farmers.") %>% 
+  kable_styling(font_size = 10)
+out2 <- prepareSideBySideTable(out) 
+out2
+```
+
+
+
+<!-- QUICK REVIEW ANSWERS -->
+`r if (knitr::is_html_output()) '<!--'`
+::: {.EOCanswerBox data-latex="{iconmonstr-check-mark-14-240.png}"}
+**Answers to in-chapter questions:**
+- \textbf{\textit{Quick Revision} questions:}
+**1.** False.
+**2.** True.
+**3.** True.
+**4.** False. Percentages are proportions multiplied by $100$, so they are similar.
+:::
+`r if (knitr::is_html_output()) '-->'`
 

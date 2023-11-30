@@ -624,223 +624,7 @@ The meaning of any conclusions will be the same.
 :::
 
 
-```{r, FloweringData}
-data(Flowering)
-
-Flen <- length(Flowering$Willow) 
-Flowering$Site <- 1:Flen
-
-if( knitr::is_latex_output() ) {
-  
- T1 <- knitr::kable(surroundMaths(Flowering[1:9, c(5, 1, 2)],
-                                   decDigits = 0),
-                     format = "latex",
-                     valign = 't',
-                     align = "r",
-                     linesep = "",
-                     col.names = c("Site", "Willow", "Skypilot"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-   add_header_above( c( " " = 1,
-                        "First-flowering day" = 2),
-                     bold = TRUE)
-
- T2 <- knitr::kable(surroundMaths( rbind(Flowering[10:17, c(5, 1, 2)],
-                                         c(NA, NA)),
-                                   decDigits = 0),
-                     format = "latex",
-                     valign = 't',
-                     align = "r",
-                     linesep = "",
-                     col.names = c("Site", "Willow", "Skypilot"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-   add_header_above( c( " " = 1,
-                        "First-flowering day" = 2),
-                     bold = TRUE)
-  
-      
-  T3 <- knitr::kable(surroundMaths( rbind(Flowering[18:25, c(5, 1, 2)],
-                                          c(NA, NA)),
-                                   decDigits = 0),
-                     format = "latex",
-                     valign = 't',
-                     align = "r",
-                     linesep = "",
-                     col.names = c("Site", "Willow", "Skypilot"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-       add_header_above( c( " " = 1,
-                            "First-flowering day" = 2),
-                     bold = TRUE)
-
-  
-  out <- knitr::kables(list(T1, T2, T3),
-                       format = "latex",
-                       label = "FloweringData",
-                       caption = "The day of the year of first flowering by encroaching willow and native skypilot.") %>% 
-    kable_styling(font_size = 10)
-  out2 <- prepareSideBySideTable(out) 
-  out2 
-}
-
-if( knitr::is_html_output() ) {
-  kable( Flowering[, c(5, 1, 2)],
-         format = "html",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names = c("Site", "Willow", "Skypilot"),
-         caption = "The day of the year of first flowering by encroaching willow and native skypilot.") %>% 
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE)
-}
-```
-
-
 Since the raw data are available, the data should be summarised graphically (Fig.\ \@ref(fig:FloweringPlots)) and numerically (Table\ \@ref(tab:FloweringSummary)), using software (Fig.\ \@ref(fig:Floweringjamovi)).
-
-
-```{r Floweringjamovi, fig.cap="jamovi output for the flowering-day data", fig.align="center", out.width=c("100%"), fig.show='hold'}
-knitr::include_graphics("jamovi/Flowering/FloweringAll.png")
-```
-
-
-
-```{r FloweringSummary}
-FloweringSummary <- array( dim = c(3, 4))
-
-FloweringTab <- cbind( Flowering[, 1:2], 
-                       Change = Flowering[, 2] - Flowering[, 1])
-
-rownames(FloweringSummary) <- c("Willow (encroaching)",
-                            "Skypilot (native)",
-                            "Differences")
-colnames(FloweringSummary) <- c("Mean",
-                            "Std. dev.",
-                            "Std. error",
-                            "Sample size")
-
-FloweringSummary[, 1] <- colMeans(FloweringTab,
-                              na.rm = TRUE)
-FloweringSummary[, 2] <- apply(FloweringTab,
-                           2,
-                           "sd",
-                           na.rm = TRUE)
-FloweringSummary[, 3] <- apply(FloweringTab,
-                           2,
-                           "findStdError",
-                           na.rm = TRUE)
-FloweringSummary[, 4] <- apply(FloweringTab,
-                           2,
-                           "realLength")
-
-# Do some appropriate rounding
-FloweringSummary <- round(FloweringSummary, 4)
-FloweringSummary[1:2, 1] <- round(FloweringSummary[1:2, 1], 3)
-
-if( knitr::is_latex_output() ) {
-  
-  knitr::kable(surroundMaths(FloweringSummary,
-                             decDigits = c(2, 3, 3, 0)),
-               format = "latex",
-               align = c("r", "r", "r", "c"),
-               linesep = "",
-               caption = "The day of first flowering for encroaching willow and native skypilot",
-               col.names = c("Mean", "Std. dev.", "Std. error", "Sample size"),
-               row.names = TRUE,
-               escape = FALSE,
-               booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-    row_spec(3, italic = TRUE) %>%
-    kable_styling(font_size = 10)
-  
-}
-
-if( knitr::is_html_output() ) {
-  kable( FloweringSummary,
-         format = "html",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names =  c("Mean", "Std. dev.", "Std. error", "Sample size"),
-         caption = "The day of first flowering for encroaching willow and native skypilot") %>% 
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE)
-}
-```
-
-
-```{r, FloweringPlots, out.width='90%', fig.width=9, fig.height=3.5, fig.align="center", fig.cap="The flowering-day data. Left: A histogram of the difference between the first-flowering days (skypilot minus willow) ; right: a case-profile plot of days of first flowering (unfilled points and dashed lines indicate earlier dates (smaller values) for willow)"}
-par( mfrow = c(1, 2))
-
- hist(FloweringTab$Change,
-      las = 1,
-      ylim = c(0, 20),
-      xlab = "Difference in day number\n(skypilot minus willow)",
-      ylab = "Number of locations",
-      main = "Histogram of day of\nfirst-flowering")
- 
-arrows (x0 = 1,
-         x1 = 14,
-         y0 = 16,
-         y1 = 16,
-         angle = 15,
-         length = 0.1)
-text(x = 7.5,
-     y = 16,
-     pos = 3,
-     cex = 0.9,
-     labels = "Willow earlier")
- 
-arrows (x0 = -1,
-         x1 = -9,
-         y0 = 16,
-         y1 = 16,
-         angle = 15,
-         length = 0.1)
-text(x = -5,
-     y = 16,
-     pos = 3,
-     cex = 0.9,
-     labels = "Skypilot earlier")
-
-
- ###
- 
- plot( x = c(0.75, 2.25),
-       y = c(160, 225),
-       type = "n",
-       las = 1,
-       xlab = "",
-       main = "Case-profile plot of day of\nfirst-flowering",
-       ylab = "Day of first flowering",
-       axes = FALSE)
- axis(side = 1,
-      at = c(1, 2),
-      labels = c("Willow",
-                 "Skypilot"))
- axis(side = 2,
-      las = 1)
- box()
- 
- 
- for (i in (1:length(FloweringTab$Change))){
-     delta <- ifelse(FloweringTab$Change[i] > 0, 0.025, -0.025)
-     lines( x = c(1 + delta, 2 - delta),
-            y = c( FloweringTab$Willow[i],
-                   FloweringTab$Skypilot[i]),
-            lty = ifelse(FloweringTab$Change[i] > 0, 1, 2),
-            pch = ifelse(FloweringTab$Change[i] > 0, 19, 1),
-            type = "b",
-            lwd = 1)
- }
-
-```
 
 The standard error of the mean difference is $\text{s.e.}(\bar{d}) = 0.940$, from Fig.\ \@ref(fig:Floweringjamovi) or Table\ \@ref(tab:FloweringSummary).
 The approximate $95$% CI is $1.36 \pm (2\times 0.940)$, or from $-0.52$ to $3.24$ days.
@@ -1280,52 +1064,6 @@ In a study of hypertension [@data:hand:handbook; @data:macgregor:essential], $15
 
 
 
-```{r CICaptoprilData}
-if( knitr::is_latex_output() ) {
-  bloodS <- rbind( bloodS, 
-                   c(NA, NA, NA) )
-  T1 <- kable( surroundMaths(bloodS[1:8, ],
-                             decDigits = 0),
-               format = "latex",
-               row.names = FALSE,
-               booktabs = TRUE,
-               align = c("c", "c", "r"),
-               escape = FALSE,
-               longtable = FALSE) %>%
-    row_spec(0, bold = TRUE)
-  T2 <- kable( surroundMaths(bloodS[9:16, ],
-                             decDigits = 0),
-               format = "latex",
-               row.names = FALSE,
-               booktabs = TRUE,
-               align = c("c", "c", "r"),
-               escape = FALSE,
-               longtable = FALSE) %>%
-    row_spec(0, bold = TRUE)
-
-  out <- knitr::kables(list(T1, T2),
-                       format = "latex",
-                       label = "CICaptoprilData",
-                       caption = "The Captopril data: before after after systolic blood pressures (in mm Hg)") %>% 
-    kable_styling(font_size = 10)  
-  out2 <- prepareSideBySideTable(out, 
-                                 gap = "\\quad") 
-  out2
-}
-if( knitr::is_html_output() ) {
-  kable( bloodS2,
-                format = "html",
-                booktabs = TRUE,
-                caption = "The Captopril data: before after after systolic blood pressures (in mm Hg)",
-                longtable = FALSE
-                ) %>%
-    add_header_above(header = c("  " = 2, "  " = 2), 
-		     bold = TRUE, 
-		     align = "c")
-}
-```
-
-
 ```{r CaptoriljamoviCI, fig.cap="jamovi output for the Captoril data", fig.align="center", out.width="80%", fig.show="hold"}
 knitr::include_graphics("jamovi/CaptoprilAll/CaptoprilAll-PairedTOutput.png") 
 #knitr::include_graphics("SPSS/CaptoprilAll/CaptoprilAll-PairedTOutput.png")
@@ -1335,7 +1073,7 @@ knitr::include_graphics("jamovi/CaptoprilAll/CaptoprilAll-PairedTOutput.png")
 ::: {.exercise #PairedCIExercisesSmokeExercise}
 A study  [@data:Allen2018:Smoking] examined the effect of exercise on smoking.
 Men and women were assessed on their 'intention to smoke', both before and after exercise for each subject (using two quantitative questionnaires).
-Smokers (smoking at least five cigarettes per day) aged 18 to 40 were enrolled for the study.
+Smokers (smoking at least five cigarettes per day) aged\ $18$ to\ $40$ were enrolled for the study.
 For the $23$ women in the study, the mean intention to smoke after exercise *reduced* by $0.66$ (with a standard error of $0.37$).
 
 1. Find a $95$% confidence interval for the population mean reduction in intention to smoke for women after exercising.
@@ -1369,62 +1107,6 @@ One study (@data:hand:handbook, Dataset 232; @hoaglin2011exploring) measured the
 Each patient had their beta-endorphin concentrations measured $12$--$14$ hours before surgery, and also $10$ minutes before surgery.
 A numerical summary (from the jamovi output) is in Table\ \@ref(tab:StressTable).
 
-
-```{r StressTable}
-data(Stress)
-
-Stress$Diff <- Stress$BeforeMins - Stress$BeforeHours
-
-STtable <- array( dim = c(3, 4) )
-
-rownames(STtable) <- c("12--14 hours before surgery",
-                       "10 minutes before surgery",
-                       "Increase")
-colnames(STtable) <- c("Sample mean",
-                       "Std deviation",
-                       "Std error",
-                       "Sample size")
-
-STtable[, 1] <- c(mean(Stress$BeforeHours),
-                  mean(Stress$BeforeMins),
-                  mean(Stress$Diff))
-STtable[, 2] <- c(sd(Stress$BeforeHours),
-                  sd(Stress$BeforeMins),
-                  sd(Stress$Diff))
-STtable[, 4] <- c(length(Stress$BeforeHours),
-                  length(Stress$BeforeMins),
-                  length(Stress$Diff))
-STtable[, 3] <- STtable[, 2] / sqrt( STtable[, 4])     
-
-
-if( knitr::is_latex_output() ) {
-kable(surroundMaths(STtable,
-                    decDigits = c(2, 2, 2, 0) ),
-      format = "latex",
-      booktabs = TRUE,
-      longtable = FALSE,
-      escape = FALSE,
-      align = c("r", "r", "r", "c"),
-      col.names = c("Mean", "Std deviation", "Std error", "Sample size"),
-      #digits = c(2, 2, 2, 0),
-      caption = "The numerical summary for the presurgical stress data") %>%
-  row_spec(0, bold = TRUE) %>%
-  row_spec(3, italic = TRUE) %>%
-  kable_styling(font = 10)
-}
-if( knitr::is_html_output() ) {
-kable(STtable,
-      format = "html",
-      booktabs = TRUE,
-      longtable = FALSE,
-      col.names = c("Mean", "Std deviation", "Std error", "Sample size"),
-      digits = c(2, 3, 3, 0),
-      caption = "The numerical summary for the presurgical stress data")
-}
-
-```
-
-
 1. Use the jamovi output in Fig.\ \@ref(fig:StressDescriptivesjamovi) to construct an *approximate* $95$% CI for the *increase* in stress as surgery gets closer.
 2. Use the jamovi output in Fig.\ \@ref(fig:StressDescriptivesjamovi) to write down the *exact* $95$% CI for the *increase* in stress as surgery gets closer.
 3. Is the CI likely to be statistically valid?
@@ -1447,7 +1129,6 @@ The data are summarised in Table\ \@ref(tab:COVIDsummaryTable).
 1. Compute the standard error of the differences.
 1. Compute the approximate $95$% CI, and interpret what it means.
 :::
-
 
 
 ```{r COVIDsummaryTable}
