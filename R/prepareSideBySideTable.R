@@ -7,7 +7,7 @@ prepareSideBySideTable <- function(twoTables,
   # The output should NOT need to be  print()-ed.
   
   # How many tables?
-  # Search for the stroingf "begin{tabular}": That's how many:
+  # Search for the string "begin{tabular}": That's how many:
   out <- gregexpr('begin\\{tabular\\}', 
                   twoTables)
   numberOfTables <- length(out[[1]])

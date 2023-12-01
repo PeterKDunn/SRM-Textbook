@@ -201,6 +201,7 @@ Since we only consider histograms where the boxes are all the same width, this i
 When the categories are of equal width, histograms are essentially a picture of the table of data (such as Table\ \@ref(tab:BabyBoomTable)).
 The vertical axis can be counts (labelled as 'Counts', 'Frequency', or similar) or percentages.
 
+When the quantitative variable is discrete and the boxes have a width of one, sometimes the labels are placed on the axis aligned with the centre of the bar (e.g., see Fig.\ \@ref(fig:WaterAcessQuant), right panel)).
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
 <img src="Illustrations/pexels-nappy-3569597.jpg" width="200px"/>
@@ -3519,9 +3520,99 @@ Removing these from the analysis would be inappropriate.
 :::
 
 
-## Example: 
+## Example: water access {#WaterAccessQuant}
 
-See @lopez2022farmers
+A study of three rural communities in Cameroon [@lopez2022farmers] recorded data about access to water.
+Three quantitative variables are recorded.
+Part of the understanding the data requires summarising the quantitative variables; histograms are shown in Fig.\ \@ref(fig:WaterAcessQuant), and a summary table in Table\ \@ref(tab:WaterAccessQuant)).
+
+A large number of households are organised by women in their late 50s.
+The number of people and number of children under 5 are both right-skewed.
+One household has over 30 people, and has 10 children in that household.
+(These are identified as outliers, but are not mistakes.)
+
+
+```{r WaterAccessQuant}
+data(WaterAccess)
+
+WaterAccessTable1 <- array( dim = c(3, 5) )
+
+rownames(WaterAccessTable1) <- c("Woman's age (years)",
+                                 "Household size",
+                                 "Children under $5$")
+colnames(WaterAccessTable1) <- c("Sample size",
+                                 "Mean",
+                                 "Median",
+                                 "Std. dev.",
+                                 "IQR")
+ 
+quantSummary <- function(x){
+  c(realLength(x),
+    mean(x, na.rm = TRUE),
+    median(x, na.rm = TRUE),
+    sd(x, na.rm = TRUE),
+    IQR(x, na.rm = TRUE))
+}
+
+WaterAccessTable1[1, ] <- quantSummary(WaterAccess$Age)
+WaterAccessTable1[2, ] <- quantSummary(WaterAccess$HouseholdPeople)
+WaterAccessTable1[3, ] <- quantSummary(WaterAccess$HouseholdUnder5s)
+
+if( knitr::is_latex_output() ) {
+  kable(surroundMaths(WaterAccessTable1, 
+                      decDigits = c(0, 1, 1, 2, 2)),
+        format = "latex",
+        longtable = FALSE,
+        escape = FALSE,
+        col.names = colnames(WaterAccessTable1),
+        booktabs = TRUE,
+        align = c("c"),
+        caption = "Summarising the quantitative data in the water-access study") %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  out <- kable(WaterAccessTable1, 
+               format = "html",
+               longtable = FALSE,
+               col.names = colnames(WaterAccessTable1),
+               booktabs = TRUE,
+               align = c("c"),
+               caption = "Summarising the quantitative data in the water-access study") %>%
+   kable_styling(full_width = FALSE) 
+}
+```
+
+```{r WaterAcessQuant, fig.align="center", fig.cap="The age of the women, the number of people in the household, and the number of children in the household for the water-access study. (Some data are missing.)", out.width='100%', fig.width=8, fig.height=2.75}
+
+par(mfrow = c(1, 3))
+
+hist(WaterAccess$Age,
+     xlab = "Woman's age",
+     ylab = "Number",
+     main = "Age of women\nin sample",
+     ylim = c(0, 40),
+     xlim = c(15, 65),
+     las = 1)
+
+hist(WaterAccess$HouseholdPeople,
+     xlab = "Number people\n",
+     ylab = "Number",
+     main = "Number people\nin household",
+     ylim = c(0, 60),
+     xlim = c(0, 35),
+     las = 1)
+
+hist(WaterAccess$HouseholdUnder5s,
+     xlab = "Number children",
+     ylab = "Number",
+     main = "Number children\nin household",
+     ylim = c(0, 70),
+     xlim = c(-1, 10),
+     las = 1,
+     breaks = seq(-0.5, 10.5, by = 1))
+```
+
 
 
 ## Summary {#Chap12-Summary}
@@ -3579,16 +3670,12 @@ if( knitr::is_html_output() ) {
                col.names = colnames(SummaryQS),
                booktabs = TRUE,
                align = c("r", "c", "c"),
-               caption = "Summarising quantitative data")
-  if ( knitr::is_html_output()) {
-   kable_styling(out, full_width = FALSE) %>%
+               caption = "Summarising quantitative data") %>%
+   kable_styling(full_width = FALSE) %>%
    add_header_above(header = c(" " = 1, 
                                "For distributions that are:" = 2), 
 		   bold = TRUE, 
 		   align = "c")
-  } else {
-    out
-  }
 }
 ```
 

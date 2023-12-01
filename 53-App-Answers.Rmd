@@ -3689,3 +3689,151 @@ out <- knitr::kables( list(T1, T2),
 out2 <- prepareSideBySideTable(out) 
 out2
 ```
+
+
+
+::: {.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:StudentTransport).**
+
+1. Walking; Bus
+1. Bus.
+1. No.
+1. $220 / (284 - 220) = 3.44$; that is, students are $3.44$ times as likely to use motorised transport than to use active transport.
+1. $35/(284 - 35) = 0.141$; that is, for every $100$ students that *do not walk* to campus, about $100\times 0.141 = 14.1$ *do walk* to campus.
+1. Fig.\ \@ref(fig:TransportPlots). (The colours in the two plots are related:  white refers to active methods of transport.)
+The left panel shows the specific methods, and the right panel shows the methods of transport grouped more coarsely.
+:::
+
+
+
+```{r TransportPlots, fig.align="center", fig.cap="Methods of transport to campus. White refers to active methods of transport; shaded to motorised methods of transport.", out.width='90%', fig.width=8, fig.height=3}
+TransportTable <- array( dim = c(5, 2) )
+
+rownames(TransportTable) <- c("Bicycle",
+                              "Walking",
+                              "Car",
+                              "Bus",
+                              "Other")
+colnames(TransportTable) <- c("Number",
+                              "Percentage")
+TransportTable[, 1] <- c(29, 35, 70, 117, 33)
+TransportTable[, 2] <- c(10.2, 12.3, 24.7, 41.2, 11.6)
+
+
+par( mfrow = c(1, 2) )
+
+par( mar = c(3.1, 5.5, 4.1, 2.25) )
+
+barplot( TransportTable[, 1],
+         las = 1,
+         xlim = c(0, 120),
+         horiz = TRUE,
+         xlab = "Number of students",
+         ylab = "",
+         main = "Methods of transport",
+         col = c("white",
+                 "white",
+                 plot.colour,
+                 plot.colour,
+                 plot.colour) )
+box()
+
+###
+
+Mode <- c( Active    = sum(TransportTable[1:2, 1]),
+           Motorised = sum(TransportTable[3:5, 1]))
+pie( Mode,
+     xlim = c(-2, 2),
+     ylim = c(-2, 2),
+     col = c("white",
+             plot.colour),
+     main = "Methods of\ntransport")
+```
+
+
+
+::: {.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:SkippingBreakfast).**
+
+1. The *proportion* of females who skipped breakfast is $\hat{p}_F = 2\,383/6\,640 = 0.359$;
+2. The *proportion* of   males who skipped breakfast is $\hat{p}_M = 1\,944/6\,846 = 0.284$.
+3. $\text{Odds}(\text{Skips breakfast, among F}) = 2\,383/4\,257 = 0.5598$;
+4. $\text{Odds}(\text{Skips breakfast, among M}) = 1\,944/4\,902 = 0.3966$.
+5. The *odds ratio* (OR) is $\frac{0.5598}{0.3966} = 1.41$.
+6. The odds of females skipping breakfast are $1.41$ *times* the odds of males skipping breakfast.
+7. Table\ \@ref(tab:BreakSum).
+:::
+
+
+```{r BreakSum}
+
+Counts <- c(2383, 
+            1944, 
+            4257, 
+            4902)
+Gender <- c("Females", 
+            "Males", 
+            "Females", 
+            "Males")
+Breakfast <- c("Skip", 
+               "Skip", 
+               "Doesn't skip", 
+               "Doesn't skip")
+
+Brek <- xtabs(Counts ~ Gender + Breakfast)[, c(2, 1)]
+Brek2 <- cbind(Brek, "Total" = rowSums(Brek))
+
+
+Brek.Sum <- array( NA, 
+                   dim = c(3, 3))
+rownames(Brek.Sum) <- c("Females", 
+                        "Males", 
+                        "Odds ratio")
+
+Brek.Sum[1, 1] <- Brek[1, 1] / sum(Brek[1,]) * 100
+Brek.Sum[2, 1] <- Brek[2, 1] / sum(Brek[2,]) * 100
+
+Brek.Sum[1, 2] <- Brek[1, 1] /Brek[1, 2]
+Brek.Sum[2, 2] <- Brek[2, 1] /Brek[2, 2]
+
+Brek.Sum[3, 2] <- Brek.Sum[1, 2] / Brek.Sum[2, 2]
+
+Brek.Sum[1, 3] <- sum(Brek[1, ])
+Brek.Sum[2, 3] <- sum(Brek[2, ])
+
+if( knitr::is_latex_output() ) {
+  kable(surroundMaths(Brek.Sum,
+                      decDigits = c(1, 3, 0)),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        align = c("r", "r", "r"),
+        digits = c(1, 3),
+        col.names = c("Percentage", 
+                      "Odds", 
+                      "Sample size"),
+        caption = "Numerical summary of the Iranian-breakfast data: odds and percentage of those who skip breakfast") %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10) %>%
+    row_spec(3, bold = TRUE) %>%
+    row_spec(row = 2, 
+             hline_after = TRUE)
+}
+if( knitr::is_html_output() ) {
+  kable(Brek.Sum,
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               align = c("r", "r", "r"),
+               digits = c(1, 3),
+               col.names = c("Percentage", 
+                             "Odds", 
+                             "Sample size"),
+               caption = "Numerical summary of the Iranian-breakfast data: Odds and percentage of those who skip breakfast") %>%
+    row_spec(3, bold = TRUE) %>%
+    row_spec(row = 2, 
+             hline_after = TRUE)
+}
+```
+
