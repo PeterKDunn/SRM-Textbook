@@ -3837,3 +3837,128 @@ if( knitr::is_html_output() ) {
 }
 ```
 
+
+
+
+::: {.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:QuantCompareSpeedSignage).**
+
+1. Table\ \@ref(tab:SignageSummary).
+1. Fig.\ \@ref(fig:SpeedBoxplot).
+:::
+
+
+
+```{r SignageSummary}
+data(Speed)
+
+Speed$When <- factor(Speed$When,
+                     levels = c("Before", "After"),
+                     ordered = TRUE)
+
+Speed2 <- data.frame( Before = Speed$Speed[ Speed$When == "Before" ][1:10],
+                      After = Speed$Speed[ Speed$When == "After" ][1:10])
+
+
+SignageSummary <- array(dim = c(3, 5))
+rownames(SignageSummary) <- c("Before", 
+                              "After",
+                              "Speed reduction")
+colnames(SignageSummary) <- c("Mean",
+                              "Median",
+                              "Std deviation",
+                              "IQR",
+                              "Sample size")
+
+Speed.n <- tapply(Speed$Speed, 
+                  list(Speed$When), 
+                  "length") 
+Speed.sd <- tapply(Speed$Speed, 
+                   list(Speed$When), 
+                   "sd") 
+
+SignageSummary[1:2, 1] <- round( tapply(Speed$Speed, 
+                                        list(Speed$When), 
+                                        "mean"),
+                                 2)
+SignageSummary[1:2, 2] <- tapply(Speed$Speed,
+                                 list(Speed$When), 
+                                 "median") 
+
+SignageSummary[1:2, 3] <- round( Speed.sd, 2)
+SignageSummary[1:2, 4] <- tapply(Speed$Speed,
+                                 list(Speed$When), 
+                                 "IQR") 
+SignageSummary[1:2,5] <- Speed.n 
+
+SignageSummary[3, 1] <- SignageSummary[1, 1] -  
+                        SignageSummary[2, 1] 
+
+sdB <- round( Speed.sd[1], 2)
+sdA <- round( Speed.sd[2], 2)
+
+SignageSummary[3, 4] <- NA 
+SignageSummary[3, 2] <- NA
+                          
+
+
+if( knitr::is_latex_output() ) {
+  kable(surroundMaths(SignageSummary,
+                      decDigits = c(2, 2, 3, 2, 0)),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        align = c("r", "r", "r", "r", "r", "r"),
+        col.names = c("Mean", 
+                      "Median",
+                      "Std deviation", 
+                      "IQR",
+                      "Sample size"),
+        caption = "The signage data summary (in km/h)"
+  ) %>%
+  row_spec(0, bold = TRUE) %>%
+  row_spec(3, italic = TRUE) %>%
+  kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+  kable(SignageSummary,
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               align = c("r", "r", "r", "r"),
+               col.names = c("Mean", 
+                             "Median",
+                            "Std deviation",
+                            "IQR",
+                            "Sample size"),
+    caption = "The signage data summary (in km/h)") %>%
+    kable_styling(full_width = FALSE)
+}
+```
+
+
+```{r SpeedBoxplot, fig.cap="Boxplot of speed beefore and after adding signage", fig.align="center", out.width='50%', fig.width=5, fig.height=3.25  }
+par(mar = c(5, 4, 4, 4) + 0.1)
+boxplot( Speed2, 
+         col = plot.colour,
+         las = 1,
+         ylab = "Speed (in km/h)",
+         xlab = "When speed measured",
+         main = "Speeds before and after adding speed signage",
+         names = c("", "") )
+abline( h = 100,
+        lwd = 2)
+axis(side = 4,
+     at = 100,
+     las = 1,
+     labels = "Speed\nlimit")
+mtext(text = c(expression( atop(Before, group("(",italic(n) == 38, ")")) ),
+               expression( atop(After, group("(", italic(n) == 41, ")")) ) ),
+      side = 1,
+      at = 1:2,
+      las = 1,
+      line = 2 )
+```
+
+
