@@ -56,7 +56,7 @@ surroundMaths <- function(x,
                                               as.numeric(tempTable[locateNumeric, i]), 
                                               "$")    
         
-      } else { # decDigits is gi=ven
+      } else { # decDigits is given
         tempTable[locateNumeric, i] <- paste0("$",
                                               format( round( as.numeric(tempTable[locateNumeric, i]), 
                                                              digits = decDigits[i]), 
@@ -78,7 +78,7 @@ surroundMaths <- function(x,
                                               as.numeric(tempTable[i, locateNumeric]), 
                                               "$")
         
-      } else { # decZdigits is given
+      } else { # decDigits is given
         
         tempTable[i, locateNumeric] <- paste0("$",
                                               format( round( as.numeric(tempTable[i, locateNumeric]), 
