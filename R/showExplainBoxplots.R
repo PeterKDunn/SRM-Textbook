@@ -2,6 +2,8 @@
 angle <- 15
 
 # Centre: The boxplot
+par( mar = c(0.6, 4.1, 3.1, 2.1) )
+
 plot( x = c(0, 6),
       y = c(-1 , 5),
       type = "n",
