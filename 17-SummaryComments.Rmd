@@ -133,7 +133,7 @@ if (knitr::is_latex_output()){
 ```
 
 
-Graphs should focus on clear communication, not trying to appear fancy. 
+Graphs should focus on clear communication, not trying to appear fancy simply for the sake of appearing  fancy. 
 One way people try to be fancy is to use an unnecessary third dimension.
 This is poor: the resulting graphs can be misleading and hard to read [@siegrist1996use].
 
@@ -411,204 +411,210 @@ When creating numerical summary tables, ensure that you:
 * *Do* make sure text and details are easy to read.
 * *Do* round numbers appropriately (don't necessarily use all significant figures provided by software).
 * *Do* place captions *above* tables.
-* *Do* align numbers in the table by decimal point when possible, for easier reading.
-* *Do* construct the table to allow readers to easily make the important comparisons, as far as possible.
+* *Do* align numbers in the table by decimal point if possible, for easier reading.
+* *Do* construct the table to allow readers to easily make the important comparisons, as far as possible (space restriction may take precedence, for example).
 * *Do not* use distracting colours and fonts.
 * *Do not* use vertical lines (in general), and use *very few* horizontal lines.
 
 
-## Example {#NHANESSummaryTable}
+## Example: water access {#WaterAcessSummary}
 
-Studies usually involve many variables, some quantitative and some qualitative.
-In addition, numerous comparisons are often of interest.
-A table of summary information is often presented, separated by the comparison of most interest.
+A study of three rural communities in Cameroon [@lopez2022farmers] recorded data about access to water (see Sects. \@ref(WaterAccessQuant) and\ \@ref(WaterAccessQual)).
+One of the main purposes of the study was to determine contributors to the incidence of diarrhoea in young children ($85$ households had children under\ $5$).
+Relationships between the incidence of diarrhea and some other variables appear in Figs.\ \@ref(fig:WaterAccessQualCompare) and\ \@ref(fig:WaterAccessCompareQuantFigs).
+A summary table of information can also be constructed (Table\ \@ref(tab:WaterAccessSummaryCommentsTable)).
 
-As an example, consider this RQ:
+In this table, note that:
 
-> Among Americans, is the mean direct HDL cholesterol different for current smokers and non-smokers?
+* quantitative and qualitative variables are summarised differently but appropriately.
+* units of measurements are given where appropriate (i.e., only for age).
+* numbers in columns are aligned for easier reading.
 
-Data to answer this RQ is available from the American NHANES study, which 
 
-> ... examines a nationally *representative* sample of about $5\ 000$ persons each year... located in counties across the country, $15$ of which are visited each year.
+```{r WaterAccessSummaryCommentsTable}
+data(WaterAccess)
+WAKids <- subset(WaterAccess,
+                 HouseholdUnder5s > 0)
 
-The data are equivalent to a 'a simple random sample from the American population' [@data:NHANES:Rpackage].
-In total, $10\ 000$ observations on scores of variables are available (from the 2009/2010 and the 2011/2012 surveys).
-`r if (knitr::is_html_output()) {
-   'Fig.\\ \\@ref(fig:NHANESFullDataTable) shows the first $1000$ observations on the first $40$ variables only.'
-}`
+WAkidsTable <- array(dim = c(3, 6))
 
-```{r NHANESFullDataTable, fig.cap="The full NHANES dataset", fig.align="center"}
-if( knitr::is_html_output() ) {
-  DT::datatable(NHANES[1:1000, 1:40 ],
-               list(scrollX = TRUE,
-                     scrollY = TRUE,
-                     ordering = FALSE),
-               caption = "Part of the large NHANES dataset")
+colnames(WAkidsTable) <- c("$n$",
+                           "Summary",
+                           "$n$",
+                           "Summary",
+                           "$n$",
+                           "Summary")
+rownames(WAkidsTable) <- c("Age (in years)$^a$",
+                           "Household size$^a$",
+                           "Under 5s in household$^a$")
+
+quantStuff <- function(x, digits = c(2, 2)){
+  c( paste( "$", pad(realLength(x), targetLength = 2), "$"),
+     paste( "$", 
+            pad( format( round( median(x, na.rm = TRUE), digits[1]), nsmall = digits[1]), targetLength = 5),
+            "$\\ $(",
+            pad( format( round( IQR(x, na.rm = TRUE), digits[2]), nsmall = digits[2]), targetLength = 5),
+            ")$"),
+     #
+     paste( "$", pad(realLength(x[WAKids$Diarrhea == "N"]), targetLength = 2), "$"),
+     paste( "$", 
+            pad( format(round( median(x[WAKids$Diarrhea == "N"], na.rm = TRUE), digits[1]), nsmall = digits[1]), targetLength = 5),
+            "$\\ $(",
+            pad( format( round( IQR(x[WAKids$Diarrhea == "N"], na.rm = TRUE), digits[2]), nsmall = digits[2]), targetLength = 5),
+            ")$"),
+     #
+     paste( "$", pad(realLength(x[WAKids$Diarrhea == "Y"]), targetLength = 2), "$"),
+     paste( "$", 
+            pad( format( round( median(x[WAKids$Diarrhea == "Y"], na.rm = TRUE), digits[1]),  nsmall = digits[1]), targetLength = 5),
+            "$\\ $(",
+            pad( format( round( IQR(x[WAKids$Diarrhea == "Y"], na.rm = TRUE), digits[2]), nsmall = digits[2]), targetLength = 5),
+            ")$")
+  )
 }
-```
 
-The direct HDL concentration can be summarised for all respondents, and for smokers and non-smokers (Table\ \@ref(tab:NHANESSummaryQuant)).
-Notice that many respondents did not provide their smoking status, and so the total number of respondents with a HDL cholesterol concentration ($n = 8474$) is far less than the number whose smoking status is known ($1388 + 1668 = 3056$).
-Similar information can be included in a summary table for other quantitative variables (such as age).
+WAkidsTable[1, ]<- quantStuff( WAKids$Age)
+WAkidsTable[2, ]<- quantStuff( WAKids$HouseholdPeople)
+WAkidsTable[3, ]<- quantStuff( WAKids$HouseholdUnder5s)
 
-Relationships with qualitative data can also be included (Table\ \@ref(tab:NHANESSummaryQuant)), where the diabetes status is given.
-Again, lots of data are missing.
-Similar information can be included in a summary table for other quantitative variables (such as sex).
+######
+
+qualStuff <- function(x, digits = c(2, 2)){
+  if ( !is.factor(x) ) x <- factor(x)
+  numLevels <- nlevels( x )
+  
+  temp <- array( dim = c(numLevels, 6))
+  
+  WAtab <- xtabs( ~ x + WAKids$Diarrhea)
+  
+  temp[1:numLevels, 1] <- pad(rowSums(WAtab), targetLength = 2, surroundMaths = TRUE)
+  temp[1:numLevels, c(3, 5, 4, 6)] <- array( c( paste("$", pad(WAtab, targetLength = 2), "$"),
+                                      paste("$", 
+                                            pad( format( round( prop.table(WAtab, 1) * 100, 1), nsmall = 1), targetLength=4),
+                                            "$\\%") ),
+                                   dim = c(numLevels, 4) )
+  temp
+}
+       
+###
+WAkidsTable2 <- array(dim = c(11, 6))
+rownames(WAkidsTable2) <- c( levels(factor(WAKids$Region)),
+                             levels(WAKids$WaterSource),
+                             levels(WAKids$Education),
+                             "No", "Yes")
+
+WAkidsTable2[1:3, ] <- qualStuff(WAKids$Region)
+WAkidsTable2[4:7, ] <- qualStuff(WAKids$WaterSource)
+WAkidsTable2[8:9, ] <- qualStuff(WAKids$Education)
+WAkidsTable2[10:11, ] <- qualStuff(WAKids$HasLivestock)
 
 
-```{r NHANEDescriptivesBySmoking, fig.cap="Output for direct HDL cholesterol concentration and presence of diabetes, by current smoking status", fig.align="center",fig.show="hold", out.width=c('80%', '45%')}
-knitr::include_graphics("jamovi/NHANES/NHANES-DirectHDL-Smoke-Explore-Horizontal.png")
-knitr::include_graphics("jamovi/NHANES/NHANES-Smoke-Diabetes.png")
-```
+######
 
-
-```{r}
-NHANESComparison <- array(dim = c(8, 4))
-
-NHANESComparison[1, ] <- c(NA,
-                           "$n$",
-                           "Mean",
-                           "Std. dev.")
-NHANESComparison[2, ] <- c("All",
-                           realLength(NHANES$DirectChol),
-                           mean(NHANES$DirectChol, na.rm = TRUE),
-                           sd(NHANES$DirectChol, na.rm = TRUE) )
-
-NHANESComparison[3, ] <- c("Smokers",
-                           realLength(NHANES$DirectChol[NHANES$SmokeNow == "Yes"]),
-                           mean(NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE),
-                           sd(NHANES$DirectChol[NHANES$SmokeNow == "Yes"], na.rm = TRUE) )
-
-NHANESComparison[4, ] <- c("Non-smokers",
-                           realLength(NHANES$DirectChol[NHANES$SmokeNow == "No"]),
-                           mean(NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE),
-                           sd(NHANES$DirectChol[NHANES$SmokeNow == "No"], na.rm = TRUE) )
-
-NHANES.DiabetesTab <- xtabs( ~ NHANES$Diabetes + NHANES$SmokeNow)
-NHANES.DiabetesTab.Colsum <- colSums(NHANES.DiabetesTab)
-
-NHANESComparison[5, ] <- c(NA,
-                           "$n$",
-                           "Percentage",
-                           "Odds")
-
-NHANESComparison[6, ] <- c("All",
-                           realLength(NHANES$Diabetes),
-                           sum(NHANES$Diabetes == "Yes", 
-                               na.rm = TRUE)/realLength(NHANES$Diabetes) * 100,
-                           NA)
-NHANESComparison[7, ] <- c("Smokers",
-                           NHANES.DiabetesTab.Colsum[2], 
-                           realLength(NHANES$Diabetes[NHANES$SmokeNow == "Yes"])/realLength(NHANES$Diabetes) * 100,
-                           NHANES.DiabetesTab[2, 2]/NHANES.DiabetesTab[1, 2])
-NHANESComparison[8, ] <- c("Non-smokers",
-                           NHANES.DiabetesTab.Colsum[1], 
-                           realLength(NHANES$Diabetes[NHANES$SmokeNow == "No"])/realLength(NHANES$Diabetes) * 100,
-                           NHANES.DiabetesTab[2, 1]/NHANES.DiabetesTab[1, 1])
 
 if( knitr::is_latex_output() ) {
-
-  kable(surroundMaths(NHANESComparison, 
-                      decDigits = c(0, 0, 2, 3)),
+  kable( surroundMaths(rbind(WAkidsTable,
+                             WAkidsTable2) ),
         format = "latex",
         longtable = FALSE,
-        escape = FALSE,
-        #col.names = colnames(NHANESComparison),
         booktabs = TRUE,
-        linesep = c("",
-                    "",
-                    "\\addlinespace"),
-        align = "r",
-        caption = "The direct HDL cholesterol and presence of diabetes, summarised for smokers and non-smokers. (Many respondents did not provide their smoking status.)") %>%
-    kable_styling(font_size = 10) %>%
+        escape = FALSE,
+        linesep = c("", "", "\\addlinespace",
+                    "", "", "\\addlinespace",
+                    "", "", "", "\\addlinespace",
+                    "", "\\addlinespace",
+                    "", ""),
+        align = "c",
+        digits = 2,
+        caption = "Numerical summary of the water-access data in $85$ households with children, according of whether children under $5$ had reported diarrhea in the last two weeks") %>%
     row_spec(0, bold = TRUE) %>%
-    row_spec(1, italic = TRUE) %>%
-    row_spec(5, italic = TRUE) %>%
-    pack_rows(  "Direct HDL cholesterol concentration",
-                start_row = 1,
-                end_row = 4,
-                bold = TRUE,
-              hline_after = TRUE) %>%
-    pack_rows("Presence of diabetes",
-              start_row = 5,
-              end_row = 8,
-              bold = TRUE,
-              hline_after = TRUE,
-              hline_before = TRUE)
-}            
-if( knitr::is_html_output() ) {
+    kable_styling(font_size = 10) %>%
+    row_spec(1:3, bold = TRUE) %>%
+    add_header_above( c(" " = 1,
+                        "All households" = 2,
+                        "Reported diarrhea" = 2,
+                        "No reported diarrhea" = 2),
+                      bold = TRUE) %>%
+    pack_rows( "Region$^b$",
+               start_row = 4,
+               end_row = 6,
+               escape = FALSE) %>%
+    pack_rows( "Water source$^b$",
+               start_row = 7,
+               end_row = 10,
+               escape = FALSE) %>%
+    pack_rows( "Education$^b$",
+               start_row = 11,
+               end_row = 12,
+               escape = FALSE) %>%
+    pack_rows( "Has livestock$^b$",
+               start_row = 13,
+               end_row = 14,
+               escape = FALSE) %>%
+    add_footnote(c("Quantitative variables are summarised using medians and IQR", "Qualitative variables are summarised using counts and percentages"), notation = "alphabet")
 
-  kable(surroundMaths(NHANESComparison, 
-                      decDigits = c(0, 0, 2, 3)),
-        format = "html",
-        longtable = FALSE,
-        escape = FALSE,
-        #col.names = colnames(NHANESComparison),
-        booktabs = TRUE,
-        linesep = c("",
-                    "",
-                    "\\addlinespace"),
-        align = "r",
-        caption = "The direct HDL cholesterol and presence of diabetes, summarised for smokers and non-smokers. (Many respondents did not provide their smoking status.)") %>%
-    kable_styling(font_size = 10) %>%
+}
+if( knitr::is_html_output() ) {
+  kable(rbind(WAkidsTable,
+              WAkidsTable2),
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               align = "c",
+               digits = 2,
+               caption = "Numerical summary of the water-access data in $85$ households with children, according of whether children under $5$ had reported diarrhea in the last two weeks")  %>%
     row_spec(0, bold = TRUE) %>%
-    row_spec(1, italic = TRUE) %>%
-    row_spec(5, italic = TRUE) %>%
-    pack_rows(  "Direct HDL cholesterol concentration",
-                start_row = 1,
-                end_row = 4,
-                bold = TRUE) %>%
-    pack_rows("Presence of diabetes",
-              start_row = 5,
-              end_row = 8,
-              bold = TRUE)
+    kable_styling(font_size = 10) %>%
+    row_spec(1:3, bold = TRUE) %>%
+    add_header_above( c(" " = 1,
+                        "All households" = 2,
+                        "Reported diarrhea" = 2,
+                        "No reported diarrhea" = 2),
+                      bold = TRUE) %>%
+    pack_rows( "Region$^b$",
+               start_row = 4,
+               end_row = 6,
+               escape = FALSE) %>%
+    pack_rows( "Water source$^b$",
+               start_row = 7,
+               end_row = 10,
+               escape = FALSE) %>%
+    pack_rows( "Education$^b$",
+               start_row = 11,
+               end_row = 12,
+               escape = FALSE) %>%
+    pack_rows( "Has livestock$^b$",
+               start_row = 13,
+               end_row = 14,
+               escape = FALSE) %>%
+    add_footnote(c("Quantitative variables are summarised using medians and IQR", "Qualitative variables are summarised using counts and percentages"), notation = "alphabet")
 }
 
 ```
 
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-Information about current smoking status is unavailable for very person in the study.
-This could impact the results if those who provide data and those who do not are different regarding direct HDL cholesterol concentration (non-response bias; Sect.\ \@ref(SelectionBias)).
-
-Some respondents do not have their HDL concentration recorded either.
-:::
 
 
-The RQ, as usual, asks about the *population*.
-The RQ cannot be answered with certainty, since *we only have data from one of the many possible samples*, and every sample is likely to be different.
-Clearly, the *sample* means are different, but the RQ asks if the *population* means are different.
-Broadly, two possible reasons could explain why the *sample* mean direct HDL cholesterol concentration is different for current smokers and non-smokers:
+The table summarises the sample, but RQs are about the *population*.
+For example, one RQ could be:
 
-* *the **population** means are the same*. 
-  The *sample* means are *different* simply because of the people selected in this sample.
-  Another sample, with different people, might produce different sample means.
-  *Sampling variation explains the difference in the sample means*.
-       
-* *the **population** means are different*.
-   The difference between the *sample* means reflects this difference between the *population* means.
+>  Is the percentage of households with chidren under\ $5$ having diarrhea the same for house that do and do not keep livestock?
 
-The difficulty is knowing which of these reasons ('hypotheses') is the most likely explanation for the difference between the sample means.
-This question is of prime importance (it answers the RQ), and is addressed at length later in this book.
+Since the observed sample is one of countless possible samples that may have been selected, answering RQs about the population is not straightforward.
 
-We can also ask: 
+In the observed sample, $85.0$% of households that *did not* keep livestock reported diarrhea in children under\ $5$, while $64.6$% of households that *did* keep livestock reported diarrhea in children under\ $5$.
+That is, a difference is seen *in the sample*; but the interest is in the *population*.
 
-> Is the percentage of people with diabetes the same for smokers and non-smokers?
-
-The RQ again asks about the *population*.
-Again, the RQ cannot be answered with certainty, since *we only have data from one of the many possible samples*, and every sample is likely to be different.
-However, the *sample* percentages are clearly different.
-Broadly, two possible reasons could explain why the *sample* percentage of diabetics is different for current smokers and non-smokers:
+Broadly, two possible reasons could explain why the *sample* percentages of households reporting diarrhea in children are different:
 
 * *the **population** percentages are the same*. 
-  The *sample* percentages are *different* simply because of the people selected in this sample.
-  Another sample, with different people, might produce different sample percentages
+  The *sample* percentages are *different* simply because of the households selected in this particular sample.
+  Another sample, with different households, might produce different sample percentages.
   *Sampling variation explains the difference in the sample percentages*.
        
 * *the **population** percentages are different*.
-   The difference between the *sample* percentages reflects this difference between the *population* percentages
+   The difference between the *sample* percentages reflects this difference between the *population* percentages.
 
 The difficulty is knowing which of these reasons ('hypotheses') is the most likely explanation for the difference between the sample percentages.
-
+This question is of prime importance (it answers the RQ), and is addressed at length later in this book.
 
 
 
