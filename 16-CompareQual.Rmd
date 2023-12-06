@@ -105,7 +105,7 @@ if( knitr::is_html_output() ) {
 
 
 
-## Graphs {#QualitativeGraphs}
+## Graphs {#QualitativeCompareGraphs}
 
 
 When a *qualitative* variable is compared across different groups (i.e., comparing between individuals), options for plotting include:
@@ -498,9 +498,6 @@ Remember, the data in Table\ \@ref(tab:KidneySmallSum) is for a *sample*, but th
 :::
 
 
-
-
-
 ```{r KidneySmallSum}
 KidneySmall.Sum <- array( NA, 
                           dim = c(3, 3))
@@ -528,15 +525,21 @@ if( knitr::is_latex_output() ) {
         escape = FALSE,
         align = c("r", "r", "r"),
         digits = c(1, 3),
-        col.names = c("Percentage", 
-                      "Odds", 
-                      "Sample size"),
+        col.names = c("success", 
+                      "success", 
+                      "size"),
         caption = "Numerical summary of the small kidney-stone data: Odds and percentage of successes") %>%
     row_spec(0, bold = TRUE) %>%
     kable_styling(font_size = 10) %>%
     row_spec(3, bold = TRUE) %>%
     row_spec(row = 2, 
-             hline_after = TRUE)
+             hline_after = TRUE) %>%
+    add_header_above( c(" " = 1,    
+                        "Percentage" = 1,
+                        "Odds" = 1,
+                        "Sample" = 1),
+                      bold = TRUE,
+                      line = FALSE)
 }
 if( knitr::is_html_output() ) {
   kable(KidneySmall.Sum,
@@ -790,7 +793,7 @@ textrect( pos[3,],
 
 A study of three rural communities in Cameroon [@lopez2022farmers] recorded data about access to water (see Sects. \@ref(WaterAccessQuant) and\ \@ref(WaterAccessQual)).
 One of the main purposes of the study was to determine contributors to the incidence of diarrhoea in young children ($85$ households had children under\ $5$).
-The comparison in Fig.\ \@ref(fig:WaterAcessQualCompare) include some categories with small sample sizes, do the percentages shown may not be precise.
+The comparison in Fig.\ \@ref(fig:WaterAccessQualCompare) include some categories with small sample sizes, so the percentages shown may not be precise estimates of the population values.
 The summary table (Table\ \@ref(tab:WaterAccessQual)) may suggest a difference due to keeping livestock.
 
 As usual, the data come one of countless possible samples, but the RQ is about the population, so making a definitive decisions is difficult.
@@ -826,20 +829,26 @@ if( knitr::is_latex_output() ) {
         longtable = FALSE,
         booktabs = TRUE,
         escape = FALSE,
-        align = c("r", "r", "r"),
+        align = c("c", "c", "c"),
         digits = c(1, 3),
-        col.names = c("Percentage", 
-                      "Odds", 
-                      "Sample size"),
+        col.names = c("having diarrhea", 
+                      "having diarrhea", 
+                      "size"),
         caption = "Numerical summary of the water-access data: odds and percentage of children with diarrhea in the last two weeks") %>%
     row_spec(0, bold = TRUE) %>%
     kable_styling(font_size = 10) %>%
     row_spec(3, bold = TRUE) %>%
     row_spec(row = 2, 
-             hline_after = TRUE)
+             hline_after = TRUE) %>%
+    add_header_above( c(" " = 1,    
+                        "Percentage" = 1,
+                        "Odds" = 1,
+                        "Sample" = 1),
+                      bold = TRUE,
+                      line = FALSE)
 }
 if( knitr::is_html_output() ) {
-  kable(Brek.Sum,
+  kable(WANumericalSummary,
                format = "html",
                longtable = FALSE,
                booktabs = TRUE,
@@ -855,14 +864,14 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-```{r WaterAcessQualCompare, fig.align="center", fig.cap="Percentage of children with and without diarrhea in the last two weeks, by water source (left) and how often the water vessel was cleaned (right).", out.width='100%', fig.width=9, fig.height = 3}
+```{r WaterAccessQualCompare, fig.align="center", fig.cap="Percentage of children with and without diarrhea in the last two weeks, by water source (left) and how often the water vessel was cleaned (right).", out.width='100%', fig.width=9, fig.height = 3}
 par(mfrow = c(1, 2),
     mar = c(5, 7, 4, 6) )
 
 WAtable1 <- prop.table( xtabs(~ Diarrhea + WaterSource,
                               data = subset(WaterAccess, HouseholdUnder5s > 0 )),
                         2)
-barplot( WAtable1 * 100,
+out <- barplot( WAtable1 * 100,
          names.arg = paste( colnames(WAtable1)), 
          xlab = "Percentage",
          main = "Water source",
@@ -876,7 +885,7 @@ mtext(side = 3,
       text = c("No diarrhea",
                "Diarrhea"))
 mtext(side = 4,
-      at = 1:4,
+      at = out,
       line = 1,
       las = 1,
       cex = 0.9,
@@ -888,7 +897,7 @@ mtext(side = 4,
 WAtable2 <- prop.table( xtabs(~ Diarrhea + WashContainer,
                               data = subset(WaterAccess, HouseholdUnder5s > 0 )),
                         2)
-barplot( WAtable2 * 100,
+out <- barplot( WAtable2 * 100,
          names.arg = paste( colnames(WAtable2)), 
          xlab = "Percentage",
          main = "How often water vessel cleaned",
@@ -902,7 +911,7 @@ mtext(side = 3,
       text = c("No diarrhea",
                "Diarrhea"))
 mtext(side = 4,
-      at = 1:3,
+      at = out,
       line = 1,
       las = 1,
       cex = 0.9,
