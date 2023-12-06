@@ -8,9 +8,14 @@
 
 ## Introduction
 
-As with quantitative data, data are difficult to understanding unless the data set is very small.
-For qualitative data, like quantitative data, a graph shows the *distribution* of the data (Def.\ \@ref(def:Distribution)): the values taken by the variable, and how often they appear.
-However, the ways in which qualitative data are summarised is different than with quantitative data.
+Except for very small amounts of data, understanding data is difficult without using a summary.
+For qualitative data, a graph shows the *distribution* of the data: the values taken by the variable, and how often they appear.
+The distribution can be displayed using a table, or a graph.
+
+
+::: {.definition #Distribution name="Distribution"}
+The *distribution* of a quantitative variable describes what values are present in the data, and how often those values appear.
+:::
 
 
 ## Tables for qualitative data {#QualitativeTables}
@@ -517,10 +522,57 @@ findOdds <- function(x){
 }
 
 qualSummary <- function(x){
-  cbind( t(t(table(x))),
-         t( t( table(x) ) / sum(table(x)) * 100),
-         t( t(findOdds(x)) ) )
-}
+  out <- cbind( pad2( t(t(table(x))),
+                     targetLength = 2,
+                     surroundMaths = TRUE),
+                pad2( t( t( table(x) ) / sum(table(x)) * 100),
+                      digits = 1,
+                     targetLength = 4,
+                     surroundMaths = TRUE),
+                pad2( t( t(findOdds(x)) ),
+                      digits = 2,
+                     targetLength = 4,
+                     surroundMaths = TRUE ) 
+  )
+
+  out
+} 
+
+qualSummary <- function(x){
+  tab <- table(x)
+  
+  out <- array( dim = length(tab)) 
+  
+#  for (i in 1:length(tab)){
+    
+    # out <- cbind( pad( t(t(tab[i])),
+    #                    targetLength = 2,
+    #                    surroundMaths = TRUE),
+    #               pad( format( round(t( t( tab[i] ) / sum(tab) * 100), 1), nsmall = 1),
+    #                    targetLength = 4,
+    #                    surroundMaths = TRUE),
+    #               pad( format( round( t( t(findOdds(x)[i]) ), 2), nsmall = 2),
+    #                    targetLength = 4,
+    #                    surroundMaths = TRUE ) 
+    # )
+    out <- cbind( pad2( t(t(tab)),
+                       targetLength = 2,
+                       digits = 0,
+                       surroundMaths = TRUE),
+                  pad2( t( t( tab ) / sum(tab) * 100), 
+                       targetLength = 4,
+                       digits = 1,
+                       surroundMaths = TRUE),
+                  pad2( t( t(findOdds(x)) ),
+                        digits = 2,
+                       targetLength = 4,
+                       surroundMaths = TRUE ) 
+    )
+#  }
+  
+  out
+} 
+
 
 WaterAccessTable2A <- rbind(qualSummary(WaterAccess$SourceDistance), 
                             qualSummary(WaterAccess$SourceQueueTime) )
@@ -545,14 +597,13 @@ colnames(WaterAccessTable2B) <- c("Number",
 
 
 if( knitr::is_latex_output() ) {
-  T1 <- kable(surroundMaths(WaterAccessTable2A, 
-                      decDigits = c(0, 1, 3)),
+  T1 <- kable( WaterAccessTable2A,
         format = "latex",
         longtable = FALSE,
         escape = FALSE,
         col.names = colnames(WaterAccessTable2A),
         booktabs = TRUE,
-        align = c("c")) %>%
+        align = c("r")) %>%
     row_spec(0, bold = TRUE) %>%
     pack_rows("Distance to water source",
               start_row = 1,
@@ -563,8 +614,7 @@ if( knitr::is_latex_output() ) {
               end_row = 6,
               bold = TRUE)
   
-  T2 <- kable(surroundMaths(WaterAccessTable2B, 
-                      decDigits = c(0, 1, 3)),
+  T2 <- kable( WaterAccessTable2B,
         format = "latex",
         longtable = FALSE,
         escape = FALSE,
@@ -593,7 +643,7 @@ if( knitr::is_html_output() ) {
                longtable = FALSE,
                col.names = colnames(WaterAccessTable2A),
                booktabs = TRUE,
-               align = c("c"),
+               align = c("r"),
                caption = "Summarising some qualitative data in the water-access study") %>%
    kable_styling(full_width = FALSE) %>%
     pack_rows("Distance to water soource",
@@ -611,7 +661,7 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-```{r WaterAcessQual, fig.align="center", fig.cap="The age of the women, the number of people in the household, and the number of children in the household for the water-access study. (Some data are missing.)", out.width='100%', fig.width=7.75, fig.height=1.75}
+```{r WaterAcessQual, fig.align="center", fig.cap="The age of the women, the number of people in the household, and the number of children in the household for the water-access study. (Some data are missing.)", out.width='100%', fig.width=7, fig.height=1.75}
 
 par(mfrow = c(1, 3))
 
@@ -619,7 +669,7 @@ dotchart( as.numeric(table(WaterAccess$SourceDistance)),
           labels = names(table(WaterAccess$SourceDistance)),
      xlab = "Number",
      ylab = "",
-     main = "Distance to water source",
+     main = "Distance to\nwater source",
      xlim = c(0, 60),
      las = 1,
      pch = 19)
@@ -628,7 +678,7 @@ dotchart( as.numeric(table(WaterAccess$SourceQueueTime)),
           labels = names(table(WaterAccess$SourceQueueTime)),
      xlab = "Number",
      ylab = "",
-     main = "Queue wait at water source",
+     main = "Queue wait at\nwater source",
      xlim = c(0, 55),
      las = 1,
      pch = 19)
