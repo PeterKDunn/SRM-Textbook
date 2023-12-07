@@ -513,13 +513,20 @@ data(Orthoses)
 
 
 if( knitr::is_latex_output() ) {
-  kable( surroundMaths(Orthoses,
-                       decDigits = c(0, 0, 0, 1, 0)),
+  
+  Orth <- array( unlist(Orthoses), 
+                 dim = c(15, 5) )
+
+  kable( pad(Orth,
+              targetLength = c(1, 2, 3, 4, 1),
+              digits = c(0, 0, 0, 1, 0),
+              surroundMaths = TRUE),
         format = "latex",
         longtable = FALSE,
         escape = FALSE,
         booktabs = TRUE,
-        digits = c(0, 0, 0, 1, 0),
+        align = "c",
+        #digits = c(0, 0, 0, 1, 0),
         caption = "Describing the sample in the orthoses dataset",
         col.names = c("Gender", 
                       "Age (years)", 
@@ -588,24 +595,27 @@ Scenes <- c(
   "Fields, farms, associated structures",
   "Others"
 )
-SelfieDeaths <- data.frame(
-  Num = NumSD,
-  PC = PercentageSD
-)
+SelfieDeaths <- array( cbind(NumSD, PercentageSD), 
+                       dim = c(length(NumSD), 2)
+                       )
 rownames(SelfieDeaths) <- Scenes
 
 if( knitr::is_latex_output() ) {
-  kable(surroundMaths(SelfieDeaths,
-                      decDigits = c(0, 1)),
+  kable(pad(SelfieDeaths,
+             targetLength = c(2, 4),
+             surroundMaths = TRUE,
+             digits = c(0, 1)),
         format = "latex",
+        align = "c",
         longtable = FALSE,
         booktabs = TRUE,
         escape = FALSE,
+        row.names = TRUE,
         linesep = c("", "\\addlinespace", "", "", "\\addlinespace", "", ""), # Otherwise addes a space after five lines... 
-        digits = c(0, 1),
-        caption = "Locations of people dying while taking selfies",
         col.names = c("Number", 
-                      "Percentage")) %>%
+                      "Percentage"),
+#        digits = c(0, 1),
+        caption = "Locations of people dying while taking selfies") %>%
    kable_styling(font_size = 10) %>%
    row_spec(0, bold = TRUE)
 }
