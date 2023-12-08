@@ -301,8 +301,10 @@ rownames(Phone.DataSummary2) <- c("Not using phone",
 
 
 if( knitr::is_latex_output() ) {
-  kable(surroundMaths(Phone.DataSummary2,
-                      decDigits = c(2, 0, 2, 3)),
+  kable(pad(Phone.DataSummary2,
+            surroundMaths = TRUE,
+            targetLength = c(6, 2, 5, 6),
+            digits = c(2, 0, 2, 3)),
         format = "latex",
         booktabs = TRUE,
         longtable = FALSE,
@@ -387,7 +389,7 @@ kable(Phone.DataSummary2,
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-For those *using* a phone, what is the difference in meaning between the *standard deviation* and the *standard error* in the context of the reaction-time study?\label{thinkBox:SEsd}
+For those *using* a phone, what is the difference in meaning between the *standard deviation* and the *standard error* in this context?\label{thinkBox:SEsd}
 
 `r if (knitr::is_latex_output()) '<!--'`
 `r webexercises::hide()`
@@ -587,8 +589,8 @@ The *difference* between the sample means varies from sample to sample, and so h
 ::: {.definition #DEFSamplingDistributionDiffMeans name="Sampling distribution for the difference between two sample means"}
 The *sampling distribution of the difference between two sample means* $\bar{x}_A$ and $\bar{x}_B$ is, when the appropriate conditions are met (Sect.\ \@ref(ValidityTwoMeans)), described by:
 
-* an approximate normal distribution;
-* centred around a sampling mean whose value is ${\mu_{A}} - {\mu_{B}}$, the difference between the *population* means;
+* an approximate normal distribution,
+* centred around a sampling mean whose value is ${\mu_{A}} - {\mu_{B}}$, the difference between the *population* means,
 * with a standard deviation of $\displaystyle\text{s.e.}(\bar{x}_A - \bar{x}_B)$,
 
 The standard error for the difference between the means is found using  
@@ -605,7 +607,7 @@ For the reaction-time data, the differences between the sample means will have:
 * centred around the sampling mean whose value is $\mu_P - \mu_C$,
 * with a standard deviation, called the *standard error* of the difference, of $\text{s.e.}(\bar{x}_P - \bar{x}_C) = `r round(Phone.DataSummary[3, 4], 3)`$.
 
-The standard error of the difference between the means is  
+The standard error of the difference between the means was computed using    
 \[
   \text{s.e.}(\bar{x}_A - \bar{x}_B)
   = \sqrt{ \text{s.e.}(\bar{x}_A)^2 + \text{s.e.}(\bar{x}_B)^2},
@@ -824,7 +826,7 @@ For the reaction-time data, both samples are larger than $25$, so the CI will be
 
 
 To reduce vehicle speeds on freeway exit ramps, a Chinese study studied adding additional signage [@ma2019impacts].
-At one site (Ningxuan Freeway), speeds were recorded for 38 vehicles before the extra signage was added, and then for 41 different vehicles after the extra signage was added.
+At one site (Ningxuan Freeway), speeds were recorded for $38$ vehicles before the extra signage was added, and then for $41$ different vehicles after the extra signage was added.
 
 The researchers are hoping that the addition of extra signage will *reduce* the mean speed of the vehicles.
 The RQ is:
@@ -845,7 +847,7 @@ knitr::include_graphics("jamovi/Speed/Speed-ALL.png")
 A useful graphical summary of the *data* is a boxplot (Fig.\ \@ref(fig:SignageErrorBar), left panel);  likewise, an error bar chart can be produced by computing the CI for each group (Fig.\ \@ref(fig:SignageErrorBar), right panel).
 
 
-```{r SignageErrorBar, fig.cap="Boxplot (left); error bar chart (right) showing the mean speed before and after the addition of extra signage, and the 95\\% CIs", fig.align="center", out.width='70%',fig.width=6.0, fig.height=3.25}
+```{r SignageErrorBar, fig.cap="Boxplot (left); error bar chart (right) showing the mean speed before and after the addition of extra signage, and the $95$\\% CIs. The vertical scales on the two graphs are different.", fig.align="center", out.width='70%',fig.width=6.0, fig.height=3.25}
 data(Speed)
 
 SignageSummary <- array(dim = c(3, 5))
@@ -888,8 +890,7 @@ sdA <- round( Speed.sd[2], 2)
 SignageSummary[3, 4] <- NA 
 SignageSummary[3, 2] <- NA
                           
-
-
+###
 
 par( mfrow = c(1, 2) )
 
@@ -906,7 +907,7 @@ boxplot( Speed ~ When,
 bit <- 0.05
 
 mns <- SignageSummary[1:2, 1]
-se <- SignageSummary[1:2, 3]
+se <- SignageSummary[1:2, 3] / SignageSummary[1:2, 5]
 
 ci.lo <- mns - 2 * se
 ci.hi <- mns + 2 * se
@@ -914,7 +915,7 @@ ci.hi <- mns + 2 * se
 plot( 1:2, 
       mns,
       pch = 19,
-      ylim = c(80, 110 ),
+      ylim = c(90, 100 ),
       xlim = c(0.4, 2.6),
       axes = FALSE,
       xlab = "",
@@ -1011,14 +1012,16 @@ BHADPSummary[3, ] <- c(6.76, NA, NA, 0.78794)
   
 
 if( knitr::is_latex_output() ) {
-  kable( surroundMaths(BHADPSummary,
-                       decDigits = c(2, 2, 0, 5) ),
+  kable( pad(BHADPSummary,
+             surroundMaths = TRUE,
+             targetLength = c(5, 4, 3, 7),
+             digits = c(2, 2, 0, 5) ),
         format = "latex",
         longtable = FALSE,
         booktabs = TRUE,
         escape = FALSE,
         #linesep = c("", "", "", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), # Otherwise addes a space after five lines... 
-        align = c("r", "r", "r", "l"),
+        align = "c",
         col.names = c("Sample mean", 
                       "Std deviation", 
                       "Sample size", 
@@ -1046,7 +1049,7 @@ if( knitr::is_html_output() ) {
 
 
 
-```{r BHADPErrorBar, fig.cap="Error bar chart showing the mean BHADP score for people with and without a disability, and the 95\\% CIs", fig.align="center", fig.width=5.5, fig.height=3.25, out.width="55%"}
+```{r BHADPErrorBar, fig.cap="Error bar chart showing the mean BHADP score for people with and without a disability, and the $95$\\% CIs", fig.align="center", fig.width=5.5, fig.height=3.25, out.width="65%"}
 ### Disability example
 bit <- 0.05
 
@@ -1063,7 +1066,7 @@ plot( 1:2,
       mns,
       pch = 19,
       ylim = c(24, 34 ),
-      xlim = c(0.4, 2.6),
+      xlim = c(0.9, 3.2),
       las = 1,
       axes = FALSE,
       xlab = "",
@@ -1095,6 +1098,31 @@ lines( c(2 - bit, 2 + bit),
        c( ci.hi[2], ci.hi[2]) )
 lines( c(2 - bit, 2 + bit), 
        c( ci.lo[2], ci.lo[2]) )
+
+# Help
+lines( x = c(1.1, 2.5),
+       y = c( mns[1], mns[1]),
+       lwd = 2,
+       lty = 2,
+       col = "grey")
+lines( x = c(2.1, 2.5),
+       y = c( mns[2], mns[2]),
+       lwd = 2,
+       lty = 2,
+       col = "grey")
+
+arrows( x0 = 2.5,
+        x1 = 2.5,
+        y0 = mns[1],
+        y1 = mns[2],
+        angle = 15,
+        length = 0.1,
+        code = 3)
+text( x = 2.6,
+      y = mean( mns ),
+      labels = "Difference\nbetween the\nsample means",
+      cex = 0.9,
+      pos = 4)
 ```
 
 
@@ -1258,13 +1286,15 @@ WhaleInfo[2, ] <- c("4.60",
                     30)
 
 if( knitr::is_latex_output() ) {
-  kable( surroundMaths(WhaleInfo,
-                       decDigits = c(2, 3, 0)),
+  kable( pad(WhaleInfo,
+             surroundMaths = TRUE,
+             targetLength = c(4, 5, 2),
+             digits = c(2, 3, 0)),
          format = "latex",
          longtable = FALSE,
          booktabs = TRUE,
          escape = FALSE,
-         align = c("c", "c", "c"),
+         align = "c",
          col.names = colnames(WhaleInfo),
          caption = "Numerical summary of length of whales at birth (in m)") %>%
     row_spec(0, 
@@ -1298,7 +1328,8 @@ if( knitr::is_html_output() ) {
 
 
 ::: {.exercise #MeansIndSamplesExercisesNHANES}
-Earlier, we used the NHANES study data (Sect.\ \@ref(NHANESGraphs)), and considered this RQ:
+The NHANES study records data annually about a sample of Americans.
+The data can be used to ask the RQ:
 
 > Among Americans, is the mean direct HDL cholesterol different for current smokers and non-smokers?
 
@@ -1335,18 +1366,20 @@ rownames(EchinaceaInfo) <- c("Placebo",
                              "Echinacea",
                              "Difference")
 
-EchinaceaInfo[1, ] <- c(6.87, 3.62, "", 176)
-EchinaceaInfo[2, ] <- c(6.34, 3.31, "", 183)
-EchinaceaInfo[3, ] <- c(0.53, "", 0.367, "")
+EchinaceaInfo[1, ] <- c(6.87, 3.62, NA, 176)
+EchinaceaInfo[2, ] <- c(6.34, 3.31, NA, 183)
+EchinaceaInfo[3, ] <- c(0.53, NA, 0.367, NA)
 
 if( knitr::is_latex_output() ) {
-  kable( surroundMaths(EchinaceaInfo,
-                       decDigits = c(2, 2, 3, 0)),
+  kable( pad(EchinaceaInfo,
+             surroundMaths = TRUE,
+             targetLength = c(4, 4, 4, 3),
+             digits = c(2, 2, 3, 0)),
          format = "latex",
          longtable = FALSE,
          booktabs = TRUE,
          escape = FALSE,
-         align = c("c", "c", "c", "c"),
+         align = "c",
          col.names = colnames(EchinaceaInfo),
          caption = "Numerical summary of duration (in days) of common cold symptoms, for blinded patients taking echinacea or a placebo") %>%
     row_spec(0, 
@@ -1394,13 +1427,15 @@ rownames(CTInfo) <- c("Exercise",
                       "Splinting",
                       "Difference")
 
-CTInfo[1, ] <- c(0.8, 1.4, "", 10)
-CTInfo[2, ] <- c(1.1, 1.1, "", 10)
-CTInfo[3, ] <- c(0.3, "", 0.563, "")
+CTInfo[1, ] <- c(0.8, 1.4, NA, 10)
+CTInfo[2, ] <- c(1.1, 1.1, NA, 10)
+CTInfo[3, ] <- c(0.3, NA, 0.563, NA)
 
 if( knitr::is_latex_output() ) {
-  kable( surroundMaths(CTInfo,
-                       decDigits = c(1, 1, 3, 0)),
+  kable( pad(CTInfo,
+             surroundMaths = TRUE,
+             targetLength = c(3, 3, 4, 2),
+             digits = c(1, 1, 3, 0)),
          format = "latex",
          longtable = FALSE,
          booktabs = TRUE,
