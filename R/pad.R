@@ -43,6 +43,18 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
   # where  is how the numbers are aligned
   # big.mark is the format() input of same name. To call it, need to backslash *four* times: pad(..., big.mark = "\\\\,") 
   
+  if (is.data.frame(x)) { # CONVERT to an array for out purposes
+    #cat("Convert data.frame to array\n")
+    numCols <- dim(x)[2]
+    numRows <- dim(x)[1]
+    
+    xTemp <- array( dim = c(numRows, numCols) )
+    for (i in 1:numCols){
+      xTemp[, i] <- x[[i]]
+    }
+    x <- xTemp
+  }
+  
   if ( is.array(x) ) {
     #cat("IS ARRAY\n")
     currentDim <- dim(x) # NULL if scalar. Use to restore dimension.
