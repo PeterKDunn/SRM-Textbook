@@ -74,7 +74,7 @@ We only study *pairs* of measurements, and only for quantitative variable.
 
 :::{.example #PairedUnpaired name="Paired and unpaired data"}
 Consider the student weight-loss study described above.
-Weight is measured for the same students at the start of university and after 12\ weeks at university.
+Weight is measured for the same students at the start of university and after $12$\ weeks at university.
 Each student receives a pair of measurements, and the *change* in weight for each individual between these time points can be recorded
 `r if (knitr::is_latex_output()) {
    '(Table\\ \\@ref(tab:DataWeightChange)).'
@@ -83,12 +83,12 @@ Each student receives a pair of measurements, and the *change* in weight for eac
 }`
 
 
-A boxplot comparing students' weights at Week\ 1 and at Week\ 12 (that is, *not* treating the data as paired) shows that the distribution of weights, and the median weights, are very similar (Fig.\ \@ref(fig:ComparePairedBoxplots), left panel).
+A boxplot comparing students' weights at Week\ $1$ and at Week\ $12$ (that is, *not* treating the data as paired) shows that the distribution of weights, and the median weights, are very similar (Fig.\ \@ref(fig:ComparePairedBoxplots), left panel).
 Any difference is difficult to see and detect, due to the amount of variation in the weights of the students.
 Changes in weight for individuals cannot be determined.
 
 A boxplot of the weight *gains* (that is, treating the data as *paired*) makes the change in weight much easier to see and detect (Fig.\ \@ref(fig:ComparePairedBoxplots), right panel).
-It is also easy to see that some students *lost* weight from Week\ 1 to Week\ 12.
+It is also easy to see that some students *lost* weight from Week\ $1$ to Week\ $12$.
 :::
 
 ```{r ComparePairedBoxplots, fig.align="center", out.width='80%', fig.cap="Plots of the weight-loss data. Left: Treating the data incorrectly as not paired; right: a boxplot of the weight gains when the data are treated as paired.", fig.height = 3.5, fig.width = 7}
@@ -143,8 +143,8 @@ abline(h = 0,
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
 Which of these are paired situations?\label{thinkBox:WhichPaired}
 
-1. Heart rate was recorded for 36 people, before and after exercise, to determine how much the average heart rate increase.
-1. The mean HDL cholesterol concentration is recorded for 22 males and 19 females, and the means compared.
+1. Heart rate was recorded for $36$ people, before and after exercise, to determine how much the average heart rate increase.
+1. The mean HDL cholesterol concentration is recorded for $22$ males and $19$ females, and the means compared.
 1. The mean protein concentrations were compared in sea turtles before and after being rehabilitated  [@data:March2018:turtles].
 
 `r if (knitr::is_latex_output()) '<!--'`
@@ -159,16 +159,16 @@ Situations **1** and **3** are paired situations.
 
 The example introduced in Sect.\ \@ref(PairedIntro) was studied by Prof. David Levitsky (@levitsky2004freshman, @DASL:WeightChange):
 
-> For Cornell University students, what is the *mean weight change* in students after 12 weeks at university?
+> For Cornell University students, what is the *mean weight change* in students after $12$ weeks at university?
 
-Data were obtained data to answer this descriptive RQ 
+Data were obtained data to answer this RQ 
 `r if (knitr::is_latex_output()) {
    '(Table\\ \\@ref(tab:DataWeightChange)).'
 } else {
    '(shown below).'
 }`
 The parameter is $\mu_d$, the population mean *weight gain* (in kg).
-The subscript $d$ is because we are working with *differences* between the initial weight and the weight after 12 weeks.
+The subscript $d$ is because we are working with *differences* between the initial weight and the weight after $12$ weeks.
 
 <!-- Case-profile plot not very helpful: -->
 
@@ -178,13 +178,20 @@ The subscript $d$ is because we are working with *differences* between the initi
 ```{r DataWeightChange}
 SWlen <- length(StudentWt$Week1)
 
-tb1 <- surroundMaths( StudentWt[1:5, ],
-                      decDigits = 1)
+tb1 <- array( cbind( StudentWt$Student[1:5 ],
+                     StudentWt$Week1[1:5 ],
+                     StudentWt$Week12[1:5 ],
+                     StudentWt$GainWt[1:5 ]),
+                     dim = c(5, 4) )
+                     
 
-T1 <- knitr::kable(tb1,
+T1 <- knitr::kable(pad(tb1,
+                       surroundMaths = TRUE,
+                       targetLength = 4,
+                       digits = 1),
                    format = "latex",
                    valign = 't',
-                   align = c("r", "c", "c", "r"),
+                   align = "c",
                    linesep = "",
                    col.names = c("Student", 
                                  "Week 1", 
@@ -201,9 +208,18 @@ T1 <- knitr::kable(tb1,
                     bold = TRUE) %>%
   row_spec(0, bold = TRUE)
 
-tb2 <- surroundMaths( StudentWt[(SWlen - 4):SWlen, ],
-                      decDigits = 1)
-T2 <- knitr::kable(tb2,
+
+tb2 <- array( cbind( StudentWt$Student[(SWlen - 4):SWlen ],
+                     StudentWt$Week1[(SWlen - 4):SWlen ],
+                     StudentWt$Week12[(SWlen - 4):SWlen ],
+                     StudentWt$GainWt[(SWlen - 4):SWlen ]),
+                     dim = c(5, 4) )
+
+
+T2 <- knitr::kable(pad(tb2,
+                       surroundMaths = TRUE,
+                       targetLength = 4,
+                       digits = 1),
                    format = "latex",
                    valign = 't',
                    align = c("r", "c", "c", "r"),
@@ -246,14 +262,14 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-Finding the *difference* in weight for each student seems sensible: each student has a *Week\ 1* and *Week\ 12* measurement.
+Finding the *difference* in weight for each student seems sensible: each student has a *Week\ $1$* and *Week\ $12$* measurement.
 Using these differences, the process for computing a CI is the same as in Chap.\ \@ref(OneMeanConfInterval), where these changes (or differences) are treated as the data.
 Either weight *gain* or weight *loss* could be used as the differences.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 Be clear about *how* the differences are computed.
-Differences could be computed as  *Week\ 1* minus *Week\ 12* (the weight *loss*), or *Week\ 12* minus *Week\ 1* (the weight *gain*).
+Differences could be computed as  *Week\ $1$* minus *Week\ $12$* (the weight *loss*), or *Week\ $12$* minus *Week\ $1$* (the weight *gain*).
 
 Either is fine: provided you are consistent throughout, the meaning of any conclusions will be the same.
 Here, we use weight *gain*.
@@ -264,7 +280,7 @@ Here, we use weight *gain*.
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 Some weight gains are *negative*.
 This does *not* mean a negative weight, since the values are *differences* (specifically, weight *gains*).
-The differences are computed as *Week\ 12* minus *Week\ 1*, so a negative value means that the *Week\ 1 weight* is greater than the *Week\ 12 weight* value: that is, a weight *loss*.
+The differences are computed as *Week\ $12$* minus *Week\ $1$*, so a negative value means that the *Week\ $1$ weight* is greater than the *Week\ $12$ weight* value: that is, a weight *loss*.
 :::
 
 
@@ -338,7 +354,7 @@ if( knitr::is_html_output() ) {
 ## Summarising data
 
 An appropriate graph is *a histogram* of the *differences* (Fig.\ \@ref(fig:WeightGainHistogram)).
-Graphing the *Week\ 1* and *Week\ 12* data may also be useful too, but a graph of the differences is *crucial*, as the RQ is about the differences.
+Graphing the *Week\ $1$* and *Week\ $12$* data may also be useful too, but a graph of the differences is *crucial*, as the RQ is about the differences.
 A case-profile plot (Sect.\ \@ref(CaseProfilePlot)) is also useful, but is difficult to read here as the sample size is too large (a case-profile plot contains a line for each unit of analysis).
 
 
@@ -368,7 +384,7 @@ plot(out,
 
 
 Since the RQ is about the weight *changes*, a numerical summary of the *differences* is essential.
-The Week\ 1 and the Week\ 12 data can also be summarised.
+The Week\ $1$ and the Week\ $12$ data can also be summarised.
 Since the weights and the differences are quantitative, the appropriate *numerical summary* includes means, standard deviations, and so on, as appropriate (found using a computer, for example).
 The formal summary table is given 
 `r if (knitr::is_latex_output()) {
@@ -381,7 +397,7 @@ The sample error of the difference is
 \[
   \text{s.e.}(\bar{x}) =  \frac{0.956}{\sqrt{68}} = 0.116.
 \]
-All statistics are slightly different in Weeks\ 1 and\ 12; in particular, a slight weight gain is seen.
+All statistics are slightly different in Weeks\ $1$ and\ $12$; in particular, a slight weight gain is seen.
 
 
 ```{r WeightGainSummary}
@@ -408,13 +424,15 @@ rownames(WtGain.DataSummary) <- c("Week 1 weight (in kg)",
                                   "Weight gain (in kg)")
 
 if( knitr::is_latex_output() ) {
-  kable(surroundMaths(WtGain.DataSummary,
-                      decDigits = c(2, 1, 3, 3)),
+  kable(pad(WtGain.DataSummary,
+            targetLength = c(5, 4, 6, 5),
+            surroundMaths = TRUE,
+            digits = c(2, 1, 3, 3)),
         format = "latex",
         booktabs = TRUE,
         longtable = FALSE,
         escape = FALSE,
-        align = c("r", "r", "r", "r"),
+        align = "c",
         col.names = c("Mean", "Median", "Standard deviation", "Standard error"),
         digits = 2,
         caption = "The mean, median, standard deviation and standard error for the weight-gain data") %>%
@@ -439,7 +457,7 @@ if( knitr::is_latex_output() ) {
 ## Describing sampling distribution 
 
 The study concerns the mean weight change, and the differences have been defined as weight gains.
-Every possible sample of $n = 68$ students comprises different students, and hence produces different Week\ 1 and Week\ 12 weights, and hence different weight gains.
+Every possible sample of $n = 68$ students comprises different students, and hence produces different Week\ $1$ and Week\ $12$ weights, and hence different weight gains.
 As a result, the sample mean weight gain will vary from sample to sample, so the mean weight gains have a *sampling distribution*, and a *standard error*.
 
 Since the differences are like a single sample of data (Chap.\ \@ref(OneMeanConfInterval)), the sampling distribution for the differences will have a similar sampling distribution to the mean of a single sample $\bar{x}$ (provided the conditions are met; Sect.\ \@ref(ValidityPaired)).
@@ -468,7 +486,7 @@ For the weight-gain data, the the sample mean differences $\bar{d}$ are describe
 
 * approximate normal distribution;
 * with a sampling mean whose value is $\mu_{{d}}$;
-* with a *standard error* of $0.1159764$.
+* with a *standard error* of $\text{s.e.}(\bar{d}) = 0.1159764$.
 
 Many decimal places are shown here; results will be rounded when reported.
  
@@ -544,11 +562,11 @@ or $0.8618\pm 0.2319528$ (so the *margin of error* is $0.232$).
 Equivalently, the CI is from $0.8618 - 0.23195 = 0.630$, up to $0.8618 + 0.232195 = 1.094$.
 We write:
 
-> Based on the sample, the mean weight gain from Week\ 1 and\ 12 is $0.86$\ kg ($\text{s.e.} = 0.116$; $n = 68$), with an *approximate* $95$% CI from $0.63$\ kg to $1.09$\ kg.
+> Based on the sample, the mean weight gain from Week\ $1$ and\ $12$ is $0.86$\ kg ($\text{s.e.} = 0.116$; $n = 68$), with an *approximate* $95$% CI from $0.63$\ kg to $1.09$\ kg.
 
 The CI means that the plausible values for the population mean weight gain are between $0.63$\ kg and $1.09$\ kg.
 Alternatively, 
-we are $95$% confident that, between Weeks\ 1 and\ 12, the population mean weight gain is between $0.63$\ kg and $1.09$\ kg.
+we are $95$% confident that, between Weeks\ $1$ and\ $12$, the population mean weight gain is between $0.63$\ kg and $1.09$\ kg.
 A change of this size may not have practical importance.
 
 
@@ -575,7 +593,7 @@ That is, when $n > 25$ the sample means generally have an approximate normal dis
 
 ::: {.example #StatisticalValidityWeightGain name="Statistical validity"}
 For the weight-gain data, the sample size is $n = 68$, larger than $25$, so the results are statistically valid.
-We do not require that the differences *in the population*, or the weights in either Week\ 1 or Week\ 12, to follow a normal distribution.
+We do not require that the differences *in the population*, or the weights in either Week\ $1$ or Week\ $12$, to follow a normal distribution.
 :::
 
 
@@ -585,7 +603,7 @@ Statistical software can produce *exact* $95$% CIs, which may be slightly differ
 For the weight-loss data, the *approximate* and *exact* $95$% CIs are the same to two decimal places.
 From the jamovi output (Fig.\ \@ref(fig:WeightGainTestOutput)) we can write:
 
-> Based on the sample, the mean weight gain from Week\ 1 to Week\ 12 is $0.86$\ kg ($\text{s.e.} = 0.116$; $n= 68$), with a $95$% CI between $0.63$ to $1.09$\ kg
+> Based on the sample, the mean weight gain from Week\ $1$ to Week\ $12$ is $0.86$\ kg ($\text{s.e.} = 0.116$; $n= 68$), with a $95$% CI between $0.63$ to $1.09$\ kg
 
 
 ```{r WeightGainTestOutput, fig.cap="The weight-gain data: jamovi output", fig.align="center", out.width="100%", fig.show="hold"}
@@ -609,7 +627,7 @@ The data are shown in
 } else {
     'the table below.'
 }`
-The 'first-flowering day' is the number of days since the start of the year (e.g., January\ 12 is 'day\ 12') when flowers were first first observed.
+The 'first-flowering day' is the number of days since the start of the year (e.g., January\ $12$ is 'day\ $12$') when flowers were first first observed.
 
 The parameter is $\mu_d$, which we define as the population mean *difference* between the day of first flowering for skypilot, less the day of first flowering for willow.
 Hence, a *positive* value for the difference means that the skypilot values are larger, and hence that willow flowered first.
@@ -644,7 +662,7 @@ Make sure to interpret the CI consistent with how the differences were defined.
 
 ## Example: growing squash {#GrowingSquashCI}
 
-The effect of rainfall on growing Chayote squash (*Sechium edule*) studied the size of the fruit in a year with normal rainfall (2015) compared to fruit in a dry year (2014) on 24 farms [@mukherjee2019diversity]:
+The effect of rainfall on growing Chayote squash (*Sechium edule*) studied the size of the fruit in a year with normal rainfall (2015) compared to fruit in a dry year (2014) on $24$ farms [@mukherjee2019diversity]:
 
 > For Chayote squash grown in Bangalore, what is the mean difference in fruit weight between a normal and dry year?
 
@@ -666,11 +684,13 @@ FruitTab$Change <- FruitTab$FWeight2015 - FruitTab$FWeight2014
 
 if( knitr::is_latex_output() ) {
   
- T1 <- knitr::kable(surroundMaths(FruitTab[1:5, ],
-                                   decDigits = c(0, 2, 2, 2)),
+ T1 <- knitr::kable(pad(FruitTab[1:5, ],
+                        digits = c(0, 2, 2, 2),
+                        surroundMaths = TRUE,
+                        targetLength = c(2, 6, 6, 6)),
                      format = "latex",
                      valign = 't',
-                     align = c("r", "c","c", "r"),
+                     align = "c",
                      linesep = "",
                      col.names = c("Farm", 
                                    "Dry", 
@@ -686,11 +706,13 @@ if( knitr::is_latex_output() ) {
     row_spec(0, bold = TRUE) 
   
   
-  T2 <- knitr::kable(surroundMaths(FruitTab[20:24, ],
-                                   decDigits = c(0, 2, 2, 2)),
+  T2 <- knitr::kable(pad(FruitTab[20:24, ],
+                        digits = c(0, 2, 2, 2),
+                        surroundMaths = TRUE,
+                        targetLength = c(2, 6, 6, 6)),
                      format = "latex",
                      valign = 't',
-                     align = c("r", "c","c", "r"),
+                     align = "c",
                      linesep = "",
                      col.names = c("Farm", 
                                    "Dry", 
@@ -783,10 +805,12 @@ FruitSummary[1:2, 1] <- round(FruitSummary[1:2, 1], 3)
 
 if( knitr::is_latex_output() ) {
   
-  knitr::kable(surroundMaths(FruitSummary,
-                             decDigits = c(3, 3, 3, 0)),
+  knitr::kable(pad(FruitSummary,
+                   surroundMaths = TRUE,
+                   targetLength = c(7, 6, 6, 2),
+                   digits = c(3, 3, 3, 0)),
                format = "latex",
-               align = c("r", "r", "r", "c"),
+               align = "c",
                linesep = "",
                caption = "The fruit weight (in g) at farms for two different years",
                col.names = c("Mean", "Std. dev.", "Std. error", "Sample size"),
@@ -813,7 +837,7 @@ if( knitr::is_html_output() ) {
 
 
 
-```{r, FruitPlots, out.width='90%', fig.width=9, fig.height=3.5, fig.align="center", fig.cap="The fruit-weight data. Left: A histogram of the weight changes on each farm; right: a case-profile plot of the weight changes (unfilled points and dashed lines indicate a decrease)"}
+```{r, FruitPlots, out.width='90%', fig.width=9, fig.height=3.5, fig.align="center", fig.cap="The fruit-weight data. Left: A histogram of the weight changes on each farm; right: a case-profile plot of the weight changes where each line corresponds to a farm (unfilled points and dashed lines indicate a decrease)"}
 par( mfrow = c(1, 2))
 
  hist(FruitTab$Change,
@@ -856,13 +880,13 @@ par( mfrow = c(1, 2))
 
 ```
 
-The standard error of the mean increase is $\text{s.e.}(\bar{d}) = 10.879$, from Fig.\ \@ref(fig:Fruitjamovi) or Table\ \@ref(tab:FruitSummary)).
+The standard error of the mean increase is $\text{s.e.}(\bar{d}) = 10.879$, from Fig.\ \@ref(fig:Fruitjamovi) or Table\ \@ref(tab:FruitSummary).
 The approximate $95$% CI is from $2.230 \pm (2\times 10.879)$, or from $-19.528$ to $23.988$\ g.
 Figure\ \@ref(fig:Fruitjamovi) gives the $95$% CI as $-24.79$ to $20.33$\ g.
 The two CIs are a bit different since the sample size is not large ($n = 23$).
 Using the exact CI, we write:
 
-> From the sample, the mean increase in fruit weight from 2014 (dry year) to 2015 (normal year) is $2.230$\ g ($\text{s.e.} = 0.10.879$; $n = 23$), with an approximate $95$% CI between $24.79$\ g lighter in 2014 to $20.33$\ g higher in 2015.
+> From the sample, the mean increase in fruit weight from 2014 (dry year) to 2015 (normal year) is $2.230$\ g ($\text{s.e.} = 10.879$; $n = 23$), with an approximate $95$% CI between $24.79$\ g lighter in 2014 to $20.33$\ g higher in 2015.
 
 The sample size ($n = 23$) is only *slightly* smaller than $25$.
 Since Fig.\ \@ref(fig:FruitPlots) shows the *sample* differences are approximately symmetrically, so the CI should be reasonably statistically valid.
@@ -891,8 +915,8 @@ It is difficult to be certain.
 A study of patients with Type\ 2 diabetes mellitus (T2DM) randomly allocated $32$ patients into a control group (who drank hot water), and $32$ to receive chamomile tea (@rafraf2015effectiveness, p.\ 164):
 
 > The study was blinded so that the allocation of the intervention or control group was concealed from the researchers and statistician [...]
-> The intervention group ($n = 32$) consumed one cup of chamomile tea [...] three times a day immediately after meals (breakfast, lunch, and dinner) for 8\ weeks. 
-> The control group ($n = 32$) consumed an equivalent volume of warm water during the 8-week period...
+> The intervention group ($n = 32$) consumed one cup of chamomile tea [...] three times a day immediately after meals (breakfast, lunch, and dinner) for $8$\ weeks. 
+> The control group ($n = 32$) consumed an equivalent volume of warm water during the $8$-week period...
 
 The total glucose (TG) was measured for each individual, in both groups, both before the intervention and after eight weeks on the intervention.
 The data are not available, so a graphical summary of the data cannot be produced; however, a data summary is given in the article (motivating Table\ \@ref(tab:TGsummaryTable)).
@@ -942,10 +966,12 @@ TGsummary[3, ] <- c(NA,
 
 if( knitr::is_latex_output() ) {
   
-  knitr::kable(surroundMaths(TGsummary,
-                             decDigits = c(0, 2, 2, 2, 2, 2, 2)),
+  knitr::kable(pad(TGsummary,
+                   surroundMaths = TRUE,
+                   targetLength = c(2, 6, 5, 6, 5, 5, 5),
+                   digits = c(0, 2, 2, 2, 2, 2, 2)),
                format = "latex",
-               align = c("r", "r", "r", "c"),
+               align = "c",
                linesep = "",
                caption = "The total glucose (in mg.dl$^{-1}$)",
                col.names = c("$n$",
@@ -1092,10 +1118,10 @@ ANCB <- subset(Anorexia,
 Young girls ($n = 29$) with anorexia received cognitive behavioural treatment (@data:hand:handbook, Dataset 285), and their weight before and after treatment were recorded.
 In summary:
 
-* Before the treatment, the mean weight was `r round(mean(ANCB$Before), 2)` pounds ($s = `r round(sd(ANCB$Before), 2)`$ pounds);
-* After the treatment, the mean weight was `r round(mean(ANCB$After), 2)` pounds ($s = `r round(sd(ANCB$After), 2)`$ pounds).
+* Before the treatment, the mean weight was $`r round(mean(ANCB$Before), 2)`$ pounds ($s = `r round(sd(ANCB$Before), 2)`$ pounds);
+* After the treatment, the mean weight was $`r round(mean(ANCB$After), 2)`$ pounds ($s = `r round(sd(ANCB$After), 2)`$ pounds).
 
-If the standard deviation of the weight *loss* was `r round(sd( ANCB$After - ANCB$Before), 2)` pounds, find a 95% CI for the population mean weight loss. 
+If the standard deviation of the weight *loss* was $`r round(sd( ANCB$After - ANCB$Before), 2)`$ pounds, find a $95$% CI for the population mean weight loss. 
 Do you think the treatment had any impact on the mean weight of the girls?
 :::
 
@@ -1149,14 +1175,16 @@ COVID.summary[3, ] <- c(2.68,
 
 
 if( knitr::is_latex_output() ) {
-  knitr::kable( surroundMaths(COVID.summary,
-                              decDigits = 2),
+  knitr::kable( pad(COVID.summary,
+                    surroundMaths = TRUE,
+                    targetLength = c(5, 5),
+                    digits = 2),
                format = "latex",
                booktabs = TRUE,
                longtable = FALSE,
                escape = FALSE,
                caption = "Summary information for the COVID-lockdown exercise data",
-               align = c("r", "r")) %>%
+               align = "c") %>%
     row_spec(0, bold = TRUE) %>%
     row_spec(3, italic = TRUE) %>%
     kable_styling(font_size = 10)
