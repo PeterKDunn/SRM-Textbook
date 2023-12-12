@@ -1,41 +1,3 @@
-pad2 <- function(x, targetLength = 2, where = "front", surroundMaths = FALSE){
-  
-  currentDim <- dim(x) # NULL if scalar
-  
-  if ( !is.null(currentDim) ) x <- c(x)
-  
-  xLen <- length(x)
-  out <- array( dim = xLen)
-  
-  for (i in 1:xLen){
-    currentLength <- nchar( as.character(x[i]))
-    
-    if ( currentLength < targetLength) {
-      if (where == "front"){
-        out[i] <- paste( paste(rep("\\phantom{0}", targetLength - currentLength), collapse = ""), 
-                         x[i],
-                         collapse = "")
-      } else {
-        out <- paste(x[i], 
-                     paste(rep("\\phantom{0}", targetLength - currentLength), collapse=""),
-                     collapse = "")
-      }
-    } else {
-      out[i] <- x[i]
-    }
-    
-    if (surroundMaths) out[i] <- paste("$", out[i], "$", collapse = "") 
-  }
-  
-  if ( !is.null(currentDim) ) dim(out) <- currentDim
-  
-  out
-}
-
-
-############################################################################
-
-
 pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths = FALSE, textAlign = "left", big.mark = ""){
   
   # digits is the number of DECIMAL digits
@@ -62,12 +24,14 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
     currentRows <- currentDim[1]
     xAnArray <- TRUE
     
+    # Determine if row names exists, and save to be able to restore them
     xHasRowNames <- FALSE
     if (!is.null(rownames(x))) {
       xHasRowNames <- TRUE
       rowNamesToRestore <- rownames(x)
     }
 
+    # Determine if col names exists, and save to be able to restore them
     xHasColNames <- FALSE
     if (!is.null(colnames(x))) {
       xHasColNames <- TRUE
@@ -89,48 +53,48 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
     }
   }  
   # If targetLength given once, make length appropriate for use by columns
-  #cat("XYZ\n")
-  #cat(currentCols,"\n")
   if ( length(targetLength) == 1) targetLength <- rep( targetLength, 
                                                        times = currentCols)
-  #cat("ABC\n")
-  
+
   # If digits given once, make length appropriate for use by columns
-  if ( length(digits) == 1) digits <- rep( digits, currentCols)
-#cat("digits:", digits,"\n")
-#cat("currentCols:", currentCols,"\n")
+  if ( length(digits) == 1) digits <- rep( digits, 
+                                           times = currentCols)
 
   if ( !is.null(currentDim) ) x <- c(x)
   
   xLen <- length(x)
   out <- array( dim = xLen)
   
-  
+  # Keep tabs on which row and column we are working on:  
   thisRow <- 0
   thisCol <- 1
-  # Take each element at a time
+  
+  # Take each element one at a time
   for (i in 1:xLen){
     
+    # Update the row and column currently being worked on
     thisRow <- thisRow + 1
     if( thisRow == (currentRows + 1)){ # Then move to next column, and start again at Row 1
       thisCol <- thisCol + 1
       thisRow <- 1
     }
-    #cat("\n---\ni = ", i,":", x[i], "\n")
-    #cat("This row, col=", thisRow, thisCol, "\n")
+    
+    # Determine if a negative sign needs to be \phantomed-ed in this COLUMN
+    addNegativeSignForThisCol <- FALSE
+    if ( any(x[((thisCol - 1) * numRows + 1) : (thisCol * numRows)] < 0) ) {
+      addNegativeSignForThisCol <- TRUE
+    }
     
     
+
     # Check if element can be converted to numeric, or not; if not, leave it be.
     elementIsNumeric <- varhandle::check.numeric( x[i])
     # This return  TRUE  if the cell is NA. So check this separately
     if ( is.na(x[i]) ) elementIsNumeric <- FALSE
     
-    #locateNumeric[ is.na( x[i])] <- FALSE 
-    
-    #cat("digits:", digits, "\n")
     if (elementIsNumeric) { 
-      #cat("NUMERIC: i = ",i," and x[i] = ", x[i],"\n")
       x[i] <- as.numeric( x[i] )
+      
       
       #cat("digits = ", digits[thisCol], "width = ", targetLength[thisCol], "\n")
       xi <- format( round( as.numeric(x[i]), 
@@ -140,11 +104,15 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
                     justify = "right",
                     big.mark = big.mark,
                     width = targetLength[thisCol])
-       #cat(xi, "\n")
-      
+
       xi <- gsub(pattern = " ", 
                  replacement = "\\\\phantom{0}",
                  xi)
+      
+      # Replace first phantom with \phantom{-} if needed
+      if (addNegativeSignForThisCol) xi <- sub(pattern = "\\\\phantom\\{0\\}", # 'sub' replace only first instance
+                                               replacement = "\\\\phantom\\{-\\}",
+                                               xi)
       
       #cat(xi, "\n")
       
