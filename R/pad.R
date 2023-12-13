@@ -1,4 +1,6 @@
-pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths = FALSE, textAlign = "left", big.mark = ""){
+pad <- function(x, digits = 2, targetLength = 4, where = "front", 
+                surroundMaths = FALSE, textAlign = "left", big.mark = "",
+                verbose = FALSE){
   
   # digits is the number of DECIMAL digits
   # targetLength  is the total length of the field (including negative signs and decimal points)
@@ -6,28 +8,61 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
   # big.mark is the format() input of same name. To call it, need to backslash *four* times: pad(..., big.mark = "\\\\,") 
   
   numRows <- 1
-  if (is.data.frame(x)) { # CONVERT to an array for out purposes
-    #cat("Convert data.frame to array\n")
+  if (is.data.frame(x)) { # CONVERT to an array for our purposes
+    if ( verbose) cat("* Converting data.frame to array\n")
+
+    # Store row and col names if present
+    xHasRowNames <- FALSE
+    if (!is.null(rownames(x))) {
+      if ( verbose) cat("  * Restoring row names\n")
+      xHasRowNames <- TRUE
+      rowNamesToRestore <- rownames(x)
+    }
+    
+    # Determine if col names exists, and save to be able to restore them
+    xHasColNames <- FALSE
+    if (!is.null(colnames(x))) {
+      if ( verbose) cat("  * Restoring column names\n")
+      xHasColNames <- TRUE
+      colNamesToRestore <- colnames(x)
+    }
+    
+
     numCols <- dim(x)[2]
     numRows <- dim(x)[1]
     
+
     xTemp <- array( dim = c(numRows, numCols) )
     for (i in 1:numCols){
       xTemp[, i] <- x[[i]]
     }
     x <- xTemp
+    
+    # Restore
+    if ( verbose) cat("  * Restoring row, col names\n")
+    if (xHasRowNames){
+      if ( verbose) cat("  * Restoring row names:", rowNamesToRestore, "\n")
+      rownames(x) <- rowNamesToRestore 
+    }
+    if (xHasColNames) {
+      if ( verbose) cat("  * Restoring col names:", colNamesToRestore, "\n")
+      colnames(x) <- colNamesToRestore
+    }
+
   }
   
   if ( is.array(x) ) {
-    #cat("IS ARRAY\n")
+    if ( verbose ) cat("* Computing array size:")
     currentDim <- dim(x) # NULL if scalar. Use to restore dimension.
     currentCols <- currentDim[2]
     currentRows <- currentDim[1]
     xAnArray <- TRUE
+    if ( verbose ) cat(currentDim, "\n")
     
     # Determine if row names exists, and save to be able to restore them
     xHasRowNames <- FALSE
     if (!is.null(rownames(x))) {
+      if ( verbose) cat("* Storing row names\n")
       xHasRowNames <- TRUE
       rowNamesToRestore <- rownames(x)
     }
@@ -35,6 +70,7 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
     # Determine if col names exists, and save to be able to restore them
     xHasColNames <- FALSE
     if (!is.null(colnames(x))) {
+      if ( verbose) cat("* Storing column names\n")
       xHasColNames <- TRUE
       colNamesToRestore <- colnames(x)
     }
@@ -42,11 +78,14 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
   } else {
     # Probably a single number... or a vector
     if (is.vector(x)) {
+      if ( verbose) cat("* Computing vector size")
       currentDim <- length(x)
       currentCols <- 1
       currentRows <- length(x)
-      xAnArray <- FALSE      
+      xAnArray <- FALSE
+      if ( verbose) cat(currentRows, "\n")
     } else{
+      if ( verbose) cat("* Identifying scalar\n")
       currentDim <- NA
       currentCols <- 1
       currentRows <- 1
@@ -54,10 +93,12 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
     }
   }  
   # If targetLength given once, make length appropriate for use by columns
+  if ( verbose) cat("* Lengthening targetLength if necessary\n")
   if ( length(targetLength) == 1) targetLength <- rep( targetLength, 
                                                        times = currentCols)
 
   # If digits given once, make length appropriate for use by columns
+  if ( verbose) cat("* Lengthening digits if necessary\n")
   if ( length(digits) == 1) digits <- rep( digits, 
                                            times = currentCols)
 
@@ -71,7 +112,9 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
   thisCol <- 1
   
   # Take each element one at a time
+  if ( verbose) cat("* Dealing element-by-element:\n")
   for (i in 1:xLen){
+    if ( verbose) cat("\n  * Element:", i, "\n")
     
     # Update the row and column currently being worked on
     thisRow <- thisRow + 1
@@ -79,6 +122,7 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
       thisCol <- thisCol + 1
       thisRow <- 1
     }
+    if ( verbose) cat("  * row/col:", thisRow, thisCol, "\n")
     
     # Determine if a negative sign needs to be \phantomed-ed in this COLUMN
     addNegativeSignForThisCol <- FALSE
@@ -86,17 +130,18 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
     if ( any(x[((thisCol - 1) * numRows + 1) : (thisCol * numRows)] < 0, na.rm = TRUE) ) {
       addNegativeSignForThisCol <- TRUE
     }
-    
+    if ( verbose) cat("  * Determining if negative sign needed for this COLUMN:", addNegativeSignForThisCol, "\n")
     
 
     # Check if element can be converted to numeric, or not; if not, leave it be.
     elementIsNumeric <- varhandle::check.numeric( x[i])
     # This return  TRUE  if the cell is NA. So check this separately
     if ( is.na(x[i]) ) elementIsNumeric <- FALSE
+    if ( verbose) cat("  * Determining if element numeric:", elementIsNumeric, "\n")
     
     if (elementIsNumeric) { 
       x[i] <- as.numeric( x[i] )
-      
+      if ( verbose) cat("  * Numeric value to align:", x[i], "\n")
       
       #cat("digits = ", digits[thisCol], "width = ", targetLength[thisCol], "\n")
       xi <- format( round( as.numeric(x[i]), 
@@ -106,10 +151,12 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
                     justify = "right",
                     big.mark = big.mark,
                     width = targetLength[thisCol])
-
+      if ( verbose) cat("  * First update:", xi, "\n")
+      
       xi <- gsub(pattern = " ", 
                  replacement = "\\\\phantom{0}", 
                  xi)
+      if ( verbose) cat("  * Second update:", xi, "\n")
       
       
       
@@ -135,6 +182,7 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
       currentLength <- nchar( as.character(x[i]))
       # Replace first phantom with \phantom{-} if needed
       if (addNegativeSignForThisCol) {
+        if ( verbose) cat("  * Dealing with negatives:", xi, "\n")
         #cat("xi (a):", xi, ":\n")
         #cat("   Need to add - sign\n")
         if (x[i] >= 0 ) { # If the number is -ive, we do not need a \phantom{-},  
@@ -151,6 +199,8 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
           #cat("xi (b):", xi, ":\n")
           
         }
+        if ( verbose) cat("  * Third update:", xi, "\n")
+        
       }
       
       out[i] <- xi
@@ -159,7 +209,10 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
       #cat("Non numeric\n")
       if (is.na(x[i]) ) {
         out[i] <-  NA
+        if ( verbose) cat("  * Element is NA: no padding\n")
+        
       } else { # TEXT
+        if ( verbose) cat("  * Element is text\n")
         
         xLength <- nchar( x[i] )
         
@@ -191,9 +244,17 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
     }
   } 
   if ( xAnArray ) {
+    if ( verbose) cat("* Restoring col, row names if necessary:\n")
+    
     dim(out) <- currentDim
-    if (xHasRowNames) rownames(out) <- rowNamesToRestore 
-    if (xHasColNames) colnames(out) <- colNamesToRestore 
+    if (xHasRowNames) {
+      rownames(out) <- rowNamesToRestore
+      if ( verbose) cat("  * Row names: ", length(colNamesToRestore), "\n")
+    }
+    if (xHasColNames) {
+      colnames(out) <- colNamesToRestore
+      if ( verbose) cat("  * Col names: ", length(rowNamesToRestore), "\n")
+    }
   }
   
   out
