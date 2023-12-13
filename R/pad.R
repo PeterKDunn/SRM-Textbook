@@ -5,6 +5,7 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
   # where  is how the numbers are aligned
   # big.mark is the format() input of same name. To call it, need to backslash *four* times: pad(..., big.mark = "\\\\,") 
   
+  numRows <- 1
   if (is.data.frame(x)) { # CONVERT to an array for out purposes
     #cat("Convert data.frame to array\n")
     numCols <- dim(x)[2]
@@ -81,7 +82,8 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
     
     # Determine if a negative sign needs to be \phantomed-ed in this COLUMN
     addNegativeSignForThisCol <- FALSE
-    if ( any(x[((thisCol - 1) * numRows + 1) : (thisCol * numRows)] < 0) ) {
+    #cat("thisCol, numRows", thisCol, numRows, "\n")
+    if ( any(x[((thisCol - 1) * numRows + 1) : (thisCol * numRows)] < 0, na.rm = TRUE) ) {
       addNegativeSignForThisCol <- TRUE
     }
     
@@ -106,19 +108,9 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
                     width = targetLength[thisCol])
 
       xi <- gsub(pattern = " ", 
-                 replacement = "\\\\phantom{0}",
+                 replacement = "\\\\phantom{0}", 
                  xi)
       
-      # Replace first phantom with \phantom{-} if needed
-      if (addNegativeSignForThisCol) xi <- sub(pattern = "\\\\phantom\\{0\\}", # 'sub' replace only first instance
-                                               replacement = "\\\\phantom\\{-\\}",
-                                               xi)
-      
-      #cat(xi, "\n")
-      
-      out[i] <- xi
-      
-      currentLength <- nchar( as.character(x[i]))
       
       
       # if ( currentLength < targetLength) {
@@ -135,8 +127,34 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front", surroundMaths 
       #   out[i] <- xi
       # }
       # 
-      if (surroundMaths) out[i] <- paste0( "$", out[i], "$", 
+      if (surroundMaths) xi <- paste0( "$", xi, "$", 
                                            collapse = "") 
+      
+      #cat(xi, "\n")
+      
+      currentLength <- nchar( as.character(x[i]))
+      # Replace first phantom with \phantom{-} if needed
+      if (addNegativeSignForThisCol) {
+        #cat("xi (a):", xi, ":\n")
+        #cat("   Need to add - sign\n")
+        if (x[i] >= 0 ) { # If the number is -ive, we do not need a \phantom{-},  
+          #cat("   Adding phantom{-}\n")
+          xi <- sub(pattern = "\\\\phantom\\{0\\}", # 'sub' replace only first instance
+                    replacement = "\\\\phantom\\{-\\}",
+                    xi)
+        } else {
+          # Need a fix, or we have \phantom{0} - 1.23, and the - is interpreted as a minus sign and spacing is screwed up
+          #cat("   NOT adding phantom{-}\n\n")
+          xi <- sub(pattern  = "\\$\\\\phantom\\{0\\}", # 'sub' replace only first instance
+                    replacement = "\\\\phantom\\{0\\}\\$",
+                    xi)
+          #cat("xi (b):", xi, ":\n")
+          
+        }
+      }
+      
+      out[i] <- xi
+      
     } else { # So these cannot be converted to numeric; likely are text
       #cat("Non numeric\n")
       if (is.na(x[i]) ) {
