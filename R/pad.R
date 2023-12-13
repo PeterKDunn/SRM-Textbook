@@ -127,10 +127,15 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front",
     # Determine if a negative sign needs to be \phantomed-ed in this COLUMN
     addNegativeSignForThisCol <- FALSE
     #cat("thisCol, numRows", thisCol, numRows, "\n")
-    if ( any(x[((thisCol - 1) * numRows + 1) : (thisCol * numRows)] < 0, na.rm = TRUE) ) {
+    if ( any(x[((thisCol - 1) * currentRows + 1) : (thisCol * currentRows)] < 0, na.rm = TRUE) ) {
       addNegativeSignForThisCol <- TRUE
     }
     if ( verbose) cat("  * Determining if negative sign needed for this COLUMN:", addNegativeSignForThisCol, "\n")
+    if ( verbose) cat("  * Checking elements", 
+                      (thisCol - 1) * currentRows + 1, 
+                      "to", 
+                      thisCol * currentRows, 
+                      "\n")
     
 
     # Check if element can be converted to numeric, or not; if not, leave it be.
