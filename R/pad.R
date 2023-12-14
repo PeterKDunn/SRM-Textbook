@@ -235,10 +235,10 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front",
             out[i] <- paste0( "$",
                               paste0( rep("\\phantom{0}",
                                           times = targetLength[thisCol] - xLength),
-                                      "$",
-                                      x[i],
-                                      collapse = "")
-            )
+                                      collapse = ""),
+                              "$",
+                              x[i],
+                              collapse = "")
             
           }
         } else {
