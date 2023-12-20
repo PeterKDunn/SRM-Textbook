@@ -2052,14 +2052,18 @@ Since these values are the same, the sample median is $1.7$ beats per $10$\ h.
 
 
 ```{r GYoungSorted}
+GYoung <- Gorillas$ChestBeatRate[ Gorillas$Age20 == "Younger"] 
+
 GYoung.sort <- sort( GYoung)
 GYoung.sort <- matrix( GYoung.sort, 
                      ncol = 14, 
                      byrow = TRUE)
 
 if( knitr::is_latex_output() ) {
-  kable(surroundMaths(GYoung.sort,
-                      decDigits = 1),
+  kable(pad(GYoung.sort,
+            surroundMaths = TRUE,
+            targetLength = 3,
+            digits = 1),
         format = "latex",
         longtable = FALSE,
         booktabs = TRUE,
@@ -2072,21 +2076,15 @@ if( knitr::is_latex_output() ) {
 }
 
 if( knitr::is_html_output() ) {
-  out <- kable(GYoung.sort,
+  kable(GYoung.sort,
               format = "html",
               longtable = FALSE,
-              col.names = rep(" ", 10),
+              col.names = rep(" ", 14),
               booktabs = TRUE,
-              caption = "The chest-beating rate of young gorillas, in increasing order")
-  if ( knitr::is_html_output()) {
-   add_header_above(out,
-                    header = c("Chest-beating rate, per 10 h" = 14), 
+              caption = "The chest-beating rate of young gorillas, in increasing order") %>%
+   add_header_above(header = c("Chest-beating rate, per 10 h" = 14), 
                     bold = TRUE, 
 		    align = "c")
-  } else {
-    out
-  }
-  
 }
 ```
 
@@ -2578,7 +2576,7 @@ text( 0.65, Beat.quantiles[2],
       cex = 0.75)
 
 axis(side = 4, # This places the tick marks
-     at = Eggs.quantiles,
+     at = Beat.quantiles,
      labels = rep("", 5) )
 mtext(Beat.quantiles,
       side = 4,
