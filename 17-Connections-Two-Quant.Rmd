@@ -1,15 +1,13 @@
-# (PART) Connection RQs: regression and correlation {-}
 
-
-# Relationships between two quantitative variables {#TwoQuant}
+# Connections between two quantitative variables {#TwoQuant}
 
 
 <!-- Introductions; easier to separate by format -->
-```{r, child = if (knitr::is_html_output())  {'./introductions/35-Relationships-Two-Quant-HTML.Rmd'} else {'./introductions/35-Relationships-Two-Quant-LaTeX.Rmd'}}
+```{r, child = if (knitr::is_html_output())  {'./introductions/17-Connections-TwoQuant-HTML.Rmd'} else {'./introductions/17-Connections-TwoQuant-LaTeX.Rmd'}}
 ```
 
 
-## Introduction: red deer {#Chap33-Intro}
+## Introduction: red deer {#TwoQuant-Intro}
 
 So far, RQs about single variables and RQs for comparing two groups have been studied.
 Comparing the mean value of a quantitative variable in two groups was studied in Sects.\ \@ref(CITwoMeans) and\ \@ref(TestTwoMeans).
@@ -98,7 +96,7 @@ plot(Weight ~ Age,
 \end{figure}
 
 
-## Two quantitative variables: graphical summaries {#RedDeerData}
+## Graphs {#RedDeerData}
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
 <img src="Illustrations/diana-parkhouse-Qf4eZXC3t2Y-unsplash.jpg" width="200px"/>
@@ -306,6 +304,73 @@ the relationship is approximately linear (form) with a negative direction (*olde
 
 
 <iframe src="https://learningapps.org/watch?v=pdxmdaf1522" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+
+
+
+
+
+## Summary tables {#ConnectionSummaryTables}
+
+In general, numerical summaries are difficult for describing the relationship between two quantitative variables, because the possible relationships vary greatly (Sect.\ \@ref(UnderstandingScatterplots)).
+Later (Chap.\ \@ref(LinearRelationshipsR)), numerical summaries are described specifically for *linear* relationships.
+
+Nonethless, numerical summary information the relationship between *two quantitative variables* can be collated in a table.
+The table summarises each variable.
+If the relationship is linear, the measures described in Chap.\ \@ref(LinearRelationshipsR) may also be added to the summary table.
+
+
+```{r RDSummaryPlots, fig.cap="Histograms of age and molar weight for male red deer", fig.align="center", fig.width=8, fig.height=3.25, out.width='90%'}
+par( mfrow = c(1, 2))
+
+hist(RedDeer$Age,
+     las = 1,
+     ylim = c(0, 15),
+     xlab = "Age (in years)",
+     ylab = "Number of deer",
+     main = "Histogram of ages")
+
+hist(RedDeer$Weight,
+     las = 1,
+     ylim = c(0, 25),
+     xlab = "Weight (in g)",
+     ylab = "Number of deer",
+     main = "Histogram of molar weight")
+```
+
+```{r RDSummaryTable}
+RDTable <- array( dim = c(2, 3))
+
+rownames(RDTable) <- c("Age",
+                        "Molar weight") 
+colnames(RDTable) <- c("Mean",
+                        "Std. dev.",
+                        "Sample size") 
+
+
+RDTable[, 1] <- round(colMeans(RedDeer), 1)
+RDTable[, 2] <- round(apply(RedDeer, 2, "sd"), 2)
+RDTable[, 3] <- round(apply(RedDeer, 2, "realLength"), 0)
+
+knitr::kable( pad(RDTable,
+                  surroundMaths = TRUE,
+                  targetLength = c(4, 5, 3),
+                  digits = c(1, 2, 0)),
+              format = "latex",
+              longtable = FALSE,
+              booktabs = TRUE,
+              escape = FALSE,
+              digits = 1,
+              align = "c",
+              caption = "A numerical summary of the red deer data") %>%
+  kable_styling(full_width = FALSE) %>%
+  row_spec(row = 0, 
+           bold = TRUE) %>%
+  row_spec(row = 3,
+           italic = TRUE) %>%
+  kable_styling(font_size = 10)
+```
+
+
 
 
 
