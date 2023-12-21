@@ -52,7 +52,7 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front",
   }
   
   if ( is.array(x) ) {
-    if ( verbose ) cat("* Computing array size:")
+    if ( verbose ) cat("* Computing array size: ")
     currentDim <- dim(x) # NULL if scalar. Use to restore dimension.
     currentCols <- currentDim[2]
     currentRows <- currentDim[1]
@@ -92,7 +92,7 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front",
       xAnArray <- FALSE
     }
   }  
-  # If targetLength given once, make length appropriate for use by columns
+  # If  targetLength  given once, make length appropriate for use by columns
   if ( verbose) cat("* Lengthening targetLength if necessary\n")
   if ( length(targetLength) == 1) targetLength <- rep( targetLength, 
                                                        times = currentCols)
@@ -156,12 +156,14 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front",
                     justify = "right",
                     big.mark = big.mark,
                     width = targetLength[thisCol])
-      if ( verbose) cat("  * First update:", xi, "\n")
+      if ( verbose) cat("  * First update: '", xi, "'\n",
+                        sep = "")
       
       xi <- gsub(pattern = " ", 
                  replacement = "\\\\phantom{0}", 
                  xi)
-      if ( verbose) cat("  * Second update:", xi, "\n")
+      if ( verbose) cat("  * Second update: '", xi, "'\n",
+                        sep = "")
       
       
       
@@ -182,7 +184,9 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front",
       if (surroundMaths) xi <- paste0( "$", xi, "$", 
                                            collapse = "") 
       
-      #cat(xi, "\n")
+      if ( verbose) cat("  * Third update: '", xi, "'\n",
+                        sep = "")
+      
       
       currentLength <- nchar( as.character(x[i]))
       # Replace first phantom with \phantom{-} if needed
@@ -204,7 +208,7 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front",
           #cat("xi (b):", xi, ":\n")
           
         }
-        if ( verbose) cat("  * Third update:", xi, "\n")
+        if ( verbose) cat("  * Fourth update:", xi, "\n")
         
       }
       
