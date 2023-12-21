@@ -26,7 +26,7 @@ The categories should be *exhaustive* (cover all values) and *exclusive* (observ
 
 
 ::: {.example #AVstudy name="Opinions of AV vehicles"}
-@pyrialakou2020perceptions surveyed 400 residents of Phoenix (Arizona) about their opinions of sharing roads with autonomous vehicles (AVs).
+@pyrialakou2020perceptions surveyed $400$ residents of Phoenix (Arizona) about their opinions of sharing roads with autonomous vehicles (AVs).
 Some demographic information was collected (Table\ \@ref(tab:AVtable1)), as well as respondents opinions of sharing roads with AVs (Table\ \@ref(tab:AVtable2)).
 
 The gender of the respondent is *nominal*, while the age group is *ordinal*.
@@ -99,8 +99,23 @@ colnames(AVquestions) <- colnames(AVtable2)[2:4]
 
 ```{r AVtable1}
 if (knitr::is_html_output()) {
-   knitr::kable(AVtable1,
-               format = "html")
+   knitr::kable(pad(AVtable1,
+                   surroundMaths = TRUE,
+                   targetLength = c(3, 2),
+                   digits = 0),
+               format = "html",
+               longtable = FALSE,
+               escape = FALSE,
+               align = c("c", "c"),
+               booktabs = TRUE,
+               caption = "Demographic information for the AV data for $400$ respondents") %>%
+    row_spec(0, bold = TRUE) %>%
+    pack_rows( "Gender",
+               start_row = 1,
+               end_row = 2) %>%
+    pack_rows( "Age group",
+               start_row = 3,
+               end_row = 8)
 } else {
   knitr::kable(pad(AVtable1,
                    surroundMaths = TRUE,
@@ -127,11 +142,34 @@ if (knitr::is_html_output()) {
 
 ```{r AVtable2}
 if (knitr::is_html_output()) {
-   knitr::kable(AVtable2,
-               format = "html")
+   knitr::kable(pad(AVtable2,
+                   surroundMaths = TRUE,
+                   targetLength = c(0, 2, 3, 3),
+                   digits = 0),
+               format = "html",
+               longtable = FALSE,
+               escape = FALSE,
+               align = c("r", "c", "c", "c"),
+               linesep = c("", 
+                           "\\addlinespace",
+                           "", 
+                           "\\addlinespace",
+                           "", 
+                           "\\addlinespace",
+                           "", 
+                           "\\addlinespace",
+                           "", 
+                           "\\addlinespace"),  # Otherwise adds a space after five lines... 
+               booktabs = TRUE,
+               caption = "Responses to three scenarios for the AV data for $400$ respondent") %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(1, bold = TRUE) 
 } else {
   
-  knitr::kable(surroundMaths(AVtable2),
+  knitr::kable(pad(AVtable2,
+                   surroundMaths = TRUE,
+                   targetLength = c(2, 3, 3),
+                   digits = 0),
                format = "latex",
                longtable = FALSE,
                escape = FALSE,
@@ -742,20 +780,20 @@ Construct a suitable plot, and explain what the data reveal about the social gro
 
 
 ```{r SpiderMonkeysData}
-names <- c("Solitary", 
-           "All males", 
-           "Female + no young", 
-           "Mixed young", 
-           "Mixed + no young", 
-           "One female + offspring", 
-           "Many females + offspring",
-           NA)
+namesSM <- c("Solitary", 
+             "All males", 
+             "Female + no young", 
+             "Mixed young", 
+             "Mixed + no young", 
+             "One female + offspring", 
+             "Many females + offspring",
+             NA)
 
 SpiderMonkeyTable <- array( dim = c(8, 2) )
 SpiderMonkeyTable[, 2] <- c(8, 3, 2, 15, 1, 23, 48, NA)
-SpiderMonkeyTable[, 1] <- names
+SpiderMonkeyTable[, 1] <- namesSM
 
-rownames(SpiderMonkeyTable) <- names
+rownames(SpiderMonkeyTable) <- namesSM
 ```
 
 ```{r}
@@ -809,8 +847,11 @@ if( knitr::is_latex_output() ) {
 ```{r SpiderMonkeysHTML}
 if( knitr::is_html_output() ) {
 
-kable( surroundMaths( (SpiderMonkeyTable)), 
-       format = "latex",
+kable( pad( SpiderMonkeyTable,
+                     surroundMaths = TRUE,
+                     targetLength = 2,
+                     digits = 0), 
+       format = "html",
        longtable = FALSE,
        booktabs = TRUE,
        escape = FALSE,
@@ -1053,6 +1094,7 @@ if( knitr::is_latex_output() ) {
 }
 
 if( knitr::is_html_output() ) {
+  BreadTable[6, 1] <- "City more than $100\\, 000$ residents" 
   knitr::kable(BreadTable,
         format = "html",
         longtable = FALSE,
@@ -1098,39 +1140,86 @@ AdTable[, 2] <- Advantages
 DisadTable[, 1] <- namesDisadvantages
 DisadTable[, 2] <- Disadvantages
 
-T1 <-  knitr::kable(surroundMaths(AdTable),
-                     format = "latex",
-                     valign = 't',
-                     align = "r",
-                     linesep = "",
-                     col.names = c("Advantage", "No. farmers"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE)
-
-
-
-T2 <-  knitr::kable(surroundMaths(DisadTable),
-                     format = "latex",
-                     valign = 't',
-                     align = "r",
-                     linesep = "",
-                     col.names = c("Disadvantage", "No. farmers"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE)
+if( knitr::is_latex_output() ) {
   
-  
-  
-out <- knitr::kables( list(T1, T2),
+  T1 <-  knitr::kable(pad(AdTable,
+                          surroundMaths = TRUE,
+                          targetLength = c(0, 2),
+                          digits = 0),
                       format = "latex",
-                      label = "ReclaimedWater",
-                      caption = "The advantages and disadvantages of using reclaimed water, reported by $231$ farmers.") %>% 
-  kable_styling(font_size = 10)
-out2 <- prepareSideBySideTable(out) 
-out2
+                      valign = 't',
+                      align = "r",
+                      linesep = "",
+                      col.names = c("Advantage", "No. farmers"),
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+  
+  
+  
+  T2 <-  knitr::kable(pad(DisadTable,
+                          surroundMaths = TRUE,
+                          targetLength = c(0, 2),
+                          digits = 0),
+                      format = "latex",
+                      valign = 't',
+                      align = "r",
+                      linesep = "",
+                      col.names = c("Disadvantage", "No. farmers"),
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+  
+  
+  
+  out <- knitr::kables( list(T1, T2),
+                        format = "latex",
+                        label = "ReclaimedWater",
+                        caption = "The advantages and disadvantages of using reclaimed water, reported by $231$ farmers.") %>% 
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out) 
+  out2
+}
+if( knitr::is_html_output() ) {
+  
+  T1 <- knitr::kable(pad(AdTable,
+                          surroundMaths = TRUE,
+                          targetLength = c(0, 2),
+                          digits = 0),
+                      format = "html",
+                      valign = 't',
+                      align = "r",
+                      linesep = "",
+                      col.names = c("Advantage", "No. farmers"),
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+  
+  
+  T2 <-  knitr::kable(pad(DisadTable,
+                          surroundMaths = TRUE,
+                          targetLength = c(0, 2),
+                          digits = 0),
+                      format = "html",
+                      valign = 't',
+                      align = "r",
+                      linesep = "",
+                      col.names = c("Disadvantage", "No. farmers"),
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+  
+  
+  
+  knitr::kables( list(T1, T2),
+                        format = "html",
+                        label = "ReclaimedWater",
+                        caption = "The advantages and disadvantages of using reclaimed water, reported by $231$ farmers.") 
+}
 ```
 
 
@@ -1160,12 +1249,16 @@ colnames(TransportTable) <- c("Number",
 TransportTable[, 1] <- c(29, 35, 70, 117, 33)
 TransportTable[, 2] <- c(10.2, 12.3, 24.7, 41.2, 11.6)
 
-knitr::kable(TransportTable,
+if( knitr::is_latex_output() ) {
+knitr::kable(pad(TransportTable,
+                 surroundMaths = TRUE,
+                 targetLength = c(3, 4),
+                 digits = c(0, 1)),
              format = "latex",
              longtable = FALSE,
              escape = FALSE,
              caption = "Modes of transport for students getting to campus",
-             align = c("r", "c", "c", "c"),
+             align = "c",
              booktabs = TRUE) %>%
   kable_styling(font_size = 10) %>%
   row_spec(0, bold = TRUE) %>%
@@ -1175,6 +1268,27 @@ knitr::kable(TransportTable,
   pack_rows("Motorised", 
             start_row = 3,
             end_row = 5)
+}
+if( knitr::is_html_output() ) {
+  
+knitr::kable(pad(TransportTable,
+                 surroundMaths = TRUE,
+                 targetLength = c(3, 4),
+                 digits = c(0, 1)),
+             format = "html",
+             longtable = FALSE,
+             escape = FALSE,
+             caption = "Modes of transport for students getting to campus",
+             align = "c",
+             booktabs = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  pack_rows("Active", 
+            start_row = 1,
+            end_row = 2) %>%
+  pack_rows("Motorised", 
+            start_row = 3,
+            end_row = 5)
+}
 ```
 
 

@@ -37,7 +37,7 @@ One disadvantage is that only two groups can be compared.
 
 
 ::: {.example #GorillaData name="Back-to-back stemplots"}
-A study recorded the number chest-beats by gorillas [@wright2021chest], for gorillas under 20 years old (young) and 20 years and over (older)
+A study recorded the number chest-beats by gorillas [@wright2021chest], for gorillas under $20$ years old ('younger') and $20$ years and over ('older')
 `r if (knitr::is_latex_output()) {
    '(Table\\ \\@ref(tab:GorillaDataTable)).'
 } else {
@@ -74,8 +74,10 @@ Gorilla2 <- cbind( CBRyounger[1:7],
 ```{r GorillaDataTable}
 
 if( knitr::is_latex_output() ) {
-  kable( surroundMaths(Gorilla2,
-                       decDigits = 1),
+  kable( pad(Gorilla2,
+             surroundMaths = TRUE,
+             targetLength = 3,
+             digits = 1),
          format = "latex", 
          longtable = FALSE,
          table.env = "@empty",
@@ -117,24 +119,26 @@ if( knitr::is_latex_output() ) {
 ### Control data in cols 13 to 19 (x= 1 to x = 7)
   
   # Divide the stems and leaves
-  lines(c(-0.5, -0.5),
-        c(0.5, 6.5),
+  lines(x = c(-0.5, -0.5),
+        y = c(0.5, 6.5),
          lwd = 2,
          col = "grey")
-  lines(c(0.5, 0.5),
-        c(0.5, 6.5),
+  lines(x = c(0.5, 0.5),
+        y = c(0.5, 6.5),
          lwd = 2,
          col = "grey")
-  text(-5, 0, 
+  text(x = -5, 
+       y = 0, 
        "Younger", 
        font = 2)
-  text( 4, 0, 
+  text( x = 4, 
+        y = 0, 
         "Older", 
 	font = 2)
   
   # Plot stems
-  points( c(0, 0, 0, 0, 0), 
-          1:5,
+  points( x = c(0, 0, 0, 0, 0), 
+          y = 1:5,
           pch = as.character(4:0))
   
   
@@ -190,14 +194,13 @@ if( knitr::is_latex_output() ) {
 `r if (knitr::is_html_output()) '-->'`
 
 
-
-
-
-
 `r if (knitr::is_latex_output()) '<!--'`
 ```{r GorillaDataTableHTML}
 if (knitr::is_html_output()) {
-  kable( Gorilla2,
+  kable( pad(Gorilla2,
+             surroundMaths = TRUE,
+             targetLength = 3,
+             digits = 1),
          format = "html",
          longtable = FALSE,
          booktabs = TRUE,
@@ -215,103 +218,94 @@ if (knitr::is_html_output()) {
 
 
 
-```{r krillEggsDoubleStemHTML, fig.width=6.0, out.width='100%', fig.cap="The chest-beating rate for gorillas", fig.cap="center"}
+```{r krillEggsDoubleStemHTML, fig.width=6.0, out.width='100%', fig.cap="The chest-beating rate for gorillas", fig.align="center"}
 
-data(Gorillas)
-CBRyounger <- sort( Gorillas$ChestBeatRate[Gorillas$Age20 == "Younger"] )
-CBRolder <- sort( Gorillas$ChestBeatRate[Gorillas$Age20 == "Older"] )
+  stemgrid.x <- 1
+  stemgrid.y <- 6
+  stemcounts <- array(1, 
+                      dim = stemgrid.y)
 
-Gorilla2 <- cbind( CBRyounger[1:7],
-                   CBRyounger[8:14],
-                   CBRolder[1:7],
-                   c(CBRolder[8:11], NA, NA, NA ) )
+  par( mar = c(0.25, 0.25, 4, 0.25) + 0.1)
 
-stemgrid.x <- 1
-stemgrid.y <- 6
-stemcounts <- array(1, dim=stemgrid.y)
-
-par( mar = c(0.5, 0.5, 4, 0.5) + 0.1)
-
-plot( expand.grid(1:stemgrid.x, 0:stemgrid.y), 
+  plot( expand.grid(1:stemgrid.x, 0:stemgrid.y), 
       type = "n",
       xlab = "",
       ylab = "",
-      main = "Stemplot of chest-beating rates for gorillas\n(1|6 means 1.6 beats per 10 h)",
-      xlim = c(-11, 7),
-      ylim = c(-0.2, 6.2),
+      main = "Chest-beating rate of gorillas\n(1|6 means 1.6 beats per 10 hours)",
+      xlim = c(-11, 8),
+      ylim = c(-0.2, 5.2),
       axes = FALSE)
-
+  
 ### Treatment data in cols 1  to 11 (x = -11 to x = -1)
 ### Stems in col 12  (x=0)
 ### Control data in cols 13 to 19 (x= 1 to x = 7)
-
-# Divide the stems and leaves
-lines(c(-0.5, -0.5),
-      c(0.5, 5.5),
-      lwd = 2,
-      col = "grey")
-lines(c(0.5, 0.5),
-      c(0.5, 6.5),
-      lwd = 2,
-      col = "grey")
-text(-5, 0, 
-     "Younger", 
-     font = 2)
-text( 4, 0, 
-      "Older", 
-      font = 2)
-
-# Plot stems
-points( c(0, 0, 0, 0, 0), 
-        1:5,
-        pch = as.character(4:0))
-# Plot leaves
-for (j in (1:2) ){
   
-  if (j == 1) { # Right-hand side
-    CBR <- CBRolder
-    step <- 1
-    stemcounts <- array(1, dim=stemgrid.y)
-  }
-  if (j == 2) { # Left-hand side
-    CBR <- CBRyounger
+  # Divide the stems and leaves
+  lines(x = c(-0.5, -0.5),
+        y = c(0.5, 6.5),
+         lwd = 2,
+         col = "grey")
+  lines(x = c(0.5, 0.5),
+        y = c(0.5, 6.5),
+         lwd = 2,
+         col = "grey")
+  text(x = -5, 
+       y = 0, 
+       "Younger", 
+       font = 2)
+  text( x = 4, 
+        y = 0, 
+        "Older", 
+	font = 2)
+  
+  # Plot stems
+  points( x = c(0, 0, 0, 0, 0), 
+          y = 1:5,
+          pch = as.character(4:0))
+  
+  
+  ### Plot leaves
+  for (j in (1:2) ){
+
+    if (j == 1) { # Right-hand side
+      CBR <- CBRolder
+      step <- 1
+      stemcounts <- array(1, dim = stemgrid.y)
+    }
+    if (j == 2) { # Left-hand side
+      CBR <- CBRyounger
       step <- -1
       stemcounts <- array(-1, dim = stemgrid.y)
     }
     
     for (i in 1:length(CBR)){
     
-      if ( CBR[i] < 10) {
-        points( stemcounts[1], 6, 
-	        pch = as.character(CBR[i]))
+      if ( CBR[i] < 1) {
+        points( stemcounts[1], 5, 
+	        pch = substr( sprintf("%1.1f", CBR[i]), 3, 3)) 
         stemcounts[1] <- stemcounts[1] + step
       }
 
-    if ( (CBR[i] >= 10) & (CBR[i] < 20) ) {
-      points( stemcounts[2], 5, 
-              pch = as.character(CBR[i] - 10) )
+    if ( (CBR[i] >= 1) & (CBR[i] < 2) ) {
+      points( stemcounts[2], 4, 
+              pch = substr( sprintf("%1.1f", CBR[i] - 1), 3, 3)) 
       stemcounts[2] <- stemcounts[2] + step
     }
 
-    if ( (CBR[i] >= 20) & (CBR[i] < 30) ) {
-      points( stemcounts[3], 4, 
-              pch = as.character(CBR[i] - 20))
+    if ( (CBR[i] >= 2) & (CBR[i] < 3) ) {
+      points( stemcounts[3], 3, 
+              pch = substr( sprintf("%1.1f", CBR[i] - 2), 3, 3)) 
       stemcounts[3] <- stemcounts[3] + step
     }
-    if ( ( CBR[i] >= 30 ) & (CBR[i] < 40) ) {
-      points( stemcounts[4], 3, 
-              pch = as.character(CBR[i] - 30))
+    if ( ( CBR[i] >= 3 ) & (CBR[i] < 4) ) {
+      points( stemcounts[4], 2, 
+              pch = substr( sprintf("%1.1f", CBR[i] - 3), 3, 3)) 
       stemcounts[4] <- stemcounts[4] + step
     }
-    if ( ( CBR[i] >= 40 ) & (CBR[i] < 50) ) {
-      points( stemcounts[5], 2, 
-              pch = as.character(CBR[i] - 40))
+    if ( ( CBR[i] >= 4 ) & (CBR[i] < 5) ) {
+      points( stemcounts[5], 1, 
+              pch = substr( sprintf("%1.1f", CBR[i] - 4), 3, 3)) 
       stemcounts[5] <- stemcounts[5] + step
-    }
-    if ( ( CBR[i] >= 50 ) & (CBR[i] < 60) ) {
-      points( stemcounts[6], 1, 
-              pch = as.character(CBR[i] - 50))
-      stemcounts[6] <- stemcounts[6] + step
     }
   }
 }
@@ -367,7 +361,7 @@ stripchart( list(Treatment = CBRyounger,
 ### Boxplots {#Boxplot}
 
 A boxplot is a picture of the quantiles (Sect.\ \@ref(VariationIQR)).
-Any number of groups can be compared usin a boxplot.
+Any number of groups can be compared using a boxplot.
 
 The distribution for each group is summarised by five numbers: the minimum value, $Q_1$, the median ($Q_2$), $Q_3$ and the maximum value.
 Outliers, identified using the IQR rule (Sect. \@ref(OutliersIQRrule)), are also shown.
@@ -432,13 +426,7 @@ source("R/showExplainBoxplots.R")
 ```
 
 
-The box for the *older* gorillas is slightly different
-`r if (knitr::is_latex_output()) {
-   '(Fig.\\ \\@ref(fig:BoxplotGorillasExplain), left panel):'
-} else {
-   '(Fig.\\ \\@ref(BoxplotGorillasExplain)):'
-}`
-one observation is identified with a point, *above* the top line.
+The box for the *older* gorillas is slightly different (Fig.\ \@ref(BoxplotGorillas)): one observation is identified with a point, *above* the top line.
 Computer software has identified this observation as a potentially *outlier* (in this case, unusually *large*), and has plotted this point separately, using the IQR rule (Sect.\ \@ref(OutliersIQRrule)).
 Mild and extreme outliers are plotted in this way (Sect.\ \@ref(OutliersIQRrule)) then then the values of the quantiles ($Q_1$, $Q_2$ and $Q_3$) are computed as usual.
 
@@ -458,6 +446,161 @@ Boxplots summarise data with only five numbers, so a lot of detail of the distri
 For this reason, boxplots are excellent for *comparing* distributions, but histograms are better for displaying a single quantitative distribution.
 :::
 
+
+<!-- --- -->
+
+
+
+<!-- ```{r BoxplotGorillasYoungHTML, fig.cap="A boxplot for chest-beating data; the boxplot just for the younger gorillas", fig.width=5, fig.height=4, fig.align="center"} -->
+<!-- if (knitr::is_html_output()) { -->
+
+<!--     data(Gorillas) -->
+
+<!--   GYoung <- Gorillas$ChestBeatRate[ Gorillas$Age20 == "Younger"]  -->
+<!--   GYoung <- sort(GYoung) -->
+
+
+<!-- Beat.quantiles <- quantile(GYoung) -->
+<!-- out <- boxplot( list(Older = GYoung),  -->
+<!--             main = "A boxplot of the number of\neggs laid by krill: Treatment group", -->
+<!--             las = 1, -->
+<!--             pch = 19, -->
+<!--             col = "white", -->
+<!--             ylim = c(-2, 6), -->
+<!--             xlim = c(0.55, 1.85), -->
+<!--             ylab = "Number of eggs") -->
+<!-- abline( h = Beat.quantiles,  -->
+<!--         col = "grey", -->
+<!--         lty = 2, -->
+<!--         lwd = 1) -->
+<!-- bxp(out,  -->
+<!--     las = 1,  -->
+<!--     add = TRUE,  -->
+<!--     boxfill = plot.colour) -->
+
+<!-- text( 1.53, Beat.quantiles[5],  -->
+<!--       "Max. value",  -->
+<!--       pos = 1,  -->
+<!--       cex = 0.75) -->
+<!-- text( 1.53, Beat.quantiles[4],  -->
+<!--       "75% smaller than this",  -->
+<!--       pos = 3,  -->
+<!--       cex = 0.75) -->
+<!-- text( 1.53, Beat.quantiles[3],  -->
+<!--       "Median",  -->
+<!--       pos = 3,  -->
+<!--       cex = 0.75) -->
+<!-- text( 1.53, Beat.quantiles[2],  -->
+<!--       "25% smaller than this",  -->
+<!--       pos = 3,  -->
+<!--       cex = 0.75) -->
+<!-- text( 1.53, Beat.quantiles[1],  -->
+<!--       "Min. value",  -->
+<!--       pos = 1,  -->
+<!--       cex = 0.75) -->
+
+<!-- text( 0.65, Beat.quantiles[4],  -->
+<!--       expression(italic(Q)[3]),  -->
+<!--       pos = 3,  -->
+<!--       cex = 0.75) -->
+<!-- text( 0.65, Beat.quantiles[3],  -->
+<!--       expression(italic(Q)[2]),  -->
+<!--       pos = 3,  -->
+<!--       cex = 0.75) -->
+<!-- text( 0.65, Beat.quantiles[2],  -->
+<!--       expression(italic(Q)[1]),  -->
+<!--       pos = 3,  -->
+<!--       cex = 0.75) -->
+
+<!-- axis(side = 4, # This places the tick marks -->
+<!--      at = Beat.quantiles, -->
+<!--      labels = rep("", 5) ) -->
+<!-- mtext(Beat.quantiles, -->
+<!--       side = 4, -->
+<!--       at = Beat.quantiles, -->
+<!--       las = 1, -->
+<!--       line = 1, -->
+<!--       padj = c(0.5, 0.5, 0.5, 0, 1), -->
+<!--       cex = 1) -->
+<!-- } -->
+<!-- ``` -->
+
+
+
+
+<!-- ```{r animation.hook="gifski", interval=0.75, dev=if (is_latex_output()){"pdf"}else{"png"}} -->
+<!-- # Grab some of the necessary stats -->
+<!-- Qs <- quantile(GYoung,  -->
+<!--                seq(0, 1, by = 0.25)) # See below for better way when there are outliers -->
+
+<!-- left <- 0.75 -->
+<!-- right <- 1.25 -->
+<!-- axis.edge <- axis.edge.left <- 0.5 -->
+<!-- axis.edge.right <- 1.5 -->
+<!-- angle <- 15 -->
+<!-- mid <- mean( c(left, axis.edge.left) ) -->
+<!-- mid.r <- mean( c(right, axis.edge.right) ) -->
+
+<!-- # The box is at x = 1, and goes from x = 0.5 to 1.5 on the x-axis. -->
+<!-- # See this by following the boxplot()) call with axis(side-1) -->
+
+
+<!-- if (knitr::is_html_output()) { -->
+<!--   for (i in (1:6)){ -->
+<!--     boxplot( GYoung,  -->
+<!--              col = plot.colour, -->
+<!--              las = 1, -->
+<!--              main = "Boxplot of chest-beating rate\n(younger gorillas)", -->
+<!--              ylim = c(-1, 6), -->
+<!--              ylab = "Number of eggs") -->
+<!--     if ( i == 2 ){ -->
+<!--       arrows(left, Qs[2], -->
+<!--              axis.edge, Qs[2], -->
+<!--              angle = angle, -->
+<!--              lwd = 2) -->
+<!--       text(mid, Qs[2],  -->
+<!--            label = expression( italic(Q)[1]),  -->
+<!-- 	   pos = 3) -->
+<!--     } -->
+<!--     if (i == 3){ -->
+<!--       arrows(left, Qs[4], -->
+<!--              axis.edge, Qs[4], -->
+<!--              angle = angle, -->
+<!--              lwd = 2) -->
+<!--       text(mid, Qs[4],  -->
+<!--            label = expression( italic(Q)[3]),  -->
+<!-- 	   pos = 3) -->
+<!--     } -->
+<!--     if (i >= 4){ -->
+<!--       arrows(left, Qs[2], -->
+<!--              axis.edge, Qs[2], -->
+<!--              angle = angle, -->
+<!--              lwd = 1) -->
+<!--       text(mid, Qs[2],  -->
+<!--            label = expression( italic(Q)[1]),  -->
+<!-- 	   pos = 3) -->
+<!--       arrows(left, Qs[4], -->
+<!--              axis.edge, Qs[4], -->
+<!--              angle = angle, -->
+<!--              lwd = 1) -->
+<!--       text(mid, Qs[4],  -->
+<!--            label = expression( italic(Q)[3]),  -->
+<!-- 	   pos = 3) -->
+
+<!--       arrows(mid.r, Qs[4], mid.r, Qs[2], -->
+<!--              lwd = 2, -->
+<!--              angle = angle, -->
+<!--              code = 3) # Arrow at both ends -->
+<!--       text( mid.r, Qs[3],  -->
+<!--             label = "IQR",  -->
+<!-- 	    pos = 4) -->
+<!--     } -->
+<!--   } -->
+<!-- } -->
+<!-- ``` -->
+
+
+<!-- --- -->
 
 ::: {.example #BoxplotsHorizontal name="Boxplots"}
 Boxplots can be plotted horizontally too, which leaves space for long labels.
@@ -594,8 +737,11 @@ GorillaSummaryTable[, 3] <- c( length(CBRyounger),
                                   length(CBRolder), 
                                   NA )
 
-knitr::kable( surroundMaths(GorillaSummaryTable,
-                            decDigits = c(2, 3, 0)),
+if( knitr::is_latex_output() ) {
+  knitr::kable( pad(GorillaSummaryTable,
+                  surroundMaths = TRUE,
+                  targetLength = c(5, 6, 2),
+                  digits = c(3, 4, 0)),
               format = "latex",
               longtable = FALSE,
               booktabs = TRUE,
@@ -615,6 +761,31 @@ knitr::kable( surroundMaths(GorillaSummaryTable,
                       "Sample" = 1),
                     bold = TRUE,
                     line = FALSE)
+}
+if( knitr::is_html_output() ) {
+  knitr::kable( pad(GorillaSummaryTable,
+                  surroundMaths = TRUE,
+                  targetLength = c(5, 6, 2),
+                  digits = c(3, 4, 0)),
+              format = "html",
+              longtable = FALSE,
+              booktabs = TRUE,
+              escape = FALSE,
+              digits = 1,
+              align = "c",
+              caption = "A numerical summary of the gorillas data") %>%
+  kable_styling(full_width = FALSE) %>%
+  row_spec(row = 0, 
+           bold = TRUE) %>%
+  row_spec(row = 3,
+           italic = TRUE) %>%
+  add_header_above( c( " " = 1,
+                       "Mean" = 1,
+                      "Standard deviation" = 1,
+                      "Sample" = 1),
+                    bold = TRUE,
+                    line = FALSE)
+}
 ```
 
 
@@ -623,8 +794,8 @@ knitr::kable( surroundMaths(GorillaSummaryTable,
 A study of three rural communities in Cameroon [@lopez2022farmers] recorded data about access to water (Sect.\ \@ref(WaterAccessQuant)).
 One of the main purposes of the study was to determine contributors to the incidence of diarrhoea in young children ($85$ households had children under\ $5$).
 
-The graphs (Fig.\ \@ref(fig:WaterAccessCompareQuantFigs)) and summary (Table\ \@ref(tab:WaterAccessCompareQuantTabs)) show that households in which diarrhea was found in the last two weeks in children had older coordinators, more in the household, and more children under 5 in the household. 
-The may be expected: older female coordinators probably have more children, have more children in the household under 5, and more children (and hence people) in the household in general.
+The graphs (Fig.\ \@ref(fig:WaterAccessCompareQuantFigs)) and summary (Table\ \@ref(tab:WaterAccessCompareQuantTabs)) show that households in which diarrhea was found in the last two weeks in children had older coordinators, more in the household, and more children under\ $5$ in the household. 
+The may be expected: older female coordinators probably have more children, have more children in the household under\ $5$, and more children (and hence people) in the household in general.
 
 
 
@@ -730,7 +901,7 @@ if( knitr::is_latex_output() ) {
         booktabs = TRUE,
         escape = FALSE, # For latex to work
         linesep = c( "", "", ""), 
-        caption = "A summary of the quantitative variables in the water-access study, according to whether diarrhea had been observed in the last two weeks in children under 5, for those household with children under 5",
+        caption = "A summary of the quantitative variables in the water-access study, according to whether diarrhea had been observed in the last two weeks in children under $5$, for those household with children under $5$",
         align = c("r", "c", "c", "c", "c", "c"))   %>%
    kable_styling(full_width = FALSE, 
                  font_size = 10) %>%
@@ -751,11 +922,14 @@ if( knitr::is_latex_output() ) {
 }
 
 if( knitr::is_html_output() ) {
-  kable(WACompareQual,
+  kable(pad(WACompareQual,
+               targetLength = c(0, 2, 4, 4, 5, 5),
+               digits = c(0, 0, 1, 1, 2, 2),
+               surroundMaths = TRUE),
         format = "html",
         align = c("r", "c", "c", "c", "c", "c"),
         longtable = FALSE,
-        caption = "A summary of the quantitative variables in the water-access study, according to whether diarrhea had been observed in the last two weeks in children under 5, for those household with children under 5",
+        caption = "A summary of the quantitative variables in the water-access study, according to whether diarrhea had been observed in the last two weeks in children under $5$, for those household with children under $5$",
         booktabs = TRUE) %>%     # Row headings in bold
     pack_rows("Woman's age",
               start_row = 1,
@@ -990,8 +1164,10 @@ OfficeTemps[5, ] <- c(25.5, 26.9, 27.2)
 OfficeTemps[6, ] <- c(27.4, 31.0, 30.3)
 
 if( knitr::is_latex_output() ) {
-    kable(surroundMaths(OfficeTemps,
-                        decDigits = 1),
+    kable(pad(OfficeTemps,
+              surroundMaths = TRUE,
+              targetLength = c(4, 4, 4),
+              digits = 1),
         format = "latex",
         longtable = FALSE,
         booktabs = TRUE,
@@ -1007,7 +1183,10 @@ according to current smoking status",
 }
 
 if( knitr::is_html_output() ) {
-  kable(OfficeTemps,
+  kable(pad(OfficeTemps,
+              surroundMaths = TRUE,
+              targetLength = c(4, 4, 4),
+              digits = 1),
         format = "html",
         align = c("c", "c"),
         longtable = FALSE,
@@ -1176,8 +1355,10 @@ FacePlant[2, 1:5] <- ForwardFall$LeanAngle[ForwardFall$Group == "Younger"][6:10]
 
 if( knitr::is_latex_output() ) {
   
-  kable( surroundMaths(FacePlant,
-                       decDigits = 0),
+  kable( pad(FacePlant,
+             surroundMaths = TRUE,
+             targetLength = c(2, 2, 2, 2, 2, 2, 2, 2, 2, 2),
+             digits = 0),
          format = "latex",
          longtable = FALSE,
          booktabs = TRUE,
@@ -1191,7 +1372,10 @@ if( knitr::is_latex_output() ) {
     
 }
 if( knitr::is_html_output() ) {
-  out <- kable( FacePlant,
+  out <- kable( pad(FacePlant,
+             surroundMaths = TRUE,
+             targetLength = c(2, 2, 2, 2, 2, 2, 2, 2, 2, 2),
+             digits = 0),
                 format = "html",
                 longtable = FALSE,
                 booktabs = TRUE,
@@ -1251,8 +1435,10 @@ if( knitr::is_latex_output() ) {
                 Speed$Speed[Speed$When == "Before"][22:28],
                 Speed$Speed[Speed$When == "Before"][29:35],
                 c( Speed$Speed[Speed$When == "Before"][36:38], NA, NA, NA, NA ) )
-  T1 <- knitr::kable( surroundMaths(tb1,
-                                    decDigits = 1),
+  T1 <- knitr::kable( pad(tb1,
+                          surroundMaths = TRUE,
+                          targetLength = 5,
+                          digits = 1),
                       format = "latex",
                       valign = 't',
                       align = "r",
@@ -1270,8 +1456,10 @@ if( knitr::is_latex_output() ) {
                 Speed$Speed[Speed$When == "After"][22:28], 
                 Speed$Speed[Speed$When == "After"][29:35], 
                 c( Speed$Speed[Speed$When == "After"][36:41], NA) )
-  T2 <- knitr::kable( surroundMaths(tb2,
-                                    decDigits = 1),
+  T2 <- knitr::kable( pad(tb2,
+                          surroundMaths = TRUE,
+                          targetLength = 5,
+                          digits = 1),
                       format = "latex",
                       align = "r",
                       valign = 't',

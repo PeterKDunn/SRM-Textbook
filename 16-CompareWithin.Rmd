@@ -89,10 +89,14 @@ if( knitr::is_latex_output() ) {
                       line = FALSE) 
 }
 if( knitr::is_html_output() ) {
-  kable(IgE,
+  kable(pad(IgE,
+            surroundMaths = TRUE,
+            targetLength = 4,
+            digits = 0),
         format = "html",
         longtable = TRUE,
         booktabs = TRUE,
+        align = "c",
         col.names = c("IgE (before) in micrograms/L", 
                       "IgE (after) in micrograms/L", 
                       "IgE reduction in micrograms/L"),
@@ -345,11 +349,13 @@ Flowering$Site <- 1:Flen
 
 if( knitr::is_latex_output() ) {
   
- T1 <- knitr::kable(surroundMaths(Flowering[1:9, c(5, 1, 2)],
-                                   decDigits = 0),
+ T1 <- knitr::kable(pad(Flowering[1:9, c(5, 1, 2)],
+                        surroundMaths = TRUE,
+                        targetLength = c(2, 3, 3),
+                        digits = 0),
                      format = "latex",
                      valign = 't',
-                     align = "r",
+                     align = "c",
                      linesep = "",
                      col.names = c("Site", "Willow", "Skypilot"),
                      row.names = FALSE,
@@ -360,12 +366,14 @@ if( knitr::is_latex_output() ) {
                         "First-flowering day" = 2),
                      bold = TRUE)
 
- T2 <- knitr::kable(surroundMaths( rbind(Flowering[10:17, c(5, 1, 2)],
+ T2 <- knitr::kable(pad( rbind(Flowering[10:17, c(5, 1, 2)],
                                          c(NA, NA)),
-                                   decDigits = 0),
+                        surroundMaths = TRUE,
+                        targetLength = c(2, 3, 3),
+                        digits = 0),
                      format = "latex",
                      valign = 't',
-                     align = "r",
+                     align = "c",
                      linesep = "",
                      col.names = c("Site", "Willow", "Skypilot"),
                      row.names = FALSE,
@@ -377,12 +385,14 @@ if( knitr::is_latex_output() ) {
                      bold = TRUE)
   
       
-  T3 <- knitr::kable(surroundMaths( rbind(Flowering[18:25, c(5, 1, 2)],
+  T3 <- knitr::kable(pad( rbind(Flowering[18:25, c(5, 1, 2)],
                                           c(NA, NA)),
-                                   decDigits = 0),
+                        surroundMaths = TRUE,
+                        targetLength = c(2, 3, 3),
+                        digits = 0),
                      format = "latex",
                      valign = 't',
-                     align = "r",
+                     align = "c",
                      linesep = "",
                      col.names = c("Site", "Willow", "Skypilot"),
                      row.names = FALSE,
@@ -404,13 +414,16 @@ if( knitr::is_latex_output() ) {
 }
 
 if( knitr::is_html_output() ) {
-  kable( Flowering[, c(5, 1, 2)],
+  kable( pad(Flowering[, c(5, 1, 2)],
+                        surroundMaths = TRUE,
+                        targetLength = c(2, 3, 3),
+                        digits = 0),
          format = "html",
+         align = "c",
          booktabs = TRUE,
          longtable = FALSE,
          col.names = c("Site", "Willow", "Skypilot"),
          caption = "The day of the year of first flowering by encroaching willow and native skypilot.") %>% 
-    kable_styling(font_size = 10) %>%
     row_spec(0, bold = TRUE)
 }
 ```
@@ -459,10 +472,12 @@ FloweringSummary[1:2, 1] <- round(FloweringSummary[1:2, 1], 3)
 
 if( knitr::is_latex_output() ) {
   
-  knitr::kable(surroundMaths(FloweringSummary,
-                             decDigits = c(2, 3, 3, 0)),
+  knitr::kable(pad(FloweringSummary,
+                   surroundMaths = TRUE,
+                   targetLength = c(6, 7, 6, 2),
+                   digits = c(2, 4, 4, 0)),
                format = "latex",
-               align = c("r", "r", "r", "c"),
+               align = "c",
                linesep = "",
                caption = "The day of first flowering for encroaching willow and native skypilot",
                col.names = c("Mean", "Std. dev.", "Std. error", "Sample size"),
@@ -476,8 +491,12 @@ if( knitr::is_latex_output() ) {
 }
 
 if( knitr::is_html_output() ) {
-  kable( FloweringSummary,
+  kable( pad(FloweringSummary,
+                   surroundMaths = TRUE,
+                   targetLength = c(6, 7, 6, 2),
+                   digits = c(2, 4, 4, 0)),
          format = "html",
+               align = "c",
          booktabs = TRUE,
          longtable = FALSE,
          col.names =  c("Mean", "Std. dev.", "Std. error", "Sample size"),
@@ -565,7 +584,7 @@ The pressure when this occurred was recorded.
 This was repeated $5$\ mins before applying the tape, $5$\ min after applying the tape, and again $15$--$20$\ min after applying the tape.
 
 Figure\ \@ref(fig:TapeRepeated) shows the reported pain for $16$ subjects.
-When the number of individuals is large, sometimes just the means are shown (the black lines and points in the figure)
+When the number of individuals is large, sometimes just the means are shown (the black lines and points in the figure).
 A summary table is shown in Table\ \@ref(tab:TapeTable).
 
 
@@ -622,14 +641,6 @@ points( x = 1:3,
 # }
 
 ```
-
-
-
-1. What do the differences *mean*?
-2. Construct a summary table.
-3. Construct a case-profile plot.
-4. Construct a stemplot of the differences.
-:::
 
 
 ```{r TapeTable}
@@ -710,7 +721,7 @@ Their RQ was:
 
 ```{r DataInsulationTest, echo=FALSE}
 data(InsulationBeforeAfter)
-InsulationBeforeAfter$Diff <- InsulationBeforeAfter$Before - InsulationBeforeAfter$After
+InsulationBeforeAfter$Diff <- round(InsulationBeforeAfter$Before - InsulationBeforeAfter$After, 1)
 InsulationBeforeAfter$Home <- paste("Home", 
                                     LETTERS[1:10])
 InsulationBeforeAfter <- InsulationBeforeAfter[, c(4, 1:3)] # Reorder with HOME first column
@@ -762,16 +773,6 @@ if( knitr::is_html_output(exclude = "epub") ) {
                  fillContainer = FALSE, # Make more room, so we don't just have ten values
                  options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
                  caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)")
-}
-if( knitr::is_html_output() ) {
-  kable( InsulationBeforeAfter,
-         format = "html",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names = c("Home", "Before", "After", "Energy savings"),
-         caption = "The house insulation data: Energy consumption before and after adding insulation, and the energy saving (all in MWh)") %>%
-  kable_styling(font_size = 10) %>%
-  row_spec(0, bold = TRUE)
 }
 ```
 
@@ -825,8 +826,11 @@ PRtable[4, 2:5] <- apply( subset(PTwide[7:10],
                           "sd",
                           na.rm = TRUE)
 
-knitr::kable( surroundMaths(PRtable,
-                            decDigits = c(0, 2, 2, 2, 2)),
+if( knitr::is_latex_output() ) {
+knitr::kable( pad(PRtable,
+                  surroundMaths = TRUE,
+                  targetLength = c(0, 4, 4, 4, 4),
+                  digits = c(0, 2, 2, 2, 2)),
               format = "latex",
               align = c("r", "c", "c", "c", "c"),
               linesep = c("", "\\addlinespace"),
@@ -837,12 +841,27 @@ knitr::kable( surroundMaths(PRtable,
   row_spec(0, bold = TRUE) %>%
   column_spec(1, bold = TRUE) %>%
   kable_styling(font_size = 10)
-
+}
+if( knitr::is_latex_output() ) {
+knitr::kable( pad(PRtable,
+                  surroundMaths = TRUE,
+                  targetLength = c(0, 4, 4, 4, 4),
+                  digits = c(0, 2, 2, 2, 2)),
+              format = "html",
+              align = c("r", "c", "c", "c", "c"),
+              linesep = c("", "\\addlinespace"),
+              row.names = TRUE,
+              escape = FALSE,
+              caption = "Reported pain for mothers after giving birth",
+              booktabs = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = TRUE)
+}
 ```
 
 
 ::: {.exercise #CompareWithinExercisesCaptopril}
-In a study of hypertension [@data:hand:handbook; @data:macgregor:essential], $15$ patients were given a drug (Captopril) and their systolic blood pressure measured (in mm Hg) immediately before and two hours after being given the drug (Table\ \@ref(tab:CICaptoprilData)).
+In a study of hypertension [@data:hand:handbook; @data:macgregor:essential], $15$ patients were given a drug (Captopril) and their systolic blood pressure measured (in mm\ Hg) immediately before and two hours after being given the drug (Table\ \@ref(tab:CICaptoprilData)).
 
 1. Explain why this is a within-individuals comparison.
 1. Construct a histogram of the differences.
@@ -916,7 +935,11 @@ if( knitr::is_latex_output() ) {
   out2
 }
 if( knitr::is_html_output() ) {
-  kable( bloodS2,
+  kable( pad(bloodS2,
+             surroundMaths = TRUE,
+             targetLength = c(3, 3, 3, 3),
+             digits = 0),
+         alisgn = "c",
                 format = "html",
                 booktabs = TRUE,
                 caption = "The Captopril data: before after after systolic blood pressures (in mm Hg)",
@@ -972,13 +995,15 @@ STtable[, 3] <- STtable[, 2] / sqrt( STtable[, 4])
 
 
 if( knitr::is_latex_output() ) {
-kable(surroundMaths(STtable,
-                    decDigits = c(2, 2, 2, 0) ),
+kable(pad(STtable,
+          surroundMaths = TRUE,
+          targetLength = c(5, 6, 5, 2),
+          digits = c(2, 3, 3, 0) ),
       format = "latex",
       booktabs = TRUE,
       longtable = FALSE,
       escape = FALSE,
-      align = c("r", "r", "r", "c"),
+      align = "c",
       col.names = c("Mean", "Std deviation", "Std error", "Sample size"),
       #digits = c(2, 2, 2, 0),
       caption = "The numerical summary for the presurgical stress data") %>%
@@ -987,12 +1012,16 @@ kable(surroundMaths(STtable,
   kable_styling(font = 10)
 }
 if( knitr::is_html_output() ) {
-kable(STtable,
+kable(pad(STtable,
+          surroundMaths = TRUE,
+          targetLength = c(5, 6, 5, 2),
+          digits = c(2, 3, 3, 0) ),
       format = "html",
+      align = "c",
       booktabs = TRUE,
       longtable = FALSE,
       col.names = c("Mean", "Std deviation", "Std error", "Sample size"),
-      digits = c(2, 3, 3, 0),
+      #digits = c(2, 3, 3, 0),
       caption = "The numerical summary for the presurgical stress data")
 }
 

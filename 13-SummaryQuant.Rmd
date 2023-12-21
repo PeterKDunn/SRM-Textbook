@@ -138,12 +138,14 @@ colnames(BBtab) <- c("Weight group",
                      "Percentage of babies born")
 
 if( knitr::is_latex_output() ) {
-  kable( surroundMaths(BBtab,
-                       decDigits = 0),
+  kable( pad(BBtab,
+             surroundMaths = TRUE,
+             targetLength = c(0, 2, 2),
+             digits = 0),
         format = "latex",
         longtable = FALSE,
         escape = FALSE,
-        align = c("c", "r", "r"),
+        align = "c",
         booktabs = TRUE,
         linesep = c("","","\\addlinespace"),
         row.names = FALSE,
@@ -152,10 +154,13 @@ if( knitr::is_latex_output() ) {
 	row_spec(0, bold = TRUE)
 }
 if( knitr::is_html_output() ) {
- kable(BBtab,
+ kable(pad(BBtab,
+             surroundMaths = TRUE,
+             targetLength = c(0, 2, 2),
+             digits = 0),
                format = "html",
                longtable = FALSE,
-               align = c("c", "r", "r"),
+               align = "c",
                booktabs = TRUE,
                row.names = FALSE,
                caption = "The baby-weights data, displayed in a tabular summary") %>%
@@ -1524,7 +1529,7 @@ Consider again the weights (in kg) of babies born in a Brisbane hospital
 }`
 A dot chart
 `r if( knitr::is_html_output() ) {
-  '(Fig.\\ \\@ref(fig:BabyBoomDotHTML)).'
+  '(Fig.\\ \\@ref(fig:BabyBoomDotHTML))'
 } else
 {
   '(Fig\\ \\@ref(fig:FriesBabiesPDF), right panel)'
@@ -1820,12 +1825,18 @@ htmltools::tags$video(src ="./Movies/mu.mp4",
 
 
 ::: {.example #JerseyCows name="A small dataset"}
-To demonstrate ideas, consider a small dataset for answering this descriptive RQ: 'For gorillas aged under 20, what is the average chest-beating rate?'
+To demonstrate ideas, consider a small dataset for answering this descriptive RQ: 'For gorillas aged under $20$, what is the average chest-beating rate?'
 The population mean rate (denoted $\mu$) is to be estimated.
 
 Clearly, every gorilla cannot be studied; a *sample* is studied.
 The unknown population mean is estimated using the sample mean ($\bar{x}$), and every possible sample can give a different value for $\bar{x}$.
-Measurements were taken from 14 young gorillas (Fig.\ \@ref(fig:FriesBabiesPDF), left panel).
+Measurements were taken from $14$ young gorillas
+`r if( knitr::is_html_output() ) {
+  '(Fig.\\ \\@ref(fig:BabyBoomDotHTML)).'
+} else
+{
+  '(Fig\\ \\@ref(fig:FriesBabiesPDF), right panel).'
+}`
 :::
 
 
@@ -1925,7 +1936,14 @@ In symbols:
 
 
 ::: {.example #ComputeMean name="Computing a sample mean"}
-For the chest-beating data (Fig.\ \@ref(fig:FriesBabiesPDF), left panel), an *estimate* of the population mean (i.e., the sample mean) chest-beating rate is found by summing all $n = 14$ observations and dividing by $n$:  
+For the chest-beating data
+`r if( knitr::is_html_output() ) {
+  '(Fig.\\ \\@ref(fig:BabyBoomDotHTML)),'
+} else
+{
+  '(Fig\\ \\@ref(fig:FriesBabiesPDF), right panel),'
+}`
+an *estimate* of the population mean (i.e., the sample mean) chest-beating rate is found by summing all $n = 14$ observations and dividing by $n$:  
 \[
    \overline{x} 
    = \frac{\sum x}{n} 
@@ -1938,7 +1956,14 @@ The sample mean, the best estimate of the population mean, is $2.22$ beats per $
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-For the chest-beating data (Fig.\ \@ref(fig:FriesBabiesPDF), left panel), what is the value of $\mu$?\label{thinkBox:ValueOfMu}
+For the chest-beating data
+`r if( knitr::is_html_output() ) {
+  '(Fig.\\ \\@ref(fig:BabyBoomDotHTML)),'
+} else
+{
+  '(Fig\\ \\@ref(fig:FriesBabiesPDF), right panel),'
+}`
+what is the value of $\mu$?\label{thinkBox:ValueOfMu}
 
 `r if (knitr::is_latex_output()) '<!--'`
 `r webexercises::hide()`
@@ -2042,7 +2067,14 @@ A *median* is a value such that half the values are larger than the median, and 
 
 
 ::: {.example #SampleMedian name="Find a sample median"}
-To find a sample median for the chest-beating data (Fig.\ \@ref(fig:FriesBabiesPDF), left panel)), first arrange the data *in numerical order* (Table\ \@ref(tab:GYoungSorted)).
+To find a sample median for the chest-beating data
+`r if( knitr::is_html_output() ) {
+  '(Fig.\\ \\@ref(fig:BabyBoomDotHTML)),'
+} else
+{
+  '(Fig\\ \\@ref(fig:FriesBabiesPDF), right panel),'
+}`
+first arrange the data *in numerical order* (Table\ \@ref(tab:GYoungSorted)).
 The median separates the larger $7$ numbers from the smaller $7$ numbers. 
 With $n = 14$ observations, the median is the ordered observation located between the seventh and eighth observations (i.e., at position $(14 + 1)/2 = 7.5$; the *median itself is not $7.5$*).
 
@@ -2183,10 +2215,12 @@ upperLim <- out$breaks[ -1 ]
 Intervals <- paste0("$",
                    format(lowerLim,
                           big.mark = ",",
+                          trim = TRUE,
                           scientific = FALSE),
                    "$ to under $", 
                    format(upperLim,
                           big.mark = ",",
+                          trim = TRUE,
                           scientific = FALSE),
                    "$")
 MaryRiverTable <- cbind(Intervals = Intervals, 
@@ -2195,17 +2229,21 @@ MaryRiverTable <- cbind(Intervals = Intervals,
 
 if( knitr::is_latex_output() ) {
   
-  T1 <- knitr::kable( surroundMaths(MaryRiverTable[1:4, ],
-                                    decDigits = 0),
-                     format = "latex",
-                     col.names = c("Daily streamflow (ML)",
-                                   "Num. of days"),
-                     align = c("c", "r"),
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
+  T1 <- knitr::kable( pad(MaryRiverTable[1:4, ],
+                          surroundMaths = TRUE,
+                          targetLength = c(0, 4),
+                          digits = 0),
+                      format = "latex",
+                      col.names = c("Daily streamflow (ML)",
+                                    "Num. of days"),
+                      align = c("c", "r"),
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
     row_spec(0, bold = TRUE)
-  T2 <- knitr::kable(surroundMaths(MaryRiverTable[5:8, ],
-                                   decDigits = 0),
+  T2 <- knitr::kable(pad(MaryRiverTable[5:8, ],
+                         surroundMaths = TRUE,
+                         targetLength = c(0, 4),
+                         digits = 0),
                      format = "latex",
                      col.names = c("Daily streamflow (ML)",
                                    "Num. of days"),
@@ -2224,7 +2262,10 @@ if( knitr::is_latex_output() ) {
 }
 
 if( knitr::is_html_output() ) {
-  kable( MaryRiverTable,
+  kable( pad(MaryRiverTable,
+             surroundMaths = TRUE,
+             targetLength = c(0, 4),
+             digits = 0),
          format = "html",
          col.names = c("Daily streamflow (ML)",
                        "Number of days"),
@@ -2519,76 +2560,6 @@ The IQR is measured in the same measurements units as the data.
 The sample IQR *estimates* the population IQR, and every one of the possible samples is likely to have a different sample IQR.
 :::
 
-
-```{r BoxplotKrillTreatment2HTML, fig.cap="A boxplot for the krill-egg data; the boxplot just for the treatment group", fig.width=5, fig.height=4, fig.align="center"}
-if (knitr::is_html_output()) {
-
-  Beat.quantiles <- quantile(GYoung)
-out <- boxplot( list(Older = GYoung), 
-            main = "A boxplot of the number of\neggs laid by krill: Treatment group",
-            las = 1,
-            pch = 19,
-            col = "white",
-            ylim = c(-4, 50),
-            xlim = c(0.55, 1.85),
-            ylab = "Number of eggs")
-abline( h = Beat.quantiles, 
-        col = "grey",
-        lty = 2,
-        lwd = 1)
-bxp(out, 
-    las = 1, 
-    add = TRUE, 
-    boxfill = plot.colour)
-
-text( 1.53, Beat.quantiles[5], 
-      "Max. value", 
-      pos = 1, 
-      cex = 0.75)
-text( 1.53, Beat.quantiles[4], 
-      "75% smaller than this", 
-      pos = 3, 
-      cex = 0.75)
-text( 1.53, Beat.quantiles[3], 
-      "Median", 
-      pos = 3, 
-      cex = 0.75)
-text( 1.53, Beat.quantiles[2], 
-      "25% smaller than this", 
-      pos = 3, 
-      cex = 0.75)
-text( 1.53, Beat.quantiles[1], 
-      "Min. value", 
-      pos = 1, 
-      cex = 0.75)
-
-text( 0.65, Beat.quantiles[4], 
-      expression(italic(Q)[3]), 
-      pos = 3, 
-      cex = 0.75)
-text( 0.65, Beat.quantiles[3], 
-      expression(italic(Q)[2]), 
-      pos = 3, 
-      cex = 0.75)
-text( 0.65, Beat.quantiles[2], 
-      expression(italic(Q)[1]), 
-      pos = 3, 
-      cex = 0.75)
-
-axis(side = 4, # This places the tick marks
-     at = Beat.quantiles,
-     labels = rep("", 5) )
-mtext(Beat.quantiles,
-      side = 4,
-      at = Beat.quantiles,
-      las = 1,
-      line = 1,
-      padj = c(0.5, 0.5, 0.5, 0, 1),
-      cex = 1)
-}
-```
-
-
 For the chest-beating data (Table\ \@ref(tab:GYoungSorted)):
 
 *  $75$% of the observations are smaller than about $2.9$.
@@ -2600,93 +2571,11 @@ For the chest-beating data (Table\ \@ref(tab:GYoungSorted)):
 
 (We say 'about' these values, as exact values can only be found when the sample size is a multiple of $4$.
 With a sample of size $14$, the data cannot be split into exactly into quartiles.)
-The IQR is $Q_3 - Q_1$ = $2.9 - 1.5 = 1.4$,
-`r if (knitr::is_latex_output()) {
-   'as shown in Fig.\\ \\@ref(fig:IQRKrill).'
-} else {
-   'as shown in the animation below.'
-}`
+The IQR is $Q_3 - Q_1$ = $2.9 - 1.5 = 1.4$, as shown in Fig.\ \@ref(fig:QuartilesYgorillas).
 
 
-```{r animation.hook="gifski", interval=0.75, dev=if (is_latex_output()){"pdf"}else{"png"}}
-# Grab some of the necessary stats
-Qs <- quantile(GYoung, 
-               seq(0, 1, by = 0.25)) # See below for better way when there are outliers
+```{r QuartilesYgorillas, fig.align="center", fig.width=8.75, fig.height=3.5, fig.cap="A dotchart for the chest-beating data for young gorillas showing the IQR", out.width='100%' }
 
-left <- 0.75
-right <- 1.25
-axis.edge <- axis.edge.left <- 0.5
-axis.edge.right <- 1.5
-angle <- 15
-mid <- mean( c(left, axis.edge.left) )
-mid.r <- mean( c(right, axis.edge.right) )
-
-# The box is at x = 1, and goes from x = 0.5 to 1.5 on the x-axis.
-# See this by following the boxplot()) call with axis(side-1)
-
-
-if (knitr::is_html_output()) {
-  for (i in (1:6)){
-    boxplot( GYoung, 
-             col = plot.colour,
-             las = 1,
-             main = "Boxplot of krill eggs\n(Treatment group)",
-             ylim = c(-3, 60),
-             ylab = "Number of eggs")
-    if ( i == 2 ){
-      arrows(left, Qs[2],
-             axis.edge, Qs[2],
-             angle = angle,
-             lwd = 2)
-      text(mid, Qs[2], 
-           label = expression( italic(Q)[1]), 
-	   pos = 3)
-    }
-    if (i == 3){
-      arrows(left, Qs[4],
-             axis.edge, Qs[4],
-             angle = angle,
-             lwd = 2)
-      text(mid, Qs[4], 
-           label = expression( italic(Q)[3]), 
-	   pos = 3)
-    }
-    if (i >= 4){
-      arrows(left, Qs[2],
-             axis.edge, Qs[2],
-             angle = angle,
-             lwd = 1)
-      text(mid, Qs[2], 
-           label = expression( italic(Q)[1]), 
-	   pos = 3)
-      arrows(left, Qs[4],
-             axis.edge, Qs[4],
-             angle = angle,
-             lwd = 1)
-      text(mid, Qs[4], 
-           label = expression( italic(Q)[3]), 
-	   pos = 3)
-      
-      arrows(mid.r, Qs[4], mid.r, Qs[2],
-             lwd = 2,
-             angle = angle,
-             code = 3) # Arrow at both ends
-      text( mid.r, Qs[3], 
-            label = "IQR", 
-	    pos = 4)
-    }
-  }
-}
-```
-
-
-```{r IQRKrill, fig.align="center", fig.width=8.75, fig.height=3.5, fig.cap="A dotchart for the chest-beating data for young gorillas showing the IQR", out.width='100%' }
-if (knitr::is_latex_output()){
-  
-  # layout( matrix( c(1, 2),
-  #                 nrow = 1, 
-  #                 ncol = 2),
-  #         widths = c(1.6, 1))
   par( mar = c(4.5, 2.0, 4, 2.0) + 0.1)
   angle <- 15
   
@@ -2800,84 +2689,7 @@ if (knitr::is_latex_output()){
        y = 1.85,
        x = mean( Beat.quantiles[c(2, 4)]),
        pos = 3)
-  
-#  axis(side = 4, # This places the tick marks
-#       at = Beat.quantiles,
-#       labels = rep("", 5) )
-  # mtext(Beat.quantiles,
-  #       side = 4,
-  #       at = Beat.quantiles,
-  #       las = 1,
-  #       line = 1,
-  #       padj = c(0.95, 0.25, 0.5, 0, 1),
-  #       cex = 1)
-  
-  ##########
-  #knitr::include_graphics("OtherImages/SPACER.png")
-  ##########
-  # 
-  # stripchart( GYoung,
-  #             method = "jitter",
-  #             main = "A boxplot of the number of\neggs laid by krill: Treatment group",
-  #             las = 1,
-  #             pch = 19,
-  #             vertical = TRUE,
-  #             #col = "grey",
-  #             axes = FALSE,
-  #             xlim = c(0.2, 1.75),
-  #             ylim = c(0, 5),
-  #             ylab = "Chest-beats per 10 h")
-  # axis(side = 2, 
-  #      las = 1)
-  # abline( h = Beat.quantiles[ c(2, 4)], 
-  #         col = "grey",
-  #         lty = 2,
-  #         lwd = 1)
-  # 
-  # arrows(x0 = 0, 
-  #        y0 = Qs[2],
-  #        x1 = 0.2, 
-  #        y1 = Qs[2],
-  #        angle = angle,
-  #        length = 0.1,
-  #        lwd = 1)
-  # text(mid, Qs[2], 
-  #      label = expression( italic(Q)[1]), 
-  #      pos = 3)
-  # arrows(x0 = 0.8, 
-  #        y0 = Qs[4],
-  #        x1 = 0.2, 
-  #        y1 = Qs[4],
-  #        angle = angle,
-  #        length = 0.1,
-  #        lwd = 1)
-  # text(mid, Qs[4], 
-  #      label = expression( italic(Q)[3]), 
-  #      pos = 3)
-  # 
-  # arrows(x0 = mid.r - 0.05, 
-  #        y0 = Qs[4], 
-  #        x1 = mid.r - 0.05, 
-  #        y1 = Qs[2],
-  #        lwd = 2,
-  #        angle = angle,
-  #        length = 0.1,
-  #        code = 3) # Arrow at both ends
-  # text( mid.r, Qs[3], 
-  #       label = "IQR", 
-  #       srt = 90,
-  #       pos = 4)
-  # 
-  # axis(side = 4, # This places the tick marks
-  #      at = Beat.quantiles[ c(2, 4)],
-  #      labels = rep("", 2) )
-  # mtext(Beat.quantiles[ c(2, 4)],
-  #       side = 4,
-  #       at = Beat.quantiles[c(2, 4)],
-  #       las = 1,
-  #       line = 1,
-  #       cex = 1)
-}
+
 ```
 
 
@@ -3181,7 +2993,7 @@ This is shown in Fig.\ \@ref(fig:SDOutliers); two observations are identified as
 
 
 
-```{r SDOutliers, fig.align="center", fig.width=9, fig.height = 3.5, fig.cap="Mild and extreme outliers, using the IQR rule, for the permeability data", out.width = '99%' }
+```{r SDOutliers, fig.align="center", fig.width=9, fig.height = 3.5, fig.cap="Outliers identified using the standard deviation rule for the permeability data", out.width = '99%' }
 source("R/showOutliersStdDevRule.R")
 ```
 
@@ -3222,225 +3034,225 @@ Three observations are identified as outliers using the IQR rule (Fig.\\ \\@ref(
 :::
 
 
-```{r IQROutlier, animation.hook="gifski", interval=1.75, dev=if (is_latex_output()){"pdf"}else{"png"}}
-data(Perm)
-x <- Perm$Perm
+<!-- ```{r IQROutlier, animation.hook="gifski", interval=1.75, dev=if (is_latex_output()){"pdf"}else{"png"}} -->
+<!-- data(Perm) -->
+<!-- x <- Perm$Perm -->
 
-plotIQROutliersAnimation <- function(x, i){
-  grey.pch <- grey(0.75)
-  
-  xsort <- sort( x , decreasing = TRUE)  
-  b.out <- boxplot(x, plot = FALSE)
-  
-  b.out.noextreme <- b.out
-  b.out.noextreme$n <- b.out.noextreme$n - 2
-  b.out.noextreme$out <- numeric(0)
-  b.out.noextreme$group <- numeric(0)
-  b.out.noextreme$stats[5, 1] <- xsort[3]
-  
-  b.out.nomild <- b.out
-  b.out.nomild$n <- b.out.nomild$n - 3
-  b.out.nomild$out <- numeric(0)
-  b.out.nomild$group <- numeric(0)
-  
-  qx <- quantile(x)
-  iqrx <- qx[4] - qx[2]
-  mild <- qx[4] + 1.5 * iqrx
-  extreme <- qx[4] + 3 * iqrx
-  
-  # FIND extreme obs
-  extreme.obs <-  b.out$out[2:3]
-  extreme.which <- which(x > extreme )
-  extreme.num <- length( x[extreme.obs] )
-  
-  # FIND mild obs
-  mild.obs <- b.out$out[1]
-  mild.which <- which(x > mild )
-  mild.num <- length( x[mild.obs] )
-  
-  x.nooutliers <- xsort[ -(1:3)]
-  
-  if ( (i >= 2) & (i <= 6) ){
-    set.seed(937300)
-    stripchart(x, #.nooutliers, 
-               vertical = TRUE, 
-               las = 1, 
-               pch = 1, 
-               ylim = c(0, 180), 
-               xlim = c(0.5, 1.5),
-               method = "jitter", 
-               jitter = 0.05,
-               ylab = "Permeability (in seconds)", 
-               col = grey.pch)
-    if (i == 2) title(main = "The boxplot, plus the data")
-    if (i == 3) title(main = "The IQR for the data")
-    if (i == 4) title(main = "Extreme outliers are more than 3 IQRs\n more than Q3 (or less than Q1)...")     
-    if ( i == 5 ) title( main = "...and are shown using a star")
-    if ( i == 6 ) title(main = "Mild outliers are more than 1.5 IQRs\n more than Q3 (or less than Q1)...") 
-    if ( i == 7 ) title( main = "...and are shown using a dot")
-  }
-  if ( i == 1) {
-    out <- boxplot(x, 
-                   col = rgb(0, 0, 0, maxColorValue = 256, alpha = 0.5), 
-                   pch = 1, 
-                   ylim = c(0, 180), 
-                   xlim = c(0.5, 1.5),
-                   ylab = "Permeability (in seconds)", 
-                   main = "The boxplot",
-                   range = 0, 
-                   las = 1)
-  }
-  if ( (i >= 2) & (i <= 4 ) ){
-    out <- boxplot(x, 
-                   add = TRUE, 
-                   col = rgb(0, 0, 0, maxColorValue = 256, alpha = 0.5), 
-                   boxwex = 0.2,
-                   range = 0, 
-                   las = 1)
-  }
-  if ( (i >= 5 ) & (i <= 7)) {
-    out <- bxp(b.out.noextreme, 
-               add = TRUE, 
-               boxfill = rgb(0, 0, 0, 
-                             maxColorValue = 256, 
-                             alpha = 0.5), 
-               pars = list(boxwex = 0.2),
-               width = 0.25,
-               las = 1)
-  }
-  
-  if ( i > 2 ){
-    abline( h = qx[2], 
-            col = "grey", 
-            lty = 2)
-    text(x = 1.4, 
-         y = qx[2], 
-         expression(Q[1] == 24.66), 
-         pos = 1,
-         cex = 0.9)
-    abline( h = qx[4], 
-            col = "grey", 
-            lty = 2)
-    text(x = 1.4, 
-         y = qx[4], 
-         expression(Q[3] == 50.58), 
-         pos = 3,
-         cex = 0.9)
-    
-    arrows(x0 = 0.75, 
-           y0 = qx[2], 
-           x1 = 0.75, 
-           y1 = qx[4], 
-           angle = 15,
-           length = 0.125, 
-           code = 3)
-    text(x = 0.83, 
-         y = mean(qx[ c(3, 4)]), 
-         label = expression(IQR), 
-         cex = 0.9)
-  }
-  
-  if ( (i > 3) & (i < 8) ){
-    abline( lwd = 2, 
-            col = "gray",
-            
-	    h = extreme )
-    text(1.0, mean( c(extreme, qx[5])), 
-         "All observations here are extreme outliers", 
-         col = "grey")
-  }
-  if ( (i == 4) | (i == 5) ) {
-    arrows(x0 = 0.75, 
-           y0 = qx[4], 
-           x1 = 0.75, 
-           y1 = extreme, 
-           angle = 15,
-           length = 0.125, 
-           code = 3)
-    text(x = 0.83, 
-         y = mean( c(qx[4], extreme)), 
-         labels = "Three IQRs")
-  }
-  
-  if ( (i > 5) & (i < 8) ){
-    abline( lwd = 2, 
-            col = "gray", 
-            h = mild )
-    text(x = 1.0, 
-         y = extreme,
-         pos = 1,
-         labels = "All observations here are mild outliers", 
-         col = "grey")
-  }
-  if ( (i == 6) | (i == 7) ) {
-    arrows(x0 = 0.75, 
-           y0 = qx[4], 
-           x1 = 0.75, 
-           y1 = mild, 
-           angle = 15, 
-           length = 0.125, 
-           code = 3)
-    text(x = 0.6, 
-         y = mean( c(qx[4], mild)), 
-         labels = "1.5 IQRs")
-  }
-  
-  
-  if ( i == 7 ) {
-    out <- boxplot(x,  
-                   add = TRUE, 
-                   col = rgb(0, 0, 0, maxColorValue = 256, alpha = 0.5), 
-                   las=1)
-    
-    set.seed(937300)
-    stripchart(x,
-               vertical = TRUE, 
-               las = 1, 
-               pch = 1, 
-               ylim = c(0, 180), 
-               xlim = c(0.5, 1.5),
-               method = "jitter", 
-               jitter = 0.05,
-               ylab = "Permeability (in seconds)", 
-               col = grey.pch)
-    title( main = "...and are shown using a dot")
-    points( rep(1, 2), 
-            xsort[1:2], 
-            pch = 8, 
-            cex = 1.5)
-    points( 1, xsort[3], 
-            pch = 1, 
-	    cex = 1.5)
-  }
-  if ( i == 8 ) {
-    out <- boxplot(x, 
-                   col = rgb(0, 0, 0, maxColorValue = 256, alpha = 0.5), 
-                   pch = 1, 
-                   main = "The final boxplot",
-                   ylim = c(0, 180), 
-                   xlim = c(0.5, 1.5),
-                   ylab = "Permeability (in seconds)", 
-                   las = 1)
-    points( 1, xsort[3], 
-            pch = 1, 
-            cex = 1.5)
-    points( rep(1, 2), 
-            xsort[1:2], 
-            pch = 8, 
-            cex = 1.5)
-  }
-  
-}
+<!-- plotIQROutliersAnimation <- function(x, i){ -->
+<!--   grey.pch <- grey(0.75) -->
 
-### HTML ONLY
+<!--   xsort <- sort( x , decreasing = TRUE)   -->
+<!--   b.out <- boxplot(x, plot = FALSE) -->
 
-if (knitr::is_html_output()){
-    for (i in 1:8){
-      plotIQROutliersAnimation(x, i )
-    }
-    
-  }
-```
+<!--   b.out.noextreme <- b.out -->
+<!--   b.out.noextreme$n <- b.out.noextreme$n - 2 -->
+<!--   b.out.noextreme$out <- numeric(0) -->
+<!--   b.out.noextreme$group <- numeric(0) -->
+<!--   b.out.noextreme$stats[5, 1] <- xsort[3] -->
+
+<!--   b.out.nomild <- b.out -->
+<!--   b.out.nomild$n <- b.out.nomild$n - 3 -->
+<!--   b.out.nomild$out <- numeric(0) -->
+<!--   b.out.nomild$group <- numeric(0) -->
+
+<!--   qx <- quantile(x) -->
+<!--   iqrx <- qx[4] - qx[2] -->
+<!--   mild <- qx[4] + 1.5 * iqrx -->
+<!--   extreme <- qx[4] + 3 * iqrx -->
+
+<!--   # FIND extreme obs -->
+<!--   extreme.obs <-  b.out$out[2:3] -->
+<!--   extreme.which <- which(x > extreme ) -->
+<!--   extreme.num <- length( x[extreme.obs] ) -->
+
+<!--   # FIND mild obs -->
+<!--   mild.obs <- b.out$out[1] -->
+<!--   mild.which <- which(x > mild ) -->
+<!--   mild.num <- length( x[mild.obs] ) -->
+
+<!--   x.nooutliers <- xsort[ -(1:3)] -->
+
+<!--   if ( (i >= 2) & (i <= 6) ){ -->
+<!--     set.seed(937300) -->
+<!--     stripchart(x, #.nooutliers,  -->
+<!--                vertical = TRUE,  -->
+<!--                las = 1,  -->
+<!--                pch = 1,  -->
+<!--                ylim = c(0, 180),  -->
+<!--                xlim = c(0.5, 1.5), -->
+<!--                method = "jitter",  -->
+<!--                jitter = 0.05, -->
+<!--                ylab = "Permeability (in seconds)",  -->
+<!--                col = grey.pch) -->
+<!--     if (i == 2) title(main = "The boxplot, plus the data") -->
+<!--     if (i == 3) title(main = "The IQR for the data") -->
+<!--     if (i == 4) title(main = "Extreme outliers are more than 3 IQRs\n more than Q3 (or less than Q1)...")      -->
+<!--     if ( i == 5 ) title( main = "...and are shown using a star") -->
+<!--     if ( i == 6 ) title(main = "Mild outliers are more than 1.5 IQRs\n more than Q3 (or less than Q1)...")  -->
+<!--     if ( i == 7 ) title( main = "...and are shown using a dot") -->
+<!--   } -->
+<!--   if ( i == 1) { -->
+<!--     out <- boxplot(x,  -->
+<!--                    col = rgb(0, 0, 0, maxColorValue = 256, alpha = 0.5),  -->
+<!--                    pch = 1,  -->
+<!--                    ylim = c(0, 180),  -->
+<!--                    xlim = c(0.5, 1.5), -->
+<!--                    ylab = "Permeability (in seconds)",  -->
+<!--                    main = "The boxplot", -->
+<!--                    range = 0,  -->
+<!--                    las = 1) -->
+<!--   } -->
+<!--   if ( (i >= 2) & (i <= 4 ) ){ -->
+<!--     out <- boxplot(x,  -->
+<!--                    add = TRUE,  -->
+<!--                    col = rgb(0, 0, 0, maxColorValue = 256, alpha = 0.5),  -->
+<!--                    boxwex = 0.2, -->
+<!--                    range = 0,  -->
+<!--                    las = 1) -->
+<!--   } -->
+<!--   if ( (i >= 5 ) & (i <= 7)) { -->
+<!--     out <- bxp(b.out.noextreme,  -->
+<!--                add = TRUE,  -->
+<!--                boxfill = rgb(0, 0, 0,  -->
+<!--                              maxColorValue = 256,  -->
+<!--                              alpha = 0.5),  -->
+<!--                pars = list(boxwex = 0.2), -->
+<!--                width = 0.25, -->
+<!--                las = 1) -->
+<!--   } -->
+
+<!--   if ( i > 2 ){ -->
+<!--     abline( h = qx[2],  -->
+<!--             col = "grey",  -->
+<!--             lty = 2) -->
+<!--     text(x = 1.4,  -->
+<!--          y = qx[2],  -->
+<!--          expression(Q[1] == 24.66),  -->
+<!--          pos = 1, -->
+<!--          cex = 0.9) -->
+<!--     abline( h = qx[4],  -->
+<!--             col = "grey",  -->
+<!--             lty = 2) -->
+<!--     text(x = 1.4,  -->
+<!--          y = qx[4],  -->
+<!--          expression(Q[3] == 50.58),  -->
+<!--          pos = 3, -->
+<!--          cex = 0.9) -->
+
+<!--     arrows(x0 = 0.75,  -->
+<!--            y0 = qx[2],  -->
+<!--            x1 = 0.75,  -->
+<!--            y1 = qx[4],  -->
+<!--            angle = 15, -->
+<!--            length = 0.125,  -->
+<!--            code = 3) -->
+<!--     text(x = 0.83,  -->
+<!--          y = mean(qx[ c(3, 4)]),  -->
+<!--          label = expression(IQR),  -->
+<!--          cex = 0.9) -->
+<!--   } -->
+
+<!--   if ( (i > 3) & (i < 8) ){ -->
+<!--     abline( lwd = 2,  -->
+<!--             col = "gray", -->
+
+<!-- 	    h = extreme ) -->
+<!--     text(1.0, mean( c(extreme, qx[5])),  -->
+<!--          "All observations here are extreme outliers",  -->
+<!--          col = "grey") -->
+<!--   } -->
+<!--   if ( (i == 4) | (i == 5) ) { -->
+<!--     arrows(x0 = 0.75,  -->
+<!--            y0 = qx[4],  -->
+<!--            x1 = 0.75,  -->
+<!--            y1 = extreme,  -->
+<!--            angle = 15, -->
+<!--            length = 0.125,  -->
+<!--            code = 3) -->
+<!--     text(x = 0.83,  -->
+<!--          y = mean( c(qx[4], extreme)),  -->
+<!--          labels = "Three IQRs") -->
+<!--   } -->
+
+<!--   if ( (i > 5) & (i < 8) ){ -->
+<!--     abline( lwd = 2,  -->
+<!--             col = "gray",  -->
+<!--             h = mild ) -->
+<!--     text(x = 1.0,  -->
+<!--          y = extreme, -->
+<!--          pos = 1, -->
+<!--          labels = "All observations here are mild outliers",  -->
+<!--          col = "grey") -->
+<!--   } -->
+<!--   if ( (i == 6) | (i == 7) ) { -->
+<!--     arrows(x0 = 0.75,  -->
+<!--            y0 = qx[4],  -->
+<!--            x1 = 0.75,  -->
+<!--            y1 = mild,  -->
+<!--            angle = 15,  -->
+<!--            length = 0.125,  -->
+<!--            code = 3) -->
+<!--     text(x = 0.6,  -->
+<!--          y = mean( c(qx[4], mild)),  -->
+<!--          labels = "1.5 IQRs") -->
+<!--   } -->
+
+
+<!--   if ( i == 7 ) { -->
+<!--     out <- boxplot(x,   -->
+<!--                    add = TRUE,  -->
+<!--                    col = rgb(0, 0, 0, maxColorValue = 256, alpha = 0.5),  -->
+<!--                    las=1) -->
+
+<!--     set.seed(937300) -->
+<!--     stripchart(x, -->
+<!--                vertical = TRUE,  -->
+<!--                las = 1,  -->
+<!--                pch = 1,  -->
+<!--                ylim = c(0, 180),  -->
+<!--                xlim = c(0.5, 1.5), -->
+<!--                method = "jitter",  -->
+<!--                jitter = 0.05, -->
+<!--                ylab = "Permeability (in seconds)",  -->
+<!--                col = grey.pch) -->
+<!--     title( main = "...and are shown using a dot") -->
+<!--     points( rep(1, 2),  -->
+<!--             xsort[1:2],  -->
+<!--             pch = 8,  -->
+<!--             cex = 1.5) -->
+<!--     points( 1, xsort[3],  -->
+<!--             pch = 1,  -->
+<!-- 	    cex = 1.5) -->
+<!--   } -->
+<!--   if ( i == 8 ) { -->
+<!--     out <- boxplot(x,  -->
+<!--                    col = rgb(0, 0, 0, maxColorValue = 256, alpha = 0.5),  -->
+<!--                    pch = 1,  -->
+<!--                    main = "The final boxplot", -->
+<!--                    ylim = c(0, 180),  -->
+<!--                    xlim = c(0.5, 1.5), -->
+<!--                    ylab = "Permeability (in seconds)",  -->
+<!--                    las = 1) -->
+<!--     points( 1, xsort[3],  -->
+<!--             pch = 1,  -->
+<!--             cex = 1.5) -->
+<!--     points( rep(1, 2),  -->
+<!--             xsort[1:2],  -->
+<!--             pch = 8,  -->
+<!--             cex = 1.5) -->
+<!--   } -->
+
+<!-- } -->
+
+<!-- ### HTML ONLY -->
+
+<!-- if (knitr::is_html_output()){ -->
+<!--     for (i in 1:8){ -->
+<!--       plotIQROutliersAnimation(x, i ) -->
+<!--     } -->
+
+<!--   } -->
+<!-- ``` -->
 
 ```{r IQROutliers, fig.align="center", fig.width=9, fig.height = 3.5, fig.cap="Mild and extreme outliers, using the IQR rule, for the permeability data", out.width = '99%' }
 source("R/showOutliersDotChart.R")
