@@ -8,7 +8,7 @@ figWidth <- 4
 
 xx <- c( rchisq(300, 
                 df = 2), 
-         7,7,8,7,7,7,8,7,7,6)
+         7, 7 , 8 , 7 , 7 , 7 , 8 , 7 , 7 , 6)
 
 png(file ="ShapeExampleA-Carousel.png", 
     width = figWidth,
@@ -189,10 +189,4 @@ axis(side = 2,
 
 box()
 dev.off()
-
-
-
-
-
-
 
