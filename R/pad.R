@@ -7,12 +7,24 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front",
   # where  is how the numbers are aligned
   # big.mark is the format() input of same name. To call it, need to backslash *four* times: pad(..., big.mark = "\\\\,") 
   
+  # digits  and targetLength  may be entered as
+  #   * one digits: Fill out a vector with this digit.
+  #   * one digits for each column: Fill out a vector with this digit.
+  #   * one digit for each element, given across rows, same size as input, giving the value for each cell.
+  
+  
+  
   numRows <- 1
+  numCols <- 1
+  xHasRowNames <- FALSE
+  xHasColNames <- FALSE
+  
   if (is.data.frame(x)) { # CONVERT to an array for our purposes
+    if ( verbose) cat("* Data frame given\n")
     if ( verbose) cat("* Converting data.frame to array\n")
 
     # Store row and col names if present
-    xHasRowNames <- FALSE
+    
     if (!is.null(rownames(x))) {
       if ( verbose) cat("  * Restoring row names\n")
       xHasRowNames <- TRUE
@@ -49,9 +61,12 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front",
       colnames(x) <- colNamesToRestore
     }
 
+  } else {
+    if ( verbose) cat("* Data frame NOT given\n")
   }
   
   if ( is.array(x) ) {
+    if ( verbose ) cat("* NOW working with an array\n ")
     if ( verbose ) cat("* Computing array size: ")
     currentDim <- dim(x) # NULL if scalar. Use to restore dimension.
     currentCols <- currentDim[2]
@@ -92,24 +107,75 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front",
       xAnArray <- FALSE
     }
   }  
+
+  # digits  and targetLength  may be entered as
+  #   * one digits: Fill out an array with this digit.
+  #   * one digits for each column: Fill out an array with this digit.
+  #   * an array, same size as input, giving the vaklue for each cell.
+  
+
   # If  targetLength  given once, make length appropriate for use by columns
+  if ( verbose) cat("* numRows and numCols:", currentRows, currentCols, "\n")
+  
+
   if ( verbose) cat("* Lengthening targetLength if necessary\n")
-  if ( length(targetLength) == 1) targetLength <- rep( targetLength, 
-                                                       times = currentCols)
+  if ( verbose) cat("  * Current length:", length(targetLength), "\n")
+  if ( length(targetLength) != currentRows * currentCols) {
+    if ( length(targetLength) == 1) {
+      targetLength <- rep( targetLength, 
+                           times = currentRows * currentCols)
+    } else { # One digit per col
+      targetLength <- rep(targetLength, each = currentRows) 
+    }
+  } else {
+    tmp <- matrix( nrow = currentRows, 
+                   ncol = currentCols, 
+                   data = targetLength,
+                   byrow = TRUE)
+    targetLength <- c( tmp ) # Since we operate BY COLS in what follows
+    
+  }
+  targetLength <- c(targetLength)
+  if ( verbose) cat("  * Finished length:", length(targetLength), "\n")
+  
+  
 
   # If digits given once, make length appropriate for use by columns
   if ( verbose) cat("* Lengthening digits if necessary\n")
-  if ( length(digits) == 1) digits <- rep( digits, 
-                                           times = currentCols)
-
+  if ( verbose) cat("  * Current length:", length(digits), "\n")
+  if ( length(digits) != currentRows * currentCols) {
+    if ( length(digits) == 1) {
+      digits <- rep( digits, 
+                     times = currentRows * currentCols)
+    } else { # One digit per col
+      if (verbose) print(digits)
+      digits <- rep(digits, each = currentRows) 
+      if (verbose) print(digits)
+    }
+  } else {
+    tmp <- matrix( nrow = currentRows, 
+                   ncol = currentCols, 
+                  data = digits,
+                  byrow = TRUE)
+    digits <- c( tmp ) # Since we operate BY COLS in what follows
+  }
+  digits <- c( digits)
+  if ( verbose) cat("  * Finished length:", length(digits), "\n")
+  
+  
+  
   if ( !is.null(currentDim) ) x <- c(x)
   
-  xLen <- length(x)
+  
+  
+  ### NOW TO THE PADDING AND ROUNDING ETC
+  
+  xLen <- length(x) # The number of elements to work with 
   out <- array( dim = xLen)
   
   # Keep tabs on which row and column we are working on:  
-  thisRow <- 0
-  thisCol <- 1
+  thisRow <- 0 # Rows move fastest
+  thisCol <- 1 # Cols move slowest
   
   # Take each element one at a time
   if ( verbose) cat("* Dealing element-by-element:\n")
@@ -146,16 +212,18 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front",
     
     if (elementIsNumeric) { 
       x[i] <- as.numeric( x[i] )
-      if ( verbose) cat("  * Numeric value to align:", x[i], "\n")
+      if ( verbose ) cat("  * Numeric value to align:", x[i], "\n")
+      if ( verbose ) cat("    * digits:", digits[i], "\n")
+      if ( verbose ) cat("    * targetLength:", targetLength[i], "\n")
       
       #cat("digits = ", digits[thisCol], "width = ", targetLength[thisCol], "\n")
       xi <- format( round( as.numeric(x[i]), 
-                           digits[thisCol]),
+                           digits[i]),
                     #digits = digits,
-                    nsmall = digits[thisCol],
+                    nsmall = digits[i],
                     justify = "right",
                     big.mark = big.mark,
-                    width = targetLength[thisCol])
+                    width = targetLength[i])
       if ( verbose) cat("  * First update: '", xi, "'\n",
                         sep = "")
       
@@ -252,17 +320,29 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front",
       }
     }
   } 
+  
+  ### NOW RESTORE TO ORIGINAL SHAPE, WITH NAMES
   if ( xAnArray ) {
-    if ( verbose) cat("* Restoring col, row names if necessary:\n")
+    if ( verbose) cat("* Restoring shape:\n")
+    if ( verbose) cat("  * Current shape:", dim(out), "\n")
     
     dim(out) <- currentDim
+
+    if ( verbose) cat("  * Final shape:", dim(out), "\n")
+
+    if ( verbose) cat("* Restoring col, row names if necessary:\n")
+    if ( verbose) cat("  * xHasRowNames:", xHasRowNames, "\n")
+    if ( verbose) cat("  * xHasColNames:", xHasColNames, "\n")
+    
     if (xHasRowNames) {
+      if ( verbose) cat("  * Row names: ", rowNamesToRestore, "\n")
       rownames(out) <- rowNamesToRestore
-      if ( verbose) cat("  * Row names: ", length(colNamesToRestore), "\n")
+      if ( verbose) cat("  * Row names length: ", length(currentCols), "\n")
     }
     if (xHasColNames) {
+      if ( verbose) cat("  * Col names: ", colNamesToRestore, "\n")
       colnames(out) <- colNamesToRestore
-      if ( verbose) cat("  * Col names: ", length(rowNamesToRestore), "\n")
+      if ( verbose) cat("  * Col names length: ", length(currentRows), "\n")
     }
   }
   
