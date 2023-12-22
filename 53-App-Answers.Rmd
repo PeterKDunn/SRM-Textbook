@@ -766,10 +766,14 @@ dotchart(Disadvantages)
 AdTable[, 2] <- round(Advantages/sum(Advantages) * 100, 1)
 DisadTable[, 2] <- round(Disadvantages/sum(Disadvantages) * 100, 1)
 
-T1 <-  knitr::kable(surroundMaths(AdTable),
+if( knitr::is_latex_output() ) {
+T1 <-  knitr::kable(pad(AdTable,
+                        surroundMaths = TRUE,
+                        targetLength = c(0, 2),
+                        digits = 0),
                     format = "latex",
                     valign = 't',
-                    align = "r",
+                    align = c("r", "c"),
                     linesep = "",
                     col.names = c("Advantage", "No. farmers"),
                     row.names = FALSE,
@@ -778,10 +782,13 @@ T1 <-  knitr::kable(surroundMaths(AdTable),
   row_spec(0, bold = TRUE)
 
 
-T2 <-  knitr::kable(surroundMaths(DisadTable),
+T2 <-  knitr::kable(pad(DisadTable,
+                        surroundMaths = TRUE,
+                        targetLength = c(0, 2),
+                        digits = 0),
                     format = "latex",
                     valign = 't',
-                    align = "r",
+                    align = c("r", "c"),
                     linesep = "",
                     col.names = c("Disadvantage", "No. farmers"),
                     row.names = FALSE,
@@ -798,6 +805,47 @@ out <- knitr::kables( list(T1, T2),
   kable_styling(font_size = 10)
 out2 <- prepareSideBySideTable(out) 
 out2
+}
+
+
+if( knitr::is_html_output() ) {
+  T1 <-  knitr::kable(pad(AdTable,
+                        surroundMaths = TRUE,
+                        targetLength = c(0, 2),
+                        digits = 0),
+                    format = "html",
+                    valign = 't',
+                    align = c("r", "c"),
+                    linesep = "",
+                    col.names = c("Advantage", "No. farmers"),
+                    row.names = FALSE,
+                    escape = FALSE,
+                    booktabs = TRUE) %>%
+  row_spec(0, bold = TRUE)
+
+
+T2 <-  knitr::kable(pad(DisadTable,
+                        surroundMaths = TRUE,
+                        targetLength = c(0, 2),
+                        digits = 0),
+                    format = "html",
+                    valign = 't',
+                    align = c("r", "c"),
+                    linesep = "",
+                    col.names = c("Disadvantage", "No. farmers"),
+                    row.names = FALSE,
+                    escape = FALSE,
+                    booktabs = TRUE) %>%
+  row_spec(0, bold = TRUE)
+
+
+
+knitr::kables( list(T1, T2),
+                      format = "html",
+                      label = "ReclaimedWaterPercent",
+                      caption = "The advantages and disadvantages of using reclaimed water, reported by $231$ farmers.") %>% 
+  kable_styling(font_size = 10)
+}
 ```
 
 
@@ -3792,13 +3840,15 @@ rownames(PhoneTable) <- c("Low exposure",
                           "High exposure")
 
 if( knitr::is_latex_output() ) {
-  kable(surroundMaths(round(chisq.test(PhoneTable)$expected, 2),
-                      decDigits = 2),
+  kable(pad(round(chisq.test(PhoneTable)$expected, 2),
+            surroundMaths = TRUE,
+            targetLength = c(6, 6, 6),
+            digits = 2),
         format = "latex",
         longtable = FALSE,
         booktabs = TRUE,
         escape = FALSE,
-        align = "r",
+        align = "c",
         digits = 2,
         col.names = c("Answer call", 
                       "Respond to text", 
@@ -3809,8 +3859,12 @@ if( knitr::is_latex_output() ) {
                   font_size = 9)
 }
 if( knitr::is_html_output() ) {
-  out <- kable(round(chisq.test(PhoneTable)$expected, 2),
+  out <- kable(pad(round(chisq.test(PhoneTable)$expected, 2),
+            surroundMaths = TRUE,
+            targetLength = c(6, 6, 6),
+            digits = 2),
                format = "html",
+            align = "c",
                longtable = FALSE,
                booktabs = TRUE,
                digits = 2,
