@@ -35,16 +35,16 @@ Since many values for the sample mean are possible, the possible values of the s
 
 
 Consider rolling dice again.
-Suppose a die is rolled $n = 25$ times, and the *mean* of the $25$ numbers that are rolled is recorded.
+Suppose a die is rolled $n = 25$ times, and the *mean* of the sample of $25$ numbers that are rolled is recorded.
 Since every face of the die is equally likely to appear on any one roll, the population mean of all possible rolls is $\mu = 3.5$ (in the middle of the numbers on the faces of the die, so this is also the *median*).
 
 What will be the sample mean of the numbers in the $25$ rolls?
 We cannot be sure, as the sample mean will vary from sample to sample (*sampling variation*).
 But suppose we roll a die $25$ times, to see how the sample mean varies in $25$ rolls
 `r if (knitr::is_latex_output()) {
-   '(see Fig.\\ \\@ref(fig:RollDiceMeanFig) for ten sets of $25$ rolls).'
+   '(see Fig.\\ \\@ref(fig:RollDiceMeanFig) for ten samples of $25$ rolls).'
 } else {
-   'as shown in the animation below for ten sets of $25$ rolls.'
+   'as shown in the animation below for ten samples of $25$ rolls.'
 }`
 The mean of the $25$ rolls clearly varies, as expected.
 In the simulation, the sample mean of $25$ rolls was as low as $3.08$ and as high as $3.76$.
@@ -68,13 +68,17 @@ if (knitr::is_html_output()){
     y.loc <- 1
     mean.even <- array(dim = num.sims)
     all.rolls <- array( dim = c(num.sims, num.rolls))
+    
     for (i in 1:num.sims){
+      
+      par( mar = c(5.1, 5.1, 4.1, 2.1))
+      
       plot( c(1, (num.rolls + 2)), c(1, num.sims),
             type = "n",
             las = 1,
             xlab = "",
             ylab = "",
-            main = paste("Set number", i),
+            main = paste("Sample number", i),
             axes = FALSE)
       
       roll <- sample(1:6, 
@@ -108,7 +112,7 @@ if (knitr::is_html_output()){
       axis(side = 2, 
            at = 1:i,
            las = 1,
-           labels = paste("Set #", 1:i, sep = "") )
+           labels = paste("Sample #", 1:i, sep = "") )
       
       # Add the sample mean to right-hand side 
       text(num.rolls + 2, 
@@ -187,7 +191,7 @@ if (knitr::is_latex_output()){
 
 
 The mean for any single sample of $n = 25$ rolls will sometimes be higher than $\mu = 3.5$, and sometimes lower than $\mu = 3.5$, but most of the time the mean should be close to $3.5$.
-If thousands of people made one set of $25$ rolls each, and computed the mean for their set, every person would have a sample mean for their set of $25$ rolls, and we could produce a histogram of all these sample means;
+If thousands of people made one set of $25$ rolls each, and computed the mean for their set, every person would have a sample mean for their sample of $25$ rolls, and we could produce a histogram of all these sample means;
 `r if (knitr::is_latex_output()) {
    'see Fig.\\ \\@ref(fig:RollDiceHistMeanFig).'
 } else {
@@ -225,7 +229,7 @@ if (knitr::is_html_output()){
                   xlab = "Mean of 25 rolls",
                   ylab = "Number of times observed",
                   main = paste("Histogram of the mean of 25 rolls:\nSimulation number:", i),
-                  sub = paste("(For this set: mean roll is ", 
+                  sub = paste("(For this sample: mean roll is ", 
                               format(round(meanList[i], 2), nsmall = 2), 
                               ")", 
                               sep = "" ),
@@ -700,9 +704,23 @@ LC.F11 <- subset(LungCap,
 
 ## Chapter summary
 
+To compute a confidence interval (CI) for a mean, compute the sample mean, $\bar{x}$, and identify the sample size $n$.
+Then compute the standard error, which quantifies how much the value of $\bar{x}$ varies across all possible samples:  
+\[
+  \text{s.e.}(\bar{x})
+  =
+  \frac{ s }{\sqrt{n}},
+\]
+where $s$ is the sample standatd deviation.
+The *margin of error* is (Multiplier$\times$standard error), where the multiplier is $2$ for an approximate $95$% CI (using the $68$--$95$--$99.7$ rule).
+Then find the CI:  
+\[
+   \bar{x} \pm \left( \text{Multiplier}\times\text{standard error} \right).
+\]
+Always check whether the [statistical validity conditions](#ValiditySampleMean) are satisfied.
+
+
 ## Quick review questions {#Chap22-QuickReview}
-
-
 
 ::: {.webex-check .webex-box}
 1. True or false: The value of $\bar{x}$ varies from sample to sample. \tightlist  
