@@ -302,8 +302,10 @@ IgETable[, 1] <- round(colMeans(IgE), 1)
 IgETable[, 2] <- round(apply(IgE, 2, "sd"), 2)
 IgETable[, 3] <- round(apply(IgE, 2, "realLength"), 0)
 
-knitr::kable( surroundMaths(IgETable,
-                            decDigits = c(1, 2, 0)),
+knitr::kable( pad(IgETable,
+                  surroundMaths = TRUE,
+                  targetLength = c(4, 4, 4),
+                  digits = c(1, 2, 0)),
               format = "latex",
               longtable = FALSE,
               booktabs = TRUE,
@@ -658,8 +660,11 @@ TapeTable[, 1] <- round(colMeans(PPT), 1)
 TapeTable[, 2] <- round(apply(PPT, 2, "sd"), 2)
 TapeTable[, 3] <- round(apply(PPT, 2, "realLength"), 0)
 
-knitr::kable( surroundMaths(TapeTable,
-                            decDigits = c(1, 2, 0)),
+if( knitr::is_latex_output() ) {
+knitr::kable( pad(TapeTable,
+                  surroundMaths = TRUE,
+                  targetLength = c(5, 6, 2),
+                  digits = c(1, 2, 0)),
               format = "latex",
               longtable = FALSE,
               booktabs = TRUE,
@@ -671,6 +676,23 @@ knitr::kable( surroundMaths(TapeTable,
   row_spec(row = 0, 
            bold = TRUE) %>%
   kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+knitr::kable( pad(TapeTable,
+                  surroundMaths = TRUE,
+                  targetLength = c(5, 6, 2),
+                  digits = c(1, 2, 0)),
+              format = "html",
+              longtable = FALSE,
+              booktabs = TRUE,
+              escape = FALSE,
+              digits = 1,
+              align = c("r", "r", "r", "r"),
+              caption = "A numerical summary of the Tape data") %>%
+  kable_styling(full_width = FALSE) %>%
+  row_spec(row = 0, 
+           bold = TRUE) 
+}
 ```
 
 
@@ -729,8 +751,10 @@ InsulationBeforeAfter <- InsulationBeforeAfter[, c(4, 1:3)] # Reorder with HOME 
 if( knitr::is_latex_output() ) {
   
   tb1 <- InsulationBeforeAfter[1:5, ]
-  T1 <- knitr::kable( surroundMaths(tb1,
-                                    decDigits = c(0, 1, 1, 1)),
+  T1 <- knitr::kable( pad(tb1,
+                          surroundMaths = TRUE,
+                          targetLength = c(0, 4, 4, 3),
+                          digits = c(0, 1, 1, 1)),
                      format = "latex",
                      valign = 't',
                      align = "r",
@@ -746,7 +770,7 @@ if( knitr::is_latex_output() ) {
   tb2 <- InsulationBeforeAfter[6:10, ]
   T2 <- knitr::kable(pad(tb2,
                          surroundMaths = TRUE,
-                         targetLength = 4,
+                         targetLength = c(0, 4, 4, 4),
                          digits = c(0, 1, 1, 1)),
                      format = "latex",
                      valign = 't',
@@ -842,7 +866,7 @@ knitr::kable( pad(PRtable,
   column_spec(1, bold = TRUE) %>%
   kable_styling(font_size = 10)
 }
-if( knitr::is_latex_output() ) {
+if( knitr::is_html_output() ) {
 knitr::kable( pad(PRtable,
                   surroundMaths = TRUE,
                   targetLength = c(0, 4, 4, 4, 4),
