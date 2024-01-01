@@ -12,7 +12,7 @@ addShots <- function(x = 0, y = 0, radius = 1, n = 20, seed = 27469){
           yy,
           cex = 1.2,
           pch = 21, 
-          col = blueTransparent, 
+          col = "black", 
           bg = blueSolid)
   
   list(x = xx, y = yy)

@@ -78,8 +78,8 @@ showSampleMultistage <- function(sizeHorizontal = 21,
 
       # Filled circles for chosen classes
       if ( i %in% selectedTutorials){
-        sample.pch <- rep(19, numStudentsInTutorials[i])
-        sample.col <- rep(grey(0.6), numStudentsInTutorials[i])
+        sample.pch <- rep(1, numStudentsInTutorials[i])
+        sample.col <- rep(grey(0.3), numStudentsInTutorials[i])
         sample.cex <- rep(1, (numStudentsInTutorials[i]))
         sample.lwd <- rep(1, (numStudentsInTutorials[i]))
       }
