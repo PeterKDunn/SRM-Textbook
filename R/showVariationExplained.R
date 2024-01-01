@@ -92,7 +92,7 @@ showVariationExplained <- function(){
          angle = 15)
   text(x = xLoc[1] + (1.65 * barWidths),
        y = yHeights[1]/2,
-       labels = "Quite\nsmall",
+       labels = "Relatively\nsmall",
        cex = 0.9,
        srt = 90)
   
@@ -182,7 +182,7 @@ showVariationExplained <- function(){
          angle = 15)
   text(x = xLoc[2] + (1.65 * barWidths),
        y = yHeights[1]/2,
-       labels = "Still\nsmall",
+       labels = "Relatively\nsmall",
        cex = 0.9,
        srt = 90)
   
@@ -276,7 +276,7 @@ showVariationExplained <- function(){
          angle = 15)
   text(x = xLoc[3] + (1.65 * barWidths),
        y = yHeights[1]/2,
-       labels = "Still\nsmall",
+       labels = "Relatively\nsmall",
        cex = 0.9,
        srt = 90)
   
