@@ -50,10 +50,10 @@ showSampleSystematic <- function(sizeHorizontal = 21,
            cex = 0.8,
            at = sizeHorizontal / 2)
     ordinal <- "th"
-    if (start == 2) ordinal <- "nd"
-    if (start == 3) ordinal <- "rd"
+    if (jump == 2) ordinal <- "nd"
+    if (jump == 3) ordinal <- "rd"
     
-    mtext(paste0("Select ", sampleSize, " students, starting with the ", start, ordinal, " student"),   
+    mtext(paste0("Select ", sampleSize, " students, selecting every ", start, ordinal, " student"),   
           side = 1, 
           cex = 0.8,
           at = sizeHorizontal / 2)
