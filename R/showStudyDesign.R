@@ -242,18 +242,18 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   } else { # studyType is  "QuasiExp" or "TrueExp"
     diagram::straightarrow(from = pos[4, ], # Group 1 to Treatment 1
                            to = pos[1, ],
-                           arr.pos <- 0.65,
+                           arr.pos = 0.6,
                            lcol = ifelse(studyType == "Obs", "grey", "black"),
                            lty = ifelse(studyType == "Obs", 2, 1))
     diagram::straightarrow(from = pos[5, ],  # Group 2 to Treatment 2
                            to = pos[2, ], 
-                           arr.pos <- 0.65,
+                           arr.pos = 0.6,
                            lcol = ifelse(studyType == "Obs", "grey", "black"),
                            lty = ifelse(studyType == "Obs", 2, 1))
     if (length(addGroupNames) == 3) {
       diagram::straightarrow(from = pos[6, ],  # Group 3 to Treatment 3
                              to = pos[3, ], 
-                             arr.pos <- 0.65,
+                             arr.pos = 0.6,
                              lcol = ifelse(studyType == "Obs", "grey", "black"),
                              lty = ifelse(studyType == "Obs", 2, 1))
     }
