@@ -204,18 +204,21 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     diagram::straightarrow(to = pos[4, ], # Group 1 to Treatment 1
                            from = pos[1, ], 
                            lcol = "grey",
+                           lwd = 2,
                            segment = c(0.60, 0.70), # To get just the arrow
                            arr.pos = 0.65,
                            lty = 2)
     diagram::straightarrow(from = pos[4, ], # Group 1 to Treatment 1
                            to = pos[1, ], 
                            lcol = "grey",
+                           lwd = 2,
                            arr.pos = 0.65,
                            lty = 2)
     
     diagram::straightarrow(to = pos[5, ],  # Group 2 to Treatment 2
                            from = pos[2, ], 
                            arr.col = "grey",
+                           lwd = 2,
                            lcol = "grey", # Two sets of dashed lines often pverlap; make first white
                            segment = c(0.60, 0.70), # To get just the arrow
                            arr.pos = 0.65,
@@ -223,6 +226,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     diagram::straightarrow(from = pos[5, ],  # Group 2 to Treatment 2
                            to = pos[2, ], 
                            lcol = "grey",
+                           lwd = 2,
                            arr.pos = 0.65,
                            lty = 2)
     
@@ -231,11 +235,13 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                              from = pos[3, ], 
                              arr.col = "grey",
                              arr.pos = 0.65,
+                             lwd = 2,
                              segment = c(0.60, 0.70), # To get just the arrow
                              lty = 2)
       diagram::straightarrow(from = pos[6, ],  # Group 3 to Treatment 3
                              to = pos[3, ], 
                              lcol = "grey",
+                             lwd = 2,
                              arr.pos = 0.65,
                              lty = 2)
     }
@@ -243,17 +249,20 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     diagram::straightarrow(from = pos[4, ], # Group 1 to Treatment 1
                            to = pos[1, ],
                            arr.pos = 0.6,
+                           lwd = 2,
                            lcol = ifelse(studyType == "Obs", "grey", "black"),
                            lty = ifelse(studyType == "Obs", 2, 1))
     diagram::straightarrow(from = pos[5, ],  # Group 2 to Treatment 2
                            to = pos[2, ], 
                            arr.pos = 0.6,
+                           lwd = 2,
                            lcol = ifelse(studyType == "Obs", "grey", "black"),
                            lty = ifelse(studyType == "Obs", 2, 1))
     if (length(addGroupNames) == 3) {
       diagram::straightarrow(from = pos[6, ],  # Group 3 to Treatment 3
                              to = pos[3, ], 
                              arr.pos = 0.6,
+                             lwd = 2,
                              lcol = ifelse(studyType == "Obs", "grey", "black"),
                              lty = ifelse(studyType == "Obs", 2, 1))
     }
@@ -264,6 +273,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     diagram::straightarrow(from = pos[9, ], # POP to SAMPLE
                            to = pos[8, ], 
                            lcol = "black",
+                           lwd = 2,
                            lty = 1)
   }
   
