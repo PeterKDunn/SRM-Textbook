@@ -371,14 +371,14 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     
     diagram::straightarrow(from = BlindTreatmentx[1, ], # Treatment 1 to A
                            to = pos[5, ], 
-                           segment = c(0, 0.350),
-                           arr.pos = 0.50, # Position arrow at end of line
+                           segment = c(0, 0.3750),
+                           arr.pos = 0.30, # Position arrow at end of line
                            lcol = "grey",
                            lty = 1)
     
     diagram::straightarrow(from = BlindTreatmentx[2, ], # Treatment 1 to A
                            to = pos[4, ], 
-                           segment = c(0, 0.350),
+                           segment = c(0, 0.3750),
                            arr.pos = 0.30, # Position arrow at end of line
                            lcol = "grey",
                            lty = 1)
