@@ -1,34 +1,54 @@
-showSampleMultistage <- function(sizeHorizontal = 21,
-                                 sizeVertical = 21,
+showSampleMultistage <- function(populationSize = 21 * 21,
                                  sampleSize = 40,
                                  numberTutorials = 20,
-                                 sampleA = 1/2, # proportion females in the SAMPLE
+                                 proportionA = 2/3, # proportion females in the SAMPLE
                                  static = TRUE, 
                                  plotDark = "blue",
                                  main = "Multistage sampling",
-                                 seed = 918239){ 
+                                 seed = 9182391){ 
   
   set.seed(seed)
   
-  populationSize <- sizeHorizontal * sizeVertical
-  
-  numTutorials <- 20
+  # Students numbers in each of the tutorials (rows):
   numStudentsInTutorials <- array( NA, 
-                                   dim = numTutorials) 
-  
-  for (i in (1:(numTutorials - 1))){
+                                   dim = numberTutorials) 
+  for (i in (1:(numberTutorials - 1))){
     numStudentsInTutorials[i] <- sample(19:25, 1)
   }
-  numStudentsInTutorials[ numTutorials] <- populationSize - sum( numStudentsInTutorials, na.rm = TRUE)
+  numStudentsInTutorials[ numberTutorials] <- populationSize - sum( numStudentsInTutorials, na.rm = TRUE)
   maxTutorial <- max(numStudentsInTutorials)
   
-  selectedTutorials <- sample(1: numTutorials, 10)
   
+  # Identify younger:
+  younger <- sample(1:populationSize,
+                    populationSize * (1 - proportionA) )
+  # Identify chosen:
+  selected <- sample(1:populationSize, 
+                     sampleSize)
+  
+  # Older:    pch = 1, selected: pch = 19
+  # Younger:  pch = 6; selected: pch = 25 
+  # Defaults are for NOT selected, older
+  sample.pch <- rep(1, length = populationSize) # Older
+  sample.pch[younger] <- 6                      # Younger
+  
+  sample.col <- rep("black", length = populationSize)
+  sample.cex <- rep(1, length = populationSize)
+  sample.bg  <- rep("white", length = populationSize)
+  
+  
+  
+  # Stage 1: Select some tutorials
+  selectedTutorials <- sort( sample(1: numberTutorials, 10) )
+  
+  # Stage 2: Select the students within these chosen tutorials
   numStudentsSelectedEachTutorial <- 4
   
-  plotBackground <- function() {
+  
+  # PLOT
+  plotBackground <- function(showSelectedClasses = TRUE) {
     plot( x = c(1, maxTutorial), 
-          y = c(1, numTutorials),
+          y = c(1, numberTutorials),
           type = "n",
           main = main,
           axes = FALSE,
@@ -45,131 +65,131 @@ showSampleMultistage <- function(sizeHorizontal = 21,
          font = 2) # BOLD text
     
     # Grey box around chosen classes
-    for (i in (1:length(selectedTutorials))){
-      j <- selectedTutorials[i]
-      polygon(x = c(0.25, 0.25, 
-                    maxTutorial + 0.5, maxTutorial + 0.5),
-              y = c(j - 0.5, j + 0.5, 
-                    j + 0.5, j - 0.5),
-              border = NA, # No borders
-              col = grey(0.9))
+    if( showSelectedClasses ) {
+      for (i in (1:length(selectedTutorials))){
+        j <- selectedTutorials[i]
+        polygon(x = c(0.25, 0.25, 
+                      maxTutorial + 0.5, maxTutorial + 0.5),
+                y = c(j - 0.5, j + 0.5, 
+                      j + 0.5, j - 0.5),
+                border = NA, # No borders
+                col = grey(0.9))
+      }
     }
+    # Now plot everyone:
     
-    # Now plot everyone: 
     for (j in 1:numberTutorials){
-      points(1:numStudentsInTutorials[j], rep(j, numStudentsInTutorials[j]),
-             pch = 1,
-             col = grey(0.3),
+      
+      minLinear <- ifelse(j == 1, 1, sum( numStudentsInTutorials[1 : (j - 1)]) + 1)
+      maxLinear <- sum( numStudentsInTutorials[1:j]) 
+      
+      points(x = 1:numStudentsInTutorials[j], 
+             y = rep(j, numStudentsInTutorials[j]),
+             pch = sample.pch[minLinear : maxLinear ],
+             col = "black",
              cex = 1,
              lwd = 1)
     }
   }
   
   ###########################################################################
+  
+  this.pch <- sample.pch
+  this.col <- sample.col
+  this.cex <- sample.cex
+  this.bg <-  sample.bg
+  
+  sampleSizeOlder <- 0
+  sampleSizeYounger <- 0
+  
+  for (i in (1:numberTutorials)){
+    
+    if (i %in% selectedTutorials){
+      selectedStudents <- sort( sample(1:numStudentsInTutorials[i], 
+                                       numStudentsSelectedEachTutorial) )
+      minSelect <- sum( numStudentsInTutorials[1:(i - 1)])
+      linearSelect <- minSelect + selectedStudents
+      
+      selection <- (sum(numStudentsInTutorials[1:(i - 1)]) + 1) : sum(numStudentsInTutorials[1:i])
+      
+      this.pch[ linearSelect[ sample.pch[ linearSelect ] == 1] ] <- 19
+      this.pch[ linearSelect[ sample.pch[ linearSelect ] == 6] ] <- 25
+      
+      this.col[ linearSelect[ sample.col[ linearSelect ] == "black"] ] <- plotDark
+      this.cex[ linearSelect[ sample.cex[ linearSelect ] == 1] ]    <- 1.2
+      this.bg[  linearSelect[ sample.bg[  linearSelect ] == "white"] ] <- plotDark
+    }
+  }
+  
+  
   if (static){
     plotBackground()
+    
+    for (i in (1:numberTutorials)){
+      
+      if (i %in% selectedTutorials) {
+        selection <- (sum(numStudentsInTutorials[1:(i - 1)]) + 1) : sum(numStudentsInTutorials[1:i])
+        
+        points(x = 1:numStudentsInTutorials[i], 
+               y = rep(i, numStudentsInTutorials[i]),
+               pch = this.pch[selection],
+               col = this.col[selection],
+               cex = this.cex[selection],
+               bg  = this.bg[selection])
+        
+        sampleSizeOlder   <- sampleSizeOlder + sum( this.pch[selection] == 19)
+        sampleSizeYounger <- sampleSizeYounger + sum( this.pch[selection] == 25)
 
-    for (i in (1:numTutorials)){
-      # Grey empty circle by default
-      sample.pch <- rep(1, (numStudentsInTutorials[i]))
-      sample.col <- rep(grey(0.3), (numStudentsInTutorials[i]))
-      sample.cex <- rep(1, (numStudentsInTutorials[i]))
-      sample.lwd <- rep(1, (numStudentsInTutorials[i]))
-
-      # Filled circles for chosen classes
-      if ( i %in% selectedTutorials){
-        sample.pch <- rep(1, numStudentsInTutorials[i])
-        sample.col <- rep(grey(0.3), numStudentsInTutorials[i])
-        sample.cex <- rep(1, (numStudentsInTutorials[i]))
-        sample.lwd <- rep(1, (numStudentsInTutorials[i]))
       }
-      # Filled squares for chosen students
-      if ( i %in% selectedTutorials){
-        selectedStudents <- sample(1 : numStudentsInTutorials[i], 
-                                   numStudentsSelectedEachTutorial)
-        sample.pch[selectedStudents] <- 15
-        sample.col[selectedStudents] <- plotDark
-        sample.cex[selectedStudents] <- 1.2
-        sample.lwd[selectedStudents] <- 2
-      }
-      points(x = 1:numStudentsInTutorials[i], 
-             y = rep(i, numStudentsInTutorials[i]),
-             pch = sample.pch,
-             col = sample.col,
-             cex = sample.cex,
-             lwd = sample.lwd)
+      
     }
     mtext(paste("Selected classes:", paste( sort(selectedTutorials), collapse = ", ")),
           side = 1,
-          cex = 0.8,
+          cex = 0.9,
           at = (1 + maxTutorial) / 2 )
   } else { #################################### NOT STATIC (static = FALSE)
     # Step 1
-    plotBackground()
-    sample.pch <- rep(1, (numStudentsInTutorials[i]))
-    sample.col <- rep(grey(0.3), (numStudentsInTutorials[i]))
-    sample.cex <- rep(1, (numStudentsInTutorials[i]))
-    sample.lwd <- rep(1, (numStudentsInTutorials[i]))
-    
-    # Step 2: Students in chosen classes    
-    plotBackground()
-    for (i in (1:numTutorials)){
-      sample.pch <- rep(1, (numStudentsInTutorials[i]))
-      sample.col <- rep(grey(0.3), (numStudentsInTutorials[i]))
-      sample.cex <- rep(1, (numStudentsInTutorials[i]))
-      sample.lwd <- rep(1, (numStudentsInTutorials[i]))
+    plotBackground(showSelectedClasses = FALSE)
+    mtext( "The whole group",
+           side = 1,
+           cex = 0.9,
+           at = (1 + maxTutorial) / 2 )
 
-      if (i %in% selectedTutorials) {
-        sample.pch <- rep(19, (numStudentsInTutorials[i]) )
-        sample.col <- rep(grey(0.6), (numStudentsInTutorials[i]) )
-        sample.cex <- rep(1, (numStudentsInTutorials[i]) )
-        sample.lwd <- rep(2, (numStudentsInTutorials[i]))
-      }
-      points(x = 1:numStudentsInTutorials[i], 
-             y = rep(i, numStudentsInTutorials[i]),
-             pch = sample.pch,
-             col = sample.col,
-             cex = sample.cex,
-             lwd = sample.lwd)
-    }
+    # Step 2: Select classes
+    plotBackground()
     mtext(paste("Selected classes:", paste( sort(selectedTutorials), collapse = ", ")),   
           side = 1, 
           cex = 0.9,
           at = (1 + maxTutorial) / 2 )
+    
 
     # Step 3: Selected students in chosen classes (so initially repeat Step 2)      
     plotBackground()
-    for (i in (1:numTutorials)){
+    for (i in (1:numberTutorials)){
       if (i %in% selectedTutorials){
-
+        
         selectedStudents <- sample(1 : numStudentsInTutorials[i], 
                                    numStudentsSelectedEachTutorial)
-
-        sample.pch3 <- sample.pch
-        sample.col3 <- sample.col
-        sample.cex3 <- sample.cex
-        sample.lwd3 <- sample.lwd
-        
-        sample.pch3[selectedStudents] <- 15
-        sample.col3[selectedStudents] <- plotDark
-        sample.cex3[selectedStudents] <- 1.2
-        sample.lwd3[selectedStudents] <- 2
+        selection <- (sum(numStudentsInTutorials[1:(i - 1)]) + 1) : sum(numStudentsInTutorials[1:i])
         
         points(1:numStudentsInTutorials[i], rep(i, numStudentsInTutorials[i]),
-               pch = sample.pch3,
-               col = sample.col3,
-               cex = sample.cex3,
-               lwd = sample.lwd3)
+               pch = this.pch[selection],
+               col = this.col[selection],
+               cex = this.cex[selection],
+               bg  = this.bg[ selection])
+
+        sampleSizeOlder   <- sampleSizeOlder + sum( this.pch[selection] == 19)
+        sampleSizeYounger <- sampleSizeYounger + sum( this.pch[selection] == 25)
       }    
       
     }
-    mtext(paste("Selected some students in classes:", paste( sort(selectedTutorials), collapse = ", ")),   
+    mtext(paste("Selected 4 students in classes:", paste( sort(selectedTutorials), collapse = ", ")),   
           side = 1, 
           cex = 0.9,
           at = (1 + maxTutorial) / 2 )
   }
+  
+  invisible( list( sampleSizeOlder = sampleSizeOlder,
+                   sampleSizeYounger = sampleSizeYounger) )
 }
-
-
-
 
