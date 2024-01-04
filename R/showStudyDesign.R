@@ -19,7 +19,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   ### Works for two groups/treatments; most things should work with three
   
   
-    ### CANVAS
+  ### CANVAS
   par( mar = c(0.5, 0.5, 0.5, 0.5))
   useDefaultCanvas <- TRUE
   xLimLo <- 0
@@ -27,7 +27,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   
   # WATCH THE ORDER HERE!
   if ( addThirdParty ) {
-     # Recommend no POPULATION box---too wide!
+    # Recommend no POPULATION box---too wide!
     useDefaultCanvas <- FALSE
     xLimHi <- 1.5
   } 
@@ -48,31 +48,31 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                      xlim = c(xLimLo, xLimHi),
                      asp = NULL) # ELSE  asp=1 or requested
     
-    }
+  }
   
-### AT PRESENT ONLY FOR ONE BLOCK...:
-
-
+  ### AT PRESENT ONLY FOR ONE BLOCK...:
+  
+  
   # NAMES
   if ( studyType == "Obs") {
     if (addCNames[1] == "Treatment 1") {
-       addCNames <- c("Condition 1", "Condition 2")
+      addCNames <- c("Condition 1", "Condition 2")
     }
   }
   if ( addThirdParty ) {
     addResearcherControl <- FALSE # We add other things instead, 
-                                  # and besides... it is the same for quasi- and true experiments, so it doesn't matter which we show
+    # and besides... it is the same for quasi- and true experiments, so it doesn't matter which we show
     
     addBlindedTreatmentNames <- addCNames
     addCNames <- c('"A"', '"B"')
   }
-    ### SETUP
+  ### SETUP
   pos <- array(NA, dim = c(14, 2))
   # pos[1:3, ] refer to the Groups; see below
   # pos[4:6, ] refer to the Treatments; see below
   
-
-    ### SET OPTIONS 
+  
+  ### SET OPTIONS 
   numberOfcomparisons <- length(addGroupNames)
   if ( numberOfcomparisons == 2){ # Two groups being compared
     pos[1, ] <- c(0.60, 0.75)     # Group 1
@@ -102,17 +102,17 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   # We do the calculations whether the research-control info is needed or not, 
   # as sometimes  left  and  right  etc are used later
   if (studyType == "TrueExp" & addByResearchers) text(x = mean( c(pos[8, 1], pos[1, 1] ) ),
-                                   y = 0.5,
-                                   labels = "By researchers",
-                                   col = "grey",
-                                   srt = 90,
-                                   cex = 1.65)
+                                                      y = 0.5,
+                                                      labels = "By researchers",
+                                                      col = "grey",
+                                                      srt = 90,
+                                                      cex = 1.65)
   if (studyType != "Obs" & addByResearchers) text(x = mean( c(pos[1, 1], pos[4, 1]) ),
-                                   y = 0.5,
-                                   labels = "By researchers",
-                                   col = "grey",
-                                   srt = 90,
-                                   cex = 1.65)
+                                                  y = 0.5,
+                                                  labels = "By researchers",
+                                                  col = "grey",
+                                                  srt = 90,
+                                                  cex = 1.65)
   
   if (studyType == "TrueExp") {
     top <- 0.99
@@ -154,14 +154,14 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                     lcol = grey(0.8))
   # Second, draw the arrow head
   diagram::textmulti(mid = c(pos[1, 1], 0.17),
-                    radx = 0.09,
-                    rady = 0.07,
-                    nr = 3, # THAT IS, A TRIANGLE
-                    angle = 270, # ROTATION DEGREES
-                    shadow.size = 0,
-                    lab = "",
-                    box.col = grey(0.8),
-                    lcol = grey(0.8))
+                     radx = 0.09,
+                     rady = 0.07,
+                     nr = 3, # THAT IS, A TRIANGLE
+                     angle = 270, # ROTATION DEGREES
+                     shadow.size = 0,
+                     lab = "",
+                     box.col = grey(0.8),
+                     lcol = grey(0.8))
   
   # Third, add "Comparison" text
   
@@ -173,26 +173,29 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     diagram::bentarrow(from = pos[8, ], # Individuals to Group 1
                        to = pos[1, ], 
                        path = "V",
+                       arr.pos = 0.3,
                        lcol = ifelse(studyType == "TrueExp", "black", "grey"),
                        lty = ifelse(studyType == "TrueExp", 1, 2), 
                        arr.type = ifelse(studyType == "TrueExp", "curved", "none"),
                        lwd = 2)
     
     diagram::bentarrow(from = pos[8, ], # Individuals to Group 2
-                           to = pos[2, ], 
+                       to = pos[2, ], 
                        path = "V",
+                       arr.pos = 0.3,
                        lcol = ifelse(studyType == "TrueExp", "black", "grey"),
-                           lty = ifelse(studyType == "TrueExp", 1, 2),  
-                           arr.type = ifelse(studyType == "TrueExp", "curved", "none"),
-                           lwd = 2)
+                       lty = ifelse(studyType == "TrueExp", 1, 2),  
+                       arr.type = ifelse(studyType == "TrueExp", "curved", "none"),
+                       lwd = 2)
     if (length(addGroupNames) == 3) {
       diagram::bentarrow(from = pos[8, ], # Individuals to Group 3
-                             to = pos[3, ], 
-                             path = "V",
-                             lcol = ifelse(studyType == "TrueExp", "black", "grey"),
-                             lty = ifelse(studyType == "TrueExp", 1, 2),  
-                             arr.type = ifelse(studyType == "TrueExp", "curved", "none"),
-                             lwd = 2)
+                         to = pos[3, ], 
+                         path = "V",
+                         arr.pos = 0.3,
+                         lcol = ifelse(studyType == "TrueExp", "black", "grey"),
+                         lty = ifelse(studyType == "TrueExp", 1, 2),  
+                         arr.type = ifelse(studyType == "TrueExp", "curved", "none"),
+                         lwd = 2)
     }
   }
   
@@ -209,7 +212,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                            lcol = "grey",
                            arr.pos = 0.65,
                            lty = 2)
-
+    
     diagram::straightarrow(to = pos[5, ],  # Group 2 to Treatment 2
                            from = pos[2, ], 
                            arr.col = "grey",
@@ -238,16 +241,19 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     }
   } else { # studyType is  "QuasiExp" or "TrueExp"
     diagram::straightarrow(from = pos[4, ], # Group 1 to Treatment 1
-                           to = pos[1, ], 
+                           to = pos[1, ],
+                           arr.pos <- 0.65,
                            lcol = ifelse(studyType == "Obs", "grey", "black"),
                            lty = ifelse(studyType == "Obs", 2, 1))
     diagram::straightarrow(from = pos[5, ],  # Group 2 to Treatment 2
                            to = pos[2, ], 
+                           arr.pos <- 0.65,
                            lcol = ifelse(studyType == "Obs", "grey", "black"),
                            lty = ifelse(studyType == "Obs", 2, 1))
     if (length(addGroupNames) == 3) {
       diagram::straightarrow(from = pos[6, ],  # Group 3 to Treatment 3
                              to = pos[3, ], 
+                             arr.pos <- 0.65,
                              lcol = ifelse(studyType == "Obs", "grey", "black"),
                              lty = ifelse(studyType == "Obs", 2, 1))
     }
@@ -260,7 +266,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                            lcol = "black",
                            lty = 1)
   }
-
+  
   
   # ADD GROUPS
   numGroups <- length(addGroupNames)
@@ -273,7 +279,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                      shadow.size = 0,
                      lcol = GroupColour,
                      box.col = GroupColour)
-   diagram::textrect( pos[2, ], 
+  diagram::textrect( pos[2, ], 
                      lab = addGroupNames[2], 
                      radx = 0.075,
                      rady = 0.07,
@@ -289,7 +295,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                        lcol = GroupColour,
                        box.col = GroupColour)
   }
-
+  
   
   # ADD INDIVIDUALS
   if (addIndividuals) {
@@ -347,26 +353,26 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                          lab = addCNames[3])
     }
     
-    } else {
+  } else {
     BlindTreatmentx <- array( NA, 
                               dim = c(2, 2))
     BlindTreatmentx[1, ] <- c(1.4, pos[4, 2])
     BlindTreatmentx[2, ] <- c(1.4, pos[5, 2])
-
+    
     diagram::straightarrow(from = BlindTreatmentx[1, ], # Treatment 1 to A
                            to = pos[5, ], 
                            segment = c(0, 0.350),
-                           arr.pos = 0.30, # Position arrow at end of line
+                           arr.pos = 0.50, # Position arrow at end of line
                            lcol = "grey",
                            lty = 1)
-
+    
     diagram::straightarrow(from = BlindTreatmentx[2, ], # Treatment 1 to A
                            to = pos[4, ], 
                            segment = c(0, 0.350),
                            arr.pos = 0.30, # Position arrow at end of line
                            lcol = "grey",
                            lty = 1)
-
+    
     # ADD the question-mark allocation arrows: To blinded treatments
     diagram::straightarrow(from = BlindTreatmentx[1, ], # Treatment 1 to A
                            to = pos[5, ],
@@ -374,7 +380,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                            arr.pos = 0.75, # Position arrow at end of line
                            lcol = "grey",
                            lty = 2)
-
+    
     diagram::straightarrow(from = BlindTreatmentx[2, ], # Treatment 1 to A
                            to = pos[4, ],
                            segment = c(0.65, 1.00),
@@ -412,17 +418,17 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   }
   
   # Add headings
-#  text( x = pos[1, 1], 
-#        y = 0.95,
-#        cex = 1.05,
-#        font = 2, # BOLD
-#        label = "Groups")
-#  text( x = pos[3, 1], 
-#        y = 0.95,
-#        cex = 1.05,
-#        font = 2, # BOLD
-#        label = ifelse(studyType == "Obs", "Conditions", "Treatments"))
-
+  #  text( x = pos[1, 1], 
+  #        y = 0.95,
+  #        cex = 1.05,
+  #        font = 2, # BOLD
+  #        label = "Groups")
+  #  text( x = pos[3, 1], 
+  #        y = 0.95,
+  #        cex = 1.05,
+  #        font = 2, # BOLD
+  #        label = ifelse(studyType == "Obs", "Conditions", "Treatments"))
+  
   
   ### ADD RANDOM ALLOCATION TEXT
   if (addRandomAllocationText){
@@ -451,7 +457,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                        col = "grey",
                        srt = 90)
   }
-
+  
   
   ### ADD RANDOM SAMPLING TEXT
   if (addRandomSamplingText){
@@ -490,7 +496,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                               bty = "n", # Removes box from around the plot 
                               add = TRUE)
   }
-
+  
   
   if ( addInternalValidityText ) {
     polygon( x = c(0.425, 0.425, 1.00, 1.00),
@@ -521,7 +527,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     # Add question mark
     Deltax <- 0.075
     Deltay <- 0.125
-
+    
     plotfunctions::plot_image(img =  "icons/iconmonstr-help-3-240.png",
                               type = "png",
                               keep.ratio = TRUE,
@@ -531,7 +537,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                                           pos[8, 2] + Deltay),
                               bty = "n", # Removes box
                               add = TRUE)
-
+    
     # Add arrows
     diagram::textrect( c(pos[4, ], 1.2),
                        lab = addCNames[1], 
@@ -540,7 +546,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                        shadow.size = 0,
                        lcol = ExplanatoryColour,
                        box.col = ExplanatoryColour)
-  
+    
     diagram::textrect( c(pos[5, ], 1.2),
                        lab = addCNames[2], 
                        radx = 0.075,
