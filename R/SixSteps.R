@@ -34,7 +34,7 @@ SixSteps <- function( Flag = NA,
     "Ask~the~question",
     "Design~the~study",
     "Collect~the~data",
-    "Describe*','~summarise~the~data",
+    "Classify*','~summarise~the~data",
     "Analyse~the~data",
     "Report~the~results")
   
