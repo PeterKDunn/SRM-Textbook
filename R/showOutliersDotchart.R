@@ -33,12 +33,12 @@ mild <- qx[4] + 1.5 * iqrx
 extreme <- qx[4] + 3 * iqrx
 
 # FIND extreme obs
-extreme.obs <-  b.out$out[2:3]
+extreme.obs <-  sort(b.out$out)[2:3]
 extreme.which <- which(x > extreme )
 extreme.num <- length( x[extreme.obs] )
 
 # FIND mild obs
-mild.obs <- b.out$out[1]
+mild.obs <- sort(b.out$out)[1]
 mild.which <- which(x > mild )
 mild.num <- length( x[mild.obs] )
 
@@ -121,8 +121,13 @@ abline( v = c(mild, extreme),
          col = "grey")
 text(x = mean( c(mild, extreme) ),
      y = 1.75,
-     labels = "Mild\noutliers")
-
+     labels = "Mild\noutlier")
+arrows(x0 = mild.obs,
+       x1 = mild.obs,
+       y0 = 1.4,
+       y1 = 1.1,
+       angle = 15,
+       length = 0.1)
 
 ### EXTREME OUTLIERS
 arrows(x0 = Perm.quantiles[4],
@@ -142,5 +147,11 @@ text(x = mean( c(extreme, 175) ),
      y = 1.75,
      labels = "Extreme\noutliers")
 
+arrows(x0 = mean( c(extreme, 175) ),
+       x1 = extreme.obs + c(4, -4),
+       y0 = 1.4,
+       y1 = 1.15,
+       angle = 15,
+       length = 0.1)
 
 

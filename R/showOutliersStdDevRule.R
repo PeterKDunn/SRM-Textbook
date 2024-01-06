@@ -37,10 +37,10 @@ polygon( x = c(locationOfOutliers,
                locationOfOutliers,
                180,
                180),
-         y = c(0, 
+         y = c(-1, 
                2, 
                2, 
-               0),
+               -1),
          col = transparentGrey,
          border = NA)
 
