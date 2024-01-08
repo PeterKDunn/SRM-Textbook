@@ -160,15 +160,16 @@ pad <- function(x,
   } else {
     tmp <- matrix( nrow = currentRows, 
                    ncol = currentCols, 
-                  data = digits,
-                  byrow = TRUE)
+                   data = digits,
+                   byrow = TRUE)
     digits <- c( tmp ) # Since we operate BY COLS in what follows
   }
   digits <- c( digits)
   if ( verbose) cat("  * Finished length:", length(digits), "\n")
   if ( verbose) cat("  * digits:", digits, "\n")
   if ( verbose) cat("  * targetLengths:", targetLength, "\n")
-  
+  if ( verbose) cat("  * (Their lengths:", length(digits), length(targetLength), ")\n")
+  if (verbose) cat("----------------------------------------------------------------\n")
   
   
   if ( !is.null(currentDim) ) x <- c(x)
@@ -188,6 +189,8 @@ pad <- function(x,
   if ( verbose) cat("* Dealing element-by-element:\n")
   for (i in 1:xLen){
     if ( verbose) cat("\n  * Element:", i, "\n")
+    if ( verbose) cat("    * targetLength:", targetLength[i], "\n")
+    if ( verbose) cat("    * digits:", digits[i], "\n")
     
     # Update the row and column currently being worked on
     thisRow <- thisRow + 1
