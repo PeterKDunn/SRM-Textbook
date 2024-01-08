@@ -74,10 +74,15 @@ pad <- function(x,
     if ( verbose ) cat("* NOW working with an array\n ")
     if ( verbose ) cat("* Computing array size: ")
     currentDim <- dim(x) # NULL if scalar. Use to restore dimension.
+    if ( verbose ) cat("initially: ", currentDim)
+    if (length(currentDim) == 1) {
+      x <- array( x, dim = c(1,  dim(x)))
+      currentDim <- dim(x)
+    }  
     currentCols <- currentDim[2]
     currentRows <- currentDim[1]
     xAnArray <- TRUE
-    if ( verbose ) cat(currentDim, "\n")
+    if ( verbose ) cat("; adjusted (if necessary):", currentDim, "\n")
     
     # Determine if row names exists, and save to be able to restore them
     xHasRowNames <- FALSE
