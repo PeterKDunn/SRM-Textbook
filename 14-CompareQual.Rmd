@@ -1,5 +1,4 @@
-# Comparing qualitative data between individuals {#CompareQualData}
-
+# Qualitative data: Comparing between individuals {#CompareQualData}
 
 
 <!-- Introductions; easier to separate by format -->
@@ -14,17 +13,11 @@ This chapter considers how to compare *qualitative* variables in different group
 Tables and graphs are very useful this purpose.
 
 
-
-
-
-
 ## Two-way tables {#QualitativeTwoWaytables}
 
-Since qualitative data is typically collated in a table, more than one qualitative variable can be combined into tables also.
+When more than one qualitative variable is recorded for each individual, the data can be collated into table.
 When two qualitative variables are cross-tabulated, this is called a *two-way table*.
 As always, the categories should be *exhaustive* (cover all values) and *exclusive* (observations belong to one and only one category).
-
-
 
 
 :::{.example #SmallKidneyStones name="Two-way tables"}
@@ -123,12 +116,12 @@ However, to *compare* Methods\ A and\ B, these odds and percentages can be compu
 
 
 ::: {.example}
-The data in Table\ \@ref(tab:KS-Small) can be numerically summarised by computing *proportions* or *percentages* by *row totals*.
-The rows refer to the different Methods, this will compare the two methods.
+The data in Table\ \@ref(tab:KS-Small) can be numerically summarised by computing *proportions* or *percentages* by *row*.
+The rows refer to the different Methods, so this will compare the two methods.
 
-For the small kidney stones (Table\ \@ref(tab:KS-Small)), the *row proportions*
+For the small kidney stones (Table\ \@ref(tab:KS-Small)), the *row percentages*
 `r if (knitr::is_latex_output()) {
-   '(Table\\ \\@ref(tab:KidneyRowColLATEX), right table)'
+   '(Table\\ \\@ref(tab:KidneyRowColLATEX), left table)'
 } else {
    '(Table\\ \\@ref(tab:KS-Small-rowPC)'
 }`
@@ -136,14 +129,14 @@ give the proportion of successes for each *Method*, since the rows represent the
 *Row* proportions allow the proportions *within the rows* (i.e., for each Method) to be compared:
 
 * Method\ A: $81 \div 87 = 0.931$ (or $93.1$%) of operations in the sample were successful; and
-* Method\ B: $0.867$ (or $86.7$%) of operations in the sample were successful.
+* Method\ B: $234\div 270 = 0.867$ (or $86.7$%) of operations in the sample were successful.
 
 This suggests that, for small kidney stones, Method\ A is slightly more successful ($93.1$%) than Method\ B ($86.7$%) in the *sample*.
-These can be collated into a table
+These percentages are collated in
 `r if (knitr::is_latex_output()) {
-   '(Table\\ \\@ref(tab:KidneyRowColLATEX), right table).'
+   'Table\\ \\@ref(tab:KidneyRowColLATEX) (left table).'
 } else {
-   '(Table\\ \\@ref(tab:KS-Small-rowPC).'
+   'Table\\ \\@ref(tab:KS-Small-rowPC).'
 }`
 
 
@@ -154,7 +147,7 @@ Odds can also be computed:
 * Method\ B: The odds of success is $234/36 = 6.5$.
   This means there are $6.5$ more successful procedures than failures for Method\ B.
 
-This shows that the odds of a success is far greater for Method\ A.
+This shows that the odds of a success is far greater for Method\ A then Method B.
 :::
 
 
@@ -236,10 +229,10 @@ KS.small.colPC2 <- rbind(KS.small.colPC,
 KS.small.colPC <- round(KS.small.colPC, 1)
 
 if( knitr::is_latex_output() ) {
-  T1 <- kable(pad( KS.small.colPC2,
+  T1 <- kable(pad( KS.small.rowPC2,
                    surroundMaths = TRUE,
-                   targetLength = c(3, 3),
-                   digits = c(1, 1)),
+                   targetLength = c(4, 4, 3),
+                   digits = c(1, 1, 0)),
               format = "latex",
               longtable = FALSE,
               booktabs = TRUE,
@@ -247,9 +240,9 @@ if( knitr::is_latex_output() ) {
               digits = 1,
               align = "c",
               col.names = c("Success", 
-                            "Failure")) %>%
-    row_spec(0, bold = TRUE) %>%
-    column_spec(1, bold = TRUE)  
+                            "Failure",
+                            "Total")) %>%
+    row_spec(0, bold = TRUE) #%>%    column_spec(1, bold = TRUE)  
   
   T2 <- kable(pad(KS.small.colPC2,
                   surroundMaths = TRUE,
@@ -265,11 +258,13 @@ if( knitr::is_latex_output() ) {
                             "Failure"))  %>%
     row_spec(0, bold = TRUE) 
   
-  out <- knitr::kables(list(T2, T1),
+  out <- knitr::kables(list(T1, T2),
                        format = "latex",
                        label = "KidneyRowColLATEX",
                        caption = "(ref:KStonesRowColPercentSmall)") %>% 
-    kable_styling(font_size = 10)
+    kable_styling(font_size = 10) %>%
+      column_spec(1, bold = TRUE)  # Causes an error if placed with each table...
+  
   out2 <- prepareSideBySideTable(out, 
                                  gap = "\\qquad\\qquad\\qquad") 
   out2
@@ -285,15 +280,15 @@ Rather then comparing methods (in the rows), the procedure results can be compar
 ::: {.example}
 For the *small* kidney stones (Table\ \@ref(tab:KS-Small)), the *column proportions* 
 `r if (knitr::is_latex_output()) {
-   '(Table\\ \\@ref(tab:KidneyRowColLATEX), left table)'
+   '(Table\\ \\@ref(tab:KidneyRowColLATEX), right table)'
 } else {
    '(Table\\ \\@ref(tab:KS-Small-colPC)'
 }`
 give the proportion of successes within each column (i.e., for successes and for failures), since the columns contain the procedure results.
 *Column* proportions allow the proportions (or percentages) within *columns* to be compared:
 
-* Successful operations: $81 \div (81 + 234) = 0.257$ (or $25.7$%) in the sample were with Method\ A; and
-* Unsuccessful operations: $0.143$ (or $14.3$%) in the sample were with Method\ A.
+* Successful operations: $81 \div 315 = 0.257$ (or $25.7$%) in the sample were with Method\ A; and
+* Unsuccessful operations: $234\div 315 = 0.143$ (or $14.3$%) in the sample were with Method\ A.
 
 Row percentages seems more intuitive than column percentages here: they compare the success percentage for each treatment method.
 
@@ -326,7 +321,7 @@ The data can be graphed by using a bar for each level of one variable, and *stac
 
 
 ::: {.example #BarStacked name="Stacked bar charts"}
-For the data in Example\ \@ref(exm:SmallKidneyStones), a stacked bar chart can be created by producing a bar for each method, and *stacking* the successes and failures for each method (Fig.\ \@ref(fig:QualGraphsStones), top left panel).
+For the kidney-stone data in Example\ \@ref(exm:SmallKidneyStones), a stacked bar chart can be created by producing a bar for each method, and *stacking* the successes and failures for each method (Fig.\ \@ref(fig:QualGraphsStones), top left panel).
 
 Rather than using *numbers*, the *percentages* within each group can be used too (Fig.\ \@ref(fig:QualGraphsStones), top right panel).
 
@@ -376,21 +371,21 @@ dotchart(t (KS.small),
 
 ### Side-by-side bar charts {#SideBySideBarCharts}
 
-Instead of stacking the bars within each season on top of each other, the bars can be placed *side-by-side* within each season (Fig.\ \@ref(fig:QualGraphsStones), right panel).
+Instead of stacking the success and failures bars on top of each other, these bars can be placed *side-by-side* for each method.
 
 ::: {.example #BarSideBySide name="Side-by-side bar charts"}
-For the data in Example\ \@ref(exm:SmallKidneyStones), a side-by-side bar chart can be created by producing two bars for each method (one for failures; one for successes), and placing these side-by-side (Fig.\ \@ref(fig:QualGraphsStones), bottom left panel).
+For the kidney-stone data in Example\ \@ref(exm:SmallKidneyStones), a side-by-side bar chart can be created by producing two bars for each method (one for failures; one for successes), and placing these side-by-side (Fig.\ \@ref(fig:QualGraphsStones), bottom left panel).
 Again, numbers or percentages can be used.
 :::
 
 
 ### Dot charts {#TwoWayCountsDotCharts}
 
-Instead of bars, dots (or other symbols) can be used in place of a side-by-side bar chart.
+Instead of bars, dots (or other symbols) can be used in place of the bars in a side-by-side bar chart.
 
 
 ::: {.example #BarSideBySide2 name="Side-by-side bar charts"}
-For the data in Example\ \@ref(exm:SmallKidneyStones), a side-by-side bar chart can be created by producing two bars for each method (one for failures; one for successes), and placing these side-by-side (Fig.\ \@ref(fig:QualGraphsStones), bottom left panel).
+For the data in Example\ \@ref(exm:SmallKidneyStones), a dot chart can be created by placing plotting symbols for each result (one for failures; one for successes) side-by-side for each method (Fig.\ \@ref(fig:QualGraphsStones), bottom right panel).
 Again, numbers or percentages can be used.
 :::
 
@@ -427,7 +422,7 @@ The odds of success for Method\ A and Method\ B are very different.
 In the sample, the odds of success for Method\ A is many *times* greater than for Method\ B.
 In fact, in the sample, the odds of success for Method\ A is $13.5\div 6.5 = 2.08$ *times* the odds of a success for Method\ B.
 This value is the *odds ratio* (OR).
-The sample odds ratio is a *statistic*, and the population odds ratio is a *parameter*.
+The sample odds ratio is a *statistic*, and the (unknown) population odds ratio is a *parameter*.
 
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
@@ -446,8 +441,8 @@ The *odds ratio* is the ratio of the odds of an event in one group, compared to 
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-Understanding how software computes the odds ratio is important for understanding the output. 
-jamovi output can be interpreted in *either* of these ways (i.e., both are correct):
+Our definition of the odds ratio is the same used by jamovi, SPSS and many other statistical programs.
+The odds ratio can be interpreted in *either* of these ways (i.e., both are correct):
 \vspace{-2ex}
 
 * The *odds* compare Row\ 1 counts to Row\ 2 counts, for both columns.  
@@ -460,7 +455,16 @@ Odds and odds ratios are computed with the *first row* and *first column* values
 :::
 
 
-The OR compares the odds of the same event in two different groups.
+::: {.example #InterpretingOdds name="Interpreting odds"}
+For the *small* kidney stone data, the odds of a success for Method\ A is  $81\div6 = 13.5$ (i.e., successes).
+The value of $81$ is from Row\ 1 of the table.
+Similarly, the odds of a success for Method\ B is  $234\div36 = 6.5$, where the value of $234$ is from Row\ 1 of the table (i.e., successes).
+
+The odds ratio is then computed as $13.5\div 6.5$, where the odds of $13.5$ is from Row\ 1 of the table (i.e., Method\ A).
+:::
+
+
+The OR compares the odds of the same event (e.g., success) in two different groups (e.g., Method\ A and Method\ B).
 This means that a $2\times 2$ table can be summarised using one number: the odds ratio (OR).
 
 Take care interpreting odds ratios (or ORs):
@@ -493,9 +497,9 @@ htmltools::tags$video(src ="./videos/oddsratios.mp4",
 
 
 
-## Summary tables {#CompareQualTables}
+## Numerical summary tables {#CompareQualTables}
 
-The numerical summary information can be collated in a table, or a *tabular summary*.
+The numerical summary information for comparig qualitative variables can be collated in a table, or a *tabular summary*.
 The data should be summarised by one of the qualitative variables, producing percentages and odds for the other.
 
 
@@ -503,7 +507,7 @@ The data should be summarised by one of the qualitative variables, producing per
 For the small kidney-stone data, the summary of the data can be tabulated as in Table\ \@ref(tab:KidneySmallSum).
 
 Based on the table, do you think a difference exists between the success rate for each method?
-Remember, the data in Table\ \@ref(tab:KidneySmallSum) is for a *sample*, but the RQ is asking about the *population*.
+Remember, the data in Table\ \@ref(tab:KidneySmallSum) are for a *sample*, but the RQ is asking about the *population*.
 :::
 
 
@@ -529,12 +533,14 @@ if( knitr::is_latex_output() ) {
   kable(pad(KidneySmall.Sum,
             surroundMaths = TRUE,
             targetLength = c(4, 6, 3),
-            digits = c(1, 3, 0)),
+            digits = c(1, 1, 0,
+                       1, 1, 0,
+                       0, 3, 0)),
         format = "latex",
         longtable = FALSE,
         booktabs = TRUE,
         escape = FALSE,
-        align = c("r", "r", "r"),
+        align = "c",
         digits = c(1, 3),
         col.names = c("success", 
                       "success", 
@@ -592,7 +598,7 @@ Data were also recorded for the *large* kidney stones
 } else {
    '(Table\\ \\@ref(tab:KS-Large)).'
 }`
-As for small kidney stones, the *success proportions* can be computed for large kidney stones for Methods\ A and\ B (i.e., row percentages):
+As for small kidney stones, the *success percentages* can be computed for large kidney stones for Methods\ A and\ B (i.e., row percentages):
 
 * Method\ A: Success proportion for large kidney stones: $192/263 = 0.730$, or $73.0$%; and
 * Method\ B: Success proportion for large kidney stones: $55/80 = 0688$, or $68.8$%.
@@ -680,7 +686,7 @@ if( knitr::is_latex_output() ) {
             surroundMaths = TRUE,
             targetLength = c(3, 2, 3),
             digits = 0), 
-        format  ="latex",
+        format  = "latex",
         longtable = FALSE,
         booktabs = TRUE,
         escape = FALSE,
@@ -732,6 +738,7 @@ Compute the success proportions for Method\ A and Method\ B when *small* and *la
 * For all stones combined, what is the success proportion for Method\ A?
 * For all stones combined, what is the success proportion for Method\ B?
 
+\vspace{-2ex}
 Which method has the higher success proportion for all stones combined?
 
 `r if (knitr::is_latex_output()) '<!--'`
@@ -751,7 +758,7 @@ To summarise:
 That seems strange...
 Method\ A performs better for small *and* large kidney stones... but Method\ B performs better when size is unknown (i.e., ignoring size).
 
-The *size of the stone* is a *confounding variable* (Fig.\ \@ref(fig:SimpsonRulesStones)), as it is associated with the method (small stones are treated more often with Method\ B) *and* with the result (small stones have a greater success proportion).
+The *size of the stone* is a *confounding variable* (Fig.\ \@ref(fig:SimpsonRulesStones)), as it is associated with the method (small stones are treated more often with Method\ B) *and* with the result (small stones have a greater success proportion for *both* methods).
 
 This confounding could have been avoided by randomly allocating a treatment method to patients.
 However, random allocation was not possible in this study, so the researchers used a different method to manage confounding: *recording* the size of the kidney stones; see Sect.\ \@ref(ObsManagingConfounding).
@@ -776,18 +783,34 @@ pos[1, ] <- c(0.25, 0.20) # Success
 pos[2, ] <- c(0.75, 0.20) # Method
 pos[3, ] <- c(0.5, 0.75)   # Size
 
-straightarrow(from = pos[2,], 
-              to = pos[1,], 
-              lty = 1, 
-              lwd = 2)
-straightarrow(from = pos[3,],
-              to = pos[1,], 
-              lty=2,
-              lcol="grey")
-straightarrow(from = pos[3,], 
-              to = pos[2,], 
+straightarrow(from = pos[2,], # Method
+              to = pos[1,],   # Success
               lty = 2,
-              lcol = "grey")
+              lcol = "grey",
+              lwd = 2)
+straightarrow(from = pos[3,], # Size
+              to = pos[1,],   # Success
+              lty = 1)
+straightarrow(from = pos[3,], # Size 
+              to = pos[2,],   # Method
+              lty = 1)
+
+text(x = 0.5,
+     y = 0.48,
+     cex = 0.85,
+     pos = 3,
+     labels = "Actual links")
+text(x = 0.5,
+     y = 0.20,
+     cex = 0.85,
+     pos = 3,
+     labels = "Apparent")
+text(x = 0.5,
+     y = 0.20,
+     cex = 0.85,
+     pos = 1,
+     labels = "link")
+
 
 textrect( pos[1,], 
            lab = "Success", 
@@ -816,24 +839,61 @@ textrect( pos[3,],
 ## Example: water access {#WaterAcessQualCompare}
 
 A study of three rural communities in Cameroon [@lopez2022farmers] recorded data about access to water (see Sects. \@ref(WaterAccessQuant) and\ \@ref(WaterAccessQual)).
-One of the main purposes of the study was to determine contributors to the incidence of diarrhoea in young children ($85$ households had children under\ $5$).
-The comparison in Fig.\ \@ref(fig:WaterAccessQualCompare) include some categories with small sample sizes, so the percentages shown may not be precise estimates of the population values.
-The summary table (Table\ \@ref(tab:WaterAccessQual)) may suggest a difference due to keeping livestock.
+One of the main purposes of the study was to determine contributors to the incidence of diarrhea in young children ($85$ households had children under\ $5$).
+A cross-tabulation (Table\ \@ref(tab:WaterAcessQualCrosstab)) shows the relationship with keeping livestock; the numerical summary table (Table\ \@ref(tab:WaterAcessQualCompareTable)) may suggest a difference due to keeping livestock.
+The comparison in Fig.\ \@ref(fig:WaterAccessQualCompare) includes some categories with small sample sizes, so the percentages shown may not be precise estimates of the population values.
 
-As usual, the data come one of countless possible samples, but the RQ is about the population, so making a definitive decisions is difficult.
+As usual, the data come from one of countless possible samples, but the RQ is about the population, so making a definitive decisions is difficult.
 
 
-```{r WaterAcessQualCompareTable}
+```{r WaterAcessQualCrosstab}
 data(WaterAccess)
-
-WANumericalSummary <- array( dim = c(3, 3))
 
 WAkids <- subset(WaterAccess, HouseholdUnder5s > 0 ) # 85 have kids
 WAKidsTab <- xtabs( ~ HasLivestock + Diarrhea,
                     data = WAkids)
+rownames(WAKidsTab) <- c("No diarrhea reported in household",
+                         "Diarrhea reported in household")
 
-rownames(WANumericalSummary) <- c("Does not have livestock",
-                                  "Has livestock",
+if( knitr::is_latex_output() ) {
+  kable(pad(WAKidsTab,
+            surroundMaths = TRUE,
+            targetLength = 2,
+            digits = 0),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        align = "c",
+        digits = c(1, 3),
+        col.names = c("No diarrhea in children", 
+                      "Diarrhea in children"),
+        caption = "Cross-tabulation of having livestock in the household, and children under $5$ having diaarhea in the household in the last two week") %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 10) 
+}
+if( knitr::is_html_output() ) {
+  kable(pad(WAKidsTab,
+            surroundMaths = TRUE,
+            targetLength = 2,
+            digits = 0),
+        format = "html",
+        longtable = FALSE,
+        booktabs = TRUE,
+        align = "c",
+        digits = c(1, 3),
+        col.names = c("No diarrhea", 
+                      "Diarrhea"),
+        caption = "Cross-tabulation of having livestock in the household, and children under $5$ having diaarhea in the household in the last two week")
+}
+```
+
+```{r WaterAcessQualCompareTable}
+
+WANumericalSummary <- array( dim = c(3, 3))
+
+rownames(WANumericalSummary) <- c("Household does not have livestock",
+                                  "Household has livestock",
                                   "Odds ratio")
 colnames(WANumericalSummary) <- c("Percentage",
                                   "Odds",
@@ -955,7 +1015,7 @@ mtext(side = 4,
 ## Chapter summary {#CompareQual-Summary}
 
 Qualitative data can be compared between different groups (between individuals comparisons) using a  dot chart, bar chart or pie chart.
-The data can be displayed in a two-way table, then summarised by comparing proportions, percentages and odds.
+The data can be displayed in a two-way table, then summarised numerically by comparing proportions, percentages and odds.
 Odds ratio can be used to compare odds in two different groups.
 
 
@@ -963,7 +1023,7 @@ Odds ratio can be used to compare odds in two different groups.
 ## Quick revision questions {#CompareQual-QuickReview}
 
 ::: {.webex-check .webex-box}
-A study [@data:Alley2017:SocialMedia] examined social media (SM) use, using a representative sample of Queenslanders at least 18 years of age (from the 2013 Queensland Social Survey; Table\ \@ref(tab:SocialMedia)).
+A study [@data:Alley2017:SocialMedia] examined social media use, using a representative sample of Queenslanders at least 18 years of age (from the 2013 Queensland Social Survey; Table\ \@ref(tab:SocialMedia)).
 
 1. Compute the *sample proportion* of *urban* residents who use social media, $\hat{p}_U$.\tightlist
 `r if( knitr::is_html_output() ) {mcq( c(
@@ -1070,7 +1130,7 @@ Table\ \@ref(tab:VomitTable) shows how many people vomited after consuming beer 
 1. Compute the *column percentages*. 
    What do these mean?
 1. Compute the *overall percentage* of drinkers who vomited.
-1. Compute the *odds* a wine-only drinker vomited.
+1. Compute the *odds* that a wine-only drinker vomited.
 1. Compute the *odds* that a beer-then-wine drinker vomited.
 1. Compute the *odds ratio*, comparing the odds of vomiting for wine-only drinkers to beer-then-wine drinkers.
 1. Compute the *odds ratio*, comparing the odds of vomiting for beer-then-wine drinkers to wine-only drinkers.
@@ -1128,8 +1188,8 @@ In December 1993, $91$ males and $188$ female *adult* wallabies were recorded, a
 1. Create the two-way table of counts.
 1. For *adult* wallabies, what *proportion* of adult wallabies were males?
 1. For *adult* wallabies, what are the *odds* that a female was observed?
-1. For *young* wallabies, what are the *odds* that a female was observed?
 1. For *young* wallabies, what *percentage* of  wallabies were males?
+1. For *young* wallabies, what are the *odds* that a female was observed?
 1. What is the odds ratio of observing an adult wallaby, comparing females to males?
 :::
 
@@ -1213,12 +1273,6 @@ Bags.tab[1, ] <- c(330, 226)
 Bags.tab[2, ] <- c(280, 359)
 ```
 
-
-:::{.exercise #AVquestions}
-Using the information in Table\ \@ref(tab:AVtable2), create a stacked bar chart to display the responses to the three questions.
-:::
-
-
 ::: {.exercise #OddsBackpacks}
 A study [@haselgrove2008perceived] asked boys and girls in Western Australia about back pain from carrying school bags (Table\ \@ref(tab:BagsTable)).
 
@@ -1267,7 +1321,14 @@ if( knitr::is_html_output() ) {
 ```
 
 
-::: {.exercise}
+
+
+:::{.exercise #AVquestions}
+Using the information in Table\ \@ref(tab:AVtable2), create a stacked bar chart to display the responses to the three questions.
+:::
+
+
+::: {.exercise #Roadkill}
 A study of road kill [@data:Russell2009:Possums] produced the data in Table\ \@ref(tab:PossumRoadkillNumber).
 
 1. Identify the two variables, and classify them as nominal or ordinal.
