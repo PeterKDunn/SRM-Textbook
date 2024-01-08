@@ -1,4 +1,4 @@
-# Comparing quantitative data within individuals {#SummariseWithin}
+# Quantitative data: Changes within individuals {#SummariseWithin}
 
 
 
@@ -9,14 +9,13 @@
 
 ## Introduction
 
-Sometimes the same variable is measured on each unit of analysis more than once (i.e., *within*-individual comparisons for each unit of analysis) but only a small number of times.
-A *case-profile plot* can be used: a plot showing how the response variable changes for each unit of analysis.
+Sometimes the same variable is measured on each individual more than once (i.e., *within*-individual comparisons for each unit of analysis) but only a small number of times.
 Examples of this type of data include:
 
 * Measurements of household water consumption *before* and *after* installing water-saving devices, for many households.
 * Blood pressure measurements for many people at $8$am, $1$pm and $8$pm each day.
 
-In both cases, the same variable is measured multiple times for each unit of analysis.
+In both cases, the same variable is measured multiple times for each individual.
 *Within*-individuals comparisons require different methods than *between*-individuals comparisons.
 This chapter considers how to compare *qualitative* variables in different groups.
 Graphs are very useful this purpose.
@@ -66,27 +65,60 @@ IgE$Reduction <- IgE$Before - IgE$After
   
 
 if( knitr::is_latex_output() ) {
-  kable(pad(IgE,
+  
+  T1 <- kable(pad(IgE[1:6, ],
             surroundMaths = TRUE,
             targetLength = 4,
-            digits = 0),
-        format = "latex",
+            digits = 0), 
+        format  = "latex",
+        longtable = FALSE,
         booktabs = TRUE,
         escape = FALSE,
+        digits = 1,
         align = "c",
-        col.names = c("in micrograms/L", 
-                      "in micrograms/L", 
-                      "in micrograms/L"),
-        linesep = c("", "", "", "\\addlinespace", "", "", "\\addlinespace", "", "", "", ""), # Otherwise adds a space after five lines... 
-        caption = "The IgE before and after an intervention, and the reduction in IgE (in micrograms/L)",
-        digits = 0)  %>%
-    kable_styling(font_size = 10) %>%
-    row_spec(0, bold = TRUE) %>%
+        linesep = c("", "", "\\addlinespace"),
+        col.names = c("(in $\\mu$g/L)", 
+                      "(in $\\mu$g/L)", 
+                      "(in $\\mu$g/L)")) %>%
+    row_spec(0, bold = TRUE)   %>%
     add_header_above( c("IgE (before)" = 1,
                         "IgE (after)" = 1,
                         "Reduction" = 1),
                       bold = TRUE,
                       line = FALSE) 
+  
+  T2 <- kable(pad(rbind(IgE[7:11, ], c(NA, NA, NA)),
+            surroundMaths = TRUE,
+            targetLength = 4,
+            digits = 0), 
+        format  = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        row.names = FALSE,
+        digits = 1,
+        align = "c",
+        linesep = c("", "", "\\addlinespace"),
+        col.names = c("(in $\\mu$g/L)", 
+                      "(in $\\mu$g/L)", 
+                      "(in $\\mu$g/L)")) %>%
+    row_spec(0, bold = TRUE)    %>%
+    add_header_above( c("IgE (before)" = 1,
+                        "IgE (after)" = 1,
+                        "Reduction" = 1),
+                      bold = TRUE,
+                      line = FALSE) 
+  
+  
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "IgEChanges",
+                       caption = "The IgE before and after an intervention, and the change in IgE (in $\\mu$grams/L)") %>% 
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out, 
+                                 gap = "\\enskip") 
+  out2
+  
 }
 if( knitr::is_html_output() ) {
   kable(pad(IgE,
@@ -105,6 +137,7 @@ if( knitr::is_html_output() ) {
         digits = 0)
 }
 ```
+
 
 
 ```{r PairedGraphCaseProfileLATEX, fig.cap="The IgE data. Left: A histogram of the differences; right: A case-profile plot. Each line represents one subject, joining that person's pre-intervention measurement to their post-intervention measurement.", fig.align="center", fig.width=9.25, fig.height=3.25, out.width='100%'}
@@ -213,6 +246,19 @@ Sometimes the within-individual comparison is made more than two times, and so a
 In these cases, the values for each individual can be be plotted using a case-profile plot.
 
 
+
+::: {.example #CaseProfilePlots name="Case-profile plot"}
+A study of children with atopic asthma [@data:Lothian2006:Whey] measured the immunogoblin\ E concentrations (IgE) before and after an intervention for each child (Table\ \@ref(tab:IgEChanges)).
+The measurements of IgE for each child at both times can be shown using a case-profile plot
+`r if (knitr::is_latex_output()) {
+   '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileLATEX), right panel).'
+} else {
+   '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileHTML), bottom panel).'
+}`
+Each line corresponds to a unit of analysis (i.e., a child).
+:::
+
+
 :::{.example #CaseProfileRunning name="Case-profile plot"}
 Runners use wearable devices to measure many performance indicators, including vertical oscillation (VO). 
 VO contributes to running economy and injury risk, so reliable VO measurements are crucial.
@@ -221,8 +267,10 @@ The case-profile plot is shown in Fig.\ \@ref(fig:RunningRM), where solid points
 NOVA and Footpod give smaller VO measurements in general.
 :::
 
-```{r RunningRM, fig.cap="Vertical oscillation measured using five methods for $15$ runners. The solid black points represent the means for each method.", fig.align="center", out.width='70%', fig.width=6, fig.height=4}
+```{r RunningRM, fig.cap="Vertical oscillation measured using five methods for $15$ runners. The solid black points represent the means for each method. Left: A lines is plotted for each individuals; right: only the means are shown, with vertical lines form the minumum value to the maximum value.", fig.align="center", out.width='100%', fig.width=9, fig.height=3.25}
 data(Running)
+
+par( mfrow = c(1, 2))
 
 par( mar = c(5.1, 5.1, 4.1, 2.1) )
 
@@ -231,11 +279,12 @@ plot( x = c(0.75, 5.25),
       type = "n",
       ylab = "Average vertical\noscillation (cm)",
       xlab = "Method",
-      main = "Case-profile plot for the vertical oscillations\nmeasurements using five methods, for 15 runners",
+      main = "Case-profile plot for the vertical\n oscillations measurements; 5 methods",
       axes = FALSE)
 
 axis(side = 1,
      at = 1:5, 
+     las = 2,
      labels = c("HRM", 
                 "NOVA",
                 "RDP",
@@ -266,25 +315,74 @@ lines( x = 1:5,
        type ="b",
        col = "black",
        pch = 19)
+
+
+
+###
+
+
+
+par( mar = c(5.1, 5.1, 4.1, 2.1) )
+
+plot( x = c(0.75, 5.25),
+      y = c(0, 150),
+      type = "n",
+      ylab = "Average vertical\noscillation (cm)",
+      xlab = "Method",
+      main = "Case-profile plot for the vertical\noscillations measurements; 5 methods",
+      axes = FALSE)
+
+axis(side = 1,
+     at = 1:5, 
+     las = 2,
+     labels = c("HRM", 
+                "NOVA",
+                "RDP",
+                "Footpod",
+                "Video"))
+axis(side = 2,
+     las = 1,
+     at = seq(0, 150, 
+              by = 25))
+box()
+
+Mns <- colMeans( Running[, 4:8])
+lines( x = 1:5,
+       y = Mns,
+       type ="b",
+       col = "black",
+       pch = 19)
+
+
+Min <- apply(Running,
+             MARGIN = 2,
+             FUN = "min")[4:8]
+Max <- apply(Running,
+             MARGIN = 2,
+             FUN = "max")[4:8]
+
+for (i in 1:5)
+segments(x0 = i,
+         x1 = i,
+         y0 = Min[i],
+         y1 = Max[i])
+
 ```
 
-
-::: {.example #CaseProfilePlots name="Case-profile plot"}
-A study of children with atopic asthma [@data:Lothian2006:Whey] measured the immunogoblin\ E concentrations (IgE) before and after an intervention for each child (Table\ \@ref(tab:IgEChanges)).
-The measurements of IgE for each child at both times can be shown using a case-profile plot
-`r if (knitr::is_latex_output()) {
-   '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileLATEX), right panel).'
-} else {
-   '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileHTML), bottom panel).'
-}`
-Each line corresponds to a unit of analysis (i.e., a child).
-:::
+As seen in the last example, the case-profile plot is hard to read with large numbers of individuals.
+In those situations, sometimes just the mean (or median, as appropriate) is shown, often with some measure of the variation of the observations (Fig.\ \@ref(fig:RunningRM) shows the minimum and maximum values, for instance).
 
 
-## Summary tables {#WithinSummaryTables}
+## Numerical summary tables {#WithinSummaryTables}
 
 The numerical summary information from a within-individuals study can collated in a table, or a *tabular summary*.
 The data should be summarised at each within-individual comparison, and (when appropriate) the changes should also be summarised.
+
+
+:::{.example #NumericalSummaryWithin name="Numerical summary table"}
+For the data in Example\ \@ref(exm:CaseProfileRunning), the numerical summary table is shown in Table\ \@ref(tab:IgETable).
+The direction of the difference is implied by the word *reduction*.
+:::
 
 
 ```{r IgETable}
@@ -304,15 +402,15 @@ IgETable[, 3] <- round(apply(IgE, 2, "realLength"), 0)
 
 knitr::kable( pad(IgETable,
                   surroundMaths = TRUE,
-                  targetLength = c(4, 4, 4),
+                  targetLength = c(7, 7, 2),
                   digits = c(1, 2, 0)),
               format = "latex",
               longtable = FALSE,
               booktabs = TRUE,
               escape = FALSE,
               digits = 1,
-              align = c("r", "r", "r", "c"),
-              caption = "A numerical summary of the IgE data (in micrograms/L)") %>%
+              align =  "c",
+              caption = "A numerical summary of the IgE data (in $\\mu$g/L)") %>%
   kable_styling(full_width = FALSE) %>%
   row_spec(row = 0, 
            bold = TRUE) %>%
@@ -435,7 +533,7 @@ Since the raw data are available, the data should be summarised graphically (Fig
 
 
 ```{r Floweringjamovi, fig.cap="jamovi output for the flowering-day data", fig.align="center", out.width=c("100%"), fig.show='hold'}
-knitr::include_graphics("jamovi/Flowering/FloweringAll.png")
+knitr::include_graphics("jamovi/Flowering/Flowering-Descriptives.png")
 ```
 
 
@@ -477,7 +575,7 @@ if( knitr::is_latex_output() ) {
   knitr::kable(pad(FloweringSummary,
                    surroundMaths = TRUE,
                    targetLength = c(6, 7, 6, 2),
-                   digits = c(2, 4, 4, 0)),
+                   digits = c(2, 3, 3, 0)),
                format = "latex",
                align = "c",
                linesep = "",
@@ -496,7 +594,7 @@ if( knitr::is_html_output() ) {
   kable( pad(FloweringSummary,
                    surroundMaths = TRUE,
                    targetLength = c(6, 7, 6, 2),
-                   digits = c(2, 4, 4, 0)),
+                   digits = c(2, 3, 3, 0)),
          format = "html",
                align = "c",
          booktabs = TRUE,
@@ -670,7 +768,7 @@ knitr::kable( pad(TapeTable,
               booktabs = TRUE,
               escape = FALSE,
               digits = 1,
-              align = c("r", "r", "r", "r"),
+              align = "c",
               caption = "A numerical summary of the Tape data") %>%
   kable_styling(full_width = FALSE) %>%
   row_spec(row = 0, 
@@ -687,7 +785,7 @@ knitr::kable( pad(TapeTable,
               booktabs = TRUE,
               escape = FALSE,
               digits = 1,
-              align = c("r", "r", "r", "r"),
+              align = "c",
               caption = "A numerical summary of the Tape data") %>%
   kable_styling(full_width = FALSE) %>%
   row_spec(row = 0, 
@@ -722,7 +820,7 @@ Are the following statements *true* or *false*?
 
 ## Exercises {#SummariseWithin-Exercises}
 
-Selected answers are available in Sect.\ \@ref(SummariseWithin-Answer).
+Selected answers are available in Sect.\ \@ref(SummariseWithin-Answers).
 
 
 :::{.exercise #CompareWithinInsulation}
@@ -803,87 +901,6 @@ if( knitr::is_html_output(exclude = "epub") ) {
 ```
 
 
-:::{.exercse #CompareWithinPainRelief}
-Researchers measured the reported pain of new mothers in Dodoma (Tanzania) at four times: near giving birth, then $20$, $40$ and $60$ minutes after giving birth (after being administered either paracetamol or a cold pack as pain relief) [@augustino2023dataset].
-Pain was recorded using a 'numeric rating scale represented by the horizontal line marked from zero to ten', where higher scores mean greater pain.
-
-Since the number of individuals in large, use the summary data in Table\ \@ref(tab:PainReliefTable) to sketch a plot of the means, like that in Figure\ \@ref(fig:TapeRepeated).
-:::
-
-
-```{r PainReliefTable}
-data(PainRelief)
-
-PTwide <- tidyr::pivot_wider(PainRelief, 
-                             names_from = Time,
-                             values_from = Score)
-
-PRtable <- array( dim = c(4, 5))
-rownames(PRtable) <- c("Paracetamol",
-                       "",
-                       "Cold pack",
-                       "")
-
-
-colnames(PRtable) <- c("",
-                       "At birth",
-                       "After 20 mins",
-                       "After 40 mins",
-                       "After 60 mins")
-PRtable[1:4, 1] <-   c("Mean",
-                       "Std. deviation",
-                       "Mean",
-                       "Std. deviation")
-
-PRtable[1, 2:5] <- colMeans( subset(PTwide[7:10], 
-                                    PTwide$Group == "paracetamol"), 
-                             na.rm = TRUE)
-PRtable[2, 2:5] <- apply( subset(PTwide[7:10], 
-                                 PTwide$Group == "paracetamol"), 
-                          2, 
-                          "sd",
-                          na.rm = TRUE)
-PRtable[3, 2:5] <- colMeans( subset(PTwide[7:10], 
-                                    PTwide$Group == "coldpack"), 
-                             na.rm = TRUE)
-PRtable[4, 2:5] <- apply( subset(PTwide[7:10], 
-                                 PTwide$Group == "coldpack"), 
-                          2, 
-                          "sd",
-                          na.rm = TRUE)
-
-if( knitr::is_latex_output() ) {
-knitr::kable( pad(PRtable,
-                  surroundMaths = TRUE,
-                  targetLength = c(0, 4, 4, 4, 4),
-                  digits = c(0, 2, 2, 2, 2)),
-              format = "latex",
-              align = c("r", "c", "c", "c", "c"),
-              linesep = c("", "\\addlinespace"),
-              row.names = TRUE,
-              escape = FALSE,
-              caption = "Reported pain for mothers after giving birth",
-              booktabs = TRUE) %>%
-  row_spec(0, bold = TRUE) %>%
-  column_spec(1, bold = TRUE) %>%
-  kable_styling(font_size = 10)
-}
-if( knitr::is_html_output() ) {
-knitr::kable( pad(PRtable,
-                  surroundMaths = TRUE,
-                  targetLength = c(0, 4, 4, 4, 4),
-                  digits = c(0, 2, 2, 2, 2)),
-              format = "html",
-              align = c("r", "c", "c", "c", "c"),
-              linesep = c("", "\\addlinespace"),
-              row.names = TRUE,
-              escape = FALSE,
-              caption = "Reported pain for mothers after giving birth",
-              booktabs = TRUE) %>%
-  row_spec(0, bold = TRUE) %>%
-  column_spec(1, bold = TRUE)
-}
-```
 
 
 ::: {.exercise #CompareWithinExercisesCaptopril}
@@ -976,6 +993,93 @@ if( knitr::is_html_output() ) {
 		     align = "c")
 }
 ```
+
+
+
+
+
+:::{.exercise #CompareWithinPainRelief}
+Researchers measured the reported pain of new mothers in Dodoma (Tanzania) at four times: near giving birth, then $20$, $40$ and $60$ minutes after giving birth after being administered either paracetamol or a cold pack as pain relief [@augustino2023dataset].
+Pain was recorded using a 'numeric rating scale represented by the horizontal line marked from zero to ten', where higher scores mean greater pain.
+
+Since the number of individuals in large, use the summary data in Table\ \@ref(tab:PainReliefTable) to sketch a plot of the means and the range, like that in Figure\ \@ref(fig:TapeRepeated).
+:::
+
+
+```{r PainReliefTable}
+data(PainRelief)
+
+PTwide <- tidyr::pivot_wider(PainRelief, 
+                             names_from = Time,
+                             values_from = Score)
+
+PRtable <- array( dim = c(4, 5))
+rownames(PRtable) <- c("Paracetamol",
+                       "",
+                       "Cold pack",
+                       "")
+
+
+colnames(PRtable) <- c("",
+                       "At birth",
+                       "After 20 mins",
+                       "After 40 mins",
+                       "After 60 mins")
+PRtable[1:4, 1] <-   c("Mean",
+                       "Std. deviation",
+                       "Mean",
+                       "Std. deviation")
+
+PRtable[1, 2:5] <- colMeans( subset(PTwide[7:10], 
+                                    PTwide$Group == "paracetamol"), 
+                             na.rm = TRUE)
+PRtable[2, 2:5] <- apply( subset(PTwide[7:10], 
+                                 PTwide$Group == "paracetamol"), 
+                          2, 
+                          "sd",
+                          na.rm = TRUE)
+PRtable[3, 2:5] <- colMeans( subset(PTwide[7:10], 
+                                    PTwide$Group == "coldpack"), 
+                             na.rm = TRUE)
+PRtable[4, 2:5] <- apply( subset(PTwide[7:10], 
+                                 PTwide$Group == "coldpack"), 
+                          2, 
+                          "sd",
+                          na.rm = TRUE)
+
+if( knitr::is_latex_output() ) {
+knitr::kable( pad(PRtable,
+                  surroundMaths = TRUE,
+                  targetLength = c(0, 4, 4, 4, 4),
+                  digits = c(0, 2, 2, 2, 2)),
+              format = "latex",
+              align = c("r", "c", "c", "c", "c"),
+              linesep = c("", "\\addlinespace"),
+              row.names = TRUE,
+              escape = FALSE,
+              caption = "Reported pain for mothers after giving birth",
+              booktabs = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = TRUE) %>%
+  kable_styling(font_size = 10)
+}
+if( knitr::is_html_output() ) {
+knitr::kable( pad(PRtable,
+                  surroundMaths = TRUE,
+                  targetLength = c(0, 4, 4, 4, 4),
+                  digits = c(0, 2, 2, 2, 2)),
+              format = "html",
+              align = c("r", "c", "c", "c", "c"),
+              linesep = c("", "\\addlinespace"),
+              row.names = TRUE,
+              escape = FALSE,
+              caption = "Reported pain for mothers after giving birth",
+              booktabs = TRUE) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = TRUE)
+}
+```
+
 
 ```{r out.width='80%'}
 data(Anorexia)
