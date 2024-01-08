@@ -1,5 +1,10 @@
-pad <- function(x, digits = 2, targetLength = 4, where = "front", 
-                surroundMaths = FALSE, textAlign = "left", big.mark = "",
+pad <- function(x, 
+                digits = 2, 
+                targetLength = 4, 
+                #where = "front", 
+                surroundMaths = FALSE,
+                textAlign = "left", 
+                big.mark = "",
                 verbose = FALSE){
   
   # digits is the number of DECIMAL digits
@@ -161,6 +166,8 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front",
   }
   digits <- c( digits)
   if ( verbose) cat("  * Finished length:", length(digits), "\n")
+  if ( verbose) cat("  * digits:", digits, "\n")
+  if ( verbose) cat("  * targetLengths:", targetLength, "\n")
   
   
   
@@ -189,10 +196,10 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front",
       thisRow <- 1
     }
     if ( verbose) cat("  * row/col:", thisRow, thisCol, "\n")
-    
+
     # Determine if a negative sign needs to be \phantomed-ed in this COLUMN
     addNegativeSignForThisCol <- FALSE
-    #cat("thisCol, numRows", thisCol, numRows, "\n")
+
     if ( any(x[((thisCol - 1) * currentRows + 1) : (thisCol * currentRows)] < 0, na.rm = TRUE) ) {
       addNegativeSignForThisCol <- TRUE
     }
@@ -212,18 +219,33 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front",
     
     if (elementIsNumeric) { 
       x[i] <- as.numeric( x[i] )
+      
+      
+      # Now, may have this situation: 2.1, 13.4 and 2.334.
+      # So [1] needs one dp showing, but *space* for 3 dp:
+      #   2.1 
+      #  13.4
+      #   2.334
+      #
+      # The padding needed at the right we call backPadding
+      
+      maxColumnDigits <- max( digits[((thisCol - 1) * currentRows + 1) : (thisCol * currentRows)] )
+      backPadding <-  maxColumnDigits - digits[i]
       if ( verbose ) cat("  * Numeric value to align:", x[i], "\n")
       if ( verbose ) cat("    * digits:", digits[i], "\n")
       if ( verbose ) cat("    * targetLength:", targetLength[i], "\n")
+      if ( verbose ) cat(" backPadding: ", backPadding, "\n")
+      
       
       #cat("digits = ", digits[thisCol], "width = ", targetLength[thisCol], "\n")
+      if (verbose ) cat("     targetLength - backPadding:", targetLength[i] - backPadding, "\n")
       xi <- format( round( as.numeric(x[i]), 
                            digits[i]),
                     #digits = digits,
                     nsmall = digits[i],
                     justify = "right",
                     big.mark = big.mark,
-                    width = targetLength[i])
+                    width = targetLength[i] - backPadding)
       if ( verbose) cat("  * First update: '", xi, "'\n",
                         sep = "")
       
@@ -234,27 +256,30 @@ pad <- function(x, digits = 2, targetLength = 4, where = "front",
                         sep = "")
       
       
-      
-      # if ( currentLength < targetLength) {
-      #   if (where == "front"){
-      #     out[i] <- paste0( paste(rep("\\phantom{0}", targetLength - currentLength), collapse = ""), 
-      #                       xi,
-      #                       collapse = "")
-      #   } else {
-      #     out <- paste0(xi, 
-      #                   paste(rep("\\phantom{0}", targetLength - currentLength), collapse=""),
-      #                   collapse = "")
-      #   }
-      # } else {
-      #   out[i] <- xi
-      # }
-      # 
-      if (surroundMaths) xi <- paste0( "$", xi, "$", 
-                                           collapse = "") 
-      
+      if ( backPadding > 0 ) xi <- paste0( xi, 
+                                        strrep("\\phantom{0}", backPadding) )
       if ( verbose) cat("  * Third update: '", xi, "'\n",
                         sep = "")
       
+      # # if ( currentLength < targetLength) {
+     #    if (where == "front"){
+     #      out[i] <- paste0( paste(rep("\\phantom{0}", targetLength - length(digits)), collapse = ""),
+     #                        xi,
+     #                        collapse = "")
+     #    } else {
+     #      out <- paste0(xi,
+     #                    paste(rep("\\phantom{0}", targetLength - length(digits)), collapse=""),
+     #                    collapse = "")
+     #    }
+     #  #} else {
+     #  #  out[i] <- xi
+     #  #}
+
+      if (surroundMaths) xi <- paste0( "$", xi, "$", 
+                                           collapse = "") 
+      
+      if ( verbose) cat("  * Fourth update: '", xi, "'\n",
+                        sep = "")
       
       currentLength <- nchar( as.character(x[i]))
       # Replace first phantom with \phantom{-} if needed
