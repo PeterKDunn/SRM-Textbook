@@ -15,7 +15,7 @@ plot( x = c(0, 6),
 
 
 out <- boxplot( list(Younger = CBRyounger, 
-              Older = CBRolder), 
+                     Older = CBRolder), 
          main = "Boxplot of the chest-beating\nrate of gorillas",
          las = 1,
          pch = 19,
@@ -100,7 +100,7 @@ text(x = 3.5,
 ###############
 
 ### LEFT: Younger gorillas explanation
-CBR.quantiles <- quantile(CBRyounger)
+CBR.quantiles <- out$stats[, 1]
 arrows( x0 = 1,
         x1 = 2.2,
         y0 = CBR.quantiles[1],
@@ -166,7 +166,7 @@ text(x = 1,
 ###############
 
 ### RIGHT: Older gorillas explanation
-CBR.quantiles <- quantile(CBRolder)
+CBR.quantiles <- out$stats[, 2]
 arrows( x0 = 5,
         x1 = 3.8,
         y0 = -0.2,
