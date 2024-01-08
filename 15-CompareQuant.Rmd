@@ -50,8 +50,8 @@ A back-to-back stemplot allows the two groups to be compared visually
    '(Fig.\\ \\@ref(fig:krillEggsDoubleStemHTML)).'
 }`
 The leaves for younger gorillas go from right-to-left, and the leaves for older gorillas go left-to-right, sharing the same stems.
-The younger groups has a faster chest-beating rate.
-One older gorilla has a much faster rate that the other older gorillas. 
+The younger group has a faster chest-beating rate in general.
+One older gorilla has a much faster rate that the other older gorillas (an outlier).
 :::
 
 
@@ -323,7 +323,7 @@ Any number of groups can be compared.
 :::{.example #Dotchart2DGorillas name="Boxplots"}
 For the chest-beating data seen in Example\ \@ref(exm:GorillaData), a dot chart is shown in Fig.\ \@ref(fig:TwoDDotchart).
 
-Many observations are the same, so some points would be *over-plotted* if points were not *stacked* (left panel), or some randomness added (a 'jitter') in the vertical direction, before plotting (right panel).
+Many observations are the same, so some points would be *over-plotted* if points were not *stacked* (left panel), or some randomness added in the vertical direction (a 'jitter'), before plotting (right panel).
 :::
 
 ```{r TwoDDotchart, fig.height=6, out.width='100%',fig.cap="Two variations of a 2-D dot chart for the chest-beating data to avoid overplotting: stacking (left) and jittering (right)", fig.align="center", fig.width=8.75, fig.height=2.5}
@@ -363,12 +363,17 @@ stripchart( list(Treatment = CBRyounger,
 A boxplot is a picture of the quantiles (Sect.\ \@ref(VariationIQR)).
 Any number of groups can be compared using a boxplot.
 
-The distribution for each group is summarised by five numbers: the minimum value, $Q_1$, the median ($Q_2$), $Q_3$ and the maximum value.
+The distribution for each group is summarised by five numbers: the minimum value; $Q_1$; the median ($Q_2$); $Q_3$; and the maximum value.
 Outliers, identified using the IQR rule (Sect. \@ref(OutliersIQRrule)), are also shown.
 Distributions can be compared by comparing the values of $Q_1$, the medians, and the values of $Q_3$.
 Since each distribution is summarised by just five numbers, a lot of detail of the distribution is lost.
-For this reason, boxplots are best for *comparing* distributions. 
-Software uses approximations to compute these values (and different software may use different rules, and hence may produce slightly different values for quartiles).
+Different software may use different rules for computing quartiles, and hence may produce slightly different boxplots.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Boxplots summarise data with only five numbers, so detail of the distributions are lost.
+For this reason, boxplots are excellent for *comparing* distributions, but histograms are better for displaying the distribution of a single quantitative variable.
+:::
 
 
 :::{.example #BoxplotGorillas name="Boxplots"}
@@ -378,15 +383,13 @@ The boxplot shows a distinct difference between the chest-beating rates of older
 :::
 
 ```{r BoxplotGorillas, fig.cap="A boxplot for the chest-beating data", fig.align="center",  fig.height=3, , fig.width=4.5, out.width='50%'}
-CBRyounger.quantiles <- quantile(CBRyounger)
 CBR.C2 <- CBRolder[ -which.max(CBRolder)]
-krillC2.quantiles <- quantile(CBR.C2)
 
-par( mar = c(4.5, 3, 4, 2) + 0.1 )
+par( mar = c(4.5, 5, 4, 2) + 0.1 )
 Gorillas$Age20 <- ordered(Gorillas$Age20,
                           levels = c("Younger", 
                                      "Older"))
-boxplot( ChestBeatRate ~ Age20,
+out <- boxplot( ChestBeatRate ~ Age20,
          data = Gorillas,
          col = plot.colour,
          las = 1,
@@ -396,12 +399,14 @@ boxplot( ChestBeatRate ~ Age20,
          ylab = "Chest-beating rate\n (per 110 h)",
          main = "Chest-beating rate\nof gorillas")
 
+CBRyounger.quantiles <- out$stats[, 1]
+
 ```
 
 
 The boxplots are explained in Fig.\ \@ref(fig:BoxplotGorillasExplain).
-First focus on just the boxplot for the *younger* gorillas (i.e., the left box).
-Boxplots have five horizontal lines; from the top to the bottom of the plot:
+Boxplots have five horizontal lines; from the top to the bottom of the plot.
+First focus on just the boxplot for the *younger* gorillas (i.e., the left box):
 
 1. *Top line*:
    The *fastest* chest-beating rate is $`r CBRyounger.quantiles[5]`$ per $10$\ h.
@@ -428,7 +433,7 @@ source("R/showExplainBoxplots.R")
 
 The box for the *older* gorillas is slightly different (Fig.\ \@ref(fig:BoxplotGorillas)): one observation is identified with a point, *above* the top line.
 Computer software has identified this observation as a potentially *outlier* (in this case, unusually *large*), and has plotted this point separately, using the IQR rule (Sect.\ \@ref(OutliersIQRrule)).
-Mild and extreme outliers are plotted in this way (Sect.\ \@ref(OutliersIQRrule)) then then the values of the quantiles ($Q_1$, $Q_2$ and $Q_3$) are computed as usual.
+
 
 ```{r}
 outC <- boxplot( list(Older = CBRolder),
@@ -439,176 +444,13 @@ CBR.quantiles <- outC$stats
 The values of $Q_1$, the median and $Q_3$ are all substantially larger for the younger gorillas, suggesting that younger gorillas have, in general, faster chest-beating rates.
 
 
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Boxplots summarise data with only five numbers, so a lot of detail of the distribution is lost.
-For this reason, boxplots are excellent for *comparing* distributions, but histograms are better for displaying a single quantitative distribution.
-:::
-
-
-<!-- --- -->
-
-
-
-<!-- ```{r BoxplotGorillasYoungHTML, fig.cap="A boxplot for chest-beating data; the boxplot just for the younger gorillas", fig.width=5, fig.height=4, fig.align="center"} -->
-<!-- if (knitr::is_html_output()) { -->
-
-<!--     data(Gorillas) -->
-
-<!--   GYoung <- Gorillas$ChestBeatRate[ Gorillas$Age20 == "Younger"]  -->
-<!--   GYoung <- sort(GYoung) -->
-
-
-<!-- Beat.quantiles <- quantile(GYoung) -->
-<!-- out <- boxplot( list(Older = GYoung),  -->
-<!--             main = "A boxplot of the number of\neggs laid by krill: Treatment group", -->
-<!--             las = 1, -->
-<!--             pch = 19, -->
-<!--             col = "white", -->
-<!--             ylim = c(-2, 6), -->
-<!--             xlim = c(0.55, 1.85), -->
-<!--             ylab = "Number of eggs") -->
-<!-- abline( h = Beat.quantiles,  -->
-<!--         col = "grey", -->
-<!--         lty = 2, -->
-<!--         lwd = 1) -->
-<!-- bxp(out,  -->
-<!--     las = 1,  -->
-<!--     add = TRUE,  -->
-<!--     boxfill = plot.colour) -->
-
-<!-- text( 1.53, Beat.quantiles[5],  -->
-<!--       "Max. value",  -->
-<!--       pos = 1,  -->
-<!--       cex = 0.75) -->
-<!-- text( 1.53, Beat.quantiles[4],  -->
-<!--       "75% smaller than this",  -->
-<!--       pos = 3,  -->
-<!--       cex = 0.75) -->
-<!-- text( 1.53, Beat.quantiles[3],  -->
-<!--       "Median",  -->
-<!--       pos = 3,  -->
-<!--       cex = 0.75) -->
-<!-- text( 1.53, Beat.quantiles[2],  -->
-<!--       "25% smaller than this",  -->
-<!--       pos = 3,  -->
-<!--       cex = 0.75) -->
-<!-- text( 1.53, Beat.quantiles[1],  -->
-<!--       "Min. value",  -->
-<!--       pos = 1,  -->
-<!--       cex = 0.75) -->
-
-<!-- text( 0.65, Beat.quantiles[4],  -->
-<!--       expression(italic(Q)[3]),  -->
-<!--       pos = 3,  -->
-<!--       cex = 0.75) -->
-<!-- text( 0.65, Beat.quantiles[3],  -->
-<!--       expression(italic(Q)[2]),  -->
-<!--       pos = 3,  -->
-<!--       cex = 0.75) -->
-<!-- text( 0.65, Beat.quantiles[2],  -->
-<!--       expression(italic(Q)[1]),  -->
-<!--       pos = 3,  -->
-<!--       cex = 0.75) -->
-
-<!-- axis(side = 4, # This places the tick marks -->
-<!--      at = Beat.quantiles, -->
-<!--      labels = rep("", 5) ) -->
-<!-- mtext(Beat.quantiles, -->
-<!--       side = 4, -->
-<!--       at = Beat.quantiles, -->
-<!--       las = 1, -->
-<!--       line = 1, -->
-<!--       padj = c(0.5, 0.5, 0.5, 0, 1), -->
-<!--       cex = 1) -->
-<!-- } -->
-<!-- ``` -->
-
-
-
-
-<!-- ```{r animation.hook="gifski", interval=0.75, dev=if (is_latex_output()){"pdf"}else{"png"}} -->
-<!-- # Grab some of the necessary stats -->
-<!-- Qs <- quantile(GYoung,  -->
-<!--                seq(0, 1, by = 0.25)) # See below for better way when there are outliers -->
-
-<!-- left <- 0.75 -->
-<!-- right <- 1.25 -->
-<!-- axis.edge <- axis.edge.left <- 0.5 -->
-<!-- axis.edge.right <- 1.5 -->
-<!-- angle <- 15 -->
-<!-- mid <- mean( c(left, axis.edge.left) ) -->
-<!-- mid.r <- mean( c(right, axis.edge.right) ) -->
-
-<!-- # The box is at x = 1, and goes from x = 0.5 to 1.5 on the x-axis. -->
-<!-- # See this by following the boxplot()) call with axis(side-1) -->
-
-
-<!-- if (knitr::is_html_output()) { -->
-<!--   for (i in (1:6)){ -->
-<!--     boxplot( GYoung,  -->
-<!--              col = plot.colour, -->
-<!--              las = 1, -->
-<!--              main = "Boxplot of chest-beating rate\n(younger gorillas)", -->
-<!--              ylim = c(-1, 6), -->
-<!--              ylab = "Number of eggs") -->
-<!--     if ( i == 2 ){ -->
-<!--       arrows(left, Qs[2], -->
-<!--              axis.edge, Qs[2], -->
-<!--              angle = angle, -->
-<!--              lwd = 2) -->
-<!--       text(mid, Qs[2],  -->
-<!--            label = expression( italic(Q)[1]),  -->
-<!-- 	   pos = 3) -->
-<!--     } -->
-<!--     if (i == 3){ -->
-<!--       arrows(left, Qs[4], -->
-<!--              axis.edge, Qs[4], -->
-<!--              angle = angle, -->
-<!--              lwd = 2) -->
-<!--       text(mid, Qs[4],  -->
-<!--            label = expression( italic(Q)[3]),  -->
-<!-- 	   pos = 3) -->
-<!--     } -->
-<!--     if (i >= 4){ -->
-<!--       arrows(left, Qs[2], -->
-<!--              axis.edge, Qs[2], -->
-<!--              angle = angle, -->
-<!--              lwd = 1) -->
-<!--       text(mid, Qs[2],  -->
-<!--            label = expression( italic(Q)[1]),  -->
-<!-- 	   pos = 3) -->
-<!--       arrows(left, Qs[4], -->
-<!--              axis.edge, Qs[4], -->
-<!--              angle = angle, -->
-<!--              lwd = 1) -->
-<!--       text(mid, Qs[4],  -->
-<!--            label = expression( italic(Q)[3]),  -->
-<!-- 	   pos = 3) -->
-
-<!--       arrows(mid.r, Qs[4], mid.r, Qs[2], -->
-<!--              lwd = 2, -->
-<!--              angle = angle, -->
-<!--              code = 3) # Arrow at both ends -->
-<!--       text( mid.r, Qs[3],  -->
-<!--             label = "IQR",  -->
-<!-- 	    pos = 4) -->
-<!--     } -->
-<!--   } -->
-<!-- } -->
-<!-- ``` -->
-
-
-<!-- --- -->
-
 ::: {.example #BoxplotsHorizontal name="Boxplots"}
 Boxplots can be plotted horizontally too, which leaves space for long labels.
-In Fig.\ \@ref(fig:CementBuildBoxplot) (left panel; based on @data:Silva2016:rootcanal), the three dental cements are very different regarding their push-out forces.
+In Fig.\ \@ref(fig:CementBuildBoxplot) (based on @data:Silva2016:rootcanal), the three dental cements are very different regarding their push-out forces.
 :::
 
 
-```{r CementBuildBoxplot, fig.cap="Comparing three push-out values for three dental cements", fig.align="center", fig.height=2.75, fig.width=8.5, fig.show='hold', out.width='100%'}
+```{r CementBuildBoxplot, fig.cap="Comparing three push-out values for three dental cements", fig.align="center", fig.height=2.75, fig.width=6.5, fig.show='hold', out.width='60%'}
 MTA    <- c(0.05, 0.1, 0.2, 0.25, 0.45)
 Endo   <- c(0.1, 0.2, 0.4,   1.0, 2.05)
 AHplus <- c(0.5, 1.1, 2.25, 2.9, 4.4)
@@ -628,8 +470,6 @@ CementStats <- list( n = c(5, 5, 5),
 		                        "Endo Seal", 
 			                      "AH Plus"))
 
-par( mfrow = c(1, 2),
-     mar = c(4, 6, 3, 2) + 0.1)
 plot( c(0, 5), 
       c(0.4, 3.6),
       type = "n",
@@ -648,52 +488,7 @@ bxp(CementStats,
     horizontal = TRUE,
     add = TRUE,
     boxfill = plot.colour)
-
-######
-
-DB  <-  c( 7,   3, 1.5, 1, -1.5)
-DBB <- c(10, 5.5, 3.5, 2, -2)
-
-EngStats <- list( n = c(5, 5),
-                  stats = matrix( cbind(DB, DBB), 
-                                  ncol = 2, 
-                                  byrow = FALSE),
-                  conf = matrix( c(-1.5, 7, -2, 10), 
-                                 ncol = 2, 
-                                 byrow = FALSE),
-                  out = c(8, 20, 12.5, 11.5, -7),
-                  group = c(1, 2, 2, 2, 2),
-                  names = c("DB", 
-                            "DBB"))
-plot( c(0.4, 2.6), 
-      c(-10, 21),
-      type = "n",
-      axes = FALSE,
-      main = "Boxplot of project costs",
-      ylab = "Cost increase (%)",
-      xlab = "Project delivery method")
-
-axis(side = 2,
-     las = 1)
-abline(h = 0, 
-       col = "grey", 
-       lwd = 2)
-bxp(EngStats,
-    las = 1,
-    add = TRUE,
-    boxfill = plot.colour)
 ```
-
-
-::: {.example #Boxplots2 name="Boxplots"}
-A study of different engineering project delivery methods [@data:Hale2009:ProjectDelivery] produced the boxplot in Fig.\ \@ref(fig:CementBuildBoxplot) (right panel): the increase in the costs of projects seem to differ between the two methods.
-The quantitative variable is the percentage increase in costs, and the qualitative variable is the method used.
-
-The Design/Build (DB) method produces a smaller project cost growth on average (the centre line of the boxplot), but the Design/Bid/Build (DBB) method produces more variation in project cost growth.
-Outliers are present for both methods, as indicated by the dots.
-:::
-
-
 
 ```{r}
 htmltools::tags$video(src = "./videos/Boxplots.mp4", 
@@ -706,8 +501,8 @@ htmltools::tags$video(src = "./videos/Boxplots.mp4",
 
 ## Summary tables {#CompareQuantTables}
 
-The numerical summary information can be collated in a table, or a *tabular summary*.
-The data should be summarised the quantitative variable for each group, and (when appropriate) the changes should also be summarised.
+The numerical summary information for comparing a quantitative between groups can be collated in a table, or a *tabular summary*.
+The data should be summarised the quantitative variable for each group, and (when appropriate) the differences should also be summarised.
 
 ::: {.example #GorillaSummarytable name="Numerical summary table"}
 For the gorilla data, the summary of the data can be tabulated as in Table\ \@ref(tab:GorillaTable).
@@ -794,12 +589,12 @@ if( knitr::is_html_output() ) {
 A study of three rural communities in Cameroon [@lopez2022farmers] recorded data about access to water (Sect.\ \@ref(WaterAccessQuant)).
 One of the main purposes of the study was to determine contributors to the incidence of diarrhea in young children ($85$ households had children under\ $5$).
 
-The graphs (Fig.\ \@ref(fig:WaterAccessCompareQuantFigs)) and summary (Table\ \@ref(tab:WaterAccessCompareQuantTabs)) show that households in which diarrhea was found in the last two weeks in children had older coordinators, more in the household, and more children under\ $5$ in the household. 
+The graphs (Fig.\ \@ref(fig:WaterAccessCompareQuantFigs)) and summary (Table\ \@ref(tab:WaterAccessCompareQuantTabs)) show that households in which diarrhea was found in the last two weeks in children had older coordinators, more people in the household, and more children under\ $5$ in the household. 
 The may be expected: older female coordinators probably have more children, have more children in the household under\ $5$, and more children (and hence people) in the household in general.
 
 
 
-```{r WaterAccessCompareQuantFigs, fig.align="center", fig.cap="Some plots for the water access data", out.width = '100%', fig.width=6, fig.height=2.25}
+```{r WaterAccessCompareQuantFigs, fig.align="center", fig.cap="Some plots for the water access data in 85 households ($59$ household reported no diarrhea in children under\\ $5$; $26$ reported diarrhea in children under\\ $5$). ", out.width = '100%', fig.width=6, fig.height=2.25}
 data(WaterAccess)
 par( mfrow = c(1, 3),
      mar = c(5.1, 5.1, 4.1, 1.1))
@@ -817,10 +612,10 @@ boxplot(Age ~ Diarrhea,
      data = WAkids,
      xlab = "Diarrhea in any\n children under 5",
      ylab = "Woman's age\n(in years)",
-     main = "Diarrhea in children under 5\n(85 households)",
+     main = "Diarrhea in children\nunder 5",
      las = 1,
-     names = c( expression(N*":"~italic(n)==59),
-                expression(Y*":"~italic(n)==26))
+     names = c( "No",
+                "Yes")
      )
 
 boxplot(HouseholdPeople~ Diarrhea,
@@ -829,8 +624,8 @@ boxplot(HouseholdPeople~ Diarrhea,
      ylab = "Number in household",
      main = "Diarrhea in children under 5\n(85 households)",
      las = 1,
-     names = c( expression(N*":"~italic(n)==59),
-                expression(Y*":"~italic(n)==26))
+      names = c("No",
+                "Yes")
      )
 
 boxplot(HouseholdUnder5s ~ Diarrhea,
@@ -839,8 +634,8 @@ boxplot(HouseholdUnder5s ~ Diarrhea,
      ylab = "Number under 5",
      main = "Diarrhea in children under 5\n(85 households)",
      las = 1,
-     names = c( expression(N*":"~italic(n)==59),
-                expression(Y*":"~italic(n)==26))
+      names = c("No",
+                "Yes")
      )
      
 ```
@@ -852,7 +647,7 @@ colnames(WACompareQual) <- c("",
                              "$n$",
                              "Mean",
                              "Median",
-                             "Std dev",
+                             "Std. dev.",
                              "IQR")
 WACompareQual[, 1] <- c("All households with children",
                         "Incidents of diarrhea",
@@ -907,7 +702,7 @@ if( knitr::is_latex_output() ) {
                  font_size = 10) %>%
   row_spec(0, bold = TRUE) %>% # Columns headings (row 0) in bold
   column_spec(0, bold = TRUE) %>%     # Row headings in bold
-    pack_rows("Woman's age (in years)",
+    pack_rows("Woman coordinator's age (in years)",
               start_row = 1,
               end_row = 3,
               bold = TRUE) %>%
@@ -976,11 +771,20 @@ Are the following statements *true* or *false*?
 
 ## Exercises {#CompareQuantData-Exercises}
 
-Selected answers are available in Sect.\ \@ref(CompareQuantData-Exercises).
+Selected answers are available in Sect.\ \@ref(CompareQuantData-Answers).
+
+
+::: {.exercise #BoxplotsProjectCosts}
+A study of different engineering project delivery methods [@data:Hale2009:ProjectDelivery] produced the boxplot in Fig.\ \@ref(fig:AISfemalesportEng) (left panel).
+The grey, horizontal line is where the projected costs are the same as the actual cost.
+
+What does the plot reveal about the two methods?
+:::
+
 
 ::: {.exercise #GraphsAIS}
 A study of athletes at the *Australian Institute of Sport* (AIS) measured numerous physical and blood measurements from high performance athletes [@data:Telford1991:sexsportsize].
-The graph in Fig.\ \@ref(fig:AISfemalesport) compares the heights of females in two similar sports: basketball and netball.
+The graph in Fig.\ \@ref(fig:AISfemalesportEng) (right panel) compares the heights of females in two similar sports: basketball and netball.
 (Netball was derived from basketball.)
 How would you interpret the graph, regarding the heights of the athletes in the two sports?
 :::
@@ -993,7 +797,48 @@ subAIS <- subset(AISsub,
 subAIS$Sport <- factor(subAIS$Sport)
 ```
 
-```{r AISfemalesport, fig.cap="The heights of female basketball and netball players attending the AIS", fig.align="center", fig.width=5, fig.height=3.5}
+```{r AISfemalesportEng, fig.cap="Left: Cost increases for two different building project delivery methods (the grey, horizontal line is where the projected costs are the same as the actual cost). Right: The heights of female basketball and netball players attending the AIS. ", fig.align="center", fig.width=9, fig.height=3.5, out.width = '90%'}
+
+par(mfrow = c(1, 2))
+
+DB  <-  c( 7,   3, 1.5, 1, -1.5)
+DBB <- c(10, 5.5, 3.5, 2, -2)
+
+EngStats <- list( n = c(5, 5),
+                  stats = matrix( cbind(DB, DBB), 
+                                  ncol = 2, 
+                                  byrow = FALSE),
+                  conf = matrix( c(-1.5, 7, -2, 10), 
+                                 ncol = 2, 
+                                 byrow = FALSE),
+                  out = c(8, 20, 12.5, 11.5, -7),
+                  group = c(1, 2, 2, 2, 2),
+                  names = c("DB", 
+                            "DBB"))
+plot( c(0.4, 2.6), 
+      c(-10, 21),
+      type = "n",
+      axes = FALSE,
+      main = "Boxplot of project costs",
+      ylab = "Cost increase (%)",
+      xlab = "Project delivery method")
+
+axis(side = 2,
+     las = 1)
+abline(h = 0, 
+       col = "grey", 
+       lwd = 2)
+bxp(EngStats,
+    las = 1,
+    add = TRUE,
+    boxfill = plot.colour)
+
+
+
+###
+
+
+
 boxplot(Ht ~ Sport, 
         data = subAIS,
         las = 1,
@@ -1004,8 +849,11 @@ boxplot(Ht ~ Sport,
         main = "Boxplot of heights:\nbasketballers and netballers",
         names = c("Basketball", 
                   "Netball")
+
 )
 ```
+
+
 
 
 
@@ -1292,104 +1140,8 @@ Use the jamovi output (Fig.\ \@ref(fig:NHANESTwoSample)) to construct an appropr
 :::
 
 ```{r NHANESTwoSample, fig.cap="jamovi output for the NHANES data", fig.align="center", out.width='100%'}
-knitr::include_graphics("jamovi/NHANES/NHANES-DirectHDL-Smoke-ALL.png")
+knitr::include_graphics("jamovi/NHANES/NHANES-DirectHDL-Smoke-Descriptives.png")
 ```
-
-
-
-::: {.exercise #CompareQuantDeceleration}
-To reduce vehicle speeds on freeway exit ramps, a Chinese study studied using additional signage [@ma2019impacts].
-At one site (Ningxuan Freeway), speeds were recorded at various points on the freeway exit for $38$ vehicles before the extra signage was added, and then for $41$ vehicles after the extra signage was added.
-
-From this data, the *deceleration* of each vehicle was determined
-`r if (knitr::is_latex_output()) {
-   '(Table\\ \\@ref(tab:SignageDec))'
-} else {
-   '(data below)'
-}`
-as the vehicle left the $120$\ km/h speed zone and approached the $80$\ km/hr speed zone. 
-Use the data, and the summary in Table\ \@ref(tab:SignageSummaryDec), to address this RQ:
-
-> At this freeway exit, what is the difference between the mean vehicle deceleration, comparing the times before the extra signage is added and after extra signage is added?
-
-In this context, the researchers are hoping that the extra signage might cause cars to slow down *faster* (i.e., they will decelerate more, on average, after adding the extra signage).
-
-1. Construct a numerical summary table for the data.
-2. Use software to construct a boxplot of the data.
-:::
-
-
-
-```{r}
-data(Deceleration)
-
-Deceleration$When <- factor(Deceleration$When,
-                     levels = c("Before", "After"),
-                     ordered = TRUE)
-
-
-if( knitr::is_latex_output() ) {
-  tb1 <- cbind( Deceleration$Deceleration[Deceleration$When == "Before"][1:9],
-                Deceleration$Deceleration[Deceleration$When == "Before"][10:18],
-                Deceleration$Deceleration[Deceleration$When == "Before"][19:27],
-                Deceleration$Deceleration[Deceleration$When == "Before"][28:36],
-                c(Deceleration$Deceleration[Deceleration$When == "Before"][37:38], NA, NA, NA, NA, NA, NA, NA) )
-  T1 <- knitr::kable( pad(tb1,
-                          surroundMaths = TRUE,
-                          targetLength = c(5, 6, 5, 5, 5),
-                          digits = 3),
-                      format = "latex",
-                      valign = 't',
-                      align = "r",
-                      linesep = "",
-                      row.names = FALSE,
-                      escape = FALSE,
-                      booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Deceleration before signage added" = 5),
-                      bold = TRUE)
-
-  tb2 <- cbind( Deceleration$Deceleration[Deceleration$When == "After"][1:9],
-                Deceleration$Deceleration[Deceleration$When == "After"][10:18], 
-                Deceleration$Deceleration[Deceleration$When == "After"][19:27], 
-                Deceleration$Deceleration[Deceleration$When == "After"][28:36], 
-                c(Deceleration$Deceleration[Deceleration$When == "After"][37:41], NA, NA, NA, NA) ) 
-  T2 <- knitr::kable( pad(tb2,
-                          surroundMaths = TRUE,
-                          targetLength = c(5, 6, 5, 5, 5),
-                          digits = 3),
-                      format = "latex",
-                      align = "r",
-                      valign = 't',
-                      linesep = "",
-                      row.names = FALSE,
-                      escape = FALSE,
-                      booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Deceleration after signage added" = 5),
-                      bold = TRUE)
-  
-  out <- knitr::kables(list(T1, T2),
-                       format = "latex",
-                       label = "SignageDec",
-                       caption = "Vehicle decleration  (in m/s-squared) before and after adding extra signage") %>%
-    kable_styling(font_size = 10)
-  out2 <- prepareSideBySideTable(out, gap = "\\enskip")
-  out2
-
-}
-
-if( knitr::is_html_output() ) {
-  
-   DT::datatable( Deceleration,
-                 fillContainer = FALSE, # Make more room, so we don't just have ten values
-                 colnames = c("When measured", "Deceleration (m/s-squared)"),
-                 options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
-                 caption = "The observations from the signage data (negative values mean the vehicle has accelerated)")
-}
-```
-
-
 
 
 
@@ -1412,14 +1164,8 @@ Consider the RQ:
 
 The data are shown in Table\ \@ref(tab:FacePlant).
 
-1. What is the parameter?
-   Describe what this *means*.
-2. What is an appropriate graph to display the *data*?
-3. Construct an appropriate numerical summary from the software output (Fig.\ \@ref(fig:FallFowardTTestjamovi)).
-4. Construct *approximate* and *exact* $95$% CIs.
-   Explain any differences.
-5. Is the CI expected to be statistically valid?
-6. Write a conclusion.
+1. What is an appropriate graph to display the *data*?
+1. Construct an appropriate numerical summary from the software output (Fig.\ \@ref(fig:FallFowardTTestjamovi)).
 :::
 
 ```{r FacePlant}
@@ -1469,17 +1215,8 @@ if( knitr::is_html_output() ) {
 
 
 ```{r FallFowardTTestjamovi, fig.cap="jamovi output for the lean-forward angles data", fig.align="center", out.width='95%'}
-knitr::include_graphics("jamovi/FallForward/FallForwardTTestOutput.png")
+knitr::include_graphics("jamovi/FallForward/FallForward-Descriptives.png")
 ```
-
-
-::: {.exercise #NumericalQuantTyping}
-The `Typing` dataset contains four variables: typing speed (`mTS`), typing accuracy (`mAcc`), age (`Age`). and sex (`Sex`) for $1301$ students.
-
-1. Produce appropriate numerical summaries for the quantitative variables.
-1. Produce appropriate numerical summaries for *comparing* the quantitative variables for different values of the qualitative variable.
-1. What do you learn from these numerical summaries?
-:::
 
 
 :::{.exercise #QuantCompareSpeedSignage}
@@ -1505,12 +1242,11 @@ Speed2 <- data.frame( Before = Speed$Speed[ Speed$When == "Before" ][1:10],
 
 ```{r}
 if( knitr::is_latex_output() ) {
-  tb1 <- cbind( Speed$Speed[Speed$When == "Before"][1:7],
-                Speed$Speed[Speed$When == "Before"][8:14],
-                Speed$Speed[Speed$When == "Before"][15:21],
-                Speed$Speed[Speed$When == "Before"][22:28],
-                Speed$Speed[Speed$When == "Before"][29:35],
-                c( Speed$Speed[Speed$When == "Before"][36:38], NA, NA, NA, NA ) )
+  tb1 <- cbind( Speed$Speed[Speed$When == "Before"][1:8],
+                Speed$Speed[Speed$When == "Before"][9:16],
+                Speed$Speed[Speed$When == "Before"][17:24],
+                Speed$Speed[Speed$When == "Before"][25:32],
+                c( Speed$Speed[Speed$When == "Before"][33:38], NA, NA, NA ) )
   T1 <- knitr::kable( pad(tb1,
                           surroundMaths = TRUE,
                           targetLength = 5,
@@ -1523,15 +1259,15 @@ if( knitr::is_latex_output() ) {
                       escape = FALSE,
                       booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Speeds before signage added" = 6),
+    add_header_above( c("Speeds before signage added" = 5),
                       bold = TRUE)
 
-  tb2 <- cbind( Speed$Speed[Speed$When == "After"][1:7],
-                Speed$Speed[Speed$When == "After"][8:14], 
-                Speed$Speed[Speed$When == "After"][15:21], 
-                Speed$Speed[Speed$When == "After"][22:28], 
-                Speed$Speed[Speed$When == "After"][29:35], 
-                c( Speed$Speed[Speed$When == "After"][36:41], NA) )
+  tb2 <- cbind( Speed$Speed[Speed$When == "After"][1:8],
+                Speed$Speed[Speed$When == "After"][9:16], 
+                Speed$Speed[Speed$When == "After"][17:24], 
+                Speed$Speed[Speed$When == "After"][25:32], 
+                Speed$Speed[Speed$When == "After"][33:40], 
+                c( Speed$Speed[Speed$When == "After"][41], NA, NA, NA, NA, NA, NA, NA) )
   T2 <- knitr::kable( pad(tb2,
                           surroundMaths = TRUE,
                           targetLength = 5,
@@ -1578,8 +1314,121 @@ The RQ is:
 
 
 ```{r SpeedjamoviCI, fig.cap="jamovi output for the speed data", fig.align="center", out.width="100%"}
-knitr::include_graphics("jamovi/Speed/Speed-ALL.png")
+knitr::include_graphics("jamovi/Speed/Speed-Descriptives.png")
 ```
+
+
+
+
+::: {.exercise #CompareQuantDeceleration}
+To reduce vehicle speeds on freeway exit ramps, a Chinese study studied using additional signage [@ma2019impacts].
+At one site (Ningxuan Freeway), speeds were recorded at various points on the freeway exit for $38$ vehicles before the extra signage was added, and then for $41$ vehicles after the extra signage was added.
+
+From this data, the *deceleration* of each vehicle was determined
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:SignageDec))'
+} else {
+   '(data below)'
+}`
+as the vehicle left the $120$\ km/h speed zone and approached the $80$\ km/hr speed zone. 
+Use the data, and the summary in Table\ \@ref(tab:SignageSummaryDec), to address this RQ:
+
+> At this freeway exit, what is the difference between the mean vehicle deceleration, comparing the times before the extra signage is added and after extra signage is added?
+
+In this context, the researchers are hoping that the extra signage might cause cars to slow down *faster* (i.e., they will decelerate more, on average, after adding the extra signage).
+
+1. Construct a numerical summary table for the data.
+2. Use software to construct a boxplot of the data.
+:::
+
+
+
+```{r}
+data(Deceleration)
+
+Deceleration$When <- factor(Deceleration$When,
+                     levels = c("Before", "After"),
+                     ordered = TRUE)
+
+
+if( knitr::is_latex_output() ) {
+  tb1 <- cbind( Deceleration$Deceleration[Deceleration$When == "Before"][1:8],
+                Deceleration$Deceleration[Deceleration$When == "Before"][9:16],
+                Deceleration$Deceleration[Deceleration$When == "Before"][17:24],
+                Deceleration$Deceleration[Deceleration$When == "Before"][25:32],
+                c(Deceleration$Deceleration[Deceleration$When == "Before"][33:38], NA, NA) )
+  T1 <- knitr::kable( pad(tb1,
+                          surroundMaths = TRUE,
+                          targetLength = c(5, 6, 5, 5, 5),
+                          digits = 3),
+                      format = "latex",
+                      valign = 't',
+                      align = "r",
+                      linesep = "",
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Deceleration before signage added" = 5),
+                      bold = TRUE)
+
+  tb2 <- cbind( Deceleration$Deceleration[Deceleration$When == "After"][1:8],
+                Deceleration$Deceleration[Deceleration$When == "After"][9:16], 
+                Deceleration$Deceleration[Deceleration$When == "After"][17:24], 
+                Deceleration$Deceleration[Deceleration$When == "After"][25:32], 
+                Deceleration$Deceleration[Deceleration$When == "After"][33:40], 
+                c(Deceleration$Deceleration[Deceleration$When == "After"][41], NA, NA, NA, NA, NA, NA, NA) ) 
+  T2 <- knitr::kable( pad(tb2,
+                          surroundMaths = TRUE,
+                          targetLength = c(5, 6, 5, 5, 5, 5),
+                          digits = 3),
+                      format = "latex",
+                      align = "r",
+                      valign = 't',
+                      linesep = "",
+                      row.names = FALSE,
+                      escape = FALSE,
+                      booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c("Deceleration after signage added" = 6),
+                      bold = TRUE)
+  
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "SignageDec",
+                       caption = "Vehicle decleration  (in m/s-squared) before and after adding extra signage") %>%
+    kable_styling(font_size = 10)
+  out2 <- prepareSideBySideTable(out, gap = "\\enskip")
+  out2
+
+}
+
+if( knitr::is_html_output() ) {
+  
+   DT::datatable( Deceleration,
+                 fillContainer = FALSE, # Make more room, so we don't just have ten values
+                 colnames = c("When measured", "Deceleration (m/s-squared)"),
+                 options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
+                 caption = "The observations from the signage data (negative values mean the vehicle has accelerated)")
+}
+```
+
+
+
+
+::: {.exercise #NumericalQuantTyping}
+The `Typing` dataset contains four variables: typing speed (`mTS`), typing accuracy (`mAcc`), age (`Age`), and sex (`Sex`) for $1301$ students.
+
+1. Produce appropriate numerical summaries for the quantitative variables.
+1. Produce appropriate numerical summaries for *comparing* the quantitative variables for different values of the qualitative variable.
+1. What do you learn from these numerical summaries?
+:::
+
+
+
+
+
+
 
 
 
