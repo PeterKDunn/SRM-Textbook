@@ -49,23 +49,23 @@
    
    openplotmat(mar = c(0.25, 0.25, 0.25, 0.25))
    
-   # # 'Background' squares delineating the steps
-   # polygon( x = edgesX[ c(1, 1, 2, 2)],
-   #          y = edgesY[ c(2, 3, 3, 2)],
-   #          border = "grey",
-   #          col = NA)
-   # polygon( x = edgesX[ c(2, 2, 3, 3)],
-   #          y = edgesY[ c(2, 3, 3, 2)],
-   #          border = "grey",
-   #          col = NA)
-   # polygon( x = edgesX[ c(1, 1, 3, 3)],
-   #          y = edgesY[ c(1, 2, 2, 1)],
-   #          border = "grey",
-   #          col = NA)
-   # polygon( x = edgesX[ c(3, 3, 5, 5)],
-   #          y = edgesY[ c(1, 3, 3, 1)],
-   #          border = "grey",
-   #          col = NA)
+   # 'Background' squares delineating the steps
+   polygon( x = edgesX[ c(1, 1, 2, 2)],
+            y = edgesY[ c(2, 3, 3, 2)],
+            border = "grey",
+            col = NA)
+   polygon( x = edgesX[ c(2, 2, 3, 3)],
+            y = edgesY[ c(2, 3, 3, 2)],
+            border = "grey",
+            col = NA)
+   polygon( x = edgesX[ c(1, 1, 3, 3)],
+            y = edgesY[ c(1, 2, 2, 1)],
+            border = "grey",
+            col = NA)
+   polygon( x = edgesX[ c(3, 3, 5, 5)],
+            y = edgesY[ c(1, 3, 3, 1)],
+            border = "grey",
+            col = NA)
    
    
    straightarrow(from = pos[1, ], 
