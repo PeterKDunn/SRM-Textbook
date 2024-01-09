@@ -143,11 +143,11 @@ text( x = mean( c(Perm.quantiles[4],
       y = 0,
       pos = 1,
       labels = expression(3~x~IQR~"  "))
-text(x = mean( c(extreme, 175) ),
+text(x = mean( extreme.obs ),
      y = 1.75,
      labels = "Extreme\noutliers")
 
-arrows(x0 = mean( c(extreme, 175) ),
+arrows(x0 = mean( extreme.obs ) + c(-4, 4),
        x1 = extreme.obs + c(4, -4),
        y0 = 1.4,
        y1 = 1.15,

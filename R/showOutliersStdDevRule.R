@@ -77,13 +77,14 @@ text(x = locationOfOutliers,
      labels = round(locationOfOutliers, 1))
 
 
-text(x = 155,
+text(x = mean(sort(Perm$Perm,
+              decreasing = TRUE)[1:2]),
      y = 0.25,
      pos = 1,
      cex = 0.95,
      labels = "Identified as outliers")
 arrows(x0 = sort(Perm$Perm,
-                 decreasing = TRUE)[2],
+                 decreasing = TRUE)[2] + 5,
        x1 = sort(Perm$Perm,
                  decreasing = TRUE)[2],
        y0 = 0.25,
@@ -91,7 +92,7 @@ arrows(x0 = sort(Perm$Perm,
        angle = 15,
        length = 0.1)
 arrows(x0 = sort(Perm$Perm,
-                 decreasing = TRUE)[1],
+                 decreasing = TRUE)[1] - 5,
        x1 = sort(Perm$Perm,
                  decreasing = TRUE)[1],
        y0 = 0.25,
