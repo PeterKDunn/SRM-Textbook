@@ -743,7 +743,9 @@ if (knitr::is_latex_output()) {
   
   for (i in (1:length(zList))){
     zScore <- zList[i]
-    pValue <- pnorm( -zScore )
+    pValue <- pnorm( zScore )
+    
+  
     pValue2 <- ifelse( pValue < 0.001, 
                        "< 0.001",
                        round(pValue, 4) )
@@ -758,12 +760,12 @@ if (knitr::is_latex_output()) {
     shadeNormal(out$x,
                 out$y,
                 col = pColours[i],
-                lo = zScore,
+                lo = -zScore,
                 hi = 10)
     shadeNormal(out$x,
                 out$y,
                 col = pColours[i],
-                hi = -zScore,
+                hi = zScore,
                 lo = -10)
     
     abline(v = zScore,
@@ -850,21 +852,20 @@ Let's recap the decision-making process, in this context about rolling a `r incl
    Under certain circumstances, the sample proportions will vary with an approximate normal distribution around a mean of $p = 1/6$ with a standard deviation of $\text{s.e.}(\hat{p}) = 0.0372678$.
 3. *Observation*: 
    Compute the $z$-score: $z = 6.53$, a measure of the distance between the assumed population value, and the observed sample value.
-4. *Consistency?*: 
+4. *Decision*: 
    Determine if the data are consistent with the assumption, by computing the $P$-value. 
    Here, the $P$-value is (much) less than $0.001$.
    The $P$-value can be computed by software, or approximated using the $68$--$95$--$99.7$ rule.
-
-The *conclusion* is that very strong evidence exists that $p$ is *not* $1/6$.
+   The *conclusion* is that very strong evidence exists that $p$ is *not* $1/6$.
 
 
 
 ## Statistical validity conditions {#ValidityProportionsTest}
 
-All hypothesis tests have underlying conditions to be met so that the results are statistically valid; that is, the $P$-values can be found accurately because the sampling distribution is an approximate normal distribution.
+All hypothesis tests have underlying conditions to be met so that the results are statistically valid; that is, $P$-values can be found accurately because the sampling distribution is an approximate normal distribution.
 For a hypothesis test for one proportion, these conditions are similar to those for the CI for one proportion (Sect.\ \@ref(ValidityProportions)).
 
-The *statistical validity conditions* for a test for a single proportion is that the *expected* number of individuals in the group of interest (i.e, $n\times p$) and in the group *not* of interest (i.e., $n\times (1 - p)$ both exceed five; that is:
+The *statistical validity conditions* for a test for a single proportion is that the *expected* number of individuals in the group of interest (i.e, $n\times p$) and in the group *not* of interest (i.e., $n\times (1 - p)$) both exceed five; that is:
 
 * $n\times p > 5$, *and* $n\times (1 - p) > 5$.
 
@@ -882,20 +883,20 @@ The hypothesis test regarding the dice is statistically valid, since $n\times p 
 
 A study [@barve2017elevational] compared two types of birds (male green-backed tits; male cinereous tits) to see which was more behaviourally dominant over winter.
 If the species were equally-dominant, then about $50$% of the interactions would be won by each species (i.e., $p = 0.50$).
-However, in the $45$ interactions observed between the two species, green-backed tits won $37$ of these interactions (i.e., $\hat{p} = 0.82222$).
+However, in the $45$ interactions observed between the two species, green-backed tits won $37$ of these interactions (i.e., $\hat{p} = 37/45  0.82222$).
 
 Of course, every sample of $45$ interactions would produce a different sample proportion, so the difference between this sample proportion and $p = 0.5$ could be due to sampling variation.
 To test if the proportion of interactions were equally shared, the hypotheses are:  
 \[
    \text{$H_0$: } p = 0.5\quad\text{and}\quad\text{$H_1$: } p \ne 0.5 \text{ (two-tailed)}.
 \]
-The test will be statistically valid, since $n\times p = 45\times 0.5 = 22.5$ and $n\times (1 - p) = 22.5$ both exceed five.
-The *standard error* for the sample proportion is  
+The test will be statistically valid, since $n\times p = 45\times 0.5 = 22.5$ and $n\times (1 - p) = 22.5$; both exceed five.
+The *standard error* is  
 \[
    \text{s.e.}(\hat{p}) 
    = \sqrt{\frac{p (1 - p)}{n}} 
    = \sqrt{\frac{0.50 \times (1 - 0.50)}{45}} 
-   = 0.0745356...
+   = 0.0745356....
 \]
 Then, the value of the *test statistic* is:  
 \[
@@ -906,14 +907,14 @@ Then, the value of the *test statistic* is:
 \]
 This is a *very* large $z$-score, so the $P$-value will be very small, using the $68$--$95$--$99.7$ rule or tables.
 
-The $95$% CI for the proportion requires the standard error computed using the *sample* proportion:  
+The $95$% CI for the proportion requires the standard error computed using $\hat{p}$  
 \[
    \text{s.e.}(\hat{p}) 
    = \sqrt{\frac{\hat{p} (1 - \hat{p})}{n}} 
    = \sqrt{\frac{0.82222 \times (1 - 0.82222)}{45}} 
    = 0.056999...
 \]
-So the approximate $95$% CI is $0.82222 \pm(2 \times 0.056999...)$, or from $0.708$ to $0.936$.
+An approximate $95$% CI is from $0.708$ to $0.936$.
 We write:
 
 > There is *very* strong evidence in the sample ($P < 0.001$; $z = 4.325$) that the interactions were not won equally between each species ($\hat{p} = 0.8222$ won by green-backed tits; $n = 45$; approximate $95$% CI: $0.708$ to $0.936$) in the population.
@@ -980,8 +981,8 @@ An approximate *$P$-value* can be estimated using the [$68$--$95$--$99.7$ rule](
 
 ::: {.webex-check .webex-box}
 A study of diseases in native Americans [@kizer2006digestive] found $381$ obese or overweight patients in $449$ patients.
-In the USA general population, the rate of Americans obese or overweight is $65$%.
-The researchers wanted to determine of the rate of obesity/overweight native Americans was *greater* than that of the general population.
+In the USA general population, the percentage obese or overweight is $65$%.
+The researchers wanted to determine if the percentage of obesity/overweight native Americans was *greater* than that of the general population.
 
 1. True or false: The *population* proportion of overweight/obese native Americans is $0.65$. \tightlist
 `r if( knitr::is_html_output() ) {torf(answer=TRUE)}`
@@ -991,21 +992,19 @@ The researchers wanted to determine of the rate of obesity/overweight native Ame
 `r if( knitr::is_html_output() ) {
    fitb(num=TRUE, tol=0.0001, answer=0.84855)
 } else {
-   "________________"
+   "________________."
 }`
 1. True or false: The *null* hypothesis is $H_0$: $p = 0.65$.
 `r if( knitr::is_html_output() ) {torf(answer=TRUE)}`
 1. True or false: The *alternative* hypothesis is *one*-tailed.
 `r if( knitr::is_html_output() ) {torf(answer=TRUE)}`
-1. True or false: To compute the standard error for the sample proportion, $\text{s.e.}(\hat{p})$, we use $\hat{p}$ in the formula.
-`r if( knitr::is_html_output() ) {torf(answer=FALSE)}`
 1. True or false: In a one-sample test of proportion, the $z$-score is always large.
 `r if( knitr::is_html_output() ) {torf(answer=FALSE)}`
 1. For this test, the computed $z$-score is (to *two* decimal places):
 `r if( knitr::is_html_output() ) {
    fitb(num=TRUE, tol=0.005, answer=8.82079)
 } else {
-   "________________"
+   "________________."
 }`
 1. True or false? We always accept the *null* hypothesis.
 `r if( knitr::is_html_output() ) {torf(answer=FALSE)}`
@@ -1021,7 +1020,8 @@ Selected answers are available in Sect. \@ref(TestOneProportionAnswer).
 The study of herbal medicines is complicated, as *blinding* subjects is difficult: placebos are often easily identifiable by eye, by taste, or by smell.
 
 One study [@loyeung2018experimental] examined if subjects could identify potential placebos at *better* rate than just guessing.
-The $81$ subjects were each presented with a choice of five different supplements, and asked to select which one was the legitimate herbal supplement based on the *taste*.
+The $81$ subjects were each presented with a choice of five different supplements, four of which were placebos.
+Subjects were asked to select which one was the legitimate herbal supplement based on the *taste*.
 Of these, $50$ correctly selected the true herbal supplement.
 
 1. If the subjects were selecting the true herbal supplement randomly, what proportion of subjects would be expected to select the correct supplement as the true herbal medicine?
@@ -1029,13 +1029,7 @@ Of these, $50$ correctly selected the true herbal supplement.
 3. Is this a one- or two-tailed test? 
    Explain.
 4. Sketch the *sampling distribution* of the sample proportion, assuming the null hypothesis is correct.
-5. Is there evidence to support the idea that people can identify the true supplement by taste?
-:::
-
-
-::: {.exercise #OneProportionTestTurtleSex}
-In a study of western saw-shelled turtles [@streeting2022optimising], eggs were incubated at $27^\circ$C, and $29$ males and $44$ females hatched.
-Are the proportions of male and female turtles that hatch at this temperature equal?
+5. Is there evidence that people can identify the true supplement by taste?
 :::
 
 
@@ -1055,6 +1049,12 @@ In the study, $55$ children out of $972$ had the antibody present
 :::
 
 
+::: {.exercise #OneProportionTestTurtleSex}
+In a study of western saw-shelled turtles [@streeting2022optimising], eggs were incubated at $27^\circ$C, and $29$ males and $44$ females hatched.
+Are the proportions of male and female turtles that hatch at this temperature equal?
+:::
+
+
 ::: {.exercise #OneProportionTestExercisesEPL}
 In the 2019/2020 English Premier League (EPL), the home team won $91$ out of $208$ games, while the away team won $67$.
 ($50$ games were draws.)
@@ -1064,10 +1064,10 @@ In the 2019/2020 English Premier League (EPL), the home team won $91$ out of $20
 
 
 ::: {.exercise #OneProportionTestExercisesPedalMachines}
-In a study to increase activity in library users [@maeda2013introducing], pedal machine were introduced on the first floor of Joyner Library at East Carolina University, where $60.2$% of all students were females.
+In a study to increase activity in library users [@maeda2013introducing], pedal machine were introduced on the first floor of Joyner Library for use by students at East Carolina University, where $60.2$% of all students were females.
 Students were observed using the machine on $589$ occasions, of which $295$ times were by females
 
-Is there evidence that the proportion of females users of the machines was lower than the overall female proportion at the university?
+Is there evidence that the proportion of females users of the machines was *lower* than the overall female proportion at the university?
 What would you conclude?
 :::
 
@@ -1090,7 +1090,7 @@ Do the researchers have sufficient evidence to claim that the 'majority of peopl
 A study of black spiny-tailed iguanas in Florida (an invasive species) compared the snout--vent length (SVL) for  various sizes iguanas [@avery2014invasive].
 Of the $275$ iguanas with a SVL between $100$ and $149$\ mm,$146$ were female.
 
-Assuming female and male iguanas were equally present in the population, is there evidence that female and male iguanas were equally-likely to found with SVL in this range?
+Assuming female and male iguanas were equally present in the population, is there evidence that female and male iguanas were equally-likely to be found with SVL in this range?
 :::
 
 
@@ -1100,7 +1100,7 @@ A study [@boltuch2020palmaris] was interested in whether 'a relationship exists 
 The palmaris longus (PL) tendon is visually absent in about $15$% of the population.
 The researchers found PL was visually absent in $33$ of $516$ CTS wrists in their sample.
 
-Is there evidence to suggest that rate of PL absence is different in CTS cases? 
+Is there evidence to suggest that rate of PL absence is *different* in CTS cases? 
 :::
 
 
@@ -1145,9 +1145,8 @@ Is this what the data suggest?
 **4.** True.
 **5.** True.
 **6.** False.
-**7.** False.
-**8.** $z = -8.82079$.
-**9.** False.
+**7.** $z = -8.82079$.
+**8.** False.
 :::
 `r if (knitr::is_html_output()) '-->'`
 
