@@ -66,7 +66,7 @@ SixSteps4 <- function( Flag = 0, # 0 means to flag nothing
   
 
   boxGapHorizontal <- 1.75
-  boxGapVertical <- 1.15
+  boxGapVertical <- 2.5
   boxWidth <- 2.5
   boxHeight <- 2.5
   
@@ -92,11 +92,11 @@ SixSteps4 <- function( Flag = 0, # 0 means to flag nothing
   
   # CANVAS
   par( mar = c(0.15, 0.15, 0.15, 0.15),
-       fin = c(2.5, 1.5) * 1.5)
+       fin = c(2.5, 2.5) * 1.5)
   
   
   ### SETUP
-  shape::emptyplot(xlim = c(0, plotWidth), # No change
+  shape::emptyplot(xlim = c(0, plotWidth),
                    ylim = c(0, plotHeight),
                    asp = 1) # ELSE  asp=1 or requested
   
