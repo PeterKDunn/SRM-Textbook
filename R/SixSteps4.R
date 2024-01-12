@@ -211,8 +211,8 @@ SixSteps4 <- function( Flag = 0, # 0 means to flag nothing
     )
     diagram::textrect( mid = c( plotWidth/2, 
                                 plotHeight/2 ),
-                       radx = (plotWidth - 2 * boxWidth)/2 - 2 * edgeGap,
-                       rady = (textHeight/2) - (edgeGap/2),
+                       radx = (plotWidth /2 ) - (boxWidth / 2) - (2.5 * edgeGap),
+                       rady = (textHeight/2) + (edgeGap),
                        lab = Text,
                        box.col = gray(0.9),
                        lcol = gray(0.9),
