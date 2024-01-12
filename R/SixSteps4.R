@@ -29,23 +29,23 @@ SixSteps4 <- function( Flag = 0, # 0 means to flag nothing
   
   ## TMP
   ImageAsk <- ifelse(Flag == 1, 
-                     "icons/SixSteps/iconmonstr-help-5-240.png",
-                     "icons/SixSteps/iconmonstr-help-6-240.png")
+                     "../icons/SixSteps/iconmonstr-help-5-240.png",
+                     "../icons/SixSteps/iconmonstr-help-6-240.png")
   ImageDesign <- ifelse(Flag == 2,
-                        "icons/SixSteps/iconmonstr-brick-3-240.png",
-                        "icons/SixSteps/iconmonstr-brick-4-240.png")
+                        "../icons/SixSteps/iconmonstr-brick-3-240.png",
+                        "../icons/SixSteps/iconmonstr-brick-4-240.png")
   ImageCollect <- ifelse(Flag == 3, 
-                         "icons/SixSteps/iconmonstr-flask-21-240.png",
-                         "icons/SixSteps/iconmonstr-flask-1-240.png")
+                         "../icons/SixSteps/iconmonstr-flask-21-240.png",
+                         "../icons/SixSteps/iconmonstr-flask-1-240.png")
   ImageClassifySummarise <- ifelse(Flag == 4, 
-                                   "icons/SixSteps/iconmonstr-chart-1-240.png",
-                                   "icons/SixSteps/iconmonstr-chart-2-240.png")
+                                   "../icons/SixSteps/iconmonstr-chart-1-240.png",
+                                   "../icons/SixSteps/iconmonstr-chart-2-240.png")
   ImageAnalyse <- ifelse(Flag == 5, 
-                         "icons/SixSteps/iconmonstr-calculator-1-240.png",
-                         "icons/SixSteps/iconmonstr-calculator-2-240.png")
+                         "../icons/SixSteps/iconmonstr-calculator-1-240.png",
+                         "../icons/SixSteps/iconmonstr-calculator-2-240.png")
   ImageReport <- ifelse(Flag == 6, 
-                        "icons/SixSteps/iconmonstr-pencil-square-filled-240.png",
-                        "icons/SixSteps/iconmonstr-pencil-square-lined-240.png")
+                        "../icons/SixSteps/iconmonstr-pencil-square-filled-240.png",
+                        "../icons/SixSteps/iconmonstr-pencil-square-lined-240.png")
   
   imageList <- c(ImageAsk,
                  ImageDesign,
