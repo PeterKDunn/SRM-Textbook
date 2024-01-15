@@ -17,15 +17,15 @@
 </div>
 
 
-A study [@lambie2021microbial] compared the percentage nitrogen (N) in soils from irrigated and non-irrigated intensively grazed pasture sites.
-The researchers paired irrigated and non-irrigated  sites (p. 338):
+A study [@lambie2021microbial] compared the percentage nitrogen (%N) in soils from irrigated and non-irrigated intensively-grazed pasture sites.
+The researchers paired irrigated and non-irrigated sites (p. 338):
 
 > The irrigated and non-irrigated pairs within each site were within $100$\ m of each other and were on the same soil, landform and usually the same farm with the same farm management on both treatments.
 
 The data are *paired* (Sect.\ \@ref(PairedIntro)), which is a form of blocking (Sect.\ \@ref(ExpManagingConfounding)) and used to manage confounding.
 One RQ in the study was:
 
-> For intensively grazed pastures sites, is there a mean reduction in percentage soil nitrogen (N) when sites are irrigated, compared to non-irrigated?
+> For intensively grazed pastures sites, is there a mean reduction in percentage soil nitrogen (%N) when sites are irrigated, compared to non-irrigated?
 
 The data are shown in
 `r if( knitr::is_latex_output() ) {
@@ -33,14 +33,14 @@ The data are shown in
 } else {
     'the table below.'
 }`
-The parameter is $\mu_d$, which we define as the population mean *reduction* in percentage N when sites are irrigated, compared to non-irrigated.
+The parameter is $\mu_d$, which we define as the population mean *reduction* in %N when sites are irrigated, compared to non-irrigated.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 Explaining *how* the differences are computed is important.  
 
-The differences here are the percentage N in *non-irrigated* sites minus percentage N in *irrigated* sites.
-However, the differences could be computed as the percentage N in *irrigated* sites minus percentage N in *non-irrigated* sites.
+The differences here are the %N in *non-irrigated* sites minus % N in *irrigated* sites.
+However, the differences could be computed as the %N in *irrigated* sites minus %N in *non-irrigated* sites.
 *Either is fine*, as long as you remain consistent throughout.
 The meaning of any conclusions will be the same.  
 :::
@@ -65,13 +65,18 @@ if( knitr::is_latex_output() ) {
                      valign = 't',
                      align = "c",
                      linesep = "",
-                     col.names = c("Irrigated", 
-                                   "Not irrigated", 
-                                   "Reduction"),
+                     col.names = c("irrigated", 
+                                   "irrigated", 
+                                   "reduction"),
                      row.names = FALSE,
                      escape = FALSE,
                      booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) 
+   add_header_above( c("%N:" = 1, 
+                       "%N: Not" = 1, 
+                       "%N:" = 1),
+                    line = FALSE,
+                    bold = TRUE) %>%
+   row_spec(0, bold = TRUE) 
   
   
   T2 <- knitr::kable(pad(SoilN[15:28, ],
@@ -82,20 +87,26 @@ if( knitr::is_latex_output() ) {
                      valign = 't',
                      align = "c",
                      linesep = "",
-                     col.names = c("Irrigated", 
-                                   "Not irrigated", 
-                                   "Reduction"),
+                     col.names = c("irrigated", 
+                                   "irrigated", 
+                                   "reduction"),
                      row.names = FALSE,
                      escape = FALSE,
                      booktabs = TRUE) %>%
+   add_header_above( c("%N:" = 1, 
+                       "%N: Not" = 1, 
+                       "%N:" = 1),
+                    line = FALSE,
+                    bold = TRUE) %>%
     row_spec(0, bold = TRUE)
   
   out <- knitr::kables(list(T1, T2),
                        format = "latex",
                        label = "SoilCN",
-                       caption = "The percentage total nitrogen in irrigated and non-irrigated soils.") %>% 
-    kable_styling(font_size = 10)
-  out2 <- prepareSideBySideTable(out) 
+                       caption = "The percentage total nitrogen (\\%N) in irrigated and non-irrigated soils in $n = 28$ sites") %>% 
+    kable_styling(font_size = 8)
+  out2 <- prepareSideBySideTable(out,
+                                 gap = "\\enskip") 
   out2 
 }
 
@@ -109,15 +120,13 @@ if( knitr::is_html_output() ) {
          booktabs = TRUE,
          longtable = FALSE,
          col.names = c("Irrigated", "Not irrigated", "Reduction"),
-         caption = "The percentage total nitrogen in irrigated and non-irrigated soils.") %>% 
+         caption = "The percentage total nitrogen in irrigated and non-irrigated soils in $n = 28$ sites") %>% 
     row_spec(0, bold = TRUE)
 }
 ```
 
 
 Since the raw data are available, the data should be summarised graphically (Fig.\ \@ref(fig:SoilNGraphs)) and numerically (Table\ \@ref(tab:SoilNSummary)), using information provided by software (Fig.\ \@ref(fig:Nitrogenjamovi)).
-
-
 
 
 
@@ -163,7 +172,7 @@ if( knitr::is_latex_output() ) {
                booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
     row_spec(3, italic = TRUE) %>%
-    kable_styling(font_size = 10)
+    kable_styling(font_size = 8)
   
 }
 
@@ -185,7 +194,7 @@ if( knitr::is_html_output() ) {
 
 
 
-```{r, SoilNGraphs, fig.align="center", fig.cap="The reduction in percentage N when sites are irrigated, compared to non-irrigated. Left: A histogram; right: a case-profile plot (solid lines, solid dots for lower percentage N in irrigated sites).", fig.show="hold", out.width='100%', fig.width = 9.25, fig.height = 3.75}
+```{r, SoilNGraphs, fig.align="center", fig.cap="The reduction in percentage N when sites are irrigated, compared to non-irrigated. Left: A histogram, Right: a case-profile plot (solid lines, solid dots for lower percentage N in irrigated sites).", fig.show="hold", out.width='100%', fig.width = 9.25, fig.height = 3.75}
 par( mfrow = c(1, 2))
 
 hist(SoilN$Change,
@@ -234,8 +243,8 @@ knitr::include_graphics("jamovi/SoilCN/SoilCN-Testing.png")
 
 ## Statistical hypotheses and notation
 
-The RQ asks if the mean percentage nitrogen *reduces* in the *population* when sites are irrigated.
-If the difference is defined as the percentage N in *non-irrigated* sites minus *irrigated* sites, the RQ is asking if the mean difference is zero, or if it is greater than zero.
+The RQ asks if the mean %N *reduces* in the *population* when sites are irrigated.
+If the difference is defined as the %N in *non-irrigated* sites minus *irrigated* sites, the RQ is asking if the mean difference is zero, or if it is *greater* than zero.
 The *parameter* is the *population mean difference*. 
 The notation used (recapping Sect.\ \@ref(PairedNotationCI)) is:
 
@@ -245,27 +254,26 @@ The notation used (recapping Sect.\ \@ref(PairedNotationCI)) is:
 * $n$: The number of *differences*.
 
 The hypotheses, therefore, can be written in terms of the parameter $\mu_d$.
-The *null* hypothesis is 'there is *no mean change* in percentage N, in the population' (Sect.\ \@ref(AboutHypotheses)):
+The *null* hypothesis is 'there is *no mean change* in %N, in the population' (Sect.\ \@ref(AboutHypotheses)):
 
 * $H_0$: $\mu_d = 0$.
 
 This hypothesis, the initial *assumption*, postulates that the mean reduction may not be zero in the *sample* due to sampling variation.
 
-Since the RQ asks specifically if mean percentage N *decreases*, the alternative hypothesis is *one-tailed* (Sect.\ \@ref(AboutHypotheses)).
+Since the RQ asks specifically if mean %N *decreases*, the alternative hypothesis is *one-tailed* (Sect.\ \@ref(AboutHypotheses)).
 According to how the differences have been defined, the alternative hypothesis is:
 
 * $H_1$: $\mu_d > 0$ (i.e., one-tailed).
 
 This hypothesis says that the mean change in the population is *greater than* zero, because of the wording of the RQ, and because of how we defined the differences.
-(If the differences had been defined in the opposite way---as 'the percentage N in *irrigated* sites minus *non-irrigated* sites'--- then the alternative hypothesis would be $\mu_d < 0$, which has the same *meaning*.)
+(If the differences had been defined in the opposite way---as '%N in *irrigated* sites minus *non-irrigated* sites'--- then the alternative hypothesis would be $\mu_d < 0$, which has the same *meaning*.)
 
 
 ##  Describing the sampling distribution
 
-The *sample* percentage N reduction will vary depending on which one of the many possible samples is randomly obtained, *even if* the mean reduction in the population is zero.
+The *sample* mean %N reduction will vary depending on which one of the many possible samples is randomly obtained, *even if* the mean reduction in the population is zero.
 That is, the value of $\bar{d}$ will vary across all possible samples even if $\mu_d = 0$.
-In other words, the sample mean changes $\bar{d}$ have a sampling distribution.
-
+The sample mean changes $\bar{d}$ have a sampling distribution.
 
 
 ::: {.definition #DEFSamplingDistributionMeanDiff name="Sampling distribution of a sample mean difference"}
@@ -282,6 +290,7 @@ where $n$ is the number of differences, and $s_d$ is the standard deviation of t
 In general, the approximation gets better as the sample size gets larger.
 :::
 
+
 The value of the *standard error of the differences* here is  
 \[
   \text{s.e.}(\bar{d}) = s_d/\sqrt{n} = 0.0618/\sqrt{28} = 0.0117.
@@ -290,7 +299,7 @@ This describes what can be *expected* from the possible values of $\bar{d}$ (Fig
 
 
 
-```{r PercentageNSamplingDist, fig.cap="The sampling distribution is a normal distribution; it describes how the sample mean reduction in percentage N varies in samples of size $n = 28$ when the population mean reduction is $0$", fig.align="center", fig.width=9.0, fig.height=2.5, out.width='95%'}
+```{r PercentageNSamplingDist, fig.cap="The sampling distribution is a normal distribution; it describes how the sample mean reduction in percentage N varies in samples of size $n = 28$ when the population mean reduction is $0$.", fig.align="center", fig.width=9.0, fig.height=2.5, out.width='95%'}
 mn <- mean(SoilN$Change)
 n <- length(SoilN$Change)
 stdd <- sd(SoilN$Change)
@@ -300,7 +309,7 @@ se <- stdd/sqrt(n)
 par( mar = c(4, 0.5, 0.5, 0.5) )
 out <- plotNormal(0,
                   se,
-                  xlab = "Sample mean difference in N (%)", 
+                  xlab = "Sample mean reduction in %N", 
                   cex.axis = 0.95,
                   ylim = c(0, 55),
                   showXlabels = c( 	
@@ -377,7 +386,7 @@ Hence, the one-tailed $P$-value is $0.02279/2 = 0.0114$.
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 The jamovi software clarifies *how* the differences have been computed:
-At the left of the output (Fig.\ \@ref(fig:Nitrogenjamovi)), the order implies the differences are found as `NonirrigatedN` minus `IrrigatedN`.
+At the left of the output (Fig.\ \@ref(fig:Nitrogenjamovi)), the order implies the differences are found as `NonirrigatedN` minus `IrrigatedN`, the same as our definition.
 
 :::
 
@@ -399,7 +408,7 @@ The wording implies the direction of the differences.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Just saying 'evidence of a difference' is insufficient.
+Saying 'there is evidence of a difference' is insufficient.
 You must state *which* measurement is, on average, higher (that is, what the differences *mean*).
 :::
 
@@ -417,13 +426,12 @@ The test above is statistically valid if *one* of these conditions is true:
 
 The sample size of $25$ is a rough figure here, and some books give other values (such as $30$).
 This condition ensures that the *distribution of the sample mean differences has an approximate normal distribution* (so that, for example, the [$68$--$95$--$99.7$ rule](#def:EmpiricalRule) can be used).
-
 Provided the $n > 25$, this will be approximately true *even if* the distribution of the differences in the population does not have a normal distribution.
 That is, when $n > 25$ the sample mean differences generally have an approximate normal distribution, even if the differences themselves don't have a normal distribution.
 
 
 ::: {.example #StatisticalValidityWeightLossHT name="Statistical validity"}
-For the percentage N data, the sample size is $n = 28$, so the test is statistically valid.
+For the %N data, the sample size is $n = 28$, so the test is statistically valid.
 :::
 
 
@@ -435,7 +443,6 @@ For the percentage N data, the sample size is $n = 28$, so the test is statistic
 (This study was seen in Sect.\ \@ref(PairedInvasivePlantsCI).)
 Skypilot (*Polemonium viscosum*) is a native alpine wildflower growing in the Colorado Rocky Mountains (USA).
 In recent years, a willow shrub (*Salix*) has been encroaching on skypilot territory and, because willow often flowers early, researchers [@kettenbach2017shrub] are concerned that the willow may 'negatively affect pollination regimes of resident alpine wildflower species' (p.\ 6965).
-This example was first seen in Sect.\ \@ref(PairedInvasivePlantsCI).
 
 Data for both species was collected at $25$ different sites, so the data are *paired* (Sect.\ \@ref(PairedIntro)) and shown in
 `r if( knitr::is_latex_output() ) {
@@ -445,12 +452,11 @@ Data for both species was collected at $25$ different sites, so the data are *pa
 }`
 The parameter is $\mu_d$, which we define as the population mean *difference* in day of first flowering for skypilot, less the day of first flowering for willow.
 Hence, a *positive* value for the difference means that the skypilot values are larger, and hence that willow flowered first.
-
-In addition to learning about the difference in flowering time, another RQ is:
+The RQ is:
 
 > In the Colorado Rocky Mountains, is there a mean difference between first-flowering day for the native skypilot and encroaching willow?
 
-The hypotheses are:  
+The hypotheses are
 \[
    \text{$H_0$: $\mu_d = 0$}\quad\text{and}\quad\text{$H_1$: $\mu_d\ne 0$}
 \]
@@ -462,7 +468,7 @@ Explaining *how* the differences are computed is important.
 The differences here are skypilot first-flowering days minus willow first-flowering days.
 However, the differences could be computed as willow first-flowering days minus skypilot first-flowering days.
 *Either is fine*, as long as you remain consistent throughout.
-The meaning of any conclusions will be the same.  
+The *meaning* of any conclusions will be the same.  
 :::
 
 Since the raw data are available, the data were summarised graphically in Fig.\ \@ref(fig:FloweringPlots).
@@ -524,7 +530,7 @@ if( knitr::is_latex_output() ) {
                booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
     row_spec(3, italic = TRUE) %>%
-    kable_styling(font_size = 10)
+    kable_styling(font_size = 8)
   
 }
 
@@ -551,258 +557,13 @@ The value of the test statistic (i.e., the $t$-score) is
   = \frac{1.36 - 0}{0.9396} = 1.45,
 \end{align*}
 as in the output.
-This is a small value of $t$, so expect a large $P$-value using the $68$--$95$--$99.7$ rule.
-Indeed, the output shows that $P = 0.161$, so there is no evidence of a mean difference in first-flowering day.
+This is a small value of $t$, so a large $P$-value is expected using the $68$--$95$--$99.7$ rule.
+Indeed, the output shows that $P = 0.161$, so there is *no evidence* of a mean difference in first-flowering day: the sample difference could be explained by sampling variation.
 We write:
 
 > No evidence exists ($t = 1.45$; two-tailed $P = 0.161$) that the day of first-flowering is different for the encroaching willow and the native skypilot (mean difference: $1.36$ days earlier for willow; s.e.: $0.940$; $n = 25$).
 
 The CI should be statistically valid since $n = 25$.
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Be clear in your conclusion about *how* the differences are computed.
-Make sure to interpret the CI consistent with how the differences were defined.
-:::
-
-
-## Example: growing squash {#GrowingSquashHT}
-
-(This study was seen in Sect.\ \@ref(GrowingSquashCI).)
-The effect of rainfall on growing Chayote squash (*Sechium edule*) studied the size of the fruit in a year with normal rainfall (2015) compared to fruit in a dry year (2014) on $24$ farms [@mukherjee2019diversity]:
-
-> For Chayote squash grown in Bangalore, what is the mean difference in fruit weight between a normal and dry year?
-
-Ten fruits were gathered from each farm in both years, and the average weight recorded for the farm.
-(The farm is the *unit of analysis*, but the individual fruits are the *units of observation*.)
-Since the same farms are used in both years, the data are *paired* (Table\ \@ref(tab:FruitsDataHT)).
-Data is missing for Farm\ 20 in the dry year (2014), so there are $n = 23$ differences.
-
-```{r FruitsDataHT, echo=FALSE}
-data(Fruit)
-
-Fruit$Farm <- 1 : length(Fruit$FWeight2014)
-
-FruitTab <- dplyr::select(Fruit,
-                          Farm,
-                          FWeight2014,
-                          FWeight2015)
-FruitTab$Change <- FruitTab$FWeight2015 - FruitTab$FWeight2014
-
-if( knitr::is_latex_output() ) {
-  
- T1 <- knitr::kable(pad(FruitTab[1:5, ],
-                        surroundMaths = TRUE,
-                        targetLength = c(1, 6, 6, 6),
-                        digits = c(0, 2, 2, 2)),
-                     format = "latex",
-                     valign = 't',
-                     align = "c",
-                     linesep = "",
-                     col.names = c("Farm", 
-                                   "Dry", 
-                                   "Normal",
-                                   "Change (in g)"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
-   add_header_above(c( " " = 1,
-                       "Fruit weight (in g)" = 2,
-                       " " = 1),
-                    bold = TRUE) %>%
-    row_spec(0, bold = TRUE) 
-  
-  
-  T2 <- knitr::kable(pad(FruitTab[20:24, ],
-                        surroundMaths = TRUE,
-                        targetLength = c(2, 6, 6, 7),
-                        digits = c(0, 2, 2, 2)),
-                     format = "latex",
-                     valign = 't',
-                     align = "c",
-                     linesep = "",
-                     col.names = c("Farm", 
-                                   "Dry", 
-                                   "Normal",
-                                   "Change (in g)"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE)  %>%
-   add_header_above(c( " " = 1,
-                       "Fruit weight (in g)" = 2,
-                       " " = 1),
-                    bold = TRUE) %>%
-    row_spec(0, bold = TRUE) 
-  
-  out <- knitr::kables(list(T1, T2),
-                       format = "latex",
-                       label = "FruitsDataHT",
-                       caption = "The weight of fruits (in g) in two different years. One observation is missing for Field\ 20.") %>% 
-    kable_styling(font_size = 10)
-  out2 <- prepareSideBySideTable(out) 
-  out2 
-}
-
-if( knitr::is_html_output() ) {
-  kable( pad(FruitTab,
-                        surroundMaths = TRUE,
-                        targetLength = c(1, 6, 6, 6),
-                        digits = c(0, 2, 2, 2)),
-         format = "html",
-         align = "c",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names = c("Farm", 
-                       "Dry", 
-                       "Normal",
-                       "Change (in g)"),
-         caption = "The weight of fruits (in g) in two different years. One observation is missing for Field\ 20.") %>% 
-    row_spec(0, bold = TRUE)
-}
-```
-
-In Table\ \@ref(tab:FruitsDataHT), the changes refer to the *increase* in fruit weight from 2014 (dry) to 2015 (normal).
-(Computing the changes as the 2015 (normal) values less the 2014 (dry) values is fine, permitted this is used consistently throughout the analysis.)
-The parameter is $\mu_d$, the population *increase* in fruit weight (in g) from 2014 to 2015.
-
-Since the data are available
-`r if( knitr::is_latex_output() ) {
-  '(Table\\ \\@ref(tab:FruitsDataHT)),'
-} else {
-  '(see above),'
-}`
-a numerical summary *must* summarise the differences, as the RQ is about the mea difference.
-Each group can be summarised too.
-The information is found using software (Fig.\ \@ref(fig:FruitjamoviHT)), and can be compiled into a table (Table\ \@ref(tab:FruitSummaryHT)).
-The appropriate plot for graphically summarising the *data* is (for example) a histogram of the differences (Fig.\ \@ref(fig:FruitPlots), left panel) or a case-profile plot (Fig.\ \@ref(fig:FruitPlots), right panel).
-A small increase is seen from 2014 to 2015, with lots of variation from farm to farm.
-
-
-```{r FruitjamoviHT, fig.cap="jamovi output for the fruit-weight data", fig.align="center", out.width=c("100%"), fig.show='hold'}
-knitr::include_graphics("jamovi/Fruit/Fruit-Differences.png")
-```
-
-
-
-```{r FruitSummaryHT}
-FruitSummary <- array( dim = c(3, 4))
-
-rownames(FruitSummary) <- c("Dry year (2014)",
-                            "Normal year (2015)",
-                            "Change")
-colnames(FruitSummary) <- c("Mean",
-                            "Std. dev.",
-                            "Std. error",
-                            "Sample size")
-
-FruitSummary[, 1] <- colMeans(FruitTab[, 2:4],
-                              na.rm = TRUE)
-FruitSummary[, 2] <- apply(FruitTab[, 2:4],
-                           2,
-                           "sd",
-                           na.rm = TRUE)
-FruitSummary[, 3] <- apply(FruitTab[, 2:4],
-                           2,
-                           "findStdError",
-                           na.rm = TRUE)
-FruitSummary[, 4] <- apply(FruitTab[, 2:4],
-                           2,
-                           "realLength")
-
-# Do some appropriate rounding
-FruitSummary <- round(FruitSummary, 4)
-FruitSummary[1:2, 1] <- round(FruitSummary[1:2, 1], 3)
-
-if( knitr::is_latex_output() ) {
-  
-  knitr::kable(pad(FruitSummary,
-                   targetLength = c(7, 6, 6, 2),
-                   surroundMaths= TRUE,
-                   digits = c(3, 3, 3, 0)),
-               format = "latex",
-               align = "c",
-               linesep = "",
-               caption = "The fruit weight (in g) at farms for two different years",
-               col.names = c("Mean", "Std. dev.", "Std. error", "Sample size"),
-               row.names = TRUE,
-               escape = FALSE,
-               booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-    row_spec(3, italic = TRUE) %>%
-    kable_styling(font_size = 10)
-  
-}
-
-if( knitr::is_html_output() ) {
-  kable( pad(FruitSummary,
-                   targetLength = c(7, 6, 6, 2),
-                   surroundMaths= TRUE,
-                   digits = c(3, 3, 3, 0)),
-         format = "html",
-         align = "c",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names =  c("Mean", "Std. dev.", "Std. error", "Sample size"),
-         caption = "The fruit weight (in g) at farms for two different years") %>% 
-    row_spec(0, bold = TRUE)
-}
-```
-
-
-
-```{r, FruitPlotsHT, out.width='90%', fig.width=9, fig.height=3.5, fig.align=TRUE, fig.cap="The fruit-weight data. Left: A histogram of the weight changes on each farm; right: a case-profile plot of the weight changes (unfilled points and dashed lines indicate a decrease)"}
-par( mfrow = c(1, 2))
-
- hist(FruitTab$Change,
-      las = 1,
-      xlab = "Weight increase (in g)",
-      ylab = "Number of farms",
-      main = "Histogram of fruit weight\nincrease from 2014 to 2015")
- 
- ###
- 
- plot( x = c(0.75, 2.25),
-       y = c(150, 400),
-       type = "n",
-       las = 1,
-       xlab = "",
-       main = "Case-profile plot of fruit weight\nincreases from 2014 to 2015",
-       ylab = "Farm fruit weight (in g)",
-       axes = FALSE)
- axis(side = 1,
-      at = c(1, 2),
-      labels = c("2014 (dry)",
-                 "2015 (normal)"))
- axis(side = 2,
-      las = 1)
- box()
- 
- 
- for (i in (1:length(FruitTab$Change))){
-   if (!is.na(FruitTab$Change[i])){
-     delta <- ifelse(FruitTab$Change[i] > 0, 0.025, -0.025)
-     lines( x = c(1 + delta, 2 - delta),
-            y = c( FruitTab$FWeight2014[i],
-                   FruitTab$FWeight2015[i]),
-            lty = ifelse(FruitTab$Change[i] > 0, 1, 2),
-            pch = ifelse(FruitTab$Change[i] > 0, 19, 1),
-            type = "b",
-            lwd = 1)
-   }
- }
-
-```
-
-The standard error of the mean increase is $\text{s.e.}(\bar{d}) = 10.879$, from Fig.\ \@ref(fig:Fruitjamovi) or Table\ \@ref(tab:FruitSummary).
-The approximate $95$% CI is from $2.230 \pm (2\times 10.879)$, or from $-19.528$ to $23.988$\ g.
-Figure\ \@ref(fig:FruitjamoviHT) gives the $95$% CI as $-24.79$ to $20.33$\ g.
-The two CIs are a bit different since the sample size is not large ($n = 23$).
-Using the exact CI, we write:
-
-> From the sample, the mean increase in fruit weight from 2014 (dry year) to 2015 (normal year) is $2.230$\ g ($\text{s.e.} = 0.10.879$; $n = 23$), with an approximate $95$% CI between $24.79$\ g lighter in 2014 to $20.33$\ g higher in 2015.
-
-The sample size ($n = 23$) is only *slightly* smaller than $25$.
-Since Fig.\ \@ref(fig:FruitPlotsHT) shows the *sample* differences are approximately symmetrically, so the CI should be reasonably statistically valid.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -828,19 +589,20 @@ The following descriptive RQs can be asked:
 The hypotheses are:
 
 \begin{align*}
-  \text{Tea group}:      \qquad & \text{$H_0$:} \mu_d = 0\quad \text{vs}\quad\text{$H_1$}: \mu_d \ne 0;\\
-  \text{Hot water group:}\qquad & \text{$H_0$:} \mu_d = 0\quad \text{vs}\quad\text{$H_1$}: \mu_d \ne 0.
+  \text{Tea group}:      \qquad & \text{$H_0$: } \mu_d = 0\quad \text{vs}\quad\text{$H_1$: } \mu_d \ne 0;\\
+  \text{Hot water group:}\qquad & \text{$H_0$: } \mu_d = 0\quad \text{vs}\quad\text{$H_1$: } \mu_d \ne 0.
 \end{align*}
 
 For the two groups, using the standard errors found in Sect.\ \@ref(ChamomileTea-Paired-CI), the test statistics are  
 \[
-  t_T = \frac{38.62 - 0}{5.37} = 7.19\qquad\text{and}\qquad t_W = \frac{-7.12 - 0}{6.48} = -1.10.
+  t_T = \frac{38.62 - 0}{5.37} = 7.19\qquad\text{and}\qquad t_W = \frac{-7.12 - 0}{6.48} = -1.10,
 \]
+where the subscripts $T$ and $W$ refer to the tea and hot-water groups respectively.
 The $t$-score for the tea-drinking group is *huge*, so the two-tailed $P$-value will be *very small* using the $68$--$95$--$99.7$ rule, and certainly smaller than $0.001$.
-This means that there is evidence that chamomile tea had an impact on TG.
+This means that there is evidence that chamomile tea had an impact on the mean change in TG.
 
 In contrast, the $t$-score for the water-drinking group is *small*, so the two-tailed $P$-value will be *large* using the $68$--$95$--$99.7$ rule, and certainly larger than $0.10$.
-This means that there is no evidence that placebo treatment (hot water) had any impact on TG, as one might expect.
+This means that there is no evidence that placebo treatment (hot water) had any impact on mean change in TG, as one might expect.
 
 We can write:
 
@@ -903,18 +665,20 @@ The mean *improvement* in joint pain after $13$ weeks was $1.27$ (with a standar
 
 1. True or false? Only 'before and after' studies can be paired. \tightlist
 `r if( knitr::is_html_output() ) { torf( answer=FALSE )}`
-1. True or false? The null hypothesis is about the population mean *difference*.
+1. True or false? The null hypothesis is about the *population* mean difference.
 `r if( knitr::is_html_output() ) { torf( answer=TRUE )}`
-1. The value of the test statistic (to two decimal places) is
-`r if( knitr::is_html_output() ) { fitb( answer = 2.23, num = TRUE, tol = 0.01 )} else {"________________."}`
-1. The two-tailed $P$-value will be
+1. What is the value of the test statistic (to two decimal places)?
+`r if( knitr::is_html_output() ) { fitb( answer = 2.23, num = TRUE, tol = 0.01 )}`
+1. What is the two-tailed $P$-value?
 `r if( knitr::is_html_output() ) {mcq( 
 	c(answer = "Very small",
 		"Small",
     "About 0.05",
 		"Large",
 		"Very large")
-)} else {"________________."}`
+)}`
+1. True or false? The 'test statistic' is a $t$-score.
+`r if( knitr::is_html_output() ) { torf( answer=TRUE )}`
 :::
 
 
@@ -922,6 +686,56 @@ The mean *improvement* in joint pain after $13$ weeks was $1.27$ (with a standar
 ## Exercises {#TestPairedMeansExercises}
 
 Selected answers are available in Sect.\ \@ref(TestPairedMeansAnswer).
+
+
+
+::: {.exercise #MeanDiffGrowingSquashHT}
+[*Dataset*: `Fruit`]
+(These data were also seen in Exercise\ \@ref(exr:MeanDiffGrowingSquashCI).)
+The effect of rainfall on growing Chayote squash (*Sechium edule*) was studied [@mukherjee2019diversity], comparing the size of the fruit in a year with normal rainfall (2015) compared to fruit in a dry year (2014) on $24$ farms:
+
+> For Chayote squash grown in Bangalore, what is the mean difference in fruit weight between a normal and dry year?
+
+Ten fruits were gathered from each farm in both years, and the average (mean) weight recorded for the farm.
+Since the same farms are used in both years, the data are *paired* 
+`r if( knitr::is_latex_output() ) {
+  '(Table\\ \\@ref(tab:FruitsData)).'
+} else {
+  '(see above).'
+}`
+Data is missing for Farm\ 20 in the dry year (2014), so there are $n = 23$ differences.
+
+1. Write down the hypotheses.
+2. Compute the $t$-score.
+3. Determine the $P$-value.
+4. Write a conclusion.
+:::
+
+
+::: {.exercise #TestPairedMeansCaptopril}
+(This study was also seen in Exercise\ \@ref(exr:PairedCIExercisesCaptopril).)
+In a study of hypertension [@data:hand:handbook; @data:macgregor:essential], patients were given a drug (Captopril) and their systolic blood pressure measured (in mm Hg) immediately before and two hours after being given the drug (data with Exercise\ \@ref(exr:PairedCIExercisesCaptopril)).
+
+The aim is to see if there is evidence of a *reduction* in blood pressure after taking Captopril.
+Using these data and the software output (Fig.\ \@ref(fig:CaptoriljamoviHT)):
+
+1. Explain why it is probably more sensible to compute differences as the *Before* minus the *After* measurements. 
+   What do the differences *mean* when computed this way?
+1. Compute the differences.
+1. Construct a suitable graph for the differences.
+1. Write down the hypotheses.
+1. Write down the $t$-score.
+1. Write down the $P$-value.
+1. Write a conclusion.
+:::
+
+    
+
+```{r CaptoriljamoviHT, fig.cap="jamovi (top) and SPSS (bottom) output for the Captoril data", fig.align="center", out.width="80%", fig.show="hold"}
+knitr::include_graphics("jamovi/CaptoprilAll/CaptoprilAll-PairedTOutput.png") 
+knitr::include_graphics("SPSS/CaptoprilAll/CaptoprilAll-PairedTOutput.png") 
+```
+
 
 ::: {.exercise #TestPairedMeansTasteOfBrocolli}
 (These data were also seen in Exercise\ \@ref(exr:PairedCIExercisesBrocolli).)
@@ -964,30 +778,6 @@ bloodS2 <- cbind( "Before" = bloodS$Before[1:8],
 ```
 
 
-::: {.exercise #TestPairedMeansCaptopril}
-(This study was also seen in Exercise\ \@ref(exr:PairedCIExercisesCaptopril).)
-In a study of hypertension [@data:hand:handbook; @data:macgregor:essential], patients were given a drug (Captopril) and their systolic blood pressure measured (in mm Hg) immediately before and two hours after being given the drug (data with Exercise\ \@ref(exr:PairedCIExercisesCaptopril)).
-
-The aim is to see if there is evidence of a *reduction* in blood pressure after taking Captopril.
-Using these data and the software output (Fig.\ \@ref(fig:CaptoriljamoviHT)):
-
-1. Explain why it is probably more sensible to compute differences as the *Before* minus the *After* measurements. 
-   What do the differences *mean* when computed this way?
-1. Compute the differences.
-1. Construct a suitable graph for the differences.
-1. Write down the hypotheses.
-1. Write down the $t$-score.
-1. Write down the $P$-value.
-1. Write a conclusion.
-:::
-
-    
-
-```{r CaptoriljamoviHT, fig.cap="jamovi (top) and SPSS (bottom) output for the Captoril data", fig.align="center", out.width="80%", fig.show="hold"}
-knitr::include_graphics("jamovi/CaptoprilAll/CaptoprilAll-PairedTOutput.png") 
-knitr::include_graphics("SPSS/CaptoprilAll/CaptoprilAll-PairedTOutput.png") 
-```
-
 
 ::: {.exercise #TestPairedMeansSmokingAndExercise}
 (This study was also seen in Exercise\ \@ref(exr:PairedCIExercisesSmokeExercise).)
@@ -1022,7 +812,7 @@ data(Ferritin)
 FR <- Ferritin
 
 if( knitr::is_latex_output() ) {
-  T1 <- kable( pad(FR[1:7, ],
+  T1 <- kable( pad(FR[1:10, ],
                    surroundMaths = TRUE,
                    targetLength = c(4, 4, 5),
                    digits = 0),
@@ -1035,7 +825,7 @@ if( knitr::is_latex_output() ) {
                linesep = c("", "", "", "\\addlinespace"),
                longtable = FALSE) %>%
     row_spec(0, bold = TRUE)
-  T2 <- kable( pad( rbind(FR[8:13, ], c(NA, NA, NA)),
+  T2 <- kable( pad( FR[11:20, ],
                     surroundMaths = TRUE,
                     targetLength = c(4, 4, 5),
                     digits = 0),
@@ -1048,25 +838,12 @@ if( knitr::is_latex_output() ) {
                linesep = c("", "", "", "\\addlinespace"),
                longtable = FALSE) %>%
     row_spec(0, bold = TRUE)
-  T3 <- kable( pad(FR[14:20, ],
-                   surroundMaths = TRUE,
-                   targetLength = c(5, 4, 5),
-                   digits = 0),
-               format = "latex",
-               row.names = FALSE,
-               escape = FALSE,
-               align = "c",
-               col.names = c("Sept.", "March", "Reduction"),
-               booktabs = TRUE,
-               linesep = c("", "", "", "\\addlinespace"),
-               longtable = FALSE) %>%
-    row_spec(0, bold = TRUE) 
   
-  out <- knitr::kables(list(T1, T2, T3),
+  out <- knitr::kables(list(T1, T2),
                        format = "latex",
                        label = "FerritinTable",
                        caption = "The ferritin content (in $\\mu$g/L) for 20 thalassemia patients at the Adelaide Children's Hospital") %>% 
-    kable_styling(font_size = 10)  
+    kable_styling(font_size = 8)  
   out2 <- prepareSideBySideTable(out, 
                                  gap = "\\quad") 
   out2
@@ -1086,7 +863,7 @@ if( knitr::is_html_output()) {
 
 
 ::: {.exercise #StressSurgeryHT}
-(This study was also seen in Exercise\ \@ref(exr:StressSurgeryHT).)
+(This study was also seen in Exercise\ \@ref(exr:StressSurgeryCI).)
 The concentration of beta-endorphins in the blood is a sign of stress.
 One study (@data:hand:handbook, Dataset 232; @hoaglin2011exploring) measured the beta-endorphin concentration for $19$ patients about to undergo surgery.
 The RQ was: "For patients approaching surgery, is there a mean increase in beta-endorphin concentrations?"
@@ -1127,14 +904,14 @@ if( knitr::is_latex_output() ) {
                escape = FALSE,
                caption = "The surgery-stress data",
                col.names = c("Sample mean",
-                             "Std deviation",
+                             "Std. dev.",
                              "Std error",
                              "Sample size"),
                row.names = TRUE,
                digits = 2) %>%
      row_spec(0, bold = TRUE) %>%
      row_spec(3, italic = TRUE) %>%
-     kable_styling(font_size = 10)
+     kable_styling(font_size = 8)
 } 
 
 if( knitr::is_html_output() ) {
@@ -1161,6 +938,7 @@ if( knitr::is_html_output() ) {
 **2.** True.
 **3.** $2.23$.
 **4.** Very small.
+**5.** True.
 :::
 `r if (knitr::is_html_output()) '-->'`
 

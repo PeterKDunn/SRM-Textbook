@@ -50,14 +50,14 @@ Answers to exercises in Sect.\ \@ref(IntroExercises).
 ::: {.answer data-latex=""}
 **Answer to Exercise\ \@ref(exr:RQsTypeTourniquet)**:
 The RQ requires numerical information to be answered, such as the *average time* taken to apply the tourniquets.
-This RQ would be answered using a **quant**itative RQ.
+A **quant**itative RQ.
 :::
 
 
 <!-- ::: {.answer data-latex=""} -->
 <!-- **Answer to Exercise\ \@ref(exr:RQsTypeMangroves)**: -->
 <!-- The RQ does not require numerical information to be answered. -->
-<!-- This RQ would be answered using a **qual**itative RQ. -->
+<!-- A **qual**itative RQ. -->
 <!-- ::: -->
 
 
@@ -1087,7 +1087,7 @@ out <- knitr::kables( list(T1, T2),
                       format = "latex",
                       label = "ReclaimedWaterPercent",
                       caption = "The advantages and disadvantages of using reclaimed water, reported by $231$ farmers.") %>% 
-  kable_styling(font_size = 10)
+  kable_styling(font_size = 8)
 out2 <- prepareSideBySideTable(out) 
 out2
 }
@@ -1129,7 +1129,7 @@ knitr::kables( list(T1, T2),
                       format = "html",
                       label = "ReclaimedWaterPercent",
                       caption = "The advantages and disadvantages of using reclaimed water, reported by $231$ farmers.") %>% 
-  kable_styling(font_size = 10)
+  kable_styling(font_size = 8)
 }
 ```
 
@@ -1412,7 +1412,7 @@ if( knitr::is_latex_output() ) {
                       "Sample size"),
         caption = "Numerical summary of the Iranian-breakfast data: odds and percentage of those who skip breakfast") %>%
     row_spec(0, bold = TRUE) %>%
-    kable_styling(font_size = 10) %>%
+    kable_styling(font_size = 8) %>%
     row_spec(3, bold = TRUE) %>%
     row_spec(row = 2, 
              hline_after = TRUE)
@@ -1723,7 +1723,7 @@ if( knitr::is_latex_output() ) {
   ) %>%
     row_spec(0, bold = TRUE) %>%
     row_spec(3, italic = TRUE) %>%
-    kable_styling(font_size = 10)
+    kable_styling(font_size = 8)
 }
 if( knitr::is_html_output() ) {
   kable(pad(SignageSummary,
@@ -1836,7 +1836,7 @@ mtext(text = c(expression( atop(Before, group("(",italic(n) == 38, ")")) ),
 <!--   ) %>% -->
 <!--     row_spec(0, bold = TRUE) %>% -->
 <!--     row_spec(3, italic = TRUE) %>% -->
-<!--     kable_styling(font_size = 10) -->
+<!--     kable_styling(font_size = 8) -->
 <!-- } -->
 <!-- if( knitr::is_html_output() ) { -->
 <!--   kable(pad(SignageSummaryDec, -->
@@ -1915,7 +1915,7 @@ if( knitr::is_latex_output() ) {
         caption = "Numerical summary of the typing data") %>%
     row_spec(0, bold = TRUE) %>%
     column_spec(1, bold = TRUE) %>%
-    kable_styling(font_size = 9) %>%
+    kable_styling(font_size = 8) %>%
     add_header_above( c(" " = 1,
                         "Typing accuracy" = 1, 
                         "Typing speed" = 1, 
@@ -1996,7 +1996,7 @@ if( knitr::is_latex_output() ) {
         caption = "Numerical summary of the typing data") %>%
     row_spec(0, bold = TRUE) %>%
     column_spec(1, bold = TRUE) %>%
-    kable_styling(font_size = 9) %>%
+    kable_styling(font_size = 8) %>%
     add_header_above( c(" " = 1,
                         "Typing accuracy" = 2, 
                         "Typing speed" = 2, 
@@ -3253,6 +3253,149 @@ We want to know what the *statistic* that tells us about the *population* parame
 Answers to exercises in Sect.\ \@ref(PairedCIExercises).
 
 
+
+::: {.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MeanDiffGrowingSquashCI).**
+**1.** The farm is the *unit of analysis*, but the individual fruits are the *units of observation*.
+2. See Table\ \@ref(tab:FruitSummary).
+3. See Fig.\ \@ref(fig:FruitPlots).
+4. The mean increase in average fruit weight from 2014 (dry year) to 2015 (normal year) is $2.230$\ g ($\text{s.e.} = 10.879$; $n = 23$), with an approximate $95$% CI between $24.79$\ g lighter in 2014 to $20.33$\ g higher in 2015.
+:::
+
+
+```{r FruitSummary}
+data(Fruit)
+
+Fruit$Farm <- 1 : length(Fruit$FWeight2014)
+
+FruitTab <- dplyr::select(Fruit,
+                          Farm,
+                          FWeight2014,
+                          FWeight2015)
+FruitTab$Change <- FruitTab$FWeight2015 - FruitTab$FWeight2014
+
+FruitSummary <- array( dim = c(3, 4))
+
+rownames(FruitSummary) <- c("Dry year (2014)",
+                            "Normal year (2015)",
+                            "Change")
+colnames(FruitSummary) <- c("Mean",
+                            "Std. dev.",
+                            "Std. error",
+                            "Sample size")
+
+FruitSummary[, 1] <- colMeans(FruitTab[, 2:4],
+                              na.rm = TRUE)
+FruitSummary[, 2] <- apply(FruitTab[, 2:4],
+                           2,
+                           "sd",
+                           na.rm = TRUE)
+FruitSummary[, 3] <- apply(FruitTab[, 2:4],
+                           2,
+                           "findStdError",
+                           na.rm = TRUE)
+FruitSummary[, 4] <- apply(FruitTab[, 2:4],
+                           2,
+                           "realLength")
+
+# Do some appropriate rounding
+FruitSummary <- round(FruitSummary, 4)
+FruitSummary[1:2, 1] <- round(FruitSummary[1:2, 1], 3)
+
+if( knitr::is_latex_output() ) {
+  
+  knitr::kable(pad(FruitSummary,
+                   surroundMaths = TRUE,
+                   targetLength = c(7, 6, 6, 2),
+                   digits = c(3, 3, 3, 0)),
+               format = "latex",
+               align = "c",
+               linesep = "",
+               caption = "The fruit weight (in g) at farms for two different years",
+               col.names = c("Mean", "Std. dev.", "Std. error", "Sample size"),
+               row.names = TRUE,
+               escape = FALSE,
+               booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, italic = TRUE) %>%
+    kable_styling(font_size = 8)
+  
+}
+
+if( knitr::is_html_output() ) {
+  kable( pad(FruitSummary,
+                   surroundMaths = TRUE,
+                   targetLength = c(7, 6, 6, 2),
+                   digits = c(3, 3, 3, 0)),
+         format = "html",
+         align = "c",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names =  c("Mean", "Std. dev.", "Std. error", "Sample size"),
+         caption = "The fruit weight (in g) at farms for two different years") %>% 
+    row_spec(0, bold = TRUE)
+}
+```
+
+
+
+```{r, FruitPlots, out.width='90%', fig.width=9, fig.height=3.5, fig.align="center", fig.cap="The fruit-weight data. Left: A histogram of the weight changes on each farm; right: a case-profile plot of the weight changes where each line corresponds to a farm (unfilled points and dashed lines indicate a decrease)."}
+par( mfrow = c(1, 2))
+
+ hist(FruitTab$Change,
+      las = 1,
+      xlab = "Weight increase (in g)",
+      ylab = "Number of farms",
+      main = "Histogram of fruit weight\nincrease from 2014 to 2015")
+ 
+ ###
+ 
+ plot( x = c(0.75, 2.25),
+       y = c(150, 400),
+       type = "n",
+       las = 1,
+       xlab = "",
+       main = "Case-profile plot of fruit weight\nincreases from 2014 to 2015",
+       ylab = "Farm fruit weight (in g)",
+       axes = FALSE)
+ axis(side = 1,
+      at = c(1, 2),
+      labels = c("2014 (dry)",
+                 "2015 (normal)"))
+ axis(side = 2,
+      las = 1)
+ box()
+ 
+ 
+ for (i in (1:length(FruitTab$Change))){
+   if (!is.na(FruitTab$Change[i])){
+     delta <- ifelse(FruitTab$Change[i] > 0, 0.025, -0.025)
+     lines( x = c(1 + delta, 2 - delta),
+            y = c( FruitTab$FWeight2014[i],
+                   FruitTab$FWeight2015[i]),
+            lty = ifelse(FruitTab$Change[i] > 0, 1, 2),
+            pch = ifelse(FruitTab$Change[i] > 0, 19, 1),
+            type = "b",
+            lwd = 1)
+   }
+ }
+
+```
+
+
+<!-- ::: {.answer data-latex=""} -->
+<!-- **Answer to Exercise\ \@ref(exr:PairedCIExercisesCaptopril)**: -->
+<!-- **1.** Computing differences as `Before` minus the `After` measurements seems sensible: the average blood pressure *decrease*, the purpose of the drug. -->
+<!-- **2.** The differences (when defined as *reductions*): $9$, $4$, $21$, $3$, $20$, $31$, $17$, $26$, and so on. -->
+<!-- **3.** Mean difference: 18.933; standard deviation: $9.027$; standard error: $9.027/\sqrt{15} = 2.331$.  -->
+<!-- *Approximate* $95$% CI: $14.271$ to $23.56$\ mm\ Hg. -->
+<!-- **4.** Exact $95$% CI: $13.934$ to $23.93$\ mm\ Hg from output. -->
+<!-- **5.** The first uses *approximate* multipliers; the second uses exact multipliers. -->
+<!-- ::: -->
+
+
+
+
 ::: {.answer data-latex=""}
 **Answer to Exercise\ \@ref(exr:PairedCIExercisesBrocolli)**:
 Mean of the *differences*: $5.2$; standard error $3.6$.
@@ -3301,7 +3444,7 @@ if( knitr::is_latex_output() ) {
          caption = tab.cap.br) %>%
     column_spec(1, bold = TRUE)  %>%
     row_spec(0, bold = TRUE) %>%
-    kable_styling(font_size = 9)
+    kable_styling(font_size = 8)
 }
 if( knitr::is_html_output() ) {
   out <- kable( pad(BrocolliSummaryTable,
@@ -3321,38 +3464,34 @@ if( knitr::is_html_output() ) {
 
 
 
-::: {.answer data-latex=""}
-**Answer to Exercise\ \@ref(exr:PairedCIExercisesCaptopril)**:
-**1.** Computing differences as `Before` minus the `After` measurements seems sensible: the average blood pressure *decrease*, the purpose of the drug.
-**2.** The differences (when defined as *reductions*): $9$, $4$, $21$, $3$, $20$, $31$, $17$, $26$, and so on.
-**3.** Mean difference: 18.933; standard deviation: $9.027$; standard error: $9.027/\sqrt{15} = 2.331$. 
-*Approximate* $95$% CI: $14.271$ to $23.56$\ mm\ Hg.
-**4.** Exact $95$% CI: $13.934$ to $23.93$\ mm\ Hg from output.
-**5.** The first uses *approximate* multipliers; the second uses exact multipliers.
-:::
+<!-- ::: {.answer data-latex=""} -->
+<!-- **Answer to Exercise\ \@ref(exr:PairedCIExercisesSmokeExercise)**: -->
+<!-- **1.** *Approximate* $95$% CI for *reduction*: $0.66 \pm(2\times 0.37)$, or $-0.08$ to $1.4$: average could be an *increase* of up to $0.08$ to a *reduction* of up to $1.4$ on the given scale for women. -->
+<!-- **2.** Sample size is not larger than $25$, but close: probably reasonably statistically valid. -->
+<!-- ::: -->
+
 
 
 ::: {.answer data-latex=""}
-**Answer to Exercise\ \@ref(exr:PairedCIExercisesSmokeExercise)**:
-**1.** *Approximate* $95$% CI for *reduction*: $0.66 \pm(2\times 0.37)$, or $-0.08$ to $1.4$: average could be an *increase* of up to $0.08$ to a *reduction* of up to $1.4$ on the given scale for women.
-**2.** Sample size is not larger than $25$, but close: probably reasonably statistically valid.
+**Answer to Exercise\ \@ref(exr:PairedCIExercisesAnorexia).**
+No answer (yet).
 :::
 
 
-::: {.answer data-latex=""}
-**Answer to Exercise\ \@ref(exr:StressSurgeryCI).**
 
-$\bar{d} = 7.70$ fmol/mol and the *standard error for this increase* is $3.10$\ fmol/mol.
-The approximate $95$% CI is $7.70 \pm (2\times 3.10)\quad\text{or:}\quad 7.70 \pm 6.20$, or from $1.50$ to $13.90$\ fmol/m.
+<!-- ::: {.answer data-latex=""} -->
+<!-- **Answer to Exercise\ \@ref(exr:StressSurgeryCI).** -->
+<!-- $\bar{d} = 7.70$ fmol/mol and the *standard error for this increase* is $3.10$\ fmol/mol. -->
+<!-- The approximate $95$% CI is $7.70 \pm (2\times 3.10)\quad\text{or:}\quad 7.70 \pm 6.20$, or from $1.50$ to $13.90$\ fmol/m. -->
 
-Using jamovi, the *exact* $95$% CI is from $1.18$ to $14.22$\ fmol/mol, similar to the *approximate* CI computed manually.
-The sample size is $n = 19$, just less than $25$, so the results may not be statistically valid (but shouldn't be too bad).
-:::
+<!-- Using jamovi, the *exact* $95$% CI is from $1.18$ to $14.22$\ fmol/mol, similar to the *approximate* CI computed manually. -->
+<!-- The sample size is $n = 19$, just less than $25$, so the results may not be statistically valid (but shouldn't be too bad). -->
+<!-- ::: -->
+
+
 
 ::: {.answer data-latex=""}
 **Answer to Exercise\ \@ref(exr:MeanDiffCOVIDCI).**
-
-
 **1.** The *differences* are defined as *during* minus *before*, so that *positive* difference therefore means the *during* value is higher.
 **2.** $\text{s.e.}(\bar{d}) = {s_d}/{n} = {51.30}/{\sqrt{213}} = 3.515018$.
 **3.** From $-4.35$ to $9.71$\ mins.
@@ -3362,6 +3501,148 @@ The CI is for the population mean *increase* during compared to before lockdown,
 
 
 
+<!-- ::: {.answer data-latex=""} -->
+<!-- **Answer to Exercise\ \@ref(exr:BHADPCI).** -->
+<!-- **1.** Define $\mu$ as the mean BHADP score, the parameter is $\mu_D - \mu_N$, the difference between the two population means (disability $D$, minus non-disability $N$). -->
+<!-- The statistic is $\bar{x}_D - \bar{x}_N$. -->
+<!-- **2.** See Fig.\ \@ref(fig:BHADPErrorBar). -->
+<!-- **3.** $\text{s.e.}(\bar{x}_D - \bar{x}_N) = \sqrt{0.67280^2 +  0.41010^2} = 0.78794$. -->
+<!-- **4.** See Fig.\ \@ref(tab:BHADPSummary). -->
+<!-- **5.** $6.76 \pm (2 \times 0.78794)$, or from $5.18$ to $8.34$ (higher for those with a disability). -->
+<!-- **6.** The difference between the mean BHADP scores is $6.76$, higher (i.e., worse) for those with a disability (mean: $31.83$; s.e.: $0.673$; $n = 132$) compared to those without (mean: $25.07$; s.e.: $0.410$; $n = 137$), with an approximate $95$% CI from $5.18$ to $8.34$. -->
+<!-- ::: -->
+
+
+
+<!-- ```{r BHADPSummary} -->
+<!-- BHADPSummary <- array(dim = c(3, 4)) -->
+<!-- rownames(BHADPSummary) <- c("Disability",  -->
+<!--                             "No disability", -->
+<!--                             "Difference") -->
+
+<!-- BHADPSummary[1, ] <- c(31.83, 7.73, 132, 0.6728) -->
+<!-- BHADPSummary[2, ] <- c(25.07, 4.80, 137, 0.4101) -->
+<!-- BHADPSummary[3, ] <- c(6.76, NA, NA, 0.78794) -->
+
+
+<!-- if( knitr::is_latex_output() ) { -->
+<!--   kable( pad(BHADPSummary, -->
+<!--              surroundMaths = TRUE, -->
+<!--              targetLength = c(5, 4, 3, 7), -->
+<!--              digits = c(2, 2, 0, 5) ), -->
+<!--         format = "latex", -->
+<!--         longtable = FALSE, -->
+<!--         booktabs = TRUE, -->
+<!--         escape = FALSE, -->
+<!--         #linesep = c("", "", "", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), # Otherwise addes a space after five lines...  -->
+<!--         align = "c", -->
+<!--         col.names = c("Sample mean",  -->
+<!--                       "Std deviation",  -->
+<!--                       "Sample size",  -->
+<!--                       "Std error"), -->
+<!--         caption = "The data summary for BHADP scores (no measurement units)" -->
+<!--   ) %>% -->
+<!--   row_spec(0, bold = TRUE) %>% -->
+<!--   row_spec(3, italic = TRUE) %>% -->
+<!--   kable_styling(font_size = 8) -->
+<!-- } -->
+<!-- if( knitr::is_html_output() ) { -->
+<!--   kable( pad(BHADPSummary, -->
+<!--              surroundMaths = TRUE, -->
+<!--              targetLength = c(5, 4, 3, 7), -->
+<!--              digits = c(2, 2, 0, 5) ), -->
+<!--                format = "html", -->
+<!--                longtable = FALSE, -->
+<!--                booktabs = TRUE, -->
+<!--                align = "c", -->
+<!--                col.names = c("Sample mean",  -->
+<!--                             "Std deviation",  -->
+<!--                             "Sample size",  -->
+<!--                             "Std error"), -->
+<!--     caption = "The data summary for BHADP scores (no measurement units)") %>% -->
+<!--     kable_styling(full_width = FALSE) -->
+<!-- } -->
+<!-- ``` -->
+
+
+
+<!-- ```{r BHADPErrorBar, fig.cap="Error bar chart showing the mean BHADP score for people with and without a disability, and the $95$\\% CIs", fig.align="center", fig.width=5.5, fig.height=3.25, out.width="65%"} -->
+<!-- ### Disability example -->
+<!-- bit <- 0.05 -->
+
+<!-- mns <- c(31.83, 25.07) -->
+<!-- sd <- c(7.73, 4.80) -->
+<!-- nn <- c(132, 137) -->
+
+<!-- se <- sd/sqrt(nn) -->
+
+<!-- ci.lo <- mns - (2 * se) -->
+<!-- ci.hi <- mns + (2 * se) -->
+
+<!-- plot( 1:2,  -->
+<!--       mns, -->
+<!--       pch = 19, -->
+<!--       ylim = c(24, 34 ), -->
+<!--       xlim = c(0.9, 3.2), -->
+<!--       las = 1, -->
+<!--       axes = FALSE, -->
+<!--       xlab = "", -->
+<!--       ylab = "BHADP score", -->
+<!--       main = "Access to health promotion services for\ntwo groups: Mean BHADP scores", -->
+<!--       sub = "(Error bars are the 95% CI)", -->
+<!--       type = "p") -->
+<!-- axis(side = 1,  -->
+<!--      at = 1:2, -->
+<!--      las = 1, -->
+<!--      labels = c(expression( Disability~"("*italic(n)==132*")"),  -->
+<!--                 expression( No~disability~"("*italic(n)==137*")")) ) -->
+<!-- axis(side = 2,  -->
+<!--      las = 1) -->
+<!-- box() -->
+
+<!-- lines( c(1, 1), -->
+<!--        c(ci.lo[1], ci.hi[1])) -->
+<!-- lines( c(2, 2), -->
+<!--        c(ci.lo[2], ci.hi[2])) -->
+
+
+<!-- lines( c(1 - bit, 1 + bit),  -->
+<!--        c( ci.hi[1], ci.hi[1]) ) -->
+<!-- lines( c(1 - bit, 1 + bit),  -->
+<!--        c( ci.lo[1], ci.lo[1]) ) -->
+
+<!-- lines( c(2 - bit, 2 + bit),  -->
+<!--        c( ci.hi[2], ci.hi[2]) ) -->
+<!-- lines( c(2 - bit, 2 + bit),  -->
+<!--        c( ci.lo[2], ci.lo[2]) ) -->
+
+<!-- # Help -->
+<!-- lines( x = c(1.1, 2.5), -->
+<!--        y = c( mns[1], mns[1]), -->
+<!--        lwd = 2, -->
+<!--        lty = 2, -->
+<!--        col = "grey") -->
+<!-- lines( x = c(2.1, 2.5), -->
+<!--        y = c( mns[2], mns[2]), -->
+<!--        lwd = 2, -->
+<!--        lty = 2, -->
+<!--        col = "grey") -->
+
+<!-- arrows( x0 = 2.5, -->
+<!--         x1 = 2.5, -->
+<!--         y0 = mns[1], -->
+<!--         y1 = mns[2], -->
+<!--         angle = 15, -->
+<!--         length = 0.1, -->
+<!--         code = 3) -->
+<!-- text( x = 2.6, -->
+<!--       y = mean( mns ), -->
+<!--       labels = "Difference\nbetween the\nsample means", -->
+<!--       cex = 0.9, -->
+<!--       pos = 4) -->
+<!-- ``` -->
+
+
 
 
 ## Answers: Tests for paired means {#TestPairedMeansAnswer}
@@ -3369,70 +3650,83 @@ The CI is for the population mean *increase* during compared to before lockdown,
 Answers to exercises in Sect.\ \@ref(TestPairedMeansExercises).
 
 
+
+::: {.answer data-latex=""}
+**Answer to Exercise\ \@ref(exr:MeanDiffGrowingSquashHT).**
+**1.** $H_0$: $\mu_d = 0$ and $H_1$: $\mu_d \ne 0$.
+**2.** $t = -0.205$.
+**3.** $P$ will be large; from software, $P = 0.839$.
+**4.** There is no evidence ($t = -0.205$; two-tailed $P = 0.839$) of a mean increase in the weight of squash from dry to normal years (mean change: $2.230$\ g ($95$% Ci from -24.8$ to $20.3$\ g), heavier in normal year).
+:::
+
+
+
+<!-- ::: {.answer data-latex=""} -->
+<!-- **Answer to Exercise\ \@ref(exr:TestPairedMeansCaptopril)**: -->
+<!-- **1.** Because it is the blood pressure *reduction*, and a reduction is what the drug is meant to produce, so expect the reductions to be positive numbers.  -->
+<!-- **2.** Differences shown below. -->
+<!-- **3.** Histogram of *differences*: Fig.\ \@ref(fig:SBPHistDiffs). -->
+<!-- **4.** $H_0$: $\mu_d = 0$ and $H_1$: $\mu_d > 0$ (because the differences are *reductions*). -->
+<!-- **5.** $t = 8.12$. -->
+<!-- **6.** $P = 0.001\div 2 = 0.0005$ (one-tailed test). -->
+<!-- **7.** Very strong evidence ($P = 0.0005$) that the drug reduces the average systolic blood pressure (mean reduction: $8.6$\ mm\ Hg) in the population. -->
+<!-- ::: -->
+
+<!-- ```{r} -->
+<!-- blood <- structure(list(Patient = c(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L,  -->
+<!--                                     10L, 11L, 12L, 13L, 14L, 15L, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L,  -->
+<!--                                     9L, 10L, 11L, 12L, 13L, 14L, 15L), Before = c(210L, 169L, 187L,  -->
+<!--                                                                                   160L, 167L, 176L, 185L, 206L, 173L, 146L, 174L, 201L, 198L, 148L,  -->
+<!--                                                                                   154L, 130L, 122L, 124L, 104L, 112L, 101L, 121L, 124L, 115L, 102L,  -->
+<!--                                                                                   98L, 119L, 106L, 107L, 100L), After = c(201L, 165L, 166L, 157L,  -->
+<!--                                                                                                                           147L, 145L, 168L, 180L, 147L, 136L, 151L, 168L, 179L, 129L, 131L,  -->
+<!--                                                                                                                           125L, 121L, 121L, 106L, 101L, 85L, 98L, 105L, 103L, 98L, 90L,  -->
+<!--                                                                                                                           98L, 110L, 103L, 82L), BP = structure(c(2L, 2L, 2L, 2L, 2L, 2L,  -->
+<!--                                                                                                                                                                   2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 1L, 1L, 1L, 1L, 1L, 1L, 1L,  -->
+<!--                                                                                                                                                                   1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L), .Label = c("D", "S"), class = "factor")), .Names = c("Patient",  -->
+<!--                                                                                                                                                                                                                                                         "Before", "After", "BP"), class = "data.frame", row.names = c(NA,  -->
+<!--                                                                                                                                                                                                                                                                                                                       -30L)) -->
+
+<!-- blood$Differences <- blood$Before - blood$After -->
+
+<!-- bloodS <- subset(blood,  -->
+<!--                  BP == "S") -->
+<!-- bloodS <- bloodS[, c("Before",  -->
+<!--                      "After",  -->
+<!--                      "Differences")] -->
+<!-- ``` -->
+
+<!-- ```{r SBPHistDiffs, fig.cap="A histogram of the systolic blood pressure reductions (in mm Hg)", fig.align="center", fig.width=5, fig.height=3} -->
+<!-- hist(bloodS$Differences, -->
+<!--      breaks = seq(0, 40, by = 10), -->
+<!--      main = "SBP reductions", -->
+<!--      xlim = c(-5, 35), -->
+<!--      las = 1, -->
+<!--      xlab = "SBP reduction (in mm Hg)", -->
+<!--      col = plot.colour) -->
+<!-- box() -->
+<!-- ``` -->
+
+
+
+
 ::: {.answer data-latex=""}
 **Answer to Exercise\ \@ref(exr:TestPairedMeansTasteOfBrocolli)**:
 $H_0$: $\mu_d = 0$ and $H_1$: $\mu_d > 0$: *differences* are positive when the dip rating is better than the raw rating.
 $t = (5.2 - 0)/3.06 = 1.699$; the *approximate* one-tailed $P$-value, from using the $68$--$95$--$99.7$ rule, is somewhere between $16$% and $2.5$%. 
 
-So we cannot be sure if the $P$-value is larger than $0.05$... but it is likely that it is (since the calculated $t$-score is quite a long distance from $z = 1$).
+So we cannot be sure if the $P$-value is larger than $0.05$... but it is likely that it is (since the calculated $t$-score is quite a  distance from $z = 1$).
 The evidence *probably* doesn't support the alternative hypothesis.
 :::
 
 
-::: {.answer data-latex=""}
-**Answer to Exercise\ \@ref(exr:TestPairedMeansCaptopril)**:
-**1.** Because it is the blood pressure *reduction*, and a reduction is what the drug is meant to produce, so expect the reductions to be positive numbers. 
-**2.** Differences shown below.
-**3.** Histogram of *differences*: Fig.\ \@ref(fig:SBPHistDiffs).
-**4.** $H_0$: $\mu_d = 0$ and $H_1$: $\mu_d > 0$ (because the differences are *reductions*).
-**5.** $t = 8.12$.
-**6.** $P = 0.001\div 2 = 0.0005$ (one-tailed test).
-**7.** Very strong evidence ($P = 0.0005$) that the drug reduces the average systolic blood pressure (mean reduction: $8.6$\ mm\ Hg) in the population.
-:::
+<!-- ::: {.answer data-latex=""} -->
+<!-- **Answer to Exercise\ \@ref(exr:TestPairedMeansSmokingAndExercise)**: -->
+<!-- $H_0$: $\mu_d = 0$ and $H_1$: $\mu_d > 0$, where *differences* are positive when the intention to smoke is reduced after exercise. -->
+<!-- $t = (0.66 - 0)/0.37 = 1.78$; $P$-value larger than $0.05$: the evidence doesn't support the alternative hypothesis. -->
 
-```{r}
-blood <- structure(list(Patient = c(1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 9L, 
-                                    10L, 11L, 12L, 13L, 14L, 15L, 1L, 2L, 3L, 4L, 5L, 6L, 7L, 8L, 
-                                    9L, 10L, 11L, 12L, 13L, 14L, 15L), Before = c(210L, 169L, 187L, 
-                                                                                  160L, 167L, 176L, 185L, 206L, 173L, 146L, 174L, 201L, 198L, 148L, 
-                                                                                  154L, 130L, 122L, 124L, 104L, 112L, 101L, 121L, 124L, 115L, 102L, 
-                                                                                  98L, 119L, 106L, 107L, 100L), After = c(201L, 165L, 166L, 157L, 
-                                                                                                                          147L, 145L, 168L, 180L, 147L, 136L, 151L, 168L, 179L, 129L, 131L, 
-                                                                                                                          125L, 121L, 121L, 106L, 101L, 85L, 98L, 105L, 103L, 98L, 90L, 
-                                                                                                                          98L, 110L, 103L, 82L), BP = structure(c(2L, 2L, 2L, 2L, 2L, 2L, 
-                                                                                                                                                                  2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 2L, 1L, 1L, 1L, 1L, 1L, 1L, 1L, 
-                                                                                                                                                                  1L, 1L, 1L, 1L, 1L, 1L, 1L, 1L), .Label = c("D", "S"), class = "factor")), .Names = c("Patient", 
-                                                                                                                                                                                                                                                        "Before", "After", "BP"), class = "data.frame", row.names = c(NA, 
-                                                                                                                                                                                                                                                                                                                      -30L))
-
-blood$Differences <- blood$Before - blood$After
-
-bloodS <- subset(blood, 
-                 BP == "S")
-bloodS <- bloodS[, c("Before", 
-                     "After", 
-                     "Differences")]
-```
-
-```{r SBPHistDiffs, fig.cap="A histogram of the systolic blood pressure reductions (in mm Hg)", fig.align="center", fig.width=5, fig.height=3}
-hist(bloodS$Differences,
-     breaks = seq(0, 40, by = 10),
-     main = "SBP reductions",
-     xlim = c(-5, 35),
-     las = 1,
-     xlab = "SBP reduction (in mm Hg)",
-     col = plot.colour)
-box()
-```
-
-
-::: {.answer data-latex=""}
-**Answer to Exercise\ \@ref(exr:TestPairedMeansSmokingAndExercise)**:
-$H_0$: $\mu_d = 0$ and $H_1$: $\mu_d > 0$, where *differences* are positive when the intention to smoke is reduced after exercise.
-$t = (0.66 - 0)/0.37 = 1.78$; $P$-value larger than $0.05$: the evidence doesn't support the alternative hypothesis.
-
-No evidence ($P > 0.05$) that the mean 'intention to smoke' reduced after exercise in women (mean change in intention to smoke: $-0.66$; std. error: $0.37$).
-:::
+<!-- No evidence ($P > 0.05$) that the mean 'intention to smoke' reduced after exercise in women (mean change in intention to smoke: $-0.66$; std. error: $0.37$). -->
+<!-- ::: -->
 
 
 
@@ -3444,7 +3738,7 @@ $t$ is 'small'; $P > 0.05$ (actually $P = 0.376$): the evidence doesn't support 
 Since $n < 25$, the test may not be statistically valid (the histogram of data (Fig.\ \@ref(fig:FerritinGraph)) suggests that the population *might* have a normal distribution), though the $P$-value is very large so it probably makes little difference.
 :::
 
-```{r FerritinGraph, fig.align="center", fig.cap="A histogram of the change in ferritin concentration", out.width='70%', fig.width=6, height=2}
+```{r FerritinGraph, fig.align="center", fig.cap="A histogram of the change in ferritin concentration", out.width='50%', fig.width=4, fig.height=2.5}
 FR <- structure(list(September = c(6630L, 4590L, 3510L, 6375L, 2500L, 
                                    1400L, 4580L, 6885L, 4200L, 5600L, 5360L, 6110L, 5300L, 3120L, 
                                    3300L, 11400L, 3100L, 2800L, 3500L, 12700L), March = c(5100L, 
@@ -3471,18 +3765,28 @@ axis(side = 2,
 
 
 
-::: {.answer data-latex=""}
-**Answer to Exercise\ \@ref(exr:StressSurgeryHT).**
-$H_0$: $\mu_D = 0$ and $H_1$: $\mu_D > 0$, provided we define the difference as the beta-endorphin concentration $10$\ mins before surgery, minus the concentration $12$--$14$ hours before surgery.
-The $t$-score is $(\bar{d} - \mu_d)/{\text{s.e.}(\bar{d})} = (7.70 - 0)/{3.10} = 2.48$, which is quite large.
-Using the $68$--$95$--$99.7$ rule, we would expect a small **one-tailed** $P$-value (certainly less than $0.025$).
-jamovi reports a *two*-tailed $P$-value of $0.023$, so a *one*-tailed $P$-value of $0.023/2 = 0.0115$.
-Conclude (where the CI was [found earlier](#StressSurgery)) that strong evidence exists in the sample (paired $t = 2.48$; one-tailed $P = 0.0115$) of a population mean increase in beta-endorphin concentrations from $12$--$14$ hours before surgery to $10$\ mins before surgery ($95$% CI: $1.62$ to $13.78$\ fmol/mol.)
+<!-- ::: {.answer data-latex=""} -->
+<!-- **Answer to Exercise\ \@ref(exr:StressSurgeryHT).** -->
+<!-- $H_0$: $\mu_D = 0$ and $H_1$: $\mu_D > 0$, provided we define the difference as the beta-endorphin concentration $10$\ mins before surgery, minus the concentration $12$--$14$ hours before surgery. -->
+<!-- The $t$-score is $(\bar{d} - \mu_d)/{\text{s.e.}(\bar{d})} = (7.70 - 0)/{3.10} = 2.48$, which is quite large. -->
+<!-- Using the $68$--$95$--$99.7$ rule, we would expect a small **one-tailed** $P$-value (certainly less than $0.025$). -->
+<!-- jamovi reports a *two*-tailed $P$-value of $0.023$, so a *one*-tailed $P$-value of $0.023/2 = 0.0115$. -->
+<!-- Conclude (where the CI was [found earlier](#StressSurgery)) that strong evidence exists in the sample (paired $t = 2.48$; one-tailed $P = 0.0115$) of a population mean increase in beta-endorphin concentrations from $12$--$14$ hours before surgery to $10$\ mins before surgery ($95$% CI: $1.62$ to $13.78$\ fmol/mol.) -->
 
-The sample size is $n = 19$, just less than $25$, so the results may not be statistically valid (but shouldn't be too bad).
-:::
+<!-- The sample size is $n = 19$, just less than $25$, so the results may not be statistically valid (but shouldn't be too bad). -->
+<!-- ::: -->
 
 
+
+
+<!-- ::: {.answer data-latex=""} -->
+<!-- **Answer to Exercise\ \@ref(exr:BHADPHT).** -->
+<!-- **1.** $H_0$: $\mu_D - \mu_N = 0$ (*no* difference in the population mean BHADP scores). -->
+<!--        $H_1$: $\mu_D - \mu_N \ne 0$ (A difference in the population mean BHADP scores). -->
+<!-- **2.** $t = \frac{6.76 - 0}{0.78794} = 8.58$. -->
+<!-- **3.** $P$ will be *very* small. -->
+<!-- **4.** Strong evidence exists in the sample ($t = 8.58$; two-tailed $P < 0.001$) that people with a disability (mean: $31.83$; $n = 132$; standard deviation: $7.73$) and people without a disability (mean: $25.07$; $n = 137$; standard deviation: $4.80$) have different population mean access to health promotion services ($95$% CI for the difference: $5.18$ to $8.34$), as measured by BHADP scores. -->
+<!-- ::: -->
 
 
 
@@ -3590,7 +3894,7 @@ if( knitr::is_latex_output() ) {
         caption = "A summary table for the NHANES data; statistics in mm Hg") %>%
     column_spec(1, bold = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-    kable_styling(font_size = 9)
+    kable_styling(font_size = 8)
 }
 if( knitr::is_html_output() ) {
   kable(pad(NHANESSummaryTable,
@@ -3703,7 +4007,7 @@ if( knitr::is_latex_output() ) {
         caption = "Numerical summary for the face-plant data (means, standard deviations and standard errors are in degrees)"
   ) %>%
     row_spec(0, bold = TRUE) %>%
-    kable_styling(font_size = 9)
+    kable_styling(font_size = 8)
 }
 if( knitr::is_html_output() ) {
   kable(pad(FF.Summary2,
@@ -3823,7 +4127,7 @@ if( knitr::is_latex_output() ) {
     pack_rows("Push-ups (per minute)", 5, 7, 
               bold = TRUE, 
               italic = FALSE) %>%
-    kable_styling(font_size = 9)
+    kable_styling(font_size = 8)
 }
 if( knitr::is_html_output() ) {
   out <- kable(pad(ParaTable,
@@ -3955,7 +4259,7 @@ if( knitr::is_latex_output() ) {
         align = "c",
         caption = tab.cap) %>%
     column_spec(1, bold = TRUE) %>%
-    kable_styling(font_size = 9)
+    kable_styling(font_size = 8)
 } 
 if( knitr::is_html_output() ) {
   out <- kable(pad(ScarTable,
@@ -4027,7 +4331,7 @@ if( knitr::is_latex_output() ) {
         align = "c",
         caption = tab.cap) %>%
     column_spec(1, bold = TRUE) %>%
-    kable_styling(font_size = 9)
+    kable_styling(font_size = 8)
 }
 if( knitr::is_html_output() ) {
   out <- kable(pad(TurbineCITable,
@@ -4093,7 +4397,7 @@ if( knitr::is_latex_output() ) {
         align = "c",
         caption = tab.cap) %>%
     column_spec(1, bold = TRUE) %>%
-    kable_styling(font_size = 9)
+    kable_styling(font_size = 8)
 }
 if( knitr::is_html_output() ) {
   out <- kable(pad(TurbineCISumTable,
@@ -4182,7 +4486,7 @@ if( knitr::is_latex_output() ) {
          caption = "The odds and percentage of subjects keeping pet birds") %>%
     row_spec(0, bold = TRUE) %>%
     row_spec(3, italic = TRUE) %>%
-    kable_styling(font_size = 10)
+    kable_styling(font_size = 8)
 }
 if( knitr::is_html_output() ) {
   kable(pad(PBsummary,
@@ -4324,7 +4628,7 @@ if( knitr::is_latex_output() ) {
         caption = "The expected counts for the phone-use data"
   ) %>%
     kable_styling(full_width = FALSE, 
-                  font_size = 9)
+                  font_size = 8)
 }
 if( knitr::is_html_output() ) {
   out <- kable(pad(round(chisq.test(PhoneTable)$expected, 2),

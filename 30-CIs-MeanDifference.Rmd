@@ -175,7 +175,10 @@ The subscript $d$ is because we are working with *differences* between the initi
 ```{r DataWeightChange}
 SWlen <- length(StudentWt$Week1)
 
-tb1 <- array( cbind( StudentWt$Student[1:5 ],
+Labels <- paste("No.", 
+                1 : length(StudentWt$Student))
+
+tb1 <- array( cbind( Labels[1:5 ],
                      StudentWt$Week1[1:5 ],
                      StudentWt$Week12[1:5 ],
                      StudentWt$GainWt[1:5 ]),
@@ -191,22 +194,22 @@ T1 <- knitr::kable(pad(tb1,
                    align = "c",
                    linesep = "",
                    col.names = c("Student", 
-                                 "Week 1", 
-                                 "Week 12", 
+                                 "Wk 1", 
+                                 "Wk 12", 
                                  "gain"),
                    row.names = FALSE,
                    escape = FALSE,
                    booktabs = TRUE) %>%
   add_header_above( c("  " = 1,
-                      "Weight:" = 1, 
-                      "Weight:" = 1, 
-                      "Weight" = 1),
+                      "Wt:" = 1, 
+                      "Wt:" = 1, 
+                      "Wt" = 1),
                     line = FALSE,
                     bold = TRUE) %>%
   row_spec(0, bold = TRUE)
 
 
-tb2 <- array( cbind( StudentWt$Student[(SWlen - 4):SWlen ],
+tb2 <- array( cbind( Labels[(SWlen - 4):SWlen ],
                      StudentWt$Week1[(SWlen - 4):SWlen ],
                      StudentWt$Week12[(SWlen - 4):SWlen ],
                      StudentWt$GainWt[(SWlen - 4):SWlen ]),
@@ -222,16 +225,16 @@ T2 <- knitr::kable(pad(tb2,
                    align = c("r", "c", "c", "r"),
                    linesep = "",
                    col.names = c("Student", 
-                                 "Week 1", 
-                                 "Week 12", 
+                                 "Wk 1", 
+                                 "Wk 12", 
                                  "gain"),
                    row.names = FALSE,
                    escape = FALSE,
                    booktabs = TRUE) %>%
   add_header_above(c( " " = 1, 
-                      "Weight:" = 1, 
-                      "Weight:" = 1, 
-                      "Weight" = 1),
+                      "Wt:" = 1, 
+                      "Wt:" = 1, 
+                      "Wt" = 1),
                    line = FALSE,
                    bold = TRUE) %>%
   row_spec(0, bold = TRUE)
@@ -240,8 +243,9 @@ out <- knitr::kables(list(T1, T2),
                      format = "latex",
                      label = "DataWeightChange",
                      caption = "The student weight-change data: The weight of students in Week\\ 1 at university, in Week\\ 12, and the weight gain (all in kg). These are the first five and the last five of the $68$ total observations.") %>% 
-  kable_styling(font_size = 10)
-out2 <- prepareSideBySideTable(out) 
+  kable_styling(font_size = 8)
+out2 <- prepareSideBySideTable(out,
+                               gap = "\\enskip") 
 out2
 
 ```
@@ -294,11 +298,11 @@ Apart from that, the notation is similar to that used in Chap.\ \@ref(OneMeanCon
 ```{r PairedNotation}
 DiffNotation <- array(dim = c(5, 2))
 colnames(DiffNotation) <- c(	"One sample mean", 
-                             "Mean of paired data")
+                             "Mean difference")
 rownames(DiffNotation) <- c(	"The observations:",
                              "Sample mean:",
                              "Standard deviation:",
-                             "Standard error of sample mean:",
+                             "Standard error of $\\bar{x}$:",
                              "Sample size:")
 
 
@@ -322,7 +326,7 @@ if( knitr::is_latex_output() ) {
          escape = FALSE,
          col.names = colnames(DiffNotation),
          caption = "The notation used for mean differences (paired data) compared to the notation used for one sample mean") %>%
-    kable_styling(font_size = 10) %>%
+    kable_styling(font_size = 8) %>%
     row_spec(0, bold = TRUE) 
 }
 if( knitr::is_html_output() ) {
@@ -379,7 +383,7 @@ Since the sampling distribution for the sample mean difference (under certain co
 :::
 
 
-For the weight-gain data, the sample mean differences $\bar{d}$ are described by:
+For the weight-gain data, the sample mean differences $\bar{d}$ are described by (Fig.\ \@ref(fig:WtGainSamplingDist)):
 
 * approximate normal distribution,
 * with a sampling mean whose value is $\mu_{{d}}$,
@@ -389,58 +393,68 @@ Many decimal places are shown here; results will be rounded when reported.
  
  
 
+```{r WtGainSamplingDist, fig.cap="The sampling distribution is a normal distribution; it describes how the sample mean weight gain varies in samples of size $n = 68$", fig.align="center", fig.width=9.0, fig.height=2.5, out.width='95%'}
+mn <- mean(StudentWt$GainWt)
+n <- length(StudentWt$GainWt)
+stdd <- sd(StudentWt$GainWt)
 
-<!-- ```{r NotationOneDiffCI} -->
+se <- stdd/sqrt(n)
 
-<!-- OneDiffNotation <- array( dim = c(4, 2)) -->
+par( mar = c(4, 0.5, 0.5, 0.5) )
+out <- plotNormal(0,
+                  se,
+                  xlab = "Sample mean difference in weight gain (in kg)", 
+                  cex.axis = 0.95,
+                  ylim = c(0, 4.0),
+                  showXlabels = c( 	
+                    expression( mu-0.348),
+                    expression( mu-0.232), 
+                    expression( mu-0.116), 
+                    expression( mu ),
+                    expression( mu + 0.116), 
+                    expression( mu + 0.232), 
+                    expression( mu + 0.348) ) )
 
-<!-- OneDiffNotation[1, ] <- c("Individual difference in the population", -->
-<!--                           "Vary with mean $\\mu_d$ and standard deviation $\\sigma_d$") -->
-<!-- OneDiffNotation[2, ] <- c("Individual differences in a sample", -->
-<!--                           "Vary with mean $\\bar{d}$ and standard deviation $s_d$") -->
-<!-- OneDiffNotation[3, ] <- c("Sample means ($\\bar{d}$) across", -->
-<!--                           "Vary with approx. normal distribution (under certain conditions)") -->
-<!-- OneDiffNotation[4, ] <- c("all possible samples:", -->
-<!--                           "sampling mean $\\mu_{{d}}$; standard deviation $\\text{s.e.}(\\bar{d})$") -->
+arrows(x0 = 0,
+       x1 = 0,
+       y0 = 45,
+       y1 = max(out$y),
+       angle = 15,
+       length = 0.1)
+
+text(x = 0,
+     y = 45,
+     pos = 3,
+     labels = expression(Sampling~mean~difference))
 
 
-<!-- if( knitr::is_latex_output() ) { -->
-<!--   kable( OneDiffNotation, -->
-<!--          format = "latex", -->
-<!--          booktabs = TRUE, -->
-<!--          longtable = FALSE, -->
-<!--          escape = FALSE, -->
-<!--          caption = "The notation used for describing means, and the sampling distribution of the sample means", -->
-<!--          align = c("r", "l"), -->
-<!--          linesep = c("\\addlinespace", -->
-<!--                      "\\addlinespace", -->
-<!--                      ""), -->
-<!--          col.names = c("Quantity", -->
-<!--                        "Description") ) %>% -->
-<!-- 	row_spec(0, bold = TRUE) %>% -->
-<!--   kable_styling(font_size = 10) -->
-<!-- } else { -->
-<!--   OneDiffNotation[3, 1] <- paste(OneDiffNotation[3, 1],  -->
-<!--                                  OneDiffNotation[4, 1]) -->
-<!--   OneDiffNotation[3, 2] <- paste(OneDiffNotation[3, 2],  -->
-<!--                                  OneDiffNotation[4, 2]) -->
-<!--   OneDiffNotation[4, ] <- NA  -->
 
-<!--     kable( OneDiffNotation, -->
-<!--          format = "html", -->
-<!--          booktabs = TRUE, -->
-<!--          longtable = FALSE, -->
-<!--          escape = FALSE, -->
-<!--          caption = "The notation used for describing means, and the sampling distribution of the sample means", -->
-<!--          align = c("r", "l"), -->
-<!--          linesep = c("\\addlinespace", -->
-<!--                      "\\addlinespace", -->
-<!--                      ""), -->
-<!--          col.names = c("Quantity", -->
-<!--                        "Description") ) %>% -->
-<!-- 	row_spec(0, bold = TRUE)  -->
-<!-- } -->
-<!-- ``` -->
+arrows(x0 = 0,
+       x1 = 0 + se,
+       y0 = 0.30 * max(out$y),
+       y1 = 0.30 * max(out$y),
+       code = 3, # Arrows both ends
+       angle = 15,
+       length = 0.1)
+
+text(x = 0 + (se / 2),
+     y = 0.30 * max(out$y),
+     labels = expression( atop(Std.~error,
+                               s.e.(bar(italic(d)))==0.116)) )
+
+
+arrows(x0 = mn,
+       x1 = mn,
+       y0 = 0.7 * max(out$y),
+       y1 = 0,
+       angle = 15,
+       length = 0.1)
+text(x = mn,
+     y = 0.7 * max(out$y),
+     pos = 3,
+     labels = expression(bar(italic(d)) == 0.0282) )
+```
+
 
 
 ## Summarising data
@@ -530,7 +544,7 @@ if( knitr::is_latex_output() ) {
         caption = "The mean, median, standard deviation and standard error for the weight-gain data") %>%
     row_spec(0, bold = TRUE) %>%
     row_spec(3, italic = TRUE) %>%
-    kable_styling(font_size = 10)
+    kable_styling(font_size = 8)
 } else {
   kable(pad(WtGain.DataSummary,
             targetLength = c(5, 4, 6, 5),
@@ -685,7 +699,7 @@ For the *control group*, the standard error of the *reduction* in TG is $\text{s
 \]
 (A *negative* reduction means an *increase* in TG.)
 The chamomile tea appears to reduce TG, but not the hot water.
-Is the difference between the two treatments statistically significant?
+Is the difference between the two treatments due to sampling variation?
 This is studied further in Sect.\ \@ref(ChamomileTea-Paired-HT).
 
 
@@ -735,7 +749,7 @@ if( knitr::is_latex_output() ) {
                booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
     row_spec(3, italic = TRUE) %>%
-    kable_styling(font_size = 10) %>%
+    kable_styling(font_size = 8) %>%
     add_header_above( c(" " = 2,
                         "Baseline" = 2,
                         "After 8 weeks" = 2,
@@ -795,26 +809,115 @@ Are the following statements *true* or *false*?
 Selected answers are available in Sect.\ \@ref(PairedCIExercisesAnswer).
 
 
-::: {.exercise #PairedCIExercisesBrocolli}
-Some people struggle to eat the recommended intake of vegetables.
-In one study exploring ways to increase vegetable intake in teens [@data:Fritts2018:Vegetables], teens rated the taste of raw broccoli, and raw broccoli served with a specially-made dip.
 
-Each teen ($n = 100$) had a *pair* of measurements: the taste rating of the broccoli *with* and *without* dip.
-Taste was assessed using a '$100$\ mm visual analog scale', where a *higher* score means a *better* taste.
-In summary:
 
-* For raw broccoli, the mean taste rating was $56.0$ (with a standard deviation of $26.6$);
-	 <!-- %  (SDs); so if $n=101$ we'd get SE: 2.647 -->
-* For raw broccoli served with dip, the mean taste rating was $61.2$ (with a standard deviation of $28.7$).
+::: {.exercise #MeanDiffGrowingSquashCI}
+[*Dataset*: `Fruit`]
+The effect of rainfall on growing Chayote squash (*Sechium edule*) was studied [@mukherjee2019diversity], comparing the size of the fruit in a year with normal rainfall (2015) compared to fruit in a dry year (2014) on $24$ farms:
 
-Because the data are paired, the *differences* are the best way to describe the data.
-The mean difference in the ratings was $5.2$, with $\text{s.e.}(\bar{d}) = 3.06$. 
-From this information:
+> For Chayote squash grown in Bangalore, what is the mean difference in fruit weight between a normal and dry year?
 
-1. Construct a suitable numerical summary table.
-1. Compute the approximate $95$% CI for the mean difference in taste ratings.
+Ten fruits were gathered from each farm in both years, and the average (mean) weight recorded for the farm.
+Since the same farms are used in both years, the data are *paired* 
+`r if( knitr::is_latex_output() ) {
+  '(Table\\ \\@ref(tab:FruitsData)).'
+} else {
+  '(see above).'
+}`
+Data is missing for Farm\ 20 in the dry year (2014), so there are $n = 23$ differences.
+
+
+```{r FruitsData, echo=FALSE}
+data(Fruit)
+
+Fruit$Farm <- 1 : length(Fruit$FWeight2014)
+
+FruitTab <- dplyr::select(Fruit,
+                          Farm,
+                          FWeight2014,
+                          FWeight2015)
+FruitTab$Change <- FruitTab$FWeight2015 - FruitTab$FWeight2014
+
+if( knitr::is_latex_output() ) {
+  
+ T1 <- knitr::kable(pad(FruitTab[1:5, ],
+                        digits = c(0, 2, 2, 2),
+                        surroundMaths = TRUE,
+                        targetLength = c(2, 6, 6, 6)),
+                     format = "latex",
+                     valign = 't',
+                     align = "c",
+                     linesep = "",
+                     col.names = c("Farm", 
+                                   "Dry", 
+                                   "Normal",
+                                   "Change"),
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+   add_header_above(c( " " = 1,
+                       "Avge fruit wt" = 2,
+                       " " = 1),
+                    bold = TRUE) %>%
+    row_spec(0, bold = TRUE) 
+  
+  
+  T2 <- knitr::kable(pad(FruitTab[20:24, ],
+                        digits = c(0, 2, 2, 2),
+                        surroundMaths = TRUE,
+                        targetLength = c(2, 6, 6, 7)),
+                     format = "latex",
+                     valign = 't',
+                     align = "c",
+                     linesep = "",
+                     col.names = c("Farm", 
+                                   "Dry", 
+                                   "Normal",
+                                   "Change"),
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE)  %>%
+   add_header_above(c( " " = 1,
+                       "Avge fruit wt" = 2,
+                       " " = 1),
+                    bold = TRUE) %>%
+    row_spec(0, bold = TRUE) 
+  
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "FruitsData",
+                       caption = "The weight of fruits (in g) in two different years. One observation is missing for Field\ 20.") %>% 
+    kable_styling(font_size = 8)
+  out2 <- prepareSideBySideTable(out) 
+  out2 
+}
+
+if( knitr::is_html_output() ) {
+  kable( pad(FruitTab,
+             digits = c(0, 2, 2, 2),
+                        surroundMaths = TRUE,
+                        targetLength = c(2, 6, 6, 7)),
+         format = "html",
+         align = "c",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names = c("Farm", 
+                       "Dry", 
+                       "Normal",
+                       "Change (in g)"),
+         caption = "The weight of fruits (in g) in two different years. One observation is missing for Field\ 20.") %>% 
+    row_spec(0, bold = TRUE)
+}
+```
+
+1. What is the *unit of analysis*?
+   What is the *units of observation*?
+2. Create a numerical summary table for the data (Fig.\ \@ref(fig:Fruitjamovi)).
+3. Create a suitable graph to display the data.
+4. Construct an approximate $95$% CI for the mean difference in fruit weight.
 :::
-<!-- (working backwards from the $t$-score). Looks like $n=101$. n=100...? -->
+
+
 
 
 
@@ -837,11 +940,11 @@ bloodS2 <- cbind( "Before" = bloodS$Before[1:8],
 
 
 ::: {.exercise #PairedCIExercisesCaptopril}
+[*Dataset*: `Captopril`]
 In a study of hypertension [@data:hand:handbook; @data:macgregor:essential], $15$ patients were given a drug (Captopril) and their systolic blood pressure measured (in mm Hg) immediately before and two hours after being given the drug (Table\ \@ref(tab:CICaptoprilData)).
 
 1. Explain why it is sensible to compute differences as the *Before* minus the *After* measurements.
    What do the differences *mean* when computed this way?
-1. Compute the differences.
 1. Compute an *approximate* $95$% CI for the mean difference.
 1. Write down the *exact* $95$% CI using the computer output (Fig.\ \@ref(fig:CaptoriljamoviCI)). 
 1. Why are the two CIs different?
@@ -855,13 +958,39 @@ knitr::include_graphics("jamovi/CaptoprilAll/CaptoprilAll-PairedTOutput.png")
 ```
 
 
+
+
+::: {.exercise #PairedCIExercisesBrocolli}
+Some people struggle to eat the recommended intake of vegetables.
+One study explored ways to increase vegetable intake in teens [@data:Fritts2018:Vegetables].
+Teens rated the taste of raw broccoli, and raw broccoli served with a specially-made dip.
+
+Each teen ($n = 100$) had a *pair* of measurements: the taste rating of the broccoli *with* and *without* dip.
+Taste was assessed using a '$100$\ mm visual analog scale', where a *higher* score means a *better* taste.
+In summary:
+
+* For raw broccoli, the mean taste rating was $56.0$ (with $s = 26.6$);
+	 <!-- %  (SDs); so if $n=101$ we'd get SE: 2.647 -->
+* For raw broccoli served with dip, the mean taste rating was $61.2$ (with $s = 28.7$).
+
+Because the data are paired, *differences* are the best way to describe the data.
+The mean difference in the ratings was $5.2$, with $\text{s.e.}(\bar{d}) = 3.06$. 
+From this information:
+
+1. Construct a suitable numerical summary table.
+1. Compute the approximate $95$% CI for the mean difference in taste ratings.
+:::
+<!-- (working backwards from the $t$-score). Looks like $n=101$. n=100...? -->
+
+
+
 ::: {.exercise #PairedCIExercisesSmokeExercise}
 A study  [@data:Allen2018:Smoking] examined the effect of exercise on smoking.
 Men and women were assessed on their 'intention to smoke', both before and after exercise for each subject (using two quantitative questionnaires).
-Smokers (smoking at least five cigarettes per day) aged\ $18$ to\ $40$ were enrolled for the study.
+Smokers ('smoking at least five cigarettes per day') aged\ $18$ to\ $40$ were enrolled for the study.
 For the $23$ women in the study, the mean intention to smoke after exercise *reduced* by $0.66$ (with a standard error of $0.37$).
 
-1. Find a $95$% confidence interval for the population mean reduction in intention to smoke for women after exercising.
+1. Find an approximate $95$% confidence interval for the population mean reduction in intention to smoke for women after exercising.
 1. Is this CI statistically valid?
 :::
 
@@ -874,13 +1003,14 @@ ANCB <- subset(Anorexia,
 
 
 ::: {.exercise #PairedCIExercisesAnorexia}
-Young girls ($n = 29$) with anorexia received cognitive behavioural treatment (@data:hand:handbook, Dataset 285), and their weight before and after treatment were recorded [Data: `Anorexia`].
+[*Dataset*: `Anorexia`]
+Young girls ($n = 29$) with anorexia received cognitive behavioural treatment (@data:hand:handbook, Dataset 285), and their weight before and after treatment were recorded.
 In summary:
 
 * Before the treatment, the mean weight was $`r round(mean(ANCB$Before), 2)`$ pounds ($s = `r round(sd(ANCB$Before), 2)`$ pounds);
 * After the treatment, the mean weight was $`r round(mean(ANCB$After), 2)`$ pounds ($s = `r round(sd(ANCB$After), 2)`$ pounds).
 
-If the standard deviation of the weight *loss* was $`r round(sd( ANCB$After - ANCB$Before), 2)`$ pounds, find a $95$% CI for the population mean weight loss. 
+If the standard deviation of the weight *loss* was $`r round(sd( ANCB$After - ANCB$Before), 2)`$ pounds, find an approximate $95$% CI for the population mean weight loss. 
 Do you think the treatment had any impact on the mean weight of the girls?
 :::
 
@@ -894,7 +1024,8 @@ A numerical summary (from the jamovi output) is in Table\ \@ref(tab:StressTable)
 
 1. Use the jamovi output in Fig.\ \@ref(fig:StressDescriptivesjamovi) to construct an *approximate* $95$% CI for the *increase* in stress as surgery gets closer.
 2. Use the jamovi output in Fig.\ \@ref(fig:StressDescriptivesjamovi) to write down the *exact* $95$% CI for the *increase* in stress as surgery gets closer.
-3. Is the CI likely to be statistically valid?
+3. Why is there a difference between the two CIs?
+4. Is the CI likely to be statistically valid?
 :::
 
 
@@ -942,11 +1073,11 @@ if( knitr::is_latex_output() ) {
                booktabs = TRUE,
                longtable = FALSE,
                escape = FALSE,
-               caption = "Summary information for the COVID-lockdown exercise data",
+               caption = "Summary information for the COVID-lockdown exercise data for $n = 214$ Spanish students",
                align = "c") %>%
     row_spec(0, bold = TRUE) %>%
     row_spec(3, italic = TRUE) %>%
-    kable_styling(font_size = 10)
+    kable_styling(font_size = 8)
 } 
 if( knitr::is_html_output() ) {
    knitr::kable( pad(COVID.summary,
@@ -954,264 +1085,9 @@ if( knitr::is_html_output() ) {
                     targetLength = c(5, 5),
                     digits = 2),
                  format = "html",
-                 caption = "Summary information for the COVID-lockdown exercise data")
+                 caption = "Summary information for the COVID-lockdown exercise data for $n = 214$ Spanish students")
 }
 ```
-
-
-::: {.exercise #MeanDiffGrowingSquashCI}
-
-The effect of rainfall on growing Chayote squash (*Sechium edule*) was studied [@mukherjee2019diversity], comparing the size of the fruit in a year with normal rainfall (2015) compared to fruit in a dry year (2014) on $24$ farms:
-
-> For Chayote squash grown in Bangalore, what is the mean difference in fruit weight between a normal and dry year?
-
-Ten fruits were gathered from each farm in both years, and the average (mean) weight recorded for the farm.
-(The farm is the *unit of analysis*, but the individual fruits are the *units of observation*.)
-Since the same farms are used in both years, the data are *paired* (Table\ \@ref(tab:FruitsData)).
-Data is missing for Farm\ 20 in the dry year (2014), so there are $n = 23$ differences.
-
-```{r FruitsData, echo=FALSE}
-data(Fruit)
-
-Fruit$Farm <- 1 : length(Fruit$FWeight2014)
-
-FruitTab <- dplyr::select(Fruit,
-                          Farm,
-                          FWeight2014,
-                          FWeight2015)
-FruitTab$Change <- FruitTab$FWeight2015 - FruitTab$FWeight2014
-
-if( knitr::is_latex_output() ) {
-  
- T1 <- knitr::kable(pad(FruitTab[1:5, ],
-                        digits = c(0, 2, 2, 2),
-                        surroundMaths = TRUE,
-                        targetLength = c(2, 6, 6, 6)),
-                     format = "latex",
-                     valign = 't',
-                     align = "c",
-                     linesep = "",
-                     col.names = c("Farm", 
-                                   "Dry", 
-                                   "Normal",
-                                   "Change"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
-   add_header_above(c( " " = 1,
-                       "Average fruit weight" = 2,
-                       " " = 1),
-                    bold = TRUE) %>%
-    row_spec(0, bold = TRUE) 
-  
-  
-  T2 <- knitr::kable(pad(FruitTab[20:24, ],
-                        digits = c(0, 2, 2, 2),
-                        surroundMaths = TRUE,
-                        targetLength = c(2, 6, 6, 7)),
-                     format = "latex",
-                     valign = 't',
-                     align = "c",
-                     linesep = "",
-                     col.names = c("Farm", 
-                                   "Dry", 
-                                   "Normal",
-                                   "Change"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE)  %>%
-   add_header_above(c( " " = 1,
-                       "Average fruit weight" = 2,
-                       " " = 1),
-                    bold = TRUE) %>%
-    row_spec(0, bold = TRUE) 
-  
-  out <- knitr::kables(list(T1, T2),
-                       format = "latex",
-                       label = "FruitsData",
-                       caption = "The weight of fruits (in g) in two different years. One observation is missing for Field\ 20.") %>% 
-    kable_styling(font_size = 10)
-  out2 <- prepareSideBySideTable(out) 
-  out2 
-}
-
-if( knitr::is_html_output() ) {
-  kable( pad(FruitTab,
-             digits = c(0, 2, 2, 2),
-                        surroundMaths = TRUE,
-                        targetLength = c(2, 6, 6, 7)),
-         format = "html",
-         align = "c",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names = c("Farm", 
-                       "Dry", 
-                       "Normal",
-                       "Change (in g)"),
-         caption = "The weight of fruits (in g) in two different years. One observation is missing for Field\ 20.") %>% 
-    row_spec(0, bold = TRUE)
-}
-```
-
-In Table\ \@ref(tab:FruitsData), the mean changes refer to the *mean increase* in fruit weight from 2014 (dry) to 2015 (normal).
-(Computing the changes as the 2015 (normal) values less the 2014 (dry) values is fine, provided this is used consistently throughout the analysis.)
-The parameter is $\mu_d$, the population mean *increase* in average fruit weight (in g) from 2014 to 2015.
-
-Since the data are available
-`r if( knitr::is_latex_output() ) {
-  '(Table\\ \\@ref(tab:FruitsData)),'
-} else {
-  '(see above),'
-}`
-a numerical summary *must* summarise the differences, as the RQ is about the mean difference.
-The dry-year and normal-year weights can be summarised too.
-The information is found using software (Fig.\ \@ref(fig:Fruitjamovi)), and can be compiled into a table (Table\ \@ref(tab:FruitSummary)).
-The appropriate plot for graphically summarising the *data* is (for example) a histogram of the differences (Fig.\ \@ref(fig:FruitPlots), left panel) or a case-profile plot (Fig.\ \@ref(fig:FruitPlots), right panel).
-A small increase is seen from 2014 to 2015, with lots of variation from farm to farm.
-
-
-```{r Fruitjamovi, fig.cap="jamovi output for the fruit-weight data", fig.align="center", out.width=c("100%"), fig.show='hold'}
-knitr::include_graphics("jamovi/Fruit/Fruit-Differences.png")
-```
-
-
-
-```{r FruitSummary}
-FruitSummary <- array( dim = c(3, 4))
-
-rownames(FruitSummary) <- c("Dry year (2014)",
-                            "Normal year (2015)",
-                            "Change")
-colnames(FruitSummary) <- c("Mean",
-                            "Std. dev.",
-                            "Std. error",
-                            "Sample size")
-
-FruitSummary[, 1] <- colMeans(FruitTab[, 2:4],
-                              na.rm = TRUE)
-FruitSummary[, 2] <- apply(FruitTab[, 2:4],
-                           2,
-                           "sd",
-                           na.rm = TRUE)
-FruitSummary[, 3] <- apply(FruitTab[, 2:4],
-                           2,
-                           "findStdError",
-                           na.rm = TRUE)
-FruitSummary[, 4] <- apply(FruitTab[, 2:4],
-                           2,
-                           "realLength")
-
-# Do some appropriate rounding
-FruitSummary <- round(FruitSummary, 4)
-FruitSummary[1:2, 1] <- round(FruitSummary[1:2, 1], 3)
-
-if( knitr::is_latex_output() ) {
-  
-  knitr::kable(pad(FruitSummary,
-                   surroundMaths = TRUE,
-                   targetLength = c(7, 6, 6, 2),
-                   digits = c(3, 3, 3, 0)),
-               format = "latex",
-               align = "c",
-               linesep = "",
-               caption = "The fruit weight (in g) at farms for two different years",
-               col.names = c("Mean", "Std. dev.", "Std. error", "Sample size"),
-               row.names = TRUE,
-               escape = FALSE,
-               booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-    row_spec(3, italic = TRUE) %>%
-    kable_styling(font_size = 10)
-  
-}
-
-if( knitr::is_html_output() ) {
-  kable( pad(FruitSummary,
-                   surroundMaths = TRUE,
-                   targetLength = c(7, 6, 6, 2),
-                   digits = c(3, 3, 3, 0)),
-         format = "html",
-         align = "c",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names =  c("Mean", "Std. dev.", "Std. error", "Sample size"),
-         caption = "The fruit weight (in g) at farms for two different years") %>% 
-    row_spec(0, bold = TRUE)
-}
-```
-
-
-
-```{r, FruitPlots, out.width='90%', fig.width=9, fig.height=3.5, fig.align="center", fig.cap="The fruit-weight data. Left: A histogram of the weight changes on each farm; right: a case-profile plot of the weight changes where each line corresponds to a farm (unfilled points and dashed lines indicate a decrease)."}
-par( mfrow = c(1, 2))
-
- hist(FruitTab$Change,
-      las = 1,
-      xlab = "Weight increase (in g)",
-      ylab = "Number of farms",
-      main = "Histogram of fruit weight\nincrease from 2014 to 2015")
- 
- ###
- 
- plot( x = c(0.75, 2.25),
-       y = c(150, 400),
-       type = "n",
-       las = 1,
-       xlab = "",
-       main = "Case-profile plot of fruit weight\nincreases from 2014 to 2015",
-       ylab = "Farm fruit weight (in g)",
-       axes = FALSE)
- axis(side = 1,
-      at = c(1, 2),
-      labels = c("2014 (dry)",
-                 "2015 (normal)"))
- axis(side = 2,
-      las = 1)
- box()
- 
- 
- for (i in (1:length(FruitTab$Change))){
-   if (!is.na(FruitTab$Change[i])){
-     delta <- ifelse(FruitTab$Change[i] > 0, 0.025, -0.025)
-     lines( x = c(1 + delta, 2 - delta),
-            y = c( FruitTab$FWeight2014[i],
-                   FruitTab$FWeight2015[i]),
-            lty = ifelse(FruitTab$Change[i] > 0, 1, 2),
-            pch = ifelse(FruitTab$Change[i] > 0, 19, 1),
-            type = "b",
-            lwd = 1)
-   }
- }
-
-```
-
-The standard error of the mean increase is $\text{s.e.}(\bar{d}) = 10.879$, from Fig.\ \@ref(fig:Fruitjamovi) or Table\ \@ref(tab:FruitSummary).
-The approximate $95$% CI is from $2.230 \pm (2\times 10.879)$, or from $-19.528$ to $23.988$\ g.
-Figure\ \@ref(fig:Fruitjamovi) gives the $95$% CI as $-24.79$ to $20.33$\ g.
-The two CIs are a bit different since the sample size is not large ($n = 23$).
-Using the exact CI, we write:
-
-> The mean increase in average fruit weight from 2014 (dry year) to 2015 (normal year) is $2.230$\ g ($\text{s.e.} = 10.879$; $n = 23$), with an approximate $95$% CI between $24.79$\ g lighter in 2014 to $20.33$\ g higher in 2015.
-
-The sample size ($n = 23$) is only *slightly* smaller than $25$.
-Since Fig.\ \@ref(fig:FruitPlots) shows the *sample* differences are approximately symmetric, so the CI should be reasonably statistically valid.
-:::
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Be clear in your conclusion about *how* the differences are computed.
-Make sure to interpret the CI consistent with how the differences were defined.
-:::
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Is there a mean difference in average fruit weight from 2014 to 2015 *in the population*?\label{thinkBox:MeanDifferenceFruit}
-
-`r if (knitr::is_latex_output()) '<!--'`
-`r webexercises::hide()`
-The RQ is about the mean difference in the **population**... but we only have the mean difference from one of many possible **samples**.
-It is difficult to be certain.
-`r webexercises::unhide()`
-`r if (knitr::is_latex_output()) '-->'`
-:::
 
 
 
@@ -1222,8 +1098,6 @@ It is difficult to be certain.
 **Answers to in-chapter questions:**
 
 - Sect. \ref{thinkBox:WhichPaired}: Situations **1** and **3** are paired.
-- Sect. \ref{thinkBox:MeanDifferenceFruit}: The RQ is about the mean difference in the **population**... but we only have the mean difference from one of many possible **samples**.
-It is difficult to be certain.
 - \textbf{\textit{Quick Revision} questions:}
 **1.** True
 **2.** True.

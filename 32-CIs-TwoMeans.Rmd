@@ -14,8 +14,6 @@ A study examined the reaction times of students (from the University of Utah) wh
 In one study, students were randomly allocated to one of two groups: one group *using* a mobile phone while driving, and one group *not using* a mobile phone while driving.
 This is a [*between-individuals* comparison](#Comparison), since different students are in each group.
 The reaction time for each student was measured in a driving simulator.
-
-The data are not paired; instead, the means of two separate (or independent) samples are being compared.
 (The data would be paired if *each* student's reaction time was measured twice: once using a phone, and once without using a phone; Sect.\ \@ref(PairedData).)
 
 
@@ -60,12 +58,11 @@ What are P, O, C and I in this study?\label{thinkBox:PhonepOCI}
 data(ReactionTimePhoneInd)
 
 if( knitr::is_latex_output() ) {
-  tb1 <- cbind( ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][1:5],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][6:10],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][11:15],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][16:20],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][21:25],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][26:30],
+  tb1 <- cbind( ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][1:6],
+                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][7:12],
+                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][13:18],
+                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][19:24],
+                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][25:30],
                 c(ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][31:32], NA, NA, NA) )
   
   T1 <- knitr::kable( pad(tb1,
@@ -83,15 +80,14 @@ if( knitr::is_latex_output() ) {
                       escape = FALSE,
                       booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Using phone" = 7),
+    add_header_above( c("Using phone" = 6),
                       bold = TRUE)
 
-  tb2 <- cbind( ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][1:5],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][6:10], 
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][11:15], 
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][16:20], 
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][21:25], 
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][26:30], 
+  tb2 <- cbind( ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][1:6],
+                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][7:12], 
+                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][13:18], 
+                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][19:24], 
+                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][25:30], 
                 c(ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][31:32], NA, NA, NA))
   T2 <- knitr::kable( pad(tb2,
                           surroundMaths = TRUE,
@@ -108,14 +104,14 @@ if( knitr::is_latex_output() ) {
                       escape = FALSE,
                       booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Not using phone" = 7),
+    add_header_above( c("Not using phone" = 6),
                       bold = TRUE)
   
   out <- knitr::kables(list(T1, T2),
                        format = "latex",
                        label = "PhoneDataTable",
                        caption = "Reaction times (in milliseconds) for students using, and not using, mobile phones.") %>% 
-    kable_styling(font_size = 10)
+    kable_styling(font_size = 8)
   out2 <- prepareSideBySideTable(out)
   out2
 } 
@@ -183,15 +179,15 @@ The differences could be computed as:
   this measures much faster the reaction times is for *phone users*, on average.
 
 Either is fine, provided you are *consistent*, and *clear* about how the difference are computed.
-The meaning of any conclusions will be the same.
+The *meaning* of any conclusions will be the same.
 :::
 
 
 ```{r IndSampleNotation}
 Diff2Notation <- array(dim = c(5, 3))
-colnames(Diff2Notation) <- c(	"Phone users: Group $P$", 
-                              "Non-phone users: Group $C$",
-                              "Difference ($P - C$)")
+colnames(Diff2Notation) <- c(	"Group $P$", 
+                              "Group $C$",
+                              "($P - C$)")
 rownames(Diff2Notation) <- c(	"Population means:",
 								              "Sample means:",
 								              "Standard deviations:",
@@ -225,8 +221,14 @@ if( knitr::is_latex_output() ) {
          col.names = colnames(Diff2Notation),
          caption = "Notation used to distinguish between the two independent groups using subscripts. Any two different subscripts can be used for the two groups.") %>%
     row_spec(0, bold = TRUE) %>%
-    kable_styling(font_size = 10)
-}
+    kable_styling(font_size = 8) %>%
+  add_header_above( c(" " = 1,
+                      "Phone users" = 1,
+                      "Non-phone users" = 1, 
+                      "Difference:" = 1),
+                    line = FALSE,
+                    bold = TRUE)
+  }
 if( knitr::is_html_output() ) {
 
   Diff2Notation[1, ] <- c( "$\\mu_P$", 	
@@ -266,7 +268,7 @@ However, the *standard error* of the difference between the means does make sens
 
 ## Summarising data
 
-A suitable graphical summary of the data is a boxplot (Fig.\ \@ref(fig:PhonePlots)), which shows that the *sample* medians are slightly different, but the IQRs about the same; one large outlier is present for the phone-using group. 
+A suitable graphical summary of the data is a boxplot (Fig.\ \@ref(fig:PhonePlots)), which shows that the *sample* medians are slightly different, and the IQRs slightly smaller for the phone-using group; one large outlier is present for the phone-using group. 
 
 
 ```{r PhonePlots, fig.width=4.5, fig.height=3.5, out.width='45%', fig.alt="Boxplot of the two groups in the reaction-time data", fig.align="center", fig.cap="A boxplot of the reaction-time data"}
@@ -326,7 +328,7 @@ if( knitr::is_latex_output() ) {
     column_spec(3, width = "15mm") %>%
     column_spec(4, width = "18mm") %>%
     column_spec(5, width = "15mm") %>%
-    kable_styling(font_size = 10)
+    kable_styling(font_size = 8)
 }
 if( knitr::is_html_output() ) {
 kable(pad(Phone.DataSummary2,
@@ -411,10 +413,9 @@ The *standard error* quantifies how much the *difference between sample mean rea
 ## Error bar charts {#ErrorBarCharts}
 
 A useful way to compare the means of two (or more) groups is to display the individual CIs in an *error bar chart*.
-
 Error bars charts display the expected variation *in the sample means* from sample to sample, while boxplots display the variation *in the individual observations*.
 For the reaction time data, the error bar chart (Fig.\ \@ref(fig:PhoneErrorbar)) shows the $95$% CI for each group; the mean has been added as a dot.
-(An error bar chart can also be used to compare more than two groups.)
+(An error bar chart can be used to compare more than two groups, too.)
 
 
 ```{r PhoneErrorbar, fig.cap="Error bar chart comparing the mean reaction time for students using a mobile phone and not using a mobile phone (control)", fig.align="center", fig.width=4.5, fig.height=3.25, out.width='50%'}
@@ -457,7 +458,7 @@ arrows(x0 = 1:2,
 
 
 ::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-What is different about the information displayed in the error bar chart (Fig.\ \@ref(fig:PhoneErrorbar)) and the boxplot (Fig.\ \@ref(fig:PhonePlots))?\label{thinkBox:DiffErrorbarBoxplot}
+What is different about the information displayed in the error bar chart (Fig.\ \@ref(fig:PhonePlots)) and the boxplot (Fig.\ \@ref(fig:PhoneErrorbar))?\label{thinkBox:DiffErrorbarBoxplot}
 
 `r if (knitr::is_latex_output()) '<!--'`
 `r webexercises::hide()`
@@ -481,7 +482,7 @@ Three graphical summaries are shown in Fig.\ \@ref(fig:LimeTreesBoxErrorbar): a 
 :::
 
 
-```{r LimeTreesBoxErrorbar, fig.cap="Boxplot (left) and error bar charts (centre; right) comparing the mean foliage biomass for small-leaved lime trees from three sources (C: Coppice; N: Natural; P: Planted). The centre panel shows an error-bar chart using the same vertical scale as the boxplot; the right error-bar chart uses a better scale on the vertical axis. The solid dots in the boxplot show the mean of the distributions", fig.align="center", fig.width=7, fig.height=3.0, out.width='100%'}
+```{r LimeTreesBoxErrorbar, fig.cap="Boxplot (left) and error bar charts (centre; right) comparing the mean foliage biomass for small-leaved lime trees from three sources (C: Coppice; N: Natural; P: Planted). The centre panel shows an error-bar chart using the same vertical scale as the boxplot. The right error-bar chart uses a better scale on the vertical axis. The solid dots in the boxplot show the mean of the distributions", fig.align="center", fig.width=7, fig.height=3.0, out.width='100%'}
 par( mfrow = c(1, 3))
 
 data(Lime)
@@ -580,8 +581,7 @@ arrows(1:3, mns - 2 * ses,
 
 ## Describing the sampling distribution
 
-Since the difference between the *population* means  $\mu_P - \mu_C$ is unknown, the difference is estimated using the *sample* means.
-The difference between the two sample means (the *statistic*) is $\bar{x}_P - \bar{x}_C$.
+Since the difference between the *population* means  $\mu_P - \mu_C$ is unknown, the difference is estimated using the *sample* means; the *statistic* is $\bar{x}_P - \bar{x}_C$.
 Each sample of students will comprise different students, and will give different reaction times while driving. 
 The means for each group will differ from sample to sample, and the *difference* between the means will be different for each sample.
 The *difference* between the sample means varies from sample to sample, and so has a sampling distribution and *standard error*.
@@ -592,7 +592,7 @@ The *sampling distribution of the difference between two sample means* $\bar{x}_
 
 * an approximate normal distribution,
 * centred around a sampling mean whose value is ${\mu_{A}} - {\mu_{B}}$, the difference between the *population* means,
-* with a standard deviation of $\displaystyle\text{s.e.}(\bar{x}_A - \bar{x}_B)$,
+* with a standard deviation of $\displaystyle\text{s.e.}(\bar{x}_A - \bar{x}_B)$.
 
 The standard error for the difference between the means is found using  
 \[
@@ -707,7 +707,7 @@ RT.se <- Phone.DataSummary[3, 4]
 <!--          col.names = c("Quantity", -->
 <!--                        "Description") ) %>% -->
 <!-- 	row_spec(0, bold = TRUE) %>% -->
-<!--   kable_styling(font_size = 10) -->
+<!--   kable_styling(font_size = 8) -->
 <!-- } else { -->
 <!--   TwoMeansNotation[5, 1] <- paste(TwoMeansNotation[5, 1],  -->
 <!--                                  TwoMeansNotation[6, 1]) -->
@@ -736,8 +736,8 @@ RT.se <- Phone.DataSummary[3, 4]
 ## Computing confidence intervals
 
 The sampling distribution describes how the values of $\bar{x}_P - \bar{x}_C$ are likely to vary from sample to sample. 
-Then, finding an approximate $95$% CI for the difference between the mean reaction times is similar to the process used in Chap.\ \@ref(OneMeanConfInterval). 
-Almost all approximate $95$% CIs have the same form:  
+Then, finding a $95$% CI for the difference between the mean reaction times is similar to the process used in Chap.\ \@ref(OneMeanConfInterval). 
+Almost all CIs have the same form:  
 \[
   \text{statistic} \pm (\text{multiplier} \times\text{s.e.}(\text{statistic})).
 \]
@@ -752,7 +752,7 @@ So, in this case, the *approximate* $95$% CI is
 or $`r round(RT.mn, 2)`\pm `r round(RT.se, 2)`$ after rounding appropriately.
 We write:
 
-> Based on the sample, the difference between reactions times is $`r round(RT.mn, 2)`$\ ms, slower for those *using* a phone (mean: $585.19$\ ms; s.e.: $15.85$; $n = 32$) compared to those *not using* a phone (mean: $533.59$\ ms; s.e.: $11.55$; $n = 32$), with an *approximate* $95$% CI for the difference between mean reaction times from $`r round(RT.mn - 2*RT.se, 2)`$ to $`r round(RT.mn + 2*RT.se, 2)`$\ ms.
+> The difference between reactions times is $`r round(RT.mn, 2)`$\ ms, slower for those *using* a phone (mean: $585.19$\ ms; s.e.: $15.85$; $n = 32$) compared to those *not using* a phone (mean: $533.59$\ ms; s.e.: $11.55$; $n = 32$), with an *approximate* $95$% CI for the difference between mean reaction times from $`r round(RT.mn - 2*RT.se, 2)`$ to $`r round(RT.mn + 2*RT.se, 2)`$\ ms.
 
 
 The plausible values for the difference between the two population means are between $`r round(RT.mn - 2*RT.se, 2)`$ to $`r round(RT.mn + 2*RT.se, 2)`$ milliseconds (slower for those *using* a phone).
@@ -765,7 +765,7 @@ Giving the CI alone is insufficient; the *direction* in which the differences we
 
 ## Using software
 
-The jamovi output (Fig.\ \@ref(fig:ReactionPhoneSummaryjamovi)) shows *two* CIs.
+Output from jamovi (and other software) shows *two* CIs (Fig.\ \@ref(fig:ReactionPhoneSummaryjamovi)).
 *We will use the results from the second row*, as this row of output is more general, and makes fewer assumptions.
 Specifically, the information in the first row (`Student's t`) is appropriate when the *population* standard deviations in the two groups *are* the same; the second row (`Welch's t`) is appropriate when the *population* standard deviations in the two groups *are not* the same.
 Choosing the second row assumes less, and is more widely applicable.
@@ -827,14 +827,14 @@ For the reaction-time data, both samples are larger than $25$, so the CI will be
 
 
 To reduce vehicle speeds on freeway exit ramps, a Chinese study studied adding additional signage [@ma2019impacts].
-At one site (Ningxuan Freeway), speeds were recorded for $38$ vehicles before the extra signage was added, and then for $41$ different vehicles after the extra signage was added.
+At one site (Ningxuan Freeway), speeds were recorded for $38$ vehicles *before* the extra signage was added, and then for $41$ different vehicles *after* the extra signage was added.
 
 The researchers are hoping that the addition of extra signage will *reduce* the mean speed of the vehicles.
 The RQ is:
 
 > At this freeway exit, how much is the mean vehicle speed *reduced* after extra signage is added?
 
-The data are *not* paired: different vehicles are measured before (B$) and after ($A$) the extra signage is added.
+The data are *not* paired: different vehicles are measured before ($B$) and after ($A$) the extra signage is added.
 The data are summarised in Table\ \@ref(tab:SignageSummary) using the jamovi output (Fig.\ \@ref(fig:SpeedjamoviCI2)).
 Define $\mu$ at the mean speed (in km.h^-1^) on the exit ramp.
 Then, the parameter is $\mu_B - \mu_A$, the *reduction* in the mean speed.
@@ -845,7 +845,7 @@ knitr::include_graphics("jamovi/Speed/Speed-ALL.png")
 ```
 
 
-A useful graphical summary of the *data* is a boxplot (Fig.\ \@ref(fig:SignageErrorBar), left panel);  likewise, an error bar chart can be produced by computing the CI for each group (Fig.\ \@ref(fig:SignageErrorBar), right panel).
+A useful graphical summary of the *data* is a boxplot (Fig.\ \@ref(fig:SignageErrorBar), left panel);  likewise, an error bar chart can be produced to compare the means (Fig.\ \@ref(fig:SignageErrorBar), right panel).
 
 
 ```{r SignageErrorBar, fig.cap="Boxplot (left); error bar chart (right) showing the mean speed before and after the addition of extra signage, and the $95$\\% CIs. The vertical scales on the two graphs are different.", fig.align="center", out.width='70%',fig.width=6.0, fig.height=3.25}
@@ -959,192 +959,13 @@ Loosely speaking, there is a $95$% chance that our CI straddles the difference i
 
 We could write:
 
-> Based on the sample, the reduction in the mean speed after adding signage is $5.68$\ km.h^-1^ (before mean: $98.02$; s.e.: $2.140$; $n = 38$; after mean: $92.34$; s.e.: $2.051$; $n = 41$), with an approximate $95$% CI between $-0.24$\ km.h^-1^ (i.e., an increase of $0.24$\ km.h^-1^) and $11.6$\ km.h^-1^ (two independent samples).
+> The reduction in the mean speed after adding signage is $5.68$\ km.h^-1^ (before mean: $98.02$; s.e.: $2.140$; $n = 38$; after mean: $92.34$; s.e.: $2.051$; $n = 41$), with an approximate $95$% CI between $-0.24$\ km.h^-1^ (i.e., an increase of $0.24$\ km.h^-1^) and $11.6$\ km.h^-1^ (two independent samples).
 
 Using the [validity conditions](#ValidityTwoMeans), the CI is statistically valid.
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 Remember: clearly state *which* mean is larger.
 :::
-
-
-## Example: health promotion services {#BHADPCI}
-
-
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/pexels-marcus-aurelius-4063510.jpg" width="200px"/>
-</div>
-
-
-A study [@data:Becker1991:BHADP] compared the access to health promotion (HP) services for people with and without a disability in southwestern of the USA.
-'Access' was measured using the quantitative
-`r if (knitr::is_latex_output()) {
-   '*Barriers to Health Promoting Activities for Disabled Persons*  (BHADP) scale.'
-} else {
-   '*Barriers to Health Promoting Activities for Disabled Persons*  [(BHADP) scale](http://www.utexas.edu/nursing/chpr/resources/bhadp.html).'
-}`
-*Higher* scores mean *greater* barriers to health promotion services.
-The RQ is:
-
-> What is the difference between the mean BHADP scores, for people with and without a disability, in southwestern USA?
-
-Defining $\mu$ as the mean BHADP score, the parameter is $\mu_D - \mu_N$, the difference between the two population means (disability $D$, minus non-disability $N$).
-The statistic is $\bar{x}_D - \bar{x}_N$.
-
-In this case, only *summary* information is available (Table\ \@ref(tab:BHADPSummary)).
-Nonetheless, an error bar chart can be produced by computing the CI for each group manually (Fig.\ \@ref(fig:BHADPErrorBar)).
-The first two rows of information in Table\ \@ref(tab:BHADPSummary) appear in the original article.
-The difference between the sample means: $(\bar{x}_D - \bar{x}_N) = 6.76$.
-The standard error for estimating this *difference* is  
-\[
-  \text{s.e.}(\bar{x}_D - \bar{x}_N) = \sqrt{0.67280^2 +  0.41010^2} = 0.78794.
-\]
-
-
-```{r BHADPSummary}
-BHADPSummary <- array(dim = c(3, 4))
-rownames(BHADPSummary) <- c("Disability", 
-                            "No disability",
-                            "Difference")
-
-BHADPSummary[1, ] <- c(31.83, 7.73, 132, 0.6728)
-BHADPSummary[2, ] <- c(25.07, 4.80, 137, 0.4101)
-BHADPSummary[3, ] <- c(6.76, NA, NA, 0.78794)
-  
-
-if( knitr::is_latex_output() ) {
-  kable( pad(BHADPSummary,
-             surroundMaths = TRUE,
-             targetLength = c(5, 4, 3, 7),
-             digits = c(2, 2, 0, 5) ),
-        format = "latex",
-        longtable = FALSE,
-        booktabs = TRUE,
-        escape = FALSE,
-        #linesep = c("", "", "", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), # Otherwise addes a space after five lines... 
-        align = "c",
-        col.names = c("Sample mean", 
-                      "Std deviation", 
-                      "Sample size", 
-                      "Std error"),
-        caption = "The data summary for BHADP scores (no measurement units)"
-  ) %>%
-  row_spec(0, bold = TRUE) %>%
-  row_spec(3, italic = TRUE) %>%
-  kable_styling(font_size = 10)
-}
-if( knitr::is_html_output() ) {
-  kable( pad(BHADPSummary,
-             surroundMaths = TRUE,
-             targetLength = c(5, 4, 3, 7),
-             digits = c(2, 2, 0, 5) ),
-               format = "html",
-               longtable = FALSE,
-               booktabs = TRUE,
-               align = "c",
-               col.names = c("Sample mean", 
-                            "Std deviation", 
-                            "Sample size", 
-                            "Std error"),
-    caption = "The data summary for BHADP scores (no measurement units)") %>%
-    kable_styling(full_width = FALSE)
-}
-```
-
-
-
-```{r BHADPErrorBar, fig.cap="Error bar chart showing the mean BHADP score for people with and without a disability, and the $95$\\% CIs", fig.align="center", fig.width=5.5, fig.height=3.25, out.width="65%"}
-### Disability example
-bit <- 0.05
-
-mns <- c(31.83, 25.07)
-sd <- c(7.73, 4.80)
-nn <- c(132, 137)
-
-se <- sd/sqrt(nn)
-
-ci.lo <- mns - (2 * se)
-ci.hi <- mns + (2 * se)
-
-plot( 1:2, 
-      mns,
-      pch = 19,
-      ylim = c(24, 34 ),
-      xlim = c(0.9, 3.2),
-      las = 1,
-      axes = FALSE,
-      xlab = "",
-      ylab = "BHADP score",
-      main = "Access to health promotion services for\ntwo groups: Mean BHADP scores",
-      sub = "(Error bars are the 95% CI)",
-      type = "p")
-axis(side = 1, 
-     at = 1:2,
-     las = 1,
-     labels = c(expression( Disability~"("*italic(n)==132*")"), 
-                expression( No~disability~"("*italic(n)==137*")")) )
-axis(side = 2, 
-     las = 1)
-box()
-
-lines( c(1, 1),
-       c(ci.lo[1], ci.hi[1]))
-lines( c(2, 2),
-       c(ci.lo[2], ci.hi[2]))
-
-
-lines( c(1 - bit, 1 + bit), 
-       c( ci.hi[1], ci.hi[1]) )
-lines( c(1 - bit, 1 + bit), 
-       c( ci.lo[1], ci.lo[1]) )
-
-lines( c(2 - bit, 2 + bit), 
-       c( ci.hi[2], ci.hi[2]) )
-lines( c(2 - bit, 2 + bit), 
-       c( ci.lo[2], ci.lo[2]) )
-
-# Help
-lines( x = c(1.1, 2.5),
-       y = c( mns[1], mns[1]),
-       lwd = 2,
-       lty = 2,
-       col = "grey")
-lines( x = c(2.1, 2.5),
-       y = c( mns[2], mns[2]),
-       lwd = 2,
-       lty = 2,
-       col = "grey")
-
-arrows( x0 = 2.5,
-        x1 = 2.5,
-        y0 = mns[1],
-        y1 = mns[2],
-        angle = 15,
-        length = 0.1,
-        code = 3)
-text( x = 2.6,
-      y = mean( mns ),
-      labels = "Difference\nbetween the\nsample means",
-      cex = 0.9,
-      pos = 4)
-```
-
-
-An approximate $95$% CI for the difference in population mean BHADP scores  is $6.76 \pm (2 \times 0.78794)$, or from $5.18$ to $8.34$ (higher for those with a disability).
-This means that, if many samples of size $132$ and $137$ were found, and the difference between the mean BHADP scores were found, about $95$% of the CIs would contain the population difference ($\mu_D - \mu_{ND}$).
-Loosely speaking, there is a $95$% chance that our CI straddles the difference in the population means ($\mu_D - \mu_{ND}$).
-
-We could write:
-
-> Based on the sample, the difference between the mean BHADP scores is $6.76$, higher (i.e., worse) for those with a disability (mean: $31.83$; s.e.: $0.673$; $n = 132$) compared to those without (mean: $25.07$; s.e.: $0.410$; $n = 137$), with an approximate $95$% CI from $5.18$ to $8.34$.
-
-
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-Remember: clearly state *which* mean is larger.
-:::
-
-
-Using the [validity conditions](#ValidityTwoMeans), the CI is statistically valid.
 
 
 
@@ -1159,7 +980,7 @@ However, a data summary is given in the article (motivating Table\ \@ref(tab:TGs
 
 The following relational RQ can be asked:
 
-> For patients with T2DM, what is the difference between the mean reductions in TG, between those drinking chamomile tea and those who drink hot water?
+> For patients with T2DM, what is the mean difference between the average reductions in TG, between those drinking chamomile tea and those who drink hot water?
 
 Here, two separate groups are being compared:
 the tea-drinking group ($T$), and the control water-drinking group ($W$).
@@ -1173,15 +994,10 @@ Hence, an approximate $95$% CI for the difference between the mean reduction is
 \]
 or from $28.90$ to $62.58$\ mg.dl^-1^, with a larger reduction for the tea group.
 This is a CI for the *difference* between the mean reductions in each group.
-We write:
-
-> The difference between the mean *reductions* in TG is $45.74$\ mg.dl^-1^, greater for the tea-drinking group, with the approx. $95$% CI from $28.64$ to $62.84$\ mg.dl^-1^.
-
-This interval has a $95$% chance of straddling the difference between the mean reductions in TG.
-The sample sizes are larger than $25$, so the results are statistically valid.
+The approximate $95$% CIs for each group can also be computed, and aan error bar chart produced (Fig.\ \@ref(fig:ChamomilePlot)).
 
 
-```{r ChamomilePlot, fig.align="center", fig.cap="The reduction in total glucose for the chamomile-tea drinking group, and the control group.", out.width='45%', fig.width=3.5, fig.height=3.25}
+```{r ChamomilePlot, fig.align="center", fig.cap="The reduction in total glucose for the chamomile-tea drinking group, and the control group. The horizontal grey line represenetd no mean change in the groups", out.width='45%', fig.width=3.5, fig.height=3.25}
 TGsummary <- array(dim = c(3, 7) )
 
 par(mar = c(5, 5, 4, 2) + 0.1) # Default: c(5, 4, 4, 2) + 0.1.
@@ -1246,12 +1062,20 @@ lines(x = c(2 - delta,
 
 
 
+We write:
+
+> The mean difference between the average *reductions* in TG is $45.74$\ mg.dl^-1^, greater for the tea-drinking group, with the approx. $95$% CI from $28.64$ to $62.84$\ mg.dl^-1^.
+
+This interval has a $95$% chance of straddling the difference between the mean reductions in TG.
+The sample sizes are larger than $25$, so the results are statistically valid.
+
+
 ## Chapter summary
 
 ## Quick review questions {#Chap24-QuickReview}
 
 ::: {.webex-check .webex-box}
-1. The appropriate graph for displaying quantitative *data* for two separate groups is a: \tightlist  
+1. An appropriate graph for displaying quantitative *data* for two separate groups is a: \tightlist  
 `r if( knitr::is_html_output() ) { longmcq( c( 
   answer = "boxplot",
   "histogram",
@@ -1270,10 +1094,13 @@ lines(x = c(2 - delta,
 Selected answers are available in Sect.\ \@ref(MeansIndSamplesAnswer).
 
 
+
+
+
 ::: {.exercise #MeansIndSamplesExercisesWhalesCI}
 A study of gray whales (*Eschrichtius robustus*) measured (among other things) the length of whales at birth [@agbayani2020growth].
 How much longer are female gray whales than males, on average, in the population?
-Some summary data are given in Table\ \@ref(tab:WhaleInfo).
+Summary data are given in Table\ \@ref(tab:WhaleInfo).
 
 
 ```{r WhaleInfo}
@@ -1305,7 +1132,7 @@ if( knitr::is_latex_output() ) {
          caption = "Numerical summary of length of whales at birth (in m)") %>%
     row_spec(0, 
              bold = TRUE) %>%
-    kable_styling(font_size = 10)
+    kable_styling(font_size = 8)
     
 }
 if( knitr::is_html_output() ) {
@@ -1326,10 +1153,10 @@ if( knitr::is_html_output() ) {
 
 
 1. Define the *difference*.
-1. Construct an error bar chart.
-1. Compute the standard error of this difference.
-1. Write down the parameter, and its estimate.
 1. Sketch an error-bar chart.
+1. Compute the standard error of the difference.
+1. Compile a numerical summary table.
+1. Write down the parameter, and its estimate.
 1. Compute the approximate $95$% CI, and write a conclusion.
 1. Is the CI likely to be statistically valid?
 :::
@@ -1391,9 +1218,11 @@ if( knitr::is_latex_output() ) {
          align = "c",
          col.names = colnames(EchinaceaInfo),
          caption = "Numerical summary of duration (in days) of common cold symptoms, for blinded patients taking echinacea or a placebo") %>%
+    row_spec(3, 
+             italic = TRUE) %>%
     row_spec(0, 
              bold = TRUE) %>%
-    kable_styling(font_size = 10)
+    kable_styling(font_size = 8)
     
 }
 if( knitr::is_html_output() ) {
@@ -1457,7 +1286,7 @@ if( knitr::is_latex_output() ) {
          caption = "Numerical summary of pain intensity for two different treatments of carpal tunnel syndrome") %>%
     row_spec(0, bold = TRUE) %>%
     row_spec(3, italic = TRUE) %>%
-    kable_styling(font_size = 10)
+    kable_styling(font_size = 8)
     
 }
 if( knitr::is_html_output() ) {
@@ -1506,7 +1335,7 @@ Use the data, and the summary in Table\ \@ref(tab:SignageSummaryDec), to address
 
 > At this freeway exit, what is the difference between the mean vehicle deceleration, comparing the times before the extra signage is added and after extra signage is added?
 
-In this context, the researchers are hoping that the extra signage might cause cars to slow down *faster* (i.e., they will decelerate more, on average, after adding the extra signage).
+In this context, the researchers are hoping that the extra signage might cause cars to slow down *faster* (i.e., greater deceleration, on average, after adding the extra signage).
 
 1. Identify clearly the parameter of interest to understand how much the deceleration *increased* after adding the extra signage.
 2. Compute and interpret the CI for this parameter.
@@ -1547,6 +1376,81 @@ The data are shown in Table\ \@ref(tab:FacePlant).
 knitr::include_graphics("jamovi/FallForward/FallForwardTTestOutput.png")
 ```
 
+
+
+
+::: {.exercise #BHADPCI}
+A study [@data:Becker1991:BHADP] compared the access to health promotion (HP) services for people with and without a disability in southwestern of the USA.
+'Access' was measured using the quantitative
+`r if (knitr::is_latex_output()) {
+   '*Barriers to Health Promoting Activities for Disabled Persons*  (BHADP) scale.'
+} else {
+   '*Barriers to Health Promoting Activities for Disabled Persons*  [(BHADP) scale](http://www.utexas.edu/nursing/chpr/resources/bhadp.html).'
+}`
+*Higher* scores mean *greater* barriers to health promotion services.
+The RQ is:
+
+> What is the difference between the mean BHADP scores, for people with and without a disability, in southwestern USA?
+
+1. Define the difference.
+   Write down the parameter, and its estimate.
+2. Sketch an error-bar chart.
+3. Compute the standard error of the difference.
+4. Compile a numerical summary table.
+5. Compute the approximate $95$% CI, and write a conclusion.
+6. Is the CI likely to be statistically valid?
+:::
+
+
+```{r BHADPSummary}
+BHADPSummary <- array(dim = c(3, 4))
+rownames(BHADPSummary) <- c("Disability", 
+                            "No disability",
+                            "Difference")
+
+BHADPSummary[1, ] <- c(31.83, 7.73, 132, 0.6728)
+BHADPSummary[2, ] <- c(25.07, 4.80, 137, 0.4101)
+BHADPSummary[3, ] <- c(6.76, NA, NA, 0.78794)
+  
+
+if( knitr::is_latex_output() ) {
+  kable( pad(BHADPSummary,
+             surroundMaths = TRUE,
+             targetLength = c(5, 4, 3, 7),
+             digits = c(2, 2, 0, 5) ),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        #linesep = c("", "", "", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), # Otherwise addes a space after five lines... 
+        align = "c",
+        col.names = c("Sample mean", 
+                      "Std deviation", 
+                      "Sample size", 
+                      "Std error"),
+        caption = "The data summary for BHADP scores (no measurement units)"
+  ) %>%
+  row_spec(0, bold = TRUE) %>%
+  row_spec(3, italic = TRUE) %>%
+  kable_styling(font_size = 8)
+}
+if( knitr::is_html_output() ) {
+  kable( pad(BHADPSummary,
+             surroundMaths = TRUE,
+             targetLength = c(5, 4, 3, 7),
+             digits = c(2, 2, 0, 5) ),
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               align = "c",
+               col.names = c("Sample mean", 
+                            "Std deviation", 
+                            "Sample size", 
+                            "Std error"),
+    caption = "The data summary for BHADP scores (no measurement units)") %>%
+    kable_styling(full_width = FALSE)
+}
+```
 
 
 
