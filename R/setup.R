@@ -119,22 +119,24 @@ plotDark <- rgb(0, 0, 1,
 blueTransparent <- rgb(0, 0, 1, 
                        alpha = 0.2, 
                        maxColorValue = 1)
-
-plot.colour <- if( knitr::is_latex_output()) {
-  grey(0.5) 
-  } else {
-    blueTransparent
-  }
-
-blueTransparent2 <- rgb(0, 0, 0.25, 
-                        alpha = 0.2, 
-                        maxColorValue = 1)
-plot.colour2 <- blueTransparent2
-
 blueTransparent0 <- rgb(0, 0, 1, 
                         alpha = 0.8, 
                         maxColorValue = 1)
-plot.colour0 <- blueTransparent0
+blueTransparent2 <- rgb(0, 0, 0.25, 
+                        alpha = 0.2, 
+                        maxColorValue = 1)
+
+### MOVED LATER, as t is too early to work here (I guess, the output not yet set)
+cat("XXXXXXXXX\n")
+plot.colour <-  grey(0.75) 
+plot.colour0 <-  grey(0.5) 
+plot.colour2 <-  grey(0.75) 
+
+if ( knitr::is_html_output()) {
+  plot.colour <- blueTransparent
+  plot.colour0 <- blueTransparent0
+  plot.colour2 <- blueTransparent2
+}
 
 
 
