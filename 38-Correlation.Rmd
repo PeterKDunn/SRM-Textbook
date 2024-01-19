@@ -17,7 +17,12 @@ Comparing the mean value of a quantitative variable in two groups was studied in
 Comparing the odds of an outcome of interest in two groups was studied in Sects.\ \@ref(OddsRatiosCI) and\ \@ref(TestsOddsRatio).
 In this chapter (and the next), the relationship between two quantitative variables is studied *when that relationship is approximately linear*.
 
-Our main example in the next chapters is a study [@data:Holgate1965:StraightLine] examining the relationship between the age of $n = 78$ male red deer and the weight of their molars (Sect.\ \@ref(TwoQuant-Intro)).
+Consider the age and the weight of the molars of $n = 78$ male red-deer [@data:Holgate1965:StraightLine], as seen in Sect.\ \@ref(TwoQuant)
+`r if( knitr::is_latex_output() ) {
+  '(and Table\\ \\@ref(tab:RedDeerData)).'
+} else {
+  '(and the data in that section).'
+}`
 The data comprises two quantitative variables, and the scatter plot is repeated in Fig.\ \@ref(fig:RedDeerScatter2).
 
 ```{r RedDeerScatter2, fig.width=5.5, out.width='65%', fig.align='center', fig.height=3.5, fig.cap="Molar weight verses age for the red deer data"}
@@ -35,320 +40,13 @@ plot(Weight ~ Age,
      ylab = "Molar weight (in g)")
 ```
 
+A (linear) relationship seems evident.
+That is, knowing information about the age of the deer seems to provide some information about the weight of the molars.
+Indeed, in Sect.\ \@ref(CorrCoefficients), the *correlation coefficient* was found to be $r = -0.584$ 
 
+However, as we have seen, only one of the many possible sample of deer have been studied, so potentially that relationship may not actually be present in the population.
+That is, perhaps the *population* correlation coefficient $\rho$ is actually 0, and the *sample* correlation coefficient is non-zero simply due to *sampling variation*.
 
-## Numerical summaries: linear relationships {#LinearRelationshipsR}
-
-### Correlation coefficients {#CorrCoefficients}
-
-Describing the linear relationship between two quantitative variables requires describing the form, direction and variation (Sect.\ \@ref(UnderstandingScatterplots)).
-A *correlation coefficient* is a single number encapsulating all this information: the correlation coefficient measures the *strength* and *direction* of the *linear* relationship between two quantitative variables.
-
-In the *population*, the unknown value of the correlation coefficient is denoted $\rho$ ('rho'); in the *sample* the value of the correlation coefficient is denoted $r$.
-As usual, $r$ (the *statistic*) is an estimate of $\rho$ (the *parameter*), and the value of $r$ is likely to be different in every sample (that is, *sampling variation* exists).
-
-
-:::: {.pronounceBox .pronounce data-latex="{iconmonstr-microphone-7-240.png}"}
-
-::: {style="display: flex;"}
-The symbol $\rho$ is the Greek letter 'rho', pronounced 'row', as in 'row your boat'.
-:::
-
-::: {}
-```{r}
-htmltools::tags$video(src = "./Movies/rho.mp4", 
-                      width = "121", 
-                      loop = "FALSE", 
-                      controls = "controls", 
-                      loop = "loop", 
-                      style = "padding:5px; border: 2px solid gray;")
-```
-:::
-
-::::
-
-
-Here, the *Pearson* correlation coefficient is discussed, which is appropriate for describing *linear* relationships between *quantitative* data^[Other correlation coefficients also exist, such as the *Spearman* correlation, which may be used for monotonic, non-linear relationships.].
-Pearson correlation coefficients only apply if the form is approximately *linear* (so check with a scatterplot first).
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The Pearson correlation coefficient only make sense if the relationship is approximately linear.
-:::
-
-
-The values of $\rho$ and $r$ are *always* between $-1$ and $+1$.
-The *sign* indicates whether the relationship has a positive or negative linear association, and the *value* of the correlation coefficient describes the *strength* of the relationship:
-
-* $r = -1$ means a *perfect, negative* relationship:
-  knowing the value of $x$ produces a perfect prediction of the value of $y$, and *larger* values of $y$ are associated with *smaller* values of $x$.
-* Values of $r$ between $-1$ and $0$ mean a *negative* relationship:
-  knowing the value of $x$ produces a prediction of the value of $y$, and *larger* values of $y$ are associated with *smaller* values of $x$ (in general).
-* $r = 0$ means *no linear relationship* between the variables:
-  Knowing how the value of $x$ changes tells us nothing about how the corresponding value of $y$ changes.
-  The best prediction for *any* value of $x$ is the mean of $y$.
-* Values of $r$ between $0$ and $+1$ mean a *positive* relationship:
-  knowing the value of $x$ produces a prediction of the value of $y$, and *larger* values of $y$ are associated with *larger* values of $x$ (in general).
-* $r = +1$ means a *perfect, positive* relationship:
-  knowing the value of $x$ produces a perfect prediction of the value of $y$, and *larger* values of $y$ are associated with *larger* values of $x$.
-
-Most values of $r$ are between the extremes of $r = -1$ and $r = +1$.
-`r if (knitr::is_html_output()) {
-   'The animation below demonstrates how the values of the correlation coefficient work.'
-}`
-
-
-```{r, animation.hook="gifski", interval=0.5, dev=if (is_latex_output()){"pdf"}else{"png"}}
-if (knitr::is_html_output()){
-  set.seed(12345)
-
-    num.obs <- 120
-    
-    rho.list <- seq(-1, 1, 
-                    by = 0.1)
-    num.plots <- length(rho.list)
-    
-    xx <- runif(num.obs, 0, 10)
-    
-    for (i in 1:num.plots){
-      out <- MASS::mvrnorm(num.obs, 
-                           mu = c(mean(xx), 10), 
-                           Sigma = matrix(c(1, 
-                                            rho.list[i] , 
-                                            rho.list[i], 1), 
-                                          ncol = 2), 
-                           empirical = TRUE)
-      
-      plot(out[, 1], out[, 2], 
-           pch = 19,
-           las = 1, 
-           xlim = c(2, 8),
-           ylim = c(6, 14),
-           xlab = expression(paste("Explanatory variable ", italic(x)) ),
-           ylab = expression(paste("Response variable ", italic(y)) ),
-           main = paste("Correlation:", format(round(rho.list[i], 2), nsmall = 2)))
-      abline( coef(lm(out[, 2] ~ out[, 1]) ), 
-              lwd = 2, 
-              col = "grey")
-    }
-  }
-```
-
-Numerous example scatterplots were shown in Sect.\ \@ref(UnderstandingScatterplots).
-A correlation coefficient is not relevant for 
-`r if (knitr::is_html_output()) {
-  'Plots C, D, E or H,'
-} else {
-  'Plots C, D or E,'
-}`
-as those relationships are not linear.
-For the others:
-
-* In *Plot A*, the correlation coefficient will be *positive*, and reasonably close to one.
-* In *Plot B*, the correlation coefficient will be *negative*, but not that close to $-1$.
-* In *Plot F*, the correlation coefficient will close to zero.
-
-::: {.example #Correlations name="Correlation coefficients"}
-A study of sand dollars (@leuchtenberger2022effects, @Nishizaki2022SanddollarData) explored the relationship between water temperature and fertilization rates (Fig.\ \@ref(fig:SanddollarsPlot)).
-Fitting a straight line gives a correlation coefficient of $r = -0.49$ (left panel), which might suggest that *higher* temperatures result in *lower* fertilization rates.
-However, a curved relationship is apparent (right panel), and so the relationship is more involved: the fertilization rate increases up to about 18^o^C, and then starts falling again.
-
-A correlation coefficient is not suitable for describing the relationship.
-:::
-
-```{r SanddollarsPlot, fig.cap="Water temperature vs fertilization rates for sand dollars. Left: a linear relationship; right: a curved relationship", fig.align="center", fig.width=8, fig.height=3.25, out.width='90%'}
-par(mfrow = c(1, 2))
-
-data(Sanddollars)
-
-SDsub <- subset(Sanddollars, 
-                Sanddollars$SD.temperatures < 35)
-
-plot( SDsub$SD.temperatures, SDsub$SD.fertilization,
-      pch = 19,
-      col = "grey",
-      lwd = 2,
-      las = 1,
-      xlim = c(5, 35),
-      ylim = c(20, 100),
-      main = "Temperature vs fertilization\nrates for sand dollars",
-      xlab = "Water temperature (degrees C)",
-      ylab = "Fertilization rate (in %)")
-text(x = 15,
-     y = 40,
-     labels = expression( atop(italic(r)==-0.49),
-                          group("(", Not~appropriate,")")) )
-
-abline( coef( lm( SD.fertilization ~ SD.temperatures,
-                  data =  SDsub ) ),
-        lwd = 2,
-        lty = 1)
-
-plot( SDsub$SD.temperatures, SDsub$SD.fertilization,
-      pch = 19,
-      col = "grey",
-      lwd = 2,
-      las = 1,
-      xlim = c(5, 35),
-      ylim = c(20, 100),
-      main = "Temperature vs fertilization\nrates for sand dollars",
-      xlab = "Water temperature (degrees C)",
-      ylab = "Fertilization rate (in %)")
-
-m2 <- lm( SD.fertilization ~ poly(SD.temperatures, 2),
-            data =  SDsub )
-newX <- seq(5, 35,
-            length = 100)
-newY <- predict( m2, newdata = data.frame(SD.temperatures = newX))
-lines(newY ~ newX,
-      lwd = 2)
-
-```
-
-
-
-::: {.example #CorrelationsDeer name="Correlation coefficients"}
-For the red-deer data 
-`r if( knitr::is_latex_output() ) {
-  '(Fig.\\ \\@ref(fig:RedDeerScatter)),'
-} else {
-  '(Fig.\\ \\@ref(fig:RedDeerScatterHTML)),'
-}
-`
-$r = -0.584$.
-The value of $r$ is *negative* because, in general, *older* deer ($x$) are associated with *smaller* weight molars ($y$).
-The value is about halfway between $r = 0$ and $r = -1$, so the relationship may be described as 'moderately strong' perhaps.
-:::
-
-
-::: {.example #LungCapCor name="Correlation coefficients"}
-Consider the scatterplot in Fig.\ \@ref(fig:FEVscatter2), from a study [@data:Tager:FEV; @BIB:data:FEV] of lung capacity of children in Boston (using the forced expiratory volume, FEV).
-The plot is not linear, so a correlation coefficient is inappropriate.
-
-In addition, the variation in the FEV increases as children get taller.
-For instance, the variation in FEV for children about 50cm tall is much smaller than the variation in FEV for children about 70cm tall.
-:::
-
-
-```{r FEVscatter2, fig.cap="FEV plotted against height for children in Boston", fig.align="center", fig.width=8, fig.height=3.25, out.width='90%'}
-data(LungCap)
-
-par(mfrow = c(1, 2))
-
-plot(FEV ~ Ht, 
-     data = LungCap,
-     las = 1,
-     ylim = c(0, 6),
-     cex = 0.7,
-     main = "FEV and height",
-     xlab = "Height (inches)",
-     ylab = "FEV (litres)",
-     pch = 19)
-
-scatter.smooth( LungCap$Ht, LungCap$FEV,
-     las = 1,
-     ylim = c(0, 6),
-     cex = 0.7,
-     col = "grey",
-     lwd = 2,
-     main = "FEV and height",
-     xlab = "Height (inches)",
-     ylab = "FEV (litres)",
-     pch = 19)
-
-arrows(x0 = 50,
-       x1 = 50,
-       y0 = 0.8,
-       y1 = 2.2,
-       angle = 15,
-       length = 0.11,
-       lwd = 2,
-       code = 3)
-text(x = 50,
-     y = 2.2,
-     pos = 3,
-     cex = 0.85,
-     labels = "Smaller\nvariation")
-
-arrows(x0 = 70,
-       x1 = 70,
-       y0 = 2,
-       y1 = 5.8,
-       angle = 15,
-       lwd = 2,
-       length = 0.11,
-       code = 3)
-text(x = 70,
-     y = 1.8,
-     pos = 1,
-     cex = 0.85,
-     labels = "Larger\nvariation")
-```
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-A study of the nutritional content of peas (*Pisum sativum*) measured the quantities of various minerals in pea seeds [@hacisalihoglu2021characterization].
-In these plots, it does not matter which of the pair of variables is used on the horizontal axis and which is used on the vertical axis.
-
-From the two scatterplots in Fig.\ \@ref(fig:PeasScatter), estimate the two values of $r$.\label{thinkBox:EstimateR}
-
-
-`r if (knitr::is_latex_output()) '<!--'`
-`r webexercises::hide()`
-These are *very* hard to estimate! You are not expected to be very accurate (you cannot be). 
-The actual values (from software) are $r = 0.71$ and $r = -0.13$.
-Realistically, the best you can probably do is 'a reasonably high positive $r$ value' and 'an $r$ value slightly negative'.
-`r webexercises::unhide()`
-`r if (knitr::is_latex_output()) '-->'`
-:::
-
-
-```{r PeasScatter, fig.cap="The relationship between some minerals in pea seeds", fig.align="center", fig.width=8, fig.height=3.25, out.width='90%'}
-data(Peas)
-
-par( mfrow = c(1, 2))
-
-plot( K ~ P,
-      data = Peas,
-      xlab = "Phosporus (mg/g)",
-      ylab = "Potassium (mg/g)",
-      xlim = c(3, 8),
-      ylim = c(10, 17),
-      las = 1,
-      pch = 19,
-      col = "grey",
-      main = "Nutrional elements in\npea seeds")
-abline( coef( lm( K ~ P, data = Peas)),
-        lwd = 2)
-
-###
-
-plot( Ca ~ Zn,
-      data = Peas,
-      xlab = "Zinc (mg/g)",
-      ylab = "Calcium (mg/g)",
-      xlim = c(25, 80),
-      ylim = c(0, 2.5),
-      las = 1,
-      pch = 19,
-      col = "grey",
-      main = "Nutrional elements in\npea seeds")
-abline( coef( lm( Ca ~ Zn, data = Peas)),
-        lwd = 2)
-
-```
-
-
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-The web page [http://guessthecorrelation.com](http://guessthecorrelation.com) makes a game out of trying to guess the correlation coefficient from a scatterplot.
-It's very difficult!
-:::
-
-
-
-<iframe src="https://learningapps.org/watch?v=psq8a3mfj22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
-
-
-### Using software
 
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
@@ -356,186 +54,19 @@ It's very difficult!
 </div>
 
 
-Formulas exist to compute the value of $r$, but are tedious to use manually.
-We will used software to obtain values of $r$.
-For the red-deer data
-`r if( knitr::is_latex_output() ) {
-  '(Fig.\\ \\@ref(fig:RedDeerScatter)),'
-} else {
-  '(Fig.\\ \\@ref(fig:RedDeerScatterHTML)),'
-}`
-the relationship is approximately linear, and the output from jamovi shows that $r = -0.584$.
-The *sign* of $r$ is negative, indicating a *negative* relationship: Higher ages are associated with lighter molars (in general).
-The *value* of $r$ indicates that the strength of the relationship is, perhaps, "moderate".
 
-
-
-```{r RedDeerCorrelationjamoviSPSS, fig.cap="jamovi correlation output for the red-deer data", fig.align="center", out.width=c("40%", "55%"), fig.show="hold"}
-knitr::include_graphics("jamovi/RedDeer/RedDeer-Correlation.png")
-#knitr::include_graphics("SPSS/RedDeer/RedDeer-Correlation.png")
-```
-
-
-### R-squared ($R^2$) {#R2}
-
-The value of $r$ describes the strength and direction of the linear relationship, but knowing exactly what the value *means* is tricky.
-Interpretation is easier using $R^2$, or 'R-squared': the square of the value of $r$.
-`r if (knitr::is_html_output()) {
-   'The animation below shows some values of $R^2$.'
-}`
-
-
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-The value of $R^2$ is *never* negative.
-It is usually multiplied by $100$ and expressed as a percentage.
-:::
-
-
-<!-- need to watch! Unfortunate line breaks can happen! -->
-::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"} 
-Even though the value of $R^2$ is never negative, you need to be careful when using your calculator!
-With most calculators, entering `-0.5^2` returns an answer of `-0.25`.
-The calculator interprets your input as meaning `-(0.5^2)`.
-
-You must use brackets: `(-0.5)^2` gives the correct answer of `0.25`.
-:::
-
-
-```{r R2Plots, animation.hook="gifski", interval=0.5, dev=if (is_latex_output()){"pdf"}else{"png"}}
-if (knitr::is_html_output()){
-  set.seed(12345)
-
-   num.obs <- 120
-    
-   rho2.list <- seq(0.1, 1, 
-                    by = 0.1)
-   rho.list <- c( -rev(sqrt(rho2.list)), 0, sqrt(rho2.list) )
-   num.plots <- length(rho.list)
-    
-   xx <- runif(num.obs, 0, 10)
-    
-   for (i in 1:num.plots){
-      out <- MASS::mvrnorm(num.obs, 
-                           mu = c(mean(xx), 10), 
-                           Sigma = matrix(c(1, 
-                                            rho.list[i] , 
-                                            rho.list[i], 
-                                            1), 
-                                          ncol = 2), 
-                           empirical = TRUE)
-      
-      plot(out[, 1], 
-           out[,2 ], 
-           pch = 19,
-           las = 1, 
-           xlim = c(2, 8),
-           ylim = c(6, 14),
-           xlab = "Explanatory variable",
-           ylab = "Response variable",
-           sub = paste("(r: ", format(round(rho.list[i], 2), nsmall = 2),")", sep = ""),
-           main = paste("R-squared: ", format(round(rho.list[i]^2 * 100, 0), nsmall = 0), "%", sep = "") )
-      abline( coef(lm(out[, 2] ~ out[, 1]) ), 
-              lwd = 2, 
-              col = "grey")
-    }
-}
-```
-
-
-The value of $R^2$ is the reduction in the unexplained variation of $y$ because the value of $x$ is known.
-Without knowing anything about the relationship between the values of $x$ and $y$, the best estimate of the values of $y$ is the mean of the $y$ values.
-However, knowing the relationship between the values of $x$ and $y$ means we (potentially) can make better estimates of the value of $y$, and there should be less variation unexplained.
-When expressed as a percentage, $R^2$ measures how much the unexplained variation reduces due to our knowledge of the linear relationship.
-If $R$-squared is zero, then the amount of unexplained variation has not reduced at all, and exploring the relationship has no value.
-
-
-
-::: {.example #R2Deer name="Values of $R$-squared"}
-For the red-deer data
-`r if( knitr::is_latex_output() ) {
-  '(Fig.\\ \\@ref(fig:RedDeerScatter)),'
-} else {
-  '(Fig.\\ \\@ref(fig:RedDeerScatterHTML)),'
-}`
-the value of $R^2$ is $R^2 = (-0.584)^2 = 0.341$, usually written as a percentage: $34.1$%.
-The value of $R^2$ is positive, even though the value of $r$ is negative.
-:::
-
-
-For the red-deer data, $R^2$ means that about $34.1$% of the variation in molar weights can be explained by variation in the age of the deer.
-The rest of the variation in molar weights is due to extraneous variables, such as weight, diet, amount of exercise, genetics, etc.
-
-
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-The relationship [@mypapers:dunnsmyth:glms] between the number of cyclones $y$ in the Australian region each year from 1969 to 2005, and a climatological index called the *Ocean `r readr::parse_character( c("Niño"), locale=locale(encoding="UTF-8"))` Index* (ONI, $x$), is shown in Fig.\ \@ref(fig:ONIcyclonesCI).
-
-From software, $r = -0.682$.
-What is the value of $R^2$?
-What does it mean?\label{thinkBox:MeaningOfR2}
-
-`r if (knitr::is_latex_output()) '<!--'`
-`r webexercises::hide()`
-$R^2 = (-0.682)^2 = 0.465$: about $46.5$% of the variation in the number if cyclones is due to knowing the value of the ONI averaged over October to December; extraneous variables explain the remaining $54.5$% of the variation in the number of cyclones.
-`r webexercises::unhide()`
-`r if (knitr::is_latex_output()) '-->'`
-:::
-
-
-```{r ONIcyclonesCI, fig.width=4, fig.align="center", fig.cap="The number of cyclones in the Australian region each year from 1969 to 2005, and the ONI for October, November, December", fig.width=5, fig.height=4}
-
-data(Cyclones)
-
-plot(Total ~ OND, 
-     data = Cyclones,
-     xlim = c(-2, 3),
-     ylim = c(0, 20),
-     pch = 19,
-     ylab = "Total number of cyclones",
-     xlab = "ONI averaged over Oct., Nov., Dec.",
-     las = 1)
-
-clm <- lm( Total ~ OND, 
-           data = Cyclones)
-abline( coef(clm), 
-        lwd = 1, 
-        col = "grey")
-grid(lty = 2)
-```
-
-
-## Hypothesis testing {#CorrelationTesting}
-
-### Introduction {#CorTesting-Intro}
-
-
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/diana-parkhouse-Qf4eZXC3t2Y-unsplash.jpg" width="200px"/>
-</div>
-
-```{r}
-data(RedDeer)
-```
-
-For the red-deer data (Sect.\ \@ref(TwoQuant-Intro); Sect.\ \@ref(CorrCoefficients)), the *population* correlation coefficient between the weight of molars $y$ and age of the deer $x$ is unknown, and denoted by $\rho$.
-The sample correlation coefficient is $r = `r round(cor(RedDeer$Age, RedDeer$Weight), 3)`$, but the value of $r$ will vary across all possible samples of male red deer (*sampling variation* exists).
-
-The size of the sampling variation is measured with a *standard error*.
-However, the sampling distribution of $r$ does not have a normal distribution^[For those interested: the value of $r$ only varies between $-1$ and $1$, so cannot have a normal distribution. A transformation of the sample correlation coefficient does have an approximate normal distribution and *standard error*.], and the software output does not even provide a standard error, so we will not discuss CIs for the correlation coefficient.
-
-
-### Hypothesis testing {#CorrelationHT}
+## Statistical hypotheses and the test {#CorrelationHT}
 
 As usual, questions can be asked about the relationship between the variables in the *population*, as measured by the unknown *population* correlation coefficient:
 
 > In the *population*, does the mean value of $y$ change as the value of $x$ changes?
 
-In the context of the red-deer data, a *one-tailed* RQ is asked:
+In the context of the red-deer data, the RQ is:
 
 > In male red deer, does the mean molar weight *decrease* as deer age?
 
-The RQ is about the population parameter $\rho$.
-Clearly, the *sample* correlation coefficient $r$ is not zero, and the RQ is effectively asking if sampling variation is the reason for this.
+This is a *one-tailed* RQ, about the population parameter $\rho$.
+Clearly, the *sample* correlation coefficient $r$ for the red-deer data is not zero, and the RQ is effectively asking if sampling variation is the reason for this.
 The null hypotheses is:
 
 * $H_0$: $\rho = 0$.
@@ -549,13 +80,14 @@ The alternative hypothesis is:
 As usual, initially *assume* that $\rho = 0$ (from $H_0$), then describe what values of $r$ could be *expected*, under that assumption, across all possible samples (sampling variation).
 Then the *observed* value of $r$ is compared to the expected values to determine if the value of $r$ supports or contradicts the assumption.
 
-Since the sampling distribution of $r$ is not a normal distribution, we use software to conduct the hypotheses test.
+For a correlation coefficient, the sampling distribution of $r$ does not have a normal distribution^[For those interested: the value of $r$ only varies between $-1$ and $1$, so cannot have a normal distribution. A transformation of $r$ *does* exist that has an approximate normal distribution and *standard error*.], and the software output does not even provide a standard error, so we will not discuss CIs for the correlation coefficient.
+
 The output (Fig.\ \@ref(fig:RedDeerCorrelationjamoviSPSS)) contains the relevant $P$-value.
-The *two*-tailed $P$-value for the test is less than $0.001$, so the *one*-tailed $P$ value will be less than $0.0005$.
-There is *very strong evidence* exists to support $H_1$ (that the correlation in the population is less than zero).
+The *two*-tailed $P$-value for the test is less than $0.001$, so the *one*-tailed $P$ value will be less than $0.001/2 = 0.0005$.
+*Very strong evidence* exists to support $H_1$ (that the correlation in the population is less than zero).
 We write:
 
-> The sample presents very strong evidence (one-tailed $P < 0.0005$) that teh mean molar weight decreases as the age of the male red deer increases ($r = -0.584$; $n = 78$) in the population.
+> The sample presents very strong evidence (one-tailed $P < 0.0005$) that the mean molar weight decreases as the age of the male red deer increases ($r = -0.584$; $n = 78$) in the population.
 
 Notice the three features of writing conclusions again:
 An *answer to the RQ*; evidence to support the conclusion ('one-tailed $P < 0.0005$'; here no test statistic is given in the output); and some *sample summary information* ('$r = -0.584$; $n = 78$').
@@ -570,7 +102,7 @@ That is, the test is about statistical significance, not practical importance.
 :::
 
 
-### Statistical validity conditions {#ValidityCorrelation}
+## Statistical validity conditions {#ValidityCorrelation}
 
 As usual, these results hold under [certain conditions](#exm:StatisticalValidityAnalogy).
 The conditions for which the test is statistically valid are:
@@ -595,27 +127,6 @@ The test in Sect.\ \@ref(CorrelationTesting) will be statistically valid.
 :::
 
 
-::: {.example #StatisticalValidityBiomass name="Statistical validity"}
-The scatterplot in Fig.\ \@ref(fig:LimeTreesScatter), for the foliage biomass of lime trees, shows that the relationship is non-linear.
-A correlation coefficient is not appropriate, so a hypothesis tests about $r$ is inappropriate.
-:::
-
-
-::: {.example #CorTestDrug name="Drug calculations"}
-A study of $n = 30$ paramedicine students examined the relationship between the amount of stress experienced while performing drug-dose calculations (measured using the State–Trait Anxiety Inventory (STAI)), and length of work experience [@leblanc2005paramedic].
-The hypotheses are:  
-\[
-   \text{$H_0$: } \rho = 0\quad\text{and}\quad \text{$H_1$: } \rho \ne 0.
-\]
-The article gives the correlation coefficient as $r = 0.346$ and $P = 0.18$.
-No scatterplot is provided, so the test is statistically valid only if the relationship is approximately linear, and if the variation in STAI scores does not change for different levels of work experience.
-The sample size is larger than $25$, however.
-We write:
-
-> No evidence exists ($r = 0.346$; two-tailed $P = 0.18$) that the length of work experience is associated with STAI stress levels when performing drug-dose calculations.
-:::
-
-
 <iframe src="https://learningapps.org/watch?v=pd07ft8ec22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
 
 
@@ -629,7 +140,7 @@ Each sample of dogs could produce a different value for $r$, so sampling variati
 
 Since taller dogs might be expected to be longer, we may ask:
 
-> For Phu Quoc Ridgeback dogs, are longer dogs also taller dogs, in general?
+> For Phu Quoc Ridgeback dogs, are *longer* dogs also *taller* dogs, in general?
   
 The hypotheses are:  
 \[
@@ -640,7 +151,7 @@ We write:
 
 > Very strong evidence exists that longer Phu Quoc ridgeback dogs are also taller ($r = 0.837$; one-tailed $P < 0.001$; $n = 30$).
 
-Since (a) the relationship is approximately linear; (b) the variation in heights do not seem to differ for different lengths; and (c) the sample size is larger than $25$, the test is statistically valid.
+Since the relationship is approximately linear, the variation in heights do not seem to differ for different lengths, and the sample size is larger than $25$, the test is statistically valid.
 
 
 
@@ -660,57 +171,6 @@ knitr::include_graphics("OtherImages/SPACER.png")
 knitr::include_graphics("jamovi/Dogs/Dogs-correlation-jamovi.png")
 ```
 
-
-
-## Example: removal efficiency {#Removal-Efficiency}
-
-
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/pexels-lisa-fotios-3264779.jpg" width="200px"/>
-</div>
-
-
-In wastewater treatment facilities, air from biofiltration is passed through a membrane and dissolved in water, and is transformed into harmless byproducts.
-The removal efficiency $y$ (in %) may depend on the inlet temperature (in $^\circ$C; $x$).
-A RQ is
-
-> In treating biofiltation wastewater, is the removal efficiency associated with the inlet temperature?
-
-The population parameter is $\rho$, the correlation between the removal efficiency and inlet temperature.
-A scatterplot of $n = 32$ samples (Fig.\ \@ref(fig:CorrelationRemovalEfficiency), left panel) suggests an approximately linear relationship [@chitwood2001treatment; @DevoreBerk2007].
-
-The output (Fig.\ \@ref(fig:CorrelationRemovalEfficiency), right panel) shows that the sample correlation coefficient is $r = 0.891$, and so $R^2 = (0.891)^2 = 79.4$%.
-This means that about $79.4$% of the variation in removal efficiency can be explained by knowing the inlet temperature.
-
-
-```{r CorrelationRemovalEfficiency, fig.cap="The relationship between removal efficiency and inlet temperature", fig.align="center", fig.width=5, fig.height=3.25, out.width=c("55%", "5%", "35%"), fig.show="hold"}
-data(Removal)
-
-plot(Removal ~ Temp, 
-     data = Removal,
-     main = "Removal efficiency",
-     xlab = "Temperature (degrees C)",
-     ylab = "Removal efficiency (%)",
-     pch = 19,
-     ylim = c(97.5, 99.0),
-     xlim = c(5, 18),
-     las = 1
-     )
-knitr::include_graphics("OtherImages/SPACER.png")
-knitr::include_graphics("jamovi/Removal/RemovalCorrelation.png")
-```
-
-To test if a relationship exists in the population, write:  
-\[
-   \text{$H_0$: } \rho = 0;\quad\text{and}\quad \text{$H_1$: } \rho \ne 0.
-\]
-The alternative hypothesis is two-tailed (as implied by the RQ).
-The software output (Fig.\ \@ref(fig:CorrelationRemovalEfficiency), right panel) shows that $P < 0.001$.
-We conclude:
-
-> The sample presents very strong evidence (two-tailed $P < 0.001$) that removal efficiency depends on the inlet temperature ($r = 0.891$; $n = 32$) in the population.
-
-The relationship is approximately linear, there is no obvious non-constant variance, and the sample size is larger than $25$, so the hypothesis test results will be statistically valid.
 
 
 ## Chapter summary {#Chap34-Summary}
@@ -779,6 +239,83 @@ The correlation coefficient is reported as $r = 0.457$, and the corresponding $P
 ## Exercises {#CorrelationExercises}
 
 Selected answers are available in Sect.\ \@ref(CorrelationAnswer).
+
+
+
+::: {.example #StatisticalValidityBiomass name="Statistical validity"}
+The scatterplot in Fig.\ \@ref(fig:LimeTreesScatter), for the foliage biomass of lime trees, shows that the relationship is non-linear.
+A correlation coefficient is not appropriate, so a hypothesis tests about $r$ is inappropriate.
+:::
+
+
+::: {.example #CorTestDrug name="Drug calculations"}
+A study of $n = 30$ paramedicine students examined the relationship between the amount of stress experienced while performing drug-dose calculations (measured using the State–Trait Anxiety Inventory (STAI)), and length of work experience [@leblanc2005paramedic].
+The hypotheses are:  
+\[
+   \text{$H_0$: } \rho = 0\quad\text{and}\quad \text{$H_1$: } \rho \ne 0.
+\]
+The article gives the correlation coefficient as $r = 0.346$ and $P = 0.18$.
+No scatterplot is provided, so the test is statistically valid only if the relationship is approximately linear, and if the variation in STAI scores does not change for different levels of work experience.
+The sample size is larger than $25$, however.
+We write:
+
+> No evidence exists ($r = 0.346$; two-tailed $P = 0.18$) that the length of work experience is associated with STAI stress levels when performing drug-dose calculations.
+:::
+
+
+
+## Example: removal efficiency {#Removal-Efficiency}
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-lisa-fotios-3264779.jpg" width="200px"/>
+</div>
+
+
+In wastewater treatment facilities, air from biofiltration is passed through a membrane and dissolved in water, and is transformed into harmless byproducts.
+The removal efficiency $y$ (in %) may depend on the inlet temperature (in $^\circ$C; $x$).
+A RQ is
+
+> In treating biofiltation wastewater, is the removal efficiency associated with the inlet temperature?
+
+The population parameter is $\rho$, the correlation between the removal efficiency and inlet temperature.
+A scatterplot of $n = 32$ samples (Fig.\ \@ref(fig:CorrelationRemovalEfficiency), left panel) suggests an approximately linear relationship [@chitwood2001treatment; @DevoreBerk2007].
+
+The output (Fig.\ \@ref(fig:CorrelationRemovalEfficiency), right panel) shows that the sample correlation coefficient is $r = 0.891$, and so $R^2 = (0.891)^2 = 79.4$%.
+This means that about $79.4$% of the variation in removal efficiency can be explained by knowing the inlet temperature.
+
+
+```{r CorrelationRemovalEfficiency, fig.cap="The relationship between removal efficiency and inlet temperature", fig.align="center", fig.width=5, fig.height=3.25, out.width=c("55%", "5%", "35%"), fig.show="hold"}
+data(Removal)
+
+plot(Removal ~ Temp, 
+     data = Removal,
+     main = "Removal efficiency",
+     xlab = "Temperature (degrees C)",
+     ylab = "Removal efficiency (%)",
+     pch = 19,
+     ylim = c(97.5, 99.0),
+     xlim = c(5, 18),
+     las = 1
+     )
+knitr::include_graphics("OtherImages/SPACER.png")
+knitr::include_graphics("jamovi/Removal/RemovalCorrelation.png")
+```
+
+To test if a relationship exists in the population, write:  
+\[
+   \text{$H_0$: } \rho = 0;\quad\text{and}\quad \text{$H_1$: } \rho \ne 0.
+\]
+The alternative hypothesis is two-tailed (as implied by the RQ).
+The software output (Fig.\ \@ref(fig:CorrelationRemovalEfficiency), right panel) shows that $P < 0.001$.
+We conclude:
+
+> The sample presents very strong evidence (two-tailed $P < 0.001$) that removal efficiency depends on the inlet temperature ($r = 0.891$; $n = 32$) in the population.
+
+The relationship is approximately linear, there is no obvious non-constant variance, and the sample size is larger than $25$, so the hypothesis test results will be statistically valid.
+
+
+
 
 
 ::: {.exercise #CorrelationExerciseDrawNegR}

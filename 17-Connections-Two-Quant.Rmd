@@ -12,17 +12,102 @@
 So far, RQs about single variables and RQs for comparing two groups have been studied.
 Comparing the mean value of a quantitative variable in two groups was studied in Sects.\ \@ref(CITwoMeans) and\ \@ref(TestTwoMeans).
 Comparing the odds of an outcome of interest in two groups was studied in Sects.\ \@ref(OddsRatiosCI) and\ \@ref(TestsOddsRatio).
-In this chapter, the relationship between two quantitative variables is studied: the *correlation*.
+In this chapter, the relationship between two quantitative variables is studied.
 
-Our main example is a study [@data:Holgate1965:StraightLine] examining the relationship between the age of $n = 78$ male red deer and the weight of their
+
+
+
+## Graphs {#Scatterplots}
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/diana-parkhouse-Qf4eZXC3t2Y-unsplash.jpg" width="200px"/>
+</div>
+
+
+Scatterplots display the relationship between *two quantitative variables*.
+Conventionally, when appropriate, the response variable is shown on the vertical axis (and denoted $y$), and the explanatory variable is shown on the horizontal axis (and denoted $x$).
+Two quantitative variables are measured on each individual, and a point is placed on the satter plot for each individual at the values of the two variables.
+In some cases, only a simple relationship is being explored, and which variable is denoted $x$ and which is $y$ is not important (for example, see Sect.\ \@ref(CorTestDogs).)
+
+As with any graph, describing the message in the graph is important, because the purpose of a graph is to display the information in the clearest, simplest possible way.
+
+
+:::{.example #RedDeer name="Red-deer data"}
+A study examined the relationship between the age of $n = 78$ male red deer and the weight of their molars [@data:Holgate1965:StraightLine].
+The data 
 `r if( knitr::is_latex_output() ) {
-  'molars (Table\\ \\@ref(tab:deerData)).'
+  '(Table\\ \\@ref(tab:RedDeerData))'
 } else {
-  'molars; the data are shown below.'
-}
-`
-The data comprises two quantitative variables.
+  '(below)'
+}`
+comprises two *quantitative* variables, and both measurements are made on the same individuals (i.e., male red deer).
 
+The scatterplot (Fig.\ \@ref(fig:RedDeerScatter)) shows an dot for each deer.
+The response variable is the molar weight, which is on the vertical axis and denoted $y$.
+The explanatory variable is the deer age, which is on the horizontal axis and denoted $x$.
+
+One deer is just over $14$ years of age (so that $x = 14$ for this deer),  and has a molar weight of about $1.5$\ g (so that $y = 1.5$).
+This is the last deer shown in 
+`r if( knitr::is_latex_output() ) {
+  'Table\\ \\@ref(tab:RedDeerData).'
+} else {
+  'the data above.'
+}`
+:::
+
+
+```{r}
+data(RedDeer)
+RDhead <- as.matrix( head(RedDeer, 5) )
+RDtail <- as.matrix( tail(RedDeer, 5) )
+
+if( knitr::is_latex_output()){
+T1 <- knitr::kable( pad(RDhead,
+                  surroundMaths = TRUE,
+                  targetLength = 4,
+                  digits = c(1, 2)),
+         format = "latex",
+         booktabs = TRUE,
+         longtable = FALSE,
+         escape = FALSE,
+         align = "c",
+         linesep = "", # With the \vdots, spacing doesn't seem necessary
+         col.names = c( "(in years)", 
+	                      "(in g)")) %>%
+   row_spec(0, bold = TRUE) %>%
+  add_header_above( c("Age" = 1,
+                      "Molar weight" = 1),
+                    bold = TRUE,
+                    line = FALSE)
+
+T2 <- knitr::kable( pad(RDtail,
+                  surroundMaths = TRUE,
+                  targetLength = 4,
+                  digits = c(1, 2)),
+         format = "latex",
+         booktabs = TRUE,
+         longtable = FALSE,
+         escape = FALSE,
+         align = "c",
+         row.names = FALSE,
+         linesep = "", # With the \vdots, spacing doesn't seem necessary
+         col.names = c( "(in years)", 
+	                      "(in g)")) %>%
+   row_spec(0, bold = TRUE) %>%
+  add_header_above( c("Age" = 1,
+                      "Molar weight" = 1),
+                    bold = TRUE,
+                    line = FALSE)
+
+  out <- knitr::kables(list(T1, T2), 
+                       format = "latex",
+                       label = "RedDeerData",
+                       caption = "Molar weight and age\nof male red deer: The first five and the last five observations are shown.") %>% 
+    kable_styling(font_size = 8)
+  prepareSideBySideTable(out,
+                         gap = "\\qquad")
+}
+```
 
 ```{r deerDataDT, fig.cap="The male red deer data", fig.align="center"}
 data(RedDeer)
@@ -37,49 +122,7 @@ if( knitr::is_html_output() ) {
 ```
 
 
-
-\begin{figure}
-\begin{minipage}{0.32\textwidth}
-\captionof{table}{The first four and last four observations of the male red deer data ($n = 78$)\label{tab:deerData}}
-\fontsize{8}{12}\selectfont
-```{r deerData}
-RDhead <- array( dim = c(9, 2) )
-
-RDhead[1:4, ] <- as.matrix( head(RedDeer, 4) )
-RDhead[6:9, ] <- as.matrix( tail(RedDeer, 4) )
-
-RDhead[, 1] <- format( RDhead[, 1], 
-                       nsmall = 1)
-RDhead[, 2] <- format( RDhead[, 2], 
-                       digits = 2,
-                       nsmall = 2)
-
-RDhead[5, ] <- c("$\\vdots$", "$\\vdots$")
-
-knitr::kable( pad(RDhead,
-                  surroundMaths = TRUE,
-                  targetLength = 4,
-                  digits = c(1, 2)),
-         format = "latex",
-         booktabs = TRUE,
-         longtable = FALSE,
-         table.env = "@empty",
-         escape = FALSE,
-         digits = c(1, 2),
-         align = "c",
-         linesep = "", # With the \vdots, spacing doesn't seem necessary
-         col.names = c( "Age (in years)", 
-	                      "Molar weight (in g)")) %>%
-   row_spec(0, bold = TRUE) %>%
-   #kable_styling(font_size = 10) %>% # CANNOT USE THIS IN THE MINIPAGE
-   column_spec(1, width = "13mm") %>%
-   column_spec(2, width = "22mm")
-```
-\end{minipage}
-\hspace{0.05\textwidth}
-\begin{minipage}{0.60\textwidth}%
-\centering
-```{r RedDeerScatter, fig.width=5.5, out.width='95%', fig.height=4}
+```{r RedDeerScatter, fig.width=7.5, out.width='80%', fig.height=4, fig.cap="A plot of the red-deer data", fig.align="center"}
 plot(Weight ~ Age, 
      data = RedDeer,
      las = 1,
@@ -91,56 +134,9 @@ plot(Weight ~ Age,
      xlab = "Age (in years)",
      ylab = "Molar weight (in g)")
 ```
-\caption{Molar weight verses age for the red deer data}\label{fig:RedDeerScatter}
-\end{minipage}
-\end{figure}
 
 
-## Graphs {#Scatterplots}
-
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/diana-parkhouse-Qf4eZXC3t2Y-unsplash.jpg" width="200px"/>
-</div>
-
-
-For the red deer data, both variables are *quantitative*, so the appropriate graphical summary (Sect.\ \@ref(Scatterplots)) is a *scatterplot* 
-`r if( knitr::is_latex_output() ) {
-  '(Fig.\\ \\@ref(fig:RedDeerScatter)).'
-} else {
-  '(Fig.\\ \\@ref(fig:RedDeerScatterHTML)).'
-}
-`
-The *response* variable is graphed on the *vertical* axis, and denoted $y$; the *explanatory* variable is graphed on the *horizontal* axis,
-and denoted $x$.
-In some cases, when only a relationship is being explored, which variable is $x$ and which is $y$ is not important (for example, see Sect.\ \@ref(CorTestDogs).)
-
-The *explanatory* variable (potentially) partially *explains* the response variable.
-In this example, the age of the deer may partially explain the weight of the molars (supposing the weight of the molars partially explains the age of the deer is silly), so
-
-* The *explanatory variable* ($x$) is the age of the deer (in years), and
-* The *response variable* ($y$) is the weight of molars (in grams).
-
-Each row in the dataset (and each point on the scatterplot) corresponds to a single deer (the units of analysis); two quantitative variables (age; molar weight) are measured on each deer.
-
-
-<!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r RedDeerScatterHTML, fig.cap="Molar weight verses age for the red deer data", fig.align="center", fig.width=4.5, fig.height=3.5}
-plot(Weight ~ Age,
-     data = RedDeer,
-     las = 1,
-     pch = 19,
-     ylim = c(0, 5.5),
-     xlim = c(4, 15),
-     cex = 1,
-     main = "Molar weight in male red deer\nplotted against the age of the deer",
-     xlab = "Age (in years)",
-     ylab = "Molar weight (in g)") 
-```
-`r if (knitr::is_latex_output()) '-->'`
-
-
-## Understanding scatterplots {#UnderstandingScatterplots}
+## Describing scatterplots {#UnderstandingScatterplots}
 
 The purpose of a graph is to facilitate *understanding* of the data (Sect.\ \@ref(GraphsConstructing)).
 For a scatterplot, the *form*, *direction*, and *variation in the relationship* (or the *strength of the relationship*) are described:
@@ -158,8 +154,7 @@ These three features explain the *type* of relationship (*form*; *direction*), a
 Examples are shown in
 `r if (knitr::is_html_output()) {
   'the carousel below (click to move through the scatterplots).'
-} else {
-  'Fig.\\ \\@ref(fig:ScatterplotDescriptionExamples). (The online version has extra examples.)'
+  'Fig.\\ \\@ref(fig:ScatterplotDescriptionExamples).'
 }`
 
 
@@ -232,18 +227,684 @@ text(x = 70,
      labels = "Larger\nvariation")
 ```
 
+::: {.example #DescribeScatterplotsDeer name="Scatterplots"}
+For the red deer data 
+`r if (knitr::is_latex_output()) {
+   '(Fig.\\ \\@ref(fig:RedDeerScatter)),'
+} else {
+   '(Fig\\. \\@ref(fig:RedDeerScatterHTML)),'
+}`
+the relationship is approximately linear (form) with a negative direction (*older* deer generally have *lighter* teeth); the *variation* is... perhaps moderate.
+:::
 
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Describe the scatterplot of the diameter against the age of $385$ small-leaved lime trees (@data:ForestBiomass2017), shown in Fig.\ \@ref(fig:LimeTreesScatter).\label{thinkBox:DescribeLimeTreesScatter}
+
+<iframe src="https://learningapps.org/watch?v=pdxmdaf1522" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
 
 
-`r if (knitr::is_latex_output()) '<!--'`
-`r webexercises::hide()`
-* **Form**: may start off straight-ish, but then seems hard to assess.
-* **Direction**: biomass increases as age increases (on average). 
-* **Variation**: small-ish for small ages; large-ish for older trees (after about 60 years old).
-`r webexercises::unhide()`
-`r if (knitr::is_latex_output()) '-->'`
+## Numerically describing linear relationships
+
+### Correlation coefficients {#CorrCoefficients}
+
+Describing the relationship between two quantitative variables requires describing the form, direction and variation (Sect.\ \@ref(UnderstandingScatterplots)).
+A *correlation coefficient* is a single number encapsulating all this information.
+However, numerically describing the relationship between two quantitative variables, in general, is very difficult, since many types of relationships are possible (consider 
+`r if (knitr::is_html_output()) {
+  'the scatterplots shown in the carousel above.'
+} else {
+  'the scatterplots shown in Fig.\\ \\@ref(fig:ScatterplotDescriptionExamples)).'
+}`
+For this reason, *we now focus just on linear relationships*, and discuss a way of numerically summarising *linear relationships*.
+
+The *Pearson* correlation coefficient measures the *strength* and *direction* of the *linear* relationship between two quantitative variables^[Other correlation coefficients also exist, such as the *Spearman* correlation, which may be used for increasing-only or decreasing-only  non-linear relationships.].
+Pearson correlation coefficients only apply if the form is approximately *linear*, so checking the scatterplot first is important.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The Pearson correlation coefficient only makes sense if the relationship is approximately linear.
+:::
+
+
+In the *population*, the unknown value of the correlation coefficient is denoted $\rho$ ('rho'); in the *sample* the value of the correlation coefficient is denoted $r$.
+As usual, $r$ (the *statistic*) is an estimate of $\rho$ (the *parameter*), and the value of $r$ is likely to be different in every sample (that is, *sampling variation* exists).
+
+
+:::: {.pronounceBox .pronounce data-latex="{iconmonstr-microphone-7-240.png}"}
+
+::: {style="display: flex;"}
+The symbol $\rho$ is the Greek letter 'rho', pronounced 'row', as in 'row your boat'.
+:::
+
+::: {}
+```{r}
+htmltools::tags$video(src = "./Movies/rho.mp4", 
+                      width = "121", 
+                      loop = "FALSE", 
+                      controls = "controls", 
+                      loop = "loop", 
+                      style = "padding:5px; border: 2px solid gray;")
+```
+:::
+
+::::
+
+
+
+The values of $\rho$ and $r$ are *always* between $-1$ and $+1$.
+The *sign* indicates whether the relationship has a positive or negative linear association, and the *value* of the correlation coefficient describes the *strength* of the relationship:
+
+* $r = -1$ means a *perfect, negative* relationship:
+  knowing the value of $x$ produces a perfect prediction of the value of $y$, and *larger* values of $y$ are associated with *smaller* values of $x$.
+* Values of $r$ between $-1$ and $0$ mean a *negative* relationship:
+  knowing the value of $x$ produces a prediction of the value of $y$, and *larger* values of $y$ are associated with *smaller* values of $x$ (in general).
+* $r = 0$ means *no linear relationship* between the variables:
+  Knowing how the value of $x$ changes tells us nothing about how the corresponding value of $y$ changes.
+  The best prediction for *any* value of $x$ is the mean of $y$.
+* Values of $r$ between $0$ and $+1$ mean a *positive* relationship:
+  knowing the value of $x$ produces a prediction of the value of $y$, and *larger* values of $y$ are associated with *larger* values of $x$ (in general).
+* $r = +1$ means a *perfect, positive* relationship:
+  knowing the value of $x$ produces a perfect prediction of the value of $y$, and *larger* values of $y$ are associated with *larger* values of $x$.
+
+Most values of $r$ are between the extremes of $r = -1$ and $r = +1$.
+`r if (knitr::is_html_output()) {
+   'The animation below demonstrates how the values of the correlation coefficient work.'
+}`
+
+
+```{r, animation.hook="gifski", interval=0.5, dev=if (is_latex_output()){"pdf"}else{"png"}}
+if (knitr::is_html_output()){
+  set.seed(12345)
+
+    num.obs <- 120
+    
+    rho.list <- seq(-1, 1, 
+                    by = 0.1)
+    num.plots <- length(rho.list)
+    
+    xx <- runif(num.obs, 0, 10)
+    
+    for (i in 1:num.plots){
+      out <- MASS::mvrnorm(num.obs, 
+                           mu = c(mean(xx), 10), 
+                           Sigma = matrix(c(1, 
+                                            rho.list[i] , 
+                                            rho.list[i], 1), 
+                                          ncol = 2), 
+                           empirical = TRUE)
+      
+      plot(out[, 1], out[, 2], 
+           pch = 19,
+           las = 1, 
+           xlim = c(2, 8),
+           ylim = c(6, 14),
+           xlab = expression(paste("Explanatory variable ", italic(x)) ),
+           ylab = expression(paste("Response variable ", italic(y)) ),
+           main = paste("Correlation:", format(round(rho.list[i], 2), nsmall = 2)))
+      abline( coef(lm(out[, 2] ~ out[, 1]) ), 
+              lwd = 2, 
+              col = "grey")
+    }
+  }
+```
+
+Numerous example scatterplots were shown in Sect.\ \@ref(UnderstandingScatterplots).
+A correlation coefficient is not relevant for 
+`r if (knitr::is_html_output()) {
+  'Plots C, D, E or H,'
+} else {
+  'Plots C, D or E,'
+}`
+as those relationships are not linear.
+For the others:
+
+* *Plot A*: the correlation coefficient will be *positive*, and reasonably near one.
+* *Plot B*: the correlation coefficient will be *negative*, but not near $-1$.
+* *Plot F*: the correlation coefficient will close to zero.
+
+::: {.example #Correlations name="Correlation coefficients"}
+A study of sand dollars (@leuchtenberger2022effects, @Nishizaki2022SanddollarData) explored the relationship between water temperature and fertilization rates (Fig.\ \@ref(fig:SanddollarsPlot)).
+Fitting a straight line gives a correlation coefficient of $r = -0.49$ (left panel), which might suggest that *higher* temperatures result in *lower* fertilization rates.
+However, a curved relationship is apparent (right panel), and so the relationship is more involved: the fertilization rate increases up to about 18^o^C, and then starts falling again.
+
+A correlation coefficient is not suitable for describing the relationship.
+:::
+
+```{r SanddollarsPlot, fig.cap="Water temperature vs fertilization rates for sand dollars. Left: a linear relationship. Right: a curved relationship", fig.align="center", fig.width=8, fig.height=3.25, out.width='90%'}
+par(mfrow = c(1, 2))
+
+data(Sanddollars)
+
+SDsub <- subset(Sanddollars, 
+                Sanddollars$SD.temperatures < 35)
+
+plot( SDsub$SD.temperatures, SDsub$SD.fertilization,
+      pch = 19,
+      col = "grey",
+      lwd = 2,
+      las = 1,
+      xlim = c(5, 35),
+      ylim = c(20, 100),
+      main = "Temperature vs fertilization\nrates for sand dollars",
+      xlab = "Water temperature (degrees C)",
+      ylab = "Fertilization rate (in %)")
+text(x = 15,
+     y = 40,
+     labels = expression( atop(italic(r)==-0.49),
+                          group("(", Not~appropriate,")")) )
+
+abline( coef( lm( SD.fertilization ~ SD.temperatures,
+                  data =  SDsub ) ),
+        lwd = 2,
+        lty = 1)
+
+plot( SDsub$SD.temperatures, SDsub$SD.fertilization,
+      pch = 19,
+      col = "grey",
+      lwd = 2,
+      las = 1,
+      xlim = c(5, 35),
+      ylim = c(20, 100),
+      main = "Temperature vs fertilization\nrates for sand dollars",
+      xlab = "Water temperature (degrees C)",
+      ylab = "Fertilization rate (in %)")
+
+m2 <- lm( SD.fertilization ~ poly(SD.temperatures, 2),
+            data =  SDsub )
+newX <- seq(5, 35,
+            length = 100)
+newY <- predict( m2, newdata = data.frame(SD.temperatures = newX))
+lines(newY ~ newX,
+      lwd = 2)
+
+```
+
+
+
+Formulas exist to compute the value of $r$, but are tedious to use manually.
+We will used software to obtain values of $r$.
+
+
+::: {.example #CorrelationsDeer name="Correlation coefficients"}
+For the red-deer data 
+`r if( knitr::is_latex_output() ) {
+  '(Fig.\\ \\@ref(fig:RedDeerScatter)),'
+} else {
+  '(Fig.\\ \\@ref(fig:RedDeerScatterHTML)),'
+}
+`
+the relationship is approximately linear, and the output from jamovi shows that $r = -0.584$ (Fig.\ \@ref(fig:RedDeerCorrelationjamovi)).
+The value of $r$ is *negative* because, in general, *older* deer ($x$) are associated with *smaller* weight molars ($y$).
+The value is between $r = 0$ and $r = -1$, so the relationship may be described as 'moderately strong' perhaps.
+:::
+
+
+::: {.example #LungCapCor name="Correlation coefficients"}
+Consider the scatterplot in Fig.\ \@ref(fig:FEVscatter2), from a study [@data:Tager:FEV; @BIB:data:FEV] of lung capacity of children in Boston (using the forced expiratory volume, FEV).
+The plot is not linear, so a correlation coefficient is inappropriate.
+
+In addition, the variation in the FEV increases as children get taller.
+For instance, the variation in FEV for children about 50cm tall is much smaller than the variation in FEV for children about 70cm tall.
+:::
+
+
+```{r FEVscatter2, fig.cap="FEV plotted against height for children in Boston", fig.align="center", fig.width=8, fig.height=3.25, out.width='90%'}
+data(LungCap)
+
+par(mfrow = c(1, 2))
+
+plot(FEV ~ Ht, 
+     data = LungCap,
+     las = 1,
+     ylim = c(0, 6),
+     cex = 0.7,
+     main = "FEV and height",
+     xlab = "Height (inches)",
+     ylab = "FEV (litres)",
+     pch = 19)
+
+scatter.smooth( LungCap$Ht, LungCap$FEV,
+     las = 1,
+     ylim = c(0, 6),
+     cex = 0.7,
+     col = "grey",
+     lwd = 2,
+     main = "FEV and height",
+     xlab = "Height (inches)",
+     ylab = "FEV (litres)",
+     pch = 19)
+
+arrows(x0 = 50,
+       x1 = 50,
+       y0 = 0.8,
+       y1 = 2.2,
+       angle = 15,
+       length = 0.11,
+       lwd = 2,
+       code = 3)
+text(x = 50,
+     y = 2.2,
+     pos = 3,
+     cex = 0.85,
+     labels = "Smaller\nvariation")
+
+arrows(x0 = 70,
+       x1 = 70,
+       y0 = 2,
+       y1 = 5.8,
+       angle = 15,
+       lwd = 2,
+       length = 0.11,
+       code = 3)
+text(x = 70,
+     y = 1.8,
+     pos = 1,
+     cex = 0.85,
+     labels = "Larger\nvariation")
+```
+
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+The web page [http://guessthecorrelation.com](http://guessthecorrelation.com) makes a game out of trying to guess the correlation coefficient from a scatterplot.
+It's very difficult!
+:::
+
+
+
+<iframe src="https://learningapps.org/watch?v=psq8a3mfj22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+
+
+```{r RedDeerCorrelationjamovi, fig.cap="jamovi correlation output for the red-deer data", fig.align="center", out.width="60%", fig.show="hold"}
+knitr::include_graphics("jamovi/RedDeer/RedDeer-Correlation.png")
+#knitr::include_graphics("SPSS/RedDeer/RedDeer-Correlation.png")
+```
+
+
+### R-squared ($R^2$) {#R2}
+
+The value of $r$ describes the strength and direction of the linear relationship, but knowing exactly what the value *means* is tricky.
+Interpretation is easier using $R^2$, or 'R-squared': the square of the value of $r$.
+`r if (knitr::is_html_output()) {
+   'The animation below shows some values of $R^2$.'
+}`
+
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+The value of $R^2$ is *never* negative.
+It is usually multiplied by $100$ and expressed as a percentage.
+:::
+
+
+<!-- need to watch! Unfortunate line breaks can happen! -->
+::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"} 
+Even though the value of $R^2$ is never negative, you need to be careful when using your calculator!
+With most calculators, entering `-0.5^2` returns an answer of `-0.25`.
+The calculator interprets your input as meaning `-(0.5^2)`.
+
+You must use brackets: `(-0.5)^2` gives the correct answer of `0.25`.
+:::
+
+
+```{r R2Plots, animation.hook="gifski", interval=0.5, dev=if (is_latex_output()){"pdf"}else{"png"}}
+if (knitr::is_html_output()){
+  set.seed(12345)
+
+   num.obs <- 120
+    
+   rho2.list <- seq(0.1, 1, 
+                    by = 0.1)
+   rho.list <- c( -rev(sqrt(rho2.list)), 0, sqrt(rho2.list) )
+   num.plots <- length(rho.list)
+    
+   xx <- runif(num.obs, 0, 10)
+    
+   for (i in 1:num.plots){
+      out <- MASS::mvrnorm(num.obs, 
+                           mu = c(mean(xx), 10), 
+                           Sigma = matrix(c(1, 
+                                            rho.list[i] , 
+                                            rho.list[i], 
+                                            1), 
+                                          ncol = 2), 
+                           empirical = TRUE)
+      
+      plot(out[, 1], 
+           out[,2 ], 
+           pch = 19,
+           las = 1, 
+           xlim = c(2, 8),
+           ylim = c(6, 14),
+           xlab = "Explanatory variable",
+           ylab = "Response variable",
+           sub = paste("(r: ", format(round(rho.list[i], 2), nsmall = 2),")", sep = ""),
+           main = paste("R-squared: ", format(round(rho.list[i]^2 * 100, 0), nsmall = 0), "%", sep = "") )
+      abline( coef(lm(out[, 2] ~ out[, 1]) ), 
+              lwd = 2, 
+              col = "grey")
+    }
+}
+```
+
+
+The value of $R^2$ measures the reduction in the unexplained variation in values of $y$ because the value of $x$ is known.
+Without knowing anything about the relationship between the values of $x$ and $y$, the best summary of the values of $y$ is the mean of the $y$ values.
+However, the relationship between the values of $x$ and $y$ suggests we (potentially) can make better estimates of the value of $y$ by knowing the value of $x$, and less variation should be left unexplained.
+When expressed as a percentage, $R^2$ measures how much the unexplained variation reduces due to our knowledge of the linear relationship.
+If $R$-squared is zero, then the amount of unexplained variation has not reduced at all, and exploring the relationship has no value.
+
+
+:::{.example #ReductionR2 name="Unknown variation in $y$"}
+For the red-deer data, the unexplained variation in the values of $y$ (molar weight), without knowing anything about the age of the deer, is the variation in the *distances from the mean* to each observation (Fig.\ \@ref(fig:RedDeerR2), left panel).
+Effectively, the unexplained variation is the standard deviation of the molar weights.
+
+If information about the age of the deer ($x$) is used, the unexplained variation in the values of $y$ is now the variation in the *distances from the line explaining the relationship* to each observation (Fig.\ \@ref(fig:RedDeerR2), right panel).
+The distances are much shorter, in general, showing a decrease in the *unexplained* variation.
+Effectively, the unexplained variation is the standard deviation of the distance from the line to the observations.
+:::
+
+
+```{r RedDeerR2, message=FALSE, warning=FALSE, fig.height=5.25, fig.width=6.5, out.width='100%', fig.align="center", fig.cap="The unexplained variation for the red-deer data. Left panels: When no information about the age of the deer is used, the mean (the horizontal grey line) is the best summary of the molar weight. Right panels: When information about the age of the deer is used (as shown the the grey line), the distances are shorter in general."}
+layout( matrix(c(1, 2, 3, 4), 
+               nrow = 2, 
+               byrow = TRUE) )
+
+showResidualsAtThesePoints <- c(3, 22, 53, 65, 69, 75, 74)
+
+
+### TOP LEFT plot
+par(mar = c(5.1, 4.5, 3, 3))
+
+plot(Weight ~ Age, 
+     data = RedDeer,
+     las = 1,
+     pch = 19, 
+     col = "lightgrey",
+     ylim = c(0, 5.5),
+     xlim = c(4, 15),
+     cex = 1,
+     main = "Molar weight and age\nof male red deer",
+     xlab = "Age (in years)",
+     ylab = "Molar weight (in g)")
+
+
+abline( h = mean(RedDeer$Weight),
+        lwd = 2,
+        col = "grey")
+
+# Draw residuals
+yHat <- rep(mean(RedDeer$Weight),
+            length = length(RedDeer$Weight) )
+
+for (i in (1:length(showResidualsAtThesePoints))){
+  arrows(x0 = RedDeer[ showResidualsAtThesePoints[i], 1],
+         x1 = RedDeer[showResidualsAtThesePoints[i], 1],
+         y0 = yHat[showResidualsAtThesePoints[i]],
+         y1 = RedDeer[showResidualsAtThesePoints[i], 2],
+         length = 0.075,
+         angle = 15)
+}
+
+
+### TOP RIGHT plot
+par(mar = c(5.1, 4.1, 3, 1))
+
+plot(Weight ~ Age, 
+     data = RedDeer,
+     las = 1,
+     pch = 19, 
+     col = "lightgrey",
+     ylim = c(0, 5.5),
+     xlim = c(4, 15),
+     cex = 1,
+     main = "Molar weight and age\nof male red deer",
+     xlab = "Age (in years)",
+     ylab = "Molar weight (in g)")
+
+mDeer <- lm(Weight ~ Age,
+            data = RedDeer)
+
+abline( mDeer,
+        lwd = 2,
+        col = "grey")
+
+# Draw residuals
+yHat <- predict(mDeer)
+
+for (i in (1:length(showResidualsAtThesePoints))){
+  arrows(x0 = RedDeer[ showResidualsAtThesePoints[i], 1],
+         x1 = RedDeer[showResidualsAtThesePoints[i], 1],
+         y0 = yHat[showResidualsAtThesePoints[i]],
+         y1 = RedDeer[showResidualsAtThesePoints[i], 2],
+         length = 0.075,
+         angle = 15)
+}
+
+
+
+
+### BOTTOM LEFT plot
+hist( RedDeer$Weight,
+      las = 1,
+      xlim = c(1, 6),
+      ylim = c(0, 25),
+      border = grey(0.5),
+      main = expression( atop(The~variation~"in"~the,
+                              values~of~italic(y)~"("*molar~weights*")")),
+      xlab = "Molar weight (in g)")
+
+arrows(x0 = 1,
+       x1 = 5.5,
+       y0 = 15,
+       y1 = 15,
+       code = 3, # Arrow both ends
+       lwd = 2,
+       angle = 15,
+       length = 0.1)
+
+### BOTTOM RIGHT plot
+deerResiduals <- summary(mDeer)$residuals
+hist( deerResiduals,
+      las = 1,
+      xlim = c(-3, 3),
+      ylim = c(0, 30),
+      border = grey(0.5),
+      main = expression(atop(The~variation~after~knowing,
+                             the~values~of~italic(x)~"("*age*")")),
+      xlab = "Distances from line to observations")
+
+arrows(x0 = -1.5,
+       x1 = 2,
+       y0 = 15/25 * 30,
+       y1 = 15/25 * 30,
+       code = 3, # Arrow both ends
+       lwd = 2,
+       angle = 15,
+       length = 0.1)
+
+```
+
+
+
+::: {.example #R2Deer name="Values of $R$-squared"}
+For the red-deer data
+`r if( knitr::is_latex_output() ) {
+  '(Fig.\\ \\@ref(fig:RedDeerScatter)),'
+} else {
+  '(Fig.\\ \\@ref(fig:RedDeerScatterHTML)),'
+}`
+the value of $R^2$ is $R^2 = (-0.584)^2 = 0.341$, usually written as a percentage: $34.1$%.
+The value of $R^2$ is positive, even though the value of $r$ is negative.
+
+This means a reduction of about $34.1$% in the unknown variation of the molar weights, due to using the information in the age of the deer.
+The rest of the variation in molar weights is due to chance, and to extraneous variables, such as weight, diet, amount of exercise, genetics, etc.
+:::
+
+
+
+
+## Summary tables {#ConnectionSummaryTables}
+
+In general, numerical summaries are difficult for describing the relationship between two quantitative variables, because the possible relationships vary greatly (Sect.\ \@ref(UnderstandingScatterplots)).
+Hence, numerical summaries are described specifically for *linear* relationships.
+
+Numerical summary information the linear relationship between *two quantitative variables* can be collated in a table.
+The table summarises each variable.
+If the relationship is linear, the measures described in Chap.\ \@ref(LinearRelationshipsR) may also be added to the summary table.
+
+
+
+```{r RDSummaryTable}
+RDTable <- array( dim = c(2, 4))
+
+rownames(RDTable) <- c("Age",
+                        "Molar weight") 
+colnames(RDTable) <- c("Mean",
+                        "Std. dev.",
+                        "Sample size",
+                       "Correlation") 
+
+
+RDTable[, 1] <- round(colMeans(RedDeer), 1)
+RDTable[, 2] <- round(apply(RedDeer, 2, "sd"), 2)
+RDTable[, 3] <- round(apply(RedDeer, 2, "realLength"), 0)
+RDTable[, 4] <- c( round(cor(RedDeer)[1, 2], 3), 
+                   NA)
+
+knitr::kable( pad(RDTable,
+                  surroundMaths = TRUE,
+                  targetLength = c(4, 5, 3, 6),
+                  digits = c(1, 2, 0, 3)),
+              format = "latex",
+              longtable = FALSE,
+              booktabs = TRUE,
+              escape = FALSE,
+              align = "c",
+              caption = "A numerical summary of the red deer data") %>%
+  kable_styling(full_width = FALSE) %>%
+  row_spec(row = 0, 
+           bold = TRUE) %>%
+  row_spec(row = 3,
+           italic = TRUE) %>%
+  kable_styling(font_size = 8)
+```
+
+
+
+
+
+## Chapter summary {#TwoQuant-Summary}
+
+A *scatterplot* displays the relationship between two quantitative variables (the response denoted $y$; the explanatory denoted $x$).
+The relationship is described by the *form* (linear, or otherwise), the *direction* of the relationship (sometimes not relevant if the graph is not linear), and the *variation* in the relationship (or the *strength* of the relationship).
+
+
+## Quick review questions {#TwoQuant-QuickReview}
+
+::: {.webex-check .webex-box}
+A study of onion growth [@meadplant] produced the scatterplot shown in Fig.\ \@ref(fig:MeanScatter).
+
+
+```{r MeanScatter, fig.cap="Onion yield plotted against planting density", fig.align="center", fig.width=5, fig.height=3.5}
+data(YieldDen)
+
+plot(Yield ~ Dens,
+	las = 1,
+	main = "Planting density and yield per plant\nfor onions",
+	xlab = "Planting density (plants/sq. ft)",
+	ylab = "Yield/plant (g/plant)", 
+  pch = 19,
+	ylim = c(0, 140),
+	data = YieldDen)
+```
+
+1. What is the $x$-variable? \tightlist
+`r if( knitr::is_html_output() ) {longmcq( c(
+  answer = "Planting density",
+  "Yield per plant",
+  "It doesn't matter"
+) )}`
+
+1. What is the best description for the  *form* of the relationship?
+`r if( knitr::is_html_output() ) {longmcq( c(
+  "Linear",
+  answer = "Curved"
+) )}`
+1. What is the best description for the *direction* of the relationship?
+`r if( knitr::is_html_output() ) {longmcq( c(
+  answer = "Negative",
+  "Positive"
+) )}`
+1. WHat os the best description for the *variation* in the relationship?
+`r if( knitr::is_html_output() ) {longmcq( c(
+  answer = "Small",
+  "Large",
+  "Strong"
+) )}`
+:::
+
+
+
+
+## Exercises {#TwoQuant-Exercises}
+
+Selected answers are available in Sect.\ \@ref(TwoQuant-Answers).
+
+
+::: {.exercise #TwoQuantExercisesPeas}
+A study of the nutritional content of peas (*Pisum sativum*) measured the quantities of various minerals in pea seeds [@hacisalihoglu2021characterization].
+In these plots, it does not matter which of the pair of variables is used on the horizontal axis and which is used on the vertical axis.
+
+From the *left* scatterplot in Fig.\ \@ref(fig:PeasScatter), estimate the value of $r$.
+:::
+
+::: {.exercise #TwoQuantExercisesPeas2}
+A study of the nutritional content of peas (*Pisum sativum*) measured the quantities of various minerals in pea seeds [@hacisalihoglu2021characterization].
+In these plots, it does not matter which of the pair of variables is used on the horizontal axis and which is used on the vertical axis.
+
+From the *right* scatterplot in Fig.\ \@ref(fig:PeasScatter), estimate the value of $r$.
+:::
+
+
+```{r PeasScatter, fig.cap="The relationship between some minerals in pea seeds", fig.align="center", fig.width=8, fig.height=3.25, out.width='90%'}
+data(Peas)
+
+par( mfrow = c(1, 2))
+
+plot( K ~ P,
+      data = Peas,
+      xlab = "Phosporus (mg/g)",
+      ylab = "Potassium (mg/g)",
+      xlim = c(3, 8),
+      ylim = c(10, 17),
+      las = 1,
+      pch = 19,
+      col = "grey",
+      main = "Nutrional elements in\npea seeds")
+abline( coef( lm( K ~ P, data = Peas)),
+        lwd = 2)
+
+###
+
+plot( Ca ~ Zn,
+      data = Peas,
+      xlab = "Zinc (mg/g)",
+      ylab = "Calcium (mg/g)",
+      xlim = c(25, 80),
+      ylim = c(0, 2.5),
+      las = 1,
+      pch = 19,
+      col = "grey",
+      main = "Nutrional elements in\npea seeds")
+abline( coef( lm( Ca ~ Zn, data = Peas)),
+        lwd = 2)
+
+```
+
+
+
+::: {.exercise #TwoQuantExercisesLimeTrees}
+The diameter and the age of $385$ small-leaved lime trees were found (@data:ForestBiomass2017), and shown in Fig.\ \@ref(fig:LimeTreesScatter).
+
+1. Describe the scatterplot.
+2. What does each point on the scatterplot represent?
 :::
 
 
@@ -292,144 +953,7 @@ abline( coef(lm(Foliage ~ Age,
 ```
 
 
-::: {.example #DescribeScatterplotsDeer name="Scatterplots"}
-For the red deer data 
-`r if (knitr::is_latex_output()) {
-   '(Fig.\\ \\@ref(fig:RedDeerScatter)),'
-} else {
-   '(Fig\\. \\@ref(fig:RedDeerScatterHTML)),'
-}`
-the relationship is approximately linear (form) with a negative direction (*older* deer generally have *lighter* teeth); the *variation* is... perhaps moderate.
-:::
 
-
-<iframe src="https://learningapps.org/watch?v=pdxmdaf1522" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
-
-
-
-
-
-## Summary tables {#ConnectionSummaryTables}
-
-In general, numerical summaries are difficult for describing the relationship between two quantitative variables, because the possible relationships vary greatly (Sect.\ \@ref(UnderstandingScatterplots)).
-Later (Chap.\ \@ref(LinearRelationshipsR)), numerical summaries are described specifically for *linear* relationships.
-
-Nonethless, numerical summary information the relationship between *two quantitative variables* can be collated in a table.
-The table summarises each variable.
-If the relationship is linear, the measures described in Chap.\ \@ref(LinearRelationshipsR) may also be added to the summary table.
-
-
-```{r RDSummaryPlots, fig.cap="Histograms of age and molar weight for male red deer", fig.align="center", fig.width=8, fig.height=3.25, out.width='90%'}
-par( mfrow = c(1, 2))
-
-hist(RedDeer$Age,
-     las = 1,
-     ylim = c(0, 15),
-     xlab = "Age (in years)",
-     ylab = "Number of deer",
-     main = "Histogram of ages")
-
-hist(RedDeer$Weight,
-     las = 1,
-     ylim = c(0, 25),
-     xlab = "Weight (in g)",
-     ylab = "Number of deer",
-     main = "Histogram of molar weight")
-```
-
-```{r RDSummaryTable}
-RDTable <- array( dim = c(2, 3))
-
-rownames(RDTable) <- c("Age",
-                        "Molar weight") 
-colnames(RDTable) <- c("Mean",
-                        "Std. dev.",
-                        "Sample size") 
-
-
-RDTable[, 1] <- round(colMeans(RedDeer), 1)
-RDTable[, 2] <- round(apply(RedDeer, 2, "sd"), 2)
-RDTable[, 3] <- round(apply(RedDeer, 2, "realLength"), 0)
-
-knitr::kable( pad(RDTable,
-                  surroundMaths = TRUE,
-                  targetLength = c(4, 5, 3),
-                  digits = c(1, 2, 0)),
-              format = "latex",
-              longtable = FALSE,
-              booktabs = TRUE,
-              escape = FALSE,
-              digits = 1,
-              align = "c",
-              caption = "A numerical summary of the red deer data") %>%
-  kable_styling(full_width = FALSE) %>%
-  row_spec(row = 0, 
-           bold = TRUE) %>%
-  row_spec(row = 3,
-           italic = TRUE) %>%
-  kable_styling(font_size = 8)
-```
-
-
-
-
-
-## Chapter summary {#TwoQuant-Summary}
-
-A *scatterplot* displays the relationship between two quantitative variables (the response denoted $y$; the explanatory denoted $x$).
-The relationship is described by the *form* (linear, or otherwise), the *direction* of the relationship (sometimes not relevant if the graph is not linear), and the *variation* in the relationship (or the *strength* of the relationship).
-
-
-## Quick review questions {#TwoQuant-QuickReview}
-
-::: {.webex-check .webex-box}
-A study of onion growth [@meadplant] produced the scatterplot shown in Fig.\ \@ref(fig:MeanScatter).
-
-
-```{r MeanScatter, fig.cap="Onion yield plotted against planting density", fig.align="center", fig.width=5, fig.height=3.5}
-data(YieldDen)
-
-plot(Yield ~ Dens,
-	las = 1,
-	main = "Planting density and yield per plant\nfor onions",
-	xlab = "Planting density (plants/sq. ft)",
-	ylab = "Yield/plant (g/plant)", 
-  pch = 19,
-	ylim = c(0, 140),
-	data = YieldDen)
-```
-
-1. The $x$-variable is \tightlist
-`r if( knitr::is_html_output() ) {longmcq( c(
-  answer = "Planting density",
-  "Yield per plant",
-  "It doesn't matter"
-) )} else {"________________."}`
-
-1. The *form* is best described as
-`r if( knitr::is_html_output() ) {longmcq( c(
-  "Linear",
-  answer = "Curved"
-) )} else {"________________."}`
-1. The *direction* is best described as
-`r if( knitr::is_html_output() ) {longmcq( c(
-  answer = "Negative",
-  "Positive"
-) )} else {"________________."}`
-1. The *variation* is best described as
-`r if( knitr::is_html_output() ) {longmcq( c(
-  answer = "Small",
-  "Large",
-  "Strong"
-) )} else {"________________."}`
-:::
-
-
-
-
-## Exercises {#TwoQuant-Exercises}
-
-Selected answers are available in Sect.\ \@ref(TwoQuant-Answers).
 
 
 <!-- ::: {.exercise #TwoQuantExercisesSheepFood} -->
@@ -460,7 +984,9 @@ Selected answers are available in Sect.\ \@ref(TwoQuant-Answers).
 
 ::: {.exercise #TwoQuantExercisesSoftdrink}
 A study examined the time taken to deliver soft drinks to vending machines [@others:Montgomery:regressionanalysis].
-Describe the relationship (Fig.\ \@ref(fig:MandibleGestationPlot), left panel).
+
+1. Describe the relationship (Fig.\ \@ref(fig:MandibleGestationPlot), left panel).
+2. What does eachpoint represent?
 :::
 
 
@@ -606,15 +1132,49 @@ The weights of students starting at university (Week\ 1) and in Week\ 12 are sho
 :::
 
 
+
+
+
+::: {.exercise #TwoQuantExercisesONI}
+The relationship [@mypapers:dunnsmyth:glms] between the number of cyclones $y$ in the Australian region each year from 1969 to 2005, and a climatological index called the *Ocean `r readr::parse_character( c("Niño"), locale=locale(encoding="UTF-8"))` Index* (ONI, $x$), is shown in Fig.\ \@ref(fig:ONIcyclonesCI).
+
+From software, $r = -0.682$.
+What is the value of $R^2$?
+What does it mean?
+:::
+
+
+```{r ONIcyclonesCI, fig.width=4, fig.align="center", fig.cap="The number of cyclones in the Australian region each year from 1969 to 2005, and the ONI for October, November, December", fig.width=5, fig.height=4}
+
+data(Cyclones)
+
+plot(Total ~ OND, 
+     data = Cyclones,
+     xlim = c(-2, 3),
+     ylim = c(0, 20),
+     pch = 19,
+     ylab = "Total number of cyclones",
+     xlab = "ONI averaged over Oct., Nov., Dec.",
+     las = 1)
+
+clm <- lm( Total ~ OND, 
+           data = Cyclones)
+abline( coef(clm), 
+        lwd = 1, 
+        col = "grey")
+grid(lty = 2)
+```
+
+
+
+
+
+
+
 <!-- QUICK REVIEW ANSWERS -->
 `r if (knitr::is_html_output()) '<!--'`
 ::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
 **Answers to in-chapter questions:**
-
-- Sect. \ref{thinkBox:DescribeLimeTreesScatter}: 
-  *Form*: may start off straight-ish, but then seems hard to assess.
-  *Direction*: biomass increases as age increases (on average). 
-  *Variation*: small-ish for small ages; large-ish for older trees (after about 60 years old).
 
 - \textbf{Answers to \textit{Quick Revision} questions:}
 **1.** Planting density.
