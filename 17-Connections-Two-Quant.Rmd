@@ -587,7 +587,10 @@ if (knitr::is_html_output()){
 The value of $R^2$ measures the reduction in the unexplained variation in values of $y$ because the value of $x$ is known.
 Without knowing anything about the relationship between the values of $x$ and $y$, the best summary of the values of $y$ is the mean of the $y$ values.
 However, the relationship between the values of $x$ and $y$ suggests we (potentially) can make better estimates of the value of $y$ by knowing the value of $x$, and less variation should be left unexplained.
-When expressed as a percentage, $R^2$ measures how much the unexplained variation reduces due to our knowledge of the linear relationship.
+When expressed as a percentage, $R^2$ measures how much the unexplained variation reduces due to our knowledge of the linear relationship^[This is *optional*: In the followin
+^[This is *optional*: The reduction in the *square* of the standard deviations is $(0.7263^2 - 0.5895^2)/0.7263^2 = 0.341$, which is the value of $R^2$.]
+
+ example, the reduction in the *square* of the standard deviations is $(0.7263^2 - 0.5895^2)/0.7263^2 = 0.341$, which is the value of $R^2$.].
 If $R$-squared is zero, then the amount of unexplained variation has not reduced at all, and exploring the relationship has no value.
 
 
@@ -668,6 +671,7 @@ abline( mDeer,
 # Draw residuals
 yHat <- predict(mDeer)
 
+
 for (i in (1:length(showResidualsAtThesePoints))){
   arrows(x0 = RedDeer[ showResidualsAtThesePoints[i], 1],
          x1 = RedDeer[showResidualsAtThesePoints[i], 1],
@@ -681,17 +685,20 @@ for (i in (1:length(showResidualsAtThesePoints))){
 
 
 ### BOTTOM LEFT plot
-hist( RedDeer$Weight,
+deerMeanResiduals <- summary( lm(Weight ~ 1, 
+                                 data = RedDeer))$residuals
+hist( deerMeanResiduals,
       las = 1,
-      xlim = c(1, 6),
+      xlim = c(-2.5, 2.5),
       ylim = c(0, 25),
       border = grey(0.5),
-      main = expression( atop(The~variation~"in"~the,
-                              values~of~italic(y)~"("*molar~weights*")")),
-      xlab = "Molar weight (in g)")
+      main = expression( atop(Unexplained~variation~"in",
+                              italic(y)-values~"("*molar~weights*")")),
+      sub = expression("("*Standard~deviation*":"~0.7263*")"),
+      xlab = "Distances from mean to observations")
 
-arrows(x0 = 1,
-       x1 = 5.5,
+arrows(x0 = -2,
+       x1 = 2.5,
        y0 = 15,
        y1 = 15,
        code = 3, # Arrow both ends
@@ -703,11 +710,12 @@ arrows(x0 = 1,
 deerResiduals <- summary(mDeer)$residuals
 hist( deerResiduals,
       las = 1,
-      xlim = c(-3, 3),
+      xlim = c(-2.5, 2.5),
       ylim = c(0, 30),
       border = grey(0.5),
-      main = expression(atop(The~variation~after~knowing,
+      main = expression(atop(Unexplained~variation~after~knowing,
                              the~values~of~italic(x)~"("*age*")")),
+      sub = expression("("*Standard~deviation*":"~0.5895*")"),
       xlab = "Distances from line to observations")
 
 arrows(x0 = -1.5,
@@ -736,7 +744,6 @@ The value of $R^2$ is positive, even though the value of $r$ is negative.
 This means a reduction of about $34.1$% in the unknown variation of the molar weights, due to using the information in the age of the deer.
 The rest of the variation in molar weights is due to chance, and to extraneous variables, such as weight, diet, amount of exercise, genetics, etc.
 :::
-
 
 
 
