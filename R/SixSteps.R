@@ -95,7 +95,7 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   
   
   # CANVAS
-  par( mar = c(0.05, 0.05, 0.05, 0.05),
+  par( mar = c(0.025, 0.025, 0.025, 0.025),
        fin = c(2.25, 2.25) * 1.5)
   
   
