@@ -20,7 +20,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   
   
   ### CANVAS
-  par( mar = c(0.5, 0.5, 0.5, 0.5))
+  par( mar = c(0.015, 0.015, 0.015, 0.015))
   useDefaultCanvas <- TRUE
   xLimLo <- 0
   xLimHi <- 1
@@ -75,8 +75,8 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   ### SET OPTIONS 
   numberOfcomparisons <- length(addGroupNames)
   if ( numberOfcomparisons == 2){ # Two groups being compared
-    pos[1, ] <- c(0.60, 0.75)     # Group 1
-    pos[2, ] <- c(0.60, 0.35)     # Group 2
+    pos[1, ] <- c(0.525, 0.75)     # Group 1
+    pos[2, ] <- c(0.525, 0.35)     # Group 2
     pos[3, ] <- c(NA, NA)         # No Group 3
     
     pos[4, ] <- c(0.85, 0.75)     # Treatment 1
@@ -84,9 +84,9 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     pos[6, ] <- c(NA, NA)         # No Group 3 to treat
     
   } else { # Three groups being compared
-    pos[1, ] <- c(0.60, 0.75)     # Group 1
-    pos[2, ] <- c(0.60, 0.55)     # Group 2
-    pos[3, ] <- c(0.60, 0.35)     # Group 3
+    pos[1, ] <- c(0.525, 0.75)     # Group 1
+    pos[2, ] <- c(0.525, 0.55)     # Group 2
+    pos[3, ] <- c(0.525, 0.35)     # Group 3
     
     pos[4, ] <- c(0.85, 0.75)     # Treatment 1
     pos[5, ] <- c(0.85, 0.55)     # Treatment 2
@@ -150,8 +150,8 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                     rady = 0.335,
                     shadow.size = 0,
                     lab = "",
-                    box.col = grey(0.8),
-                    lcol = grey(0.8))
+                    box.col = grey(0.85),
+                    lcol = grey(0.85))
   # Second, draw the arrow head
   diagram::textmulti(mid = c(pos[1, 1], 0.17),
                      radx = 0.09,
@@ -160,8 +160,8 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                      angle = 270, # ROTATION DEGREES
                      shadow.size = 0,
                      lab = "",
-                     box.col = grey(0.8),
-                     lcol = grey(0.8))
+                     box.col = grey(0.85),
+                     lcol = grey(0.85))
   
   # Third, add "Comparison" text
   
@@ -343,14 +343,14 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                        box.col = ExplanatoryColour,
                        lcol = ExplanatoryColour,
                        shadow.size = 0,
-                       radx = 0.08,
+                       radx = 0.09,
                        rady = 0.07,
                        lab = addCNames[1])
     diagram::textrect( pos[5, ], 
                        box.col = ExplanatoryColour,
                        lcol = ExplanatoryColour,
                        shadow.size = 0,
-                       radx = 0.08,
+                       radx = 0.09,
                        rady = 0.07,
                        lab = addCNames[2])
     if (length(addGroupNames) == 3) {
@@ -358,7 +358,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                          box.col = ExplanatoryColour,
                          lcol = ExplanatoryColour,
                          shadow.size = 0,
-                         radx = 0.08,
+                         radx = 0.09,
                          rady = 0.07,
                          lab = addCNames[3])
     }
@@ -424,7 +424,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
           y = 0.05,
           cex = 1.05,
           font = 2, # BOLD
-          label = "Compare")
+          label = "Compare outcomes")
   }
   
   # Add headings
