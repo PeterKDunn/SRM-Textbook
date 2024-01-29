@@ -36,8 +36,8 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
                      paste0(imageLocations, "iconmonstr-help-5-240.png"),
                      paste0(imageLocations, "iconmonstr-help-6-240.png") )
   ImageDesign <- ifelse(Flag == 2,
-                        paste0(imageLocations, "iconmonstr-brick-3-240.png"),
-                        paste0(imageLocations, "iconmonstr-brick-4-240.png") )
+                        paste0(imageLocations, "iconmonstr-construction-8-240.png"),
+                        paste0(imageLocations, "iconmonstr-construction-35-240.png") )
   ImageCollect <- ifelse(Flag == 3, 
                          paste0(imageLocations, "iconmonstr-flask-21-240.png"),
                          paste0(imageLocations, "iconmonstr-flask-1-240.png") )
