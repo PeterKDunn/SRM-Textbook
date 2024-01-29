@@ -127,7 +127,6 @@ blueTransparent2 <- rgb(0, 0, 0.25,
                         maxColorValue = 1)
 
 ### MOVED LATER, as t is too early to work here (I guess, the output not yet set)
-cat("XXXXXXXXX\n")
 plot.colour <-  grey(0.75) 
 plot.colour0 <-  grey(0.5) 
 plot.colour2 <-  grey(0.75) 
