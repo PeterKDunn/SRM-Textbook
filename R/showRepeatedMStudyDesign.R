@@ -32,27 +32,28 @@ showRepeatedMStudyDesign <- function(intervention = FALSE,
   } 
   
   # INDIVIDUAL NAMES
+  # Does nothing at the moment!
   if ( is.na(individualNames) ){
-    stateNames <- "Individuals"
+    individualNames <- "Individuals"
   } 
   
   # INTERVENTION NAMES
   if ( is.na(interventionName) ){
-    interventionName <- "Intervention"
+    if (intervention) interventionName <- "Intervention"
   } 
   
   ### COMPARISON ARROW
   # Need "thick" arrow
   # First, draw the arrow shaft:
   diagram::textrect(mid = c(0.4, 0.7), 
-                    radx = 0.325,
+                    radx = 0.3,
                     rady = 0.03,
                     shadow.size = 0,
                     lab = "",
                     box.col = grey(0.85),
                     lcol = grey(0.85))
   # Second, draw the arrow head
-  diagram::textmulti(mid = c(0.75, 0.7),
+  diagram::textmulti(mid = c(0.725, 0.7),
                      radx = 0.0475,
                      rady = 0.08,
                      nr = 3, # THAT IS, A TRIANGLE
@@ -64,7 +65,7 @@ showRepeatedMStudyDesign <- function(intervention = FALSE,
   
   
   ### COMPARE text
-  text(x = 0.90,
+  text(x = 0.85,
        y = 0.7,
        cex = 1.05,
        font = 2, # BOLD
@@ -90,17 +91,19 @@ showRepeatedMStudyDesign <- function(intervention = FALSE,
   ### INDIVIDUALS boxes
   polygon( x = c(0.1, 0.375, 0.375, 0.1),
            y = c(0.45, 0.45, 0.25, 0.25),
+           lwd = 4,
            col = IndividualColour,
            border = IndividualColour)
   
   polygon( x = c(0.425, 0.7, 0.7, 0.425),
            y = c(0.45, 0.45, 0.25, 0.25),
+           lwd = 4,
            col = IndividualColour,
            border = IndividualColour)
   
   polygon( x = c(0.375, 0.425, 0.425, 0.375),
            y = c(0.45, 0.45, 0.25, 0.25),
-           lwd = 2,
+           lwd = 4,
            col = makeTransparent(IndividualColour),
            border = IndividualColour)
 
@@ -111,21 +114,21 @@ showRepeatedMStudyDesign <- function(intervention = FALSE,
                      box.col = ExplanatoryColour,
                      lcol = ExplanatoryColour,
                      shadow.size = 0,
-                     lab = "State 1")
+                     lab = stateNames[1])
   diagram::textrect( mid = c(0.55, 0.7),
                      radx = 0.10,
                      rady = 0.07,
                      box.col = ExplanatoryColour,
                      lcol = ExplanatoryColour,
                      shadow.size = 0,
-                     lab = "State 1")
+                     lab = stateNames[2])
   
   ### ADD intervention
   if (intervention) {
     arrows(x0 = 0.4,
            x1 = 0.4,
-           y0 = 0.075,
-           y1 = 0.4,
+           y0 = 0.08,
+           y1 = 0.325,
            angle = 17,
            length = 0.1,
            lwd = 2)
@@ -139,24 +142,22 @@ showRepeatedMStudyDesign <- function(intervention = FALSE,
          y = 0.05,
          labels = interventionName)
     
-  } else {
-    
-    segments(x0 = 0.4,
-           x1 = 0.4,
-           y0 = 0.15,
-           y1 = 0.5,
-           angle = 15,
-           lty = 2, 
-           col = "grey",
-           length = 0.1,
-           lwd = 2)
-    segments(x0 = 0.4,
-             x1 = 0.4,
-             y0 = 0.07, 
-             y1 = 0.2,
-             col = "grey",
-             lty = 2,
-             lwd = 2)
+   # segments(x0 = 0.4,
+  #         x1 = 0.4,
+   #        y0 = 0.15,
+  #         y1 = 0.5,
+   #        angle = 15,
+    #       lty = 2, 
+     #      col = "grey",
+    #       length = 0.1,
+    #       lwd = 2)
+    # segments(x0 = 0.4,
+    #          x1 = 0.4,
+    #          y0 = 0.07, 
+    #          y1 = 0.2,
+    #          col = "grey",
+    #          lty = 2,
+    #          lwd = 2)
   }
   if ( !is.na(interventionName)) {
     text(x = 0.4,

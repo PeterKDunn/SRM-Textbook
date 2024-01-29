@@ -1,4 +1,5 @@
 showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
+                            outcomeName = NA,
                             addIndividuals = FALSE, # show the allocation of individuals?
                             addGroupNames = c("Group 1", "Group 2"), # e.g. addGroupNames = c("Group 1", "Group 2", "Group 3")
                             addCNames = c("Treatment 1", "Treatment 2"), # e.g., addCNames = c("Placebo", "10mg", "30mg") 
@@ -66,6 +67,9 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     addBlindedTreatmentNames <- addCNames
     addCNames <- c('"A"', '"B"')
   }
+  
+  
+  if ( is.na(outcomeName)) outcomeName <- "Outcomes"
   ### SETUP
   pos <- array(NA, dim = c(14, 2))
   # pos[1:3, ] refer to the Groups; see below
@@ -92,7 +96,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     pos[5, ] <- c(0.85, 0.55)     # Treatment 2
     pos[6, ] <- c(0.85, 0.35)     # Treatment 3
   }
-  pos[7, ] <- c(0.60, 0.05)     # Compare
+  pos[7, ] <- c(0.525, 0.05)     # Compare
   pos[8, ] <- c(0.33, mean( pos[1:3, 2], 
                             na.rm = TRUE ) )     # Individuals/Sample
   pos[9, ] <- c(0.10, mean( pos[1:2, 2], 
@@ -424,7 +428,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
           y = 0.05,
           cex = 1.05,
           font = 2, # BOLD
-          label = "Compare outcomes")
+          label = paste("Compare", outcomeName) )
   }
   
   # Add headings
