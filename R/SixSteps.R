@@ -24,7 +24,7 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   Labels.Short <- c("1. Ask",
                     "2. Design",
                     "3. Collect",
-                    "4. Describe",
+                    "4. Summarise",
                     "5. Analyse",
                     "6. Report")
   
@@ -66,17 +66,25 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   
   # How much to enlarge chosen box
   enlargeBoxFactor <- rep(0.60, 6)
-  if (Flag > 0 ) enlargeBoxFactor[Flag] <- 0.80
-  
+  if (Flag > 0 ) {
+    enlargeBoxFactor[Flag] <- 0.80
+
+    edgeBottomGap <- 1.1 * max( abs(diff(enlargeBoxFactor)) )
+    edgeTopGap <- 1.1 * max( abs( diff(enlargeBoxFactor)) )
+    edgeGap <- 1.6 * edgeBottomGap
+    
+  } else {
+    edgeBottomGap <- 0.1 
+    edgeTopGap <- 0.1
+    edgeGap <- 0.5
+    
+  }
 
   boxGapHorizontal <- 1.75
   boxGapVertical <- 2.5
   boxWidth <- 2.5
   boxHeight <- 2.5
   
-  edgeBottomGap <- 1.1 * max(diff(enlargeBoxFactor)) 
-  edgeTopGap <- 1.1 * max(diff(enlargeBoxFactor))
-  edgeGap <- edgeBottomGap
   
   arrowToImageGap <- 0.55
   
@@ -95,7 +103,7 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   
   
   # CANVAS
-  par( mar = c(0.025, 0.025, 0.025, 0.025),
+  par( mar = c(0.05, 0.05, 0.05, 0.05),
        fin = c(2.25, 2.25) * 1.5)
   
   
