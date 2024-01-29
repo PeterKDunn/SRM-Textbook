@@ -16,13 +16,76 @@
 The RQ implies what data *must* be collected from the individuals in the study (the response and explanatory variables)...
 but the data can be collected in many different ways.
 
-Different types of studies are used to answer different types of RQs:
+Different types of studies are used to answer different types of RQs (Table\ \@ref(tab:studyTypes)):
 
 * *Descriptive* studies (Sect.\ \@ref(DescriptiveStudies)) answer descriptive RQs;
-* *Observational* studies (Sect.\ \@ref(ObservationalStudies)) answer relational RQs; and 
-* *Experimental* studies (Sect.\ \@ref(ExperimentalStudies)) answer interventional RQs.
+* *Observational* studies (Sect.\ \@ref(ObservationalStudies)) answer RQs with a comparison or connection, that *do not have* an intervention; and 
+* *Experimental* studies (Sect.\ \@ref(ExperimentalStudies)) answer RQs with a comparison or connection that *do have* an intervention.
 
-Observational and experimental studies are sometimes called *analytical studies*.
+Observational and experimental studies are sometimes collectively called *analytical studies*.\index{Study types!analytical}
+
+
+```{r studyTypes}
+studyTypesTab <- array( dim = c(6, 6) )
+
+colnames(studyTypesTab) <- c("Type of RQ",
+                             "P",
+                             "O",
+                             "Comparison/connection",
+                             "Intervention",
+                             "Type of study")
+studyTypesTab[1, ] <- c("Relational",
+                        "Yes",
+                        "Yes",
+                        "Comparison between-ind.",
+                        "No",
+                        "Observational")
+studyTypesTab[2, ] <- c("Relational",
+                        "Yes",
+                        "Yes",
+                        "Comparison between-ind.",
+                        "Yes",
+                        "Experimental")
+studyTypesTab[3, ] <- c("Repeated measures",
+                        "Yes",
+                        "Yes",
+                        "Connection within ind.",
+                        "No",
+                        "Observational")
+studyTypesTab[4, ] <- c("Repeated measures",
+                        "Yes",
+                        "Yes",
+                        "Connection within ind.",
+                        "Yes",
+                        "Experimental")
+studyTypesTab[5, ] <- c("Correlational",
+                        "Yes",
+                        "Yes",
+                        "Connection",
+                        "No",
+                        "Observational")
+studyTypesTab[6, ] <- c("Correlational",
+                        "Yes",
+                        "Yes",
+                        "Connection",
+                        "Yes",
+                        "Experimental")
+
+kable(studyTypesTab[ , c(1, 4, 5, 6)],
+      format = "latex",
+      longtable = FALSE,
+      booktabs = TRUE,
+      caption = "The relationship between the type of research question and type study. All research questions have a population and an outcome.",
+      linesep  =  c("", "\\addlinespace\\addlinespace"),
+      align = c("r", "l", "c", "l") ) %>%
+  kable_styling(full_width = FALSE) %>%
+  kable_styling(font_size = 8) %>%
+  row_spec(0,
+           bold = TRUE) %>%
+  collapse_rows(columns = c(1, 2),
+                latex_hline = "none",
+                valign = "middle")
+```
 
 
 ## Descriptive studies {#DescriptiveStudies}
@@ -59,18 +122,18 @@ We do not explicitly discuss descriptive studies further, as the necessary ideas
 
 
 ## Observational studies {#ObservationalStudies}
-\index{Research question!relational}\index{Study types!relational}
+\index{Research question!relational}\index{Research question!repeated measures}\index{Research question!correlational}\index{Study types!observational}
 
-*Observational studies* (Fig.\ \@ref(fig:POCIObservational)) answer *relational RQs* to study relationships.
+*Observational studies* (Fig.\ \@ref(fig:POCIObservational)) answer *analytical RQs* without an intervention.
 They are commonly-used, and sometimes are the only study design possible.
 
 
 ::: {.definition #ObservationalStudy name="Observational study"}
-*Observational studies* answer relational research questions.
+*Observational studies* answer research questions with a comparison or connection, but *without* an intervention.
 :::
 
 
-```{r POCIObservational, fig.cap="An observational study, used to answer a relational RQ", fig.align="center", fig.width=6, fig.height=2, out.width='60%'}
+```{r POCIObservational, fig.cap="An observational study", fig.align="center", fig.width=6, fig.height=2, out.width='60%'}
 showPOCI(addC = TRUE, 
          addI = FALSE,
          addArrows = TRUE,  
@@ -91,49 +154,65 @@ showPOCI(addC = TRUE,
 
 
 ::: {.example #ObservationalRelationalEchinacea name="Observational study"}
-Consider again this one-tailed RQ:
+Consider again this one-tailed, decision-making RQ:
 
-> Among Australian teens with a common cold, is the *average* duration of cold symptoms shorter for teens taking a daily dose of echinacea compared to teens taking no medication?
+> Among Australian teens with a common cold, is the average duration of cold symptoms *shorter* for teens taking a daily dose of echinacea compared to teens taking no medication?
 
-This RQ has a between-individuals comparison, and is interventional if the researchers do not impose the taking of echinacea (that is, the individuals make this decision themselves).
-The two *conditions* are 'taking echinacea', and 'not taking echinacea' (Fig.\ \@ref(fig:ObsStudiesImage)).
+This RQ has a between-individuals comparison, so is a relational RQ.
+If the researchers *do not* impose the taking of echinacea (that is, the individuals make this decision themselves), the study is observational.
+The two *conditions* are 'taking echinacea', and 'not taking echinacea' (Fig.\ \@ref(fig:ObsStudiesImageBetween)).
 :::
 
 
-```{r ObsStudiesImage, fig.cap="Observational studies. The dashed lines indicate steps not under the control of the researchers", fig.align="center", fig.width=7, fig.height=3, out.width='75%', cache=FALSE}
+```{r ObsStudiesImageBetween, fig.cap="Observational between-individuals studies. The dashed lines indicate steps not under the control of the researchers", fig.align="center", fig.show="hold", fig.width=6, fig.height=3, out.width='65%', cache=FALSE}
 
 showStudyDesign(studyType = "Obs",  
+                outcomeName = "duration of cold symptoms",
                 addIndividuals = TRUE,     
                 addCNames = c("Echinacea",       
                               "No echinacea")) 
 ```
 
 
+
+
 ::: {.example #ResearchDesignWeightLoss name="Within-individuals relational study"}
-Consider this one-tailed RQ:
-
-> For obese men over $60$, what is the average increase in heart rate after walking $400$\ m?
-
-The *outcome* is the average heart rate.
-The *response variable* is the heart rate for each individual man.
-The *within-individuals comparison* is before and after walking $400$\ m.
-
-Alternatively, the outcome could be given as the average *increase* in heart rate (*after* heart rate minus the *before* heart rate).
-Some differences might be positive numbers (heart rate *increased*), and some may be negative numbers (heart rate *decreased*).
+@levitsky2004freshman conducted a study where the weights of university students were recorded both at the beginning university, and then after $12$ weeks.
+The comparison is *within* individuals, and the study is a *repeated measures* (paired) study.
+Since the researchers do not impose anything on the students (they just measure their weight at two time points), there is *no intervention* (Fig.\ \@ref(fig:ObsStudiesImageWithin)).
+The *outcome* is the average weight.
+The *response variable* is the weight of individuals.
+The *within-individuals comparison* is the number of weeks after university started ($0$ and $12$).
 :::
 
 
-## Experimental studies {#ExperimentalStudies}
-\index{Research question!interventional}\index{Study types!experimental}
 
-*Experimental studies* (Fig.\ \@ref(fig:POCIExperiment)), or *experiments*, are commonly-used to study relationships.
+
+
+```{r ObsStudiesImageWithin, fig.cap="Observational within-individuals studies. The dashed lines indicate steps not under the control of the researchers", fig.align="center", fig.show="hold", fig.width=6, fig.height=3, out.width='65%', cache=FALSE}
+source("R/showRepeatedMStudyDesign.R")
+showRepeatedMStudyDesign(intervention = FALSE,
+                         outcomeName = "average\nweight",
+                         stateNames = c("At 0 weeks",
+                                        "After 12 weeks"))
+
+```
+
+
+
+
+## Experimental studies {#ExperimentalStudies}
+\index{Research question!relational}\index{Research question!repeated measures}\index{Research question!correlational}\index{Study types!experimental}
+
+*Experimental studies* (Fig.\ \@ref(fig:POCIExperiment)), or *experiments*, are used to study relationships with an *intervention*, and are commonly-used.
 Well-designed experimental studies can establish a *cause-and-effect relationship* between the response and explanatory variables.
 However, using experimental studies is not always possible.
-Experiments have an [*intervention*](#def:Intervention), and so *experimental studies answer interventional RQs*.
+
+Experimental studies are almost always used to answer relational and repeated-measures RQs, but rarely for correlational RQs.
 
 
 ::: {.definition #Experiment name="Experiment"}
-*Experimental studies* (or *experiments*) answer interventional research questions.
+*Experimental studies* (or *experiments*) answer RQs with an intervention.
 :::
 
 
@@ -148,7 +227,7 @@ In an **experimental study**, the unit of analysis (Def.\ \@ref(def:UnitOfAnalys
 :::
 
 
-```{r POCIExperiment, fig.cap="An experimental study, used to answer interventional RQs", fig.align="center", fig.width=6, fig.height=2, out.width='65%'}
+```{r POCIExperiment, fig.cap="An experimental study", fig.align="center", fig.width=6, fig.height=2, out.width='65%'}
 showPOCI(addC = TRUE,
          addI = TRUE,
          addY = TRUE, 
@@ -158,7 +237,31 @@ showPOCI(addC = TRUE,
 
 
 
-Two types of experimental studies are [*true experiments*](#TrueExperiments) and [*quasi-experiments*](#QuasiExperiments) (Table\ \@ref(tab:ExperimentalStudyDesigns)).
+::: {.example #ResearchDesignWeightLoss name="Within-individuals experimental study"}
+Consider this estimation RQ:
+
+> For obese men over $60$, what is the average increase in heart rate after walking $400$\ m?
+
+This RQ uses a *within-individuals comparison* (before and after walking $400$\ m) so is a repeated-measures (and paired) RQ.
+There is an intervention if researchers impose the $400$\ m walk on the subjects.
+The *outcome* is the average heart rate.
+The *response variable* is the heart rate for each individual man.
+:::
+
+
+
+```{r ExpStudiesImageWithin, fig.cap="Experimental within-individuals studies. The dashed lines indicate steps not under the control of the researchers", fig.align="center", fig.show="hold", fig.width=6, fig.height=3, out.width='65%', cache=FALSE}
+source("R/showRepeatedMStudyDesign.R")
+showRepeatedMStudyDesign(intervention = TRUE,
+                         interventionName = "Walk 400 m",
+                         outcomeName = "average\nheart rate",
+                         stateNames = c("Before",
+                                        "After"))
+
+```
+
+
+*Between*-individuals experimental studies can be either *true experiments* (Sect.\ \@ref(TrueExperiments) or *quasi-experiments* (Sect.\ \@ref(QuasiExperiments)); see Table\ \@ref(tab:ExperimentalStudyDesigns).
 
 
 ```{r ExperimentalStudyDesigns}
@@ -188,7 +291,7 @@ if( knitr::is_latex_output() ) {
         booktabs = TRUE,
         escape = FALSE, # For latex to work in \rightarrow
         #linesep = c( "\\addlinespace"), # Add a bit of space between all rows. 
-        caption = "Comparing analytical designs (descriptive studies do not have any comparison or connection (C))",
+        caption = "Comparing analytical designs with a between-individuals comparison (descriptive studies do not have any comparison or connection (C))",
         align = c("r", "c", "c", "l"))   %>%
    kable_styling(full_width = FALSE, 
                  font_size = 8) %>%
@@ -226,7 +329,7 @@ if( knitr::is_html_output() ) {
 ### True experimental studies {#TrueExperiments}
 \index{Study types!experimental!true}
 
-*True experiments* are commonly used, but are not always possible.
+*True experiments* are commonly used in studies with a between-individuals comparison, but are not always possible.
 An example of a true experiment is a *randomised controlled trial*, often used in drug trials.
 
 
@@ -255,8 +358,9 @@ This is still a true experiment, since the researchers could decide to switch wh
 :::
 
 
-```{r TrueExpStudiesImage, fig.cap="True experimental studies: researchers allocate individuals to groups, and treatments to groups", fig.align="center", fig.width=7, fig.height=3, out.width='75%'}
+```{r TrueExpStudiesImage, fig.cap="True experimental studies: researchers allocate individuals to groups, and treatments to groups", fig.align="center", fig.show="hold", fig.width=6, fig.height=3, out.width='65%'}
 showStudyDesign(studyType = "TrueExp", 
+                outcomeName = "duration of cold symptoms",
                 addIndividuals = TRUE,
                 addCNames = c("Echinacea",   
                               "No echinacea"))
@@ -268,7 +372,8 @@ showStudyDesign(studyType = "TrueExp",
 ### Quasi-experimental studies {#QuasiExperiments}
 \index{Study types!experimental!quasi}
 
-Quasi-experiments are similar to true experiments, but treatments are *allocated* to groups that *already exist* (i.e., may be naturally occurring).
+Quasi-experiments are similar to true experiments, but treatments are *allocated* to groups that *already exist* (e.g., may be naturally occurring).
+
 
 ::: {.definition #QuasiExperiment name="Quasi-experiment"}
 In a *quasi-experiment*, the researchers:
@@ -284,8 +389,9 @@ The researchers could *find* (not *create*) two existing groups of people (say, 
 :::
 
 
-```{r QuasiExpStudiesImage, fig.cap="Quasi-experimental studies: researchers do not allocate individuals to groups, but do allocate treatments to groups. The dashed lines indicate steps not under the control of the researchers.", fig.align="center", fig.width=7, fig.height=3, out.width='75%'}
+```{r QuasiExpStudiesImage, fig.cap="Quasi-experimental studies: researchers do not allocate individuals to groups, but do allocate treatments to groups. The dashed lines indicate steps not under the control of the researchers.", fig.align="center", fig.width=6, fig.height=3, out.width='65%'}
 showStudyDesign(studyType = "QuasiExp",
+                outcomeName = "duration of cold symptoms",
                 addIndividuals = TRUE,  
                 addCNames = c("Echinacea",   
                               "No echinacea"))
@@ -305,7 +411,7 @@ However, the researcher *did* decide whether to allocate the program to Universi
 ## Comparing study types {#CompareStudyTypes}
 \index{Study types!compared}
 
-Different RQs require different study designs (Table\ \@ref(tab:StudyTypes)).
+Different RQs require different study designs.
 In *experimental* studies, researchers *create* differences in the values of the explanatory variable through allocation, and then note the effect this has on the values of the response variable.
 In *observational* studies, researchers *observe* differences in the values of the explanatory variable, and observe the values of the response variable.
 
@@ -316,62 +422,62 @@ Although only experimental studies can show cause-and-effect, experimental studi
 The advantages and disadvantages of each study type are discussed later (Sect.\ \@ref(InterpretStudyDesign)), after these study types are discussed in greater detail in the following chapters. 
 
 
-```{r StudyTypes}
-StudyRQ <- array( dim = c(3, 6) )
-colnames(StudyRQ) <- c("RQ type", 
-                       "P", 
-                       "O", 
-                       "C", 
-                       "I", 
-                       "Study type")
+<!-- ```{r StudyTypes} -->
+<!-- StudyRQ <- array( dim = c(3, 6) ) -->
+<!-- colnames(StudyRQ) <- c("RQ type",  -->
+<!--                        "P",  -->
+<!--                        "O",  -->
+<!--                        "C",  -->
+<!--                        "I",  -->
+<!--                        "Study type") -->
 
-StudyRQ[1, ] <- c("Descriptive",    
-                  "Yes", 
-                  "Yes",    
-                  "",    
-                  "", 
-                  "Descriptive")
-StudyRQ[2, ] <- c("Relational",     
-                  "Yes", 
-                  "Yes", 
-                  "Yes",    
-                  "", 
-                  "Observational")
-StudyRQ[3, ] <- c("Interventional", 
-                  "Yes", 
-                  "Yes", 
-                  "Yes", 
-                  "Yes", 
-                  "Experimental")
+<!-- StudyRQ[1, ] <- c("Descriptive",     -->
+<!--                   "Yes",  -->
+<!--                   "Yes",     -->
+<!--                   "",     -->
+<!--                   "",  -->
+<!--                   "Descriptive") -->
+<!-- StudyRQ[2, ] <- c("Relational",      -->
+<!--                   "Yes",  -->
+<!--                   "Yes",  -->
+<!--                   "Yes",     -->
+<!--                   "",  -->
+<!--                   "Observational") -->
+<!-- StudyRQ[3, ] <- c("Interventional",  -->
+<!--                   "Yes",  -->
+<!--                   "Yes",  -->
+<!--                   "Yes",  -->
+<!--                   "Yes",  -->
+<!--                   "Experimental") -->
 
-if( knitr::is_latex_output() ) {
-  kable(StudyRQ,
-        format = "latex",
-        longtable = FALSE,
-        booktabs = TRUE,
-        #linesep = c( "\\addlinespace"), # Add a bit of space between all rows. 
-        caption = "Study types and research questions",
-        align = c("r", "c", "c", "c", "c", "l"))   %>%
-    kable_styling(full_width = FALSE, 
-                  font_size = 8) %>%
-    row_spec(0, bold = TRUE) # Columns headings in bold
-}
+<!-- if( knitr::is_latex_output() ) { -->
+<!--   kable(StudyRQ, -->
+<!--         format = "latex", -->
+<!--         longtable = FALSE, -->
+<!--         booktabs = TRUE, -->
+<!--         #linesep = c( "\\addlinespace"), # Add a bit of space between all rows.  -->
+<!--         caption = "Study types and research questions", -->
+<!--         align = c("r", "c", "c", "c", "c", "l"))   %>% -->
+<!--     kable_styling(full_width = FALSE,  -->
+<!--                   font_size = 8) %>% -->
+<!--     row_spec(0, bold = TRUE) # Columns headings in bold -->
+<!-- } -->
 
-if( knitr::is_html_output() ) {
-  
-  out <- kable(StudyRQ,
-               format = "html",
-               align = c("r", "c", "c", "c", "c", "l"),
-               longtable = FALSE,
-               caption = "Study types and research questions",
-               booktabs = TRUE) 
-  
-    kable_styling(out, 
-                  full_width = FALSE) %>%
-      row_spec(row = 0, 
-               bold = TRUE)  
-}
-```
+<!-- if( knitr::is_html_output() ) { -->
+
+<!--   out <- kable(StudyRQ, -->
+<!--                format = "html", -->
+<!--                align = c("r", "c", "c", "c", "c", "l"), -->
+<!--                longtable = FALSE, -->
+<!--                caption = "Study types and research questions", -->
+<!--                booktabs = TRUE)  -->
+
+<!--     kable_styling(out,  -->
+<!--                   full_width = FALSE) %>% -->
+<!--       row_spec(row = 0,  -->
+<!--                bold = TRUE)   -->
+<!-- } -->
+<!-- ``` -->
 
 
 ::: {.example #Autism name="Cause and effect"}
@@ -568,7 +674,7 @@ if( knitr::is_latex_output() ) {
         longtable = FALSE,
         booktabs = TRUE,
         escape = FALSE, # For latex to work in \rightarrow
-        caption = "Classifying observational studies",
+        caption = "Classifying observational studies. (All experimental studies have a forward direction.)",
         align = c("r", "c", "c"))   %>%
     kable_styling(full_width = FALSE, 
                   font_size = 8) %>%
@@ -581,7 +687,7 @@ if( knitr::is_html_output() ) {
         format = "html",
         align = c("r", "c","c"),
         longtable = FALSE,
-        caption = "Classifying observational studies",
+        caption = "Classifying observational studies. (All experimental studies have a forward direction.)",
         booktabs = TRUE) 
 }
 ```
@@ -618,10 +724,10 @@ Observational studies may have any directionality, and are sometimes given diffe
 ### Forward-directional studies {#Forward}
 \index{Study types!directionality!forward}
 
-All experimental studies have a forward direction, and include *randomised controlled trials* (RCTs) and *clinical trials*.
+All experimental studies have a forward direction, and include *randomised controlled trials* (RCTs) and *clinical trials*.\index{Clinical trials}\index{Randomised controlled trials}
 
-Observational studies with a *forward* direction are often called *cohort studies*.
-Both experimental studies and cohort studies can be expensive and tricky: tracking a group of individuals (a *cohort*) into the future is not always easy, and the ability to track some individuals into the future may be lost (*drop-outs*) as (for example) plants or animals die, or people move or decide to no longer participate, etc.
+Observational studies with a *forward* direction are often called *cohort studies*.\index{Cohort studies}
+Both experimental studies and cohort studies can be expensive and tricky: tracking a group of individuals (a *cohort*) into the future is not always easy, and the ability to track some individuals into the future may be lost (*drop-outs*)\index{drop-outs} as (for example) plants or animals die, or people move or decide to no longer participate, etc.
 Forward-directional observational studies:
 
 * may add support to cause-and-effect conclusions, since the comparison/connection occurs *before* the outcome (only well-designed experimental studies can establish cause-and-effect).
@@ -642,15 +748,15 @@ Since the explanatory variable (whether NGT was used or not) was recorded at the
 ### Backward-directional studies {#Backward}
 \index{Study types!directionality!backward}
 
-Observational studies with a *backward* direction are often called *case-control* studies.
+Observational studies with a *backward* direction are often called *case-control* studies.\index{Case-control studies}
 Researchers find individuals with specific values of the response variable (the cases and the controls), and determine values of the explanatory variable from the past.
 Case-control studies:
 
 * only allow one outcome to be studied, since individuals are chosen to be in the study based on the value of the response variable of interest.
 * are useful for rare outcomes: the researchers can purposely select large numbers with the rare outcome of interest.
 * do not effectively eliminate other explanations for the relationship between the response and explanatory variables (called *confounding*; Def.\ \@ref(def:Confounding)).
-* may suffer from *selection bias* (Sect.\ \@ref(SelectionBias)), as researchers try to locate individuals with a rare outcome.
-* may suffer from *recall bias* (Sect.\ \@ref(Biases)) when the individuals are people: accurately recalling the past can be unreliable.
+* may suffer from *selection bias* (Sect.\ \@ref(SelectionBias)), as researchers try to locate individuals with a rare outcome.\index{Bias!selection}
+* may suffer from *recall bias* (Sect.\ \@ref(Biases)) when the individuals are people: accurately recalling the past can be unreliable.\index{Bias!recall}
 
 ::: {.example name="Backwards study"}
 A study [@data:Pamphlett:toxins] examined patients with and without sporadic motor neurone disease (SMND), and asked about *past* exposure to metals.
@@ -663,7 +769,7 @@ This observational study has a *backward* direction.
 ### Non-directional studies {#NonDirectional}
 \index{Study types!directionality!non-directional}
 
-*Non-directional* observational studies are called *cross-sectional* studies.
+*Non-directional* observational studies are called *cross-sectional* studies.\index{Cross-sectional studies}
 Cross-sectional studies:
 
 * are good for findings associations between variables (which may or may not be causation).
@@ -699,15 +805,13 @@ Studies with *high* internal validity show that changes in the response variable
 In contrast, studies with *low* internal validity leave open other possibilities, apart from changes in value of the explanatory variable, to explain changes in the value of the response variable.
 Experimental studies usually have higher internal validity than observational studies.
 
-Ideally, all studies should be designed to be *internally valid* (Chaps.\ \@ref(DesignExperiment) and \@ref(DesignObservational)) as far as possible.
-
+Ideally, all studies should be designed to be *internally valid* as far as possible.
+For this reason, internal validity is studied in more detail in Chaps.\ \@ref(DesignExperiment) (for exerimental studies) and \@ref(DesignObservational) (for observational studies).
 
 
 <div style="float:right; width: 75px; padding:10px">
 <img src="Pics/iconmonstr-door-7-240.png" width="50px"/>
 </div>
-
-
 
 
 
@@ -745,7 +849,7 @@ This is called *external validity*.
 A study is *externally valid* if the results of the study are likely to generalise to the rest of the *population*, beyond just those studied in the sample.
 To be *externally* valid, a study first needs to be *internally* valid, since the results must at least be sound for the group under study before being extended to other members of the population.
 
-Using a *random sample* helps ensure external validity.
+Using a *random sample* helps ensure external validity.\index{Samplin!random}
 In addition, the use of [*inclusion* and *exclusion criteria*](#def:InclusionExclusionCriteria) (Sect.\ \@ref(Population)) helps clarify to whom or what the results may apply.
 
 
@@ -811,7 +915,7 @@ Furthermore, the limitations of the study must be communicated (Chap.\ \@ref(Int
 
 ## Chapter summary {#Chap3-Summary}
 
-Three types of research studies are: *Descriptive studies* (for descriptive RQs), *observational studies* (for relational RQs), and *experimental* (for interventional RQs).
+Three types of research studies are: *Descriptive studies* (for descriptive RQs), *observational studies* (for RQs with a comparison or connection, but *without* an intervention), and *experimental* (for RQs with a comparison or connection, *with* an intervention).
 
 Observational studies can be classified as having a *forward direction* (cohort studies), *backward direction* (case-control studies), or *no direction* (cross-sectional studies).
 Experimental studies always have a forward direction, and can be classified as *true experiments* or *quasi-experiments*.
@@ -821,175 +925,175 @@ Ideally studies should be designed to be *internally* and *externally* valid.
 In general, experimental studies have better internal validity than observational studies.
 
 
-```{r Chap3Summary, animation.hook="gifski",  interval=1.5, fig.cap="Chapter 3 summary", fig.height = 3, fig.align="center", dev=if (is_latex_output()){"pdf"}else{"png"}}
-if (knitr::is_html_output()) {
+<!-- ```{r Chap3Summary, animation.hook="gifski",  interval=1.5, fig.cap="Chapter 3 summary", fig.height = 3, fig.align="center", dev=if (is_latex_output()){"pdf"}else{"png"}} -->
+<!-- if (knitr::is_html_output()) { -->
 
-for (i in (1:9)){
-  
-  par( mar = c(0.1, 0.1, 0.1, 0.1) ) # Number of margin lines on each side
+<!-- for (i in (1:9)){ -->
 
-  diagram::openplotmat()
-  pos <- array(NA, 
-               dim = c(4, 2))
-  pos[1, ] <- c(0.35, 0.6) # P 
-  pos[2, ] <- c(0.45, 0.6) # O
-  pos[3, ] <- c(0.55, 0.6)   # C
-  pos[4, ] <- c(0.65, 0.6)   # I
+<!--   par( mar = c(0.1, 0.1, 0.1, 0.1) ) # Number of margin lines on each side -->
 
-  
-  if (i <=  2){
-    textrect( colMeans( pos[1:2, ] )  + c(0, 0.15),
-              lab = "Descriptive RQ",
-              radx = 0.15,
-              rady = 0.04,
-              shadow.size = 0,
-              lcol = "azure",
-              box.col = "azure",
-              cex = 1.0)
-    if (i == 2) {
-      textrect( colMeans( pos[1:2, ] ) + c(0, 0.30),
-               lab = "Answer using a Descriptive study",
-               lcol = "beige",
-               box.col = "beige",
-               radx = 0.25,
-               rady = 0.04,
-               shadow.size = 0,
-               cex = 0.85)
-      
-    }
-  }
-  
-  if ( (i == 3) | ( i == 4) ){
-    textrect( colMeans( pos[1:3, ] ) + c(0, 0.15),
-               lab = "Relational RQ",
-              radx = 0.15,
-              rady = 0.04,
-              shadow.size = 0,
-              lcol = "azure",
-              box.col = "azure",
-              cex = 1.0)
-    if (i == 4) {
-      textrect( colMeans( pos[1:3, ] ) + c(0, 0.30),
-                 lab = "Answer using a Observational study",
-                lcol = "beige",
-                box.col = "beige",
-                radx = 0.25,
-                rady = 0.04,
-                shadow.size = 0,
-                cex = 0.85)
-      
-    }
-    
-  }
-  
-  if ( (i >= 5) & ( i <= 7) ){
-    textrect( colMeans( pos[1:4, ] ) + c(0, 0.15),
-               lab = "Interventional RQ",
-              radx = 0.15,
-              rady = 0.04,
-              shadow.size = 0,
-              lcol = "azure",
-              box.col = "azure",
-              cex = 1.0)
-    if (i >= 6) {
-      textrect( colMeans( pos[1:4, ] ) + c(0, 0.30),
-                 lab = "Answer using a Experimental study",
-                lcol = "beige",
-                box.col = "beige",
-                radx = 0.25,
-                rady = 0.04,
-                shadow.size = 0,
-                cex = 0.85)
-    }
-    if (i == 7) {
-      textplain( colMeans( pos[1:4, ] ) - c(0, 0.1),
-                 lab = "(Intervention: when C can be manipulated by the researchers)",
-                 cex = 0.85)
-      
-    }
-  }
- 
-  # Show some arrow, and then over-write
+<!--   diagram::openplotmat() -->
+<!--   pos <- array(NA,  -->
+<!--                dim = c(4, 2)) -->
+<!--   pos[1, ] <- c(0.35, 0.6) # P  -->
+<!--   pos[2, ] <- c(0.45, 0.6) # O -->
+<!--   pos[3, ] <- c(0.55, 0.6)   # C -->
+<!--   pos[4, ] <- c(0.65, 0.6)   # I -->
 
-  if ( i == 8 ) {
-    straightarrow( from = colMeans( pos[1:4, ] ) + c(-0.1, -0.3),
-                   to = pos[2, ],
-                   lwd = 2)
-  }
-  if ( i == 9 ) {
-    straightarrow( from = colMeans( pos[1:4, ] ) + c(0.1, -0.3),
-                   to = pos[3, ],
-                   lwd = 2)
-  }
-  
-  if ( i == 8 ) {
-    textrect( colMeans( pos[1:4, ] ) + c(-0.1, -0.3),
-              lab = "Response variable",
-              box.col = "white",
-              lcol = "white",
-              shadow.size = 0,
-              radx = 0.05,
-              rady = 0.02,
-              cex = 0.85)
-  }
-  if ( i == 9 ) {
-    textrect( colMeans( pos[1:4, ] ) + c(0.1, -0.3),
-              lab = "Explanatory variable",
-              box.col = "white",
-              lcol = "white",
-              shadow.size = 0,
-              radx = 0.05,
-              rady = 0.02,
-              cex = 0.85)
-  } 
 
-  
-  
-  
-  # Always need P and O
-  textrect( pos[1,], 
-            lab = "P",
-            radx = 0.05,
-            rady = 0.025,
-            shadow.size = 0,
-            lcol = "white",
-            box.col = "white",
-            cex = 2)
-  textrect( pos[2,], 
-            lab = "O", 
-            radx = 0.05,
-            rady = 0.05,
-            shadow.size = 0,
-            lcol = "white",
-            box.col = "white",
-            cex = 2)
-  if (i >= 3) { # C
-    textrect( pos[3,], 
-              box.col = "white",
-              lcol = "white",
-              shadow.size = 0,
-              radx = 0.05,
-              rady = 0.05,
-              lab = "C",
-              cex = 2)
-  }
-  if (i >= 5) { # I
-    textrect( pos[4,], 
-              box.col = "white",
-              lcol = "white",
-              shadow.size = 0,
-              radx = 0.05,
-              rady = 0.05,
-              lab = "I", 
-              cex = 2)
-  }
+<!--   if (i <=  2){ -->
+<!--     textrect( colMeans( pos[1:2, ] )  + c(0, 0.15), -->
+<!--               lab = "Descriptive RQ", -->
+<!--               radx = 0.15, -->
+<!--               rady = 0.04, -->
+<!--               shadow.size = 0, -->
+<!--               lcol = "azure", -->
+<!--               box.col = "azure", -->
+<!--               cex = 1.0) -->
+<!--     if (i == 2) { -->
+<!--       textrect( colMeans( pos[1:2, ] ) + c(0, 0.30), -->
+<!--                lab = "Answer using a Descriptive study", -->
+<!--                lcol = "beige", -->
+<!--                box.col = "beige", -->
+<!--                radx = 0.25, -->
+<!--                rady = 0.04, -->
+<!--                shadow.size = 0, -->
+<!--                cex = 0.85) -->
 
-} 
-  
-}
-  
-```
-  
+<!--     } -->
+<!--   } -->
+
+<!--   if ( (i == 3) | ( i == 4) ){ -->
+<!--     textrect( colMeans( pos[1:3, ] ) + c(0, 0.15), -->
+<!--                lab = "Relational RQ", -->
+<!--               radx = 0.15, -->
+<!--               rady = 0.04, -->
+<!--               shadow.size = 0, -->
+<!--               lcol = "azure", -->
+<!--               box.col = "azure", -->
+<!--               cex = 1.0) -->
+<!--     if (i == 4) { -->
+<!--       textrect( colMeans( pos[1:3, ] ) + c(0, 0.30), -->
+<!--                  lab = "Answer using a Observational study", -->
+<!--                 lcol = "beige", -->
+<!--                 box.col = "beige", -->
+<!--                 radx = 0.25, -->
+<!--                 rady = 0.04, -->
+<!--                 shadow.size = 0, -->
+<!--                 cex = 0.85) -->
+
+<!--     } -->
+
+<!--   } -->
+
+<!--   if ( (i >= 5) & ( i <= 7) ){ -->
+<!--     textrect( colMeans( pos[1:4, ] ) + c(0, 0.15), -->
+<!--                lab = "Interventional RQ", -->
+<!--               radx = 0.15, -->
+<!--               rady = 0.04, -->
+<!--               shadow.size = 0, -->
+<!--               lcol = "azure", -->
+<!--               box.col = "azure", -->
+<!--               cex = 1.0) -->
+<!--     if (i >= 6) { -->
+<!--       textrect( colMeans( pos[1:4, ] ) + c(0, 0.30), -->
+<!--                  lab = "Answer using a Experimental study", -->
+<!--                 lcol = "beige", -->
+<!--                 box.col = "beige", -->
+<!--                 radx = 0.25, -->
+<!--                 rady = 0.04, -->
+<!--                 shadow.size = 0, -->
+<!--                 cex = 0.85) -->
+<!--     } -->
+<!--     if (i == 7) { -->
+<!--       textplain( colMeans( pos[1:4, ] ) - c(0, 0.1), -->
+<!--                  lab = "(Intervention: when C can be manipulated by the researchers)", -->
+<!--                  cex = 0.85) -->
+
+<!--     } -->
+<!--   } -->
+
+<!--   # Show some arrow, and then over-write -->
+
+<!--   if ( i == 8 ) { -->
+<!--     straightarrow( from = colMeans( pos[1:4, ] ) + c(-0.1, -0.3), -->
+<!--                    to = pos[2, ], -->
+<!--                    lwd = 2) -->
+<!--   } -->
+<!--   if ( i == 9 ) { -->
+<!--     straightarrow( from = colMeans( pos[1:4, ] ) + c(0.1, -0.3), -->
+<!--                    to = pos[3, ], -->
+<!--                    lwd = 2) -->
+<!--   } -->
+
+<!--   if ( i == 8 ) { -->
+<!--     textrect( colMeans( pos[1:4, ] ) + c(-0.1, -0.3), -->
+<!--               lab = "Response variable", -->
+<!--               box.col = "white", -->
+<!--               lcol = "white", -->
+<!--               shadow.size = 0, -->
+<!--               radx = 0.05, -->
+<!--               rady = 0.02, -->
+<!--               cex = 0.85) -->
+<!--   } -->
+<!--   if ( i == 9 ) { -->
+<!--     textrect( colMeans( pos[1:4, ] ) + c(0.1, -0.3), -->
+<!--               lab = "Explanatory variable", -->
+<!--               box.col = "white", -->
+<!--               lcol = "white", -->
+<!--               shadow.size = 0, -->
+<!--               radx = 0.05, -->
+<!--               rady = 0.02, -->
+<!--               cex = 0.85) -->
+<!--   }  -->
+
+
+
+
+<!--   # Always need P and O -->
+<!--   textrect( pos[1,],  -->
+<!--             lab = "P", -->
+<!--             radx = 0.05, -->
+<!--             rady = 0.025, -->
+<!--             shadow.size = 0, -->
+<!--             lcol = "white", -->
+<!--             box.col = "white", -->
+<!--             cex = 2) -->
+<!--   textrect( pos[2,],  -->
+<!--             lab = "O",  -->
+<!--             radx = 0.05, -->
+<!--             rady = 0.05, -->
+<!--             shadow.size = 0, -->
+<!--             lcol = "white", -->
+<!--             box.col = "white", -->
+<!--             cex = 2) -->
+<!--   if (i >= 3) { # C -->
+<!--     textrect( pos[3,],  -->
+<!--               box.col = "white", -->
+<!--               lcol = "white", -->
+<!--               shadow.size = 0, -->
+<!--               radx = 0.05, -->
+<!--               rady = 0.05, -->
+<!--               lab = "C", -->
+<!--               cex = 2) -->
+<!--   } -->
+<!--   if (i >= 5) { # I -->
+<!--     textrect( pos[4,],  -->
+<!--               box.col = "white", -->
+<!--               lcol = "white", -->
+<!--               shadow.size = 0, -->
+<!--               radx = 0.05, -->
+<!--               rady = 0.05, -->
+<!--               lab = "I",  -->
+<!--               cex = 2) -->
+<!--   } -->
+
+<!-- }  -->
+
+<!-- } -->
+
+<!-- ``` -->
+
 
 `r if (knitr::is_html_output()){
   'The following short videos may help explain some of these concepts:'
@@ -1055,14 +1159,38 @@ True or false?
 Selected answers are available in Sect.\ \@ref(ResearchDesignAnswer).
 
 
-::: {.exercise #ResearchDesignVAP}
-A research study compared the use of two different education programs to reduce the percentage of patients experiencing ventilator-associated pneumonia (VAP).
-Paramedics from two cities were chosen to participate. 
-Paramedics in City\ A were chosen to receive Program\ 1, and paramedics in the other city to receive Program\ 2.
+:::{.exercise #TypesOfDesignsAcuteOtitis}
+Consider this RQ [@data:McLinn:otitis]:
 
-What type of study is this: descriptive, observational, quasi-experimental, or a true experiment?
-Explain.
+> In children with acute otitis media, what is the difference in the average duration of symptoms when treated with cefuroxime compared to amoxicillin?
+
+1. Is the comparison a within- or between-individuals comparsion?
+1. Is this RQ relational, repeated-measures or correlational?
+1. Is there likely an intervention?
+1. Is the RQ an estimation or decision-making RQ?
+1. Is the study observational or experimental?
+   If observational, what is the *direction*?
+   If experiment, is this a quasi-experiment or true experiment?
 :::
+
+
+
+::: {.exercise #TypesOfDesignsWorms}
+A study [@data:Khair2015:Earthworms] studied the time needed for organic waste to turn into compost.
+For some batches of compost, earthworms were added.
+In other batches, earthworms were *not* added to the waste.
+
+One RQs asked whether the composting times for waste with and without earthworms was the same or not. 
+
+1. Is the comparison a within- or between-individuals comparsion?
+1. Is this RQ relational, repeated-measures or correlational?
+1. Is there an intervention?
+1. Is the RQ an estimation or decision-making RQ?
+1. Is the study observational or experimental?
+   If observational, what is the *direction*?
+   If experiment, is this a quasi-experiment or true experiment?
+:::
+
 
 
 ::: {.exercise #ResearchDesignConcreteBeams}
@@ -1073,8 +1201,23 @@ Explain.
 :::
 
 
+::: {.exercise #ResearchDesignVAP}
+A research study compared the use of two different education programs to reduce the percentage of patients experiencing ventilator-associated pneumonia (VAP).
+Paramedics from two cities were chosen to participate. 
+Paramedics in City\ A were chosen to receive Program\ 1, and paramedics in the other city to receive Program\ 2.
+
+1. Is this RQ relational, repeated-measures or correlational?
+1. Is the comparison a within- or between-individuals comparsion?
+1. Is there likely an intervention?
+1. Is the study observational or experimental?
+   If observational, what is the *direction*?
+   If experiment, is this a quasi-experiment or true experiment?
+:::
+
+
+
 ::: {.exercise #ResearchDesignMatresses}
-A nursing study aimed to compare 'the effectiveness of alternating pressure air mattresses vs. overlays, to prevent pressure ulcers' (@data:Manzano2013:Matresses , p.\ 2099).
+A nursing study aimed to compare 'the effectiveness of alternating pressure air mattresses vs. overlays, to prevent pressure ulcers' (@data:Manzano2013:Matresses, p.\ 2099).
 Patients were *provided* with either alternating pressure air overlays (in 2001) or alternating pressure air mattresses (in 2006).
 The number of pressure ulcers were recorded.
 
@@ -1082,6 +1225,8 @@ This study is experimental, because the researchers *provided* the mattresses.
 Is this a *true* experiment or *quasi*-experiment?
 Explain.
 :::
+
+
 
 
 ::: {.exercise #ResearchDesignPetsAndHealth}
