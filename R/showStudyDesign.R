@@ -79,8 +79,8 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   ### SET OPTIONS 
   numberOfcomparisons <- length(addGroupNames)
   if ( numberOfcomparisons == 2){ # Two groups being compared
-    pos[1, ] <- c(0.525, 0.75)     # Group 1
-    pos[2, ] <- c(0.525, 0.35)     # Group 2
+    pos[1, ] <- c(0.575, 0.75)     # Group 1
+    pos[2, ] <- c(0.575, 0.35)     # Group 2
     pos[3, ] <- c(NA, NA)         # No Group 3
     
     pos[4, ] <- c(0.85, 0.75)     # Treatment 1
@@ -88,9 +88,9 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     pos[6, ] <- c(NA, NA)         # No Group 3 to treat
     
   } else { # Three groups being compared
-    pos[1, ] <- c(0.525, 0.75)     # Group 1
-    pos[2, ] <- c(0.525, 0.55)     # Group 2
-    pos[3, ] <- c(0.525, 0.35)     # Group 3
+    pos[1, ] <- c(0.575, 0.75)     # Group 1
+    pos[2, ] <- c(0.575, 0.55)     # Group 2
+    pos[3, ] <- c(0.575, 0.35)     # Group 3
     
     pos[4, ] <- c(0.85, 0.75)     # Treatment 1
     pos[5, ] <- c(0.85, 0.55)     # Treatment 2
