@@ -73,19 +73,21 @@ showRepeatedMStudyDesign <- function(intervention = FALSE,
   
   
   ### ARROWS States to 'individuals'
-  arrows(x0 = 0.25, 
+  segments(x0 = 0.25, 
          x1 = 0.25,
          y0 = 0.7,
          y1 = 0.45,
-         angle = 15,
-         length = 0.1,
+#         angle = 15,
+#         length = 0.1,
+         lty = 2,
          lwd = 2)
-  arrows(x0 = 0.55, 
+  segments(x0 = 0.55, 
          x1 = 0.55,
          y0 = 0.7,
          y1 = 0.45,
-         angle = 15,
-         length = 0.1,
+#         angle = 15,
+#         length = 0.1,
+         lty = 2,
          lwd = 2)
   
   ### INDIVIDUALS boxes
@@ -133,7 +135,7 @@ showRepeatedMStudyDesign <- function(intervention = FALSE,
            length = 0.1,
            lwd = 2)
     text(x = 0.4,
-         y = 0.175,
+         y = 0.15,
          labels = "By researchers",
          col = "grey",
          srt = 0,

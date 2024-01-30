@@ -96,7 +96,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
     pos[5, ] <- c(0.85, 0.55)     # Treatment 2
     pos[6, ] <- c(0.85, 0.35)     # Treatment 3
   }
-  pos[7, ] <- c(0.525, 0.05)     # Compare
+  pos[7, ] <- c(0.575, 0.05)     # Compare
   pos[8, ] <- c(0.33, mean( pos[1:3, 2], 
                             na.rm = TRUE ) )     # Individuals/Sample
   pos[9, ] <- c(0.10, mean( pos[1:2, 2], 
