@@ -58,6 +58,22 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
                  ImageAnalyse,
                  ImageReport)
   
+  if ( !is.na(seed)) {
+    set.seed(seed)
+    
+    reorder <- sample(1:6)
+    imageList <- imageList[ reorder ]
+    
+    Labels.Short <- Labels.Short[reorder]
+    
+    for (i in 1:6){
+      Labels.Short[i] <- substr(Labels.Short[i], 
+                                start = 4, 
+                                stop = nchar(Labels.Short[i]))
+    }
+
+  }
+  
   
   # SETTINGS
   # How much to enlarge chosen image
@@ -136,30 +152,31 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   
   
   # DRAW ARROWS FIRST, then over plot with images
-  arrPos <- c(0.5, 0.5, 
-              0.45, # A bit lower, to allow for small text
-              0.5, 0.5) 
-  for (i in 1:5){ # FIVE arrow needed between SIX boxes
+  if (Arrows) {
+    arrPos <- c(0.5, 0.5, 
+                0.45, # A bit lower, to allow for small text
+                0.5, 0.5) 
+    for (i in 1:5){ # FIVE arrow needed between SIX boxes
+      
+      fromArrow <- pos[i, 1]
+      toArrow   <- pos[i + 1, 1]
+      
+      diagram::straightarrow(from = c( pos[i, 1],
+                                       pos[i, 2] ),
+                             to   = c( pos[i + 1, 1],
+                                       pos[i + 1, 2] ),
+                             arr.pos = arrPos[i] )
+    }
     
-    fromArrow <- pos[i, 1]
-    toArrow   <- pos[i + 1, 1]
-
-    diagram::straightarrow(from = c( pos[i, 1],
-                                     pos[i, 2] ),
-                           to   = c( pos[i + 1, 1],
-                                     pos[i + 1, 2] ),
-                           arr.pos = arrPos[i] )
+    # Draw arrow from box 6 to 1... in a lighter shade
+    diagram::straightarrow(from = c( pos[6, 1],
+                                     pos[6, 2] ),
+                           to   = c( pos[1, 1],
+                                     pos[1, 2] ),
+                           lcol = "grey",
+                           lty = 3,
+                           arr.pos = 0.55) # A bit higher, to allow for small text
   }
-  
-  # Draw arrow from box 6 to 1... in a lighter shade
-  diagram::straightarrow(from = c( pos[6, 1],
-                                   pos[6, 2] ),
-                         to   = c( pos[1, 1],
-                                   pos[1, 2] ),
-                         lcol = "grey",
-                         lty = 3,
-                         arr.pos = 0.55) # A bit higher, to allow for small text
-
   
   
   # COVER WITH WHITE BOXES
