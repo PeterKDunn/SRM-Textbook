@@ -1250,11 +1250,11 @@ Speed2 <- data.frame( Before = Speed$Speed[ Speed$When == "Before" ][1:10],
 
 ```{r}
 if( knitr::is_latex_output() ) {
-  tb1 <- cbind( Speed$Speed[Speed$When == "Before"][1:8],
-                Speed$Speed[Speed$When == "Before"][9:16],
-                Speed$Speed[Speed$When == "Before"][17:24],
-                Speed$Speed[Speed$When == "Before"][25:32],
-                c( Speed$Speed[Speed$When == "Before"][33:38], NA, NA ) )
+  tb1 <- cbind( Speed$Speed[Speed$When == "Before"][1:9],
+                Speed$Speed[Speed$When == "Before"][10:18],
+                Speed$Speed[Speed$When == "Before"][19:27],
+                Speed$Speed[Speed$When == "Before"][28:36],
+                c( Speed$Speed[Speed$When == "Before"][37:38], NA, NA, NA, NA, NA, NA, NA ) )
   T1 <- knitr::kable( pad(tb1,
                           surroundMaths = TRUE,
                           targetLength = 5,
@@ -1270,12 +1270,11 @@ if( knitr::is_latex_output() ) {
     add_header_above( c("Speeds before signage added" = 5),
                       bold = TRUE)
 
-  tb2 <- cbind( Speed$Speed[Speed$When == "After"][1:8],
-                Speed$Speed[Speed$When == "After"][9:16], 
-                Speed$Speed[Speed$When == "After"][17:24], 
-                Speed$Speed[Speed$When == "After"][25:32], 
-                Speed$Speed[Speed$When == "After"][33:40], 
-                c( Speed$Speed[Speed$When == "After"][41], NA, NA, NA, NA, NA, NA, NA) )
+  tb2 <- cbind( Speed$Speed[Speed$When == "After"][1:9],
+                Speed$Speed[Speed$When == "After"][10:18], 
+                Speed$Speed[Speed$When == "After"][19:27], 
+                Speed$Speed[Speed$When == "After"][28:36], 
+                c( Speed$Speed[Speed$When == "After"][37:41], NA, NA, NA, NA) )
   T2 <- knitr::kable( pad(tb2,
                           surroundMaths = TRUE,
                           targetLength = 5,
@@ -1288,7 +1287,7 @@ if( knitr::is_latex_output() ) {
                       escape = FALSE,
                       booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Speeds after signage added" = 6),
+    add_header_above( c("Speeds after signage added" = 5),
                       bold = TRUE)
   
   out <- knitr::kables(list(T1, T2),
@@ -1335,7 +1334,7 @@ At one site (Ningxuan Freeway), speeds were recorded at various points on the fr
 
 From this data, the *deceleration* of each vehicle was determined
 `r if (knitr::is_latex_output()) {
-   '(Table\\ \\@ref(tab:SignageSummaryDec))'
+   '(Table\\ \\@ref(tab:SignageSummaryData))'
 } else {
    '(data below)'
 }`
@@ -1352,7 +1351,7 @@ In this context, the researchers are hoping that the extra signage might cause c
 
 
 
-```{r SignageSummaryDec}
+```{r}
 data(Deceleration)
 
 Deceleration$When <- factor(Deceleration$When,
@@ -1403,7 +1402,7 @@ if( knitr::is_latex_output() ) {
   
   out <- knitr::kables(list(T1, T2),
                        format = "latex",
-                       label = "SignageSummaryDec",
+                       label = "SignageSummaryData",
                        caption = "Vehicle decleration  (in m/s-squared) before and after adding extra signage") %>%
     kable_styling(font_size = 8)
   out2 <- prepareSideBySideTable(out, gap = "\\enskip")
@@ -1422,6 +1421,70 @@ if( knitr::is_html_output() ) {
 ```
 
 
+
+```{r SignageSummaryDec}
+DecSummary <- array( dim = c(2, 4))
+
+colnames(DecSummary) <- c("Mean",
+                          "Std. dev.",
+                          "Sample size",
+                          "Std. error")
+rownames(DecSummary) <- c("After",
+                          "Before")
+
+DecSummary[, 1]<- tapply(Deceleration$Deceleration,
+                         Deceleration$When,
+                         "mean")
+DecSummary[, 2]<- tapply(Deceleration$Deceleration,
+                         Deceleration$When,
+                         "sd")
+DecSummary[, 3]<- tapply(Deceleration$Deceleration,
+                         Deceleration$When,
+                         "realLength")
+DecSummary[, 4]<- tapply(Deceleration$Deceleration,
+                         Deceleration$When,
+                         "findStdError")
+
+DecSummary <- rbind(DecSummary,
+                    c( DecSummary[2, 1] - DecSummary[1, 1],
+                       NA,
+                       NA,
+                       t.test(Deceleration$Deceleration ~ Deceleration$When)$stderr) )
+rownames(DecSummary) <- c("After",
+                          "Before",
+                          "Difference")
+
+
+if( knitr::is_latex_output() ) {
+  knitr::kable(pad(DecSummary,
+                   surroundMaths = TRUE,
+                   targetLength = c(7, 6, 0, 6),
+                   digits = c(4, 4, 0, 4)),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        align = "c",
+        linesep = c("", "", "\\addlinespace"), 
+        caption = "A summary table for the deceleration data") %>%
+   kable_styling(font_size = 8) %>%
+   row_spec(0, bold = TRUE)
+}
+
+if( knitr::is_html_output() ) {
+
+  knitr::kable(pad(DecSummary,
+                   surroundMaths = TRUE,
+                   targetLength = c(7, 6, 0, 6),
+                   digits = c(4, 4, 0, 4)),
+        format = "html",
+        longtable = FALSE,
+        booktabs = TRUE,
+        align = "c",
+        caption = "A summary table for the deceleration data") %>%
+   row_spec(0, bold = TRUE)
+}
+```
 
 
 ::: {.exercise #NumericalQuantTyping}
