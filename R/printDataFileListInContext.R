@@ -4,15 +4,15 @@
 
 
 
-### DO NOT THEM in answers chapter!!!
+### DO NOT SEARCH FOR THEM in answers chapter!!!
 
 ### Col 1 is the data file name.
 ### Col 2 is the library it comes from
 
 
-splitFiles <- matrix( c(17, 36, # col 1 is teh first col, col 2 is where to stop for second col, before moving to whole new environment
-                       69, 104,
-                       135, 170),
+splitFiles <- matrix( c(16, 38, # col 1 is the first col, col 2 is where to stop for second col, before moving to whole new environment
+                       71, 102,
+                       127, 170),
                      nrow = 3,
                      byrow = TRUE )
 # Where to split the data file, for page 1, to create two columns. 
@@ -123,7 +123,7 @@ for (i in 1:numDataCalls){
   }
   if (substr(fileUsed[i], 2, 6) == "NHANE") { #faithful data set
     fileUsed[i] <- paste(fileUsed[i],
-                         "(package **NHANES**)" )
+                         "(*NHANES*)" )
   }
   
   

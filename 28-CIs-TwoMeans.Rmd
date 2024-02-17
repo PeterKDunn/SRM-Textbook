@@ -55,15 +55,15 @@ What are P, O, C and I in this study?\label{thinkBox:PhonepOCI}
 
 
 ```{r PhoneDataTable}
-data(ReactionTimePhoneInd)
+data(ReactionTime)
 
 if( knitr::is_latex_output() ) {
-  tb1 <- cbind( ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][1:6],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][7:12],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][13:18],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][19:24],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][25:30],
-                c(ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"][31:32], NA, NA, NA, NA) )
+  tb1 <- cbind( ReactionTime$Reaction[ReactionTime$Group == "Phone"][1:6],
+                ReactionTime$Reaction[ReactionTime$Group == "Phone"][7:12],
+                ReactionTime$Reaction[ReactionTime$Group == "Phone"][13:18],
+                ReactionTime$Reaction[ReactionTime$Group == "Phone"][19:24],
+                ReactionTime$Reaction[ReactionTime$Group == "Phone"][25:30],
+                c(ReactionTime$Reaction[ReactionTime$Group == "Phone"][31:32], NA, NA, NA, NA) )
   
   T1 <- knitr::kable( pad(tb1,
                           surroundMaths = TRUE,
@@ -83,12 +83,12 @@ if( knitr::is_latex_output() ) {
     add_header_above( c("Using phone" = 6),
                       bold = TRUE)
 
-  tb2 <- cbind( ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][1:6],
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][7:12], 
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][13:18], 
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][19:24], 
-                ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][25:30], 
-                c(ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"][31:32], NA, NA, NA, NA))
+  tb2 <- cbind( ReactionTime$Reaction[ReactionTime$Group == "Control"][1:6],
+                ReactionTime$Reaction[ReactionTime$Group == "Control"][7:12], 
+                ReactionTime$Reaction[ReactionTime$Group == "Control"][13:18], 
+                ReactionTime$Reaction[ReactionTime$Group == "Control"][19:24], 
+                ReactionTime$Reaction[ReactionTime$Group == "Control"][25:30], 
+                c(ReactionTime$Reaction[ReactionTime$Group == "Control"][31:32], NA, NA, NA, NA))
   T2 <- knitr::kable( pad(tb2,
                           surroundMaths = TRUE,
                           targetLength = rep(3, 7),
@@ -117,8 +117,8 @@ if( knitr::is_latex_output() ) {
 } 
 
 if( knitr::is_html_output() ) {
-  RT.DataTableHTML <- cbind( "Use phone" = ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Phone"], 
-                           "Not using phone" = ReactionTimePhoneInd$Reaction[ReactionTimePhoneInd$Group == "Control"])
+  RT.DataTableHTML <- cbind( "Use phone" = ReactionTime$Reaction[ReactionTime$Group == "Phone"], 
+                           "Not using phone" = ReactionTime$Reaction[ReactionTime$Group == "Control"])
 
   DT::datatable(RT.DataTableHTML,
                fillContainer = FALSE, # Make more room, so we don't just have ten values
@@ -135,16 +135,16 @@ Phone.DataSummary <- Phone.DataSummary.rnd <- array(NA,
                                                     dim = c(3, 4) )
 
 Phone.DataSummary[1:2, 1] <- aggregate( Reaction ~ Group, 
-                                        data = ReactionTimePhoneInd, 
+                                        data = ReactionTime, 
                                         FUN = "mean")[, 2]
 Phone.DataSummary[1:2, 2] <- aggregate( Reaction ~ Group, 
-                                        data = ReactionTimePhoneInd, 
+                                        data = ReactionTime, 
                                         FUN = "length")[, 2] 
 Phone.DataSummary[1:2, 3] <- aggregate( Reaction ~ Group, 
-                                        data = ReactionTimePhoneInd, 
+                                        data = ReactionTime, 
                                         FUN = "sd")[, 2]
 Phone.DataSummary[1:2, 4] <- aggregate( Reaction ~ Group, 
-                                        data = ReactionTimePhoneInd, 
+                                        data = ReactionTime, 
                                         FUN = function(x){ sd(x)/sqrt(length(x))})[, 2] 
 
 Phone.DataSummary[3, 1] <- Phone.DataSummary[2, 1] - Phone.DataSummary[1, 1]
@@ -272,7 +272,7 @@ A suitable graphical summary of the data is a boxplot (Fig.\ \@ref(fig:PhonePlot
 
 
 ```{r PhonePlots, fig.width=4.5, fig.height=3.5, out.width='45%', fig.alt="Boxplot of the two groups in the reaction-time data", fig.align="center", fig.cap="A boxplot of the reaction-time data"}
-boxplot(ReactionTimePhoneInd$Reaction ~ ReactionTimePhoneInd$Group,
+boxplot(ReactionTime$Reaction ~ ReactionTime$Group,
         col = plot.colour,
         las = 1,
         ylim = c(400, 1000),
@@ -424,7 +424,7 @@ ci.lo <- Phone.DataSummary[, 1] - 2 * Phone.DataSummary[, 4]
 ci.hi <- Phone.DataSummary[, 1] + 2 * Phone.DataSummary[, 4] 
 
 plot( range( c( ci.lo, ci.hi) ) ~ c(0.9, 2.1), 
-      data = ReactionTimePhoneInd,
+      data = ReactionTime,
       type = "n",
       xlim = c(0.5, 2.5),
       ylim = c(500, 650),
@@ -437,7 +437,7 @@ plot( range( c( ci.lo, ci.hi) ) ~ c(0.9, 2.1),
       las = 1)
 axis(side = 1, 
      at = 1:2, 
-     labels = levels(factor(ReactionTimePhoneInd$Group)), 
+     labels = levels(factor(ReactionTime$Group)), 
      las = 1) 
 axis(side = 2, 
      las = 1)
@@ -1099,7 +1099,7 @@ The sample sizes are larger than $25$, so the results are statistically valid.
 
 ## Exercises {#MeansIndSamplesExercises}
 
-Selected answers are available in Sect.\ \@ref(MeansIndSamplesAnswer).
+Selected answers are available in App.\ \@ref(Answers).
 
 
 ::: {.exercise #MeansIndSamplesExercisesWhalesCI}
