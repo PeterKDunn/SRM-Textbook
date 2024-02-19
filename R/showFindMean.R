@@ -24,7 +24,7 @@ FindMean <- function(locate.x = .22214, numberImages, iteration){
   
   #######################
   # Canvas
-  mar = c(0.1, 0.1, 3, 0.1) + 0.1
+  par( mar = c(0.1, 0.1, 3, 0.1) + 0.1)
   plot( x = c(0.5, 7.15), 
         y = c(-0.5, 3.5),
         type = "n",
@@ -141,7 +141,7 @@ FindMean <- function(locate.x = .22214, numberImages, iteration){
   bit <- 0.1
   delta <- (8 - 4 - 2 * bit)/numberImages # From the initial plots call; the size of the canvas is x-direction
   x0 <- 4 + bit                # The left-most point
-  ylow <- -1                  # From initial plot call
+  ylow <- 3                  # From initial plot call
   xplot <- x0 * iteration * delta
   points( x = xplot, 
           y = ylow, 
