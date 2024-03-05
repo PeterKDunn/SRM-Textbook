@@ -658,11 +658,11 @@ pHat <- 11/25
 n <- 25
 pVec <- c(0.25, 0.4, 0.6, 0.7)
 pMean <- pVec
-pStdDev <- sqrt( pVec * (1 - pVec) / n)
+pStdDev <- sqrt( pHat * (1 - pHat) / n)
 
 for (i in 1:4){
-  ciLo <- pVec[i] - 2 * pStdDev[i]
-  ciHi <- pVec[i] + 2 * pStdDev[i]
+  ciLo <- pVec[i] - 2 * pStdDev
+  ciHi <- pVec[i] + 2 * pStdDev
 
   pHatInOrOut <- ifelse( (pHat > ciLo) & (pHat < ciHi), TRUE, FALSE )
 
@@ -670,11 +670,11 @@ for (i in 1:4){
   xx <- seq(0, 1, length = 1000)
   yy <- max( dnorm(x = xx, 
                    mean = pMean[i],
-                   sd = pStdDev[i]) )
+                   sd = pStdDev) )
 
 
   out <- plotNormal(pMean[i],
-                    pStdDev[i],
+                    pStdDev,
                     xlab = expression( Values~of~hat(italic(p))),
                     xlim.lo = 0,
                     xlim.hi = 1,
@@ -1096,7 +1096,7 @@ Your blood is analysed, and your doctor is emailed the results of the blood test
 
 Since you did not fast, the results may or may not be valid.
 The doctor can learn *something*... but not as much as if you had followed instructions.
-Similarly, if the conditions for computing the confidence interval are not met, the results may be suspect. 
+Similarly, if the conditions for computing the confidence interval are not met, we can still perform the mathematical calculations and obtains values... but the results may be suspect. 
 :::
 
 
@@ -1108,6 +1108,15 @@ The *statistical validity conditions* for creating CI for a single proportion ar
 These conditions ensure that the sampling distribution of $\hat{p}$ has an approximate normal distribution, so that the $68$--$95$--$99.7$ rule (approximately) applies.
 If this condition is not met, the normal distribution may not approximate the sampling distribution well, so the $68$--$95$--$99.7$ rule may be inappropriate, and so the CI may also be slightly wrong.
 
+
+
+
+::: {.example #DiceStatValidity name="Statistical validity"}
+For the die-throwing example in Sect.\ \@ref(SamplingDistributionUnknownp), $n = 25$ and $\hat{p} = 0.44$.
+This means there were $11$\ even rolls, and $14$\ odd rolls.
+
+Both these values exceed $5$, so the CI is statistically valid.
+:::
 
 
 
@@ -1197,15 +1206,6 @@ lines( y ~ x,
        lwd = 2)
 
 ```
-
-
-
-::: {.example #DiceStatValidity name="Statistical validity"}
-For the die-throwing example in Sect.\ \@ref(SamplingDistributionUnknownp), $n = 25$ and $\hat{p} = 0.44$.
-This means there were $11$\ even rolls, and $14$\ odd rolls.
-
-Both these values exceed $5$, so the CI is statistically valid.
-:::
 
 
 ## Example: female coffee drinkers {#Female-Coffee-Drinkers}
