@@ -197,7 +197,7 @@
    text(x = pos[1, 1],
         y = 0.965,
         cex = 0.90,
-        labels = "1. Make an asssumption")
+        labels = "1. Make an assumption")
    text(x = pos[2, 1],
         y = 0.965,
         cex = 0.90,
