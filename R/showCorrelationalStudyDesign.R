@@ -39,7 +39,35 @@ showCorrelationalStudyDesign <- function(intervention = FALSE,
     if (intervention) interventionName <- "Intervention"
   } 
   
-   ### ARROWS Variables to 'individuals'
+  
+  ### RELATIONSHIP ARROW
+  # Need "thick" arrow
+  # First, draw the arrow shaft:
+  diagram::textrect(mid = c(0.45, 0.3), 
+                    radx = 0.15,
+                    rady = 0.03,
+                    shadow.size = 0,
+                    lab = "",
+                    box.col = grey(0.85),
+                    lcol = grey(0.85))
+  # Second, draw the arrow head
+  diagram::textmulti(mid = c(0.6, 0.3),
+                     radx = 0.0475,
+                     rady = 0.08,
+                     nr = 3, # THAT IS, A TRIANGLE
+                     angle = 0, # ROTATION DEGREES
+                     shadow.size = 0,
+                     lab = "",
+                     box.col = grey(0.85),
+                     lcol = grey(0.85))
+  text(x = 0.5,
+       y = 0.2,
+       font = 2, # BOLD
+       label = "Relationship")
+  
+  
+  
+  ### ARROWS Variables to 'individuals'
   if (intervention) {
     diagram::straightarrow(from = c(0.25, 0.3), # From X to IND
                            to = c(0.5, 0.7), 
@@ -78,20 +106,34 @@ showCorrelationalStudyDesign <- function(intervention = FALSE,
   
 
   ### VARS
-  diagram::textrect( mid = c(0.25, 0.3),
+  diagram::textrect( mid = c(0.2, 0.3),
                      radx = 0.15,
                      rady = 0.1,
                      box.col = ExplanatoryColour,
                      lcol = ExplanatoryColour,
                      shadow.size = 0,
                      lab = explanatoryName)
-  diagram::textrect( mid = c(0.75, 0.3),
+  if ( tolower(explanatoryName) != tolower("Explanatory variable") ) {
+    text( x = 0.2, 
+          y = 0.1,
+          cex = 0.9,
+          labels = "(Explanatory variable)")
+  }
+  
+  diagram::textrect( mid = c(0.8, 0.3),
                      radx = 0.15,
                      rady = 0.1,
                      box.col = ResponseColour,
                      lcol = ResponseColour,
                      shadow.size = 0,
                      lab = responseName)
+  if ( tolower(responseName) != tolower("Response variable") ) {
+    text( x = 0.8, 
+          y = 0.1,
+          cex = 0.9,
+          labels = "(Response variable)")
+  }
+  
   
 }
 
