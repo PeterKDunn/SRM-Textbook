@@ -5,10 +5,10 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
                       Arrows = TRUE, 
                       upDirectory = TRUE,
                       seed = NA, ...){
-  # FLAG is the box flagged for adding additional text; a digits from 1 to 6
+  # Flag  is the box flagged for adding additional text; a digits from 1 to 6
   # We count from the top down, so Flag=1 corresponds to Step 1: Ask
   #
-  # TEXT is the extra text that it contains
+  # Text  is the extra text that it contains; can be a vector (e.g., c("Line 1", "Line 2"))
   #
   # if seed is NA (the default), the items are labelled in the correct order.
   # Otherwise, the seed is used to generate the labels in a random order
@@ -217,7 +217,7 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
                               add = TRUE)
   }
   
-  # Show small text
+  # Show small text for each icon
   for (i in 1:6) {
     text(y = pos[i, 2] + (boxHeight / 2) * enlargeBoxFactor[i] + smallTextHeight,
          x = pos[i, 1],
@@ -233,17 +233,13 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
     displayText <- ifelse( is.na(Text),
                            Labels.Short[Flag],
                            Labels.Short[Flag] 
-                           #ifelse(Labs == "Long", 
-                            #      Labels.Long[Flag],
-                             #     Labels.Short[Flag] ),
-                           #ifelse(Labs == "Long", 
-                            #      paste0( Labels.Long[Flag], ": ", Text),
-                             #     paste0( Labels.Short[Flag], ": ", Text ))
     )
+    
+    # Text in centre of image
     diagram::textrect( mid = c( plotWidth/2, 
                                 plotHeight/2 ),
                        radx = (plotWidth /2 ) - (boxWidth / 2) * 1.5,
-                       rady = (textHeight/2) + (edgeGap),
+                       rady = (textHeight/2) + (2 * edgeGap),
                        lab = Text,
                        box.col = gray(0.9),
                        lcol = gray(0.9),
