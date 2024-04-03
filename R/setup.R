@@ -46,20 +46,54 @@ options(knitr.kable.NA = '')
 
 
 ### COLOURS
-someDefaultColoursTransparent <- viridis::viridis(8, 
+numCols <- 30
+someDefaultColoursTransparent <- viridis::viridis(numCols, 
                                                   alpha = 0.4)
+colourLocation <- round(seq(1, 
+                            numCols, 
+                            length = 10) )
 # In order: NA, Explanatory, Chance, Design, Extraneous, NA
-ResponseColourTransparent <- someDefaultColoursTransparent[1]
-ChanceColourTransparent <- someDefaultColoursTransparent[2]
-ExplanatoryColourTransparent <- someDefaultColoursTransparent[3]
-DesignColourTransparent <- someDefaultColoursTransparent[4]
-ExtraneousColourTransparent <- someDefaultColoursTransparent[5]
-GroupColourTransparent <- someDefaultColoursTransparent[6]
-IndividualColourTransparent <- someDefaultColoursTransparent[7]
-BlockColourTransparent <- someDefaultColoursTransparent[8]
+ResponseColourTransparent <- someDefaultColoursTransparent[ colourLocation[3] ]
+ChanceColourTransparent <- someDefaultColoursTransparent[ colourLocation[4] ]
+ExplanatoryColourTransparent <- someDefaultColoursTransparent[ colourLocation[5] ]
+DesignColourTransparent <- someDefaultColoursTransparent[ colourLocation[6] ]
+ExtraneousColourTransparent <- someDefaultColoursTransparent[ colourLocation[7] ]
+GroupColourTransparent <- someDefaultColoursTransparent[ colourLocation[8] ]
+IndividualColourTransparent <- someDefaultColoursTransparent[ colourLocation[9] ]
+BlockColourTransparent <- someDefaultColoursTransparent[ colourLocation[10] ]
 
-# Convert to equiv sold, manually...
-ResponseColour <- rgb(185, 171, 191, 
+# TEST COLOURS:
+
+plot( x = c(0, 1.6),
+      y = c(0, 1) )
+polygon( x = c(0, 0, 0.2, 0.2),
+         y = c(0, 1, 1, 0),
+         col = ResponseColourTransparent)
+polygon( x = c(0, 0, 0.2, 0.2) + 0.2,
+         y = c(0, 1, 1, 0),
+         col = ChanceColourTransparent)
+polygon( x = c(0, 0, 0.2, 0.2) + 0.4,
+         y = c(0, 1, 1, 0),
+         col = ExplanatoryColourTransparent)
+polygon( x = c(0, 0, 0.2, 0.2) + 0.6,
+         y = c(0, 1, 1, 0),
+         col = DesignColourTransparent)
+polygon( x = c(0, 0, 0.2, 0.2) + 0.8,
+         y = c(0, 1, 1, 0),
+         col = GroupColourTransparent)
+polygon( x = c(0, 0, 0.2, 0.2) + 1.0,
+         y = c(0, 1, 1, 0),
+         col = IndividualColourTransparent)
+polygon( x = c(0, 0, 0.2, 0.2) + 1.2,
+         y = c(0, 1, 1, 0),
+         col = ExtraneousColourTransparent)
+polygon( x = c(0, 0, 0.2, 0.2) + 1.4,
+         y = c(0, 1, 1, 0),
+         col = BlockColourTransparent)
+
+
+# Convert to equiv solid, manually...
+ResponseColour <- rgb(187, 188, 208, 
                       maxColorValue = 256)
 ChanceColour <- rgb(187, 183, 205, 
                     maxColorValue = 256)
@@ -74,38 +108,7 @@ GroupColour <- rgb(223, 240, 190, ### FIX!
 IndividualColour <- rgb(187, 217, 210, ### FIX!
                         maxColorValue = 256)
 BlockColour <- rgb(253, 245, 187, ### FIX!
-                        maxColorValue = 256)
-
-
-
-# TEST COLOURS:
-#
-# plot( x = c(0, 1.6),
-#       y = c(0, 1) )
-# polygon( x = c(0, 0, 0.2, 0.2),
-#          y = c(0, 1, 1, 0),
-#          col = ResponseColourTransparent)
-# polygon( x = c(0, 0, 0.2, 0.2) + 0.2,
-#          y = c(0, 1, 1, 0),
-#          col = ChanceColourTransparent)
-# polygon( x = c(0, 0, 0.2, 0.2) + 0.4,
-#          y = c(0, 1, 1, 0),
-#          col = ExplanatoryColourTransparent)
-# polygon( x = c(0, 0, 0.2, 0.2) + 0.6,
-#          y = c(0, 1, 1, 0),
-#          col = DesignColourTransparent)
-# polygon( x = c(0, 0, 0.2, 0.2) + 0.8,
-#          y = c(0, 1, 1, 0),
-#          col = GroupColourTransparent)
-# polygon( x = c(0, 0, 0.2, 0.2) + 1.0,
-#          y = c(0, 1, 1, 0),
-#          col = IndividualColourTransparent)
-# polygon( x = c(0, 0, 0.2, 0.2) + 1.2,
-#          y = c(0, 1, 1, 0),
-#          col = ExtraneousColourTransparent)
-# polygon( x = c(0, 0, 0.2, 0.2) + 1.4,
-#          y = c(0, 1, 1, 0),
-#          col = BlockColourTransparent)
+                   maxColorValue = 256)
 
 
 ### OTHER COLOURS
