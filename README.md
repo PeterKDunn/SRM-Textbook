@@ -7,11 +7,11 @@ The focus, however, is on the analysis of data.
 
 The content covers:
 
-- Asking research questioins that can be answered using quantitative methods
+- Asking research questions that can be answered using quantitative methods
 - Designing quantitative studies
 - Collecting data
-- Summaraising data, with graphs and numbers
-- Analysising data:
+- Summarising data, with graphs and numbers
+- Analysing data:
   - Using confidence intervals (proportions, means, odds ratios)
   - Using hypothesis tests (means, odds ratios)
   - Correlation and regression

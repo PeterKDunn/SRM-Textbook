@@ -68,7 +68,7 @@ showExtraneousTypes <- function (){
        y = mean( c(lurkingY[1], confoundingY[1]) ),
        lab = expression(Also~associated~with~explanatory) )
   
-  text(x = mean(lurkingX[1]),
+  text(x = mean(lurkingX),
        y = mean(lurkingY),
        lab = expression(Unrecorded) )
 
