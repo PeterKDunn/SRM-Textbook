@@ -27,10 +27,17 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   xLimHi <- 1
   
   # WATCH THE ORDER HERE!
+  byResearchersTextIntoGroups <- "By researchers"
+  byResearchersTextAddTreatments <- "By researchers"
+
   if ( addThirdParty ) {
     # Recommend no POPULATION box---too wide!
     useDefaultCanvas <- FALSE
     xLimHi <- 1.5
+    
+    # Change some text
+    byResearchersTextIntoGroups <- "By the assistant"
+    byResearchersTextAddTreatments <- "By the assistant"
   } 
   if ( addIndividuals ) {
     useDefaultCanvas <- FALSE
@@ -107,13 +114,13 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   # as sometimes  left  and  right  etc are used later
   if (studyType == "TrueExp" & addByResearchers) text(x = mean( c(pos[8, 1], pos[1, 1] ) ),
                                                       y = 0.5,
-                                                      labels = "By researchers",
+                                                      labels = byResearchersTextIntoGroups,
                                                       col = "grey",
                                                       srt = 90,
                                                       cex = 1.65)
   if (studyType != "Obs" & addByResearchers) text(x = mean( c(pos[1, 1], pos[4, 1]) ),
                                                   y = 0.5,
-                                                  labels = "By researchers",
+                                                  labels = byResearchersTextAddTreatments,
                                                   col = "grey",
                                                   srt = 90,
                                                   cex = 1.65)
