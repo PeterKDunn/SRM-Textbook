@@ -65,6 +65,16 @@ arrows(x0 = meanPerm,
        y1 = 1.7,
        angle = 15,
        length = 0.1)
+
+# Markers of number std dev
+points(x = meanPerm + sdPerm,
+       y = 1.7,
+       pch = 19,
+       cex = 0.7)
+points(x = meanPerm + (2 * sdPerm),
+       y = 1.7,
+       pch = 19,
+       cex = 0.7)
 text(x = mean( c(meanPerm,
                  locationOfOutliers)),
      y = 1.7,
