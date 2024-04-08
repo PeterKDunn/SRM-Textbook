@@ -15,7 +15,8 @@ As with quantitative data, quantitative data can be understood by knowing how of
 This is called the *distribution* of the data (Def.\ \@ref(def:Distribution)).
 
 The distribution can be displayed using a frequency table (Sect.\ \@ref(QualitativeTables)) or a graph (Sect.\ \@ref(QualitativeGraphs)).
-The distribution of qualitative data can be summarised numerically by computing proportions, percentages (Sect.\ \@ref({#QualitativeProportionsPercentages})), odds (Sect.\ \@ref(QualOdds)), or modes (Sect.\ \@ref({#Modes})); ordinal qualitative data can be also summarised numerically using medians.
+Qualitative data can be summarised by finding modes (Sect.\ \@ref(Modes)) or, for ordinal qualitative data, using medians.
+The distribution of qualitative data can be summarised numerically by computing proportions, percentages (Sect.\ \@ref(QualitativeProportionsPercentages)) or odds (Sect.\ \@ref(QualOdds)).
 
 
 ## Frequency tables for qualitative data {#QualitativeTables}
@@ -29,8 +30,8 @@ For *ordinal* data, the natural order of the levels should almost always be used
 
 
 ::: {.example #AVstudy name="Opinions of AV vehicles"}
-Researchers [@pyrialakou2020perceptions] surveyed $400$ residents of Phoenix (Arizona) about their opinions of autonomous vehicles (AVs).
-Demographic information was collected (Table\ \@ref(tab:AVtable1)), as well as respondents opinions of sharing roads with AVs (Table\ \@ref(tab:AVtable2)).
+@pyrialakou2020perceptions surveyed $400$ residents of Phoenix (Arizona) about their opinions of autonomous vehicles (AVs).
+Demographic information (Table\ \@ref(tab:AVtable1)) and respondents' opinions of sharing roads with AVs (Table\ \@ref(tab:AVtable2)) were recorded.
 
 The gender of the respondent is *nominal* (two levels), while the age group is *ordinal* (six levels); the levels are in the rows.
 The three questions about safety (Table\ \@ref(tab:AVtable2)) all yield *ordinal* responses (five levels, in columns). 
@@ -46,7 +47,7 @@ rownames(AVtable1) <- c("Female",
                         "$35$ to $44$",
                         "$45$ to $54$",
                         "$55$ to $64$",
-                        "$65$ and over")
+                        "$65+$")
 colnames(AVtable1) <- c("Number",
                         "Percentage")
 AVtable1[1, ] <- c(204, 51)
@@ -57,6 +58,7 @@ AVtable1[5, ] <- c(76, 19)
 AVtable1[6, ] <- c(72, 18)
 AVtable1[7, ] <- c(56, 14)
 AVtable1[8, ] <- c(68, 17)
+
 
 ###########
 
@@ -98,6 +100,8 @@ AVquestions <- as.numeric( AVtable2[ c(1, 3, 5, 7, 9), 2:4] )
 dim(AVquestions) <- c(5, 3)
 rownames(AVquestions) <- rownames(AVtable2)[ c(1, 3, 5, 7, 9)]
 colnames(AVquestions) <- colnames(AVtable2)[2:4]
+
+
 ```
 
 ```{r AVtable1}
@@ -143,69 +147,80 @@ if (knitr::is_html_output()) {
 
 
 ```{r AVtable2}
+AVtable2T <- t( AVtable2)
+colnames(AVtable2T) <- AVtable2T[1, ]
+AVtable2T <- AVtable2T[-1, ]
+colnames(AVtable2T) <- rep( c("$n$", "\\%"), 5)
+
+
 if (knitr::is_html_output()) {
-   knitr::kable(pad(AVtable2,
-                   surroundMaths = TRUE,
-                   targetLength = c(0, 2, 3, 3),
-                   digits = 0),
+   knitr::kable(pad( AVtable2T,
+                     surroundMaths = TRUE,
+                     targetLength = c(2, 2, 3, 2, 3, 2, 2, 2, 2, 2),
+                     digits = 0),
                format = "html",
                longtable = FALSE,
                escape = FALSE,
-               align = c("r", "c", "c", "c"),
-               linesep = c("", 
-                           "\\addlinespace",
-                           "", 
-                           "\\addlinespace",
-                           "", 
-                           "\\addlinespace",
-                           "", 
-                           "\\addlinespace",
-                           "", 
-                           "\\addlinespace"),  # Otherwise adds a space after five lines... 
+               align = "c",  # Otherwise adds a space after five lines... 
                booktabs = TRUE,
-               caption = "Responses to three scenarios for the AV data for $400$ respondent") %>%
+               caption = "Responses to three scenarios for the AV data for $400$ respondent (rows sum to $400$)") %>%
     row_spec(0, bold = TRUE) %>%
-    column_spec(1, bold = TRUE) 
+    column_spec(1, bold = TRUE) %>%
+    add_header_above( c(" " = 1,
+                        "Unsafe" = 2,
+                        "unsafe" = 2,
+                        "Neutral" = 2,
+                        "safe" = 2,
+                        "Safe" = 2),
+                      align = "c",
+                      line = TRUE,
+                      bold = TRUE)  %>%
+    add_header_above( c(" " = 1,
+                        " " = 2,
+                        "Somewhat" = 2,
+                        " " = 2,
+                        "Somewhat" = 2,
+                        " " = 2),
+                      align = "c",
+                      line = FALSE,
+                      bold = TRUE)
 } else {
   
-  knitr::kable(pad(AVtable2,
-                   surroundMaths = TRUE,
-                   targetLength = c(0, 2, 3, 3),
-                   digits = 0),
-               format = "latex",
-               longtable = FALSE,
-               escape = FALSE,
-               align = c("r", "c", "c", "c"),
-               col.names = c("",
-                             "near an AV",
-                             "near an AV",
-                             "near an AV"),
-               linesep = c("", 
-                           "\\addlinespace",
-                           "", 
-                           "\\addlinespace",
-                           "", 
-                           "\\addlinespace",
-                           "", 
-                           "\\addlinespace",
-                           "", 
-                           "\\addlinespace"),  # Otherwise adds a space after five lines... 
-               booktabs = TRUE,
-               caption = "Responses to three scenarios for the AV data for $400$ respondent") %>%
+  knitr::kable( pad( AVtable2T,
+                     surroundMaths = TRUE,
+                     targetLength = c(2, 2, 3, 2, 3, 2, 2, 2, 2, 2),
+                     digits = 0),
+                format = "latex",
+                booktabs = TRUE,
+                caption = "Responses to three scenarios for the AV data for $400$ respondent (rows sum to $400$)",
+                align = "c",
+                longtable = FALSE,
+                escape = FALSE) %>%
     kable_styling(font_size = 8) %>%
     row_spec(0, bold = TRUE) %>%
     column_spec(1, bold = TRUE) %>%
     add_header_above( c(" " = 1,
-                        " " = 1,
-                        "Driving" = 1,
-                        "Cycling" = 1,
-                        "Walking" = 1),
+                        "Unsafe" = 2,
+                        "unsafe" = 2,
+                        "Neutral" = 2,
+                        "safe" = 2,
+                        "Safe" = 2),
+                      align = "c",
+                      line = TRUE,
+                      bold = TRUE)  %>%
+    add_header_above( c(" " = 1,
+                        " " = 2,
+                        "Somewhat" = 2,
+                        " " = 2,
+                        "Somewhat" = 2,
+                        " " = 2),
+                      align = "c",
                       line = FALSE,
                       bold = TRUE)
-
-  
 }
 ```          
+
+
 
 ## Graphs {#QualitativeGraphs}
 \index{Qualitative data!graphs}\index{Graphs!qualitative data}
@@ -218,12 +233,12 @@ Three options for graphing qualitative data are:
 * *Bar chart* (Sect,\ \@ref(BarCharts)):
   Usually a good choice.
 * *Pie chart* (Sect.\ \@ref(PieCharts)):
-  Only useful in special circumstances, and can be harder to interpret.
+  Only useful in special circumstances, and can be hard to interpret.
 
 For *nominal* data, the levels of the variables can be displayed alphabetically, by size, by personal preference, or other way: use the order most likely to be useful to readers.
 For *ordinal* data, the natural order of the levels should almost always be used.
 
-Sometimes these graphs are also used for quantitative data with a small number of possible options.
+Sometimes these graphs are also used for quantitative data (espeiclaly discrete data) with a small number of possible options.
 Sometimes, graphs used for quantitative data (Sect.\ \@ref(QuantitativeGraphs)) may be useful for discrete quantitative data if many values are possible.
 
 
@@ -235,9 +250,9 @@ The purpose of a graph is to display the information in the clearest, simplest p
 ### Dot charts (qualitative data) {#DotChartsOneQual}
 \index{Dot charts!one qualitative variable}\index{Graphs!dot chart}
 
-Dot charts indicate the counts (or the corresponding percentages) in each level, using dots on a line *starting at zero*.
-The levels can be on the horizontal or vertical axis, and the counts or percentages in the other direction.
-Placing the level names on the vertical axis often makes for easier reading, and space for long labels. 
+Dot charts indicate the counts (or corresponding percentages) in each level, using dots on a line *starting at zero*.
+The levels can be on the horizontal or vertical axis, and the counts or percentages on the other.
+Placing the level on the vertical axis often makes for easier reading, and space for long labels. 
 
 
 ::: {.example #DotPlotsQual name="Dot plots"}
@@ -363,22 +378,14 @@ Pie charts may present challenges:
 
 * Pie charts only work when graphing parts of a whole.
 * Pie charts only work when *all* options are present ('exhaustive').
-* Pie charts are difficult to use with levels having zero counts, or small counts.
-* Pie charts are difficult to read with many categories present.
-* Pie charts are hard to read: Humans compare *lengths* (as in bar and dot charts) better than *angles* (as in pie charts) [@data:Friel:Graphs].
+* Pie charts are difficult to use with levels having zero or small counts.
+* Pie charts are difficult to interpret when many categories are present.
+* Pie charts are hard to read: Humans compare *lengths* (bar and dot charts) better than *angles* (pie charts) [@data:Friel:Graphs].
 
 
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Would a pie chart be *appropriate* for graphing the percentage of people who use Firefox, Chrome, and Safari as web browsers?\label{thinkBox:WhenPiechart}
-
-`r if (knitr::is_latex_output()) '<!--'`
-`r webexercises::hide()`
-A pie chart is *not suitable*.
-The three browsers are not *mutually exclusive* (people can use more than one of these browsers) nor *exhaustive* (some people may use browsers not listed). 
-For example, the percentages *could* be that $65$% use Firefox, $84$% use Chrome, and $20$% use Safari. 
-These add to more than $100$%.
-`r webexercises::unhide()`
-`r if (knitr::is_latex_output()) '-->'`
+::: {.example #PieUnsuitable mame="Pie chart unsuitable"}
+Consider studying the percentage of people who use Firefox, Chrome, and Safari as web browsers.
+A pie chart is *not suitable* for displaying the data, as people can use more than one of these browsers (i.e., the options are not *exclusive*) nor *exhaustive* (i.e., other options exist). 
 :::
 
 
@@ -391,12 +398,60 @@ Determining *which* age groups have the most respondents is hard.
 The equivalent bar chart (or dot chart) makes the comparison easy: clearly the youngest age group has the smallest representation, while the\ $25$ to\ $34$ and the\ $35$ to\ $44$ age groups have the most respondents.
 The *tilted* pie chart makes this comparison even harder (Fig.\ \@ref(fig:AVDotBarPie), bottom right panel).
 
-Recall that the *purpose of a graph is to display information in the clearest, simplest possible way, to help the reader understand the message(s) in the data*.
+Recall that the *purpose of a graph is to display the information in the clearest, simplest possible way, to facilitate understanding the message(s) in the data*.
 A pie chart often makes the message hard to see [@siegrist1996use].\index{Pie chart!warnings}
 
 
-
 <iframe src="https://learningapps.org/watch?v=pf4om4k5t22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+
+
+### Describing the distribution {#SummariseDataQualitative}
+\index{Qualitative data!distribution}
+
+Graphs are constructed to help readers understand the data.
+Hence, after producing a graph, the *distribution* of the data should be described.
+For qualitative data, 
+
+
+
+
+
+
+These can be described in rough terms.
+The average, variation and outliers are usually described numerically, too (as in Sect.\ \@ref(ComputeAverage) to\ Sect.\ \@ref(SummaryOutliers)).
+
+
+::: {.example #DescribeQuantData name="Describing quantitative data"}
+The weights of babies (Example\ \@ref(exm:Histograms)) are typically between about $2.5$\ kg and $3$\ kg (the *average*), with most between $1.5$\ kg and $4.5$\ kg (*variation*).
+A few babies have very lower weights, probably premature births (*shape*).
+No unusual values are present.
+:::
+
+
+Importantly, these numerical quantities are computed from a sample, even though the whole population is of interest.
+As a result, distinguishing *parameters* and *statistics* is important.\index{Parameter}\index{Statistic}
+
+
+::: {.definition #Parameter name="Parameter"}
+A ***p**arameter* is a number, usually unknown, describing some feature of a **p**opulation.
+:::
+
+
+::: {.definition #Statistic name="Statistic"}
+A ***s**tatistic* is a number describing some feature of a **s**ample (to estimate the unknown value of the population *parameter*).
+:::
+
+
+A statistic is a numerical value estimating an unknown population value.
+However, countless samples are possible (Sect.\ \@ref(IdeaOfSampling)), and so countless possible values for the statistic---all of which are estimates of the value of the parameter---are possible.
+The observed value of the statistic depends on which one of the countless possible samples is (randomly) selected.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The RQ identifies the population, but in practice only one of the many possible samples is studied.
+*Statistics* are estimates of *parameters*, and the value of the *statistic* is not the same for every possible *sample*.
+We only observe one value of the statistic from our single observed sample.
+:::
 
 
 
@@ -417,6 +472,68 @@ The RQ identifies the population, but in practice only one of the many possible 
 *Statistics* are estimates of *parameters*, and the value of the *statistic* is not the same for every possible *sample*.
 We only observe one value of the statistic from our single sample.
 :::
+
+
+## Summary: modes and medians {#Modes}
+\index{Mode}
+
+Because qualitative data has *levels* (Def.\ \@ref(def:Levels)), all qualitative data (nominal; ordinal) can be numerically summarised by *counting* the number of observations in each level (or computing the percentage of observations in each level).
+The *mode* is the level (or levels) with the *most* observations.
+
+
+::: {.definition #Mode name="Mode"}
+A *mode* is the level (or levels) of a qualitative variable with the most observations.
+:::
+
+
+::: {.example #OrdinalModes name="Modes" }
+Consider again the data in Tables\ \@ref(tab:AVtable1) and\ \@ref(tab:AVtable2).
+'Gender' is *nominal* qualitative; age group is *ordinal* qualitative.
+The responses to the question are *ordinal*.
+The mode could be used to summarise each variable:
+
+* The *mode* for gender is 'Female' (with $204$ respondents).
+* The *mode* age groups are $25$ to\ $34$ and $35$ to\ $44$ (both with $76$ respondents).
+* The *modal* response to the question about *driving* near AVs is 'Somewhat safe' ($97$ respondents).
+* The *modal* response to the question about *cycling* near AVs is 'Somewhat unsafe' ($104$ respondents).
+* The *modal* response to the question about *walking* near AVs is 'Neutral' ($103$ respondents).
+:::
+
+
+*Population* modes are almost always unknown. 
+Instead, the *population* mode (the parameter) is estimated by a *sample* mode (a statistic). 
+
+
+\index{Median!qualitative ordinal data}
+*Ordinal* data can be summarised in ways that nominal data cannot be, since *ordinal* data have levels with a natural order. 
+Ordinal qualitative data, but *not* nominal data, can be summarised using *medians*, by finding the location of the response that is in the middle, when the levels from all individuals are placed in order.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Medians can be used to summarise *qualitative data* and *ordinal* data, but *never* nominal data.
+:::
+
+
+::: {.example #OrdinalMedians name="Medians"}
+Consider again the data in Tables\ \@ref(tab:AVtable1) and\ \@ref(tab:AVtable2).
+'Gender' is *nominal* qualitative, so medians are not appropriate.
+However, the other variables are *ordinal*, so medians could be used to summarise each variable.
+Since $n = 400$, the median response will be halfway between the location of the $200$th and $201$st response when ordered:
+
+* the *median* age group is $35$ to\ $44$ (observations $200$ and $201$ fall into this level).
+* the *median* response to the driving question is 'Neutral' (observations $200$ and $201$ fall in this level).
+* the *median* response to the cycling question is 'Neutral' (observations $200$ and $201$ fall in this level).
+* the *median* response to the walking question is 'Neutral' (observations $200$ and $201$ fall in this level).
+:::
+
+
+Means are generally not suitable for numerically summarising qualitative data.
+However, *ordinal* data *may be* numerically summarised like quantitative data in *rare and very special circumstances*: only when
+
+* the levels are considered 'equally spaced'; *and*
+* assigning a number to each level is appropriate (perhaps using a mid-point for numerical groups).
+
+
 
 
 ## Numerical summary: proportions and percentages {#QualitativeProportionsPercentages}
@@ -543,66 +660,6 @@ longmcq( c(
 
 *Population* odds are almost always unknown. 
 Instead, the *population* odds (the parameter) is estimated by a *sample* odds (a statistic). 
-
-
-## Numerical summary: modes and medians {#Modes}
-\index{Mode}
-
-Because qualitative data has *levels* (Def.\ \@ref(def:Levels)), all qualitative data (nominal; ordinal) can be numerically summarised by *counting* the number of observations in each level (or computing the percentage of observations in each level).
-The *mode* is the level (or levels) with the *most* observations.
-
-
-::: {.definition #Mode name="Mode"}
-A *mode* is the level (or levels) of a qualitative variable with the most observations.
-:::
-
-
-::: {.example #OrdinalModes name="Modes" }
-Consider again the data in Tables\ \@ref(tab:AVtable1) and\ \@ref(tab:AVtable2).
-'Gender' is *nominal* qualitative; age group is *ordinal* qualitative.
-The responses to the question are *ordinal*.
-The mode could be used to summarise each variable:
-
-* The *mode* for gender is 'Female' (with $204$ respondents).
-* The *mode* age groups are $25$ to\ $34$ and $35$ to\ $44$ (both with $76$ respondents).
-* The *modal* response to the question about *driving* near AVs is 'Somewhat safe' ($97$ respondents).
-* The *modal* response to the question about *cycling* near AVs is 'Somewhat unsafe' ($104$ respondents).
-* The *modal* response to the question about *walking* near AVs is 'Neutral' ($103$ respondents).
-:::
-
-
-*Population* modes are almost always unknown. 
-Instead, the *population* mode (the parameter) is estimated by a *sample* mode (a statistic). 
-
-
-\index{Median!qualitative ordinal data}
-*Ordinal* data can be summarised in ways that nominal data cannot be, since *ordinal* data have levels with a natural order. 
-Ordinal qualitative data, but *not* nominal data, can be summarised using *medians*, by finding the location of the response that is in the middle, when the levels from all individuals are placed in order.
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Medians can be used to summarise *qualitative data* and *ordinal* data, but *never* nominal data.
-:::
-
-
-::: {.example #OrdinalMedians name="Medians"}
-Consider again the data in Tables\ \@ref(tab:AVtable1) and\ \@ref(tab:AVtable2).
-'Gender' is *nominal* qualitative, so medians are not appropriate.
-However, the other variables are *ordinal*, so medians could be used to summarise each variable.
-Since $n = 400$, the median response will be halfway between the location of the $200$th and $201$st response when ordered:
-
-* the *median* age group is $35$ to\ $44$ (observations $200$ and $201$ fall into this level).
-* the *median* response to the driving question is 'Neutral' (observations $200$ and $201$ fall in this level).
-* the *median* response to the cycling question is 'Neutral' (observations $200$ and $201$ fall in this level).
-* the *median* response to the walking question is 'Neutral' (observations $200$ and $201$ fall in this level).
-:::
-
-
-Means are generally not suitable for numerically summarising qualitative data.
-However, *ordinal* data *may be* numerically summarised like quantitative data in *rare and very special circumstances*: only when
-
-* the levels are considered 'equally spaced'; *and*
-* assigning a number to each level is appropriate (perhaps using a mid-point for numerical groups).
 
 
 
