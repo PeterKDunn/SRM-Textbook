@@ -17,12 +17,14 @@ splitFiles <- matrix( c(16, 38, # col 1 is the first col, col 2 is where to stop
                       byrow = TRUE )
 # Where to split the data file, for page 1, to create two columns. 
 # So if e.g., split = 20, we will have 20 files listed, then move to col 2, then another 20 files listed.
-# 
+#
 # them move on to a new column environment
+# 
+# OR: give HOW MANY are in each col
 
 
 ### TWO SITUAIONS:
-### 1. Explicitly data() calls in chapters.
+### 1. Explicit data() calls in chapters.
 ### 2. Pointers to use specific data files, as mentioned in the exercises
 
 
@@ -32,13 +34,21 @@ dataFilesPerChapter <- system2("grep",
                                args = " 'data(' *.Rmd", 
                                stdout = TRUE)
 
+
+# findDataFileMentions()
+# sortDataMentionsByChapter()
+# cleanDataFileCalls() # Remove comments, trailing text, etc
+# sortDataFilesByChapter()
+# addHyperLinks()
+# printDataF
+
 ### 2. Pointers to use specific data files, as mentioned in the exercises
 # Find Exercises that point to a data set; e.g.: [*Dataset*: `NHANES`]. 
 dataFilesPerChapterExercises <- system2("grep", 
                                         args = " '\\*Dataset\\*' *.Rmd",
                                         stdout = TRUE)
 
-dataFiles <- sort(c(dataFilesPerChapter,dataFilesPerChapterExercises))
+dataFiles <- sort(c(dataFilesPerChapter, dataFilesPerChapterExercises))
 
 
 ### SORT BY TYPE (Data, then Exercises) *WITHIN* CHAPTERS
