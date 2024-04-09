@@ -11,10 +11,10 @@
 
 
 splitFiles <- matrix( c(16, 38, # col 1 is the first col, col 2 is where to stop for second col, before moving to whole new environment
-                       71, 102,
-                       127, 159),
-                     nrow = 3,
-                     byrow = TRUE )
+                        71, 102,
+                        127, 159),
+                      nrow = 3,
+                      byrow = TRUE )
 # Where to split the data file, for page 1, to create two columns. 
 # So if e.g., split = 20, we will have 20 files listed, then move to col 2, then another 20 files listed.
 # 
@@ -72,8 +72,11 @@ for (i in 1:numDataCalls){
 }
 
 
+fred <- dataFiles
 
-# Remove comments that may be present after the data call; eg data(FRED) # trust this data file exists!
+# Remove comments that may be present after the data call; eg:
+#      data(FRED) # trust this data file exists?
+
 for (i in 1:numDataCalls){
   removeAfterComments <- grepl("#", 
                                dataFiles[i])
@@ -81,11 +84,10 @@ for (i in 1:numDataCalls){
     dataFiles[i] <- strsplit(dataFiles[i], "#")[[1]][1] 
   }
 }
+
 dataFiles <- dataFiles[ !commentedOut ]
 
-
-# Remove duplicates
-dataFiles <- dataFiles[ !duplicated(dataFiles) ]
+mary <- dataFiles
 
 # Find actual data used:
 numDataCalls <- length(dataFiles)
@@ -118,7 +120,7 @@ for (i in 1:numDataCalls){
     fileUsed[i] <- paste0("`", fileUsed[i], "`")
     fileUsedRaw[i] <- fileUsed[i]
   }
-
+  
   # Flag special cases
   if (substr(fileUsed[i], 2, 6) == "faith") { #faithful data set
     fileUsed[i] <- paste(fileUsed[i],
@@ -151,13 +153,23 @@ startNewChapter <- cumsum( c(1, filesPerChapter) )
 ### fileUsed should be the list of what we want to print
 # Now order, with Exercises at end (and rest alpha?)
 for (j in 1 : (length(filesPerChapter) ) ) { # For each chapter with data used
+  
   startSort <- startNewChapter[j]
-  stopSort <-  startNewChapter[j + 1] 
+  stopSort <-  startNewChapter[j] - 1 
+  
   if ( j == length(filesPerChapter)) stopSort <- as.numeric(chapNumbersList[ length(chapNumbersList)] )
-
+  
   # Sort the files within chapter
-  fileUsed[startSort : stopSort] <- sort(fileUsed[startSort : stopSort])
-  fileUsedRaw[startSort : stopSort] <- sort(fileUsedRaw[startSort : stopSort])
+
+  filesUsedThisChapter    <- fileUsed[startSort : stopSort]    <- sort(fileUsed[startSort : stopSort])
+  filesUsedThisChapterRaw <- fileUsedRaw[startSort : stopSort] <- sort(fileUsedRaw[startSort : stopSort])
+  
+  # Remove duplicates WITHIN CHAPTERS
+  filesUsedThisChapter <- filesUsedThisChapter[ !duplicated(filesUsedThisChapter) ]
+  filesUsedThisChapterRaw <- filesUsedThisChapterRaw[ !duplicated(filesUsedThisChapterRaw) ]
+
+  martha <- filesUsedThisChapter
+  
   
 }
 
@@ -166,13 +178,13 @@ for (j in 1 : (length(filesPerChapter) ) ) { # For each chapter with data used
 # If html format, add a link to the file in the Data directory
 if (knitr::is_html_output()) { # Add hyperlink to data: `file` (Exercise) ->  [`file`](Data/file.csv) (Exercise)
   for (i in (1:length(fileUsed))){ # For each data file listed
-
+    
     backTickLocation <- unlist(gregexpr('`', fileUsed[i]))
     bt2 <- backTickLocation[2]
-  
+    
     # Locate first back tick: Add  [  before
     fileUsed[i] <- paste0("[", fileUsed[i])
-
+    
     # Locate second back tick: Insert  ](Data/file.csv)
     fileUsed[i] <- paste0(substr(fileUsed[i], 
                                  start = 1,
@@ -188,10 +200,10 @@ if (knitr::is_html_output()) { # Add hyperlink to data: `file` (Exercise) ->  [`
     
   }
 }
-  
-  
-  
-  
+
+
+
+
 
 
 
