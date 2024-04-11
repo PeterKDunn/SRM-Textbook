@@ -63,10 +63,10 @@ showPropOdds <- function(){
   # Text
   text(x = 0.25,
        y = 0.5,
-       "Proportions")
+       "Proportions =")
   text(x = 0.75,
        y = 0.5,
-       "Odds")
+       "Odds =")
   
   
   # Top explanation
