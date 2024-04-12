@@ -120,12 +120,12 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   
   # CANVAS
   par( mar = c(0.05, 0.05, 0.05, 0.05),
-       fin = c(2.25, 2.25) * 1.5)
+       fin = c(2.3, 2.2) * 1.5)
   
   
   ### SETUP
-  shape::emptyplot(xlim = c(0, plotWidth),
-                   ylim = c(0, plotHeight),
+  shape::emptyplot(xlim = c(-0.30, plotWidth + 0.30),
+                   ylim = c(-0.3, plotHeight + 0.3),
                    asp = 1) # ELSE  asp=1 or requested
   
   pos <- array(NA, dim = c(6, 2)) # One for each of the six steps
@@ -239,7 +239,7 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
     diagram::textrect( mid = c( plotWidth/2, 
                                 plotHeight/2 ),
                        radx = (plotWidth /2 ) - (boxWidth / 2) * 1.5,
-                       rady = (textHeight/2) + (2 * edgeGap),
+                       rady = (textHeight/2) + (1.7 * edgeGap),
                        lab = Text,
                        box.col = gray(0.9),
                        lcol = gray(0.9),
