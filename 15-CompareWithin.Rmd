@@ -13,7 +13,7 @@
 Sometimes the same variable is measured on each individual more than once (i.e., *within*-individual changes for each unit of analysis) but only a small number of times.
 Examples of this type of data include:
 
-* Measurements of household water consumption *before* and *after* installing water-saving devices, for many households.
+* Measurements of household water consumption for many households, *before* and *after* installing water-saving devices.
 * Blood pressure recorded for people at $8$am, $1$pm and $8$pm each day.
 
 In both cases, the same variable is measured multiple times for each individual.
@@ -21,35 +21,19 @@ In both cases, the same variable is measured multiple times for each individual.
 This chapter considers how to summarise within-individuals changes in *quantitative* variables.
 
 
-## Graphs
-\index{Quantitative data!changes \textit{within} individuals!graphs}\index{Graphs!changes \textit{within} individuals}
+## Summarising the comparison: mean differences {#WithinSummaryTables}
+\index{Quantitative data!changes \textit{within} individuals!summary tables}
 
-For within-individual changes for a *quantitative* variable, options for plotting include: 
-
-* Histograms of differences (Sect.\ \@ref(HistoDiffPlot)):
-  useful for changes in *pairs* of measurements or observations.
-* Case-profile plots (Sect.\ \@ref(CaseProfilePlot)): 
-  useful when the same individuals are measured or observed over a small number of times.
-<!-- * Time plots (Sect.\ \@ref(TimePlots)): -->
-<!--   a special type of case-profile plot, when the measurements vary over a large number of time points. -->
+The best way to compare the two groups is to summarise the *differences* between the before and after measurements; for example, using the *mean difference*.
+A numerical summary table can be constructed summarising both group, plus the differences.
 
 
-### Histogram of differences {#HistoDiffPlot}
-\index{Histogram!of differences}\index{Graphs!histogram of  differences}
-
-Sometimes the same variable is measured on each unit of analysis twice, when a histogram of the *changes* (or *differences*) for each individual can be produced.
-The direction of the differences should be clear (e.g., first measurement minus second, or second measurement minus first).
-
-
-::: {.example #CaseProfileHistDiffPlots name="Within-individual comparisons"}
-A study of children with atopic asthma [@data:Lothian2006:Whey] measured the immunogoblin\ E concentrations (IgE) before and after an intervention for each child (Table\ \@ref(tab:IgEChanges)).
+:::{.example #WithinIndividualComparison name="Within-individual comparisons"}
+@data:Lothian2006:Whey studied children with atopic asthma, and measured the immunogoblin\ E concentrations (IgE) before and after an intervention for each child (Table\ \@ref(tab:IgEChanges)).
 The child is the *individual*.
-The *reduction* in IgE for each child can be shown using a histogram
-`r if (knitr::is_latex_output()) {
-   '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileLATEX), left panel).'
-} else {
-   '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileHTML), top panel).'
-}`
+
+For the IgE data, the numerical summary table is shown in Table\ \@ref(tab:IgETable).
+The direction of the difference is implied by the word '*reduction*'.
 :::
 
 
@@ -138,6 +122,98 @@ if( knitr::is_html_output() ) {
         digits = 0)
 }
 ```
+
+
+
+
+```{r IgETable}
+IgETable <- array( dim = c(3, 3))
+
+rownames(IgETable) <- c("Before",
+                        "After",
+                        "Reduction") 
+colnames(IgETable) <- c("Mean",
+                        "Std. dev.",
+                        "Sample size") 
+
+
+IgETable[, 1] <- round(colMeans(IgE), 1)
+IgETable[, 2] <- round(apply(IgE, 2, "sd"), 2)
+IgETable[, 3] <- round(apply(IgE, 2, "realLength"), 0)
+
+if( knitr::is_latex_output() ) {
+  
+  knitr::kable( pad(IgETable,
+                    surroundMaths = TRUE,
+                    targetLength = c(7, 7, 2),
+                    digits = c(1, 2, 0)),
+                format = "latex",
+                longtable = FALSE,
+                booktabs = TRUE,
+                escape = FALSE,
+                digits = 1,
+                align =  "c",
+                caption = "A numerical summary of the IgE data (in $\\mu$g/L)") %>%
+    kable_styling(full_width = FALSE) %>%
+    row_spec(row = 0, 
+             bold = TRUE) %>%
+    row_spec(row = 3,
+             italic = TRUE) %>%
+    kable_styling(font_size = 8)
+}
+if( knitr::is_html_output() ) {
+  
+  knitr::kable( pad(IgETable,
+                    surroundMaths = TRUE,
+                    targetLength = c(7, 7, 2),
+                    digits = c(1, 2, 0)),
+                format = "html",
+                longtable = FALSE,
+                booktabs = TRUE,
+                escape = FALSE,
+                digits = 1,
+                align =  "c",
+                caption = "A numerical summary of the IgE data (in $\\mu$g/L)") %>%
+    row_spec(row = 0, 
+             bold = TRUE) %>%
+    row_spec(row = 3,
+             italic = TRUE)
+}
+```
+
+
+
+
+## Graphs
+\index{Quantitative data!changes \textit{within} individuals!graphs}\index{Graphs!changes \textit{within} individuals}
+
+
+For within-individual changes for a *quantitative* variable, options for plotting include: 
+
+* Histograms of differences (Sect.\ \@ref(HistoDiffPlot)):
+  useful for changes in *pairs* of measurements or observations.
+* Case-profile plots (Sect.\ \@ref(CaseProfilePlot)): 
+  useful when the same individuals are measured or observed a small number of times.
+<!-- * Time plots (Sect.\ \@ref(TimePlots)): -->
+<!--   a special type of case-profile plot, when the measurements vary over a large number of time points. -->
+
+
+### Histogram of differences {#HistoDiffPlot}
+\index{Histogram!of differences}\index{Graphs!histogram of  differences}
+
+Sometimes the same variable is measured on each unit of analysis twice, when the *changes* (or *differences*) for each individual can be produced, and a histogram construct.
+The direction of the differences should be clear (e.g., first measurement minus second, or second measurement minus first).
+
+
+::: {.example #CaseProfileHistDiffPlots name="Within-individual comparisons"}
+For the IgE data (Table\ \@ref(tab:IgEChanges)), the *reduction* in IgE for each child can be shown using a histogram
+`r if (knitr::is_latex_output()) {
+   '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileLATEX), left panel).'
+} else {
+   '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileHTML), top panel).'
+}`
+:::
+
 
 
 
@@ -250,8 +326,7 @@ A case-profile plot is still useful for paired data, of course.
 
 
 ::: {.example #CaseProfilePlots name="Case-profile plot"}
-Consider the IgE data again (Table\ \@ref(tab:IgEChanges)).
-The measurements of IgE for each child at both times can be shown in a case-profile plot
+For the IgE data (Table\ \@ref(tab:IgEChanges)), the measurements of IgE for each child at both times can be shown in a case-profile plot
 `r if (knitr::is_latex_output()) {
    '(Fig.\\ \\@ref(fig:PairedGraphCaseProfileLATEX), right panel).'
 } else {
@@ -373,74 +448,6 @@ segments(x0 = i,
 
 As in the last example, the case-profile plot is hard to read with large numbers of individuals, and so sometimes the mean (or median, as appropriate) is shown, with some measure of the variation of the observations (Fig.\ \@ref(fig:RunningRM) shows the minimum and maximum values, for instance).
 
-
-## Numerical summary tables {#WithinSummaryTables}
-\index{Quantitative data!changes \textit{within} individuals!summary tables}
-
-The numerical summary information from a within-individuals study can collated in a table.
-The data should be summarised for each measurement/observation, and (when appropriate) the changes should also be summarised.
-
-
-:::{.example #NumericalSummaryWithin name="Numerical summary table"}
-For the IgE  data in Example\ \@ref(exm:CaseProfileRunning), the numerical summary table is shown in Table\ \@ref(tab:IgETable).
-The direction of the difference is implied by the word '*reduction*'.
-:::
-
-
-```{r IgETable}
-IgETable <- array( dim = c(3, 3))
-
-rownames(IgETable) <- c("Before",
-                        "After",
-                        "Reduction") 
-colnames(IgETable) <- c("Mean",
-                        "Std. dev.",
-                        "Sample size") 
-
-
-IgETable[, 1] <- round(colMeans(IgE), 1)
-IgETable[, 2] <- round(apply(IgE, 2, "sd"), 2)
-IgETable[, 3] <- round(apply(IgE, 2, "realLength"), 0)
-
-if( knitr::is_latex_output() ) {
-  
-  knitr::kable( pad(IgETable,
-                    surroundMaths = TRUE,
-                    targetLength = c(7, 7, 2),
-                    digits = c(1, 2, 0)),
-                format = "latex",
-                longtable = FALSE,
-                booktabs = TRUE,
-                escape = FALSE,
-                digits = 1,
-                align =  "c",
-                caption = "A numerical summary of the IgE data (in $\\mu$g/L)") %>%
-    kable_styling(full_width = FALSE) %>%
-    row_spec(row = 0, 
-             bold = TRUE) %>%
-    row_spec(row = 3,
-             italic = TRUE) %>%
-    kable_styling(font_size = 8)
-}
-if( knitr::is_html_output() ) {
-  
-  knitr::kable( pad(IgETable,
-                    surroundMaths = TRUE,
-                    targetLength = c(7, 7, 2),
-                    digits = c(1, 2, 0)),
-                format = "html",
-                longtable = FALSE,
-                booktabs = TRUE,
-                escape = FALSE,
-                digits = 1,
-                align =  "c",
-                caption = "A numerical summary of the IgE data (in $\\mu$g/L)") %>%
-    row_spec(row = 0, 
-             bold = TRUE) %>%
-    row_spec(row = 3,
-             italic = TRUE)
-}
-```
 
 
 

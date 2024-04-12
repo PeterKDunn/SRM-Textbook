@@ -14,6 +14,136 @@ This chapter considers how to compare *qualitative* variables in different group
 Graphs are very useful this purpose, and a table of the numerical summaries usually are also produced.
 
 
+## Summarising the comparison: difference between means {#CompareQuantTables}
+\index{Quantitative data!compare \textit{between} individuals!summary tables}
+
+
+The best way to compare the two groups is to summarise the *difference between the two means*.
+A numerical summary table can be constructed summarising both group, and reporting the difference between the two means.
+
+
+::: {.example #GorillaSummarytable name="Numerical summary table"}
+@wright2021chest recorded the number of chest-beats by gorillas (Table\ \@ref(tab:GorillaDataTable)), for gorillas under $20$ years old ('younger') and $20$ years and over ('older'). 
+For the gorilla data, the summary of the data can be tabulated as in Table\ \@ref(tab:GorillaTable).
+Notice that no standard deviation or sample size is provided for the *difference*; these make no sense.
+:::
+
+
+```{r}
+data(Gorillas)
+CBRyounger <- sort( Gorillas$ChestBeatRate[Gorillas$Age20 == "Younger"] )
+CBRolder <- sort( Gorillas$ChestBeatRate[Gorillas$Age20 == "Older"] )
+
+Gorilla2 <- cbind( CBRyounger[1:3], 
+                   CBRyounger[4:6],
+                   CBRyounger[7:9],
+                   CBRyounger[10:12],
+                   c(CBRyounger[13:14], NA),
+                   CBRolder[1:3],
+                   CBRolder[4:6],
+                   CBRolder[7:9],
+                   c(CBRolder[10:11], NA) )
+```
+
+```{r GorillaDataTable}
+
+if( knitr::is_latex_output() ) {
+  kable( pad(Gorilla2,
+             surroundMaths = TRUE,
+             targetLength = 3,
+             digits = 1),
+         format = "latex", 
+         longtable = FALSE,
+         booktabs = TRUE,
+         escape = FALSE,
+         caption = "The chest-beating rate of gorillas (in beats per $10$\\ hours)",
+         linesep = c("", "", "", "\\addlinespace"),
+         align = c("c","c")) %>%
+         #col.names = c("Treatment group", "Control group"),
+    add_header_above(header = c("Younger " = 5, 
+                                "Older" = 4), 
+                     bold = TRUE, 
+                     align = "c")
+}
+```
+
+
+
+
+
+```{r GorillaTable}
+GorillaSummaryTable <- array( dim = c(3, 3))
+
+rownames(GorillaSummaryTable) <- c("Younger",
+                        "Older",
+                        "Difference") 
+colnames(GorillaSummaryTable) <- c("(in beats per 10 h)",
+                        "(in beats per 10 h)",
+                        "size") 
+
+GorillaSummaryTable[, 1] <- c( round( mean(CBRyounger), 3),
+                               round( mean(CBRolder), 3),
+                               round( mean(CBRyounger) - mean(CBRolder), 3) )
+GorillaSummaryTable[, 2] <- c( round( sd(CBRyounger), 4),
+                                  round( sd(CBRolder), 4),
+                                  NA )
+GorillaSummaryTable[, 3] <- c( length(CBRyounger),
+                                  length(CBRolder), 
+                                  NA )
+
+if( knitr::is_latex_output() ) {
+  knitr::kable( pad(GorillaSummaryTable,
+                  surroundMaths = TRUE,
+                  targetLength = c(5, 6, 2),
+                  digits = c(3, 4, 0)),
+              format = "latex",
+              longtable = FALSE,
+              booktabs = TRUE,
+              escape = FALSE,
+              digits = 1,
+              align = "c",
+              caption = "A numerical summary of the gorillas data") %>%
+  kable_styling(full_width = FALSE) %>%
+  row_spec(row = 0, 
+           bold = TRUE) %>%
+  row_spec(row = 3,
+           italic = TRUE) %>%
+  kable_styling(font_size = 8) %>%
+  add_header_above( c( " " = 1,
+                       "Mean" = 1,
+                      "Standard deviation" = 1,
+                      "Sample" = 1),
+                    bold = TRUE,
+                    line = FALSE)
+}
+if( knitr::is_html_output() ) {
+  knitr::kable( pad(GorillaSummaryTable,
+                  surroundMaths = TRUE,
+                  targetLength = c(5, 6, 2),
+                  digits = c(3, 4, 0)),
+              format = "html",
+              longtable = FALSE,
+              booktabs = TRUE,
+              escape = FALSE,
+              digits = 1,
+              align = "c",
+              caption = "A numerical summary of the gorillas data") %>%
+  kable_styling(full_width = FALSE) %>%
+  row_spec(row = 0, 
+           bold = TRUE) %>%
+  row_spec(row = 3,
+           italic = TRUE) %>%
+  add_header_above( c( " " = 1,
+                       "Mean" = 1,
+                      "Standard deviation" = 1,
+                      "Sample" = 1),
+                    bold = TRUE,
+                    line = FALSE)
+}
+```
+
+
+
 ## Graphs {#GraphOneQualOneQuant}
 \index{Quantitative data!compare \textit{between} individuals!graphs}\index{Graphs!compare \textit{between} individuals}
 
@@ -40,17 +170,12 @@ One disadvantage is that only two groups can be compared.
 
 
 ::: {.example #GorillaData name="Back-to-back stemplots"}
-A study recorded the number chest-beats by gorillas [@wright2021chest], for gorillas under $20$ years old ('younger') and $20$ years and over ('older')
-`r if (knitr::is_latex_output()) {
-   '(Table\\ \\@ref(tab:GorillaDataTable)).'
-} else {
-   '(Table\\ \\@ref(tab:GorillaDataTableHTML)).'
-}`
+
 A back-to-back stemplot allows the two groups to be compared visually 
 `r if (knitr::is_latex_output()) {
    '(Fig.\\ \\@ref(fig:krillEggsDoubleStem)).'
 } else {
-   '(Fig.\\ \\@ref(fig:krillEggsDoubleStemHTML)).'
+   '(Fig.\\ \\@ref(fig:krillEggsDoubleStem)).'
 }`
 The leaves for younger gorillas go from right-to-left, and the leaves for older gorillas go left-to-right, sharing the same stems.
 The younger group has a faster chest-beating rate in general.
@@ -58,48 +183,7 @@ One older gorilla has a much faster rate that the other older gorillas (an outli
 :::
 
 
-```{r}
-data(Gorillas)
-CBRyounger <- sort( Gorillas$ChestBeatRate[Gorillas$Age20 == "Younger"] )
-CBRolder <- sort( Gorillas$ChestBeatRate[Gorillas$Age20 == "Older"] )
-
-Gorilla2 <- cbind( CBRyounger[1:7], 
-                   CBRyounger[8:14],
-                   CBRolder[1:7],
-                   c(CBRolder[8:11], NA, NA, NA ) )
-```
-
-`r if (knitr::is_html_output()) '<!--'`
-\begin{figure}
-\begin{minipage}{0.35\textwidth}
-\captionof{table}{The chest-beating rate for gorillas\label{tab:GorillaDataTable}}
-\fontsize{8}{12}\selectfont
-```{r GorillaDataTable}
-
-if( knitr::is_latex_output() ) {
-  kable( pad(Gorilla2,
-             surroundMaths = TRUE,
-             targetLength = 3,
-             digits = 1),
-         format = "latex", 
-         longtable = FALSE,
-         table.env = "@empty",
-         booktabs = TRUE,
-         escape = FALSE,
-         linesep = c("", "", "", "\\addlinespace"),
-         align = c("c","c")) %>%
-         #col.names = c("Treatment group", "Control group"),
-    add_header_above(header = c("Younger " = 2, 
-                                "Older" = 2), 
-                     bold = TRUE, 
-                     align = "c")
-}
-```
-\end{minipage}
-\hspace{0.05\textwidth}
-\begin{minipage}{0.60\textwidth}%
-\centering
-```{r krillEggsDoubleStem, fig.width=6.5, fig.height=3, out.width='100%'}
+```{r krillEggsDoubleStem, fig.width=7.0, fig.height=3, out.width='60%', fig.cap="Stemplot for the chest-beating rate for gorillas", fig.align="center"}
 
   stemgrid.x <- 1
   stemgrid.y <- 6
@@ -191,129 +275,6 @@ if( knitr::is_latex_output() ) {
   }
 }
 ```
-\caption{The chest-beating rate for gorillas}\label{fig:krillEggsDoubleStem}
-\end{minipage}
-\end{figure}
-`r if (knitr::is_html_output()) '-->'`
-
-
-`r if (knitr::is_latex_output()) '<!--'`
-```{r GorillaDataTableHTML}
-if (knitr::is_html_output()) {
-  kable( pad(Gorilla2,
-             surroundMaths = TRUE,
-             targetLength = 3,
-             digits = 1),
-         format = "html",
-         longtable = FALSE,
-         booktabs = TRUE,
-         escape = FALSE,
-         caption = "The chest-beating rate for gorillas, for younger and older gorillas",
-         linesep = c("", "", "\\addlinespace"),
-         align = c("c","c")) %>%
-    add_header_above(header = c("Younger " = 2, 
-                                "Older" = 2), 
-                     bold = TRUE, 
-                     align = "c")
-}
-```
-
-
-
-
-```{r krillEggsDoubleStemHTML, fig.width=6.0, fi.height=3, out.width='100%', fig.cap="Stemplot for the chest-beating rate for gorillas", fig.align="center"}
-
-  stemgrid.x <- 1
-  stemgrid.y <- 6
-  stemcounts <- array(1, 
-                      dim = stemgrid.y)
-
-  par( mar = c(0.25, 0.25, 4, 0.25) + 0.1)
-
-  plot( expand.grid(1:stemgrid.x, 0:stemgrid.y), 
-      type = "n",
-      xlab = "",
-      ylab = "",
-      main = "Chest-beating rate of gorillas\n(1|6 means 1.6 beats per 10 hours)",
-      xlim = c(-11, 8),
-      ylim = c(-0.2, 5.2),
-      axes = FALSE)
-  
-### Treatment data in cols 1  to 11 (x = -11 to x = -1)
-### Stems in col 12  (x=0)
-### Control data in cols 13 to 19 (x= 1 to x = 7)
-  
-  # Divide the stems and leaves
-  lines(x = c(-0.5, -0.5),
-        y = c(0.5, 6.5),
-         lwd = 2,
-         col = "grey")
-  lines(x = c(0.5, 0.5),
-        y = c(0.5, 6.5),
-         lwd = 2,
-         col = "grey")
-  text(x = -5, 
-       y = 0, 
-       "Younger", 
-       font = 2)
-  text( x = 4, 
-        y = 0, 
-        "Older", 
-	font = 2)
-  
-  # Plot stems
-  points( x = c(0, 0, 0, 0, 0), 
-          y = 1:5,
-          pch = as.character(4:0))
-  
-  
-  ### Plot leaves
-  for (j in (1:2) ){
-
-    if (j == 1) { # Right-hand side
-      CBR <- CBRolder
-      step <- 1
-      stemcounts <- array(1, dim = stemgrid.y)
-    }
-    if (j == 2) { # Left-hand side
-      CBR <- CBRyounger
-      step <- -1
-      stemcounts <- array(-1, dim = stemgrid.y)
-    }
-    
-    for (i in 1:length(CBR)){
-    
-      if ( CBR[i] < 1) {
-        points( stemcounts[1], 5, 
-	        pch = substr( sprintf("%1.1f", CBR[i]), 3, 3)) 
-        stemcounts[1] <- stemcounts[1] + step
-      }
-
-    if ( (CBR[i] >= 1) & (CBR[i] < 2) ) {
-      points( stemcounts[2], 4, 
-              pch = substr( sprintf("%1.1f", CBR[i] - 1), 3, 3)) 
-      stemcounts[2] <- stemcounts[2] + step
-    }
-
-    if ( (CBR[i] >= 2) & (CBR[i] < 3) ) {
-      points( stemcounts[3], 3, 
-              pch = substr( sprintf("%1.1f", CBR[i] - 2), 3, 3)) 
-      stemcounts[3] <- stemcounts[3] + step
-    }
-    if ( ( CBR[i] >= 3 ) & (CBR[i] < 4) ) {
-      points( stemcounts[4], 2, 
-              pch = substr( sprintf("%1.1f", CBR[i] - 3), 3, 3)) 
-      stemcounts[4] <- stemcounts[4] + step
-    }
-    if ( ( CBR[i] >= 4 ) & (CBR[i] < 5) ) {
-      points( stemcounts[5], 1, 
-              pch = substr( sprintf("%1.1f", CBR[i] - 4), 3, 3)) 
-      stemcounts[5] <- stemcounts[5] + step
-    }
-  }
-}
-```
-`r if (knitr::is_latex_output()) '-->'`
 
 
 
@@ -504,90 +465,6 @@ htmltools::tags$video(src = "./videos/Boxplots.mp4",
 ```
 
 
-## Numerical summary tables {#CompareQuantTables}
-\index{Quantitative data!compare \textit{between} individuals!summary tables}
-
-The numerical summary information for comparing a quantitative between groups can be collated in a table.
-The data should be summarised the quantitative variable for each group, and (when appropriate) the differences should also be summarised.
-
-::: {.example #GorillaSummarytable name="Numerical summary table"}
-For the gorilla data, the summary of the data can be tabulated as in Table\ \@ref(tab:GorillaTable).
-Notice that no standard deviation or sample size is provided for the *difference*; these make no sense.
-
-Based on the table, do you think a difference exists between the mean chest-beating rate for younger and older gorillas?
-Remember, the data in Table\ \@ref(tab:GorillaTable) is for a *sample*, but the RQ is asking about the *population*.
-:::
-
-```{r GorillaTable}
-GorillaSummaryTable <- array( dim = c(3, 3))
-
-rownames(GorillaSummaryTable) <- c("Younger",
-                        "Older",
-                        "Difference") 
-colnames(GorillaSummaryTable) <- c("(in beats per 10 h)",
-                        "(in beats per 10 h)",
-                        "size") 
-
-GorillaSummaryTable[, 1] <- c( round( mean(CBRyounger), 3),
-                               round( mean(CBRolder), 3),
-                               round( mean(CBRyounger) - mean(CBRolder), 3) )
-GorillaSummaryTable[, 2] <- c( round( sd(CBRyounger), 4),
-                                  round( sd(CBRolder), 4),
-                                  NA )
-GorillaSummaryTable[, 3] <- c( length(CBRyounger),
-                                  length(CBRolder), 
-                                  NA )
-
-if( knitr::is_latex_output() ) {
-  knitr::kable( pad(GorillaSummaryTable,
-                  surroundMaths = TRUE,
-                  targetLength = c(5, 6, 2),
-                  digits = c(3, 4, 0)),
-              format = "latex",
-              longtable = FALSE,
-              booktabs = TRUE,
-              escape = FALSE,
-              digits = 1,
-              align = "c",
-              caption = "A numerical summary of the gorillas data") %>%
-  kable_styling(full_width = FALSE) %>%
-  row_spec(row = 0, 
-           bold = TRUE) %>%
-  row_spec(row = 3,
-           italic = TRUE) %>%
-  kable_styling(font_size = 8) %>%
-  add_header_above( c( " " = 1,
-                       "Mean" = 1,
-                      "Standard deviation" = 1,
-                      "Sample" = 1),
-                    bold = TRUE,
-                    line = FALSE)
-}
-if( knitr::is_html_output() ) {
-  knitr::kable( pad(GorillaSummaryTable,
-                  surroundMaths = TRUE,
-                  targetLength = c(5, 6, 2),
-                  digits = c(3, 4, 0)),
-              format = "html",
-              longtable = FALSE,
-              booktabs = TRUE,
-              escape = FALSE,
-              digits = 1,
-              align = "c",
-              caption = "A numerical summary of the gorillas data") %>%
-  kable_styling(full_width = FALSE) %>%
-  row_spec(row = 0, 
-           bold = TRUE) %>%
-  row_spec(row = 3,
-           italic = TRUE) %>%
-  add_header_above( c( " " = 1,
-                       "Mean" = 1,
-                      "Standard deviation" = 1,
-                      "Sample" = 1),
-                    bold = TRUE,
-                    line = FALSE)
-}
-```
 
 
 ## Example: water access {#WaterAccessCompareQuant}
