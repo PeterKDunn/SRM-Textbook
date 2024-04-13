@@ -63,16 +63,16 @@ showPropOdds <- function(){
   # Text
   text(x = 0.25,
        y = 0.5,
-       "Proportions")
+       "Proportions =")
   text(x = 0.75,
        y = 0.5,
-       "Odds")
+       "Odds =")
   
   
   # Top explanation
   text(x = 0.15,
        y = 0.85,
-       expression(Num.~of~interest*":") )
+       expression(Number~of~interest*":") )
   polygon( y = c(0.8, 0.8, 0.9, 0.9),
            x = c(0.28, 0.38, 0.38, 0.28),
            col = pCol)
@@ -80,7 +80,7 @@ showPropOdds <- function(){
   
   text(x = 0.59,
        y = 0.85,
-       expression(Num.~bold(not)~of~interest*":") )
+       expression(Number~bold(not)~of~interest*":") )
   polygon( y = c(0.8, 0.8, 0.9, 0.9),
            x = c(0.75, 0.95, 0.95, 0.75),
            col = qCol)

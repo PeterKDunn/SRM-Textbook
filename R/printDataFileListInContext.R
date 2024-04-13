@@ -10,11 +10,16 @@
 ### Col 2 is the library it comes from
 
 
-splitFiles <- matrix( c(16, 38, # col 1 is the first col, col 2 is where to stop for second col, before moving to whole new environment
-                        71, 102,
-                        127, 159),
-                      nrow = 3,
-                      byrow = TRUE )
+
+
+### SET UP 
+
+splitFiles <- c(15, 
+                31,
+                68, 
+                100,
+                126, 
+                1540)
 # Where to split the data file, for page 1, to create two columns. 
 # So if e.g., split = 20, we will have 20 files listed, then move to col 2, then another 20 files listed.
 #
@@ -23,224 +28,378 @@ splitFiles <- matrix( c(16, 38, # col 1 is the first col, col 2 is where to stop
 # OR: give HOW MANY are in each col
 
 
-### TWO SITUAIONS:
-### 1. Explicit data() calls in chapters.
-### 2. Pointers to use specific data files, as mentioned in the exercises
 
 
-### FIRST: Explicit calls to data() in Chapters
-# Find which chapters contain data()  calls
-dataFilesPerChapter <- system2("grep", 
-                               args = " 'data(' *.Rmd", 
-                               stdout = TRUE)
 
 
-# findDataFileMentions()
-# sortDataMentionsByChapter()
-# cleanDataFileCalls() # Remove comments, trailing text, etc
-# sortDataFilesByChapter()
-# addHyperLinks()
-# printDataF
-
-### 2. Pointers to use specific data files, as mentioned in the exercises
-# Find Exercises that point to a data set; e.g.: [*Dataset*: `NHANES`]. 
-dataFilesPerChapterExercises <- system2("grep", 
-                                        args = " '\\*Dataset\\*' *.Rmd",
-                                        stdout = TRUE)
-
-dataFiles <- sort(c(dataFilesPerChapter, dataFilesPerChapterExercises))
-
-
-### SORT BY TYPE (Data, then Exercises) *WITHIN* CHAPTERS
-
-
-# Deal with things typically used to call data files
-# Remove commented-out data calls
-# Determine if the string  <!--  appears
-numDataCalls <- length(dataFiles)
-commentedOut <- array( FALSE, 
-                       dim = numDataCalls)
-
-for (i in 1:numDataCalls){
-  # First, remove all blank space
-  dataFiles[i] <- gsub(" ", 
-                       "", 
-                       dataFiles[i] )
+######################################################
+findDataFileMentions <- function(){
   
-  # Then, remove all quote marks, such as in data("Fred")
-  dataFiles[i] <- gsub('"', 
-                       "", 
-                       dataFiles[i] )
-  
-  # Now find commented-out data() calls
-  commentedOut[i]  <- grepl("<!-- data", 
-                            dataFiles[i]) | 
-    grepl("<!--data", 
-          dataFiles[i]) | 
-    grepl("<!--  data", 
-          dataFiles[i])  
-}
-
-
-fred <- dataFiles
-
-# Remove comments that may be present after the data call; eg:
-#      data(FRED) # trust this data file exists?
-
-for (i in 1:numDataCalls){
-  removeAfterComments <- grepl("#", 
-                               dataFiles[i])
-  if (removeAfterComments){
-    dataFiles[i] <- strsplit(dataFiles[i], "#")[[1]][1] 
-  }
-}
-
-dataFiles <- dataFiles[ !commentedOut ]
-
-mary <- dataFiles
-
-# Find actual data used:
-numDataCalls <- length(dataFiles)
-fileUsed <- fileUsedRaw <- array( dim = numDataCalls)
-# fileUsedRaw has *just* the data fie name.
-# fileUsed also has the indications of whether an exercise, or built-in R dataset  
-
-
-for (i in 1:numDataCalls){
-  # We can have two different things, depending if call in the chapter, or if listed in exercise
-  # So first remove chapter info
-  dataCall <- strsplit(dataFiles[i], "Rmd:")[[1]][2]
+  ### TWO SITUAIONS:
+  ### 1. Explicit data() calls in chapters.
+  ### 2. Pointers to use specific data files, as mentioned in the exercises
   
   
-  # Now if the first character is  [  then it is in an exercise; otherwise, an actual data call
-  if ( substr( dataCall, 1, 1) == "[") {
-    
-    lengthDataCall <- nchar(dataCall)
-    fileUsed[i] <- substr(dataCall,
-                          start = 12,
-                          stop = lengthDataCall - 1)
-    fileUsedRaw[i] <- fileUsed[i]
-    fileUsed[i] <- paste(fileUsed[i], " (Exercise)")
-  } else {
-    
-    lengthDataCall <- nchar(dataCall)
-    fileUsed[i] <- substr(dataCall,
-                          start = 6,
-                          stop = lengthDataCall - 1)
-    fileUsed[i] <- paste0("`", fileUsed[i], "`")
-    fileUsedRaw[i] <- fileUsed[i]
-  }
+  ### FIRST: Explicit calls to data() in Chapters
+  # Find which chapters contain data()  calls
   
-  # Flag special cases
-  if (substr(fileUsed[i], 2, 6) == "faith") { #faithful data set
-    fileUsed[i] <- paste(fileUsed[i],
-                         "(in **R**)" )
-  }
-  if (substr(fileUsed[i], 2, 6) == "NHANE") { #faithful data set
-    fileUsed[i] <- paste(fileUsed[i],
-                         "(*NHANES*)" )
-  }
+  dataFilesPerChapter <- system2("grep", 
+                                 args = " 'data(' *.Rmd", 
+                                 stdout = TRUE)
   
+  ### 2. Pointers to use specific data files, as mentioned in the exercises
+  # Find Exercises that point to a data set; e.g.: [*Dataset*: `NHANES`]. 
   
+  dataFilesPerChapterExercises <- system2("grep", 
+                                          args = " '\\*Dataset\\*' *.Rmd",
+                                          stdout = TRUE)
   
-  # Now, sometimes two brackets may occur: NHANES (Exercise) (package NHANES); replace with semicolon
-  # To find, and fix
-  fileUsed[i] <- gsub("\\) \\(", 
-                      "; ",
-                      fileUsed[i])
-}
-
-
-# Get first two characters from each entry. These are the chapter numbers
-chapNumbersList <- sapply( dataFiles,  
-                           function(x) substr(x, 1, 2),
-                           USE.NAMES = FALSE) # Remove files names, used as names
-
-filesPerChapter <- table(chapNumbersList)
-startNewChapter <- cumsum( c(1, filesPerChapter) )
-
-
-### fileUsed should be the list of what we want to print
-# Now order, with Exercises at end (and rest alpha?)
-for (j in 1 : (length(filesPerChapter) ) ) { # For each chapter with data used
+  ### Consolidate
+  dataFiles <- sort(c(dataFilesPerChapter, dataFilesPerChapterExercises))
   
-  startSort <- startNewChapter[j]
-  stopSort <-  startNewChapter[j] - 1 
-  
-  if ( j == length(filesPerChapter)) stopSort <- as.numeric(chapNumbersList[ length(chapNumbersList)] )
-  
-  # Sort the files within chapter
-
-  filesUsedThisChapter    <- fileUsed[startSort : stopSort]    <- sort(fileUsed[startSort : stopSort])
-  filesUsedThisChapterRaw <- fileUsedRaw[startSort : stopSort] <- sort(fileUsedRaw[startSort : stopSort])
-  
-  # Remove duplicates WITHIN CHAPTERS
-  filesUsedThisChapter <- filesUsedThisChapter[ !duplicated(filesUsedThisChapter) ]
-  filesUsedThisChapterRaw <- filesUsedThisChapterRaw[ !duplicated(filesUsedThisChapterRaw) ]
-
-  martha <- filesUsedThisChapter
-  
-  
-}
-
-
-# Now add link to data file if we are creating html
-# If html format, add a link to the file in the Data directory
-if (knitr::is_html_output()) { # Add hyperlink to data: `file` (Exercise) ->  [`file`](Data/file.csv) (Exercise)
-  for (i in (1:length(fileUsed))){ # For each data file listed
-    
-    backTickLocation <- unlist(gregexpr('`', fileUsed[i]))
-    bt2 <- backTickLocation[2]
-    
-    # Locate first back tick: Add  [  before
-    fileUsed[i] <- paste0("[", fileUsed[i])
-    
-    # Locate second back tick: Insert  ](Data/file.csv)
-    fileUsed[i] <- paste0(substr(fileUsed[i], 
-                                 start = 1,
-                                 stop = (bt2 + 1)), # Plus 1 as we have already added leading
-                          "](Data/",
-                          substr(fileUsed[i],
-                                 start = 3,
-                                 stop = bt2), 
-                          ".csv)",
-                          substr(fileUsed[i],
-                                 start = bt2 + 2,
-                                 stop = nchar(fileUsed[i])) )
-    
-  }
+  return(dataFiles)
 }
 
 
 
-
-
-
-
-
-
-# Start with column set-up info
-cat(':::::: {.cols data-latex=\"[T]\"}\n')
-cat("::: {.col data-latex=\"{0.46\\textwidth}\"}\n")
-
-
-
-for (i in 1:numDataCalls) {
+######################################################
+cleanDataFileCalls  <- function(dataFiles){
   
-  # Do not want to display those used in Answers Chapter  
-  answersChapNumber <- 53
-  if ( chapNumbersList[i] < 53){
+  # Remove comments, trailing text, etc
+  # Deal with things typically used to call data files
+  
+  # 1. Remove commented-out data calls
+  
+  # Determine if the string  <!--  appears
+  numDataCalls <- length(dataFiles)
+  commentedOut <- array( FALSE, 
+                         dim = numDataCalls)
+  
+  for (i in 1:numDataCalls){ # For each line in the data-call files...
+    # First, remove all blank space
+    dataFiles[i] <- gsub(" ", 
+                         "", 
+                         dataFiles[i] )
     
-    # Check if we need to start a new chapter:
-    if (i %in% startNewChapter){
-      cat("\n\\medskip\n**Chapter ",
-          sub("^0+", "", chapNumbersList[i]), # Remove any leading zeros
-          "**\n\n")
+    # Then, remove all quote marks, such as in data("Fred")
+    dataFiles[i] <- gsub('"', 
+                         "", 
+                         dataFiles[i] )
+    
+    # Now find commented-out data() calls
+    commentedOut[i]  <- grepl("<!-- data", 
+                              dataFiles[i]) | 
+      grepl("<!--data", 
+            dataFiles[i]) | 
+      grepl("<!--  data", 
+            dataFiles[i])  
+  }
+  
+  
+  
+  # Remove comments that may be present after the data call; eg:
+  #      data(FRED) # trust this data file exists?
+  
+  for (i in 1:numDataCalls){
+    removeAfterComments <- grepl("#", 
+                                 dataFiles[i])
+    if (removeAfterComments){
+      dataFiles[i] <- strsplit(dataFiles[i], "#")[[1]][1] 
+    }
+  }
+  
+  # Remove the lines commented out
+  dataFiles <- dataFiles[ !commentedOut ]
+  
+  return(dataFiles)
+  
+}
+
+
+
+######################################################
+classifyDataMentionsTypes <- function(dataFiles){
+  
+  # Find whether mentioned in the chapter, or in an exercise
+  # NOT sure I HAVE THIS CORRRECT!!!
+  
+  # Extract Chapter numbers
+  # Get first two characters from each entry. These are the chapter numbers
+  chapNumbersList <- sapply( dataFiles,  
+                             function(x) substr(x, 1, 2),
+                             USE.NAMES = FALSE) # Remove files names, used as names
+  
+  
+  # Now extract the data files names
+  numDataCalls <- length(dataFiles)
+  
+  fileUsed <- fileUsedRaw <- array( dim = numDataCalls)
+  # fileUsedRaw has *just* the data file name.
+  # fileUsed also has the indications of whether an exercise, or built-in R dataset  
+  
+  
+  for (i in 1:numDataCalls){
+    
+    # First remove chapter info
+    dataCall <- strsplit(dataFiles[i], "Rmd:")[[1]][2] 
+    # So now just things like:
+    #   data(fred) 
+    # or 
+    #  [*Dataset*:`fred`]
+    
+    
+    # We can have two different things, depending if call in the chapter, or if listed in exercise
+    # Now if the first character is  [  then it is in an exercise; otherwise, an actual data call
+    if ( substr( dataCall, 1, 1) == "[") { # Then probably an exercises (OR SOME EXAMPLES???)
+      
+      lengthDataCall <- nchar(dataCall)
+      fileUsed[i] <- substr(dataCall,
+                            start = 12,
+                            stop = lengthDataCall - 1)
+      fileUsedRaw[i] <- fileUsed[i]
+      
+      # Append note that data file used in an exercise
+      fileUsed[i] <- paste(fileUsed[i], " (Exercise)")
+      
+    } else { # Then probably just a call in passing, e.. in an example
+      
+      lengthDataCall <- nchar(dataCall)
+      fileUsed[i] <- substr(dataCall,
+                            start = 6,
+                            stop = lengthDataCall - 1)
+      fileUsed[i] <- paste0("`", fileUsed[i], "`")
+      fileUsedRaw[i] <- fileUsed[i]
+    }
+    
+    # Flag special cases
+    if (substr(fileUsed[i], 2, 6) == "faith") { #faithful data set
+      fileUsed[i] <- paste(fileUsed[i],
+                           "(in **R**)" )
+    }
+    if (substr(fileUsed[i], 2, 6) == "NHANE") { #faithful data set
+      fileUsed[i] <- paste(fileUsed[i],
+                           "(*NHANES*)" )
     }
     
     
-    if (i %in% splitFiles[, 1]){
+    
+    # Now, sometimes two brackets may occur: NHANES (Exercise) (package NHANES); replace with semicolon
+    # To find, and fix
+    fileUsed[i] <- gsub("\\) \\(", 
+                        "; ",
+                        fileUsed[i])
+  }
+  
+  # Return TWO things: List of chapter numbers and the names (both outputs same length)
+  return( list(chapNumbers = chapNumbersList, 
+               fileNames = fileUsed))
+}
+
+
+
+### REMOVE THE `  ` 
+
+
+
+######################################################
+sortDataFilesByChapter <- function(dataFiles, chapterNumbers){
+  # Create a  list()  with an entry for each chapter, giving a vector of data file names 
+  filesPerChapter <- table(chapterNumbers)
+  startNewChapter <- cumsum( c(1, filesPerChapter) )
+  numberChapters <- length(filesPerChapter)
+
+  # Initialise the list
+  listDataFilesByChapter <- list()
+  
+  # Now order, with Exercises at end (and rest alpha?)
+  for (j in 1 : numberChapters ) { # For each chapter j with data used
+    
+    startSort <- startNewChapter[j]
+    stopSort <-  startNewChapter[j + 1] - 1 
+
+    if ( j == length(filesPerChapter)) {
+      stopSort <- as.numeric(chapterNumbers[ length(chapterNumbers)] )
+    }
+    
+    # Sort the files within this chapter j
+    
+    filesUsedThisChapter    <- dataFiles[startSort : stopSort]    <- sort(dataFiles[startSort : stopSort])
+    #    filesUsedThisChapterRaw <- fileUsedRaw[startSort : stopSort] <- sort(fileUsedRaw[startSort : stopSort])
+    
+    # Remove duplicates WITHIN CHAPTERS
+    filesUsedThisChapter <- filesUsedThisChapter[ !duplicated(filesUsedThisChapter) ]
+
+    if (length(filesUsedThisChapter) > 2) {
+      fileList <- paste( paste0("\"", 
+                                filesUsedThisChapter,
+                                "\""),
+                         collapse = ", ") 
+      fileList <- paste0("c(",
+                         fileList,
+                         ")" )
+    } else {
+      fileList <- paste0("c(\"",
+                         filesUsedThisChapter,
+                         "\")")
+    }
+    listName <- unique(chapterNumbers)[j]
+    parseText <- paste0("listDataFilesByChapter$Chap", 
+                        listName,
+                        " <- ",
+                        fileList)
+    
+    # DO NLT include the solutions chapter (currently, chapter 53):
+    if (listName != 53 ){
+      eval(parse(text = parseText))
+    }
+  }
+  return(listDataFilesByChapter)
+}
+
+
+
+
+
+###
+addHyperLinks <- function(fileNames){
+  
+  # fileNames is a *list*, with entries like "fileNames$Chap07" containing all the data fies for that chapter.
+  
+  # If html format, add a link to the file in the Data directory
+  for (i in (1:length(fileNames))){ # For each data file listed
+    
+    backTickLocation <- unlist(gregexpr('`', fileNames[i]))
+    bt2 <- backTickLocation[2]
+    
+    # Locate first back tick: Add  [  before
+    fileUsed[i] <- paste0("[", fileNames[i])
+    
+    # Locate second back tick: Insert  ](Data/file.csv)
+    fileUsed[i] <- paste0(substr(fileNames[i], 
+                                 start = 1,
+                                 stop = (bt2 + 1)), # Plus 1 as we have already added leading
+                          "](Data/",
+                          substr(fileNames[i],
+                                 start = 3,
+                                 stop = bt2), 
+                          ".csv)",
+                          substr(fileNames[i],
+                                 start = bt2 + 2,
+                                 stop = nchar(fileNames[i])) )
+    
+  }
+  
+  return(fileNames)
+  
+}
+
+
+###
+writeDataFileList <- function(fileNames, 
+                              splitFiles, # Where to break columns
+                              addLinks = FALSE){ # In TML, add links 
+  
+  # Prep: define useful bits
+  numberOfDataFiles <- sum(unlist(lapply(fileNames, length)))
+  
+  splitLineNumbers <- c(1,
+                        splitFiles,
+                        numberOfDataFiles)
+  lengthSplitLineNumbers <- length(splitLineNumbers)
+  
+  startLeftColumns <- splitLineNumbers[ seq(1, lengthSplitLineNumbers, by = 2)]
+  startRightColumns <- splitLineNumbers[ 1 + seq(1, lengthSplitLineNumbers, by = 2)]
+  
+  endLeftColumns <- startRightColumns - 1
+  endRightColumns <- c(startLeftColumns - 1, numberOfDataFiles)
+  startRightColumns <- startRightColumns[1 : (length(startRightColumns) - 1)]
+  
+  startPage <- startLeftColumns 
+  endPage <- endRightColumns
+  
+  numberOfPages <- length(splitFiles) / 2
+  numberOfChapters <- length(fileNames)
+  
+  numberFilesPerChapter <- unlist(lapply(fileNames, length))
+  startChapter <- cumsum( c(1, numberFilesPerChapter) )
+  startChapter <- startChapter[1 : (length(startChapter) - 1 )]
+  names(startChapter) <- names(numberFilesPerChapter)
+
+  chapterNumbers <- names(unlist(lapply(fileNames, length)))
+  chapterNumbersForEachDataFile <- rep(chapterNumbers, unlist(lapply(fileNames, length)))
+  chapterNumbersForEachDataFile <- substr(chapterNumbersForEachDataFile,
+                                          start = 5,
+                                          stop = 6)
+  # Remove leading zeros
+  leadingZeros <- substr(chapterNumbersForEachDataFile, 1, 1) == "0"
+  for (i in 1:length(leadingZeros)){
+    if (leadingZeros[i]){
+       substr(chapterNumbersForEachDataFile[i],
+              start = 1,
+              stop = 1) <- " " # Replace with a space
+    }
+  }
+  
+  
+  for (i in 1:numberOfDataFiles){
+
+    if ( i %in% startPage){
+      # START PAGE with column set-up info for the whole PAGE
+      cat(':::::: {.cols data-latex=\"[T]\"}\n')
+      cat("::: {.col data-latex=\"{0.46\\textwidth}\"}\n")
+    }
+    
+    # if ( i %in% startLeftColumns){
+    #   cat(':::::: {.cols data-latex=\"[T]\"}\n')
+    #   cat("::: {.col data-latex=\"{0.46\\textwidth}\"}\n")
+    # }
+    
+    
+    if (i %in% startChapter){
+      cat("\n\\medskip\n**Chapter ",
+          sub("^0+", "", chapterNumbersForEachDataFile[i]), # Remove any leading zeros
+          "**\n\n")
+    }
+    
+    # PRINT DATA FILE INFO
+    # ADD HYPERLINKS if requested (i.e., HTML)
+    if (addLinks) { 
+      fileNameWithLinks <- unlist(fileNames)[i]
+
+      # Add hyperlink to data: `file` (Exercise) ->  [`file`](Data/file.csv) (Exercise)
+      backTickLocation <- unlist(gregexpr('`', 
+                                          fileNameWithLinks))
+      bt2 <- backTickLocation[2]
       
+      # Locate first back tick: Add  [  before
+      fileNameWithLinks <- paste0("[", fileNameWithLinks)
+      
+      # Locate second back tick: Insert  ](Data/file.csv)
+      fileNameWithLinks <- paste0(substr(fileNameWithLinks,
+                                         start = 1,
+                                         stop = (bt2 + 1)), # Plus 1 as we have already added leading
+                                  "](Data/",
+                                  substr(fileNameWithLinks,
+                                         start = 3,
+                                         stop = bt2), 
+                                  ".csv)",
+                                  substr(fileNameWithLinks,
+                                         start = bt2 + 2,
+                                         stop = nchar(fileNameWithLinks)) )
+      # Print 
+      cat( "* ",
+           fileNameWithLinks,
+           "\n") 
+      
+    } else {
+      # Just print 
+      cat( "* ",
+           unlist(fileNames)[i],
+           "\n") 
+    }
+    
+    
+    if ( i %in% startRightColumns){
       cat('::: \n')
       cat('::: {.col data-latex=\"{0.06\\textwidth}\"} \n')
       cat('\\ \n') 
@@ -248,34 +407,30 @@ for (i in 1:numDataCalls) {
       ## a column separator -->
       cat(':::\n')
       cat('::: {.col data-latex=\"{0.46\\textwidth}\"}\n')
-      
     }
-    if (i %in% (splitFiles[, 2]) ) {
-      
-      # After two columns of length, close off the col environment
-      # End with column set-up info
+
+    
+    if (i %in% endRightColumns ){ 
       cat(':::\n')
       cat('::::::\n')
-      
-      cat(':::::: {.cols data-latex=\"[T]\"}\n')
-      cat("::: {.col data-latex=\"{0.46\\textwidth}\"}\n")
-      
+
     }
     
-    
-    # Print the data files used in said chapter:
-    
-    # first, find where data file name actually starts:
-    # Print the data file used in said chapter:
-    cat( "* ",
-         fileUsed[i],
-         "\n") 
+
   }
-  
 }
 
+######################################################
+### DO THE EXTRACTION ###
+dFiles <- findDataFileMentions() # A list of the *lines* that contains mentions of data files
+dFiles1 <- cleanDataFileCalls(dFiles) # Remove trailing text and comments
+out <- classifyDataMentionsTypes(dFiles1)
+chapNum <- out$chapNumbers
+dFiles2 <- out$fileNames
+dFiles3 <- sortDataFilesByChapter(dFiles2, chapNum)
 
-# End with column set-up info
-cat(':::\n')
-cat('::::::\n')
+writeDataFileList(dFiles3, 
+                  splitFiles, 
+                  addLinks = is_html_output() )
+######################################################
 
