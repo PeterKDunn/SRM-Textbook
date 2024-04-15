@@ -63,33 +63,33 @@ IndividualColourTransparent <- someDefaultColoursTransparent[ colourLocation[9] 
 BlockColourTransparent <- someDefaultColoursTransparent[ colourLocation[10] ]
 
 # TEST COLOURS:
-
-plot( x = c(0, 1.6),
-      y = c(0, 1) )
-polygon( x = c(0, 0, 0.2, 0.2),
-         y = c(0, 1, 1, 0),
-         col = ResponseColourTransparent)
-polygon( x = c(0, 0, 0.2, 0.2) + 0.2,
-         y = c(0, 1, 1, 0),
-         col = ChanceColourTransparent)
-polygon( x = c(0, 0, 0.2, 0.2) + 0.4,
-         y = c(0, 1, 1, 0),
-         col = ExplanatoryColourTransparent)
-polygon( x = c(0, 0, 0.2, 0.2) + 0.6,
-         y = c(0, 1, 1, 0),
-         col = DesignColourTransparent)
-polygon( x = c(0, 0, 0.2, 0.2) + 0.8,
-         y = c(0, 1, 1, 0),
-         col = GroupColourTransparent)
-polygon( x = c(0, 0, 0.2, 0.2) + 1.0,
-         y = c(0, 1, 1, 0),
-         col = IndividualColourTransparent)
-polygon( x = c(0, 0, 0.2, 0.2) + 1.2,
-         y = c(0, 1, 1, 0),
-         col = ExtraneousColourTransparent)
-polygon( x = c(0, 0, 0.2, 0.2) + 1.4,
-         y = c(0, 1, 1, 0),
-         col = BlockColourTransparent)
+# 
+# plot( x = c(0, 1.6),
+#       y = c(0, 1) )
+# polygon( x = c(0, 0, 0.2, 0.2),
+#          y = c(0, 1, 1, 0),
+#          col = ResponseColourTransparent)
+# polygon( x = c(0, 0, 0.2, 0.2) + 0.2,
+#          y = c(0, 1, 1, 0),
+#          col = ChanceColourTransparent)
+# polygon( x = c(0, 0, 0.2, 0.2) + 0.4,
+#          y = c(0, 1, 1, 0),
+#          col = ExplanatoryColourTransparent)
+# polygon( x = c(0, 0, 0.2, 0.2) + 0.6,
+#          y = c(0, 1, 1, 0),
+#          col = DesignColourTransparent)
+# polygon( x = c(0, 0, 0.2, 0.2) + 0.8,
+#          y = c(0, 1, 1, 0),
+#          col = GroupColourTransparent)
+# polygon( x = c(0, 0, 0.2, 0.2) + 1.0,
+#          y = c(0, 1, 1, 0),
+#          col = IndividualColourTransparent)
+# polygon( x = c(0, 0, 0.2, 0.2) + 1.2,
+#          y = c(0, 1, 1, 0),
+#          col = ExtraneousColourTransparent)
+# polygon( x = c(0, 0, 0.2, 0.2) + 1.4,
+#          y = c(0, 1, 1, 0),
+#          col = BlockColourTransparent)
 
 
 # Convert to equiv solid, manually...
