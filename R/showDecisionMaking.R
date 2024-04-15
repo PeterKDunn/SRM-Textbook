@@ -47,7 +47,7 @@
    
    
    
-   openplotmat(mar = c(0.25, 0.25, 0.25, 0.25))
+   openplotmat(mar = c(0.3, 0.25, 0.3, 0.25))
    
    # 'Background' squares delineating the steps
    polygon( x = edgesX[ c(1, 1, 2, 2)],
@@ -179,7 +179,7 @@
              lab = expression( atop(bold(Yes):~Supports,
                                     assumption) ),
              col = ifelse( Decision == "Reject", 
-                           grey(0.75), 
+                           grey(0.70), 
                            "black")) # CHECKMARK
    textrect( pos[7, ],
              radx = 0.11,
@@ -190,7 +190,7 @@
              lab = expression( atop(bold(No):~Contradicts,
                                     assumption) ),
              col = ifelse( Decision == "Accept", 
-                           grey(0.75), 
+                           grey(0.70), 
                            "black")) # CHECKMARK
    
    # STEPS
