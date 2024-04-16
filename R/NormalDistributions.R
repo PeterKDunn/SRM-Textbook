@@ -121,7 +121,8 @@ shadeNormal <- function(xx,
                         yy, 
                         lo, 
                         hi, 
-                        col = "blue", #Shading colour
+                        col = "blue", # Fill colour
+                        shadeCol = NA, # Colour of the hatching
                         density = NULL,
                         angle = 45,
                         outline = FALSE){
@@ -138,7 +139,7 @@ shadeNormal <- function(xx,
   if ( !is.null(density)){
     polygon( x = c(xshade, rev(xshade) ),
              y = c( yshade, y0),
-             col = NA,
+             col = shadeCol,
              density = density,
              angle = angle)
   }
