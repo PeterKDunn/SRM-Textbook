@@ -16,8 +16,8 @@
 </div>
 
 
-In this chapter, we study the situation where a population mean $\mu$ (the parameter) is estimated by a sample mean $\bar{x}$ (the statistic).
-The sample mean is computed from just one of the many possible samples, and each possible sample is likely to produce a different value of $\bar{x}$.
+In this chapter, estimating a population mean $\mu$ (the parameter) using the sample mean $\bar{x}$ (the statistic) is studied.
+As usual, the sample mean is computed from just one of the many possible samples, and each possible sample is likely to produce a different value of $\bar{x}$.
 That is, the value of the sample mean varies from sample to sample, called *sampling variation*.
 
 
@@ -27,11 +27,11 @@ Remember: studying a sample leads to the following observations:
 
 * Every sample is likely to be different.
 * We observe just one of the many possible samples.
-* Every sample is likely to yield a different value for the sample statistic.
+* Every sample is likely to yield a different value for the statistic.
 * We observe just one of the many possible values for the statistic.
 \vspace{-2ex}
 
-Since many values for the sample mean are possible, the possible values of the sample mean vary (called *sampling variation*) and have a *distribution* (called a *sampling distribution*).
+Since many values for the sample mean are possible, the values of the sample mean vary (called *sampling variation*) and have a *distribution* (called a *sampling distribution*).
 :::
 
 
@@ -40,15 +40,8 @@ Suppose a die is rolled $n = 25$ times, and the *mean* of the sample of $25$ num
 Since every face of the die is equally likely to appear on any one roll, the population mean of all possible rolls is $\mu = 3.5$ (in the middle of the numbers on the faces of the die, so this is also the *median*).
 
 What will be the sample mean of the numbers in the $25$ rolls?
-We cannot be sure, as the sample mean will vary from sample to sample (*sampling variation*).
+We don't know, as the sample mean varies from sample to sample (*sampling variation*).
 But suppose we roll a die $25$ times, to see how the sample mean varies in $25$ rolls
-`r if (knitr::is_latex_output()) {
-   '(see Fig.\\ \\@ref(fig:RollDiceMeanFig) for ten samples of $25$ rolls).'
-} else {
-   'as shown in the animation below for ten samples of $25$ rolls.'
-}`
-The mean of the $25$ rolls clearly varies, as expected.
-In the simulation, the sample mean of $25$ rolls was as low as $3.08$ and as high as $3.76$.
 
 
 ```{r}
@@ -60,144 +53,144 @@ die.se <- sqrt( die.vr / 25)
 
 
 
-```{r RollDiceMeanHTML, animation.hook="gifski", interval=0.5, dev=if (is_latex_output()){"pdf"}else{"png"}}
-if (knitr::is_html_output()){
-  set.seed(99999)
-    num.rolls <- 25
-    num.sims <- 10
-    x.loc <- 1:(num.rolls)
-    y.loc <- 1
-    mean.even <- array(dim = num.sims)
-    all.rolls <- array( dim = c(num.sims, num.rolls))
-    
-    for (i in 1:num.sims){
-      
-      par( mar = c(5.1, 5.1, 4.1, 2.1))
-      
-      plot( c(1, (num.rolls + 2)), c(1, num.sims),
-            type = "n",
-            las = 1,
-            xlab = "",
-            ylab = "",
-            main = paste("Sample number", i),
-            axes = FALSE)
-      
-      roll <- sample(1:6, 
-                     num.rolls, 
-		     replace = TRUE)
-      all.rolls[i, ] <- roll
-      mean.even[i] <- mean(roll)
-      
-      col1 <- col2rgb("darkolivegreen2")
-      col2 <- col2rgb("indianred2")
- 
-      for (j in 1:i){
-        text(y = j, 
-	     x = 1:num.rolls,
-             labels = all.rolls[j, ])
-        
-        # Add some slight background colour under the sample proportions
-        polygon( c(num.rolls + 1, num.rolls + 1, num.rolls + 3, num.rolls + 3),
-                 c(j - 0.5, j + 0.5, j + 0.5, j - 0.5),
-                 border = NA,
-                 col = ifelse( mean.even[j] > 3.5, rgb( col1[1], col1[2], col1[3], alpha = 75, max = 255), 
-                                                   rgb( col2[1], col2[2], col2[3], alpha = 75, max = 255) ) )
+<!-- ```{r RollDiceMeanHTML, animation.hook="gifski", interval=0.5, dev=if (is_latex_output()){"pdf"}else{"png"}} -->
+<!-- if (knitr::is_html_output()){ -->
+<!--   set.seed(99999) -->
+<!--     num.rolls <- 25 -->
+<!--     num.sims <- 10 -->
+<!--     x.loc <- 1:(num.rolls) -->
+<!--     y.loc <- 1 -->
+<!--     mean.even <- array(dim = num.sims) -->
+<!--     all.rolls <- array( dim = c(num.sims, num.rolls)) -->
 
-      }
-      # Add x-bar heading
-      mtext(expression(bar( italic(x) ) ), 
-            side = 3, 
-	    line = 0, 
-	    at = num.rolls + 2 )
-      # Add the roll number to the left-hand side
-      axis(side = 2, 
-           at = 1:i,
-           las = 1,
-           labels = paste("Sample #", 1:i, sep = "") )
-      
-      # Add the sample mean to right-hand side 
-      text(num.rolls + 2, 
-           1:i, 
-           labels = format(round(mean.even[1:i], 2), nsmall = 2) )
-      #Add dividing line
-      abline(v = num.rolls + 1, 
-             col = "grey")
-      # Add line dividing roll sets
-      abline(h = seq(0.5, 10.5, by = 1), 
-             col = "gray")
-    }
-  }
-```
+<!--     for (i in 1:num.sims){ -->
 
+<!--       par( mar = c(5.1, 5.1, 4.1, 2.1)) -->
 
+<!--       plot( c(1, (num.rolls + 2)), c(1, num.sims), -->
+<!--             type = "n", -->
+<!--             las = 1, -->
+<!--             xlab = "", -->
+<!--             ylab = "", -->
+<!--             main = paste("Sample number", i), -->
+<!--             axes = FALSE) -->
 
-```{r RollDiceMeanFig, fig.align="center", fig.width=7, fig.height=4, out.width="85%", fig.cap="Rolling dice: The average of $25$ rolls, for ten samples" }
-if (knitr::is_latex_output()){
-  set.seed(99999)
-  num.rolls <- 25
-  num.sims <- 10
-  x.loc <- 1:(num.rolls)
-  y.loc <- 1
-  mean.even <- array(dim = num.sims)
-  all.rolls <- array( dim = c(num.sims, num.rolls))
-  
-  par(mar = c(0.5, 5.5, 5, 0.5) )
-  plot( c(1, (num.rolls + 2)), c(1, num.sims),
-        type = "n",
-        las = 1,
-        xlab = "",
-        ylab = "",
-        main = "The sample mean from a sample of 25 rolls\nfor each of 10 simulations",
-        axes = FALSE)
-  
-  for (i in 1:num.sims){
-    roll <- sample(1:6, 
-                   num.rolls, 
-                   replace = TRUE)
-    all.rolls[i, ] <- roll
-    mean.even[i] <- mean(roll)
-  }
-  for (j in 1:num.sims){
-    text(y = j, 
-         x = 1:num.rolls,
-         labels = all.rolls[j, ])
-  }
-  # Add x-bar heading
-  mtext(expression(bar( italic(x) ) ), 
-        side = 3, 
-        line = 0, 
-        at = num.rolls + 2 )
-  # Add the roll number to the left-hand side
-  axis(side = 2, 
-       at = 1:i,
-       las = 1,
-       labels = paste("Sample #", 1:i, sep = "") )
-  
-  # Add the sample mean to right-hand side 
-  text(x = num.rolls + 2, 
-       y = 1:i, 
-       font = ifelse( mean.even > 3.5, 2, 1),
-       labels = format(round(mean.even[1:i], 2), nsmall = 2) )
-  
-  #Add dividing line
-  abline(v = num.rolls + 1, 
-         col = "grey")
-  
-  # Add line dividing roll sets
-  abline(h = seq(0.5, 10.5, by = 1), 
-         col = "gray")
-  #}
-}
-```
+<!--       roll <- sample(1:6,  -->
+<!--                      num.rolls,  -->
+<!-- 		     replace = TRUE) -->
+<!--       all.rolls[i, ] <- roll -->
+<!--       mean.even[i] <- mean(roll) -->
+
+<!--       col1 <- col2rgb("darkolivegreen2") -->
+<!--       col2 <- col2rgb("indianred2") -->
+
+<!--       for (j in 1:i){ -->
+<!--         text(y = j,  -->
+<!-- 	     x = 1:num.rolls, -->
+<!--              labels = all.rolls[j, ]) -->
+
+<!--         # Add some slight background colour under the sample proportions -->
+<!--         polygon( c(num.rolls + 1, num.rolls + 1, num.rolls + 3, num.rolls + 3), -->
+<!--                  c(j - 0.5, j + 0.5, j + 0.5, j - 0.5), -->
+<!--                  border = NA, -->
+<!--                  col = ifelse( mean.even[j] > 3.5, rgb( col1[1], col1[2], col1[3], alpha = 75, max = 255),  -->
+<!--                                                    rgb( col2[1], col2[2], col2[3], alpha = 75, max = 255) ) ) -->
+
+<!--       } -->
+<!--       # Add x-bar heading -->
+<!--       mtext(expression(bar( italic(x) ) ),  -->
+<!--             side = 3,  -->
+<!-- 	    line = 0,  -->
+<!-- 	    at = num.rolls + 2 ) -->
+<!--       # Add the roll number to the left-hand side -->
+<!--       axis(side = 2,  -->
+<!--            at = 1:i, -->
+<!--            las = 1, -->
+<!--            labels = paste("Sample #", 1:i, sep = "") ) -->
+
+<!--       # Add the sample mean to right-hand side  -->
+<!--       text(num.rolls + 2,  -->
+<!--            1:i,  -->
+<!--            labels = format(round(mean.even[1:i], 2), nsmall = 2) ) -->
+<!--       #Add dividing line -->
+<!--       abline(v = num.rolls + 1,  -->
+<!--              col = "grey") -->
+<!--       # Add line dividing roll sets -->
+<!--       abline(h = seq(0.5, 10.5, by = 1),  -->
+<!--              col = "gray") -->
+<!--     } -->
+<!--   } -->
+<!-- ``` -->
 
 
-The mean for any single sample of $n = 25$ rolls will sometimes be higher than $\mu = 3.5$, and sometimes lower than $\mu = 3.5$, but most of the time the mean should be close to $3.5$.
+
+<!-- ```{r RollDiceMeanFig, fig.align="center", fig.width=7, fig.height=4, out.width="85%", fig.cap="Rolling dice: The average of $25$ rolls, for ten samples" } -->
+<!-- if (knitr::is_latex_output()){ -->
+<!--   set.seed(99999) -->
+<!--   num.rolls <- 25 -->
+<!--   num.sims <- 10 -->
+<!--   x.loc <- 1:(num.rolls) -->
+<!--   y.loc <- 1 -->
+<!--   mean.even <- array(dim = num.sims) -->
+<!--   all.rolls <- array( dim = c(num.sims, num.rolls)) -->
+
+<!--   par(mar = c(0.5, 5.5, 5, 0.5) ) -->
+<!--   plot( c(1, (num.rolls + 2)), c(1, num.sims), -->
+<!--         type = "n", -->
+<!--         las = 1, -->
+<!--         xlab = "", -->
+<!--         ylab = "", -->
+<!--         main = "The sample mean from a sample of 25 rolls\nfor each of 10 simulations", -->
+<!--         axes = FALSE) -->
+
+<!--   for (i in 1:num.sims){ -->
+<!--     roll <- sample(1:6,  -->
+<!--                    num.rolls,  -->
+<!--                    replace = TRUE) -->
+<!--     all.rolls[i, ] <- roll -->
+<!--     mean.even[i] <- mean(roll) -->
+<!--   } -->
+<!--   for (j in 1:num.sims){ -->
+<!--     text(y = j,  -->
+<!--          x = 1:num.rolls, -->
+<!--          labels = all.rolls[j, ]) -->
+<!--   } -->
+<!--   # Add x-bar heading -->
+<!--   mtext(expression(bar( italic(x) ) ),  -->
+<!--         side = 3,  -->
+<!--         line = 0,  -->
+<!--         at = num.rolls + 2 ) -->
+<!--   # Add the roll number to the left-hand side -->
+<!--   axis(side = 2,  -->
+<!--        at = 1:i, -->
+<!--        las = 1, -->
+<!--        labels = paste("Sample #", 1:i, sep = "") ) -->
+
+<!--   # Add the sample mean to right-hand side  -->
+<!--   text(x = num.rolls + 2,  -->
+<!--        y = 1:i,  -->
+<!--        font = ifelse( mean.even > 3.5, 2, 1), -->
+<!--        labels = format(round(mean.even[1:i], 2), nsmall = 2) ) -->
+
+<!--   #Add dividing line -->
+<!--   abline(v = num.rolls + 1,  -->
+<!--          col = "grey") -->
+
+<!--   # Add line dividing roll sets -->
+<!--   abline(h = seq(0.5, 10.5, by = 1),  -->
+<!--          col = "gray") -->
+<!--   #} -->
+<!-- } -->
+<!-- ``` -->
+
+
 If thousands of people made one sample of $25$ rolls each, and computed the mean for their sample, every person would have a sample mean for their sample, and we could produce a histogram of all these sample means
 `r if (knitr::is_latex_output()) {
    '(Fig.\\ \\@ref(fig:RollDiceHistMeanFig)).'
 } else {
    '(see the animation below).'
 }`
+The mean for any single sample of $n = 25$ rolls will sometimes be higher than $\mu = 3.5$, and sometimes lower than $\mu = 3.5$, but often close to $3.5$.
 
 
 ```{r RollDiceHistMeanHTML, animation.hook="gifski", interval=0.4, dev=if (is_latex_output()){"pdf"}else{"png"}}
@@ -260,7 +253,7 @@ if (knitr::is_html_output()){
 ```
 
 
-```{r RollDiceHistMeanFig, fig.align="center", fig.width=5, fig.height=2.5, fig.cap="Rolling dice: The mean of 25 rolls, for thousands of repetitions" }
+```{r RollDiceHistMeanFig, fig.align="center", fig.width=5, fig.height=2.75, fig.cap="Rolling dice: The mean of 25 rolls, for thousands of repetitions" }
 if (knitr::is_latex_output()){
   set.seed(123456789)
   num.sims <- 2000
@@ -320,24 +313,23 @@ if (knitr::is_latex_output()){
 } else {
    'From the animation above,'
 }`
-the sample means vary with an approximate normal distribution (as we saw with the sample proportions).
-This normal distribution does *not* describe the data; it describes how the *values of sample means vary across all possible samples*.
-Under certain conditions, the values of the sample means can vary with a normal distribution, and this normal distribution has a mean and a standard deviation.
+the sample means vary with an approximate normal distribution (as with the sample proportions).
+This normal distribution does *not* describe the data; it describes how the *values of the sample means vary across all possible samples*.
+Under certain conditions, the values of the sample mean varies with a normal distribution, and this normal distribution has a mean and a standard deviation.
 
-This sampling distribution describes how *sample means* vary.
 The mean of this sampling distribution---the *sampling mean*---has the value $\mu$.
 The standard deviation of this sampling distribution is called the *standard error of the sample means*, denoted $\text{s.e.}(\bar{x})$.
-When the *population* standard deviation $\sigma$ is *known*, the standard error happens to be  
+When the *population* standard deviation $\sigma$ is *known*, the value of the standard error happens to be  
 \[
   \text{s.e.}(\bar{x}) = \frac{\sigma}{\sqrt{n}}.
 \]
-The possible values of the sample means have a *sampling distribution* described by:
+In summary, the values of the sample means have a *sampling distribution* described by:
 
 * an approximate normal distribution,
 * with a sampling mean whose value is $\mu$, and
 * a standard deviation, called the standard error, of $\text{s.e.}(\bar{x}) = \sigma/\sqrt{n}$.
 
-However, since the population standard deviation is rarely ever known, let's focus on the case where the value of $\sigma$ is unknown.
+However, since the population standard deviation is rarely ever known, let's focus on the case where the value of $\sigma$ is unknown (and estimated by the *sample* standard deviation, $s$).
 
 
 ## Sampling distribution for $\bar{x}$: $\sigma$ unknown {#SamplingDistSampleMean}
@@ -354,7 +346,7 @@ When the *population* standard deviation is unknown, the *sampling distribution 
   
 * an approximate normal distribution,
 * centred around a sampling mean whose value is $\mu$,
-* with a standard deviation (called the *standard error of the mean*) $\text{s.e.}(\bar{x})$, whose value is  
+* with a standard deviation (called the *standard error of the mean*), denoted $\text{s.e.}(\bar{x})$, whose value is  
 \begin{equation}
    \text{s.e.}(\bar{x}) = \frac{s}{\sqrt{n}},
    (\#eq:stderrorxbar)
@@ -365,7 +357,8 @@ where $n$ is the size of the sample, and $s$ is the sample standard deviation of
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 A mean or a median may be appropriate for describing the *data*.
-However, the *sampling distribution* for the sample mean (under certain conditions) has a *normal distribution*, and so the mean is appropriate for describing the sampling distribution.
+However, the *sampling distribution* for the sample mean (under certain conditions) has a *normal distribution*.
+Hence, the mean is appropriate for describing the sampling distribution, even if not for describing the data.
 :::
 
 
@@ -427,7 +420,7 @@ However, the *sampling distribution* for the sample mean (under certain conditio
 We don't know the value of $\mu$ (the parameter), but we have an *estimate*: the value of $\bar{x}$, the sample mean (the statistic).
 The actual value of $\mu$ might be a bit larger than $\bar{x}$, or a bit smaller than $\bar{x}$; that is, the value of $\mu$ is $\bar{x}$, give-or-take a bit.
 
-Furthermore, the values of $\bar{x}$ vary from sample to sample (*sampling variation*), and vary with an approximate normal distribution.
+Furthermore, the values of $\bar{x}$ vary from sample to sample (*sampling variation*), with an approximate normal distribution.
 So, the $68$--$95$--$99.7$ rule could be used to construct an approximate $95$% interval for the plausible values of $\mu$ that may have produced the observed values of the sample mean.\index{68@$68$--$95$--$99.7$ rule}
 This is a *confidence interval*.
 
@@ -444,9 +437,11 @@ Commonly, CIs are computed at $90$%, $95$% and $99$% confidence levels.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-The multiplier *is not* a $z$-score here (but is *like* a $z$-score).
-The multiplier *is* be a $z$-score if the value of the *population* standard deviation was known (e.g., the situation in Sect.\ \@ref(SamplingDistSampleMeanSigmaKnown)).
-When $\sigma$ is unknown, and the *sample* standard deviation is used instead, the multiplier is a $t$-score.
+In Chap.\ \@ref(CIOneProportion), the multiplier was a $z$-score, and approximate values can be found using the $68$--$95$--$99.7$ rule.
+Here the multiplier *is not* a $z$-score (but is *like* a $z$-score).
+
+The multiplier is a $z$-score if the value of the *population* standard deviation is known (e.g., the situation in Sect.\ \@ref(SamplingDistSampleMeanSigmaKnown)).
+When $\sigma$ is unknown, and the *sample* standard deviation is used instead, the multiplier is called a $t$-score.
 
 The values of $t$- and $z$-multipliers are *very* similar, and (except for small sample sizes) using an approximate multiplier of\ $2$ is reasonable for computing *approximate* $95$%\ CIs in either case.
 :::
@@ -519,7 +514,7 @@ text(x = mn + (se / 2),
 ```
 
 
-Our estimate of $\bar{x} = 3.2$ may be a bit smaller than the value of $\mu$, or a bit larger than the value of $\mu$; that is, the value of $\mu$ is in the range '$\bar{x}$ give-or-take a bit'.
+Our estimate of $\bar{x} = 3.2$ may be a bit smaller than the value of $\mu$, or a bit larger than the value of $\mu$; that is, the value of $\mu$ is $\bar{x}$ give-or-take a bit.
 A range of $\bar{x}$ values that are likely to straddle $\mu$ is given by a CI.
 An *approximate* $95$%\ CI is from $3.2 - (2 \times 0.5)$ and $3.2 + (2 \times 0.5)$, or from $2.2$ to $4.2$.
 Hence, values of $\mu$ between $2.2$ to $4.2$ could reasonably have produced a sample mean of $\bar{x} = 3.2$. 
@@ -530,19 +525,6 @@ Hence, values of $\mu$ between $2.2$ to $4.2$ could reasonably have produced a s
 <!-- ```{r, CIrelationshipsMu, out.width='90%', fig.align="center", fig.cap="Various values of $\\mu$ from which the observed value of $\\bar{x}$ could reasonably be observed. The intervals are the $95$\\% sampling intervals for the given value of $\\mu$. The confidence interval contains the values for which the sampling interval contains the observed value of $\\bar{x}$.", fig.width=8, fig.height=5} -->
 <!-- source("R/rangeForMuCI.R")  -->
 <!-- ``` -->
-
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-Would a $99$%\ CI for $\mu$ be *wider* or *narrower* than the $95$%\ CI?
-Why?\label{thinkBox:WiderNarrower}
-
-`r if (knitr::is_latex_output()) '<!--'`
-`r webexercises::hide()`
-A *wider* interval is needed to be *more* confident that the interval contains the population mean.
-`r webexercises::unhide()`
-`r if (knitr::is_latex_output()) '-->'`
-:::
-
 
 <!-- ```{r BagsNormal, fig.cap="The sampling distribution is a normal distribution; it shows how the sample mean bag weight varies in samples of size $n = 586$", fig.align="center", fig.width=9.5, fig.height=2.75, out.width='95%'} -->
 
@@ -576,9 +558,9 @@ As with any confidence interval, the underlying mathematics requires certain con
 The CI for one mean will be *statistical valid* if *one* of these is true:
 
 1. The sample size is at least $25$, *or*
-2. The sample size is smaller than $25$ *and* the *population* data has an approximate normal distribution.
+2. The sample size is smaller than $25$ *and* the *population data* has an approximate normal distribution.
 
-The sample size of $25$ is a rough figure, and some books give other (similar) values (such as $30$).
+The sample size of $25$ is a rough figure, and some books give other values (such as $30$).
 
 This condition ensures that the *sampling distribution of the sample means has an approximate normal distribution* (so that the $68$--$95$--$99.7$ rule can be used).\index{68@$68$--$95$--$99.7$ rule}
 Provided the sample size is larger than about $25$, this will be approximately true *even if* the distribution of the individuals in the
@@ -587,7 +569,7 @@ That is, when $n > 25$ the sample means generally have an approximate normal dis
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-When $n > 25$ approximately, we do *not* require that the *data* has a normal distribution.
+When $n > 25$ approximately, the *data* do not have to have a normal distribution.
 The *sample means* need to have a normal distribution, which is approximately true if the statistical validity condition is true.
 :::
 
@@ -607,14 +589,14 @@ All we can reasonably do is to identify (from the sample) populations that are l
 
 
 ::: {.example #AssumptionsCT name="Assumptions"}
-A study [@data:silverman:CT; @data:zou:fluoroscopy] to examine exposure to radiation for CT scans in the abdomen assessed $n = 17$ patients.
+A study [@data:silverman:CT; @data:zou:fluoroscopy] examine exposure to radiation for CT scans in the abdomen for $n = 17$ patients.
 As the sample size is 'small' (less than $25$), the *population data* must have a normal distribution for a CI for $\mu$ to be statistically valid.
 
 A histogram of the total radiation dose received using the *sample* data (Fig.\ \@ref(fig:CTscanHistogram)) suggests this is very unlikely.
 Even though the histogram is from *sample* data, it seems improbable that the data in the sample would have come from a *population* with a normal distribution.
 
 A CI for the mean of these data will probably be *not* statistically valid.
-Other methods (beyond the scope of this course) are possible for computing a CI for the mean.
+Other methods (beyond the scope of this book) are needed to compute a CI for the mean.
 :::
 
 
@@ -641,7 +623,8 @@ box()
 </div>
 
 
-A study of peanuts from the United States [@data:Blair2017:Peanuts] found the sample mean cadmium concentration was $\bar{x} = 0.076$\ ppm with a standard deviation of $s = 0.0460$\ ppm, from a sample of $290$ peanuts gathered from a variety of regions at various times (a representative sample).
+@data:Blair2017:Peanuts studied peanuts gathered from a variety of regions in the United States over various times (a representative sample).
+They found the sample mean cadmium concentration was $\bar{x} = 0.076$\ ppm with a standard deviation of $s = 0.0460$\ ppm, from a sample of $290$ peanuts.
 The parameter is $\mu$, the population mean cadmium concentration in peanuts.
 
 Every sample of $n = 290$ peanuts is likely to produce a different sample mean, so *sampling variation* in $\bar{x}$ exists and can be measured using the standard error:  
@@ -654,7 +637,7 @@ We write:
 
 > The sample mean cadmium concentration of peanuts is $\bar{x} = 0.0768$\ ppm (s.e.: $0.00270$; $n = 290$), with an approximate $95$%\ CI from $0.0714$ to $0.0822$\ pmm.
 
-If we repeatedly took samples of size $290$ from this population, about $95$% of the $95$%\ CIs would contain the population mean (but *our* CI may or may not contain the value of $\mu$).
+If we repeatedly took samples of size $290$ from this population, about $95$% of the $95$%\ CIs would contain the population mean (*our* CI may or may not contain the value of $\mu$).
 The plausible values of $\mu$ that could have produced $\bar{x} = 0.0768$ are between $0.0714$ and $0.0822$\ ppm.
 Alternatively, we are about $95$% confident that the CI of $0.0714$ to $0.0822$\ ppm straddles the population mean.
 
@@ -680,7 +663,7 @@ Then compute the standard error, which quantifies how much the value of $\bar{x}
   \frac{ s }{\sqrt{n}},
 \]
 where $s$ is the sample standard deviation.
-The *margin of error* is (Multiplier$\times$standard error), where the multiplier is $2$ for an approximate $95$%\ CI (using the $68$--$95$--$99.7$ rule).
+The *margin of error* is (Multiplier${}\times{}$standard error), where the multiplier is $2$ for an approximate $95$%\ CI (from the $68$--$95$--$99.7$ rule).
 Then the CI is:  
 \[
    \bar{x} \pm \left( \text{Multiplier}\times\text{standard error} \right).
@@ -715,9 +698,9 @@ Answers to odd-numbered exercises are available in App.\ \@ref(Answers).
 
 
 ::: {.exercise #OneMeanCIBears}
-A study of American black bears [@bartareau2017estimating] found the mean weight of the $n = 185$ male bears was  $\bar{x} = 84.9$\ kg, with a standard deviation of $s = 51.1$\ kg.
+@bartareau2017estimating studied of American black bears, and found the mean weight of the $n = 185$ male bears was  $\bar{x} = 84.9$\ kg, with a standard deviation of $s = 51.1$\ kg.
 
-1. Write down the *parameter* of interest.
+1. Define the *parameter* of interest.
 1. Compute the standard error of the mean.
 1. Compute the approximate $95$%\ CI.
 1. Write a conclusion.
@@ -726,9 +709,10 @@ A study of American black bears [@bartareau2017estimating] found the mean weight
 
 
 ::: {.exercise #BagsCI}
-A study of the school bags that $586$ children (in Grades 6--8 in Tabriz, Iran) take to school found the mean weight was $\bar{x} = 2.8$\ kg with a standard deviation of $s = 0.94$\ kg [@data:Dianat2014:schoolbags].
+@data:Dianat2014:schoolbags studied teh weight of the school bags of $586$ children in Grades 6--8 in Tabriz, Iran.
+The mean weight was $\bar{x} = 2.8$\ kg with a standard deviation of $s = 0.94$\ kg.
 
-1. Write down the *parameter* of interest.
+1. Define the *parameter* of interest.
 1. Compute the standard error of the mean.
 1. Compute the approximate $95$%\ CI.
 1. Write a conclusion.
@@ -737,15 +721,16 @@ A study of the school bags that $586$ children (in Grades 6--8 in Tabriz, Iran) 
 
 
 ::: {.exercise #CIOneMeanLungCapacityInChildren}
-A study of the lung capacity of children in East Boston [@data:Tager:FEV; @BIB:data:FEV] measured the forced expiratory volume (FEV) of children in the area.
-The sample contained $n = 45$ eleven-year-old girls.
-For these children, the mean lung capacity was $\bar{x} = 2.85$ litres and the standard deviation was $s = 0.43$ litres.
+@data:Tager:FEV studied the lung capacity of children in East Boston.
+They measured the forced expiratory volume (FEV) of $n = 45$ eleven-year-old girls.
+For these children, the mean lung capacity was $\bar{x} = 2.85$ litres and the standard deviation was $s = 0.43$ litres [@BIB:data:FEV].
 Find an approximate $95$%\ CI for the population mean lung capacity of eleven-year-old females from East Boston.
 :::
 
 
 ::: {.exercise #CIOneMeanEnvironmentalPollution}
-A study of lead smelter emissions near children's public playgrounds [@data:Taylor2013:Lead] found the mean lead concentration at one playground (Memorial Park, Port Pirie, in South Australia) to be $6956.41$ micrograms per square metre, with a standard deviation of $7571.74$ micrograms of lead per square metre, from a sample of $n = 58$ wipes taken over a seven-day period.
+@data:Taylor2013:Lead studied lead smelter emissions near children's public playgrounds.
+They found the mean lead concentration at one playground (Memorial Park, Port Pirie, in South Australia) was $6956.41$ micrograms per square metre, with a standard deviation of $7571.74$ micrograms of lead per square metre, from a sample of $n = 58$ wipes taken over a seven-day period.
 (As a reference, the Western Australian Government recommends a maximum of $400$ micrograms of lead per square metre.)
 
 Find an approximate $95$%\ CI for the mean lead concentration at this playground.
@@ -754,24 +739,24 @@ Would these results apply to other playgrounds?
 
 
 ::: {.exercise #CIOneMeanToothbrushing}
-A study [@data:Macgregor1985:ToothbrushinghYoungAdults] of the brushing time for $60$ young adults (aged 18--22 years old) found the mean brushing time was $33.0$ seconds, with a standard deviation of $12.0$ seconds.
+@data:Macgregor1985:ToothbrushinghYoungAdults studied the brushing time for $60$ young adults (aged 18--22 years old), and found the mean brushing time was $33.0$ seconds, with a standard deviation of $12.0$ seconds.
 Find an approximate $95$%\ CI for the mean brushing time for young adults.
 :::
 
 
 ::: {.exercise #CIOneMeanBloodLoss}
-A study of paramedics [@data:Williams2007:BloodLoss] asked participants ($n = 199$) to estimate the amount of blood loss on four different surfaces.
+@data:Williams2007:BloodLoss asked paramedics ($n = 199$) to estimate the amount of blood loss on four different surfaces.
 When the actual amount of blood spill on concrete was $1000$\ ml, the mean guess was $846.4$\ ml (with a standard deviation of $651.1$\ ml).
 
 1. What is the approximate $95$%\ CI for the mean guess of blood loss?
-1. Are the participants good at estimating the amount of blood loss on concrete?
+1. Do you think the participants are good at estimating the amount of blood loss on concrete?
 1. Is this CI likely to be valid?
 :::
 
 
 ::: {.exercise #OneMeanCINHANESInterpret}
 Using data from the NHANES study [@data:NHANES3], the approximate $95$%\ CI for the mean direct HDL cholesterol is $1.356$ to $1.374$\ mmol/L.
-Which (if either) of these interpretations are acceptable?
+Which (if any) of these interpretations are acceptable?
 Explain *why* are the other interpretations are incorrect.
 
 1. In the *sample*, about $95$% of individuals have a direct HDL concentration between $1.356$ to $1.374$\ mmol/L.
@@ -785,7 +770,7 @@ Explain *why* are the other interpretations are incorrect.
 
 
 ::: {.exercise #OneMeanStdError}
-An article [@data:Grabosky2016:Trees] describes the diameter of *Quercus bicolor* trees planted in a lawn as having a mean of $25.8$\ cm, with a standard error of $0.64$\ cm, from a sample of $19$ trees.
+@data:Grabosky2016:Trees describe the diameter of *Quercus bicolor* trees planted in a lawn as having a mean of $25.8$\ cm, with a standard error of $0.64$\ cm, from a sample of $19$ trees.
 Which (if any) of the following is correct?
   
 1. About $95$% of the trees in the *sample* will have a diameter between $25.8 - (2\times 0.64)$ and $25.8 + (2\times 0.64)$ (based on using the $68$--$95$--$99.7$ rule).
@@ -794,7 +779,7 @@ Which (if any) of the following is correct?
 
 
 ::: {.exercise #ChewingTime}
-In a study of $n = 30$ five-year-old children [@watanabe1995estimation], the mean time for the children to eat a cookie was $61.3$\ s, with a standard deviation of $29.4$\ s.
+@watanabe1995estimation studied $n = 30$ five-year-old children, and found the mean time for the children to eat a cookie was $61.3$\ s, with a standard deviation of $29.4$\ s.
 
 1. What is an approximate $95$%\ CI for the population mean time for a five-year-old child to eat a cookie? 
 2. Is the CI statistically valid?
@@ -808,9 +793,7 @@ In a study of $n = 30$ five-year-old children [@watanabe1995estimation], the mea
 ::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
 **Answers to in-chapter questions:**
 
-- Sect. \ref{thinkBox:WiderNarrower}: A *wider* interval is needed to be *more* confident that the interval contains the population mean.
-
-- \textbf{\textit{Quick Revision} questions:}
+\textbf{\textit{Quick Revision} questions:}
 **1.** True
 **2.** False.
 **3.** Standard error is $1.7889$.
