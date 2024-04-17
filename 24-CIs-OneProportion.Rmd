@@ -606,71 +606,196 @@ Using $\hat{p} = 0.44$ and $n = 25$, then
    \text{s.e.}(\hat{p}) = \sqrt{ \frac{ 0.44 \times (1 - 0.44)}{25}} = 0.099277.
 \]
 So, the approximate $95$%\ CI (using the approximate multiplier of $2$ from the $68$--$95$--$99.7$ rule) is $0.44 \pm (2 \times 0.099277)$, or from $0.241$ to $0.639$.
-This confidence interval is an interval containing values of $p$ that could have reasonably produced the observed value of $\hat{p}$ (Fig.\ \@ref(fig:pProducingpHat)), with $95$% confidence.
+This confidence interval is an interval containing values of $p$ that could have reasonably produced the observed value of $\hat{p}$
+`r if (knitr::is_latex_output()) {
+   '(Fig.\\ \\@ref(fig:pProducingpHat)),'
+} else {
+   '(see the animation below),'
+}`
+with $95$% confidence.
 
+```{r}
+source("R/showCIForVariousp2.R")
 
-```{r, pProducingpHat, out.width='100%', fig.width=6, fig.height=2, fig.align="center", fig.cap="Various possible values for $p$, and the corresponding $95$\\% sampling intervals (i.e., the values of $\\hat{p}$ these are likely to produce)."}
-par(mfrow = c(1, 4),
-    mar = c(4, 0.3, 4, 0.3) )
+ciLo <- 0.241
+ciHi <- 0.639
+pHat <- mean( c(ciLo, ciHi) )
 
 pHat <- 11/25
 
 n <- 25
-pVec <- c(0.25, 0.4, 0.6, 0.7)
-pMean <- pVec
+pVec <- seq(0.20, 0.85, by = 0.025)
+#pMean <- pVec
 pStdDev <- sqrt( pHat * (1 - pHat) / n)
 
-for (i in 1:4){
-  ciLo <- pVec[i] - 2 * pStdDev
-  ciHi <- pVec[i] + 2 * pStdDev
+# Pre-calculate y-limits
+xx <- seq(0, 1, length = 1000)
+yy <- max( dnorm(x = xx, 
+                 mean = pVec[1], # Just as an example, to set limits
+                 sd = pStdDev) )
+maxY <- max(yy)
+locateY <- (-maxY * 1.2)
 
-  pHatInOrOut <- ifelse( (pHat > ciLo) & (pHat < ciHi), TRUE, FALSE )
-
-  # Pre-calculate y-limits
-  xx <- seq(0, 1, length = 1000)
-  yy <- max( dnorm(x = xx, 
-                   mean = pMean[i],
-                   sd = pStdDev) )
+```
 
 
-  out <- plotNormal(pMean[i],
-                    pStdDev,
-                    xlab = expression( Values~of~hat(italic(p))),
-                    xlim.lo = 0,
-                    xlim.hi = 1,
-                    ylim = c(0, 1.2 * yy),
-                    main = if(pHatInOrOut) {
-                      bquote( atop( If~italic(p) == .(pVec[i])~then~hat(italic(p))~is,
-                                    likely~to~be~observed) ) } else {
-                                      bquote( atop( If~italic(p) == .(pVec[i])~then~hat(italic(p))~is,
-                                                    bold(unlikely)~to~be~observed) )
-                                    },
-                    #ylim = c(0, 7.5),
-                    showXaxis = FALSE)
-  shadeNormal(out$x, 
-              out$y,
-              lo = ciLo,
-              hi = ciHi,
-              col = plot.colour)
-  axis(side = 1,
-       las = 2,
-       at = c(0, 0.25, 0.50, 0.75, 1))
+```{r fig.show="animate", animation.hook="gifski", interval=0.4, loop=FALSE}
+if (knitr::is_html_output()){
 
-  # Mark on p-hat
-  lines( x = c(pHat, pHat),
-         y = c(0, 1.15 * yy ),
-         lwd = 1,
-         lty = 1)
-  text(x = pHat,
-       y = 0.85 * yy,
-       cex = 0.95,
-#       labels = expression(Observed~hat(italic(p))),
-#       labels = expression(Observed*":"~hat(italic(p))==0.44 ),
-       labels = expression(atop(Observed*":",
-                                hat(italic(p))==0.44 ) ),
-       pos = ifelse(i < 3, 4, 2) ) #Swap sides depending on value of p
+par( #mfrow = c(1, 4),
+    mar = c(0.25, 0.3, 1.5, 0.3) )
+
+
+for (i in 1:length(pVec)){
+  pInCI <- ifelse( (pVec[i] > ciLo) & (pVec[i] < ciHi), 
+                   TRUE, 
+                   FALSE )
+  
+  
+  siLo <- pVec[i] - 2 * pStdDev
+  siHi <- pVec[i] + 2 * pStdDev
+  
+
+  ## Canvas
+  plot( x = c(0, 1),
+        y = c(maxY * 2.25, 
+              -maxY * 2.15),
+        type = "n",
+        axes = FALSE,
+        ylab = "",
+        xlab = expression(Values~of~hat(italic(p))))
+  
+  drawCI( CI = c(ciLo, ciHi),
+          pInCI,
+          locateY,
+          pVec[i])
+  
+  drawDistribution(mu = pVec[i], 
+                   sd = 0.1, 
+                   pHat = pHat,
+                   SI = c(siLo, siHi),
+                   maxY,
+                   locateY)
+}
 }
 ```
+
+
+
+```{r pProducingpHat, fig.width=7.5, fig.height=8, out.width='100%', fig.cap="The CI gives an interval containing values of $p$ that may have produced the observed value of $\\hat{p}$", fig.align="center"}
+if (knitr::is_latex_output()){
+
+  par( mfrow = c(2, 2),
+       mar = c(0.25, 0.3, 4.5, 0.3) )
+
+  pVec <- c(0.25, 0.4, 0.60, 0.70 )
+  
+for (i in 1:length(pVec)){
+  pInCI <- ifelse( (pVec[i] > ciLo) & (pVec[i] < ciHi), 
+                   TRUE, 
+                   FALSE )
+  
+  
+  siLo <- pVec[i] - 2 * pStdDev
+  siHi <- pVec[i] + 2 * pStdDev
+  
+
+  ## Canvas
+  par(mar = c(0.3, 0.3, 4.5, 0.3) )
+
+  plot( x = c(0, 1),
+        y = c(maxY * 2.25, 
+              -maxY * 2.15),
+        type = "n",
+        axes = FALSE,
+        ylab = "",
+        xlab = expression(Values~of~hat(italic(p))))
+#box()
+#box("outer", col = "purple")
+#box("inner", col = "green")
+box("figure", col="grey")
+  drawCI( CI = c(ciLo, ciHi),
+          pInCI,
+          locateY,
+          pVec[i])
+  
+  drawDistribution(mu = pVec[i], 
+                   sd = 0.1, 
+                   pHat = pHat,
+                   SI = c(siLo, siHi),
+                   maxY,
+                   locateY)
+}
+}
+```
+
+
+
+
+<!-- ---  -->
+
+<!-- ```{r, pProducingpHat, out.width='100%', fig.width=6, fig.height=2, fig.align="center", fig.cap="Various possible values for $p$, and the corresponding $95$\\% sampling intervals (i.e., the values of $\\hat{p}$ these are likely to produce)."} -->
+<!-- par(mfrow = c(1, 4), -->
+<!--     mar = c(4, 0.3, 4, 0.3) ) -->
+
+<!-- pHat <- 11/25 -->
+
+<!-- n <- 25 -->
+<!-- pVec <- c(0.25, 0.4, 0.6, 0.7) -->
+<!-- pMean <- pVec -->
+<!-- pStdDev <- sqrt( pHat * (1 - pHat) / n) -->
+
+<!-- for (i in 1:4){ -->
+<!--   ciLo <- pVec[i] - 2 * pStdDev -->
+<!--   ciHi <- pVec[i] + 2 * pStdDev -->
+
+<!--   pHatInOrOut <- ifelse( (pHat > ciLo) & (pHat < ciHi), TRUE, FALSE ) -->
+
+<!--   # Pre-calculate y-limits -->
+<!--   xx <- seq(0, 1, length = 1000) -->
+<!--   yy <- max( dnorm(x = xx,  -->
+<!--                    mean = pMean[i], -->
+<!--                    sd = pStdDev) ) -->
+
+
+<!--   out <- plotNormal(pMean[i], -->
+<!--                     pStdDev, -->
+<!--                     xlab = expression( Values~of~hat(italic(p))), -->
+<!--                     xlim.lo = 0, -->
+<!--                     xlim.hi = 1, -->
+<!--                     ylim = c(0, 1.2 * yy), -->
+<!--                     main = if(pHatInOrOut) { -->
+<!--                       bquote( atop( If~italic(p) == .(pVec[i])~then~hat(italic(p))~is, -->
+<!--                                     likely~to~be~observed) ) } else { -->
+<!--                                       bquote( atop( If~italic(p) == .(pVec[i])~then~hat(italic(p))~is, -->
+<!--                                                     bold(unlikely)~to~be~observed) ) -->
+<!--                                     }, -->
+<!--                     #ylim = c(0, 7.5), -->
+<!--                     showXaxis = FALSE) -->
+<!--   shadeNormal(out$x,  -->
+<!--               out$y, -->
+<!--               lo = ciLo, -->
+<!--               hi = ciHi, -->
+<!--               col = plot.colour) -->
+<!--   axis(side = 1, -->
+<!--        las = 2, -->
+<!--        at = c(0, 0.25, 0.50, 0.75, 1)) -->
+
+<!--   # Mark on p-hat -->
+<!--   lines( x = c(pHat, pHat), -->
+<!--          y = c(0, 1.15 * yy ), -->
+<!--          lwd = 1, -->
+<!--          lty = 1) -->
+<!--   text(x = pHat, -->
+<!--        y = 0.85 * yy, -->
+<!--        cex = 0.95, -->
+<!-- #       labels = expression(Observed~hat(italic(p))), -->
+<!-- #       labels = expression(Observed*":"~hat(italic(p))==0.44 ), -->
+<!--        labels = expression(atop(Observed*":", -->
+<!--                                 hat(italic(p))==0.44 ) ), -->
+<!--        pos = ifelse(i < 3, 4, 2) ) #Swap sides depending on value of p -->
+<!-- } -->
+<!-- ``` -->
 
 
 
@@ -756,7 +881,7 @@ for (i in 1:4){
 
 
 In general, we do not know if the computed interval straddles the value of $p$, since the value of $p$ is usually unknown.
-However, in this contrived example, the CI does straddle the known value of $p = 0.5$.
+However, in this contrived example, the CI *does* straddle the known value of $p = 0.5$.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
@@ -780,7 +905,7 @@ Suppose *thousands* of people rolled a die $25$ times, and *each* person found $
 Every sample of $25$ rolls could produce a different estimate $\hat{p}$, and so a different value for $\text{s.e.}(\hat{p})$, and hence a different $95$%\ CI.
 However, *about $95$% of these thousands of confidence intervals from those thousands of samples would straddle the true proportion $p$*.
 
-Since we usually don't know the value of $p$, and we usually only have one sample (and hence one CI), in general *we never know whether any single CI computed from the single sample straddles $p$ or not*.
+Since we usually don't know the value of $p$, and we usually only have one sample (and hence one CI), in general *we never know whether the CI computed from the single sample straddles $p$ or not*.
 
 Again, consider letting the computer simulate the situation.
 Suppose the process of recording the sample proportion of even numbers in $n = 25$ rolls is repeated fifty times, and for each of those fifty sets of 25 rolls a CI is produced
@@ -1014,12 +1139,12 @@ To form *exact* CIs, software would be used.
 \index{Confidence intervals!interpretation}
 
 
-The *correct* interpretation (Def.\ \@ref(def:ConfidenceInterval)) of a $95$%\ CI is the following:
+The *correct* interpretation (see Def.\ \@ref(def:ConfidenceInterval)) of a $95$%\ CI is the following:
 
 > If the same size samples were repeatedly taken many times, and the $95$% confidence interval computed for each sample, $95$% of these confidence intervals formed would contain the population parameter.
 
 In Sect.\ \@ref(ConfIntPUnknownP), the CI was interpreted as giving a range of values of $p$ that could reasonably be expected to produce the observed value of $\hat{p}$.
-The CI can also be seen as having a $95$% chance of straddling the value of the parameter.
+The CI can also be seen as having a $95$% chance of straddling the unknown value of the parameter.
 These are close to the correct interpretation.
 
 Commonly, the CI is interpreted as having a $95$% chance of containing the value of population parameter $p$.
@@ -1033,9 +1158,9 @@ More details on interpreting a CI are given in Sect.\ \@ref(CIInterpretation).
 ## Statistical validity conditions {#ValidityProportions}
 \index{Statistical validity!one proportion}
 
-The histogram in Sect.\ \@ref(SamplingDistributionKnownp) shows the proportion of $n = 25$ rolls that were even for many samples; it has an approximate normal distribution.
-Because of this, the $68$--$95$--$99.7$ rule could be used to determine the multipliers and form the approximate $95$%\ CIs.
-However, certain conditions must be true for the sampling distribution to be approximately normally distributed, or *statistically valid*.
+The confidence intervals formed in this chapter assume the sampling distribution is approximately a normal distribution (and so, for example, the $68$--$95$--$99.7$ rule applies).
+This is true if certain conditions are true.
+This is called *statistically valid*.
 Whenever a confidence interval is formed, the relevant statistical validity conditions need to be  checked.
 
 
@@ -1054,11 +1179,11 @@ A CI is *statistically valid* if the conditions for the underlying mathematical 
 Suppose your doctor asks you to get a blood test, after fasting (refraining from eating) for $12$ hours before your test.
 
 The next day, you have a big breakfast, lunch at a cafe, and then have your blood test.
-Your blood is analysed, and your doctor is emailed the results of the blood test.
+Your blood is analysed, and your doctor is sent the results of the blood test.
 
 Since you did not fast, the results may or may not be valid.
 The doctor can learn *something*... but not as much as if you had followed instructions.
-Similarly, if the conditions for computing the confidence interval are not met, we can still perform the mathematical calculations and obtains values... but the results may be suspect. 
+Similarly, if the conditions for computing the confidence interval are not met, the calculations still produce the CI, but the results may be slightly unreliable. 
 :::
 
 
@@ -1068,33 +1193,31 @@ The *statistical validity conditions* for creating CI for a single proportion ar
 * the number of individuals in the group *not* of interest must exceed\ $5$.
 
 These conditions ensure that the sampling distribution of $\hat{p}$ has an approximate normal distribution, so that the $68$--$95$--$99.7$ rule (approximately) applies.
-If this condition is not met, the normal distribution may not approximate the sampling distribution well, so the $68$--$95$--$99.7$ rule may be inappropriate, and so the CI may also be slightly wrong.
+If this condition is not met, the normal distribution may not approximate the sampling distribution well, so the $68$--$95$--$99.7$ rule may be inappropriate, and so the CI may also be  slightly unreliable.
 
 
 
 
 ::: {.example #DiceStatValidity name="Statistical validity"}
-For the die-throwing example in Sect.\ \@ref(SamplingDistributionUnknownp), $n = 25$ and $\hat{p} = 0.44$.
-This means there were $11$\ even rolls, and $14$\ odd rolls.
-
+For the die-throwing example in Sect.\ \@ref(SamplingDistributionUnknownp), $11$ even rolls and $14$\ odd rolls were observed.
 Both these values exceed $5$, so the CI is statistically valid.
 :::
 
 
 
 :::{.example #StatisticalValidityPHat name="Statistical validity conditions"}
-Consider a situation where $p = 0.1$.
+Consider a situation where $p = 0.1$ is the population proportion of some 'positive result'.
 
-A sample of size $n = 10$ is taken, giving $\hat{p} = 0.1$.
+A sample of size $n = 10$ is taken, with one positive result: $\hat{p} = 0.1$.
 The statistical validity conditions *are not* satisfied: the sampling distribution is not well modelled by a normal distribution (Fig.\ \@ref(fig:StatisticalValidityPHat), left panel).
 Using a normal distribution to model the sampling distribution would be silly.
 
-In contrast, assume a sample of size $n = 100$ is taken, giving $\hat{p} = 0.1$.
+In contrast, assume a sample of size $n = 150$ is taken, with $15$ positive results: $\hat{p} = 0.1$.
 The statistical validity conditions *are* satisfied, and the sampling distribution is well modelled by a normal distribution (Fig.\ \@ref(fig:StatisticalValidityPHat), right panel).
 :::
 
 
-```{r, StatisticalValidityPHat, out.width='95%', fig.align="center", fig.cap="Two proposed sampling distributions. Left: When the statistical validity conditions are not met. Right: when the statistical validity conditions are met.", fig.height=3, fig.width=9}
+```{r, StatisticalValidityPHat, out.width='95%', fig.align="center", fig.cap="Two proposed sampling distributions. Left: when the statistical validity conditions are not met. Right: when the statistical validity conditions are met.", fig.height=3, fig.width=9}
 
 par(mfrow = c(1, 2))
 
@@ -1103,7 +1226,7 @@ par(mfrow = c(1, 2))
 
 
 ### 
-set.seed(91261)
+set.seed(912642)
 numSims <- 2000
 
 # Create sample
@@ -1116,7 +1239,7 @@ sampNotOK <- rbinom(n = numSims,
 # Create sample
 sampOK <- rbinom(n = numSims,
                  prob = 0.1,
-                 size = 100)/100
+                 size = 150)/150
 
 
 
@@ -1124,7 +1247,8 @@ sampOK <- rbinom(n = numSims,
 par(mfrow = c(1, 2))
 
 outH <- hist(sampNotOK,
-             breaks = seq(0, 0.5, by = 0.1),
+             breaks = seq(0, 0.6, by = 0.1),
+             xlim = c(-0.3, 0.5),
              xlab = expression(Values~of~hat(italic(p))~from~many~samples),
              ylab = "",
              main = expression(Statistical~validity~conditions~bold(not)~met),
@@ -1133,6 +1257,17 @@ outH <- hist(sampNotOK,
              axes = FALSE)
 axis(side = 1,
      at = seq(0, 0.5, by = 0.1))
+
+
+x2 <- seq(-0.3, 0.5, 
+         length = 200)
+y2 <- dnorm(x2,
+           mean = 0.1,
+           sd = 0.09486833)
+y2 <- max(outH$counts) * y2 / max(y2)
+lines( y2 ~ x2,
+       col = "grey",
+       lwd = 1)
 
 x <- seq(0, 0.5, 
          length = 200)
@@ -1147,7 +1282,7 @@ lines( y ~ x,
 ######
 
 outH <- hist(sampOK,
-             breaks = seq(0, 0.25, by = 0.025),
+             breaks = seq(0, 0.25, by = 0.020),
              xlab = expression(Values~of~hat(italic(p))~from~many~samples),
              ylab = "",
              main = expression(Statistical~validity~conditions~bold(are)~met),
@@ -1178,11 +1313,11 @@ lines( y ~ x,
 </div>
 
 
-A study of $360$ female college students in the United States [@data:Kelpin2018:AlcoholCoffee] found that $61$ drank coffee daily. 
+@data:Kelpin2018:AlcoholCoffee studied $360$ female college students in the United States, and found that $61$ drank coffee daily. 
 The unknown parameter is $p$, the *population* proportion of female college students in the United States that drink coffee daily.
 
 The sample size is $n = 360$, and the *sample* proportion of daily coffee drinkers is $\hat{p} = 61/360 = 0.16944$. 
-The sample proportion has *sampling variation*, measured by the *standard error*:  
+Of course, the sample proportion varies from sample to sample, so the sample proportion has *sampling variation*, measured by the *standard error*:  
 \[
   \text{s.e.}(\hat{p})
                = \sqrt{ \frac{ 0.16944 \times (1 - 0.16944)}{360}}
@@ -1196,7 +1331,7 @@ We write:
 
 That is, the plausible values for $p$ that may have led to this value of $\hat{p} = 0.1694$ are between $0.130$ and $0.209$.
 (This CI may or may not contain the true proportion $p$.)
-This CI is *statistically* valid.
+This CI is *statistically* valid, since $61$ in the sample drink coffee, and $299$ do not (and both exceed five).
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -1241,7 +1376,7 @@ ci.hi.Smoker <- p.Smoker + 2 * se.Smoker
 ## Quick review questions {#Chap20-QuickReview}
 
 ::: {.webex-check .webex-box}
-1. True or false: $p$ is called a *parameter*. \tightlist  
+1. True or false: $p$ is a *parameter*. \tightlist  
 `r if( knitr::is_html_output() ) {torf(answer = TRUE )}`
 1. True or false: The value of $p$ will vary from sample to sample.  
 `r if( knitr::is_html_output() ) {torf(answer = FALSE )}`
@@ -1262,7 +1397,7 @@ Answers to odd-numbered exercises are available in App.\ \@ref(Answers).
 
 
 ::: {.exercise #CIOneProportionHiccups}
-A study of hiccups [@data:Lee2016:Hiccups] found that, of $864$ patients examined (across different studies) who had hiccups, $708$ were male.
+@data:Lee2016:Hiccups found that, of $864$ patients examined with hiccups, $708$ were male.
 
 1. Compute the sample proportion of people with hiccups who are male.
 1. Find an approximate $95$%\ CI for the proportion of people with hiccups who are male.
@@ -1273,10 +1408,10 @@ A study of hiccups [@data:Lee2016:Hiccups] found that, of $864$ patients examine
 
 
 ::: {.exercise #CIParamedic}
-A study of how paramedics administer pain medication [@lord2009impact] found that $791$ of patients reporting pain did *not* receive pain relief, out of $1766$ patients in the study  who reported pain.
+@lord2009impact studied how paramedics administer pain medication, and found that $791$ of patients reporting pain did *not* receive pain relief, out of $1\,766$ patients in the study who reported pain.
 
-1. Compute the sample proportion of patient who received pain medication.
-1. Find an approximate $95$%\ CI for the proportion of patients who receive pain medication.
+1. Compute the sample proportion of patient who did not received pain medication.
+1. Find an approximate $95$%\ CI for the proportion of patients who did not receive pain medication.
 1. Check if the statistical validity conditions are met or not.
 1. Draw a sketch of how the sample proportion varies for samples of size $1766$.
 :::
@@ -1284,9 +1419,12 @@ A study of how paramedics administer pain medication [@lord2009impact] found tha
 
 
 ::: {.exercise #CIOneProportionSnacking}
-A study of the eating habits of university students in Canada [@data:Mann12017:UniStudents] found that $8$ students out of $154$ met the recommendation for eating a sufficient number of servings of grains each day.
+@data:Mann12017:UniStudents studied the eating habits of university students in Canada.
+They found that $8$ students out of $154$ met the recommendation for eating a sufficient number of servings of grains each day.
 
 1. Find an approximate $95$%\ CI for the population proportion of Canadian students that meet the recommendation for eating a sufficient number of servings of grains each day.
+1. Check if the statistical validity conditions are met or not.
+1. Draw a sketch of how the sample proportion varies for samples of size $51$.
 1. Would these results be likely to apply to US university students?
    Explain.
 :::
@@ -1294,7 +1432,7 @@ A study of the eating habits of university students in Canada [@data:Mann12017:U
 
 
 ::: {.exercise #KoalasCrossingRoads}
-A study of koalas [@data:Dexter2018:Koalas] found that $18$ of the $n = 51$ koalas studied in a certain area over $30$ months had crossed at least one road during that time.
+@data:Dexter2018:Koalas found that $18$ of the $n = 51$ koalas studied in a certain area over $30$ months had crossed at least one road during that time.
 The unknown parameter is $p$, the *population* proportion of koalas that had crossed at least one road over the $30$ months.
 
 1. Find an approximate $95$%\ CI for the proportion of koalas that had crossed the road at least once.
@@ -1305,7 +1443,7 @@ The unknown parameter is $p$, the *population* proportion of koalas that had cro
 
 
 ::: {.exercise #CIOneProportionSaltIntake}
-A study of salt intake in the United Kingdom [@data:Sutherland:SaltIntake] found that $2\ 182$ out of the $6\ 882$ people sampled in 2007 'generally added salt at the table'.
+@data:Sutherland:SaltIntake studied salt intake in the United Kingdom, and found that $2\,182$ out of the $6\,882$ people sampled in 2007 'generally added salt at the table'.
 Find an approximate $95$%\ CI for the population proportion of Britons that generally add salt at the table.
 :::
 
@@ -1322,8 +1460,8 @@ Are the statistical validity conditions satisfied?
 
 
 ::: {.exercise #CanadianEnergyDrinks}
-A study of young Canadians aged $12$--$24$ [@data:Hammond2018:Drinks] found $365$ of the $1516$ respondents reported sleeping difficulties after consuming energy drinks.
-Find a $95$%\ CI for the true proportion of turbines that would develop fissures after $3\ 000$ hours of use.
+@data:Hammond2018:Drinks studied young Canadians aged $12$--$24$, and found $365$ of the $1\,516$ respondents reported sleeping difficulties after consuming energy drinks.
+Find a $95$%\ CI for the true proportion of young Canadians who experience sleeping difficulties after consuming energy drinks.
 Are the statistical validity conditions satisfied?
 :::
 
