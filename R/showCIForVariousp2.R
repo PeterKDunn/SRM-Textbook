@@ -145,19 +145,19 @@ drawDistribution <- function(mu,
          lwd = 2)
   
   text(x = pHat,
-       y = -1,
+       y = -1.5,
        expression(hat(italic(p))),
        pos = 1)
   arrows(x0 = pHat,
          x1 = pHat,
-         y0 = -1,
+         y0 = -1.5,
          y1 = 0,
          lwd = 2,
          col = ifelse(pInCI,
                       "black",
                       "grey"),
          angle = 15,
-         length = 0.15)
+         length = 0.13)
   points(x = pHat,
          y = 0,
          pch = 19)
