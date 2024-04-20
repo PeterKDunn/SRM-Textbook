@@ -36,34 +36,18 @@ The data are shown
 `
 
 
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-What are P, O, C and I in this study?\label{thinkBox:PhonepOCI}
-
-`r if (knitr::is_latex_output()) '<!--'`
-`r webexercises::hide()`
-**P**: Students (this is defined more specifically in the original study). 
-
-**O**: Mean reaction time. 
-
-**C**: Between two groups: those using and not sing a mobile phone while driving. 
-
-**I**: Yes; the use of a phone (or not) was decided by the researchers.
-`r webexercises::unhide()`
-`r if (knitr::is_latex_output()) '-->'`
-:::
-
-
 
 ```{r PhoneDataTable}
 data(ReactionTime)
 
 if( knitr::is_latex_output() ) {
-  tb1 <- cbind( ReactionTime$Reaction[ReactionTime$Group == "Phone"][1:6],
-                ReactionTime$Reaction[ReactionTime$Group == "Phone"][7:12],
-                ReactionTime$Reaction[ReactionTime$Group == "Phone"][13:18],
-                ReactionTime$Reaction[ReactionTime$Group == "Phone"][19:24],
-                ReactionTime$Reaction[ReactionTime$Group == "Phone"][25:30],
-                c(ReactionTime$Reaction[ReactionTime$Group == "Phone"][31:32], NA, NA, NA, NA) )
+  tb1 <- cbind( ReactionTime$Reaction[ReactionTime$Group == "Phone"][1:5],
+                ReactionTime$Reaction[ReactionTime$Group == "Phone"][6:10],
+                ReactionTime$Reaction[ReactionTime$Group == "Phone"][11:15],
+                ReactionTime$Reaction[ReactionTime$Group == "Phone"][16:20],
+                ReactionTime$Reaction[ReactionTime$Group == "Phone"][21:25],
+                ReactionTime$Reaction[ReactionTime$Group == "Phone"][26:30],
+                c(ReactionTime$Reaction[ReactionTime$Group == "Phone"][31:32], NA, NA, NA) )
   
   T1 <- knitr::kable( pad(tb1,
                           surroundMaths = TRUE,
@@ -80,15 +64,16 @@ if( knitr::is_latex_output() ) {
                       escape = FALSE,
                       booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Using phone" = 6),
+    add_header_above( c("Using phone" = 7),
                       bold = TRUE)
 
-  tb2 <- cbind( ReactionTime$Reaction[ReactionTime$Group == "Control"][1:6],
-                ReactionTime$Reaction[ReactionTime$Group == "Control"][7:12], 
-                ReactionTime$Reaction[ReactionTime$Group == "Control"][13:18], 
-                ReactionTime$Reaction[ReactionTime$Group == "Control"][19:24], 
-                ReactionTime$Reaction[ReactionTime$Group == "Control"][25:30], 
-                c(ReactionTime$Reaction[ReactionTime$Group == "Control"][31:32], NA, NA, NA, NA))
+  tb2 <- cbind( ReactionTime$Reaction[ReactionTime$Group == "Control"][1:5],
+                ReactionTime$Reaction[ReactionTime$Group == "Control"][6:10], 
+                ReactionTime$Reaction[ReactionTime$Group == "Control"][11:15], 
+                ReactionTime$Reaction[ReactionTime$Group == "Control"][16:20], 
+                ReactionTime$Reaction[ReactionTime$Group == "Control"][21:25], 
+                ReactionTime$Reaction[ReactionTime$Group == "Control"][26:30], 
+                c(ReactionTime$Reaction[ReactionTime$Group == "Control"][31:32], NA, NA, NA))
   T2 <- knitr::kable( pad(tb2,
                           surroundMaths = TRUE,
                           targetLength = rep(3, 7),
@@ -104,7 +89,7 @@ if( knitr::is_latex_output() ) {
                       escape = FALSE,
                       booktabs = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Not using phone" = 6),
+    add_header_above( c("Not using phone" = 7),
                       bold = TRUE)
   
   out <- knitr::kables(list(T1, T2),
@@ -166,7 +151,7 @@ For the reaction-time data, we use the subscript $P$ for the **p**hone-users gro
 Using this notation, the difference between population means (the parameter) is $\mu_P - \mu_C$.
 Since the population mean are unknown, this parameter is estimated using the statistic $\bar{x}_P - \bar{x}_C$.
 The differences could be computed in the opposite direction ($\bar{x}_C - \bar{x}_P$).
-However, computing differences as the reaction time for phone users, *minus*  the reaction time for non-phone users (controls) probably makes more sense: the differences then refer to how much greater (i.e., slower) the reaction times are, on average, when students are using phones.
+However, computing differences as the reaction time for phone users, *minus*  the reaction time for non-phone users (controls) probably makes more sense: the differences then refer to the increase in the average reaction times when students are using phones.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
@@ -259,18 +244,21 @@ if( knitr::is_html_output() ) {
 ```
 
 
-Table\ \@ref(tab:IndSampleNotation) does not include a standard deviation or a sample size for the *difference between means*; these make no sense in this context.
-For example, Group $P$ has $32$ individuals, and Group $C$ has $32$ individuals, and we wish to study the difference $\mu_P - \mu_C$.
-The sample size is not $32 - 32 = 0$; there are just two samples of given sizes.
+Table\ \@ref(tab:IndSampleNotation) does not include a standard deviation or a sample size for the *difference between means*.
+These make no sense in this context: there is no set of data for which a standard deviation or sample size can be found.
+For example, Group $P$ has $32$ individuals, and Group $C$ has $32$ individuals, but the sample size for the *difference* is not $32 - 32 = 0$; there are just two samples of given sizes.
 However, the *standard error* of the difference between the means does make sense, as the value of  $\bar{x}_P - \bar{x}_C$ varies across all possible samples.
 
 
 ## Summarising data {#SummarisingTwomeansCI}
 
-A suitable graphical summary of the data is a boxplot (Fig.\ \@ref(fig:PhonePlots)), which shows that the *sample* medians are slightly different, and the IQRs slightly smaller for the phone-using group; one large outlier is present for the phone-using group. 
+A suitable graphical summary of the data is a boxplot (Fig.\ \@ref(fig:PhonePlots), left panel), which shows that the *sample* medians are slightly different, and the IQRs slightly smaller, for the phone-using group.
+One large outlier is present for the phone-using group. 
 
 
-```{r PhonePlots, fig.width=4.5, fig.height=3.5, out.width='45%', fig.alt="Boxplot of the two groups in the reaction-time data", fig.align="center", fig.cap="A boxplot of the reaction-time data"}
+```{r PhonePlots, fig.width=9, fig.height=3.5, out.width='95%', fig.align="center", fig.cap="Left: boxplot of the two groups in the reaction-time data. Right: error bar chart comparing the mean reaction time for students not using a mobile phone (control), and using a mobile phone. The vertical scale is different for the two graphs."}
+par(mfrow = c(1, 2))
+
 boxplot(ReactionTime$Reaction ~ ReactionTime$Group,
         col = plot.colour,
         las = 1,
@@ -278,11 +266,51 @@ boxplot(ReactionTime$Reaction ~ ReactionTime$Group,
         main = "Reaction times: when using and\nnot using a phone",
         ylab = "Reaction time (in ms)",
         xlab = "Group")
+
+
+##
+
+ci.lo <- Phone.DataSummary[, 1] - 2 * Phone.DataSummary[, 4] 
+ci.hi <- Phone.DataSummary[, 1] + 2 * Phone.DataSummary[, 4] 
+
+plot( range( c( ci.lo, ci.hi) ) ~ c(0.9, 2.1), 
+      data = ReactionTime,
+      type = "n",
+      xlim = c(0.5, 2.5),
+      ylim = c(500, 650),
+      pch = 19,
+      axes = FALSE,
+      main = "Error bars chart:\n reaction times",
+      xlab = "Group", 
+      ylab = "Reaction times (in ms)",
+      sub = "(Error bars are 95% confidence intervals)",
+      las = 1)
+axis(side = 1, 
+     at = 1:2, 
+     labels = levels(factor(ReactionTime$Group)), 
+     las = 1) 
+axis(side = 2, 
+     las = 1)
+box()
+
+mns <- Phone.DataSummary[1:2, 1]
+
+points( mns ~ c(1:2), 
+        pch = 19)
+
+arrows(x0 = 1:2, 
+       y0 = ci.lo[1:2], 
+       x1 = 1:2, 
+       y1 = ci.hi[1:2], 
+  length = 0.05, 
+  angle = 90, 
+  code = 3)
 ```
 
 
-The numerical summary of the data should summarise both groups, and the *differences between the means* (since the RQ is about this difference).
-The information can be found using jamovi (Fig.\ \@ref(fig:ReactionPhoneSummaryjamovi)), then compiled into a table (Table\ \@ref(tab:PhoneNumerical)).
+The numerical summary of the data should summarise both groups (i.e., the first two rows of Table\ \@ref(tab:PhoneNumerical))
+The *differences between the means* is crucial (i.e., the third row), since the RQ is about this difference.
+The information can be found using jamovi (Fig.\ \@ref(fig:ReactionPhoneSummaryjamovi)).
 
 
 ```{r ReactionPhoneSummaryjamovi, fig.cap="jamovi output for the phone reaction time data", fig.align="center", out.width='100%'}
@@ -396,77 +424,51 @@ kable(pad(Phone.DataSummary2,
 
 
 
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-For those *using* a phone, what is the difference in meaning between the *standard deviation* and the *standard error* in this context?\label{thinkBox:SEsd}
-
-`r if (knitr::is_latex_output()) '<!--'`
-`r webexercises::hide()`
-The *standard deviation* quantifies how much the individual reactions times vary from *person to person*.
-
-The *standard error* quantifies how much the *difference between sample mean reaction times* varies from *sample to sample*.
-`r webexercises::unhide()`
-`r if (knitr::is_latex_output()) '-->'`
-:::
-
-
 ## Error bar charts {#ErrorBarCharts}
 \index{Graphs!error bar charts}\index{Error bar charts}
 
-A useful way to compare the means of two (or more) groups is to display the individual CIs in an *error bar chart*.
+A useful way to compare the means of two (or more) groups is to display the CIs for the means of both groups in an *error bar chart*.
 Error bars charts display the expected variation *in the sample means* from sample to sample, while boxplots display the variation *in the individual observations*.
-For the reaction time data, the error bar chart (Fig.\ \@ref(fig:PhoneErrorbar)) shows the $95$%\ CI for each group; the mean has been added as a dot.
+For the reaction time data, the error bar chart (Fig.\ \@ref(fig:PhonePlots), right panel) shows the $95$%\ CI for each group; the mean has been added as a dot.
 
 
-```{r PhoneErrorbar, fig.cap="Error bar chart comparing the mean reaction time for students using a mobile phone and not using a mobile phone (control)", fig.align="center", fig.width=4.5, fig.height=3.25, out.width='50%'}
-ci.lo <- Phone.DataSummary[, 1] - 2 * Phone.DataSummary[, 4] 
-ci.hi <- Phone.DataSummary[, 1] + 2 * Phone.DataSummary[, 4] 
+<!-- ```{r PhoneErrorbar, fig.cap="Error bar chart comparing the mean reaction time for students not using a mobile phone (control), and using a mobile phone ", fig.align="center", fig.width=4.5, fig.height=3.25, out.width='50%'} -->
+<!-- ci.lo <- Phone.DataSummary[, 1] - 2 * Phone.DataSummary[, 4]  -->
+<!-- ci.hi <- Phone.DataSummary[, 1] + 2 * Phone.DataSummary[, 4]  -->
 
-plot( range( c( ci.lo, ci.hi) ) ~ c(0.9, 2.1), 
-      data = ReactionTime,
-      type = "n",
-      xlim = c(0.5, 2.5),
-      ylim = c(500, 650),
-      pch = 19,
-      axes = FALSE,
-      main = "Error bars chart:\n reaction times",
-      xlab = "Group", 
-      ylab = "Reaction times (in ms)",
-      sub = "(Error bars are 95% confidence intervals)",
-      las = 1)
-axis(side = 1, 
-     at = 1:2, 
-     labels = levels(factor(ReactionTime$Group)), 
-     las = 1) 
-axis(side = 2, 
-     las = 1)
-box()
+<!-- plot( range( c( ci.lo, ci.hi) ) ~ c(0.9, 2.1),  -->
+<!--       data = ReactionTime, -->
+<!--       type = "n", -->
+<!--       xlim = c(0.5, 2.5), -->
+<!--       ylim = c(500, 650), -->
+<!--       pch = 19, -->
+<!--       axes = FALSE, -->
+<!--       main = "Error bars chart:\n reaction times", -->
+<!--       xlab = "Group",  -->
+<!--       ylab = "Reaction times (in ms)", -->
+<!--       sub = "(Error bars are 95% confidence intervals)", -->
+<!--       las = 1) -->
+<!-- axis(side = 1,  -->
+<!--      at = 1:2,  -->
+<!--      labels = levels(factor(ReactionTime$Group)),  -->
+<!--      las = 1)  -->
+<!-- axis(side = 2,  -->
+<!--      las = 1) -->
+<!-- box() -->
 
-mns <- Phone.DataSummary[1:2, 1]
+<!-- mns <- Phone.DataSummary[1:2, 1] -->
 
-points( mns ~ c(1:2), 
-        pch = 19)
+<!-- points( mns ~ c(1:2),  -->
+<!--         pch = 19) -->
 
-arrows(x0 = 1:2, 
-       y0 = ci.lo[1:2], 
-       x1 = 1:2, 
-       y1 = ci.hi[1:2], 
-  length = 0.05, 
-  angle = 90, 
-  code = 3)
-```    
-
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-What is different about the information displayed in the error bar chart (Fig.\ \@ref(fig:PhonePlots)) and the boxplot (Fig.\ \@ref(fig:PhoneErrorbar))?\label{thinkBox:DiffErrorbarBoxplot}
-
-`r if (knitr::is_latex_output()) '<!--'`
-`r webexercises::hide()`
-The *error bar chart* helps us understand how precisely the sample mean estimates the population mean.
-
-The *boxplot* shows the variation in the individual *data* values.
-`r webexercises::unhide()`
-`r if (knitr::is_latex_output()) '-->'`
-:::
+<!-- arrows(x0 = 1:2,  -->
+<!--        y0 = ci.lo[1:2],  -->
+<!--        x1 = 1:2,  -->
+<!--        y1 = ci.hi[1:2],  -->
+<!--   length = 0.05,  -->
+<!--   angle = 90,  -->
+<!--   code = 3) -->
+<!-- ```     -->
 
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
@@ -477,11 +479,11 @@ The *boxplot* shows the variation in the individual *data* values.
 ::: {.example #ErrorBarCharts2 name="Error bar charts"}
 A study [@data:ForestBiomass2017] examined  the foliage biomass of small-leaved lime trees from three sources: coppices; natural; planted.
 
-Three graphical summaries are shown in Fig.\ \@ref(fig:LimeTreesBoxErrorbar): a boxplot (showing the variation in *individual* trees; left), an error bar chart (showing the variation in the *sample means*; centre) on the same vertical scale as the boxplot, and the same error bar chart using a better scale for the error-bar plot  (right).
+Three graphical summaries are shown in Fig.\ \@ref(fig:LimeTreesBoxErrorbar): a boxplot (showing the variation in *individual* trees; left), an error bar chart (showing the variation in the *sample means*; centre) on the same vertical scale as the boxplot, and the same error bar chart using a more appropriate scale for the error-bar plot  (right).
 :::
 
 
-```{r LimeTreesBoxErrorbar, fig.cap="Boxplot (left) and error bar charts (centre. Right) comparing the mean foliage biomass for small-leaved lime trees from three sources (C: Coppice; N: Natural; P: Planted). The centre panel shows an error-bar chart using the same vertical scale as the boxplot. The right error-bar chart uses a better scale on the vertical axis. The solid dots in the boxplot show the mean of the distributions", fig.align="center", fig.width=7, fig.height=3.0, out.width='100%'}
+```{r LimeTreesBoxErrorbar, fig.cap="Boxplot (left) and error bar charts (centre. Right) comparing the mean foliage biomass for small-leaved lime trees from three sources (C: Coppice; N: Natural; P: Planted). The centre panel shows an error-bar chart using the same vertical scale as the boxplot. The right error-bar chart uses a more appropriate scale on the vertical axis. The solid dots in the boxplot show the mean of the distributions", fig.align="center", fig.width=7, fig.height=3.0, out.width='100%'}
 par( mfrow = c(1, 3))
 
 data(Lime)
@@ -581,17 +583,17 @@ arrows(1:3, mns - 2 * ses,
 ## Sampling distribution for $\bar{x}_1 - \bar{x}_2$ {#SamplingDistDiffMeansCI}
 \index{Sampling distribution!comparing two means}
 
-Each sample of students will comprise different students, and will give different reaction times while driving. 
+Each sample of students will comprise different students, giving different reaction times. 
 The sample means for each group will differ from sample to sample, and the *difference* between the sample means will be different for each sample.
 The *difference* between the sample means varies from sample to sample, and so has a sampling distribution and *standard error*.
 
 
 ::: {.definition #DEFSamplingDistributionDiffMeans name="Sampling distribution for the difference between two sample means"}
-The *sampling distribution of the difference between two sample means* $\bar{x}_A$ and $\bar{x}_B$ is, when the appropriate conditions are met (Sect.\ \@ref(ValidityTwoMeans)), described by:
+The *sampling distribution of the difference between two sample means* $\bar{x}_A$ and $\bar{x}_B$ is (when the appropriate conditions are met; Sect.\ \@ref(ValidityTwoMeans)) described by:
 
 * an approximate normal distribution,
 * centred around a sampling mean whose value is ${\mu_{A}} - {\mu_{B}}$, the difference between the *population* means,
-* with a standard deviation of $\displaystyle\text{s.e.}(\bar{x}_A - \bar{x}_B)$.
+* with a standard deviation, called the standard error of the difference between the means, of $\displaystyle\text{s.e.}(\bar{x}_A - \bar{x}_B)$.
 
 The standard error for the difference between the means is found using  
 \[
@@ -635,7 +637,7 @@ When the statistic is $\bar{x}_P - \bar{x}_C$, the approximate $95$%\ CI is
 \[
 	(\bar{x}_P - \bar{x}_C) \pm (2 \times \text{s.e.}(\bar{x}_P - \bar{x}_C)).
 \]
-So, in this case, the *approximate* $95$%\ CI is  
+So, in this case, the approximate $95$%\ CI is  
 \[
 	`r round(RT.mn,  3)` \pm (2 \times `r round(RT.se, 3)`),
 \]
@@ -652,8 +654,6 @@ The plausible values for the difference between the two population means are bet
 Giving the CI alone is insufficient; the *direction* in which the differences were calculated must be given, so readers know which group had the higher mean.
 :::
 
-
-## Using software
 
 Output from jamovi (and other software) shows *two* CIs (Fig.\ \@ref(fig:ReactionPhoneSummaryjamovi)).
 *We will use the results from the second row*, as this row of output is more general, and makes fewer assumptions.
@@ -695,7 +695,7 @@ The CI computed above is statistically valid if *one* of these conditions is tru
 1. *Both* sample sizes are at least $25$; *or*
 1. If one or both sample sizes are $25$ or smaller, *and* the *populations* corresponding to both comparison groups have an approximate normal distribution.
      
-The sample size of $25$ is a rough figure; some books give other (similar) values (such as $30$).
+The sample size of $25$ is a rough figure; some books give other values (such as $30$).
 The histograms of the *samples* could be used to determine if normality of the *populations* seems reasonable.
 
 
@@ -716,7 +716,7 @@ For the reaction-time data, both samples are larger than $25$, so the CI is stat
 </div>
 
 
-To reduce vehicle speeds on freeway exit ramps, a Chinese study studied adding additional signage [@ma2019impacts].
+To reduce vehicle speeds on freeway exit ramps, @ma2019impacts studied adding additional signage.
 At one site (Ningxuan Freeway), speeds were recorded for $38$ vehicles *before* the extra signage was added, and then for $41$ different vehicles *after* the extra signage was added.
 
 The researchers are hoping that the addition of extra signage will *reduce* the mean speed of the vehicles.
@@ -725,9 +725,8 @@ The RQ is:
 > At this freeway exit, how much is the mean vehicle speed *reduced* after extra signage is added?
 
 The data are *not* paired: different vehicles are measured before ($B$) and after ($A$) the extra signage is added.
-The data can be summarised using the jamovi output (Fig.\ \@ref(fig:SpeedjamoviCI2)).
-Define $\mu$ at the mean speed (in km.h^-1^) on the exit ramp.
-Then, the parameter is $\mu_B - \mu_A$, the *reduction* in the mean speed.
+The data can be summarised (Table\ \@ref(tab:SignageSummary)) using the jamovi output (Fig.\ \@ref(fig:SpeedjamoviCI2)).
+Define $\mu$ at the mean speed (in km.h^-1^) on the exit ramp, and the parameter as $\mu_B - \mu_A$, the *reduction* in the mean speed.
 
 
 ```{r SpeedjamoviCI2, fig.cap="jamovi output for the speed data", fig.align="center", out.width="100%"}
@@ -735,10 +734,111 @@ knitr::include_graphics("jamovi/Speed/Speed-ALL.png")
 ```
 
 
+```{r SignageSummary}
+data(Speed)
+
+Speed$When <- factor(Speed$When,
+                     levels = c("Before", "After"),
+                     ordered = TRUE)
+
+Speed2 <- data.frame( Before = Speed$Speed[ Speed$When == "Before" ][1:10],
+                      After = Speed$Speed[ Speed$When == "After" ][1:10])
+
+
+SignageSummary <- array(dim = c(3, 5))
+rownames(SignageSummary) <- c("Before",
+                              "After",
+                              "Speed reduction")
+colnames(SignageSummary) <- c("Mean",
+                              "Median",
+                              "Std deviation",
+                              "Standard error",
+                              "Sample size")
+
+Speed.n <- tapply(Speed$Speed,
+                  list(Speed$When),
+                  "length")
+Speed.sd <- tapply(Speed$Speed,
+                   list(Speed$When),
+                   "sd")
+
+SignageSummary[1:2, 1] <- round( tapply(Speed$Speed,
+                                        list(Speed$When),
+                                        "mean"),
+                                 2)
+SignageSummary[1:2, 2] <- tapply(Speed$Speed,
+                                 list(Speed$When),
+                                 "median")
+
+SignageSummary[1:2, 3] <- round( Speed.sd, 2)
+SignageSummary[1:2, 4] <- tapply(Speed$Speed,
+                                 list(Speed$When),
+                                 "findStdError")
+SignageSummary[1:2,5] <- Speed.n
+
+SignageSummary[3, 1] <- SignageSummary[1, 1] -
+  SignageSummary[2, 1]
+
+sdB <- round( Speed.sd[1], 2)
+sdA <- round( Speed.sd[2], 2)
+
+SignageSummary[3, 4] <- NA
+SignageSummary[3, 2] <- NA
+
+
+
+if( knitr::is_latex_output() ) {
+  kable(pad(SignageSummary,
+            surroundMaths = TRUE,
+            targetLength = c(5, 4, 5, 4, 2),
+            digits = c(2, 1, 2, 1, 0)),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        align = "c",
+        col.names = c("Mean",
+                      "Median",
+                      "Std deviation",
+                      "Std error",
+                      "Sample size"),
+        caption = "The signage data summary (in km/h)"
+  ) %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, italic = TRUE) %>%
+    kable_styling(font_size = 8)
+}
+if( knitr::is_html_output() ) {
+  kable(pad(SignageSummary,
+            surroundMaths = TRUE,
+            targetLength = c(5, 4, 5, 4, 2),
+            digits = c(2, 1, 2, 1, 0)),
+        format = "html",
+        longtable = FALSE,
+        booktabs = TRUE,
+        align = "c",
+        col.names = c("Mean",
+                      "Median",
+                      "Std deviation",
+                      "Std error",
+                      "Sample size"),
+        caption = "The signage data summary (in km/h)") %>%
+    kable_styling(full_width = FALSE)
+}
+```
+
+The standard error of the difference is  
+\[
+  \text{s.e.}(\bar{x}_A - \bar{x}_B)
+  = \sqrt{ \text{s.e.}(\bar{x}_A)^2 + \text{s.e.}(\bar{x}_B)^2 }
+  = \sqrt{ 2.05124^2 + 2.14031^2 } = 2.96454,
+\]
+and in the second row of the first table in Fig.\ \@ref(fig:SpeedjamoviCI2). 
+
 A useful graphical summary of the *data* is a boxplot (Fig.\ \@ref(fig:SignageErrorBar), left panel);  likewise, an error bar chart can be produced to compare the means (Fig.\ \@ref(fig:SignageErrorBar), right panel).
 
 
-```{r SignageErrorBar, fig.cap="Boxplot (left); error bar chart (right) showing the mean speed before and after the addition of extra signage, and the $95$\\%\ CIs. The vertical scales on the two graphs are different.", fig.align="center", out.width='70%',fig.width=6.0, fig.height=3.25}
+```{r SignageErrorBar, fig.cap="Boxplot (left) and error bar chart (right) showing the mean speed before and after the addition of extra signage, and the $95$\\%\ CIs. The vertical scales on the two graphs are different.", fig.align="center", out.width='90%',fig.width=8.0, fig.height=3.25}
 data(Speed)
 
 SignageSummary <- array(dim = c(3, 5))
@@ -811,7 +911,7 @@ plot( 1:2,
       axes = FALSE,
       xlab = "",
       ylab = "Vehicle speed (km/h)",
-      main = "Mean speed before, after\nextra signage added",
+      main = "Mean speed before and after\nextra signage added",
       sub = "(Error bars are the 95%\ CI)",
       type = "p")
 axis(side = 1, 
@@ -844,12 +944,16 @@ lines( c(2 - bit, 2 + bit),
 Based on the sample, an approximate $95$%\ CI for the *difference* in mean speeds is $5.68 \pm (2 \times 2.964)$, or from $-0.24$ to $11.6$\ km.h^-1^, higher before the addition of extra signage.
 (The negative value refers to a *negative* reduction; that is, an *increase* in speed of $0.24$\ km.h^-1^.) 
 
-This means that, if many samples of size $38$ and $41$ were found, and the difference between the mean speeds were found, about $95$% of the CIs would contain the population difference ($\mu_A - \mu_A$).
+From Fig.\ \@ref(fig:SpeedjamoviCI2), an exact $95$% CI is from $-11.6$ to $0.23$\ km.h^-1^, *lower* before the addition of extra signage (since the *After* information is given first in the second table of Fig.\ \@ref(fig:SpeedjamoviCI2)).
+This is equivalent to an exact $95$% CI from $-0.23$ to $11.6$\ km.h^-1^, *higher* before the addition of extra signage.
+The exact and approximate $95$% CIs are almost exactly the same.
+
+The CI means that, if many samples of size $38$ and $41$ were found, and the difference between the mean speeds were found, about $95$% of the CIs would contain the population difference ($\mu_A - \mu_A$).
 Loosely speaking, there is a $95$% chance that our CI straddles the difference in the population means ($\mu_B - \mu_A$).
 
 We could write:
 
-> The reduction in the mean speed after adding signage is $5.68$\ km.h^-1^ (before mean: $98.02$; s.e.: $2.140$; $n = 38$; after mean: $92.34$; s.e.: $2.051$; $n = 41$), with an approximate $95$%\ CI between $-0.24$\ km.h^-1^ (i.e., an increase of $0.24$\ km.h^-1^) and $11.6$\ km.h^-1^ (two independent samples).
+> The reduction in the mean speed after adding signage is $5.68$\ km.h^-1^ (before mean: $98.02$; s.e.: $2.140$; $n = 38$; after mean: $92.34$; s.e.: $2.051$; $n = 41$), with a $95$%\ CI between $-0.24$\ km.h^-1^ (i.e., an increase of $0.23$\ km.h^-1^) and $11.6$\ km.h^-1^ (two independent samples).
 
 Using the validity conditions, the CI is statistically valid.
 
@@ -857,25 +961,25 @@ Using the validity conditions, the CI is statistically valid.
 Remember: clearly state *which* mean is larger.
 :::
 
-
-
 ## Example: chamomile tea {#ChamomileTea-TwoMeans-CI}
 
 (This study was seen in Sect.\ \@ref(ChamomileTea-Paired-CI).)
-A study of patients with Type\ 2 diabetes mellitus (T2DM) randomly allocated $32$ patients into a control group (who drank hot water), and $32$ to receive chamomile tea (@rafraf2015effectiveness).
+@rafraf2015effectiveness studied patients with Type\ 2 diabetes mellitus (T2DM).
+They randomly allocated $32$ patients into a control group (who drank hot water), and $32$ to receive chamomile tea (@rafraf2015effectiveness).
 
-The total glucose (TG) was measured for each individual, in both groups, both before the intervention and after eight weeks on the intervention.
+The total glucose (TG) was measured for each individual, in both groups, before the intervention and after eight weeks on the intervention.
 The data are not available, so a graphical summary of the data cannot be produced.
 However, a data summary is given in the article (motivating Table\ \@ref(tab:TGsummaryTable)).
 
 The following relational RQ can be asked:
 
-> For patients with T2DM, what is the mean difference between the average reductions in TG, comparing those drinking chamomile tea and those who drink hot water?
+> For patients with T2DM, what is the mean difference between the average *reductions* in TG, comparing those drinking chamomile tea and those who drink hot water?
 
 Here, two separate groups are being compared:
 the tea-drinking group ($T$), and the control water-drinking group ($W$).
-Defining $\mu$ as the mean reduction in TG, we will define the *differences* between the TG reductions in the two groups as $\mu_T - \mu_W$.
+Defining $\mu$ as the mean reduction in TG, define the *differences* between the TG reductions in the two groups as $\mu_T - \mu_W$.
 (Of course, the difference can be defined either way provided we are consistent.)
+In Sect.\ \@ref(ChamomileTea-Paired-CI), the mean reduction in each group was estimated. 
 From Table\ \@ref(tab:TGsummaryTable), the estimate of the mean difference is $\bar{x}_T - \bar{x}_W = 45.74$\ mg.dl^-1^.
 The standard error can be determined from the information in the first two rows of the data summary table: $\text{s.e.}(\bar{x}_T - \bar{x}_W) = 8.42$.
 Hence, an approximate $95$%\ CI for the difference between the mean reduction is  
@@ -1461,18 +1565,7 @@ All girls had their weight recorded before and after treatment.
 ::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
 **Answers to in-chapter questions:**
 
-- Sect. \ref{thinkBox:PhonepOCI}: 
-  **P**: Students (this is defined more specifically in the original study). 
-  **O**: Mean reaction time. 
-  **C**: Between two groups: those using and not using a mobile phone while driving. 
-  **I**: Yes; the use of a phone (or not) was decided by the researchers.
-- Sect. \ref{thinkBox:SEsd}: 
-  The *standard deviation* quantifies how much the individual reactions times vary from *person to person*.
-  The *standard error* quantifies how much the *difference between sample mean reaction times* varies from *sample to sample*.
-- Sect. \ref{thinkBox:DiffErrorbarBoxplot}:
-  The *error bar chart* helps us understand how precisely the sample mean estimates the population mean.
-  The *boxplot* shows the variation in the individual *data* values.
-- \textbf{\textit{Quick Revision} questions:}
+\textbf{\textit{Quick Revision} questions:}
 **1.** Boxplot.
 **2.** True.
 **3.** False.
