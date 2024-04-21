@@ -364,6 +364,12 @@ Some books may give other (but similar) conditions.
 Note that this condition is based on the *expected* frequencies, not the *observed* frequencies.
 The *expected* counts are what we would expect to find if there was *no relationship* between the two variables in the two-way table (Example\ \@ref(exm:Sunglasses)).
 
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+If all the *observed* counts exceed five, then all the *observed counts will exceed five.
+:::
+
+
 If there was *no relationship* between the two variables for the student-meals data, students living *with* or *not with* their parents would have a similar percentage of meals eaten off-campus.
 The overall percentage of students eating meals off-campus is $157/183\times 100 = 85.79$% (from Table\ \@ref(tab:MealsDataTable)).
 If there was *no relationship* between the two variables, this percentage would be the same for students living *with* or *not with* their parents.
@@ -401,9 +407,10 @@ The researchers were interested in knowing:
 
 
 ```{r TurtleNestDataTable}
-TurtleData <- array( dim = c(2, 2))
-TurtleData[, 1] <- c(29, 14)
-TurtleData[, 2] <- c(10, 8)
+data(TurtleNests)
+
+TurtleData <- xtabs(Counts ~ Nest + Infected, 
+                    data = TurtleNests)
 
 rownames(TurtleData) <- c("Natural",
                           "Relocated")
@@ -420,7 +427,7 @@ if( knitr::is_latex_output() ) {
         longtable = FALSE,
         escape = FALSE,
         align = "c",
-        caption = "Infected and non-infected turtle nests") %>%
+        caption = "Non-infected and infected turtle nests") %>%
     row_spec(0, bold = TRUE) %>%
     kable_styling(font_size = 8)
 }
@@ -433,31 +440,29 @@ if( knitr::is_html_output() ) {
                booktabs = TRUE,
                longtable = FALSE,
                align = "c",
-        caption = "Infected and non-infected turtle nests") %>%
+        caption = "Non-infected and infected turtle nests") %>%
     row_spec(0, bold = TRUE)
 }
 ```
 
 
-The parameter is the odds ratio of infection, comparing natural to relocated nests.
+The parameter is the odds ratio of non-infection, comparing natural to relocated nests.
 The odds ratio can be defined in other ways also, but this definition is consistent with how software computes odds given Table\ \@ref(tab:TurtleNestDataTable) (i.e., first row to second row; first column to second column).
 
-A graphical summary (Fig.\ \@ref(fig:TurtleNestsGraphs)) and a numerical summary table (Table\ \@ref(tab:TurtleNestsNumericalSummary)) show that the odds of natural nest being infected is $1.657$ times the odds of a relocated nest being infected.
+A graphical summary (Fig.\ \@ref(fig:TurtleNestsGraphs)) and a numerical summary table (Table\ \@ref(tab:TurtleNestsNumericalSummary)) show that the odds of natural nest being non-infected is $1.657$ times the odds of a relocated nest being non-infected.
 From the jamovi output (Fig.\ \@ref(fig:TurtleNestsOutputjamovi)), the $95$%\ CI for this odds ratio is from $0.537$ to $5.12$.
 The smallest *expected* count is $6.49$ (Fig.\ \@ref(fig:TurtleNestsOutputjamovi)), so this CI is statistically valid.
+(Since all observed counts are greater than five, all the expected counts will be greater than five too.)
 We write:
 
-> The OR of an infected nest, comparing natural nests (odds: $2.90$; $n = 39$) to relocated nests (odds: $1.75$; $n = 22$), is $1.66$ with a $95$%\ CI from $0.537$ to $5.12$.
-
-
-<!-- and Table 5 (BTW, Table 6 is  not $2\times 2$): -->
+> The OR of a non-infected nest, comparing natural nests (odds: $2.90$; $n = 39$) to relocated nests (odds: $1.75$; $n = 22$), is $1.66$ with a $95$%\ CI from $0.537$ to $5.12$.
 
 
 ```{r}
 TNsummary <- array( dim = c(3, 3) )
 
-colnames(TNsummary) <- c( "Odds infected",
-                          "Percentage infected",
+colnames(TNsummary) <- c( "Odds non-infected",
+                          "Percentage non-infected",
                           "Sample size")
 rownames(TNsummary) <- c("Natural",
                          "Relocated",
@@ -474,7 +479,7 @@ TNsummary[3, 1] <- TNsummary[1, 1] / TNsummary[2, 1]
 
 \begin{figure}
 \begin{minipage}{0.52\textwidth}
-\captionof{table}{The odds and percentage of infected turtle nests\label{tab:TurtleNestsNumericalSummary}}
+\captionof{table}{The odds and percentage of non-infected turtle nests\label{tab:TurtleNestsNumericalSummary}}
 \fontsize{8}{12}\selectfont
 ```{r}
   kable( pad(TNsummary,
@@ -487,8 +492,8 @@ TNsummary[3, 1] <- TNsummary[1, 1] / TNsummary[2, 1]
         align = "c",
         escape = FALSE,
         table.env = "@empty",
-        col.names = c("infected",
-                     "infected",
+        col.names = c("non-infected",
+                     "non-infected",
                      "size")) %>%
     row_spec(0, bold = TRUE) %>%
     row_spec(3, italic = TRUE) %>%
@@ -507,14 +512,14 @@ TNsummary[3, 1] <- TNsummary[1, 1] / TNsummary[2, 1]
 par(xpd = TRUE,
     mar = c(2, 4, 4, 1) + 0.1) # DEFAULT: c(5, 4, 4, 2) + 0.1
 
-barplot(TurtleData, 
+barplot( t(TurtleData), 
 	las = 1,
 	ylab = "Count",
 	xlab = "Type of nest",
 	main = "Number of turtle\nnest infections",
 	beside = TRUE,
-	names.arg = c("Not\infected", 
-	              "Infected"),
+	names.arg = c("Natural", 
+	              "Relocated"),
 	ylim = c(0, 30),
 	col = barCols,
 	legend.text = TRUE,
@@ -522,6 +527,8 @@ barplot(TurtleData,
 	                   bty = "n",
 	                   cex = 0.9,
 	                   ncol = 1,
+	                   legend = c("Not infected", 
+	                              "Infected"), 
 	                   horiz = FALSE))
 
 box()
@@ -546,7 +553,7 @@ if( knitr::is_html_output() ) {
         longtable = FALSE,
         align = "c",
         digits = c(3, 2, 0),
-        caption = "The odds and percentage of infected nests")
+        caption = "The odds and percentage of non-infected nests")
 }
 ```
 
@@ -556,25 +563,27 @@ if( knitr::is_html_output() ) {
 par(xpd = TRUE,
     mar = c(5, 4, 4, 8) + 0.1) # DEFAULT: c(5, 4, 4, 2) + 0.1
 
-barplot(TurtleData, 
-	las = 1,
+barplot( t(TurtleData), 
+	las = 1, 
 	ylab = "Count",
 	xlab = "Type of nest",
 	beside = TRUE,
 	names.arg = c("Natural", 
 	              "Relocated"),
 	ylim = c(0, 30),
-	col =  viridis::viridis(10)[c(3, 8)]
-)
+	col =  viridis::viridis(10)[c(3, 8)],
+	legend.text = TRUE,
+	args.legend = list("topright",
+	                   bty = "n",
+	                   cex = 0.9,
+	                   ncol = 1,
+	                   legend = c("Not infected", 
+	                              "Infected"), 
+	                   horiz = FALSE))
+
+
 box()
 
-legend(6.2, 
-       400, 
-	     fill =  viridis::viridis(10)[c(3, 8)],
-	     title = "Infection",
-	     legend = c("Not infected", 
-	                "Infected"), 
-	     bty = "n")
 ```
 `r if (knitr::is_latex_output()) '-->'`
 
@@ -590,12 +599,14 @@ knitr::include_graphics("jamovi/TurtleNests/TurtleNests-Expected.png")
 
 ## Chapter summary 
 
+Software is used to compute a confidence interval (CI) for the odds ratio, as the sampling distribution does not have a normal distribution.
+The statistical validity conditions should be checked: the *expected* counts all should exceed five.
 
 
 ## Quick review questions {#Chap25-QuickReview}
 
 ::: {.webex-check .webex-box}
-A study [@egbue2017mass] of the adoption of electric vehicle (EVs) by a certain group of professional Americans compiled the data in Table\ \@ref(tab:EV10years).
+@egbue2017mass studied the adoption of electric vehicle (EVs) by a certain group of professional Americans (Table\ \@ref(tab:EV10years)).
 Output from using jamovi is shown in Fig.\ \@ref(fig:EVjamovi).
 
 1. What *percentage* of people without post-graduate study would buy an EV in the next $10$ years? \tightlist 
@@ -732,18 +743,18 @@ Answers to odd-numbered exercises are available in App.\ \@ref(Answers).
 
 
 ::: {.exercise #CIORcrashes}
-A study of car crashes in a rural, mountainous county in western China [@wang2020driver] recorded the data in
+@wang2020driver recorded information about vcar crashes in a rural, mountainous county in western China
 `r if (knitr::is_latex_output()) {
-   'Table\\ \\@ref(tab:CrashDataTables) (left table).'
+   '(Table\\ \\@ref(tab:CrashDataTables), left table).'
 } else {
-   'Table\\ \\@ref(tab:CrashDataTable).'
+   '(Table\\ \\@ref(tab:CrashDataTable)).'
 }`
 
-1. Produce a numerical summary table for the data.
 1. Compute the *odds* of crash involving a pedestrian in 2011.
 1. Compute the *odds* of crash involving a pedestrian in 2015.
 1. Compute the *odds ratio* of crash involving a pedestrian, comparing 2011 to 2015.
 1. Use the output to write down a CI for the odds ratio.
+1. Produce a numerical summary table for the data.
 1. Write a conclusion.
 1. Use
 `r if (knitr::is_latex_output()) {
