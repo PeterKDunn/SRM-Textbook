@@ -20,9 +20,9 @@ The researchers cross-classified the $n = 183$ students (the units of analysis) 
 * Where they lived: with their parents, or *not* with their parents;
 * Where they ate most meals: *off-campus* or *on-campus*.
 
-Since both variables are qualitative, *means are not appropriate* for summarising the data.
-A two-way table of counts is appropriate (Table\ \@ref(tab:MealsDataTable)), called a *contingency table*.
-Both qualitative variables have two levels, so the table is a $2\times 2$ table.
+Since both variables are qualitative, means are not appropriate for summarising the data.
+A two-way table of counts is appropriate (Table\ \@ref(tab:MealsDataTable)), called a *contingency table*.\index{Contingency table}
+Both qualitative variables have two levels, so the two-way table\index{Two-way tables} is a $2\times 2$ table.
 
 
 ```{r MealsDataTable}
@@ -45,7 +45,6 @@ Eating <- data.frame(Counts = Counts,
 
 Eating.tab <- Eating.tab.Counts <- xtabs(Counts ~ Meals + Live + Meals, 
                                          data=Eating)
-
 Eating.tab <- cbind( Eating.tab, 
                      "Total" = rowSums(Eating.tab))
 Eating.tab <- rbind( Eating.tab, 
@@ -53,23 +52,20 @@ Eating.tab <- rbind( Eating.tab,
 
 
 if( knitr::is_latex_output() ) {
-  kable( pad(Eating.tab,
+  kable( pad(Eating.tab[1:2, 1:2],
              surroundMaths = TRUE,
-             targetLength = c(2, 3, 3),
+             targetLength = c(2, 3),
              digits = 0),
         format = "latex",
         booktabs = TRUE,
         longtable = FALSE,
         escape = FALSE,
         col.names = c("with parents",
-                      "with parents",
-                      "Total"),
+                      "with parents"),
         align = "c",
         caption = "Where university students live and eat") %>%
-     column_spec(4, bold = TRUE) %>%
      column_spec(1, bold = TRUE) %>%
      row_spec(0, bold = TRUE) %>%
-     row_spec(3, bold = TRUE) %>%
      row_spec(2, hline_after = TRUE) %>%
      kable_styling(font_size = 8) %>%
     add_header_above( c(" " = 1, 
@@ -79,9 +75,9 @@ if( knitr::is_latex_output() ) {
                       bold = TRUE)
 }
 if( knitr::is_html_output() ) {
-  kable(pad(Eating.tab,
+  kable(pad(Eating.tab[1:2, 1:2],
              surroundMaths = TRUE,
-             targetLength = c(2, 3, 3),
+             targetLength = c(2, 3),
              digits = 0),
                format = "html",
                booktabs = TRUE,
@@ -92,7 +88,7 @@ if( knitr::is_html_output() ) {
 UniS <- Eating.tab
 ```
 
-The odds (or proportion) of students who eat most meals off-campus can be compared those who live with their parents and those who do *not* live with their parents.
+The odds (or proportion) of students who eat most meals off-campus can be compared between those who live with their parents and those who do *not* live with their parents.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -100,60 +96,48 @@ Every cell in the $2\times 2$ table contains different students, so the comparis
 :::
 
 
-The parameter is the *odds ratio* (OR); specifically, the odds ratio of eating most meals off-campus, comparing those living with parents to those not living with parents.
-Another sensible parameter would be the difference between the *proportions* (or *percentages*) in each group, but the odds ratio usually is used as the parameter (for reason beyond the scope of this book).
-For this reason, writing the RQ in terms of odds ratios or odds is also most appropriate.
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Take care defining the odds ratios in the parameter! 
-Recall (Sect. \@ref(QualOdds)): software usually compares Row\ 1 to Row\ 2, and Column\ 1 to Column\ 2.
-For this reason, it makes sense to define your OR in the same way.
-:::
-
+The parameter is the *odds ratio* (OR);\index{Odds ratio} specifically, the odds ratio of eating most meals off-campus, comparing those living with parents to those not living with parents.
+Another sensible parameter would be the difference between the *proportions* (or *percentages*) in each group, but the odds ratio usually is used as the parameter\footnote[This is *optional*: The difference between two proportions is always a number between $-1$ and $1$, which makes the sampling distribution hard to describe.].
+For this reason, writing the RQ in terms of odds ratios or odds\index{Odds} is also most appropriate.
 
 Using the OR, the RQ could be written as:
 
 > Among university students, what is the odds ratio of students eating most meals off-campus, comparing those who *do* and *do not* live with their parents?
 
-The parameter is the population OR, comparing the odds of eating most meals *off*-campus for students living with their parents to students *not* living with their parents.
 
-
-::: {.thinkBox .think data-latex="{iconmonstr-light-bulb-2-240.png}"}
-What are P, O, C and I for this RQ?
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Take care defining the odds ratios in the parameter! 
+Recall (Sect. \@ref(QualOdds)): software usually compares Row\ 1 to Row\ 2, and Column\ 1 to Column\ 2.
+For this reason, defining your OR in the same way makes sense.
 :::
+
 
 
 
 ## Summarising data {#CIOddsRatiosSummaries}
 \index{Odds ratio}\index{Odds}
 
-With two qualitative variables, an appropriate numerical summary includes the odds and percentages for the outcome (for each comparison group) and the sample sizes.
+With two qualitative variables, an appropriate numerical summary includes the odds and percentages for the outcome (for both comparison groups) and the sample sizes.
 From these data, the odds of eating most meals *off-campus* is:
 
-* $52\div 2 = 26$     for students     *living with their parents*.
-* $105\div 24 = 4.375$ for students *not living with their parents*.
+* $52 \div  2 = 26     for students     *living with their parents* (Column\ 1).
+* $105\div 24 = 4.375$ for students *not living with their parents* (Column\ 2).
 
-(Notice the *last* column is always on the bottom of the fraction.)
-So the *odds ratio* (OR) of eating most meals *off-campus* (the *first* row), comparing students living with parents to students *not* living with parents, is $26 \div 4.375 = 5.943$.
+(Notice the numbers in the *second* row are always on the bottom of the fraction.)
+So the *odds ratio* (OR) of eating most meals *off-campus* (the *first* row), comparing students living with parents to students *not* living with parents (second row), is $26 \div 4.375 = 5.943$.
 The numerical summary (Table\ \@ref(tab:EatingNumericalSummary)) shows the percentage and odds of eating most meals off-campus, comparing students living at home and those not living at home.
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-Understanding how software computes the odds ratio is *very* important for understanding the output.
-In jamovi, the odds ratio can be interpreted in *either* of these two ways (i.e., both are correct):
+The odds ratio can be interpreted in *either* of these ways (i.e., both are correct):\index{Odds ratio!interpreting}\index{jamovi output!Odds ratios}
 
-* The *odds* are the odds of eating most meals *off-campus* (Row\ 1 of Table\ \@ref(tab:MealsDataTable)) compared to *on-campus* (Row\ 2): $52/2 =  26$ (for those living with parents) and $105/24 = 4.375$ (for those not living with parents).
-   \smallskip
-   
-  Then, the *odds ratio* compares these odds for students living with their parents (Column\ 1 of Table\ \@ref(tab:MealsDataTable)) to those *not* living with their parents (Column\ 2): the OR is $26/4.375 = 5.943$, as in the output (Fig.\ \@ref(fig:EatingGraphsCI), right panel).
+-   The *odds* compare Row\ 1 counts to Row\ 2 counts, for both columns.
+    The *odds ratio* then compares the Column\ 1 odds to the Column\ 2 odds.
+-   The *odds* compare Column\ 1 counts to Column\ 2 counts.
+    The *odds ratio* then compares the Row\ 1 odds to the Row\ 2 odds.
 
-* The *odds* are the odds of living with parents (Column\ 1 of Table\ \@ref(tab:MealsDataTable)) compared to *not* living with parents (Column\ 2): $52/105 = 0.49524$ (for those eating most meals off-campus) and $2/24 = 0.083333$ (for those eating most meals on-campus).
-\smallskip
-
-Then, the *odds ratio* compares these odds for students eating most meals off-campus (Row\ 1 of Table\ \@ref(tab:MealsDataTable)) to the odds of students eating most meals on-campus (Row\ 2): the OR is $0.49524/0.083333 = 5.943$, as in the output (Fig.\ \@ref(fig:EatingGraphsCI), right panel).
-  
-The odds and odds ratios are relative to the *second row* or *second column*.
+Odds and odds ratios are computed with the *first row* and *first column* values on the *top* of the fraction.
+In this case, both of the above approaches produces an OR of $5.943$.
 :::
 
 
@@ -214,29 +198,32 @@ if( knitr::is_html_output() ) {
 ```
 
 
-An appropriate graph (Fig.\ \@ref(fig:EatingGraphsCI), left panel) is a *side-by-side* bar chart or a *stacked* bar chart.
-For comparing the *odds*, the side-by-side bar chart is better. 
-(A *stacked* bar chart is better for comparing *proportions*, but either is correct.)
+An appropriate graph (Fig.\ \@ref(fig:EatingGraphsCI), left panel) is a side-by-side bar chart\index{Graphs!side-by-side barchart} or a stacked bar chart.\index{Graphs!stacked bar chart}.
 
 
-```{r EatingGraphsCI, fig.cap="The uni-student eating data. Left: A side-by-side bar chart. Right: the jamovi output for computing a CI", fig.align="center", fig.height=4, fig.width=4, out.width=c("45%", "53%"), fig.show='hold'}
+```{r EatingGraphsCI, fig.cap="The uni-student eating data. Left: a side-by-side bar chart. Right: the jamovi output for computing a CI", fig.align="center", fig.height=4, fig.width=4, out.width=c("45%", "53%"), fig.show='hold'}
 par( xpd = TRUE,
-     mar = c(7, 4, 4, 2) + 0.1) # DEFAULT: c(5, 4, 4, 2) + 0.1
+     mar = c(4, 4, 4, 2) + 0.1) # DEFAULT: c(5, 4, 4, 2) + 0.1
+barCols <- c( grey(0.2), 
+              grey(0.8))
 
 barplot( (prop.table(Eating.tab.Counts, margin = 2)) * 100,
-	col = viridis::viridis(10)[c(3, 8)],     #plot.colour, "steelblue"),
+	col = barCols,
 	ylab = "Percentage",
 	beside = TRUE,
 	main = "Side-by-side bar chart of where\nstudents live and eat", 
-	ylim = c(0, 100),
+	ylim = c(0, 119),
 	las = 1,
+	names.arg = c("Lives with\nparents",
+	              "Does not live\nwith parents"),
 	legend.text = TRUE,
-	args.legend = list(x = 5.0,
-	                   y = 110,
+	args.legend = list("topright",
 	                   bty = "n",
 	                   cex = 0.9,
 	                   ncol = 1,
 	                   horiz = FALSE))
+
+#
 
 knitr::include_graphics( "jamovi/UniStudents/UniStudents-OR-CI.png")
 
@@ -246,13 +233,15 @@ knitr::include_graphics( "jamovi/UniStudents/UniStudents-OR-CI.png")
 ## Sampling distribution for sample odds ratio {#OddsRatiosOR}
 \index{Sampling distribution!odds ratio}
 
-From the numerical summary table (Table\ \@ref(tab:EatingNumericalSummary)), the odds of a student eating most meals *off-campus* is $26$ for students *living with their parents*, and $4.375$ for students *not living with their parents*.
-So the OR of eating most meals *off-campus*, comparing students living with parents to students *not* living with parents, is $26 \div 4.375 = 5.943$.
-The odds are different in each group, and hence the OR is not one *in the sample*: the odds of eating most meals off-campus for students living *with* their parents is $5.943$ times the odds for students living *not* living with their parents.
+<!-- From the numerical summary table (Table\ \@ref(tab:EatingNumericalSummary)), the odds of a student eating most meals *off-campus* is $26$ for students *living with their parents*, and $4.375$ for students *not living with their parents*. -->
+<!-- So the OR of eating most meals *off-campus*, comparing students living with parents to students *not* living with parents, is $26 \div 4.375 = 5.943$. -->
+<!-- The odds are different in each group, and hence the OR is not one *in the sample*: the odds of eating most meals off-campus for students living *with* their parents is $5.943$ times the odds for students living *not* living with their parents. -->
 
-Of course, every sample of students is likely to be different, so the OR *varies* from sample to sample; there is *sampling variation*, so the odds ratio has a *sampling distribution* and a *standard error*.
+Every sample of students is likely to be different, and hence the odds of students eating off campus will vary from sample to sample (in both groups).
+Hence, the OR varies also from sample to sample.
+That is, *sampling variation* exists, so the odds ratio has a *sampling distribution* and a *standard error*.
 
-The sampling distribution of the sample OR is not a normal distribution^[For those interested (this is *optional*): The OR is only defined for *non-negative* values so a normal distribution is inappropriate. However, the *logarithm* of the OR has an approximate normal distribution under certain conditions.].
+The sampling distribution of the sample OR is *not a normal distribution*^[For those interested (this is *optional*): The OR is only defined for *non-negative* values so a normal distribution is inappropriate. However, the *logarithm* of the OR has an approximate normal distribution under certain conditions.].
 Fortunately, a simple transformation to the sample OR *does* have a normal distribution, though we omit the details.
 For this reason, we will use software output for finding the CI for the odds ratio, and not discuss the sampling distribution directly.
 In other words, we will rely on software to find CIs for odds ratios.
@@ -322,7 +311,8 @@ In other words, we will rely on software to find CIs for odds ratios.
 ## Confidence intervals for population odds ratio
 \index{Confidence intervals!odds ratio}
 
-Using jamovi to find the OR (Fig.\ \@ref(fig:EatingGraphsCI), right panel), the sample OR is $5.94$ (as computed manually), and the (exact) $95$%\ CI is from $1.35$ to $26.1$.
+Using jamovi\index{jamovi output!Comparing two odds} to find the OR (Fig.\ \@ref(fig:EatingGraphsCI), right panel), the sample OR is $5.94$, and the (exact) $95$%\ CI is from $1.35$ to $26.1$.
+The OR is the same as computed manually, since the OR was computed comparin Row\ 1 to Row\ 2, and Column\ 1 to Column\ 2, as used y the software.
 
 
 <!-- ```{r UniMealsTestOutputjamovi, fig.show="hold", fig.cap="The jamovi output for computing a CI", fig.align="center", out.width="49%"} -->
@@ -332,7 +322,7 @@ Using jamovi to find the OR (Fig.\ \@ref(fig:EatingGraphsCI), right panel), the 
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-Recall the jamovi output can be interpreted in either of these ways:
+Recall the jamovi output can be interpreted in either of these ways:\index{jamovi output!Odds ratios}
 
 * Odds are Row\ 1 divided by Row\ 2.  
   Then the odds ratio is computed as Column\ 1 odds divided by Column\ 2 odds (i.e., *comparing* Column\ 1 odds to Column\ 2 odds); or
@@ -354,7 +344,7 @@ The *logarithm* of the limits of the CI form a symmetric interval.].
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-Interpreting ORs can be challenging, so care is needed!
+Interpreting and explaining ORs can be challenging, so care is needed!
 :::
 
 
@@ -390,7 +380,7 @@ This statistical validity condition is explained further in Sect.\ \@ref(Expecte
 
 
 ::: {.example #StatisticalValidityMeals name="Statistical validity"}
-For the uni-students eating data, jamovi can be used to compute the *expected* counts (Fig.\ \@ref(fig:UniMealsTestOutputExpectedOnlyjamovi)).
+For the uni-students eating data, jamovi can be used to compute the *expected* counts (Fig.\ \@ref(fig:UniMealsTestOutputExpectedOnlyjamovi))\index{jamovi output!Expected counts}
 None are less than five, and so the conclusion is statistically valid.
 (One *observed count* is less than five, but this is not relevant to checking for statistical validity.)
 :::
@@ -404,7 +394,7 @@ knitr::include_graphics( "jamovi/UniStudents/UniStudents-ExpectedOnly.png")
 ## Example: turtle nests {#TurtleNestsOR}
 
 The hatching success of loggerhead turtles on Mediterranean beaches is often compromised by fungi and bacteria.
-A study [@candan2021first] compared the odds of infected nests between nest relocated due to the risk of tidal inundation, and non-relocated nests (Table\ \@ref(tab:TurtleNestDataTable)).
+@candan2021first compared the odds of a nest being infected, between nest relocated due to the risk of tidal inundation, and non-relocated nests (Table\ \@ref(tab:TurtleNestDataTable)).
 The researchers were interested in knowing:
 
 > For Mediterranean loggerhead turtles, what are the odds of infections comparing natural to relocated nests?
@@ -452,8 +442,7 @@ if( knitr::is_html_output() ) {
 The parameter is the odds ratio of infection, comparing natural to relocated nests.
 The odds ratio can be defined in other ways also, but this definition is consistent with how software computes odds given Table\ \@ref(tab:TurtleNestDataTable) (i.e., first row to second row; first column to second column).
 
-A graphical summary is shown in Fig.\ \@ref(fig:TurtleNestsGraphs).
-A numerical summary table (Table\ \@ref(tab:TurtleNestsNumericalSummary)) shows that the odds of natural nest being infected is $1.657$ times the odds of a relocated nest being infected.
+A graphical summary (Fig.\ \@ref(fig:TurtleNestsGraphs)) and a numerical summary table (Table\ \@ref(tab:TurtleNestsNumericalSummary)) show that the odds of natural nest being infected is $1.657$ times the odds of a relocated nest being infected.
 From the jamovi output (Fig.\ \@ref(fig:TurtleNestsOutputjamovi)), the $95$%\ CI for this odds ratio is from $0.537$ to $5.12$.
 The smallest *expected* count is $6.49$ (Fig.\ \@ref(fig:TurtleNestsOutputjamovi)), so this CI is statistically valid.
 We write:
@@ -524,20 +513,19 @@ barplot(TurtleData,
 	xlab = "Type of nest",
 	main = "Number of turtle\nnest infections",
 	beside = TRUE,
-	names.arg = c("Natural", 
-	              "Relocated"),
+	names.arg = c("Not\infected", 
+	              "Infected"),
 	ylim = c(0, 30),
-	col =  viridis::viridis(10)[c(3, 8)]
-)
+	col = barCols,
+	legend.text = TRUE,
+	args.legend = list("topright",
+	                   bty = "n",
+	                   cex = 0.9,
+	                   ncol = 1,
+	                   horiz = FALSE))
+
 box()
 
-legend(6.2, 
-       400, 
-	     fill =  viridis::viridis(10)[c(3, 8)],
-	     title = "Infection",
-	     legend = c("Not infected", 
-	                "Infected"), 
-	     bty = "n")
 ```
 \caption{A plot of the turtle-nest data}\label{fig:TurtleNestsGraphs}
 \end{minipage}
@@ -1284,8 +1272,7 @@ knitr::include_graphics( "jamovi/B12/B12-Expected.png")
 ::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
 **Answers to in-chapter questions:**
 
-- Sect.\ \ref{thinkBox:ExpectedCounts}: Lives with parents: $7.7$; *does not* live with parents: $18.3$.
-- \textbf{\textit{Quick Revision} questions:}
+\textbf{\textit{Quick Revision} questions:}
 **1.** 75.
 **2.** 3.
 **3.** 1.71.
