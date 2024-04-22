@@ -65,6 +65,7 @@ findDataFileMentions <- function(){
 ######################################################
 cleanDataFileCalls  <- function(dataFiles){
   
+  ###
   # Remove comments, trailing text, etc
   # Deal with things typically used to call data files
   
@@ -74,6 +75,22 @@ cleanDataFileCalls  <- function(dataFiles){
   numDataCalls <- length(dataFiles)
   commentedOut <- array( FALSE, 
                          dim = numDataCalls)
+  
+  # DO NOT remove  ### Exercise  however!
+  
+  for (i in 1:numDataCalls){
+
+    removeAfterComments <- grepl("#", 
+                                 dataFiles[i])
+
+    keepInThisCase <- grepl('### Exercise',
+                            dataFiles[i])
+
+    if (removeAfterComments & !keepInThisCase){
+      dataFiles[i] <- strsplit(dataFiles[i], "#")[[1]][1] 
+    }
+  }
+
   
   for (i in 1:numDataCalls){ # For each line in the data-call files...
     # First, remove all blank space
@@ -96,17 +113,9 @@ cleanDataFileCalls  <- function(dataFiles){
   }
   
   
-  
+  ###
   # Remove comments that may be present after the data call; eg:
   #      data(FRED) # trust this data file exists?
-  
-  for (i in 1:numDataCalls){
-    removeAfterComments <- grepl("#", 
-                                 dataFiles[i])
-    if (removeAfterComments){
-      dataFiles[i] <- strsplit(dataFiles[i], "#")[[1]][1] 
-    }
-  }
   
   # Remove the lines commented out
   dataFiles <- dataFiles[ !commentedOut ]
@@ -150,6 +159,41 @@ classifyDataMentionsTypes <- function(dataFiles){
     
     # We can have two different things, depending if call in the chapter, or if listed in exercise
     # Now if the first character is  [  then it is in an exercise; otherwise, an actual data call
+    
+    # BUT! An exercise may begin with [*Dataset*: Dataset] but then later also (probably) has the  data(Dataset).
+    # This means the dataset is listed twice, as the first is flagged as a dataset mention explicitly, but the second is not...
+    # They are actually both for the same exercise. But there will be two entries: 
+    #    Dataset (Exercise)
+    #    Dataset
+    # when really I just want the first.
+    #
+    # How do I deal with this...?
+    # Maybe in the source, I can use data(Dataset)###Exercise (spaces were removed above)
+    # which is very manual... but easier than anything else I can think of.
+    
+    # Then: one approach is to look for the string  ### Exercise  and replace this with 
+    
+    # Maybe also: If we have a  data(Dataset)###Exercise  call, but no associated [*Dataset*: `Dataset`]  we can flag and/or suggest adding it
+    
+    if (grepl('###Exercise', dataCall)) { # If we see the string  ###Exercise...
+
+      dFileStem <- unlist( strsplit( dataCall, 
+                                     "###")) # Split where ### is found: Returns somethiungs like  data(fred); we just want the  fred, so split again
+      dFileStem <- unlist( strsplit( dFileStem, 
+                                     "\\("))[2] # Split where  (  is found. This returns  fred).
+      dFileStem <- substr( dFileStem, 
+                           start = 1,
+                           stop = nchar(dFileStem) - 1 )
+      
+      # So now rename it to look like an exercise
+      dataCall <- paste0("[*Dataset*:`",
+                         dFileStem[1],
+                         "`]")
+
+    }
+
+    
+    # Now, onto the real action after dealing with that
     if ( substr( dataCall, 1, 1) == "[") { # Then probably an exercises (OR SOME EXAMPLES???)
       
       lengthDataCall <- nchar(dataCall)
