@@ -362,14 +362,14 @@ The CI computed above is statistically valid if
 
 Some books may give other (but similar) conditions.
 Note that this condition is based on the *expected* frequencies, not the *observed* frequencies.
-The *expected* counts are what we would expect to find if there was *no relationship* between the two variables in the two-way table (Example\ \@ref(exm:Sunglasses)).
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-If all the *observed* counts exceed five, then all the *observed counts will exceed five.
+If all the *observed* counts exceed five, then all the *observed* counts will exceed five.
 :::
 
 
+The *expected* counts are what we would expect to find if there was *no relationship* between the two variables in the two-way table.
 If there was *no relationship* between the two variables for the student-meals data, students living *with* or *not with* their parents would have a similar percentage of meals eaten off-campus.
 The overall percentage of students eating meals off-campus is $157/183\times 100 = 85.79$% (from Table\ \@ref(tab:MealsDataTable)).
 If there was *no relationship* between the two variables, this percentage would be the same for students living *with* or *not with* their parents.
@@ -452,7 +452,7 @@ The odds ratio can be defined in other ways also, but this definition is consist
 A graphical summary (Fig.\ \@ref(fig:TurtleNestsGraphs)) and a numerical summary table (Table\ \@ref(tab:TurtleNestsNumericalSummary)) show that the odds of natural nest being non-infected is $1.657$ times the odds of a relocated nest being non-infected.
 From the jamovi output (Fig.\ \@ref(fig:TurtleNestsOutputjamovi)), the $95$%\ CI for this odds ratio is from $0.537$ to $5.12$.
 The smallest *expected* count is $6.49$ (Fig.\ \@ref(fig:TurtleNestsOutputjamovi)), so this CI is statistically valid.
-(Since all observed counts are greater than five, all the expected counts will be greater than five too.)
+(We could also see that since all observed counts are greater than five, all the expected counts will be greater than five.)
 We write:
 
 > The OR of a non-infected nest, comparing natural nests (odds: $2.90$; $n = 39$) to relocated nests (odds: $1.75$; $n = 22$), is $1.66$ with a $95$%\ CI from $0.537$ to $5.12$.
@@ -642,7 +642,7 @@ EV10[2, ] <- c(51, 29)
 
 \begin{figure}
 \begin{minipage}{0.32\textwidth}
-\captionof{table}{Responses to the question `Would you purchase an electric vehicle in the next $10$ years?' by education\label{tab:EV10years}}
+\captionof{table}{Responses to `Would you purchase an electric vehicle in the next $10$ years?' by education\label{tab:EV10years}}
 \fontsize{8}{12}\selectfont
 ```{r}
 knitr::kable( pad(EV10,
@@ -691,7 +691,7 @@ EV10[2, ] <- c(51, 29)
 #         format = "latex",
 #         longtable = FALSE,
 #         booktabs = TRUE,
-#         caption = "Responses to the question 'Would you purchase an electric vehicle in the next 10 years?' by education") %>%
+#         caption = "Responses to 'Would you purchase an electric vehicle in the next 10 years?' by education") %>%
 # 	kable_styling(font_size = 8) %>%
 # 	row_spec(0, bold = TRUE)
 #}
@@ -705,7 +705,7 @@ if( knitr::is_html_output() ) {
         align = "c",
         longtable = FALSE,
         booktabs = TRUE,
-        caption = "Responses to the question 'Would you purchase an electric vehicle in the next $10$ years?' by education")
+        caption = "Responses to 'Would you purchase an electric vehicle in the next $10$ years?' by education")
 }
 ```
 
@@ -743,7 +743,7 @@ Answers to odd-numbered exercises are available in App.\ \@ref(Answers).
 
 
 ::: {.exercise #CIORcrashes}
-@wang2020driver recorded information about vcar crashes in a rural, mountainous county in western China
+@wang2020driver recorded information about car crashes in a rural, mountainous county in western China
 `r if (knitr::is_latex_output()) {
    '(Table\\ \\@ref(tab:CrashDataTables), left table).'
 } else {
@@ -753,65 +753,31 @@ Answers to odd-numbered exercises are available in App.\ \@ref(Answers).
 1. Compute the *odds* of crash involving a pedestrian in 2011.
 1. Compute the *odds* of crash involving a pedestrian in 2015.
 1. Compute the *odds ratio* of crash involving a pedestrian, comparing 2011 to 2015.
-1. Use the output to write down a CI for the odds ratio.
+1. Use the output (Fig.\ \@ref(fig:CarCrashjamovi)) to write down a CI for the odds ratio.
 1. Produce a numerical summary table for the data.
 1. Write a conclusion.
-1. Use
-`r if (knitr::is_latex_output()) {
-   'Table\\ \\@ref(tab:CrashDataTables) (right table)'
-} else {
-   'Table\\ \\@ref(tab:ExpCrashDataTable)'
-}`
-   to determine if the CI is statistically valid.
+1. Determine if the CI is statistically valid.
 :::
 
 
-```{r CrashDataTables}
-Counts <- c(15, 37, 35, 85)
-Year <- rep( c(1, 2), 2)
-Year <- ordered(Year,
-                levels = 1:2,
-                labels = c("2011", 
-                           "2015") )
-Type <- c( rep(1, 2), 
-            rep(2, 2))
-Type <- ordered(Type, 
-                 levels = 1:2,
-                 labels = c("Involving pedestrians", 
-                            "Involving vehicles"))
+```{r}
+data(CarCrashes)
+CarCrashes$CrashType <- ordered(CarCrashes$CrashType, 
+                           levels = 1:2,
+                           labels = c("Involving pedestrians", 
+                                      "Involving vehicles"))
 
-Crashes <- data.frame(Counts = Counts,
-                     Year = Year,
-                     Type = Type)
+Crash.tab <- xtabs(Counts ~ CrashType + Year, 
+                   data = CarCrashes)
 
-Crash.tab <- xtabs(Counts ~ Type + Year, 
-                   data = Crashes)
+```
 
-### Expected
-
-ExpCounts <- c(15.11, 36.88, 34.88, 85.12)
-Year <- rep( c(1, 2), 2)
-Year <- ordered(Year,
-                levels = 1:2,
-                labels = c("2011", 
-                           "2015") )
-Type <- c( rep(1, 2), 
-            rep(2, 2))
-Type <- ordered(Type, 
-                 levels = 1:2,
-                 labels = c("Involving pedestrians", 
-                            "Involving vehicles"))
-
-ExpCrashes <- data.frame(ExpCounts = ExpCounts,
-                     Year = Year,
-                     Type = Type)
-
-ExpCrash.tab <- xtabs(ExpCounts ~ Type + Year, 
-                   data = ExpCrashes)
-###
-
-if( knitr::is_latex_output() ) {
-  T1 <- kable(pad(Crash.tab,
+\begin{figure}
+\begin{minipage}{0.32\textwidth}
+\captionof{table}{Type of car crashes in different years\label{tab:CrashDataTables}}
+\fontsize{8}{12}\selectfont
+```{r}
+kable(pad(Crash.tab,
             surroundMaths = TRUE,
             targetLength = 2,
             digits = 0),
@@ -820,72 +786,55 @@ if( knitr::is_latex_output() ) {
         longtable = FALSE,
         escape = FALSE,
         align = "c") %>%
-    row_spec(0, bold = TRUE)
-  
-  T2 <-   kable(pad(ExpCrash.tab,
+    row_spec(0, bold = TRUE) 
+#   kable_styling(font_size = 8) # CANNOT USE THIS IS THE MINIPAGE
+```
+\end{minipage}
+\hspace{0.05\textwidth}
+\begin{minipage}{0.60\textwidth}%
+\centering
+```{r, out.width='92%', fig.align="center"}
+knitr::include_graphics( "jamovi/CarCrashes/CarCrashes-ORCI.png")
+```
+\caption{jamovi output for the car-crash study}\label{fig:CarCrashjamovi}
+\end{minipage}
+\end{figure}
+
+
+
+
+```{r CrashDataTables}
+if( knitr::is_html_output() ) {
+kable(pad(Crash.tab,
             surroundMaths = TRUE,
-            targetLength = c(5, 5),
-            digits = 2),
+            targetLength = 2,
+            digits = 0),
         format = "latex",
         booktabs = TRUE,
         longtable = FALSE,
         escape = FALSE,
-        align = "r") %>%
-    row_spec(0, bold = TRUE)
-  
-
-  out <- knitr::kables(list(T1, T2), 
-                       format = "latex",
-                       label = "CrashDataTables",
-                       caption = "Types of crashes in different years: data (left), and expected values (right)") %>% 
-    kable_styling(font_size = 8)
-  prepareSideBySideTable(out,
-                         gap = "\\qquad")
-}
-```
-
-```{r CrashDataTable}
-if( knitr::is_html_output() ) {
-  kable(pad(Crash.tab,
-            surroundMaths = TRUE,
-            targetLength = 2,
-            digits = 0),
-               format = "html",
-               booktabs = TRUE,
-               longtable = FALSE,
-               align = "c",
-        caption = "Types of crashes in different years") %>%
+        caption = "Responses to 'Would you purchase an electric vehicle in the next $10$ years?' by education",
+        align = "c") %>%
     row_spec(0, bold = TRUE)
 }
 ```
 
-
-```{r ExpCrashDataTable}
-
-if( knitr::is_html_output() ) {
-  kable(pad(ExpCrash.tab,
-            surroundMaths = TRUE,
-            targetLength = c(5, 5),
-            digits = 2),
-               format = "html",
-               booktabs = TRUE,
-               longtable = FALSE,
-               align = "c",
-        caption = "Expected counts of types of crashes in different years") %>%
-    row_spec(0, bold = TRUE)
-}
+<!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r CarCrashesjamovi, fig.show="hold", fig.cap="jamovi output for the car-crash data", fig.align="center", out.width="50%"}
+knitr::include_graphics( "jamovi/CarCrashes/CarCrashes-ORCI.png")
 ```
+`r if (knitr::is_latex_output()) '-->'`
 
 
 
 ::: {.exercise #OddsRatiosCIScarHeights}
-A forward-direction observational study in Western Australia [@data:Wallace2017:Sunburn] compared the heights of scars from burns received (Table\ \@ref(tab:ScarsData)).
-
+@data:Wallace2017:Sunburn compared the heights of scars from burns received in Western Australia (Table\ \@ref(tab:ScarsData)).
 jamovi was used to analyse the data (Fig.\ \@ref(fig:ScarHeightRiskCIjamovi)).
 
 1. Compute the *odds* of having a smooth scar (that is, height is $0$\ mm) for women.
 1. Compute the *odds* of having a smooth scar (that is, height is $0$\ mm) for men.
-1. Compute the *odds ratio* of having a smooth scar, comparing women to men.
+1. Compute the *odds ratio* of having a smooth scar, comparing men to women.
 1. Interpret what this odds ratio means.
 1. Sketch a suitable graph to display the data.
 1. Construct an appropriate numerical summary table for the data.
@@ -901,18 +850,51 @@ jamovi was used to analyse the data (Fig.\ \@ref(fig:ScarHeightRiskCIjamovi)).
 
 
 
+```{r}
+data(ScarHeight)
+
+ScarsData <- xtabs( Counts ~ ScarHt + Gender,
+                     data = ScarHeight)
+
+rownames(ScarsData) <- c("Smooth",
+                         "0mm to 1mm")
+colnames(ScarsData) <- c("Men",
+                         "Women")
+```
+
+\begin{figure}
+\begin{minipage}{0.32\textwidth}
+\captionof{table}{Heights of scars for men and women\label{tab:ScarsData}}
+\fontsize{8}{12}\selectfont
+```{r}
+  kable(pad(ScarsData,
+            surroundMaths = TRUE,
+            targetLength = c(2, 3),
+            digits = 0),
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        escape = FALSE,
+        align = "c") %>%
+    row_spec(0, bold = TRUE)
+#   kable_styling(font_size = 8) # CANNOT USE THIS IS THE MINIPAGE
+```
+\end{minipage}
+\hspace{0.05\textwidth}
+\begin{minipage}{0.60\textwidth}%
+\centering
+```{r, out.width='92%', fig.align="center"}
+knitr::include_graphics( "jamovi/ScarHeight/ScarHeightOR.png")
+```
+\caption{jamovi output for the scar-height data}\label{fig:ScarHeightRiskCIjamovi}
+\end{minipage}
+\end{figure}
+
+
+
+
 ```{r ScarsData}
-ScarsData <- array( dim = c(2, 2) )
-
-rownames(ScarsData) <- c("Scar height 0mm (smooth)",
-                         "Scar height more than 0mm, less than 1mm")
-colnames(ScarsData) <- c("Women",
-                         "Men")
-
-ScarsData[1, ] <- c(99, 216)
-ScarsData[2, ] <- c(62, 115)
-
-if( knitr::is_latex_output() ) {
+if( knitr::is_html_output() ) {
   kable(pad(ScarsData,
             surroundMaths = TRUE,
             targetLength = c(2, 3),
@@ -922,37 +904,26 @@ if( knitr::is_latex_output() ) {
         longtable = FALSE,
         escape = FALSE,
         align = "c",
-        caption = "The number of men and women, with scars of different heights") %>%
+        caption = "Heights of scars for men and women") %>%
     row_spec(0, bold = TRUE) %>%
     kableExtra::kable_styling(latex_options = "hold_position") %>%
-    kable_styling(font = 8)
-}
-if( knitr::is_html_output() ) {
-  kable(pad(ScarsData,
-            surroundMaths = TRUE,
-            targetLength = c(2, 3),
-            digits = 0),
-               format = "html",
-               booktabs = TRUE,
-               longtable = FALSE,
-               align = "c",
-               caption = "The number of men and women, with scars of different heights")
+    row_spec(0, bold = TRUE)
 }
 ```
 
-
-
+<!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
+`r if (knitr::is_latex_output()) '<!--'`
 ```{r ScarHeightRiskCIjamovi, fig.show="hold", fig.cap="jamovi output for the scar-height data", fig.align="center", out.width="50%"}
 knitr::include_graphics( "jamovi/ScarHeight/ScarHeightOR.png")
 ```
+`r if (knitr::is_latex_output()) '-->'`
 
 
 
 ::: {.exercise #OddsRatiosCIEarInf}
 [*Dataset*: `EarInfection`]
 A study of ear infections in Sydney swimmers [@data:smyth:ozdasl] recorded whether people reported an ear infection or not, and where they usually swam.
-The jamovi output is shown in Fig.\ \@ref(fig:EarInfPSSOutputCI).
-Explain carefully the meaning of the OR and the corresponding CI.
+Use the jamovi output (Fig.\ \@ref(fig:EarInfPSSOutputCI)) to carefully explain the meaning of the OR and the corresponding CI.
 :::
 
 
@@ -966,6 +937,7 @@ knitr::include_graphics( "jamovi/EarInfections/EarInfections-CI.png" )
 
 
 ::: {.exercise #OddsRatiosCITurbines}
+[*Dataset*: `Turbines`]
 A study of turbine failures [@MyersBook; @NelsonLifeData] ran $73$ turbines for around $1800$\ hrs, and found that seven developed fissures (small cracks).
 They also ran a different set of $42$ turbines for about $3000$\ hrs, and found that nine developed fissures.
 
@@ -1019,7 +991,7 @@ rownames(SOI.tab) <- c("Non-positive SOI",
 
 ::: {.exercise #OddsRatiosCIAugustRainfall}
 [*Dataset*: `EmeraldAug`]
-The *Southern Oscillation Index* (SOI) is a standardised measure of the air pressure difference between Tahiti and Darwin, and is related to rainfall in some parts of the world [@climate:stone:1996], and especially Queensland [@climate:stone:1992; @mypapers:Dunn:bootstrap:2001].
+The *Southern Oscillation Index* (SOI) is a standardised measure of the air pressure difference between Tahiti and Darwin, and is related to rainfall in some parts of the world [@climate:stone:1996], and especially Queensland [@climate:stone:1992].
 
 The rainfall at Emerald (Queensland) was recorded for Augusts between 1889 to 2002 inclusive [@mypapers:dunnsmyth:glms], where the monthly average SOI was positive, and when the SOI was non-positive (that is, zero or negative), as shown in Table\ \@ref(tab:SOItableCI).
 
@@ -1077,16 +1049,6 @@ knitr::include_graphics( "jamovi/EmeraldRain/EmeraldRainOR.png")
 
 
 ```{r SOItableCI}
-# if( knitr::is_latex_output() ) {
-#   kable( t(SOI.tab),
-#          format = "latex",
-#          booktabs = TRUE,
-#          longtable = FALSE,
-#          caption = "The SOI, and whether rainfall was recorded in Augusts between 1889 and 2002 inclusive") %>%
-#   row_spec(0, bold = TRUE) %>%
-#   kableExtra::kable_styling(latex_options = "hold_position") %>%
-#   kable_styling(font_size = 8)
-# }
 if( knitr::is_html_output() ) {
   kable( pad(t(SOI.tab),
                   surroundMaths = TRUE,
@@ -1119,7 +1081,7 @@ SG.Table.GenderHat <- xtabs(Count ~ Hat + Gender,
 
 ::: {.exercise #CIOddsRatioSunglasses}
 [*Dataset*: `HatSunglasses`]
-A research study conducted in Brisbane [@data:Dexter2019:SunProtection] recorded the number of people at the foot of the Goodwill Bridge, Southbank, who wore hats between $11$:$30$am to $12$:$30$pm.
+@data:Dexter2019:SunProtection recorded the number of people at the foot of the Goodwill Bridge, Brisbane, who wore hats between $11$:$30$am to $12$:$30$pm.
 Of the $386$ males observed, $79$ wore hats; of the $366$ females observed, $22$ wore hats.
 
 Using the jamovi output in Fig.\ \@ref(fig:SunglassesSPSSOutputCI), find a $95$%\ CI for the OR, and carefully explain what OR this CI applies to.
@@ -1136,7 +1098,7 @@ knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-CI.png" )
 
 ::: {.exercise #PetBirdsCI}
 [*Dataset*: `PetBirds`]
-A study examined people with lung cancer, and a matched set of controls who did not have lung cancer, and compared the proportion in each group that kept pet birds [@data:Kohlmeier1992:BirdsCancer]. 
+@data:Kohlmeier1992:BirdsCancer examined people with lung cancer, and a matched set of controls who did not have lung cancer, and recorded the number in each group that kept pet birds. 
 One RQ of the study was:
 
 > What is the odds ratio of keeping a pet bird, comparing people *with* lung cancer (cases) compared to people *without* lung cancer (controls)?
@@ -1192,25 +1154,25 @@ if( knitr::is_html_output() ) {
 
 
 
-```{r PetBirdsCIjamovi, fig.show="hold", fig.cap="jamovi output for the pet-birds data", fig.align="center", out.width="55%"}
+```{r PetBirdsCIjamovi, fig.show="hold", fig.cap="jamovi output for the pet-birds data", fig.align="center", out.width="50%"}
 knitr::include_graphics( "jamovi/PetBirds/PetsOR.png")
 ```
 
 
-```{r PetBirdsCIjamoviExpected, fig.show="hold", fig.cap="The expected (and observed) counts as computed by jamovi for the pet-birds data", fig.align="center", out.width="95%"}
+<!-- ```{r PetBirdsCIjamoviExpected, fig.show="hold", fig.cap="The expected (and observed) counts as computed by jamovi for the pet-birds data", fig.align="center", out.width="95%"} -->
 
-knitr::include_graphics("jamovi/PetBirds/Pets-ExpectedCounts.png")
-```
+<!-- knitr::include_graphics("jamovi/PetBirds/Pets-ExpectedCounts.png") -->
+<!-- ``` -->
 
 
 ::: {.exercise #B12DeficiencyCI}
 [*Dataset*: `B12Long`]
-A study in New Zealand [@data:Gammon2012:B12] examined B12 deficiencies in 'predominantly overweight/obese women of South Asian origin living in Auckland', some of whom were on a vegetarian diet and some of whom were on a non-vegetarian diet.
+@data:Gammon2012:B12 examined B12 deficiencies in 'predominantly overweight/obese women of South Asian origin living in Auckland', some of whom were on a vegetarian diet and some of whom were on a non-vegetarian diet.
 One RQ was:
 
 > What is the odds ratio of these women being B12 deficient, comparing vegetarians to non-vegetarians?
 
-The data appear in Table\ \@ref(tab:B12DataCI), and the jamovi output in Figs.\ \@ref(fig:B12SPSSOutputCIjamovi) and\ \@ref(fig:B12jamoviExpectedCounts).
+The data appear in Table\ \@ref(tab:B12DataCI), and the jamovi output in Fig.\ \@ref(fig:B12SPSSOutputCIjamovi).
 
 1. Construct a numerical summary table.
 1. Sketch a graphical summary.
@@ -1264,15 +1226,12 @@ if( knitr::is_html_output() ) {
 ```
 
 
-```{r B12SPSSOutputCIjamovi, fig.show="hold", fig.cap="jamovi output for the B12 data", fig.align="center", out.width="48%"}
+```{r B12SPSSOutputCIjamovi, fig.show="hold", fig.cap="jamovi output for the B12 data. Left: the OR and confidence interval. Right: expected counts", fig.align="center", out.width=c("48%","51%"), fig.show='hold'}
 knitr::include_graphics( "jamovi/B12/B12OR.png")
+knitr::include_graphics( "jamovi/B12/B12-Expected.png")
 #knitr::include_graphics( "SPSS/B12/B12OR.png")
 ```
 
-
-```{r B12jamoviExpectedCounts, fig.show="hold", fig.cap="The expected counts from jamovi for the B12 data", fig.align="center", out.width="70%"}
-knitr::include_graphics( "jamovi/B12/B12-Expected.png")
-```
 
 
 
@@ -1282,7 +1241,6 @@ knitr::include_graphics( "jamovi/B12/B12-Expected.png")
 `r if (knitr::is_html_output()) '<!--'`
 ::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
 **Answers to in-chapter questions:**
-
 \textbf{\textit{Quick Revision} questions:}
 **1.** 75.
 **2.** 3.
