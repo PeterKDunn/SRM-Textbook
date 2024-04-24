@@ -14,11 +14,11 @@
 
 ### SET UP 
 
-splitFiles <- c(15, 
-                31,
-                68, 
-                100,
-                126, 
+splitFiles <- c(18, 
+                42,
+                80, 
+                120,
+                150, 
                 1540)
 # Where to split the data file, for page 1, to create two columns. 
 # So if e.g., split = 20, we will have 20 files listed, then move to col 2, then another 20 files listed.

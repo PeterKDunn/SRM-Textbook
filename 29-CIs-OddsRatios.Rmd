@@ -26,25 +26,12 @@ Both qualitative variables have two levels, so the two-way table\index{Two-way t
 
 
 ```{r MealsDataTable}
-Counts <- c(52, 105, 2, 24)
-Live <- rep( c(1, 2), 2)
-Live <- ordered(Live,
-                levels = 1:2,
-                labels = c("Lives with parents", 
-                           "Doesn't live with parents") )
-Meals <- c( rep(1, 2), 
-            rep(2, 2))
-Meals <- ordered(Meals, 
-                 levels = 1:2,
-                 labels = c("Most meals off-campus", 
-                            "Most meals on-campus"))
+data(StudentsEat)
 
-Eating <- data.frame(Counts = Counts,
-                     Live = Live,
-                     Meals = Meals)
 
-Eating.tab <- Eating.tab.Counts <- xtabs(Counts ~ Meals + Live + Meals, 
-                                         data=Eating)
+Eating.tab <- Eating.tab.Counts <-  xtabs( ~ Meals + Live, 
+                                           data = StudentsEat)
+
 Eating.tab <- cbind( Eating.tab, 
                      "Total" = rowSums(Eating.tab))
 Eating.tab <- rbind( Eating.tab, 
@@ -66,7 +53,6 @@ if( knitr::is_latex_output() ) {
         caption = "Where university students live and eat") %>%
      column_spec(1, bold = TRUE) %>%
      row_spec(0, bold = TRUE) %>%
-     row_spec(2, hline_after = TRUE) %>%
      kable_styling(font_size = 8) %>%
     add_header_above( c(" " = 1, 
                         "Lives" = 1,
@@ -120,7 +106,7 @@ For this reason, defining your OR in the same way makes sense.
 With two qualitative variables, an appropriate numerical summary includes the odds and percentages for the outcome (for both comparison groups) and the sample sizes.
 From these data, the odds of eating most meals *off-campus* is:
 
-* $52 \div  2 = 26     for students     *living with their parents* (Column\ 1).
+* $52 \div  2 = 26$    for students     *living with their parents* (Column\ 1).
 * $105\div 24 = 4.375$ for students *not living with their parents* (Column\ 2).
 
 (Notice the numbers in the *second* row are always on the bottom of the fraction.)
@@ -172,8 +158,9 @@ if( knitr::is_latex_output() ) {
                       "size"),
        caption = "The odds and percentage of university students eating most meals off-campus" 
   ) %>%
-     row_spec(3, italic = TRUE) %>%
      row_spec(0, bold = TRUE) %>%
+     row_spec(3, italic = TRUE) %>%
+     row_spec(2, hline_after = TRUE) %>%
    add_header_above( c(" ", "Odds having most" = 1, 
                        "Percentage having" = 1,
                        "Sample" = 1),
@@ -497,6 +484,7 @@ TNsummary[3, 1] <- TNsummary[1, 1] / TNsummary[2, 1]
                      "size")) %>%
     row_spec(0, bold = TRUE) %>%
     row_spec(3, italic = TRUE) %>%
+    row_spec(2, hline_after = TRUE) %>%
     add_header_above( c( " " = 1,
                          "Odds" = 1,
                          "Percentage" = 1,
