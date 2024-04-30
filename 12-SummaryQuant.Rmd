@@ -39,6 +39,200 @@ Quantitative data can be collated in a *frequency table*\index{Frequency table!q
 The intervals should be *exhaustive* (cover all values) and *exclusive* (observations belong to one and only one category).
 While not essential, usually the categories are of equal size.
 
+For discrete quantitative data, bins are defined to contain single discrete values, or a small number of discrete values (Example\ \@ref(exm:CyclonesTable)).
+
+
+:::{.example #CyclonesTable}
+The data in
+`r if( knitr::is_html_output() ) {
+  'Fig.\\ \\@ref(fig:CycloneDataHTML)' } else {
+  'Table\\ \\@ref(tab:CycloneDataLATEX)'
+}`
+show the number of severe cyclones (also called hurricanes or typhoons) in the Australian region, for each year from 16969 to 2005.
+
+A frequency table can be constructed by binning each discrete value individually (Table\ \@ref(tab:CycloneDataLATEX), left table) or grouped in pairs (Table\ \@ref(tab:CycloneDataLATEX), right table).
+:::
+
+
+
+```{r}
+data(Cyclones)
+CC <- cbind(Cyclones$Year,
+            Cyclones$Severe)
+```
+
+```{r CyclonesLATEX}
+if( knitr::is_latex_output() ) {
+  T1 <- kable( pad(CC[1:5, ],
+                   surroundMaths = TRUE,
+                   targetLength = c(4, 2),
+                   digits = c(0, 0)),
+               format = "latex",
+               longtable = FALSE,
+               row.names = FALSE,
+               escape = FALSE,
+               align = c("c", "c"),
+               digits = c(0, 0),
+               col.names = c("Year", 
+                             "Number of cyclones"),
+               booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+
+  T2 <- kable( pad(CC[33:37, ],
+                   surroundMaths = TRUE,
+                   targetLength = c(4, 2),
+                   digits = c(0, 0)),
+               format = "latex",
+               longtable = FALSE,
+               row.names = FALSE,
+               escape = FALSE,
+               digits = c(0, 0),
+               align = c("c", "c"),
+               col.names = c("Year", 
+                             "Number of cyclones"),
+               booktabs = TRUE) %>%
+    row_spec(0, bold = TRUE)
+  
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "CycloneDataLATEX",
+                       caption = "The first five and last five observations (of $37$) of the number of severe cyclones recorded in the Australian region for each year") %>% 
+    kable_styling(font_size = 8)
+  out2 <- prepareSideBySideTable(out, 
+                                 gap = "\\qquad\\qquad") 
+  out2
+  
+}
+```
+```{r CycloneDataHTML, fig.cap="The cyclone data"}
+if( knitr::is_html_output() ) {
+      DT::datatable( CC,
+                     fillContainer = FALSE, # Make more room, so we don't just have ten values
+                     options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
+                     colnames = c("Year", 
+	                                "Number of cyclones"),
+                     caption = "The cyclone data"
+        )
+}
+```
+
+
+
+
+```{r CycloneTable}
+out <- hist(CC[, 2],
+            breaks = seq(2.5, 11.5, by = 1),
+            plot = FALSE)
+CCpercentage <- out$counts / sum(out$counts) * 100
+  
+CCtab <- array(dim = c(9, 3) )
+CCtab[, 2] <- out$counts 
+CCtab[, 3] <- round(CCpercentage) 
+CCtab[, 1] <- c(" $3$ cyclones",
+                " $4$ cyclones",
+                " $5$ cyclones",
+                " $6$ cyclones",
+                " $7$ cyclones",
+                " $8$ cyclones",
+                " $9$ cyclones",
+                "$10$ cyclones",
+                "$11$ cyclones")
+colnames(CCtab) <- c("Number cyclones", 
+                     "Number of years",
+                     "Percentage of years")
+
+CC2tab <- array(dim = c(5, 3) )
+out2 <- hist(CC[, 2],
+            breaks = seq(2.5, 12.5, by = 2),
+            plot = FALSE)
+CCpercentage <- out2$counts / sum(out2$counts) * 100
+
+CC2tab[, 2] <- out2$counts 
+CC2tab[, 3] <- round(CCpercentage) 
+CC2tab[, 1] <- c(" $3$ or $4$ cyclones",
+                " $5$ or $6$ cyclones",
+                " $7$ or $8$ cyclones",
+                " $9$ or $10$ cyclones",
+                "$11$ cyclones")
+colnames(CC2tab) <- c("Num. cyclones", 
+                     "Num. of years",
+                     "Percentage of years")
+
+if( knitr::is_latex_output() ) {
+  T1 <- kable( pad(CCtab,
+             surroundMaths = TRUE,
+             targetLength = c(0, 2, 2),
+             digits = 0),
+        format = "latex",
+        longtable = FALSE,
+        escape = FALSE,
+        align = c("r", "c", "c"),
+        valign = 't',
+        booktabs = TRUE,
+        linesep = c("","","\\addlinespace"),
+        row.names = FALSE,
+        col.names = c("cyclones",
+                      "years",
+                      "years")) %>%
+    add_header_above( c("Num. of",
+                        "Num. of",
+                        "Percentage of"),
+                      bold = TRUE,
+                      line = FALSE) %>%
+	row_spec(0, bold = TRUE)
+
+	  T2 <- kable( pad(CC2tab,
+             surroundMaths = TRUE,
+             targetLength = c(0, 2, 2),
+             digits = 0),
+        format = "latex",
+        longtable = FALSE,
+        escape = FALSE,
+        align = c("r", "c", "c"),
+        valign = 't',
+        booktabs = TRUE,
+        linesep = c("","","\\addlinespace"),
+        col.names = c("cyclones",
+                      "years",
+                      "years")) %>%
+    add_header_above( c("Number of",
+                        "Number of",
+                        "Percentage of"),
+                      bold = TRUE,
+                      line = FALSE) %>%
+	row_spec(0, bold = TRUE)
+	
+    out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "CycloneFreqTables",
+                       caption = "Two frequency tables for the severe cyclone data") %>% 
+    kable_styling(font_size = 8)
+  out2 <- prepareSideBySideTable(out, 
+                                 gap = "\\qquad") 
+  out2
+	
+}
+
+
+if( knitr::is_html_output() ) {
+ kable(pad(CCtab,
+             surroundMaths = TRUE,
+             targetLength = c(0, 2, 2),
+             digits = 0),
+               format = "html",
+               longtable = FALSE,
+               align = "c",
+               booktabs = TRUE,
+               row.names = FALSE,
+               caption = "The number of severe cyclones per year, displayed in a frequency table") %>%
+      kable_styling(full_width = FALSE)
+}
+```
+
+
+Care is needed when creating frequency tables for continuous quantitative data, since all continuous data are rounded.
+The bins should be defined to ensure no values lie on the border between bins (Example\ \@ref(exm:BabyBoomTable)).
+
 
 :::{.example #BabyBoomTable}
 The data in
@@ -49,8 +243,10 @@ The data in
 give the weights of $44$ babies born in a hospital on one day [@mypapers:Dunn:dataset:1999; @data:Steele:BabyBoom], plus the gender of each baby, and the number of minutes after midnight of the birth.
 The data are given in the order in which the births occurred.
 
-To display the distribution, the weights can be grouped into weight intervals (Table\ \@ref(tab:BabyBoomTable)).
-The percentages are also given; for example, the percentage of babies over $4.0$\ kg is $1/44 \times 100 = 2.27$%, or about $2$%. 
+To display the distribution, the weights can be grouped into clearly-defined weight intervals (Table\ \@ref(tab:BabyBoomTable), left column).
+Alternatively, the breaks between the bins can be given to one more decimal place than the data to avoid observations landing exactly on the bin divisions (final column).
+
+The table also gives percentages in each bin; for example, the percentage of babies over $4.0$\ kg is $1/44 \times 100 = 2.27$%, or about $2$%. 
 Most babies in the sample are between $3$ and $4$\ kg at birth.
 :::
 
@@ -130,20 +326,13 @@ if( knitr::is_html_output() ) {
 
 
 ```{r BabyBoomTable}
-data(BabyBoom)
-BB <- BabyBoom
-
-BB2 <- data.frame(Gender = factor(BB$Gender),
-                  "Weight (in kg)" = BB$Weight,
-                   Mins.Since.Midnight = BB$Mins.Since.Midnight)
-
 Wts <- BB$Weight
 out <- hist(Wts,
             plot = FALSE,
             right = FALSE)
 BBpercentage <- out$counts / sum(out$counts) * 100
   
-BBtab <- array(dim = c(6, 3) )
+BBtab <- array(dim = c(6, 4) )
 BBtab[, 2] <- out$counts 
 BBtab[, 3] <- round(BBpercentage) 
 BBtab[, 1] <- c("$1.5$\ kg to under $2.0$\ kg",
@@ -152,14 +341,22 @@ BBtab[, 1] <- c("$1.5$\ kg to under $2.0$\ kg",
                 "$3.0$\ kg to under $3.5$\ kg",
                 "$3.5$\ kg to under $4.0$\ kg",
                 "$4.0$\ kg to under $4.5$\ kg") 
+BBtab[, 4] <- c("$1.45$\ kg to $1.95$\ kg",
+                "$1.95$\ kg to $2.45$\ kg",
+                "$2.45$\ kg to $2.95$\ kg",
+                "$2.95$\ kg to $3.45$\ kg",
+                "$3.45$\ kg to $3.95$\ kg",
+                "$3.95$\ kg to $4.45$\ kg") 
+
 colnames(BBtab) <- c("Weight group", 
                      "Number of babies",
-                     "Percentage of babies")
+                     "Percentage of babies",
+                     "Alterative weight group")
 
 if( knitr::is_latex_output() ) {
   kable( pad(BBtab,
              surroundMaths = TRUE,
-             targetLength = c(0, 2, 2),
+             targetLength = c(0, 2, 2, 0),
              digits = 0),
         format = "latex",
         longtable = FALSE,
@@ -175,7 +372,7 @@ if( knitr::is_latex_output() ) {
 if( knitr::is_html_output() ) {
  kable(pad(BBtab,
              surroundMaths = TRUE,
-             targetLength = c(0, 2, 2),
+             targetLength = c(0, 2, 2, 0),
              digits = 0),
                format = "html",
                longtable = FALSE,
@@ -228,7 +425,59 @@ When the quantitative variable is discrete and the boxes have a width of one, so
 </div>
 
 
-::: {.example #Histograms name="Histograms"}
+::: {.example #Histograms name="Histograms (discrete data)"}
+Consider again the number of severe cyclones in the Australian region
+`r if( knitr::is_html_output() ) {
+  '(Fig.\\ \\@ref(fig:CycloneDataHTML)).'
+} else {
+  '(Table\ \\@ref(tab:CycloneDataLATEX)).'
+}`
+A histogram can be constructed from either frequency table in Table\ \@ref(tab:CycloneFreqTables); see
+`r if( knitr::is_html_output() ) {
+  'below.'
+} else {
+  'Fig.\\ \\@ref(fig:BBHist1).'
+}`
+The different bin sizes change the appearance of the distribution.
+:::
+
+```{r, fig.align="center", fig.cap="Two histograms of the severe-cyclone data", out.width='100%', fig.width=9.5, fig.height=3.25}
+par(mfrow = c(1, 2))
+
+hist( Cyclones$Severe,
+      breaks = seq(2.5, 11.5, by = 1),
+      axes = FALSE,
+      xlab = "Number of cyclones",
+      ylab = "Number of years",
+      main = "Number severe cyclones in Australian\nregion per year, from 1969 to 2005",
+      las = 1)
+axis(side = 2, 
+     las = 1)
+axis(side = 1,
+     at = 3:11)
+
+hist( Cyclones$Severe,
+      breaks = seq(2.5, 12.5, by = 2),
+      ylim = c(0, 20),
+      axes = FALSE,
+      xlab = "Number of cyclones",
+      ylab = "Number of years",
+      main = "Number severe cyclones in Australian\nregion per year, from 1969 to 2005",
+      las = 1)
+axis(side = 2, 
+     las = 1)
+axis(side = 1,
+     labels = c("3 or 4",
+                "5 or 6",
+                "7 or 8",
+                "9 or 10",
+                "11, 12"),
+     las = 1,
+     at = seq(3.5, 11.5, by = 2))
+```
+
+
+::: {.example #Histograms name="Histograms (continuous data)"}
 Consider again the weights (in kg) of babies born in a Brisbane hospital in one day
 `r if( knitr::is_html_output() ) {
   '(Fig.\\ \\@ref(fig:BabyBoomDataHTML)).'
