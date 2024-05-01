@@ -193,10 +193,11 @@ if( knitr::is_html_output() ) {
 
 
 
-```{r, SoilNGraphs, fig.align="center", fig.cap="The reduction in \\%N when sites are irrigated, compared to non-irrigated. Left: A histogram of the differences. Right: a case-profile plot (solid lines, solid dots for lower percentage N in irrigated sites).", fig.show="hold", out.width='100%', fig.width = 9.25, fig.height = 3.5}
+```{r, SoilNGraphs, fig.align="center", fig.cap="The reduction in \\%N when sites are irrigated, compared to non-irrigated. Left: A histogram of the differences (boundary values in the lower box). Right: a case-profile plot (solid lines, solid dots for lower percentage N in irrigated sites).", fig.show="hold", out.width='100%', fig.width = 9.25, fig.height = 3.5}
 par( mfrow = c(1, 2))
 
 hist(SoilN$Change,
+     right = FALSE,
      breaks = seq(-0.15, 0.20, by = 0.05),
      main = "Histogram of percentage\nsoil nitrogen reduction",
      xlab = "Reduction in %N",
@@ -249,16 +250,16 @@ Then, the RQ is asking if the mean difference is zero, or if it is *greater* tha
 The *parameter* is the *population mean difference*. 
 The notation used (recapping Sect.\ \@ref(SamplingDistMeanDifferencesCI)) is:
 
-* $\mu_d$: the mean *difference* in the *population* (in %).
-* $\bar{d}$: the mean *difference* in the *sample* (in %).
-* $s_d$: the *sample* standard deviation of the *differences* (in %).
+* $\mu_d$: the mean *difference* in the *population* (in %N).
+* $\bar{d}$: the mean *difference* in the *sample* (in %N).
+* $s_d$: the *sample* standard deviation of the *differences* (in %N).
 * $n$: the number of *differences*.
 
-The *null* hypothesis is 'there is *no mean change* in %N, in the population' (Sect.\ \@ref(AboutHypotheses)):
+The *null* hypothesis is that 'there is *no mean change* in %N, in the population' (Sect.\ \@ref(AboutHypotheses)):
 
 * $H_0$: $\mu_d = 0$.
 
-This hypothesis, the initial *assumption*, postulates that the mean reduction may not be zero in the *sample* due to sampling variation.
+This hypothesis, which we initially *assume* to be true, postulates that the mean reduction may not be zero in the *sample*, due to sampling variation.
 
 Since the RQ asks specifically if mean %N *decreases*, the alternative hypothesis is *one-tailed* (Sect.\ \@ref(AboutHypotheses)).
 According to how the differences have been defined, the alternative hypothesis is:
@@ -272,9 +273,9 @@ This hypothesis says that the mean change in the population is *greater than* ze
 ## Sampling distribution for $\bar{d}$ {#SamplingDistMeanDifferencesHT}
 \index{Sampling distribution!mean difference}
 
-The *sample* mean %N reduction varies depending on which one of the many possible samples is randomly obtained, *even if* the mean reduction in the population is zero.
+The *sample* mean %N reduction varies depending on which one of the countless possible samples is randomly obtained, *even if* the mean reduction in the population is zero.
 That is, the value of $\bar{d}$ varies across all possible samples even if $\mu_d = 0$.
-The sample mean changes $\bar{d}$ have a sampling distribution.
+The value of $\bar{d}$ has a sampling distribution.
 
 
 ::: {.definition #DEFSamplingDistributionMeanDiff name="Sampling distribution of a sample mean difference"}
@@ -359,6 +360,17 @@ text(x = mn,
      y = 0.7 * max(out$y),
      pos = 3,
      labels = expression(bar(italic(d)) == 0.0282) )
+
+points(x = mn,
+       y = 0,
+       pch = 19,
+       cex = 0.6)
+mtext(text = expression( italic(z) == 2.41),
+      side = 1,
+      at = mn,
+      cex = 0.8,
+      line = 0
+      )
 ```
 
 
@@ -379,9 +391,9 @@ Software also displays the $t$-score (Fig.\ \@ref(fig:Nitrogenjamovi)).
 \index{68@$68$--$95$--$99.7$ rule}
 
 A $P$-value determines if the sample data are consistent with the assumption (Table\ \@ref(tab:PvaluesInterpretation)).
-Since $t = 2.41$, and since $t$-scores are like $z$-scores, the *one-tailed* $P$-value is small, based on the $68$--$95$--$99.7$ rule.
-Software (Fig.\ \@ref(fig:Nitrogenjamovi)) reports that the *two-tailed* $P$-value is $0.02279$.
-Hence, the one-tailed $P$-value is $0.02279/2 = 0.0114$.
+Since $t = 2.41$, and since $t$-scores are like $z$-scores, the *one*-tailed $P$-value is smaller $0.025$ (based on the $68$--$95$--$99.7$ rule).
+Software (Fig.\ \@ref(fig:Nitrogenjamovi)) reports that the *two*-tailed $P$-value is $0.02279$.
+Hence, the *one*-tailed $P$-value is $0.02279/2 = 0.0114$.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -399,11 +411,12 @@ At the left of the output (Fig.\ \@ref(fig:Nitrogenjamovi)), the order implies t
 
 ## Writing conclusions
 
-The *one-tailed* $P$-value is $0.0114$, suggesting moderate evidence (Table\ \@ref(tab:PvaluesInterpretation)) to support $H_1$.
-A conclusion requires an *answer to the RQ*, a summary of the *evidence* leading to that conclusion, and some *summary statistics*, including a CI (indicating the precision of the statistic; Chap.\ \@ref(PairedIntro)):
+The one-tailed $P$-value is $0.0114$, suggesting moderate evidence (Table\ \@ref(tab:PvaluesInterpretation)) to support $H_1$.
+A conclusion requires an *answer to the RQ*, a summary of the *evidence* leading to that conclusion, and some *summary statistics*:
 
 > Moderate evidence exists in the sample (paired $t = 2.41$; one-tailed $P = 0.0114$) of a mean reduction in percentage soil N  from non-irrigated to irrigated sites (mean reduction: $0.0282$%; $n = 28$; $95$% CI from $0.0042$% to $0.0522$%).
 
+The CI is found using the process described in Chap.\ \@ref(PairedIntro).
 The wording implies the direction of the differences.
 
 
@@ -419,14 +432,16 @@ You must state *which* measurement is, on average, higher (that is, what the dif
 As with any hypothesis test, these results apply under certain conditions.
 For a hypothesis test for the mean of paired data, these conditions are the same as for the CI for the mean difference for paired data (Sect.\ \@ref(ValidityPaired)), and similar to those for one sample mean.
 
-The test above is statistically valid if *one* of these conditions is true:
+Statistical validity can be assessed using these criteria:
 
-1. The number of differences $n$ is at least $25$; *or*
-1. The number of differences $n$ is less than $25$, *and* the *population* of *differences* has an approximate normal distribution.
+* When $n > 25$, the test is statistically valid provided the distribution of differences is *not* highly skewed.
+* When $n \le 25$, the test is statistically valid only if the data come from a *population* of differences with a normal distribution.
 
 The sample size of $25$ is a rough figure; some books give other values (such as $30$).
 This condition ensures that the *distribution of the sample mean differences has an approximate normal distribution* (so that, for example, the $68$--$95$--$99.7$ rule can be used).
 Provided $n > 25$, this will be approximately true *even if* the distribution of the differences in the population does not have a normal distribution.
+
+
 
 
 ::: {.example #StatisticalValidityWeightLossHT name="Statistical validity"}
@@ -439,9 +454,9 @@ For the %N data, the sample size is $n = 28$, so the test is statistically valid
 
 (This study was seen in Sect.\ \@ref(PairedInvasivePlantsCI).)
 Skypilot is a alpine wildflower native to the Colorado Rocky Mountains (USA).
-In recent years, a willow shrub (*Salix*) has been encroaching on skypilot territory and, because willow often flowers early, researchers [@kettenbach2017shrub] are concerned that the willow may 'negatively affect pollination regimes of resident alpine wildflower species' (p.\ 6965).
+In recent years, a willow shrub (*Salix*) has been encroaching on skypilot territory and, because willow often flowers early, @kettenbach2017shrub studied whether the willow may 'negatively affect pollination regimes of resident alpine wildflower species' (p.\ 6965).
 
-Data for both species was collected at $25$ different sites, so the data are *paired* by site (Sect.\ \@ref(PairedIntro)).
+Data for both species was collected at $n = 25$ different sites, so the data are *paired* by site (Sect.\ \@ref(PairedIntro)).
 The data are shown in
 `r if( knitr::is_latex_output() ) {
     'Table\\ \\@ref(tab:FloweringData).'
@@ -462,9 +477,9 @@ where the alternative hypothesis is two-tailed.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-Explaining *how* the differences are computed is important.  
-
+Explaining *how* the differences are computed is important.
 The differences here are skypilot minus willow first-flowering days.
+
 However, the differences could be computed as willow minus skypilot first-flowering days.
 *Either is fine*, as long as you remain consistent.
 The *meaning* of any conclusions will be the same.  
@@ -550,20 +565,20 @@ if( knitr::is_html_output() ) {
 ```
 
 The standard error of the mean difference is $\text{s.e.}(\bar{d}) = 0.9396$ (Fig.\ \@ref(fig:Floweringjamovi) or Table\ \@ref(tab:FloweringSummary)).
-The value of the test statistic (i.e., the $t$-score) is  
+The value of the test statistic (i.e., the $t$-score) is
 \begin{align*}
   t 
   = \frac{\bar{d} - \mu_d}{\text{s.e.}(\bar{d})}
   = \frac{1.36 - 0}{0.9396} = 1.45,
 \end{align*}
 as in the output.
-This is a small value of $t$, so a large $P$-value is expected using the $68$--$95$--$99.7$ rule.
-Indeed, the output shows that $P = 0.161$: there is *no evidence* of a mean difference in first-flowering day(i.e., the sample mean difference could reasonably be explained by sampling variation).
+This is a relatively small value of $t$, so a large $P$-value is expected using the $68$--$95$--$99.7$ rule.
+Indeed, the output shows that $P = 0.161$: there is *no evidence* of a mean difference in first-flowering day (i.e., the sample mean difference could reasonably be explained by sampling variation if $\mu_d = 0$).
 We write:
 
 > No evidence exists ($t = 1.45$; two-tailed $P = 0.161$) that the day of first-flowering is different for the encroaching willow and the native skypilot (mean difference: $1.36$ days earlier for willow; $95$% CI from $-0.57$ to $3.30$; $n = 25$).
 
-The CI is statistically valid since $n = 25$.
+The test is statistically valid since $n = 25$.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -576,10 +591,11 @@ Make sure to interpret the CI consistent with how the differences were defined.
 ## Example: chamomile tea {#ChamomileTea-Paired-HT}
 
 (This study was seen in Sects.\ \@ref(ChamomileTea-Paired-CI) and\ \@ref(ChamomileTea-TwoMeans-CI).)
-A study of patients with Type\ 2 diabetes mellitus (T2DM) randomly allocated $32$ patients into a control group (who drank hot water), and $32$ to receive chamomile tea [@rafraf2015effectiveness].
-Summary data are in Table\ \@ref(tab:TGsummaryTable).
+@rafraf2015effectiveness studied patients with Type\ 2 diabetes mellitus (T2DM).
+They randomly allocated $32$ patients into a control group (who drank hot water), and another $32$ patients to receive chamomile tea.
+Summary data are shown in Table\ \@ref(tab:TGsummaryTable).
 
-In Sect.\ \@ref(ChamomileTea-Paired-CI), a CI was formed for the mean reduction in total glucose (TG) for each group separately.
+In Sect.\ \@ref(ChamomileTea-Paired-CI), a CI was formed for the mean reduction in total glucose (TG) for the hot water and the tea groups separately.
 However, we can also ask about whether the mean differences in TG are non-zero due to sampling variation or not.
 The following descriptive RQs can be asked:
 
@@ -589,8 +605,8 @@ The following descriptive RQs can be asked:
 The hypotheses are:
 
 \begin{align*}
-  \text{Tea group}:      \qquad & \text{$H_0$: } \mu_d = 0\quad \text{vs}\quad\text{$H_1$: } \mu_d \ne 0;\\
-  \text{Hot water group:}\qquad & \text{$H_0$: } \mu_d = 0\quad \text{vs}\quad\text{$H_1$: } \mu_d \ne 0.
+  \text{Chamomile tea group}: \qquad & \text{$H_0$: } \mu_d = 0\quad \text{vs}\quad\text{$H_1$: } \mu_d \ne 0;\\
+  \text{Hot water group:}.    \qquad & \text{$H_0$: } \mu_d = 0\quad \text{vs}\quad\text{$H_1$: } \mu_d \ne 0.
 \end{align*}
 
 For the two groups, the test statistics are (using the standard errors in Sect.\ \@ref(ChamomileTea-Paired-CI)):  
@@ -602,18 +618,17 @@ The $t$-score for the tea-drinking group is *huge*, so the two-tailed $P$-value 
 This means that there is evidence that chamomile tea had an impact on the mean change in TG.
 
 In contrast, the $t$-score for the water-drinking group is *small*, so the two-tailed $P$-value will be *large* using the $68$--$95$--$99.7$ rule, and certainly larger than $0.10$.
-This means that there is no evidence that placebo treatment (hot water) had any impact on mean change in TG, as one might expect.
+This means there is no evidence that placebo treatment (hot water) had any impact on mean change in TG (as one might expect for a placebo).
 
 We can write:
 
 > There is very strong evidence ($t = 7.19$; two-tailed $P < 0.001$) of a mean change in TG for the chamomile-drinking groups (mean reduction: $38.62$\ mg.dl^-1^; $n = 32$; approx. $95$% CI: $27.88$ to $49.36$\ mg.dl^-1^), but *no* evidence ($t = -1.10$; two-tailed $P > 0.10$) of a mean change in the hot-water drinking group (mean reduction: $-7.12$\ mg.dl^-1^; $n = 32$; approx. $95$% CI: $-20.08$ to $5.84$\ mg.dl^-1^).
 
-These interval have a $95$% chance of straddling the mean difference in the reductions in TG.
 The sample sizes are larger than $25$, so the results are statistically valid.
 
 The two groups appear to show different mean reductions in TG, depending on which group the subject is in.
-This may suggest that chamomile tea reduces TG compared to the control... but perhaps the difference is simply due to sampling variation.
-Studying this is considered in Sect.\ \@ref(ChamomileTea-TwoMeans-HT).
+This may suggest that chamomile tea reduces TG compared to the control... but perhaps the difference in TG between the hot water and tea groups is simply due to sampling variation.
+This is considered in Sect.\ \@ref(ChamomileTea-TwoMeans-HT).
 
 
 <iframe src="https://learningapps.org/watch?v=pj3pt56fk22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
@@ -627,14 +642,14 @@ Under certain statistical validity conditions, the sample mean difference varies
 \[
    \text{s.e.}(\bar{d}) = \frac{s_d}{\sqrt{n}}.
 \]
-This distribution describes what values of the sample mean difference could be **expected** if the value of $\mu_d$ in the null hypothesis was true.
+This distribution describes what values of the sample mean difference could be *expected* if the value of $\mu_d$ in the null hypothesis was true.
 The *test statistic* is  
 \[
    t = \frac{ \bar{d} - \mu_{\bar{d}}}{\text{s.e.}(\bar{d})},
 \]
 where $\mu(\bar{d})$ is mean of all the possible sample mean differences; its value is the hypothesised value in the null hypothesis.
-The $t$-score describes what value of $\bar{d}$ was **observed** in the sample, relative to what was expected.
-The $t$-value is like a $z$-score, so an approximate **$P$-value** can be estimated using the $68$--$95$--$99.7$ rule, or is found using software.
+The $t$-score describes what value of $\bar{d}$ was *observed* in the sample, relative to what was expected.
+The $t$-value is like a $z$-score, so an approximate *$P$-value* can be estimated using the $68$--$95$--$99.7$ rule, or is found using software.
 The $P$-values helps determine if the sample evidence is consistent with the assumption, or contradicts the assumption.
 
 
