@@ -606,9 +606,9 @@ Using $\hat{p} = 0.44$ and $n = 25$, then
 So, the approximate $95$%\ CI (using the approximate multiplier of $2$ from the $68$--$95$--$99.7$ rule) is $0.44 \pm (2 \times 0.099277)$, or from $0.241$ to $0.639$.
 This confidence interval is an interval containing values of $p$ that could have reasonably produced the observed value of $\hat{p}$
 `r if (knitr::is_latex_output()) {
-   '(Fig.\\ \\@ref(fig:pProducingpHat)),'
+   '(Fig.\\ \\@ref(fig:pProducingpHatLATEX)),'
 } else {
-   '(see the animation below),'
+   '(Fig.\\ \\@ref(fig:pProducingpHatHTML)),'
 }`
 with $95$% confidence.
 
@@ -637,7 +637,7 @@ locateY <- (-maxY * 1.2)
 ```
 
 
-```{r fig.show="animate", animation.hook="gifski", interval=0.4, loop=FALSE}
+```{r pProducingpHatHTML, fig.show="animate", animation.hook="gifski", interval=0.4, loop=FALSE, fig.cap="The CI gives an interval containing values of $p$ that may have produced the observed value of $\\hat{p}$. Here, the CI is $0.241$ to $0.639$.", fig.align="center"}
 if (knitr::is_html_output()){
 
 par( #mfrow = c(1, 4),
@@ -674,56 +674,49 @@ for (i in 1:length(pVec)){
                    SI = c(siLo, siHi),
                    maxY,
                    locateY)
-}
+  }
 }
 ```
 
 
 
-```{r pProducingpHat, fig.width=7.5, fig.height=8, out.width='100%', fig.cap="The CI gives an interval containing values of $p$ that may have produced the observed value of $\\hat{p}$. Here, the CI is $0.241$ to $0.639$.", fig.align="center"}
-if (knitr::is_latex_output()){
+```{r pProducingpHatLATEX, fig.width=7.5, fig.height=8, out.width='100%', fig.cap="The CI gives an interval containing values of $p$ that may have produced the observed value of $\\hat{p}$. Here, the CI is $0.241$ to $0.639$.", fig.align="center"}
+if (knitr::is_latex_output()) {
+  par(mfrow = c(2, 2), mar = c(0.25, 0.3, 4.5, 0.3))
 
-  par( mfrow = c(2, 2),
-       mar = c(0.25, 0.3, 4.5, 0.3) )
+  pVec <- c(0.25, 0.4, 0.60, 0.70)
 
-  pVec <- c(0.25, 0.4, 0.60, 0.70 )
-  
-for (i in 1:length(pVec)){
-  pInCI <- ifelse( (pVec[i] > ciLo) & (pVec[i] < ciHi), 
-                   TRUE, 
-                   FALSE )
-  
-  
-  siLo <- pVec[i] - 2 * pStdDev
-  siHi <- pVec[i] + 2 * pStdDev
-  
+  for (i in 1:length(pVec)) {
+    pInCI <- ifelse((pVec[i] > ciLo) & (pVec[i] < ciHi), TRUE, FALSE)
 
-  ## Canvas
-  par(mar = c(0.3, 0.3, 4.5, 0.3) )
 
-  plot( x = c(0, 1),
-        y = c(maxY * 2.25, 
-              -maxY * 2.15),
-        type = "n",
-        axes = FALSE,
-        ylab = "",
-        xlab = expression(Values~of~hat(italic(p))))
+    siLo <- pVec[i] - 2 * pStdDev
+    siHi <- pVec[i] + 2 * pStdDev
+
+    ## Canvas
+    par(mar = c(0.3, 0.3, 4.5, 0.3))
+
+    plot(x = c(0, 1),
+         y = c(maxY * 2.25, -maxY * 2.15),
+         type = "n",
+         axes = FALSE,
+         ylab = "",
+         xlab = expression(Values ~ of ~ hat(italic(p)))
+         )
 #box()
 #box("outer", col = "purple")
 #box("inner", col = "green")
-box("figure", col="grey")
-  drawCI( CI = c(ciLo, ciHi),
-          pInCI,
-          locateY,
-          pVec[i])
-  
-  drawDistribution(mu = pVec[i], 
-                   sd = 0.1, 
-                   pHat = pHat,
-                   SI = c(siLo, siHi),
-                   maxY,
-                   locateY)
-}
+    box("figure", col = "grey")
+    drawCI(CI = c(ciLo, ciHi), 
+           pInCI, locateY, pVec[i])
+
+    drawDistribution(mu = pVec[i],
+                     sd = 0.1,
+                     pHat = pHat,
+                     SI = c(siLo, siHi),
+                     maxY,
+                     locateY)
+  }
 }
 ```
 
@@ -732,7 +725,7 @@ box("figure", col="grey")
 
 <!-- ---  -->
 
-<!-- ```{r, pProducingpHat, out.width='100%', fig.width=6, fig.height=2, fig.align="center", fig.cap="Various possible values for $p$, and the corresponding $95$\\% sampling intervals (i.e., the values of $\\hat{p}$ these are likely to produce)."} -->
+<!-- ```{r, pProducingpHatOLD, out.width='100%', fig.width=6, fig.height=2, fig.align="center", fig.cap="Various possible values for $p$, and the corresponding $95$\\% sampling intervals (i.e., the values of $\\hat{p}$ these are likely to produce)."} -->
 <!-- par(mfrow = c(1, 4), -->
 <!--     mar = c(4, 0.3, 4, 0.3) ) -->
 
@@ -1071,7 +1064,12 @@ More formally, a CI is an interval which contains the unknown parameter a given 
 If a $95$% confidence interval (or CI) is computed from many samples, about $95$% of the CIs would straddle the *parameter*.
 Of course, we only have one sample, so we never know if our sample contains the value of $p$ or not.
 
-A confidence interval is an interval containing values of $p$ that could have reasonably produced the observed value of $\hat{p}$ (Fig.\ \@ref(fig:pProducingpHat)).
+A confidence interval is an interval containing values of $p$ that could have reasonably produced the observed value of $\hat{p}$ 
+`r if (knitr::is_latex_output()) {
+   '(Fig.\\ \\@ref(fig:pProducingpHatLATEX)).'
+} else {
+   '(Fig.\\ \\@ref(fig:pProducingpHatHTML)).'
+}`
 In general, a CI for the population proportion $p$ is found using  
 \[
   \hat{p} \pm ( \text{multiplier} \times \text{s.e.}(\hat{p})),
