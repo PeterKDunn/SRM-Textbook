@@ -197,6 +197,16 @@ showAIMRAD <- function(debug = FALSE){
                      box.col = "lightcoral",
                      lcol = "lightcoral")
   
+  arrows(x0 = 0.75, # 0.70!!
+         y0 = pos[1, 2] - 0.75 * yDelta,
+         x1 = 0.75, # 0.70!
+         y1 = pos[1, 2] ,
+         col = "black",
+         code = 2,
+         angle = 15,
+         length = 0.1)
+  
+  
   
   # POINT TO DISCUSSION
   yLow <- pos[3, 2] - 0.75 * yDelta
