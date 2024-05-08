@@ -1,10 +1,14 @@
 showAIMRAD <- function(debug = FALSE){
 
   openplotmat(mar = c(0.10, 0.10, 0.10, 0.10))
-#  shape::emptyplot(mar = c(0.05, 0.05, 0.05, 0.05),
-#                   asp = NULL)
-#  diagram::openplotmat()
   
+  paperColour <- ifelse(knitr::is_html_output(), 
+                        "lightcoral",
+                        grey(0.85) )
+  stepsColour <- ifelse(knitr::is_html_output(),
+                        "darkseagreen1",
+                        grey(0.75) )
+
   pos <- array(NA, 
                dim = c(13, 2))
   
@@ -45,16 +49,16 @@ showAIMRAD <- function(debug = FALSE){
                      radx = 0.11, 
                      rady = 0.035, 
                      shadow.size = 0
-                     #           box.col="lightcoral",
-                     #           lcol="lightcoral"
+                     #           box.col=paperColour,
+                     #           lcol=paperColour
   )
   diagram::textrect( pos[13, ], 
                      lab = "PROCESS", 
                      radx = 0.11, 
                      rady = 0.035, 
                      shadow.size = 0
-                     #           box.col="lightcoral",
-                     #           lcol="lightcoral"
+                     #           box.col=paperColour,
+                     #           lcol=paperColour
   )
   
   
@@ -119,29 +123,29 @@ showAIMRAD <- function(debug = FALSE){
                      radx = 0.11,
                      rady = 0.025,
                      shadow.size = 0,
-                     box.col = "lightcoral",
-                     lcol = "lightcoral")
+                     box.col = paperColour,
+                     lcol = paperColour)
   diagram::textrect( pos[2, ], 
                      lab = "Methods", 
                      radx = 0.11, 
                      rady = 0.035, 
                      shadow.size = 0,
-                     box.col = "lightcoral",
-                     lcol = "lightcoral")
+                     box.col = paperColour,
+                     lcol = paperColour)
   diagram::textrect( pos[3, ], 
                      lab = "Results", 
                      radx = 0.11, 
                      rady = 0.035, 
                      shadow.size=0,
-                     box.col = "lightcoral",
-                     lcol = "lightcoral")
+                     box.col = paperColour,
+                     lcol = paperColour)
   diagram::textrect( pos[4, ], 
                      lab = "Discussion", 
                      radx = 0.11, 
                      rady = 0.035, 
                      shadow.size = 0,
-                     box.col = "lightcoral",
-                     lcol = "lightcoral")
+                     box.col = paperColour,
+                     lcol = paperColour)
   # textrect( pos[5, ], 
   #            lab = "Discussion", 
   #            radx = 0.11, 
@@ -157,43 +161,43 @@ showAIMRAD <- function(debug = FALSE){
                      radx = 0.20, 
                      rady = 0.035, 
                      shadow.size = 0,
-                     box.col = "darkseagreen1",
-                     lcol = "darkseagreen1")
+                     box.col = stepsColour,
+                     lcol = stepsColour)
   diagram::textrect( pos[7, ], 
                      lab = "Study design", 
                      radx = 0.20, 
                      rady = 0.035, 
                      shadow.size = 0,
-                     box.col = "darkseagreen1",
-                     lcol = "darkseagreen1")
+                     box.col = stepsColour,
+                     lcol = stepsColour)
   diagram::textrect( pos[8, ], 
                      lab = "Data collection", 
                      radx = 0.20, 
                      rady = 0.035, 
                      shadow.size = 0,
-                     box.col = "darkseagreen1",
-                     lcol = "darkseagreen1")
+                     box.col = stepsColour,
+                     lcol = stepsColour)
   diagram::textrect( pos[9, ], 
                      lab = "Description, summary", 
                      radx = 0.20, 
                      rady = 0.035, 
                      shadow.size = 0,
-                     box.col = "darkseagreen1",
-                     lcol = "darkseagreen1")
+                     box.col = stepsColour,
+                     lcol = stepsColour)
   diagram::textrect( pos[10, ], 
                      lab = "Data analysis", 
                      radx = 0.20, 
                      rady = 0.035, 
                      shadow.size = 0,
-                     box.col = "darkseagreen1",
-                     lcol = "darkseagreen1")
+                     box.col = stepsColour,
+                     lcol = stepsColour)
   diagram::textrect( pos[11, ], 
                      lab = "Report results", 
                      radx = 0.20, 
                      rady = 0.035, 
                      shadow.size = 0,
-                     box.col = "darkseagreen1",
-                     lcol = "darkseagreen1")
+                     box.col = stepsColour,
+                     lcol = stepsColour)
   
   
   
@@ -203,8 +207,8 @@ showAIMRAD <- function(debug = FALSE){
                      radx = 0.11, 
                      rady = 0.035, 
                      shadow.size = 0,
-                     box.col = "lightcoral",
-                     lcol = "lightcoral")
+                     box.col = paperColour,
+                     lcol = paperColour)
   
   arrows(x0 = 0.70, 
          y0 = yHi,
@@ -246,8 +250,8 @@ showAIMRAD <- function(debug = FALSE){
   #            rady = 0.035, 
   #            shadow.size = 0,
   #            angle = 90,
-  #            box.col = "darkseagreen1",
-  #            lcol = "darkseagreen1")
+  #            box.col = stepsColour,
+  #            lcol = stepsColour)
   
   if (debug) {
     axis(side = 1)
