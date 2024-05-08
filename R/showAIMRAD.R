@@ -38,6 +38,7 @@ showAIMRAD <- function(debug = FALSE){
   pos[12, ] <- c(0.70, 0.95) ### TITLE: PAPER
   pos[13, ] <- c(0.20, 0.95) ### TITLE: PROCESS
   
+
   # TITLES
   diagram::textrect( pos[12, ], 
                      lab = "PAPER", 
@@ -101,6 +102,15 @@ showAIMRAD <- function(debug = FALSE){
                        arr.pos = arrowPosition,
                        lty = 1, 
                        lwd = 2)
+  
+  # Box  
+  yDelta <- ( pos[3, 2] - pos[4, 2]) / 2
+  yLow <- pos[3, 2] - 0.75 * yDelta
+  yHi  <- pos[1, 2] + 0.75 * yDelta
+  
+  polygon( x = c(0.60, 0.90, 0.90, 0.60) - 0.05,
+           y = c(yHi, yHi, yLow, yLow), 
+           lwd = 1)
   
   
   ### TEXT
@@ -188,7 +198,6 @@ showAIMRAD <- function(debug = FALSE){
   
   
   # ADD Abstract 
-  yDelta <- ( pos[3, 2] - pos[4, 2]) / 2
   diagram::textrect( mid = c( 0.7, pos[1, 2] + 2 * yDelta),
                      lab = "Abstract", 
                      radx = 0.11, 
@@ -197,24 +206,18 @@ showAIMRAD <- function(debug = FALSE){
                      box.col = "lightcoral",
                      lcol = "lightcoral")
   
-  arrows(x0 = 0.75, # 0.70!!
-         y0 = pos[1, 2] - 0.75 * yDelta,
-         x1 = 0.75, # 0.70!
-         y1 = pos[1, 2] ,
+  arrows(x0 = 0.70, 
+         y0 = yHi,
+         x1 = 0.70, 
+         y1 = pos[1, 2] + 1.5 * yDelta,
          col = "black",
          code = 2,
          angle = 15,
          length = 0.1)
   
   
-  
+
   # POINT TO DISCUSSION
-  yLow <- pos[3, 2] - 0.75 * yDelta
-  yHi  <- pos[1, 2] + 0.75 * yDelta
-  
-  polygon( x = c(0.60, 0.90, 0.90, 0.60) - 0.05,
-           y = c(yHi, yHi, yLow, yLow), 
-           lwd = 1)
   arrows(x0 = 0.70,
          y0 = pos[3, 2] - 0.75 * yDelta,
          x1 = 0.70,
