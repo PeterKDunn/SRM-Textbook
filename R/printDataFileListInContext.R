@@ -16,8 +16,8 @@
 
 splitFiles <- c(18, 
                 42,
-                80, 
-                120,
+                75, 
+                110,
                 150, 
                 1540)
 # Where to split the data file, for page 1, to create two columns. 
@@ -222,7 +222,7 @@ classifyDataMentionsTypes <- function(dataFiles){
     }
     if (substr(fileUsed[i], 2, 6) == "NHANE") { #faithful data set
       fileUsed[i] <- paste(fileUsed[i],
-                           "(*NHANES*)" )
+                           "(*NHANES* package)" )
     }
     
     
@@ -390,15 +390,10 @@ writeDataFileList <- function(fileNames,
     if ( i %in% startPage){
       # START PAGE with column set-up info for the whole PAGE
       cat(':::::: {.cols data-latex=\"[T]\"}\n')
-      cat("::: {.col data-latex=\"{0.46\\textwidth}\"}\n")
+      cat("::: {.col data-latex=\"{0.48\\textwidth}\"}\n")
     }
     
-    # if ( i %in% startLeftColumns){
-    #   cat(':::::: {.cols data-latex=\"[T]\"}\n')
-    #   cat("::: {.col data-latex=\"{0.46\\textwidth}\"}\n")
-    # }
-    
-    
+
     if (i %in% startChapter){
       cat("\n\\medskip\n**Chapter ",
           sub("^0+", "", chapterNumbersForEachDataFile[i]), # Remove any leading zeros
@@ -445,12 +440,12 @@ writeDataFileList <- function(fileNames,
     
     if ( i %in% startRightColumns){
       cat('::: \n')
-      cat('::: {.col data-latex=\"{0.06\\textwidth}\"} \n')
+      cat('::: {.col data-latex=\"{0.03\\textwidth}\"} \n')
       cat('\\ \n') 
       ## <!-- an empty Div (with a white space), serving as
       ## a column separator -->
       cat(':::\n')
-      cat('::: {.col data-latex=\"{0.46\\textwidth}\"}\n')
+      cat('::: {.col data-latex=\"{0.48\\textwidth}\"}\n')
     }
 
     
