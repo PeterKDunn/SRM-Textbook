@@ -1,6 +1,6 @@
 library("SRMData")     # Textbook data files: install.packages("~/Documents/Git-Projects/SRMData_0.1.0.tar.gz", repos=NULL)
 library("kableExtra")  # For tables
-library("ozmaps")      # For Australia maps in graphics chapter
+#library("ozmaps")      # For Australia maps in graphics chapter
 library("NHANES")      # For NHANES data
 library("knitr")
 library("diagram")     # For diagrams
