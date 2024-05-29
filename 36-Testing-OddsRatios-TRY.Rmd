@@ -1,5 +1,5 @@
 
-# Tests for comparing odds {#TestsOddsRatio}
+# Tests comparing qualitative variables {#TestsOddsRatio}
 
 
 <!-- Introductions; easier to separate by format -->
@@ -24,82 +24,58 @@ Every cell in the $2\times 2$ table contain different students, so the compariso
 
 
 ```{r MealsDataTableHT}
-Counts <- c(52, 105, 2, 24)
-Live <- rep( c(1, 2), 2)
-Live <- ordered(Live,
-                levels = 1:2,
-                labels = c("Lives with parents", 
-                           "Doesn't live with parents") )
-Meals <- c( rep(1, 2), 
-            rep(2, 2))
-Meals <- ordered(Meals, 
-                 levels = 1:2,
-                 labels = c("Most meals off-campus", 
-                            "Most meals on-campus"))
+data(StudentsEat)
 
-Eating <- data.frame( Counts = Counts,
-                      Live = Live,
-                      Meals = Meals)
 
-Eating.tab <- Eating.tab.Counts <- xtabs(Counts ~ Meals + Live + Meals, 
-                                         data = Eating)
+Eating.tab <- Eating.tab.Counts <-  xtabs( ~ Meals + Live, 
+                                           data = StudentsEat)
 
 Eating.tab <- cbind( Eating.tab, 
                      "Total" = rowSums(Eating.tab))
 Eating.tab <- rbind( Eating.tab, 
                      "Total" = colSums(Eating.tab))
 
-
+Eating.tab <- t(Eating.tab)
 
 if( knitr::is_latex_output() ) {
-  kable(pad(Eating.tab,
-            surroundMaths = TRUE,
-            targetLength = c(2, 3, 3),
-            digits = 0),
+  kable( pad(Eating.tab[1:2, 1:2],
+             surroundMaths = TRUE,
+             targetLength = c(2, 3),
+             digits = 0),
         format = "latex",
         booktabs = TRUE,
         longtable = FALSE,
         escape = FALSE,
+        col.names = c("off-campus",
+                      "on-campus"),
         align = "c",
-        caption = "Where university students live and eat"
-  ) %>%
-     column_spec(4, bold = TRUE)  %>%
+        caption = "Where university students live and eat") %>%
+     column_spec(1, bold = TRUE) %>%
      row_spec(0, bold = TRUE) %>%
-     row_spec(3, bold = TRUE) %>%
-	kable_styling(font_size = 8) %>%
-  row_spec(2, hline_after = TRUE) 
- }
-
-
- if( knitr::is_html_output() ) {
-  kable(pad(Eating.tab,
-            surroundMaths = TRUE,
-            targetLength = c(2, 3, 3),
-            digits = 0),
+     kable_styling(font_size = 8) %>%
+    add_header_above( c(" " = 1, 
+                        "Has most meals" = 1,
+                        "Has most meals" = 1),
+                      line = FALSE,
+                      bold = TRUE)
+}
+if( knitr::is_html_output() ) {
+  kable(pad(Eating.tab[1:2, 1:2],
+             surroundMaths = TRUE,
+             targetLength = c(2, 3),
+             digits = 0),
                format = "html",
                booktabs = TRUE,
                longtable = FALSE,
-               align ="c",
-               caption = "Where university students live and eat")  %>%
-    column_spec(4, bold = TRUE) %>%
-    row_spec(3, bold = TRUE)
- }    
+               align = "c",
+               caption = "Where university students live and eat")
+}
+UniS <- t(Eating.tab )   
 ```
 
 
 A graphical summary is shown in Fig.\ \@ref(fig:EatingGraphsCI) (left panel), and a numerical summary in Table\ \@ref(tab:EatingNumericalSummaryHT).
 (The details of the computations appear in Sect.\ \@ref(OddsRatioIntro)).
-
-
-```{r}
-UniS <- matrix( ncol = 2,
-                data = c(52, 2, 105, 24), 
-                byrow = TRUE)
-rownames(UniS) <- c("Lives\nwith parents", 
-                    "Doesn't live\nwith parents")
-colnames(UniS) <- c("Most meals off-campus", 
-                    "Most meals on-campus")
-```
 
 
 ```{r EatingNumericalSummaryHT}
@@ -111,15 +87,20 @@ EatingNumericalSummary[1, ] <- c(format( round(UniS[1,1]/UniS[1,2], 4), nsmall =
 EatingNumericalSummary[2, ] <- c(round(UniS[2,1]/UniS[2,2], 4),
                                  round(UniS[2,1]/sum(UniS[2,]) * 100, 1),
                                  sum(UniS[2,]) )
-EatingNumericalSummary[3, ] <- c(round( (UniS[1, 1] / UniS[1, 2] ) / (UniS[2, 1] / UniS[2, 2]), 3), 
-                                 NA,
-                                 NA)
+EatingNumericalSummary[3, ] <- c( round( (UniS[1, 1] / UniS[1, 2] ) / (UniS[2, 1] / UniS[2, 2]), 3) ,
+                                  round( (UniS[1, 1]/UniS[3, 1] - UniS[1, 2]/UniS[3, 2]) * 100, 1),
+                                  NA)
 rownames(EatingNumericalSummary) <- c("Living with parents",
                                       "Not living with parents",
                                       "Odds ratio")
     
+ENS <- EatingNumericalSummary
+ENS[3, ] <- c( paste0("\\llap{OR:\ } $", ENS[3, 1], "$"),
+               paste0("\\llap{Difference:\ }$", ENS[3, 2], "$"),
+               NA)
+
 if( knitr::is_latex_output() ) {
-  kable(pad(EatingNumericalSummary,
+  kable(pad(ENS,
             surroundMaths = TRUE,
             targetLength = c(6, 4, 3),
             digits = c(3, 1, 0)),
@@ -129,21 +110,22 @@ if( knitr::is_latex_output() ) {
         escape = FALSE,
         align = "c",
         col.names = c("meals off-campus",
-                      "meals off-campus", 
+                      "most meals off-campus", 
                       "size"),
        caption = "The odds and percentage of university students eating most meals off-campus" 
   ) %>%
-     row_spec(3, italic = TRUE) %>%
      row_spec(0, bold = TRUE) %>%
+     row_spec(3, italic = TRUE) %>%
+     row_spec(2, hline_after = TRUE) %>%
    add_header_above( c(" ", "Odds having most" = 1, 
-                       "Percentage having most" = 1,
+                       "Percentage having" = 1,
                        "Sample" = 1),
                      line = FALSE,
                      bold = TRUE) %>%
 	 kable_styling(font_size = 8) 
 }
 if( knitr::is_html_output() ) {
-  kable(pad(EatingNumericalSummary,
+   kable(pad(ENS,
             surroundMaths = TRUE,
             targetLength = c(6, 4, 3),
             digits = c(3, 1, 0)),
@@ -154,8 +136,7 @@ if( knitr::is_html_output() ) {
                col.names = c("Odds of having most\n meals off-campus", 
                              "Percentage having most\n meals off-campus", 
                              "Sample size"),
-               caption = "The odds and percentage of university students eating most meals off-campus")  %>%
-  kable_styling(full_width = FALSE)
+               caption = "The odds and percentage of university students eating most meals off-campus")
 }
 ```
 
@@ -345,9 +326,26 @@ if( knitr::is_html_output() ) {
 
 
 
+## Comparing two proportions {#CompareTwoProportions}
 
-## Computing the value of the test statistic: $\chi^2$ values {#TestStatObs}
+### Sampling distribution for $\hat{p}_1 - \hat{p}_2$ {#CompareTwoProportionsSamplingDist}
+
+### Computing the value of the test statistic: $z$-scores {#CompareTwoProportionsTestStatistic}
+
+### Determining $P$-values {#CompareTwoProportionsPvalues}
+
+### Writing conclusions {#CompareTwoProportionsWritingConclusion}
+
+
+## Comparing two qualitative variables {#CompareManyProportions}
+
+### Computing the value of the test statistic: $\chi^2$ values {#TestStatObs}
 \index{Hypothesis testing!odds ratio}
+
+Section\ \@ref(CompareTwoProportions) introduced a $z$-test for comparing two proportions, as summarised in a $2\times 2$ table of counts.
+However, tables of counts are often larger than $2\times 2$, and different methods are needed.
+
+**FIX** 
 
 The decision-making process compares what is *expected* if the null hypothesis about the parameter is true (Table\ \@ref(tab:MealsDataTableHTExpected)) to what is *observed* in the sample (Table\ \@ref(tab:MealsDataTableHT)).
 Previously, when the summary statistics were means and the sampling distribution was a normal distribution, the test statistic was a $t$-score.
@@ -406,7 +404,7 @@ This allows the $P$-value to be estimated using the $68$--$95$--$99.7$ rule.
 :::
 
 
-## Determining $P$-values
+### Determining $P$-values
 
 The differences between the observed sample statistic (the sample OR) and the hypothesised population parameter (the population OR of one) is summarised by $\chi^2 = 6.934$, approximately equivalent to $z = 2.63$.
 Using the $68$--$95$--$99.7$ rule, a small $P$-value is expected.
@@ -432,7 +430,7 @@ Recall that, for two-way tables of counts, the alternative hypotheses *are alway
 `r if (knitr::is_latex_output()) '-->'`
 
 
-## Writing conclusions
+### Writing conclusions {#WritingConclusionChi2}
 
 A very small $P$-value ($0.008$ to three decimals) means strong evidence exists to supporting $H_1$: the evidence suggests a difference in the *population* odds in the two groups.
 We write:
