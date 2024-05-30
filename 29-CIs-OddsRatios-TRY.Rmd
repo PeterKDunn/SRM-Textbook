@@ -1,5 +1,5 @@
 
-# CIs for comparing proportions {#OddsRatiosCI}
+# CIs for comparing qualitative variables {#OddsRatiosCI}
 
 
 ```{r, child = if (knitr::is_html_output()) {'introductions/29-CIs-OddsRatios-HTML.Rmd'} else {'introductions/29-CIs-OddsRatios-LaTeX.Rmd'}}
@@ -14,7 +14,7 @@
 </div>
 
 
-@data:Mann12017:UniStudents examined the relationship between where students usually ate, and where the student lived.
+@data:Mann12017:UniStudents examined the relationship between where university students usually ate, and where the student lived.
 The researchers cross-classified the $n = 183$ students (the units of analysis) according to two *qualitative* variables:
 
 * Where they lived: with their parents, or *not* with their parents;
@@ -23,6 +23,11 @@ The researchers cross-classified the $n = 183$ students (the units of analysis) 
 Since both variables are qualitative, means are not appropriate for summarising the data.
 A two-way table of counts\index{Tables!two-way} is appropriate (Table\ \@ref(tab:MealsDataTable)), called a *contingency table*.\index{Contingency table}
 Both qualitative variables have two levels, so the two-way table\index{Two-way tables} is a $2\times 2$ table.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Every cell in the $2\times 2$ table contains different students, so the comparison is *between* individuals.
+:::
 
 
 ```{r MealsDataTable}
@@ -75,18 +80,14 @@ if( knitr::is_html_output() ) {
 UniS <- t(Eating.tab )
 ```
 
-The odds (or proportion) of students who eat most meals off-campus can be compared between those who live with their parents and those who do *not* live with their parents.
 
+The proportion of students who eat most meals off-campus can be compared between those who live with their parents and those who do *not* live with their parents.
+Then, the parameter is the difference between the population proportions in each group, and the RQ could be written as:
 
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Every cell in the $2\times 2$ table contains different students, so the comparison is *between* individuals.
-:::
+> Among university students, what is the difference between the proportion of students eating most meals off-campus, comparing those who *do* and *do not* live with their parents?
 
-
-The parameter is the *odds ratio* (OR);\index{Odds ratio} specifically, the odds ratio of eating most meals off-campus, comparing those living with parents to those not living with parents.
-Another sensible parameter would be the difference between the *proportions* (or *percentages*) in each group, but the odds ratio usually is used as the parameter^[This is *optional*: The difference between two proportions is always a number between $-1$ and $1$, which makes the sampling distribution hard to describe.].
-For this reason, writing the RQ in terms of odds ratios or odds\index{Odds} is also most appropriate.
-
+Alternatively, and equivalently, the odds of students who eat most meals off-campus can be compared between those who live with their parents and those who do *not* live with their parents.
+Then, the parameter is the *odds ratio* (OR);\index{Odds ratio} specifically, the odds ratio of eating most meals off-campus, comparing those living with parents to those not living with parents.
 Using the OR, the RQ could be written as:
 
 > Among university students, what is the odds ratio of students eating most meals off-campus, comparing those who *do* and *do not* live with their parents?
@@ -102,13 +103,29 @@ For this reason, defining your OR in the same way makes sense.
 ## Summarising data {#CIOddsRatiosSummaries}
 \index{Odds ratio}\index{Odds}
 
-With two qualitative variables, an appropriate numerical summary includes the odds and percentages for the outcome (for both comparison groups) and the sample sizes.
-From Table\ \@ref(tab:EatingNumericalSummary), define the sample proportion of students eating most meals off-campus as $\hat{p}$, and write $\hat{p}_P$ for the proportion living with parents, and $\hat{p}_N$ for the proportion *not* living with parents.
-Then, the difference between the two percentages is  
+With two qualitative variables, an appropriate numerical summary includes the odds and proportions (or percentages) for the outcome (for both comparison groups) and the sample sizes (Table\ \@ref(tab:EatingNumericalSummary)).
+
+To compare the proportions, define the sample proportion of students eating most meals off-campus as $\hat{p}$, and write $\hat{p}_P$ for the proportion living with parents, and $\hat{p}_N$ for the proportion *not* living with parents.
+Then, the *difference* between the two proportions is  
 \[
   \hat{p}_P - \hat{p}_N = 0.9630 - 0.8140 =  0.1490,
 \]
-or $14.9$%.
+or $14.9$% (as in the software output: Fig.\ \@ref(fig:EatingGraphsCI)).
+By this definition, the difference refers to how much greater the proportion eating most meals off-campus is, compared to students living *with* their parents.
+
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+Be clear about how differences are defined!
+Differences could be computed as:
+
+* the proportion eating most meals off-campus for those living with their parents, *minus* the proportion *not* living with their parents;
+  this measures how much greater the proportion is for those living with their parents; or
+* the proportion eating most meals off-campus for those *not* living with their parents, *minus* the proportion living with their parents;
+  this measures how much greater the proportion is for those *not* living with their parents.
+
+Either is fine, provided you are *consistent*, and *clear* about how the difference are computed.
+The *meaning* of any conclusions will be the same.
+:::
 
 To compare the odds, first see that the odds of eating most meals *off-campus* is:
 
@@ -116,7 +133,7 @@ To compare the odds, first see that the odds of eating most meals *off-campus* i
 * $105\div 24 = 4.375$ for students *not living with their parents* (Row\ 2).
 
 (Notice the numbers in the *second* column are always on the bottom of the fraction.)
-So the *odds ratio* (OR) of eating most meals *off-campus* (the *first* column), comparing students living with parents to students *not* living with parents (second column), is $26 \div 4.375 = 5.943$.
+So the *odds ratio* (OR) of eating most meals *off-campus* (the *first* column), comparing students living with parents to students *not* living with parents (*second* column), is $26 \div 4.375 = 5.943$ (as in the software output: Fig.\ \@ref(fig:EatingGraphsCI)).
 The numerical summary (Table\ \@ref(tab:EatingNumericalSummary)) shows the percentage and odds of eating most meals off-campus, comparing students living at home and those not living at home.
 
 
@@ -148,9 +165,9 @@ EatingNumericalSummary[3, ] <- c( round( (UniS[1, 1] / UniS[1, 2] ) / (UniS[2, 1
                                   NA)
 rownames(EatingNumericalSummary) <- c("Living with parents",
                                       "Not living with parents",
-                                      "Odds ratio")
+                                      NA)
 ENS <- EatingNumericalSummary
-ENS[3, ] <- c( paste0("\\llap{OR:\ }$", ENS[3, 1], "$"),
+ENS[3, ] <- c( paste0("\\llap{OR:\ }$\\phantom{-}", ENS[3, 1], "$"),
                paste0("\\llap{Difference:\ }$", ENS[3, 2], "$"),
                NA)
 
@@ -198,7 +215,7 @@ if( knitr::is_html_output() ) {
 
 
 
-```{r EatingGraphsCI, fig.cap="The uni-student eating data. Left: a side-by-side bar chart. Right: the jamovi output for computing a CI for the difference between the proportions, and the odds ratio", fig.align="center", fig.height=3.75, fig.width=4, out.width=c("45%", "53%"), fig.show='hold'}
+```{r EatingGraphsCI, fig.cap="The student-eating data. Left: a side-by-side bar chart. Right: the jamovi output for computing a CI for the difference between the proportions, and for the odds ratio", fig.align="center", fig.height=3.75, fig.width=4, out.width=c("43%", "55%"), fig.show='hold'}
 par( xpd = TRUE,
      mar = c(4, 4, 4, 2) + 0.1) # DEFAULT: c(5, 4, 4, 2) + 0.1
 barCols <- c( grey(0.2), 
@@ -226,19 +243,17 @@ knitr::include_graphics( "jamovi/UniStudents/UniStudents-OR-pDiff-CI.png")
 
 ```
 
-Each sample of students will comprise different students, giving different proportions and odds for both groups (living with, and not living with, parents).
-Hence, the difference between the two proportions and the odds ratio will differ between samples.
+Each sample of students will comprise different students, giving different proportions and odds of having most meals off-campus for both groups (living with, and not living with, parents).
+Hence, the difference between the two proportions and the odds ratio will vary between samples.
 
 
 ## CIs for the difference between two proportions
 
-### Sampling distribution for difference between proportions {#DiffPropSamplingDist}
-
-The sample proportions for each group will differ from sample to sample, and the *difference* between the sample proportions will be different for each sample.
-The *difference* between the sample proportions varies from sample to sample, and so has a sampling distribution and *standard error*.
+The sample proportions for each group will vary from sample to sample, and the *difference* between the sample proportions will be different for each sample.
+Hence, the *difference* between the sample proportions has a sampling distribution and *standard error*.
 
 
-::: {.definition #DEFSamplingDistributionDiffMeans name="Sampling distribution for the difference between two sample means"}
+::: {.definition #DEFSamplingDistributionDiffProportions name="Sampling distribution for the difference between two sample proportions"}
 The *sampling distribution of the difference between two sample proportions* $\hat{p}_A$ and $\hat{p}_B$ is (when the appropriate conditions are met; Sect.\ \@ref(ValidityTwoProportions)) described by:
 
 * an approximate normal distribution,
@@ -253,25 +268,22 @@ though this value will often be *given* (e.g., on computer output).
 :::
 
 
-For the student-eating data, define the sample proportion of student eating most meals off-campus as $\hat{p}$, and write $\hat{p}_P$ for the proportion living with parents, and $\hat{p}_N$ for the proportion *not* living with parents.
-Then, the differences between the sample proportions will have:
+For the student-eating data, the differences between the sample proportions will have:
 
 * an approximate normal distribution,
 * centred around the sampling mean whose value is $p_P - p_N$,
 * with a standard deviation, called the *standard error* of the difference, of $\text{s.e.}(\hat{p}_P - \hat{p}_N) = 0.04282954$.
 
-The standard error of the difference between the means was computed using. 
+The standard error of the sample proportions for each group are computed using Eq.\ \@ref(eq:stderrorphat) as  
+\[
+  \text{s.e.}(\hat{p}_L) = 0.025700\qquad\text{and}\qquad\text{s.e.}(\hat{p}_N) = 0.034262.
+\]
+The standard error of the difference between the proportions is
 \[
   \text{s.e.}(\hat{p}_P - \hat{p}_N)
   = \sqrt{ \text{s.e.}(\hat{p}_P)^2 + \text{s.e.}(\hat{p}_N)^2}
-  = \sqrt{ 0.025700^2 + 0.034262^2 } = 0.042830,
+  = \sqrt{ 0.025700^2 + 0.034262^2 } = 0.042830.
 \]
-where the individual standard error for each group are computed using Eq. \@ref(eq:stderrorphat).
-**CHECK** Seems wrong
-
-
-
-### Confidence interval for difference between proportions {#DiffPropCI}
 
 The sampling distribution describes how the values of $\hat{p}_P - \hat{p}_N$ vary from sample to sample. 
 Then, finding a $95$%\ CI for the difference between the proportions is similar to the process used previously, since almost all CIs have the same form:  
@@ -284,12 +296,13 @@ When the statistic is $\hat{p}_P - \hat{p}_N$, the approximate $95$%\ CI is
 \]
 So, in this case, the approximate $95$%\ CI is  
 \[
-	0.149 \pm (2 \times 0.042830),
+	0.1490 \pm (2 \times 0.042830),
 \]
-or $0.149 \pm 0.08566$ after rounding appropriately (i.e., from $0.0633$ to $0.2347$. **CHECK: NOT SAME AS OUTPUT: cont correction? Nor same as R's `prop.test()` either...?**
+or $0.149 \pm 0.08566$ after rounding appropriately (i.e., from $0.0633$ to $0.235$).
+This approximate CI is very similar to the (exact) CI shown in Fig.\ \@ref(fig:EatingGraphsCI).
 We write:
 
-> The difference between the proportions of students eating most meals at home, comparig those living with and not with their parents, is 0.149 ($95$% CI: $0.063$ to $0.235$). **AND FLESH OUT**
+> The difference between the proportions of students eating most meals at home is between $6.33$% and $23.5$, higher for those living with their parents ($96.3$%; $n = 52$) that those not living with their parents ($81.4$%; $n = 129$).
 
 The plausible values for the difference between the two population proportions are between $6.3$% to $23.5$%, larger for those living with parents.
 
@@ -300,87 +313,20 @@ Giving the CI alone is insufficient; the *direction* in which the differences we
 
 
 ## CIs for odds ratios
-
-### Sampling distribution for sample odds ratio {#OddsRatiosOR}
 \index{Sampling distribution!odds ratio}
 
-A CI can be formed for the difference between the two proportions (as above), and a CI can also be formed for the odds ratio.
+While a CI can be formed for the difference between the two proportions, a CI can also be formed for the odds ratio.
 Every sample of students is likely to be different, and hence the odds of students eating off campus will vary from sample to sample (in both groups).
 Hence, the OR varies also from sample to sample.
 That is, *sampling variation* exists, so the odds ratio has a *sampling distribution* and a *standard error*.
 
-The sampling distribution of the sample OR is *not a normal distribution*^[For those interested (this is *optional*): The OR is only defined for *non-negative* values so a normal distribution is inappropriate. However, the *logarithm* of the OR has an approximate normal distribution under certain conditions.].
+However, the sampling distribution of the sample OR does *not have a normal distribution*^[For those interested (this is *optional*): The OR is only defined for *non-negative* values so a normal distribution is inappropriate. However, the *logarithm* of the OR has an approximate normal distribution under certain conditions.].
 Fortunately, a simple transformation to the sample OR *does* have a normal distribution, though we omit the details.
-For this reason, we will use software output for finding the CI for the odds ratio, and not discuss the sampling distribution directly.
+For this reason, we will only use software output for finding the CI for the odds ratio, and not discuss the sampling distribution directly.
 In other words, we will rely on software to find CIs for odds ratios.
 
-
-
-<!-- ```{r NotationOddsRatioCI} -->
-
-<!-- OddsRatioNotation <- array( dim = c(6, 2)) -->
-
-<!-- OddsRatioNotation[1, ] <- c("Individual values in the population", -->
-<!--                           "Group A: Population odds ratio") -->
-<!-- OddsRatioNotation[2, ] <- c("", -->
-<!--                           "Group B: Population odds ratio") -->
-
-<!-- OddsRatioNotation[3, ] <- c("Individual values in a sample", -->
-<!--                           "Group A: Sample odds ratio") -->
-<!-- OddsRatioNotation[4, ] <- c("", -->
-<!--                           "Group B: Sample odds ratio") -->
-
-<!-- OddsRatioNotation[5, ] <- c("Odds ratio of sample odds", -->
-<!--                           "Vary with a distribution related to the normal distribution") -->
-<!-- OddsRatioNotation[6, ] <- c("across all possible samples", -->
-<!--                           " (under certain conditions), with a mean and standard deviation") -->
-
-
-<!-- if( knitr::is_latex_output() ) { -->
-<!--   kable( OddsRatioNotation, -->
-<!--          format = "latex", -->
-<!--          booktabs = TRUE, -->
-<!--          longtable = FALSE, -->
-<!--          escape = FALSE, -->
-<!--          caption = "The notation used for describing means, and the sampling distribution of the sample means", -->
-<!--          align = c("r", "l"), -->
-<!--          linesep = c("", "\\addlinespace", -->
-<!--                      "", "\\addlinespace", -->
-<!--                      ""), -->
-<!--          col.names = c("Quantity", -->
-<!--                        "Description") ) %>% -->
-<!-- 	row_spec(0, bold = TRUE) %>% -->
-<!--   kable_styling(font_size = 8) -->
-<!-- } else { -->
-<!--   OddsRatioNotation[5, 1] <- paste(OddsRatioNotation[5, 1],  -->
-<!--                                  OddsRatioNotation[6, 1]) -->
-<!--   OddsRatioNotation[6, 2] <- paste(OddsRatioNotation[5, 2],  -->
-<!--                                  OddsRatioNotation[6, 2]) -->
-<!--   OddsRatioNotation[6, ] <- NA -->
-
-<!--     kable( OddsRatioNotation, -->
-<!--          format = "html", -->
-<!--          booktabs = TRUE, -->
-<!--          longtable = FALSE, -->
-<!--          escape = FALSE, -->
-<!--          caption = "The notation used for describing means, and the sampling distribution of the sample means", -->
-<!--          align = c("r", "l"), -->
-<!--          linesep = c("", "\\addlinespace", -->
-<!--                      "", "\\addlinespace", -->
-<!--                      ""), -->
-<!--          col.names = c("Quantity", -->
-<!--                        "Description") ) %>% -->
-<!-- 	row_spec(0, bold = TRUE)  -->
-<!-- } -->
-<!-- ``` -->
-
-
-
-### Confidence intervals for population odds ratio
-\index{Confidence intervals!odds ratio}
-
-Using jamovi\index{jamovi output!Comparing two odds} to find the OR (Fig.\ \@ref(fig:EatingGraphsCI), right panel), the sample OR is $5.94$, and the (exact) $95$%\ CI is from $1.35$ to $26.1$.
-The OR is the same as computed manually, since the OR was computed comparin Row\ 1 to Row\ 2, and Column\ 1 to Column\ 2, as used y the software.
+Using jamovi\index{jamovi output!Comparing two odds}\index{Confidence intervals!odds ratio} to find the OR (Fig.\ \@ref(fig:EatingGraphsCI), right panel), the sample OR is $5.94$, and the (exact) $95$%\ CI is from $1.35$ to $26.1$.
+The OR is the same as computed manually, since the OR was computed comparin Row\ 1 to Row\ 2, and Column\ 1 to Column\ 2, as used by the software.
 
 
 <!-- ```{r UniMealsTestOutputjamovi, fig.show="hold", fig.cap="The jamovi output for computing a CI", fig.align="center", out.width="49%"} -->
@@ -408,7 +354,7 @@ There is a $95$% chance that this CI straddles the population OR.
 Notice that the *meaning* of the OR is explained in the conclusions: the odds of eating most meals *off*-campus, and comparing students living with parents to *not* living with parents.
 
 *The CI for an OR is not symmetrical*, like the others we have seen^[For those interested (this is *optional*): This is because the OR has no upper limit, but the lower limit of an OR is zero. 
-The *logarithm* of the limits of the CI form a symmetric interval.].
+The *logarithm* of the limits of the CI form a symmetric interval.]; that is, the sample OR of $5.94$ is not in the centre of the confidence interval.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
@@ -426,7 +372,7 @@ Interpreting and explaining ORs can be challenging, so care is needed!
 As usual, these results hold under certain conditions.
 The CIs computed above are statistically valid if 
 
-* All *expected* counts are at least five.
+* All *expected* counts in the table are at least five.
 
 Some books may give other (but similar) conditions.
 Note that this condition is based on the *expected* counts, not the *observed* counts.
@@ -450,13 +396,13 @@ This statistical validity condition is explained further in Sect.\ \@ref(Expecte
 
 
 ::: {.example #StatisticalValidityMeals name="Statistical validity"}
-For the uni-students eating data, jamovi can be used to compute the *expected* counts (Fig.\ \@ref(fig:UniMealsTestOutputExpectedOnlyjamovi))\index{jamovi output!Expected counts}
+For the students-eating data, jamovi can be used to compute the *expected* counts (Fig.\ \@ref(fig:UniMealsTestOutputExpectedOnlyjamovi))\index{jamovi output!Expected counts}
 None are less than five, and so the conclusion is statistically valid.
 (One *observed count* is less than five, but this is not relevant to checking for statistical validity.)
 :::
 
 
-```{r UniMealsTestOutputExpectedOnlyjamovi, fig.show="hold", fig.cap="The expected counts in jamovi, for the uni-students data", fig.align="center", out.width="70%"}
+```{r UniMealsTestOutputExpectedOnlyjamovi, fig.show="hold", fig.cap="The expected counts in jamovi, for the student-eating data", fig.align="center", out.width="70%"}
 knitr::include_graphics( "jamovi/UniStudents/UniStudents-ExpectedOnly.png")
 ```
 
@@ -468,6 +414,16 @@ The hatching success of loggerhead turtles on Mediterranean beaches is often com
 The researchers were interested in knowing:
 
 > For Mediterranean loggerhead turtles, what are the odds of infections comparing natural to relocated nests?
+
+The parameter is the odds ratio of non-infection, comparing natural to relocated nests.
+The odds ratio can be defined in other ways also, but this definition is consistent with how software computes odds given Table\ \@ref(tab:TurtleNestDataTable) (i.e., first row to second row; first column to second column).
+
+Alternatively, the researchers could have asked:
+
+> For Mediterranean loggerhead turtles, what is the difference between the prooportion of infected nests, comparing natural to relocated nests?
+
+The parameter here is the difference between the proportions infected, comparing natural to relocated nests.
+
 
 
 ```{r TurtleNestDataTable}
@@ -510,20 +466,22 @@ if( knitr::is_html_output() ) {
 ```
 
 
-The parameter is the odds ratio of non-infection, comparing natural to relocated nests.
-The odds ratio can be defined in other ways also, but this definition is consistent with how software computes odds given Table\ \@ref(tab:TurtleNestDataTable) (i.e., first row to second row; first column to second column).
 
-A graphical summary (Fig.\ \@ref(fig:TurtleNestsGraphs)) and a numerical summary table (Table\ \@ref(tab:TurtleNestsNumericalSummary)) show that the odds of natural nest being non-infected is $1.657$ times the odds of a relocated nest being non-infected.
-From the jamovi output (Fig.\ \@ref(fig:TurtleNestsOutputjamovi)), the $95$%\ CI for this odds ratio is from $0.537$ to $5.12$.
-The smallest *expected* count is $6.49$ (Fig.\ \@ref(fig:TurtleNestsOutputjamovi)), so this CI is statistically valid.
-(We could also see that since all observed counts are greater than five, all the expected counts will be greater than five.)
-We write:
+A graphical summary (Fig.\ \@ref(fig:TurtleNestsGraphs)) and a numerical summary table (Table\ \@ref(tab:TurtleNestsNumericalSummary)).
+From the jamovi output (Fig.\ \@ref(fig:TurtleNestsOutputjamovi)), the $95$%\ CI for the odds ratio is from $0.537$ to $5.12$.
+Write:
 
 > The OR of a non-infected nest, comparing natural nests (odds: $2.90$; $n = 39$) to relocated nests (odds: $1.75$; $n = 22$), is $1.66$ with a $95$%\ CI from $0.537$ to $5.12$.
 
-** ALSO DIFF BETWEEN TWO PROPS; FIX**
+In addition, the $95$% CI for the difference between the proportions is from $-0.1361$ to $0.3505$%.
+This negative value is *not* a negative proportion; it is a negative *difference* between two proportions.
+Specifically, it means that the population proportion of infected nests is larger for relocated nests than natural nests by $0.1361$ (i.e., corresponding to where the odds ratio will be less than one).
+Write:
 
-> The difference between ... comparing natural nests (p: $??$; $n = 39$) to relocated nests (p: $???$; $n = 22$), is $10.72$% with a $95$%\ CI from $0.537$ to $5.12$... HIGHER FOR
+> The difference between proportion of infected nests is $0.107$ ($95$% CI: $-0.136$ to $0.527$), comparing natural nests ($proportion: $0.744$; $n = 39$) to relocated nests ($0.636$; $n = 22$).
+
+The smallest *expected* count is $6.49$ (Fig.\ \@ref(fig:TurtleNestsOutputjamovi)), so the CIs are statistically valid.
+(We could also see that since all observed counts are greater than five, all the expected counts will be greater than five.)
 
 
 ```{r}
@@ -678,6 +636,21 @@ knitr::include_graphics("jamovi/TurtleNests/TurtleNests-Expected.png")
 
 ## Chapter summary 
 
+To compare a two-level qualitative variable between two groups, a confidence interval can be formed for the difference between two proportions, or for an odds ratio.
+
+To compute a confidence interval (CI) for the difference between two proportions, compute the difference between the two sample proportions, $\hat{p}_A - \hat{p}_B$, and identify the sample sizes $n_A$ and $n_B$.
+Then compute the standard error, which quantifies how much the value of $\hat{p}_A - \hat{p}_B$ varies across all possible samples:  
+\[
+  \text{s.e.}(\hat{p}_A - \hat{p}_B)
+  =
+  \sqrt{ \text{s.e}(\hat{p}_A) + \text{s.e.}(\hat{p}_B)},
+\]
+where $\text{s.e.}(\hat{p}_A)$ and $\text{s.e.}(\hat{p}_B)$ are the standard errors of Groups\ $A$ and\ $B$.
+The *margin of error* is (Multiplier$\times$standard error), where the multiplier is $2$ for an approximate $95$%\ CI (using the $68$--$95$--$99.7$ rule).
+Then the CI is:  
+\[
+   (\hat{p}_A - \hat{p}_B) \pm \left( \text{Multiplier}\times\text{standard error} \right).
+\]
 Software is used to compute a confidence interval (CI) for the odds ratio, as the sampling distribution does not have a normal distribution.
 The statistical validity conditions should be checked: the *expected* counts all should exceed five.
 
@@ -700,16 +673,18 @@ Output from using jamovi is shown in Fig.\ \@ref(fig:EVjamovi).
     4.28)  )}`
 1. True or false: The CI means that the sample OR is likely to be between $0.68$ and $4.28$.  
 `r if( knitr::is_html_output() ) {torf(answer = FALSE)}`
-1. True or false: The analysis is statistically valid?  
-`r if( knitr::is_html_output() ) {torf(answer = TRUE)}`
+1. The negative proportion in output suggests the statistical validity conditions are not met.
+`r if( knitr::is_html_output() ) {torf(answer = FALSE)}`
 :::
 
 
 
 
 ```{r}
-EV10 <- array(dim = c(2, 2))
+data(EVpurchase)
 
+EV10 <- xtabs(Counts ~ Education + PurchaseEV, 
+              data = EVpurchase)
 colnames(EV10) <- c("Yes", 
                     "No")
 rownames(EV10) <- c("No post-grad", 
@@ -744,7 +719,7 @@ knitr::kable( pad(EV10,
 \begin{minipage}{0.60\textwidth}%
 \centering
 ```{r, out.width='92%'}
-knitr::include_graphics( "jamovi/EVs/EVs-CI.png")
+knitr::include_graphics( "jamovi/EVs/EVs-CI-both.png")
 ```
 \caption{jamovi output for the EV study}\label{fig:EVjamovi}
 \end{minipage}
@@ -791,7 +766,7 @@ if( knitr::is_html_output() ) {
 <!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
 `r if (knitr::is_latex_output()) '<!--'`
 ```{r EVjamovi, fig.show="hold", fig.cap="jamovi output for the EV study", fig.align="center", out.width="50%"}
-knitr::include_graphics( "jamovi/EVs/EVs-CI.png")
+knitr::include_graphics( "jamovi/EVs/EVs-CI-both.png")
 ```
 `r if (knitr::is_latex_output()) '-->'`
 
@@ -831,9 +806,13 @@ Answers to odd-numbered exercises are available in App.\ \@ref(Answers).
    '(Table\\ \\@ref(tab:CrashDataTableHTML)).'
 }`
 
-1. Compute the *odds* of crash involving a pedestrian in 2011.
-1. Compute the *odds* of crash involving a pedestrian in 2015.
-1. Compute the *odds ratio* of crash involving a pedestrian, comparing 2011 to 2015.
+1. Compute the *proportion* of crashes involving a pedestrian in 2011.
+1. Compute the *proportion* of crashes involving a pedestrian in 2015.
+1. Compute the *difference between the proportion* of crashes involving a pedestrian, comparing 2011 to 2015.
+1. Use the output (Fig.\ \@ref(fig:CarCrashjamovi)) to write down a CI for the difference between the proportions.
+1. Compute the *odds* of crashes involving a pedestrian in 2011.
+1. Compute the *odds* of crashes involving a pedestrian in 2015.
+1. Compute the *odds ratio* of crashes involving a pedestrian, comparing 2011 to 2015.
 1. Use the output (Fig.\ \@ref(fig:CarCrashjamovi)) to write down a CI for the odds ratio.
 1. Produce a numerical summary table for the data.
 1. Write a conclusion.
@@ -875,7 +854,7 @@ kable(pad(Crash.tab,
 \begin{minipage}{0.60\textwidth}%
 \centering
 ```{r, out.width='92%', fig.align="center"}
-knitr::include_graphics( "jamovi/CarCrashes/CarCrashes-ORCI.png")
+knitr::include_graphics( "jamovi/CarCrashes/CarCrashes-ORpDiffCI.png")
 ```
 \caption{jamovi output for the car-crash study}\label{fig:CarCrashjamovi}
 \end{minipage}
@@ -903,7 +882,7 @@ kable(pad(Crash.tab,
 <!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
 `r if (knitr::is_latex_output()) '<!--'`
 ```{r CarCrashjamovi, fig.show="hold", fig.cap="jamovi output for the car-crash data", fig.align="center", out.width="50%"}
-knitr::include_graphics( "jamovi/CarCrashes/CarCrashes-ORCI.png")
+knitr::include_graphics( "jamovi/CarCrashes/CarCrashes-ORpDiffCI.png")
 ```
 `r if (knitr::is_latex_output()) '-->'`
 
@@ -914,14 +893,20 @@ knitr::include_graphics( "jamovi/CarCrashes/CarCrashes-ORCI.png")
 @data:Wallace2017:Sunburn compared the heights of scars from burns received in Western Australia (Table\ \@ref(tab:ScarsData)).
 jamovi was used to analyse the data (Fig.\ \@ref(fig:ScarHeightRiskCIjamovi)).
 
+1. Compute the *proportion* of having a smooth scar (that is, height is $0$\ mm) for women.
+1. Compute the *proportion* of having a smooth scar (that is, height is $0$\ mm) for men.
+1. Compute the *difference between the proportion* of having a smooth scar, comparing men to women.
+1. Write down the CI for the difference between the proportion.
+1. Carefully interpret what this CI means.
 1. Compute the *odds* of having a smooth scar (that is, height is $0$\ mm) for women.
 1. Compute the *odds* of having a smooth scar (that is, height is $0$\ mm) for men.
 1. Compute the *odds ratio* of having a smooth scar, comparing men to women.
 1. Interpret what this odds ratio means.
 1. Sketch a suitable graph to display the data.
 1. Construct an appropriate numerical summary table for the data.
-1. Write down the CI.
+1. Write down the CI for the odds ratio.
 1. Carefully interpret what this CI means.
+1. Determine if the CI is statistically valid.
 :::
 
 
@@ -966,7 +951,7 @@ colnames(ScarsData) <- c("Men",
 \begin{minipage}{0.60\textwidth}%
 \centering
 ```{r, out.width='92%', fig.align="center"}
-knitr::include_graphics( "jamovi/ScarHeight/ScarHeightOR.png")
+knitr::include_graphics( "jamovi/ScarHeight/ScarHeightORpDiff.png")
 ```
 \caption{jamovi output for the scar-height data}\label{fig:ScarHeightRiskCIjamovi}
 \end{minipage}
@@ -996,7 +981,7 @@ if( knitr::is_html_output() ) {
 <!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
 `r if (knitr::is_latex_output()) '<!--'`
 ```{r ScarHeightRiskCIjamovi, fig.show="hold", fig.cap="jamovi output for the scar-height data", fig.align="center", out.width="50%"}
-knitr::include_graphics( "jamovi/ScarHeight/ScarHeightOR.png")
+knitr::include_graphics( "jamovi/ScarHeight/ScarHeightORpDiff.png")
 ```
 `r if (knitr::is_latex_output()) '-->'`
 
@@ -1005,14 +990,14 @@ knitr::include_graphics( "jamovi/ScarHeight/ScarHeightOR.png")
 ::: {.exercise #OddsRatiosCIEarInf}
 [*Dataset*: `EarInfection`]
 A study of ear infections in Sydney swimmers [@data:smyth:ozdasl] recorded whether people reported an ear infection or not, and where they usually swam.
-Use the jamovi output (Fig.\ \@ref(fig:EarInfPSSOutputCI)) to carefully explain the meaning of the OR and the corresponding CI.
+Use the jamovi output (Fig.\ \@ref(fig:EarInfPSSOutputCI)) to carefully explain the meaning of both CIs.
 :::
 
 
 
-```{r EarInfPSSOutputCI, fig.show="hold", fig.cap="jamovi output for the ear-infection data", fig.align="center", out.width=c("45%", "50%"), fig.show='hold'}
+```{r EarInfPSSOutputCI, fig.show="hold", fig.cap="jamovi output for the ear-infection data", fig.align="center", out.width=c("42%", "53%"), fig.show='hold'}
 knitr::include_graphics( "jamovi/EarInfections/EarInfections-Data.png" )
-knitr::include_graphics( "jamovi/EarInfections/EarInfections-CI.png" )
+knitr::include_graphics( "jamovi/EarInfections/EarInfections-CI-Both.png" )
 ```
 
 
@@ -1024,15 +1009,15 @@ A study of turbine failures [@MyersBook; @NelsonLifeData] ran $73$ turbines for 
 They also ran a different set of $42$ turbines for about $3000$\ hrs, and found that nine developed fissures.
 
 1. Construct the two-way table for the data.
+1. Use the jamovi output (Fig.\ \@ref(fig:TurbinesOutputCI)) to construct a $95$%\ CI for the difference between the proportions.
 1. Use the jamovi output (Fig.\ \@ref(fig:TurbinesOutputCI)) to construct a $95$%\ CI for the odds ratio.
-1. Compute, then carefully interpret, the OR.
 1. Write down, then carefully interpret, the CI for the OR.
 1. Is the CI statistically valid (Fig.\ \@ref(fig:TurbinesOutputCI))?
 :::
 
 
 ```{r TurbinesOutputCI, fig.show="hold", fig.cap="jamovi output for the turbine data", fig.align="center", out.width=c("49%", "44%")}
-knitr::include_graphics( "jamovi/Turbines/TurbinesCI-jamovi.png" )
+knitr::include_graphics( "jamovi/Turbines/TurbinesCI-Both-jamovi.png" )
 knitr::include_graphics( "jamovi/Turbines/TurbinesExpected-jamovi.png" )
 ```
 
@@ -1119,7 +1104,7 @@ knitr::kable( pad(t(SOI.tab),
 \begin{minipage}{0.55\textwidth}%
 \centering
 ```{r, out.width='95%'}
-knitr::include_graphics( "jamovi/EmeraldRain/EmeraldRainOR.png")
+knitr::include_graphics( "jamovi/EmeraldRain/EmeraldRainORpDiff.png")
 ```
 \caption{jamovi output for the Emerald-rain data}\label{fig:EmeraldRainOutputCIjamovi}
 \end{minipage}
@@ -1147,7 +1132,7 @@ if( knitr::is_html_output() ) {
 <!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
 `r if (knitr::is_latex_output()) '<!--'`
 ```{r EmeraldRainOutputCIjamovi, fig.show="hold", fig.cap="jamovi output for the Emerald-rain data", fig.align="center", out.width="50%"}
-knitr::include_graphics( "jamovi/EmeraldRain/EmeraldRainOR.png" )
+knitr::include_graphics( "jamovi/EmeraldRain/EmeraldRainORpDiff.png" )
 ```
 `r if (knitr::is_latex_output()) '-->'`
 
@@ -1173,7 +1158,7 @@ Also, construct the numerical summary table.
 
 ```{r SunglassesSPSSOutputCI, fig.show="hold", fig.cap="jamovi output for the hats data", fig.align="center", out.width=c("45%", "50%"), fig.show='hold'}
 knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-Data.png" )
-knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-CI.png" )
+knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-CI-Both.png" )
 ```
 
 
@@ -1237,7 +1222,7 @@ if( knitr::is_html_output() ) {
 
 
 ```{r PetBirdsCIjamovi, fig.show="hold", fig.cap="jamovi output for the pet-birds data", fig.align="center", out.width="50%"}
-knitr::include_graphics( "jamovi/PetBirds/PetsOR.png")
+knitr::include_graphics( "jamovi/PetBirds/PetsCI-Both.png")
 ```
 
 
@@ -1303,7 +1288,7 @@ if( knitr::is_html_output() ) {
 
 
 ```{r B12SPSSOutputCIjamovi, fig.show="hold", fig.cap="jamovi output for the B12 data. Left: the OR and confidence interval. Right: expected counts", fig.align="center", out.width=c("48%","51%"), fig.show='hold'}
-knitr::include_graphics( "jamovi/B12/B12OR.png")
+knitr::include_graphics( "jamovi/B12/B12CI-Both.png")
 knitr::include_graphics( "jamovi/B12/B12-Expected.png")
 #knitr::include_graphics( "SPSS/B12/B12OR.png")
 ```
@@ -1322,7 +1307,7 @@ knitr::include_graphics( "jamovi/B12/B12-Expected.png")
 **2.** 3.
 **3.** 1.71.
 **4.** False
-**5.** True.
+**5.** False.
 :::
 `r if (knitr::is_html_output()) '-->'`
 
