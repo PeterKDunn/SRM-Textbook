@@ -690,8 +690,6 @@ colnames(EV10) <- c("Yes",
 rownames(EV10) <- c("No post-grad", 
                     "Post-grad study")
 
-EV10[1, ] <- c(24, 8)
-EV10[2, ] <- c(51, 29)
 ```
 
 \begin{figure}
@@ -809,13 +807,17 @@ Answers to odd-numbered exercises are available in App.\ \@ref(Answers).
 1. Compute the *proportion* of crashes involving a pedestrian in 2011.
 1. Compute the *proportion* of crashes involving a pedestrian in 2015.
 1. Compute the *difference between the proportion* of crashes involving a pedestrian, comparing 2011 to 2015.
-1. Use the output (Fig.\ \@ref(fig:CarCrashjamovi)) to write down a CI for the difference between the proportions.
+1. Compute the *difference between the proportions*.
+1. Compute an approximate $95$% CI for the difference between the proportions.
+1. Use the output (Fig.\ \@ref(fig:CarCrashjamovi)) to write down a $95$% CI for the difference between the proportions.
+1. Interpret what this CI means.
 1. Compute the *odds* of crashes involving a pedestrian in 2011.
 1. Compute the *odds* of crashes involving a pedestrian in 2015.
 1. Compute the *odds ratio* of crashes involving a pedestrian, comparing 2011 to 2015.
-1. Use the output (Fig.\ \@ref(fig:CarCrashjamovi)) to write down a CI for the odds ratio.
-1. Produce a numerical summary table for the data.
-1. Write a conclusion.
+1. Interpret what this odds ratio means.
+1. Write down the CI for the odds ratio.
+1. Construct an appropriate numerical summary table for the data.
+1. Sketch a suitable graph to display the data.
 1. Determine if the CI is statistically valid.
 :::
 
@@ -837,7 +839,7 @@ Crash.tab <- xtabs(Counts ~ CrashType + Year,
 \captionof{table}{Type of car crashes in different years\label{tab:CrashDataTableLATEX}}
 \fontsize{8}{12}\selectfont
 ```{r}
-kable(pad(Crash.tab,
+kable(pad( t(Crash.tab),
             surroundMaths = TRUE,
             targetLength = 2,
             digits = 0),
@@ -845,8 +847,15 @@ kable(pad(Crash.tab,
         booktabs = TRUE,
         longtable = FALSE,
         escape = FALSE,
+      col.names = c("pedestrians", 
+                    "vehicles"),
         align = "c") %>%
-    row_spec(0, bold = TRUE) 
+    row_spec(0, bold = TRUE) %>%
+  add_header_above( c(" " = 1,
+                      "Involving" = 1,
+                      "Involving" = 1),
+                    bold = TRUE,
+                    line = FALSE)
 #   kable_styling(font_size = 8) # CANNOT USE THIS IS THE MINIPAGE
 ```
 \end{minipage}
@@ -865,7 +874,7 @@ knitr::include_graphics( "jamovi/CarCrashes/CarCrashes-ORpDiffCI.png")
 
 ```{r CrashDataTableHTML}
 if( knitr::is_html_output() ) {
-kable(pad(Crash.tab,
+kable(pad( t(Crash.tab),
             surroundMaths = TRUE,
             targetLength = 2,
             digits = 0),
@@ -873,8 +882,15 @@ kable(pad(Crash.tab,
         booktabs = TRUE,
         longtable = FALSE,
         escape = FALSE,
+      col.names = c("pedestrians", 
+                    "vehicles"),
         caption = "Responses to 'Would you purchase an electric vehicle in the next $10$ years?' by education",
         align = "c") %>%
+  add_header_above( c(" " = 1, 
+                      "Involving" = 1,
+                      "Involving" = 1),
+                    bold = TRUE,
+                    line = FALSE) %>%
     row_spec(0, bold = TRUE)
 }
 ```
@@ -893,20 +909,21 @@ knitr::include_graphics( "jamovi/CarCrashes/CarCrashes-ORpDiffCI.png")
 @data:Wallace2017:Sunburn compared the heights of scars from burns received in Western Australia (Table\ \@ref(tab:ScarsData)).
 jamovi was used to analyse the data (Fig.\ \@ref(fig:ScarHeightRiskCIjamovi)).
 
-1. Compute the *proportion* of having a smooth scar (that is, height is $0$\ mm) for women.
-1. Compute the *proportion* of having a smooth scar (that is, height is $0$\ mm) for men.
-1. Compute the *difference between the proportion* of having a smooth scar, comparing men to women.
-1. Write down the CI for the difference between the proportion.
-1. Carefully interpret what this CI means.
-1. Compute the *odds* of having a smooth scar (that is, height is $0$\ mm) for women.
-1. Compute the *odds* of having a smooth scar (that is, height is $0$\ mm) for men.
-1. Compute the *odds ratio* of having a smooth scar, comparing men to women.
-1. Interpret what this odds ratio means.
-1. Sketch a suitable graph to display the data.
-1. Construct an appropriate numerical summary table for the data.
-1. Write down the CI for the odds ratio.
-1. Carefully interpret what this CI means.
-1. Determine if the CI is statistically valid.
+1. Compute the *proportion* of men having a smooth scar (that is, height is $0$\ mm).
+2. Compute the *proportion* of women having a smooth scar (that is, height is $0$\ mm).
+3. Compute the *difference between the proportions* of men and women having a smooth scar.
+4. Compute the standard error for the difference between the proportions.
+5. Compute the approximate $95$ CI for the difference between the proportions.
+6. Write down the $95$% CI for the difference between the proportions, using the software output.
+7. Interpret what this CI means.
+8. Compute the *odds* of having a smooth scar (that is, height is $0$\ mm) for men.
+9. Compute the *odds* of having a smooth scar (that is, height is $0$\ mm) for women.
+10. Compute the *odds ratio* of having a smooth scar, comparing men to women.
+11. Interpret what this odds ratio means.
+12. Write down the CI for the odds ratio.
+13. Construct an appropriate numerical summary table for the data.
+14. Sketch a suitable graph to display the data.
+15. Determine if the CI is statistically valid.
 :::
 
 
@@ -934,7 +951,7 @@ colnames(ScarsData) <- c("Men",
 \captionof{table}{Heights of scars for men and women\label{tab:ScarsData}}
 \fontsize{8}{12}\selectfont
 ```{r}
-  kable(pad(ScarsData,
+  kable(pad( t(ScarsData),
             surroundMaths = TRUE,
             targetLength = c(2, 3),
             digits = 0),
@@ -962,7 +979,7 @@ knitr::include_graphics( "jamovi/ScarHeight/ScarHeightORpDiff.png")
 
 ```{r ScarsData}
 if( knitr::is_html_output() ) {
-  kable(pad(ScarsData,
+  kable(pad( (ScarsData),
             surroundMaths = TRUE,
             targetLength = c(2, 3),
             digits = 0),
@@ -990,7 +1007,14 @@ knitr::include_graphics( "jamovi/ScarHeight/ScarHeightORpDiff.png")
 ::: {.exercise #OddsRatiosCIEarInf}
 [*Dataset*: `EarInfection`]
 A study of ear infections in Sydney swimmers [@data:smyth:ozdasl] recorded whether people reported an ear infection or not, and where they usually swam.
-Use the jamovi output (Fig.\ \@ref(fig:EarInfPSSOutputCI)) to carefully explain the meaning of both CIs.
+
+1. Compute the standard error for the difference between the proportions of people *not* reporting ear infections, comparing non-beach to beach swimmers.
+1. Compute an approximate $95$% CI for the difference between the proportions.
+1. Write down the $95$% CI for the difference between the proportions.
+1. Interpret the CI.
+1. Use the jamovi output (Fig.\ \@ref(fig:EarInfPSSOutputCI)) to write down a $95$%\ CI for the odds ratio.
+1. Interpret the CI.
+1. Is the CI statistically valid (Fig.\ \@ref(fig:EarInfPSSOutputCI))?
 :::
 
 
@@ -1009,9 +1033,12 @@ A study of turbine failures [@MyersBook; @NelsonLifeData] ran $73$ turbines for 
 They also ran a different set of $42$ turbines for about $3000$\ hrs, and found that nine developed fissures.
 
 1. Construct the two-way table for the data.
-1. Use the jamovi output (Fig.\ \@ref(fig:TurbinesOutputCI)) to construct a $95$%\ CI for the difference between the proportions.
-1. Use the jamovi output (Fig.\ \@ref(fig:TurbinesOutputCI)) to construct a $95$%\ CI for the odds ratio.
-1. Write down, then carefully interpret, the CI for the OR.
+1. Compute the standard error for the difference between the proportions.
+1. Compute an approximate $95$% CI for the difference between the proportions.
+1. Write down the $95$% CI for the difference between the proportions.
+1. Interpret the CI.
+1. Use the jamovi output (Fig.\ \@ref(fig:TurbinesOutputCI)) to write down a $95$%\ CI for the odds ratio.
+1. Interpret the CI.
 1. Is the CI statistically valid (Fig.\ \@ref(fig:TurbinesOutputCI))?
 :::
 
@@ -1040,13 +1067,20 @@ EmeraldAug$SOIpos <- factor( EmeraldAug$SOI>0 )
 #                          levels(emeraldaug$SOIpos)[ c(2,1)] )
                          
 
-SOI.tab <- xtabs( ~ (SOIpos) + (Rain>0), 
-                  data = EmeraldAug)
+SOI.tab2 <- SOI.tab <- xtabs( ~ (SOIpos) + (Rain>0), 
+                              data = EmeraldAug)
 
-colnames(SOI.tab) <- c("No rain", 
-                       "Rain")
-rownames(SOI.tab) <- c("Non-positive SOI", 
-                       "Positive SOI")
+#jamovi places true then false; R false then true...!
+SOI.tab[1, 1] <- SOI.tab[2, 2]
+SOI.tab[2, 2] <- SOI.tab[1, 1]
+SOI.tab[1, 2] <- SOI.tab[2, 1]
+SOI.tab[2, 1] <- SOI.tab[1, 2]
+
+
+colnames(SOI.tab) <- c("Rain", 
+                       "No rain")
+rownames(SOI.tab) <- c("Positive SOI", 
+                       "Non-positive SOI")
 
 #prop.table(SOI.tab, margin=1 )
 
@@ -1064,8 +1098,10 @@ The rainfall at Emerald (Queensland) was recorded for Augusts between 1889 to 20
 
 Using the jamovi output in Fig.\ \@ref(fig:EmeraldRainOutputCIjamovi):
 
+1. Find a $95$%\ CI for the difference between the proportion of wet Augusts, comparing those with positive SOI to those with a non-positive SOI.
 1. Find a $95$%\ CI for the OR.
-1. Carefully explain what this OR means.
+1. Carefully explain what these CIs means.
+1. Construct the summary table for the data.
 :::
 
 
@@ -1076,24 +1112,24 @@ Using the jamovi output in Fig.\ \@ref(fig:EmeraldRainOutputCIjamovi):
 \captionof{table}{The SOI, and whether rainfall was recorded in Augusts between 1889 and 2002 inclusive\label{tab:SOItableCI}}
 \fontsize{8}{12}\selectfont
 ```{r}
-knitr::kable( pad(t(SOI.tab),
+knitr::kable( pad((SOI.tab),
                   surroundMaths = TRUE,
                   targetLength = 2,
                   digits = 0),
          format = "latex",
          booktabs = TRUE,
          longtable = FALSE,
-         col.names = c("SOI",
-                       "SOI"),
+         #col.names = c("SOI",
+          #             "SOI"),
          escape = FALSE,
          #row.names = c("No rain", "Rain"),
          align = "c",
          table.env = "@empty") %>%
-  add_header_above( c(" " = 1,
-                      "Non-pos." = 1,
-                      "Positive" = 1),
-                    bold = TRUE,
-                    line = FALSE) %>%
+  #add_header_above( c(" " = 1,
+   #                   "Non-pos." = 1,
+    #                  "Positive" = 1),
+     #               bold = TRUE,
+      #              line = FALSE) %>%
    row_spec(0, bold = TRUE)
    #kable_styling(font_size = 8) %>% # CANNOT USE THIS IS THE MINIPAGE
    #column_spec(1, width = "13mm") %>%
@@ -1150,9 +1186,12 @@ SG.Table.GenderHat <- xtabs(Count ~ Hat + Gender,
 [*Dataset*: `HatSunglasses`]
 @data:Dexter2019:SunProtection recorded the number of people at the foot of the Goodwill Bridge, Brisbane, who wore hats between $11$:$30$am to $12$:$30$pm.
 Of the $386$ males observed, $79$ wore hats; of the $366$ females observed, $22$ wore hats.
+The jamovi output is shown in Fig.\ \@ref(fig:SunglassesSPSSOutputCI). 
 
-Using the jamovi output in Fig.\ \@ref(fig:SunglassesSPSSOutputCI), find a $95$%\ CI for the OR, and carefully explain what OR this CI applies to.
-Also, construct the numerical summary table.
+1. Find a $95$%\ CI for the difference between the proportion *not* wearing hats, comparing females to males.
+1. Find a $95$%\ CI for the OR.
+1. Carefully explain what these CIs means.
+1. Construct the summary table for the data.
 :::
 
 
