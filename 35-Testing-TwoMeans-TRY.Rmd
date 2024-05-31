@@ -244,9 +244,7 @@ arrows(x0 = 1:2,
 
 
 
-## Comparing two means {#CompareTwoMeans}
-
-### Statistical hypotheses and notation
+## Statistical hypotheses and notation
 
 Since two groups are being compared, subscripts are used to distinguish between the statistics for the two groups; say, Groups\ $A$ and\ $B$ in general (Table\ \@ref(tab:IndSampleNotationHT)).
 Using this notation, the *parameter* in the RQ is the difference between population means: $\mu_A - \mu_B$.
@@ -337,7 +335,7 @@ This hypothesis proposes that any difference between the *sample* means is becau
 
 
 
-### Sampling distribution for $\bar{x}_1 - \bar{x}_2$ {#SamplingDistDiffMeansHT}
+## Sampling distribution for $\bar{x}_1 - \bar{x}_2$ {#SamplingDistDiffMeansHT}
 \index{Sampling distribution!difference between two means}
 
 The *sample* mean difference between the SVL in the two groups depends on which one of the many possible samples is randomly obtained, *even if* the difference between the means in the population is zero.
@@ -383,8 +381,8 @@ In most cases, the information in both rows are similar anyway.
 
 
 
-### Computing the value of the test statistic: $t$-scores
-\index{Hypothesis testing!difference between two means}
+## Computing the value of the test statistic: $t$-scores
+\index{Hypothesis testing!difference between two means}\index{Test statistic!$t$-score}
 
 The observed difference between sample means, relative to what was expected, is found by computing the test statistic; in this case, a $t$-score.
 The jamovi output (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)) gives the $t$-score, but the $t$-score can also be computed using the information in Table\ \@ref(tab:SnakesNumericalTest):  
@@ -401,7 +399,7 @@ The jamovi output (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)) gives the $t$-score
 as in the software output.
 
 
-### Determining $P$-values
+## Determining $P$-values
 
 A $P$-value determines if the sample statistic is consistent with the assumption (i.e., $H_0$).
 Since the $t$-score is large, the $P$-value will be small using the $68$--$95$--$99.7$ rule (less than $0.003$).
@@ -419,7 +417,7 @@ A small $P$-value suggests the observations are *inconsistent* with the assumpti
 `r if (knitr::is_latex_output()) '-->'`
 
 
-### Writing conclusions
+## Writing conclusions
 
 In conclusion, write:
 
@@ -428,7 +426,7 @@ In conclusion, write:
 The conclusion contains an *answer to the RQ*, the *evidence* leading to this conclusion ($t = 3.44$; two-tailed $P = 0.0011$), and *sample summary statistics*, including a CI.
 
 
-### Statistical validity conditions {#Validity-Test-DiffMeans}
+## Statistical validity conditions {#Validity-Test-DiffMeans}
 \index{Statistical validity!difference between two means}
 
 As usual, these results apply under certain conditions, which are the same as those for forming a CI for the *difference* between two means.
@@ -460,11 +458,134 @@ The data in each group do not need be normally distributed, since both sample si
 
 ## Comparing more than two means: ANOVA {#CompareManyMeans}
 
-Section\ \@ref(CompareTwoMeans) introduced a $t$-test for comparing two means.
-However, often more than two means should be compared, and different methods are needed.
+Often more than two means need to be compared.
+This requires a different method, called *analysis of variance*\index{Analysis of variance} (or ANOVA), the details of which are are beyond the scope of this book.
+In this section, a very brief overview of using a one-way ANOVA is given, using an example.
+Importantly, this example shows that the basic principles of hypothesis testing from Chap.\ \@ref(MoreAboutTests) still apply.
 
 
+::: {.example #ANOVA name="ANOVA"}
+@johnson2021association collected data from hospital outpatients patients at an Irish hospital (Table\ \@ref(tab:BMIsummary)).
+One research question involves comparing the mean number of days per week that patients exercise for more than $30$\ mins (say, $\mu$) according to their smoking status: daily ($D$), occasionally ($O$) or not at all ($N$).
+An error bar chart can be used to display the three groups (Fig.\ \@ref(fig:BMIerrorbar)).
 
+As per Sect.\ \@ref(AboutHypotheses), the null hypothesis is 'no difference' between the means:  
+\[
+  \text{$H_0$:} \mu_D = \mu_O = \mu_N.
+\]
+The alternative hypothesis is that not all three means are equal. 
+This hypothesis encompasses many possibilities: for example, that the three means are *all* different from each other, or that the first is different than the other two (which are the same).
+
+Performing an ANOVA using software (Fig.\ \@ref(fig:BMIjamovi)), the $P$-value is shown as $P = 0.00007$.
+(The *test statistic* here is an $F$-score;\index{Test statistic!$F$-score} we don't discuss these further.)
+The $P$-value in this context means the same as usual (Sect.\ \@ref(AboutPvalues)): there is very strong evidence to support the alternative hypothesis (that the three means are not all the same).
+
+While we know the means are not all the same, we do not know *which* means are different from which other means.
+One option might seem to be to compare all *pairs* of groups (i.e., $D$ vs $O$; $D$ vs $N$; $O$ vs $N$) using two-sample $t$-tests.
+However, this approach increases the probability of *incorrectly* declaring a difference between the means (a Type\ I error; Sect.\ \@ref(TypeErrors))
+The correct approach requires methods beyond this book.
+:::
+
+
+```{r BMIsummary}
+data(BMI)
+
+BMItab <- array(dim = c(3, 4))
+
+BMItab[, 1] <- tapply(BMI$exercise, 
+                      list(BMI$smoke), 
+                      "mean")
+BMItab[, 2] <- tapply(BMI$exercise, 
+                      list(BMI$smoke), 
+                      "sd")
+BMItab[, 3] <- tapply(BMI$exercise, 
+                      list(BMI$smoke), 
+                      "findStdError")
+BMItab[, 4] <- tapply(BMI$exercise, 
+                      list(BMI$smoke), 
+                      "realLength")
+
+rownames(BMItab) <- c("Smokes daily",
+                      "Smokes occasionally",
+                      "Does not smoke")
+
+if( knitr::is_latex_output() ) {
+  kable( pad(BMItab,
+             surroundMaths = TRUE,
+             targetLength = c(4, 4, 5, 2),
+             digits = c(2, 2, 3, 0)),
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        escape = FALSE,
+        col.names = c("Mean",
+                      "Std dev.",
+                      "Std error",
+                      "$n$"),
+        align = "c",
+        caption = "Number of days per week where patients do more than $30$ mins of exercise") %>%
+     column_spec(1, bold = TRUE) %>%
+     row_spec(0, bold = TRUE) %>%
+     kable_styling(font_size = 8)
+}
+if( knitr::is_html_output() ) {
+  kable(pad(BMItab,
+             surroundMaths = TRUE,
+             targetLength = c(4, 4, 5, 2),
+             digits = c(2, 2, 3, 0)),
+        format = "html",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = "c",
+        caption = "Number of days per week where patients do more than $30$ mins of exercise")
+}        
+```
+
+
+```{r BMIerrorbar, fig.align="center", fig.cap="The error bar chart for comparing the number of days per week on which people do more than $30$\ mins of exercise, for different smoking status", fig.width=5, out.width='60%', fig.height=3.25}
+mns <- BMItab[, 1]
+ses <- BMItab[, 3]
+ci.lo <- mns - ses*2
+ci.hi <- mns + ses*2
+
+par( mar = c(5, 5, 4, 2) + 0.1 )
+plot( range( c( ci.lo, ci.hi) ) ~ c(1,3), 
+      type = "n",
+      ylim = c(0, 4),
+      xlim = c(0.5, 3.5),
+      pch = 19,
+      axes = FALSE,
+      main = "Error bars chart:\ndays per week of 30 mins exercise",
+      xlab = "Smoking status", 
+      ylab = "Number of days\nper week",
+      sub = "(Error bars are 95%\ CIs)",
+      las = 1)
+axis(side = 1, 
+     at = 1:3, 
+     labels = c("Daily", "Occasionally", "Not all"), 
+     las = 1) 
+axis(side = 2, 
+     las = 1)
+box()
+
+points( mns ~ c(1:3), 
+        pch = 19)
+
+arrows(1:3, 
+       mns - 2 * ses, 
+       1:3, 
+       mns + 2 * ses, 
+       length = 0.05, 
+       angle = 90, 
+       code = 3)
+```
+
+ANOVA is a general tool that can be extended, and used in many and varied context for analysis of data.
+
+
+```{r BMIjamovi, echo=FALSE, fig.cap="The jamovi output for the BMI data", fig.align="center", out.width='55%'}
+knitr::include_graphics( "jamovi/BMI/ANOVA.png")
+```
 
 
 ## Example: speed signage {#SpeedSignageHT}
