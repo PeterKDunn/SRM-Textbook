@@ -722,7 +722,7 @@ The degrees of freedom in a two-way table is the number of rows of data less one
 This allows the $P$-value to be estimated using the $68$--$95$--$99.7$ rule. 
 :::
 
-```{r Ripsjamovi, fig.show="hold", fig.cap="The jamovi output for the hypothesis test about knowlede of ocean rips", fig.align="center", out.width="55%"}
+```{r Ripsjamovi, fig.show="hold", fig.cap="Software output for the hypothesis test about knowledge of ocean rips", fig.align="center", out.width="50%"}
 knitr::include_graphics( "jamovi/RipsID/RipsID-chisq.png")
 ```
 
@@ -1176,7 +1176,7 @@ To test a hypothesis about a difference between two population means $\mu_A - \m
 
 ::: {.webex-check .webex-box}
 @meresa2023effect investigated Ethiopian farmers' adoption of improved soil and water conservation structures on their farms (Table\ \@ref(tab:FarmersData)).
-Output from using jamovi is shown in Fig.\ \@ref(fig:farmersjamoviHT).
+Software output is shown in Fig.\ \@ref(fig:farmersjamoviHT).
 
 ```{r}
 Farmers <- array(dim = c(2, 2))
@@ -1214,7 +1214,7 @@ knitr::kable( pad(Farmers,
 \begin{minipage}{0.54\textwidth}%
 \centering
 ```{r, out.width='95%'}
-knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2.png")
+knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2-Expected.png")
 ```
 \caption{jamovi output for the farming study}\label{fig:farmersjamoviHT}
 \end{minipage}
@@ -1239,8 +1239,8 @@ if( knitr::is_html_output() ) {
 
 <!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
 `r if (knitr::is_latex_output()) '<!--'`
-```{r farmersjamoviHT, fig.show="hold", fig.cap="jamovi output for the farming study", fig.align="center", out.width="50%"}
-knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2.png")
+```{r farmersjamoviHT, fig.show="hold", fig.cap="Software output for the farming study", fig.align="center", out.width="50%"}
+knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2-Expected.png")
 ```
 
 
@@ -1248,6 +1248,8 @@ knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2.png")
 1. What is the $\chi^2$ value? \tightlist
 `r if( knitr::is_html_output() ) {mcq(
   c(answer = 10.7105, 2.2903, 1.3891, 262)  )}`
+1. How many degrees of freedom are there?
+`r if( knitr::is_html_output() ) {fitb(answer = 1, tol = 0.01, num = TRUE)}`
 1. What is the equivalent $z$-score (to two decimal places)?
 `r if( knitr::is_html_output() ) {fitb(answer = 3.28, tol = 0.01, num = TRUE)}`
 1. Using the $68$--$95$--$99.7$ rule, what is the approximate $P$-value?
@@ -1262,7 +1264,7 @@ knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2.png")
     answer = "0.00107",
     "2.2903",
     "There is not enough information")  )}`
-1. What is the alternative hypothesis?
+1. Is the alternative hypothesis one- or two-tailed?
 `r if( knitr::is_html_output() ) {longmcq(
   c("One-tailed",
     answer = "Two-tailed",
@@ -1270,6 +1272,9 @@ knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2.png")
 1. True or false:
 There is *no* evidence of a difference in odds of adopting of conservation practices, for the two far size categories.
 `r if( knitr::is_html_output() ) {torf(answer=FALSE)}`
+1. True or false:
+The test will be statistically valid.
+`r if( knitr::is_html_output() ) {torf(answer=TRUE)}`
 :::
 
 
@@ -1288,12 +1293,9 @@ Confirm that the *odds* of having most meals off-campus is the same for students
 
 
 
-::: {.exercise #OddsEV}
-Section\ \@ref(Chap29-QuickReview) gives data from a study of the adoption of electric vehicle (EVs) by a certain group of professional Americans (Table\ \@ref(tab:EV10years); @egbue2017mass).
-Software gives the $\chi^2$-score as $1.31$.
-
-1. What is the equivalent $z$-score?
-1. What is the approximate $P$-value for the test?
+::: {.exercise #OddsSame2}
+Consider the expected counts in Fig.\ \@ref(fig:farmersjamoviHT).
+Confirm that the *odds* of being an adopter of improved soil and water conservation structures is the same for smaller and larger farms.
 :::
 
 
@@ -1325,25 +1327,20 @@ rownames(FliesData) <- c("Males",
 \captionof{table}{The sex of sandflies at two heights\label{tab:SandfliesHT}}
 \fontsize{8}{12}\selectfont
 ```{r}
-knitr::kable( pad(FliesData,
+knitr::kable( pad( t(FliesData),
                   surroundMaths = TRUE,
                   targetLength = 3, 
                   textAlign = "right",
                   digits = 0),
          format = "latex",
          align = "c",
-         col.names = c("above ground",
-                       "above ground"),
+         col.names = c("Males",
+                       "Females"),
          booktabs = TRUE,
          longtable = FALSE,
          escape = FALSE,
          table.env = "@empty") %>%
-   row_spec(0, bold = TRUE) %>%
-    add_header_above( c(" " = 1,
-                        "3 feet" = 1,
-                        "35 feet" = 1),
-                      bold = TRUE,
-                      line = FALSE)
+   row_spec(0, bold = TRUE)
    #kable_styling(font_size = 8) %>% # CANNOT USE THIS IN THE MINIPAGE
    #column_spec(1, width = "13mm") %>%
    #column_spec(2, width = "22mm")
@@ -1394,8 +1391,8 @@ if( knitr::is_html_output() ) {
         format = "html",
         align = "c",
         longtable = FALSE,
-        col.names = c("above ground",
-                      "above ground"),
+        col.names = c("Males",
+                      "Females"),
         caption = "The sex of sandflies at two heights",
         booktabs = TRUE) %>%
     kable_styling(full_width = FALSE) %>%
@@ -1404,7 +1401,6 @@ if( knitr::is_html_output() ) {
                         "35 feet" = 1),
                       bold = TRUE,
                       line = FALSE)
-  
 }
 ```
 
@@ -1414,8 +1410,8 @@ FliesSummary <- array( dim = c(3, 3) )
 colnames(FliesSummary) <- c( "Odds",
                              "Percentage",
                              "Sample size")
-rownames(FliesSummary) <- c("3 feet:",
-                            "35 feet:",
+rownames(FliesSummary) <- c("3 feet above ground:",
+                            "35 feet above ground:",
                             "Odds ratio:")
   
   
@@ -1489,7 +1485,7 @@ box()
 
 
 
-```{r Sandfliesjamovi, fig.show="hold", fig.cap="Using jamovi to compute a CI for the sandflies data", fig.align="center", out.width="75%"}
+```{r Sandfliesjamovi, fig.show="hold", fig.cap="Software output for the sandflies data", fig.align="center", out.width="65%"}
 knitr::include_graphics( "jamovi/Sandflies/Sandflies-All.png")
 ```
 
@@ -1510,8 +1506,8 @@ jamovi was used to analyse the data (Fig.\ \@ref(fig:ScarHeightRisk)).
 ```{r ScarsDataHT}
 ScarsData <- array( dim = c(2, 2) )
 
-rownames(ScarsData) <- c("Scar height $0$\\ mm (smooth)",
-                         "Scar height more than $0$\\ mm, less than $1$\\ mm")
+rownames(ScarsData) <- c("$0$\\ mm (smooth)",
+                         "Between $0$\\ mm and $1$\\ mm")
 colnames(ScarsData) <- c("Women",
                          "Men")
 
@@ -1519,7 +1515,7 @@ ScarsData[1, ] <- c(99, 216)
 ScarsData[2, ] <- c(62, 115)
 
 if( knitr::is_latex_output() ) {
-  kable(pad(ScarsData,
+  kable(pad(t(ScarsData),
             surroundMaths = TRUE,
             targetLength = c(2, 3), 
             digits = 0),
@@ -1530,11 +1526,15 @@ if( knitr::is_latex_output() ) {
         align = "c",
         caption = "The number of men and women, with scars of different heights") %>%
     row_spec(0, bold = TRUE) %>%
+    add_header_above( c(" " = 1,
+                        "Scar height" = 2),
+                      bold = TRUE,
+                      line = TRUE) %>%
   kableExtra::kable_styling(latex_options = "hold_position", 
                             font_size = 8)
 }
 if( knitr::is_html_output() ) {
-  kable(pad(ScarsData,
+  kable(pad(t(ScarsData),
             surroundMaths = TRUE,
             targetLength = c(2, 3), 
             digits = 0),
@@ -1549,8 +1549,8 @@ if( knitr::is_html_output() ) {
 ```
 
 
-```{r ScarHeightRisk, fig.show="hold", fig.cap="Using jamovi to compute a CI for the scar-height data", fig.align="center", out.width="55%"}
-knitr::include_graphics( "jamovi/ScarHeight/ScarHeight-All.png")
+```{r ScarHeightRisk, fig.show="hold", fig.cap="Software output for the scar-height data", fig.align="center", out.width="65%"}
+knitr::include_graphics( "jamovi/ScarHeight/ScarHeight-All-Both-Expected.png")
 ```
 
 
@@ -1565,8 +1565,8 @@ They also ran a different set of $42$ turbines for about $3000$\ hrs, and found 
 :::
 
 
-```{r TurbinesOutputHT, fig.show="hold", fig.cap="jamovi output for the turbine data (left); expected counts (right)", fig.align="center", out.width="48%"}
-knitr::include_graphics( "jamovi/Turbines/TurbinesCI-jamovi.png" )
+```{r TurbinesOutputHT, fig.show="hold", fig.cap="Software output for the turbine data (left); expected counts (right)", fig.align="center", out.width="48%"}
+knitr::include_graphics( "jamovi/Turbines/Turbines-Test-Both.png" )
 knitr::include_graphics( "jamovi/Turbines/TurbinesExpected-jamovi.png" )
 ```
 
@@ -1575,15 +1575,22 @@ knitr::include_graphics( "jamovi/Turbines/TurbinesExpected-jamovi.png" )
 ```{r}
 data(EmeraldAug) ### Exercise
 
-EmeraldAug$SOIpos <- factor( EmeraldAug$SOI>0 )
+EmeraldAug$SOIpos <- factor( EmeraldAug$SOI > 0 )
 
-SOI.tab <- xtabs( ~ (SOIpos) + (Rain > 0), 
+SOI.tab2 <- xtabs( ~ (SOIpos) + (Rain > 0), 
                   data = EmeraldAug)
 
-colnames(SOI.tab) <- c("No rainfall recorded", 
-                       "Rainfall recorded")
-rownames(SOI.tab) <- c("Non-positive SOI", 
-                       "Positive SOI")
+
+SOI.tab <- SOI.tab2
+
+SOI.tab[, 1] <- c(SOI.tab2[2, 2],
+                  SOI.tab2[1, 2] )
+SOI.tab[, 2] <- c(SOI.tab2[2, 1],
+                  SOI.tab2[1, 1] )
+colnames(SOI.tab) <- c("Rainfall recorded", 
+                       "No rainfall recorded")
+rownames(SOI.tab) <- c("Positive SOI", 
+                       "Non-positive SOI")
 
 #prop.table(SOI.tab, margin=1 )
 
@@ -1606,7 +1613,7 @@ The rainfall at Emerald (Queensland) was recorded for Augusts between 1889 to 20
 
 ```{r SOItableHT}
 if( knitr::is_latex_output() ) {
-  kable( pad(t(SOI.tab),
+  kable( pad((SOI.tab),
              surroundMaths = TRUE,
              targetLength = 2,
              digits = 0),
@@ -1621,7 +1628,7 @@ if( knitr::is_latex_output() ) {
     column_spec(0, bold = TRUE)
 }
 if( knitr::is_html_output() ) {
-  kable( pad(t(SOI.tab),
+  kable( pad((SOI.tab),
              surroundMaths = TRUE,
              targetLength = 2,
              digits = 0),
@@ -1635,8 +1642,8 @@ if( knitr::is_html_output() ) {
 ```
 
 
-```{r EmeraldRainjamoviOutput, fig.show="hold", fig.cap="jamovi output for the Emerald-rain data", fig.align="center", out.width="70%"}
-knitr::include_graphics( "jamovi/EmeraldRain/EmeraldRain-All.png" )
+```{r EmeraldRainjamoviOutput, fig.show="hold", fig.cap="Software output for the Emerald-rain data", fig.align="center", out.width="65%"}
+knitr::include_graphics( "jamovi/EmeraldRain/EmeraldRain-All-Both.png" )
 ```
 
 
@@ -1661,73 +1668,82 @@ Of the $386$ males observed, $79$ wore hats; of the $366$ females observed, $22$
 1. Compute the odds ratio of wearing a hat, comparing females to males.
 1. Compute the odds ratio of wearing a hat, comparing males to females.
 1. Find the $95$%\ CI for the appropriate OR.
-1. Using the jamovi output in Fig.\ \@ref(fig:SunglassesOutput), perform a hypothesis test to determine if the odds of wearing a hat is the same for females and males.
+1. Using the software output in Fig.\ \@ref(fig:SunglassesOutput), perform a hypothesis test to determine if the odds of wearing a hat is the same for females and males.
 1. Write down the conclusion.
 1. Is the test statistically valid?
 :::
 
 
 
-```{r SunglassesOutput, fig.show="hold", fig.cap="jamovi output for the hats data", fig.align="center", out.width=c("50%", "45%"), fig.show='hold'}
-knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-CI.png" )
-knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-Test.png" )
+```{r SunglassesOutput, fig.show="hold", fig.cap="Software output for the hats data", fig.align="center", out.width=c("50%", "45%"), fig.show='hold'}
+knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-CI-Both.png" )
+knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-Test-Both.png" )
 ```
 
 
 
-::: {.exercise #TestOddsRatioPedestrianPhones}
-@lennon2017pedestrian asked people about their mobile-phone interactions while crossing the road as pedestrians.
-Part of the data are summarised in Table\ \@ref(tab:PedestrianPhonesData).
+::: {.exercise #TestOddsRatioPedestrianBearTree}
+@witmer2020preliminary compared various types of repellents to stop bears damaging trees in an Idaho forest.
+Part of the data are summarised in Table\ \@ref(tab:BearTreeData).
 
 1. Compute the column percentages.
-1. Compute the odds of low exposure to each behaviour.
+1. Compute the odds of new damage for both repellents.
+1. Compute the proportion of trees with new damage.
+1. Compute the odds ratio, and the difference between the proportions.
 1. Write the hypothesis for conducting a hypothesis test.
 1. Compute the *expected counts*.
-1. After analysis in jamovi, the value of $\chi^2$ is $20.923$ with two degrees of freedom. 
+1. Software gives $\chi^2$ is $4.4850$. 
    What is the approximately-equivalent $z$-score? 
    Would you expect a large or small $P$-value?
-1. The $P$-value is given as $P < 0.000$. 
+1. The $P$-value is given as $P = 0.0342$. 
    Write a conclusion.
 :::
 
 
-```{r PedestrianPhonesData}
-PhoneTable <- array( dim = c(2, 3))
-PhoneTable[1, ] <- c(263, 259, 302)
-PhoneTable[2, ] <- c(94, 98, 51)
-colnames(PhoneTable) <- c("Answer call", 
-                          "Respond to text", 
-                          "Reply to email")
-rownames(PhoneTable) <- c("Low exposure", 
-                          "High exposure")
+```{r BearTreeData}
+BearTable <- array( dim = c(2, 2))
+BearTable[1, ] <- c(6, 69)
+BearTable[2, ] <- c(15, 60)
+colnames(BearTable) <- c("Yes",
+                         "No")
+rownames(BearTable) <- c("Bear faeces",
+                         "Control (water)")
 
 if( knitr::is_latex_output() ) {
-  kable(pad(PhoneTable,
+  kable(pad(BearTable,
             surroundMaths = TRUE,
-            targetLength = 3,
+            targetLength = 2,
             digits = 0),
         format = "latex",
         align = "c",
         escape = FALSE,
         longtable = FALSE,
-        caption = "Mobile-phone behaviour of pedestrians. (`Low exposure' means the behaviour was displayed less than once per week; `High exposure' means the behaviour was displayed one per week or more.) ",
+        caption = "The number of trees with new damage by bears, according to different repellents",
       booktabs = TRUE) %>%
     kable_styling(font_size = 8) %>%
     row_spec(0, bold = TRUE) %>%
-    column_spec(0, bold = TRUE)
+    column_spec(0, bold = TRUE) %>%
+add_header_above( c(" " = 1,
+                    "New damage" = 2),
+                  bold = TRUE,
+                  line = TRUE)
 }
 
 
 if( knitr::is_html_output() ) {
-  kable(pad(PhoneTable,
+  kable(pad(BearTable,
             surroundMaths = TRUE,
-            targetLength = 3,
+            targetLength = 2,
             digits = 0),
         format = "html",
         align = "c",
         longtable = FALSE,
-        caption = "Mobile-phone behaviour of pedestrians. ('Low exposure' means the behaviour was displayed less than once per week; 'High exposure' means the behaviour was displayed one per week or more.) ",
-      booktabs = TRUE)
+        caption = "The number of trees with new damage by bears, according to different repellents",
+      booktabs = TRUE) %>%
+add_header_above( c(" " = 1,
+                    "New damage" = 2),
+                  bold = TRUE,
+                  line = TRUE)
 }
 ```
 
@@ -1796,8 +1812,9 @@ if( knitr::is_html_output() ) {
 ```
 
 
-```{r PetBirdsjamovi, fig.show="hold", fig.cap="jamovi output for the pet-birds data", fig.align="center", out.width="50%"}
-knitr::include_graphics("jamovi/PetBirds/Pets-All.png") 
+```{r PetBirdsjamovi, fig.show="hold", fig.cap="jamovi output for the pet-birds data", fig.align="center", out.width=c('49%',"49%"), fig.show='hold'}
+knitr::include_graphics("jamovi/PetBirds/Pets-Test-Both.png") 
+knitr::include_graphics("jamovi/PetBirds/PetsCI-Both.png") 
 ```
 
 
@@ -1838,11 +1855,166 @@ colnames(B12Data) <- c("B12 deficient",
 
 
 
-```{r B12jamoviOutputHT, fig.show="hold", fig.cap="jamovi output for the B12 data", fig.align="center", out.width="70%"}
-knitr::include_graphics( "jamovi/B12/B12-All.png")
+```{r B12jamoviOutputHT, fig.show="hold", fig.cap="jamovi output for the B12 data", fig.align="center", out.width=c("49%", "49%", fig.hold=TRUE)}
+knitr::include_graphics( "jamovi/B12/B12CI-Both.png")
+knitr::include_graphics( "jamovi/B12/B12Test-Both.png")
 ```
 
 `r if( knitr::is_latex_output() ) "\\captionsetup{font=normalsize}"`
+
+
+
+::: {.exercise #DogsHT}
+[*Dataset*: `XXXXXXXXXXXXX`]
+@naughton2024association studied the difference between dogs kept in the city and on farms.
+One RQ was:
+
+> For Northern Ireland dogs, is there an association between length of dog walks, and their location?
+
+The data are shown in Table\ \@ref(tab:DogWalkTable).
+
+1. Write down the hypotheses.
+1. Determine the $\chi^2$ value and perform a hypothesis to answer the RQ, using the output in Fig.\ \@ref(fig:DogWalksjamovi).
+1. Determine the number of degrees freedom.
+1. Compute the equivalent $z$-score for this $\chi^2$-value.
+1. Write down the conclusion.
+1. Is the test statistically valid?
+:::
+
+```{r DogWalkTable}
+DogTable <- array( dim = c(2, 4))
+DogTable[1, ] <- c(138, 84, 13, 264)
+DogTable[2, ] <- c(84, 102, 33, 243)
+colnames(DogTable) <- c("Under $30$",
+                        "$30$ to under $60$",
+                        "$60$ to under $120$",
+                        "Varies")
+rownames(DogTable) <- c("City",
+                        "Farm")
+
+if( knitr::is_latex_output() ) {
+  kable(pad(DogTable,
+            surroundMaths = TRUE,
+            targetLength = 3,
+            digits = 0),
+        format = "latex",
+        align = "c",
+        escape = FALSE,
+        longtable = FALSE,
+        caption = "The length of walks for dogs, living in the city and farms. (`Varies' means usuually short walks, but occasional longer walks.)",
+      booktabs = TRUE) %>%
+    kable_styling(font_size = 8) %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(0, bold = TRUE) %>%
+add_header_above( c(" " = 1,
+                    "Walk length (in mins)" = 4),
+                  bold = TRUE,
+                  line = TRUE)
+}
+
+
+if( knitr::is_html_output() ) {
+  kable(pad(DogTable,
+            surroundMaths = TRUE,
+            targetLength = 3,
+            digits = 0),
+        format = "html",
+        align = "c",
+        longtable = FALSE,
+        caption = "The length of walks for dogs, living in the city and farms. ('Varies' means usuually short walks, but occasional longer walks.)",
+      booktabs = TRUE) %>%
+add_header_above( c(" " = 1,
+                    "Walk length (in mins)" = 4),
+                  bold = TRUE,
+                  line = TRUE)
+}
+```
+
+
+
+```{r DogWalksjamovi, fig.show="hold", fig.cap="Software output for the dog-walking data", fig.align="center", out.width="55%"}
+knitr::include_graphics("jamovi/DogWalks/DogWalks-All.png")
+```
+
+
+
+
+::: {.exercise #ComplianceHT}
+[*Dataset*: `XXXXXXXXXXXXX`]
+@soud2009isolation studied the compliance of students with an isolation request following a large mumps outbreak in Kansas in 2006.
+One RQ was:
+
+> Is there an association between age group, and compliance with the isolation order?
+
+The data are shown in Table\ \@ref(tab:MumpsTable).
+
+1. Write down the hypotheses.
+1. Compute the proportion of each age group that complied with the isolation request.
+1. Compute the odds of each age group that complied with the isolation request.
+1. Compute the relevant odds ratios, and interpret what these mean.
+1. Determine the $\chi^2$ value and perform a hypothesis to answer the RQ, using the output in Fig.\ \@ref(fig:Mumpsjamovi).
+1. Determine the number of degrees freedom.
+1. Compute the equivalent $z$-score for this $\chi^2$-value.
+1. Write down the conclusion.
+1. Is the test statistically valid?
+:::
+
+```{r MumpsTable}
+MumpsTable <- array( dim = c(3, 2))
+MumpsTable[1, ] <- c(40, 10)
+MumpsTable[2, ] <- c(37, 14)
+MumpsTable[3, ] <- c(22, 9)
+rownames(MumpsTable) <- c("$18$ to $19$",
+                        "$20$ to $21$",
+                        "Older than $22$")
+colnames(MumpsTable) <- c("Yes",
+                        "No")
+
+if( knitr::is_latex_output() ) {
+  kable(pad(MumpsTable,
+            surroundMaths = TRUE,
+            targetLength = 2,
+            digits = 0),
+        format = "latex",
+        align = "c",
+        escape = FALSE,
+        longtable = FALSE,
+        caption = "The  compliance of students by age group",
+      booktabs = TRUE) %>%
+    kable_styling(font_size = 8) %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(0, bold = TRUE) %>%
+add_header_above( c(" " = 1,
+                    "Compliance" = 2),
+                  bold = TRUE,
+                  line = TRUE)
+}
+
+
+if( knitr::is_html_output() ) {
+  kable(pad(DogTable,
+            surroundMaths = TRUE,
+            targetLength = 2,
+            digits = 0),
+        format = "html",
+        align = "c",
+        longtable = FALSE,
+        caption =  "The  compliance of students by age group",
+      booktabs = TRUE) %>%
+add_header_above( c(" " = 1,
+                    "Compliance" = 2),
+                  bold = TRUE,
+                  line = TRUE)
+}
+```
+
+
+
+```{r Mumpsjamovi, fig.cap="Software output for the dog-walking data", fig.align="center", out.width="55%", fig.show='hold'}
+knitr::include_graphics("jamovi/Mumps/Mumps-All.png") 
+```
+
+
 
 
 <!-- QUICK REVIEW ANSWERS -->
@@ -1850,10 +2022,12 @@ knitr::include_graphics( "jamovi/B12/B12-All.png")
 ::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
 **Answers to *Quick Revision* questions:**
 **1.** $10.7105$.
-**2.** $3.28$.
-**3.** Smaller than $0.003$.
-**4.** $0.00107$.
-**5.** Two-tailed.
-**6.** False
+**2.** $1$.
+**3.** $3.28$.
+**4.** Smaller than $0.003$.
+**5.** $0.00107$.
+**6.** Two-tailed.
+**7.** False.
+**8.** True.
 :::
 `r if (knitr::is_html_output()) '-->'`
