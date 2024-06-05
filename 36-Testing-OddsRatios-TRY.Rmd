@@ -563,22 +563,21 @@ PB2.exp <- chisq.test(PB2)$expected
 
 ## Beyond $2\times 2$ tables {#CompareManyProportions}
 
-Often more than two proportions need to be compared, or the tables of counts is larger than $2\times 2$.
+Often a tables of counts is larger than $2\times 2$.
 In these situations, the RQ is worded in terms of *relationships* or *associations* (but *not* correlations) between the variables:
 
-> Is there a relationship (or association) between where students eat most of their meals and whether or not the student lives with their parents?
+> Is there a relationship (or association) between one qualitative variable and another qualitative variable?
 
-The RQ is answered using a $\chi^2$-test, by extending the ideas in extension in Sect.\ \@ref(CompareTwoOdds).
-We demonstrate using an example.
+The RQ is answered using a $\chi^2$-test comparing odds (not proportions), by extending the ideas in Sect.\ \@ref(CompareTwoOdds), as demonstrated in the following example.
 
 
 :::{.example #ChiSqLarger name="Larger two-way tables"}
 [*Dataset*: `RipsID`]
-@diez2023rip studied the people's knowledge of ocean rips (Table\ \@ref(tab:RipTableSummary), left table).
+@diez2023rip studied Spanish people's knowledge of ocean rips (Table\ \@ref(tab:RipTableSummary), left table).
 The table is a $4\times 2$ two-way table.
 The RQ is
 
-> Is there a relationship (or association) between age group and people's abiity to correctly identify a rip?
+> Is there a relationship (or association) between age group and people's ability to correctly identify a rip?
 
 :::
 
@@ -622,14 +621,14 @@ colnames(RipSummary) <- c("Odds",
                           "Percentage",
                           "$n$")
 
-RipSummary[, 1] <- RipTable[, 1] / rowSums(RipTable)
-RipSummary[, 3] <- RipTable[, 1] / RipTable[, 2]
+RipSummary[, 1] <- RipTable[, 1] / RipTable[, 2]
+RipSummary[, 3] <- RipTable[, 1] / rowSums(RipTable)
 RipSummary[, 4] <- rowSums(RipTable)
 
-RipSummary[1, 2] <- NA
-RipSummary[2, 2] <- RipSummary[2, 1] / RipSummary[1, 1]
-RipSummary[3, 2] <- RipSummary[3, 1] / RipSummary[1, 1]
-RipSummary[4, 2] <- RipSummary[4, 1] / RipSummary[1, 1]
+RipSummary[1, 2] <- RipSummary[1, 1] / RipSummary[4, 1]
+RipSummary[2, 2] <- RipSummary[2, 1] / RipSummary[4, 1]
+RipSummary[3, 2] <- RipSummary[3, 1] / RipSummary[4, 1]
+RipSummary[4, 2] <- NA
 
 
 
@@ -652,7 +651,7 @@ T2 <- kable( pad(RipSummary,
   out <- knitr::kables(list(T1, T2),
                        format = "latex",
                        label = "RipTableSummary",
-                       caption = "Identifying rips. Left: the data by age group. Right: a summary table. The odds ratio is relative to the 18 to 24 age group.") %>% 
+                       caption = "Identifying rips. Left: the data by age group. Right: a summary table. The odds ratio is relative to the 51 to 65 age group.") %>% 
     kable_styling(font_size = 8)
 
   out2 <- prepareSideBySideTable(out) 
@@ -673,36 +672,44 @@ if( knitr::is_html_output() ) {
 ```
 
 
-The data can be summarised using the proportions and odds (Table\ \@ref(tab:RipTableSummary)) of correctly identifying rips.
-Odds ratios compare *pairs* of odds, so the odds ratios in Table\ \@ref(tab:RipTableSummary) are all relative to those in $18$ to $24$; hence, no odds ratio is given for the $18$ to $24$ age group which acts as the *reference level*.\index{Reference level}
-For example, the odds of someone aged $51$ to $65$ correctly identifying a rip is $0.960$ times the odds of someone aged $18$ to $24$ correctly identifying a rip.
-
-Tests involving two-way tables larger than $2\times 2$ use a $\chi^2$-test (Sect.\ \@ref(CompareTwoOdds)).
-The hypotheses are written in terms of *associations* between the two qualitative variables:
-
-* $H_0$: In the *population*, there is *no* association between the two variables;
-* $H_1$: In the *population*, there is *an* association between the two variables.
-
 The odds and percentage of people in each age group that can correctly identify rips can be computed (Table\ \@ref(tab:RipTableSummary), right table), but this is not always possible (e.g., for a $3\times 4$ table).
+Odds ratios compare *pairs* of odds, so the odds ratios in Table\ \@ref(tab:RipTableSummary) are all relative to those $51$ to $65$ (hence, no odds ratio is given for the $51$ to $65$ age group, which is the *reference level*).\index{Reference level}
+For example, the odds of someone aged $18$ to $24$ correctly identifying a rip is $1.104$ times the odds of someone aged $51$ to $65$ correctly identifying a rip.
 
-As in Sect.\ \@ref(CompareTwoOdds), the value of $\chi^2$ compares the observed counts in Table\ \@ref(tab:RipTableSummary) to the expected counts (found in the same as in Sect.\ \@ref(ExpectedValues)).
-Software computes $\chi^2 = 2.6608$ (Fig. \@ref(fig:Ripsjamovi)).
+* $H_0$: In the *population*, there *is no association* between age group and being able to correctly identify a rip;
+* $H_1$: In the *population*, there *is an association* between age group and being able to correctly identify a rip.
+
+For a $2\times 2$ table, the *parameter* is the odds ratio, and the test proceeds using a $\chi^2$ value.
+As in Sect.\ \@ref(CompareTwoOdds), the value of $\chi^2$ compares the observed counts to the expected counts (found in the same way as in Sect.\ \@ref(ExpectedValues)).
+For two-way tables larger than $2\times 2$, defining a single parameter to describe the association between the variables is difficult.
+
+When no relationship exists in the sample, the observed and expected values are the same, and $\chi^2 = 0$.
+The larger the difference between the observed and expected values, the larger the value of $\chi^2$.
+Sampling variation means that the observed values will vary from sample to sample, so that $\chi^2$ may not be exactly zero, even if there is no association between the variables.
+
+Software computes $\chi^2 = 2.4062$ (Fig. \@ref(fig:Ripsjamovi)).
 For two-way table of counts larger than $2\times 2$, this is equivalent to a $z$-score of  
 \[
   z = \sqrt{\chi^2 \div \text{df}},
 \]
-where $\text{df}$ is the *degrees of freedom*.\index{Degrees of freedom}
-For a two-way table,  
+where $\text{df}$ is the *degrees of freedom*,\index{Degrees of freedom}
+where
 \[
   \text{df} = (\text{number of columns of data} - 1)\times(\text{number of rows of data} - 1).
 \]
-So here, $\text{df} = (4 - 1)\times ( 2 - 1) = 3$, as shown in the output (Fig. \@ref(fig:Ripsjamovi)).
+Here, $\text{df} = (4 - 1)\times ( 2 - 1) = 3$, as in the output (Fig. \@ref(fig:Ripsjamovi)).
 Hence, the equivalent $z$-score is  
 \[
-  z = \sqrt{2.6608/3} = 0.942,
+  z = \sqrt{2.4062/3} = 0.896,
 \]
 which is quite small, so we expected a large $P$-value.
-Software confirms this (Fig. \@ref(fig:Ripsjamovi)): $P = 0.447$ (recall, the $P$-value is always two-tailed for a $\chi^2$-test).
+Software confirms this (Fig. \@ref(fig:Ripsjamovi)): $P = 0.492$.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Recall that, for two-way tables of counts, the alternative hypotheses *are always two-tailed*, so a two-tailed $P$-value is always reported.
+:::
+
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 In a chi-squared test, the value of  
@@ -718,12 +725,6 @@ This allows the $P$-value to be estimated using the $68$--$95$--$99.7$ rule.
 ```{r Ripsjamovi, fig.show="hold", fig.cap="The jamovi output for the hypothesis test about knowlede of ocean rips", fig.align="center", out.width="55%"}
 knitr::include_graphics( "jamovi/RipsID/RipsID-chisq.png")
 ```
-
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Recall that, for two-way tables of counts, the alternative hypotheses *are always two-tailed*, so a two-tailed $P$-value is always reported.
-:::
 
 
 The statistical validity conditions are the same as in Sect.\ \@ref(Validity-Test-ChiSq):\index{Statistical validity!odds ratio} all *expected* counts are at least five.
@@ -938,13 +939,16 @@ knitr::include_graphics("jamovi/TurtleNests/TurtleNests-Expected.png")
 A study of $400$ residents of  Klang Valley, Malaysia, examined residents' approach to waste management [@choon2017perception].
 One RQ was:
 
-> For residents of Klang Valley, is age associated with whether people bring their own bags when shopping? 
+> For residents of Klang Valley, is age group associated with whether people bring their own bags when shopping? 
 
-
-The data (Table\ \@ref(tab:BagsTableHT)) are given in a $3\times 2$ table of counts.
+The data
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:BagsTableHT), left table)'
+} else {
+   '(Table\\ \\@ref(tab:BagsTableHT))'
+}`
+are given in a $3\times 2$ table of counts.
 The software output is shown in Fig.\ \@ref(fig:BagsChisqjamovi), and a graphical summary in Fig.\ \@ref(fig:BagsSidebysideBar).
-Most of the numerical summary must be produced manually (Table\ \@ref(tab:BagsHTNumerical)), since jamovi only produces odds ratios for $2\times 2$ tables.
-Here are the details of the calculations (notice that Row\ 1 is on the bottom of the fraction):
 
 
 ```{r BagsTableHT}
@@ -962,20 +966,75 @@ rownames(BagsTab) <- c("30 and under",
                        "Over 40")
 
 if( knitr::is_latex_output() ) {
-  kable(pad(BagsTab,
+  T1 <- kable(pad(BagsTab,
             surroundMaths = TRUE,
             targetLength = 3,
             digits = 0),
         format = "latex",
-        align = "c",
+        align = c("r", "c", "c"),
+        col.names = c("Yes", "No"),
         longtable = FALSE,
         escape = FALSE,
-        caption = "Whether shoppers bring their own bags, and the shoppers age",
+        #caption = "Whether shoppers bring their own bags, and the shoppers age",
         booktabs = TRUE) %>%
-    kable_styling(font_size = 8) %>%
+    #kable_styling(font_size = 8) %>%
     row_spec(0, bold = TRUE) %>%
-    column_spec(1, bold = TRUE)
+    add_header_above( c(" " = 1,
+                        "Brings own bags" = 2),
+                      bold = TRUE,
+                      line = TRUE)
+  
+  
+  ###
+  
+BagsSummary <- array( dim = c(3, 4) )
+
+colnames(BagsSummary) <- c( "Odds",
+                            "Odds ratio",
+                           "Percentage",
+                           "$n$")
+rownames(BagsSummary) <- rownames(BagsTab)
+  
+BagsSummary[1, ] <- c( 0.913, 
+                       0.289, 
+                       47.7, 
+                       264)
+BagsSummary[2, ] <- c( 1.563, 
+                       0.496, 
+                       61.0, 
+                       82)
+BagsSummary[3, ] <- c(3.154, 
+                      NA, 
+                      75.9, 
+                      54)
+
+ T2 <- kable(pad(BagsSummary,
+            surroundMaths = TRUE,
+            targetLength = c(5, 5, 4, 3),
+            digits = c(3, 3, 1, 0)),
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        escape = FALSE,
+        align = "c") %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c(" " = 1,
+                        "Brings own shopping bags" = 3,
+                        " " = 1),
+                      bold = TRUE,
+                      line = TRUE)
+  
+    out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "BagsTableHT",
+                       caption = "Left: whether shoppers bring their own bags and age group. Right: odds and percentage that people bring their own shopping bags by age groups. The odds ratios are computed relative to those `Over $40$'") %>% 
+    kable_styling(font_size = 8)
+
+  out2 <- prepareSideBySideTable(out) 
+  out2
+
 }
+
 if( knitr::is_html_output() ) {
   kable(pad(BagsTab,
             surroundMaths = TRUE,
@@ -1040,21 +1099,7 @@ BagsSummary[3, ] <- c(3.154,
 
 cap.tab <- "Odds and percentage that people bring their own shopping bags by age groups. The odds ratios are computed relative to those 'Over $40$'."
 
-if( knitr::is_latex_output() ) {
-  cap.tab <- "Odds and percentage that people bring their own shopping bags by age groups. The odds ratios are computed relative to those `Over $40$'."
-  kable(pad(BagsSummary,
-            surroundMaths = TRUE,
-            targetLength = c(5, 5, 4, 3),
-            digits = c(3, 3, 1, 0)),
-        format = "latex",
-        booktabs = TRUE,
-        longtable = FALSE,
-        escape = FALSE,
-        align = "c",
-        caption = cap.tab) %>%
-    row_spec(0, bold = TRUE) %>%
-    kable_styling(font_size = 8)
-}
+
 if( knitr::is_html_output() ) {
   kable(pad(BagsSummary,
             surroundMaths = TRUE,
@@ -1068,43 +1113,29 @@ if( knitr::is_html_output() ) {
 }
 ```
 
+For the numerical summary table
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:BagsTableHT), right table):'
+} else {
+   '(Table\\ \\@ref(tab:BagsHTNumerical)):'
+}`
 
 * For those '$30$ or under': the *odds* of bringing a shopping bag is $126/138 = 0.913$.
-* For those '$31$ to $40$': the *odds* of bringing a shopping bag is $50/32 = 1.712$.
+* For those '$31$ to $40$': the *odds* of bringing a shopping bag is $50/32 = 1.563$.
 * For those 'Over $40$': the *odds* of bringing a shopping bag is $41/13 = 3.154$.
 
-Then the *odds ratios* can be computed:
+For computing the odds ratios, Row\ 3 is on the bottom of the fraction (as the reference level):\index{Reference level}
 
-* The OR of bringing a shopping bag, comparing people '$31$--$40$' to people 'Over $40$': $0.913/3.154 = 0.289$.
-* The OR of bringing a shopping bag, comparing people 'Over $40$' to people 'Over $40$': $1.563/3.154 = 0.496$.
+* The OR of bringing a shopping bag, comparing people '$30$ and under' to people 'Over $40$': $0.913/3.154 = 0.289$.
+* The OR of bringing a shopping bag, comparing people '$31$--$40$' to people 'Over $40$': $1.563/3.154 = 0.496$.
 
-In Table\ \@ref(tab:BagsHTNumerical), the odds of bringing a shopping bag are relative to those 'Over $40$' (the last row).
-Since Table\ \@ref(tab:BagsHTNumerical) has *three* groups to compare, three odds are needed.
-However, the summary has $3 - 1 = 2$ odds ratios, since odds *ratios* compare *pairs* of odds.
-The level to which the other two are compared is called the *reference level*.
-In Table\ \@ref(tab:BagsHTNumerical), the reference level is 'Over $40$' (i.e., on the bottom of the fraction when computing the odds ratios).
-(In a $2\times 2$ table, with *two* groups to compare, the summary has only $2 - 1 = 1$ odds ratio; i.e., one pair of odds.)
+That is, the odds of bringing a shopping bag for those '$30$ and under' is $0.289$ times (i.e., is smaller than) the odds of those 'Over $40$'.
+Similarly, the odds of bringing a shopping bag for those '$31$ to $40$' is $0.496$ times (i.e., is smaller than) the odds of those 'Over $40$'.
 
-These odds ratios mean:
-
-* The odds of bringing a shopping bag for those '$30$ and under' is $0.289$ times (i.e., is smaller than) the odds of those 'Over $40$'; and
-* The odds of bringing a shopping bag for those '$31$ to $40$' is $0.496$ times (i.e., is smaller than) the odds of those 'Over $40$'.
-
-The hypothesis can be worded in terms of odds:
-
-* $H_0$: The odds of bringing a shopping bag *is the same* for all age groups.
-* $H_1$: The odds of bringing a shopping bag *is not the same* for all age groups.
-
-Alternatively, the hypotheses can be worded in terms of *relationships* or *associations* (but *not* correlations) between the two variables:
+The hypothesis can be worded in terms of odds, but the hypothesis are usually worded in terms of associations (but *not* correlations) for tables larger than $2\times 2$:
 
 * $H_0$: *No association* exists between bringing a shopping bag and age group.
 * $H_1$: *An association* exists between bringing a shopping bag and age group.
-
-For a $2\times 2$ table, the *parameter* is the odds ratio. 
-For two-way tables larger than $2\times 2$, defining a single parameter is difficult; it requires a single number to measure the association between the variables, but we need two ORs to summarise the data.
-Effectively, the $\chi^2$-statistic becomes the parameter that measures the size of the difference between all three odds.
-When no relationship exists in the population, $\chi^2 = 0$; hence $H_0:$ $\chi^2 = 0$.
-The alternative hypothesis is $H_1$: $\chi^2 > 0$; that is, the value of $\chi^2$ in the sample is not zero due to sampling variation.
 
 From the software output (Fig.\ \@ref(fig:BagsChisqjamovi)), $\chi^2 = 16.24$ and $\text{df} = 2$, so this $\chi^2$ value is approximately equivalent to a $z$-score of $\sqrt{16.24\div 2} = 2.85$.
 This is a large $z$-score so, using the $68$--$95$--$99.7$ rule, a small $P$-value is expected; indeed, jamovi reports $P < 0.001$.
@@ -1114,9 +1145,13 @@ The conclusion could be written as
 
 > The sample provides very strong evidence ($\chi^2 = 16.24$; $\text{df} = 2$) that the odds of bringing a shopping bag is not the same for the three age groups.
 
-While sample summary information could be added to this conclusion, the statements may then become cumbersome.
-Instead, pointing readers to the numerical summary (Table\ \@ref(tab:BagsHTNumerical)) is probably better.
-Furthermore, CIs are not reported since jamovi does not produce CIs for tables larger than $2\times 2$.
+Adding sample summary information to this conclusion is cumbersome.
+Instead, readers canmbe pointed to the numerical summary (Table\ \@ref(tab:BagsHTNumerical)).
+Furthermore, CIs are not reported since software does not always produce CIs for tables larger than $2\times 2$.
+
+While we know there is an association between the variables, we can only speculate on the nature of the association (i.e., for which group(s) the *population* odds are different).
+Comparing all *pairs* of groups increases the probability of *incorrectly* declaring a difference between the odds (increasing the chance of a Type\ I error;\index{Type I error} Sect.\ \@ref(TypeErrors))
+The correct approach requires methods beyond this book.
 
 All *expected* values exceed $5$ (Fig.\ \@ref(fig:BagsChisqjamovi)), so the results are statistically valid.
 
