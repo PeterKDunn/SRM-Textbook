@@ -1,5 +1,5 @@
 
-# Tests for comparing odds {#TestsOddsRatio}
+# Tests comparing qualitative variables {#TestsOddsRatio}
 
 
 <!-- Introductions; easier to separate by format -->
@@ -15,111 +15,87 @@
 </div>
 
 
-As seen in Sect.\ \@ref(OddsRatioIntro), @data:Mann12017:UniStudents examined the relationship between where students usually ate, and where the student lived (Table\ \@ref(tab:MealsDataTableHT)).
+As seen in Sect.\ \@ref(OddsRatioIntro), @data:Mann12017:UniStudents examined the relationship between where university students usually ate, and where the student lived (Table\ \@ref(tab:MealsDataTableHT)).
 
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Every cell in the $2\times 2$ table contain different students, so the comparison is *between* individuals.
-:::
 
 
 ```{r MealsDataTableHT}
-Counts <- c(52, 105, 2, 24)
-Live <- rep( c(1, 2), 2)
-Live <- ordered(Live,
-                levels = 1:2,
-                labels = c("Lives with parents", 
-                           "Doesn't live with parents") )
-Meals <- c( rep(1, 2), 
-            rep(2, 2))
-Meals <- ordered(Meals, 
-                 levels = 1:2,
-                 labels = c("Most meals off-campus", 
-                            "Most meals on-campus"))
+data(StudentsEat)
 
-Eating <- data.frame( Counts = Counts,
-                      Live = Live,
-                      Meals = Meals)
 
-Eating.tab <- Eating.tab.Counts <- xtabs(Counts ~ Meals + Live + Meals, 
-                                         data = Eating)
+Eating.tab <- Eating.tab.Counts <-  xtabs( ~ Meals + Live, 
+                                           data = StudentsEat)
 
 Eating.tab <- cbind( Eating.tab, 
                      "Total" = rowSums(Eating.tab))
 Eating.tab <- rbind( Eating.tab, 
                      "Total" = colSums(Eating.tab))
 
-
+Eating.tab <- t(Eating.tab)
 
 if( knitr::is_latex_output() ) {
-  kable(pad(Eating.tab,
-            surroundMaths = TRUE,
-            targetLength = c(2, 3, 3),
-            digits = 0),
+  kable( pad(Eating.tab[1:2, 1:2],
+             surroundMaths = TRUE,
+             targetLength = c(3, 3),
+             digits = 0),
         format = "latex",
         booktabs = TRUE,
         longtable = FALSE,
         escape = FALSE,
+        col.names = c("off-campus",
+                      "on-campus"),
         align = "c",
-        caption = "Where university students live and eat"
-  ) %>%
-     column_spec(4, bold = TRUE)  %>%
+        caption = "Where university students live and eat") %>%
+     column_spec(1, bold = TRUE) %>%
      row_spec(0, bold = TRUE) %>%
-     row_spec(3, bold = TRUE) %>%
-	kable_styling(font_size = 8) %>%
-  row_spec(2, hline_after = TRUE) 
- }
-
-
- if( knitr::is_html_output() ) {
-  kable(pad(Eating.tab,
-            surroundMaths = TRUE,
-            targetLength = c(2, 3, 3),
-            digits = 0),
+     kable_styling(font_size = 8) %>%
+    add_header_above( c(" " = 1, 
+                        "Has most meals" = 1,
+                        "Has most meals" = 1),
+                      line = FALSE,
+                      bold = TRUE)
+}
+if( knitr::is_html_output() ) {
+  kable(pad(Eating.tab[1:2, 1:2],
+             surroundMaths = TRUE,
+             targetLength = c(2, 3),
+             digits = 0),
                format = "html",
                booktabs = TRUE,
                longtable = FALSE,
-               align ="c",
-               caption = "Where university students live and eat")  %>%
-    column_spec(4, bold = TRUE) %>%
-    row_spec(3, bold = TRUE)
- }    
+               align = "c",
+               caption = "Where university students live and eat")
+}
+UniS <- t(Eating.tab )   
 ```
 
 
 A graphical summary is shown in Fig.\ \@ref(fig:EatingGraphsCI) (left panel), and a numerical summary in Table\ \@ref(tab:EatingNumericalSummaryHT).
-(The details of the computations appear in Sect.\ \@ref(OddsRatioIntro)).
-
-
-```{r}
-UniS <- matrix( ncol = 2,
-                data = c(52, 2, 105, 24), 
-                byrow = TRUE)
-rownames(UniS) <- c("Lives\nwith parents", 
-                    "Doesn't live\nwith parents")
-colnames(UniS) <- c("Most meals off-campus", 
-                    "Most meals on-campus")
-```
+(The details of the computations appear in Sect.\ \@ref(CIOddsRatiosSummaries)).
 
 
 ```{r EatingNumericalSummaryHT}
 EatingNumericalSummary <- array( dim = c(3, 3))
 
-EatingNumericalSummary[1, ] <- c(format( round(UniS[1,1]/UniS[1,2], 4), nsmall = 3),
-                                 round(UniS[1,1]/sum(UniS[1,]) * 100, 1),
-                                 sum(UniS[1,]) )
-EatingNumericalSummary[2, ] <- c(round(UniS[2,1]/UniS[2,2], 4),
-                                 round(UniS[2,1]/sum(UniS[2,]) * 100, 1),
-                                 sum(UniS[2,]) )
-EatingNumericalSummary[3, ] <- c(round( (UniS[1, 1] / UniS[1, 2] ) / (UniS[2, 1] / UniS[2, 2]), 3), 
-                                 NA,
-                                 NA)
+EatingNumericalSummary[1, ] <- c(format(round(UniS[1, 1]/UniS[2, 1 ], 4), nsmall = 3),
+                                 round(UniS[1, 1]/UniS[3, 1] * 100, 1),
+                                 UniS[3,1] )
+EatingNumericalSummary[2, ] <- c(round(UniS[1, 2] / UniS[2, 2], 4),
+                                 round(UniS[1, 2] / UniS[3, 2] * 100, 1),
+                                 UniS[3,2] )
+EatingNumericalSummary[3, ] <- c( round( (UniS[1, 1] / UniS[1, 2] ) / (UniS[2, 1] / UniS[2, 2]), 3) ,
+                                  round( (UniS[1, 1]/UniS[3, 1] - UniS[1, 2]/UniS[3, 2]) * 100, 1),
+                                  NA)
 rownames(EatingNumericalSummary) <- c("Living with parents",
                                       "Not living with parents",
-                                      "Odds ratio")
-    
+                                      NA)
+ENS <- EatingNumericalSummary
+ENS[3, ] <- c( paste0("\\llap{OR:\ }$\\phantom{-}", ENS[3, 1], "$"),
+               paste0("\\llap{Difference:\ }$", ENS[3, 2], "$"),
+               NA)
+
 if( knitr::is_latex_output() ) {
-  kable(pad(EatingNumericalSummary,
+  kable(pad(ENS,
             surroundMaths = TRUE,
             targetLength = c(6, 4, 3),
             digits = c(3, 1, 0)),
@@ -129,21 +105,22 @@ if( knitr::is_latex_output() ) {
         escape = FALSE,
         align = "c",
         col.names = c("meals off-campus",
-                      "meals off-campus", 
+                      "most meals off-campus", 
                       "size"),
        caption = "The odds and percentage of university students eating most meals off-campus" 
   ) %>%
-     row_spec(3, italic = TRUE) %>%
      row_spec(0, bold = TRUE) %>%
+     row_spec(3, italic = TRUE) %>%
+     row_spec(2, hline_after = TRUE) %>%
    add_header_above( c(" ", "Odds having most" = 1, 
-                       "Percentage having most" = 1,
+                       "Percentage having" = 1,
                        "Sample" = 1),
                      line = FALSE,
                      bold = TRUE) %>%
 	 kable_styling(font_size = 8) 
 }
 if( knitr::is_html_output() ) {
-  kable(pad(EatingNumericalSummary,
+   kable(pad(ENS,
             surroundMaths = TRUE,
             targetLength = c(6, 4, 3),
             digits = c(3, 1, 0)),
@@ -154,72 +131,190 @@ if( knitr::is_html_output() ) {
                col.names = c("Odds of having most\n meals off-campus", 
                              "Percentage having most\n meals off-campus", 
                              "Sample size"),
-               caption = "The odds and percentage of university students eating most meals off-campus")  %>%
-  kable_styling(full_width = FALSE)
+               caption = "The odds and percentage of university students eating most meals off-campus")
 }
 ```
 
 
-The parameter is the population OR of odds of eating most meals *off*-campus, comparing students living with their parents, to students *not* living with their parents.
+The parameter can be either a difference between two population proportions, or a population odds ratio.
+For example, the parameter could be difference between population proportion students of eating most meals *off*-campus, comparing students living with their parents, to students *not* living with their parents.
+Alternatively (and equivalently), the parameter could be the population OR of odds of eating most meals *off*-campus, comparing students living with their parents, to students *not* living with their parents.
 
 
-::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-The odds ratio can be interpreted in *either* of these ways (i.e., both are correct):\index{Odds ratio!interpreting}\index{jamovi output!Odds ratios}
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The table can be constructed with either variable as the rows or the columns.
+However, software commonly compares *rows*, so it makes sense to place the groups to be compared (i.e., the explanatory variable) in the rows of the table.
 
--   The *odds* compare Row\ 1 counts to Row\ 2 counts, for both columns.
-    The *odds ratio* then compares the Column\ 1 odds to the Column\ 2 odds.
--   The *odds* compare Column\ 1 counts to Column\ 2 counts.
-    The *odds ratio* then compares the Row\ 1 odds to the Row\ 2 odds.
-
-Odds and odds ratios are computed with the *first row* and *first column* values on the *top* of the fraction.
+Then, the difference between the two proportions are usually calculated as the Row\ 1 proportion minus the Row\ 2 proportion.
+Similarly, the odds then can be interpreted as\index{Odds ratio!interpreting}\index{jamovi output!Odds ratios} comparing Column\ 1 counts to Column\ 2 counts, and the *odds ratio* as comparing the Row\ 1 odds to the Row\ 2 odds.
 :::
 
 
-:::{.example name="Odds and odds ratio in software"}
-For the data in Table\ \@ref(tab:MealsDataTableHT), the software output (Fig.\ \@ref(fig:UniMealsTestOutputHTjamovi)) can be interpreted in *either* of these ways (i.e., both are correct): 
+The RQ and the hypotheses can be written as comparing *proportions* (Sect.\ \@ref(CompareTwoProportions)), comparing *odds* (Sect.\ \@ref(CompareTwoOdds)), or about *odds ratios*.
+Means are *not* appropriate (the data contain two *qualitative* variables).
 
-* The *odds* compare eating most meals *off-campus* (Row\ 1) to *on-campus* (Row\ 2; on the bottom of the fraction):
-  * for students living with their parents (Column\ 1): $52/2 = 26$;
-  * for students not living with their parents (Column\ 2): $105/24 = 4.375$. 
+
+Since two groups are being compared, subscripts are used to distinguish between the statistics for the two groups; say, Groups\ $A$ and\ $B$ in general (Table\ \@ref(tab:ORHT)).
+
+
+```{r ORHT}
+OR2Notation <- array(dim = c(4, 3))
+colnames(OR2Notation) <- c("Group A", 
+                             "Group B",
+                             "Comparing groups")
+rownames(OR2Notation) <- c("Sample sizes:",
+                           "Sample odds:",
+                           "Sample proportions:",
+                           "Standard errors:")
+
+if( knitr::is_latex_output() ) {
+  OR2Notation[1, ] <- c(	"$n_A$",
+                           "$n_B$",
+                           NA)
+  OR2Notation[2, ] <- c( "$\\text{Odds}_A$", 	
+                           "$\\text{Odds}_B$",
+                           "$\\text{Odds ratio} = \\text{Odds}_A/\\text{Odds}_B$")
+  OR2Notation[3, ] <- c( "$\\hat{p}_A$",		
+                           "$\\hat{p}_B$",
+                           "$\\hat{p}_A - \\hat{p}_B$")
+  OR2Notation[4, ] <- c(	"$\\displaystyle\\text{s.e.}(\\hat{p}_A)$",
+                           "$\\displaystyle\\text{s.e.}(\\hat{p}_B)$",
+                           "$\\displaystyle\\text{s.e.}(\\hat{p}_A - \\hat{p}_B)$")
   
-  The OR is $26/4.375 = 5.943$ (Column\ 2 on bottom of the fraction), as in the output.
-
-* The *odds* compare the odds of living with parents (Column\ 1) to not living with parents (Column\ 2; on the bottom of the fraction):
-
-  * for those eating most meals off-campus: $52/105 = 0.49524$;
-  * for those eating most meals on-campus: and $2/24 = 0.083333$.
+  kable( OR2Notation,
+         format = "latex",
+         booktabs = TRUE,
+         align = c("c", "c"),
+         longtable = FALSE,
+         escape = FALSE,
+         linesep = c("\\addlinespace", "\\addlinespace", "", ""),
+         col.names = colnames(OR2Notation),
+         caption = "Notation used to distinguish between the two independent groups") %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 8)
+}
+if( knitr::is_html_output() ) {
   
-  The OR is $0.49524/0.083333 = 5.943$ (Row\ 2  on bottom), as in the output.
+  OR2Notation[1, ] <- c(	"$n_A$",
+                           "$n_B$",
+                           NA)
+  OR2Notation[2, ] <- c( "$\\text{Odds}_A$", 	
+                           "$\\text{Odds}_B$",
+                           "$\\text{Odds ratio} = \\text{Odds}_A/\\text{Odds}_B$")
+  OR2Notation[3, ] <- c( "$\\hat{p}_A$",		
+                           "$\\hat{p}_B$",
+                           "$\\hat{p}_A - \\hat{p}_B$")
+  OR2Notation[4, ] <- c(	"$\\displaystyle\\text{s.e.}(\\hat{p}_A)$",
+                           "$\\displaystyle\\text{s.e.}(\\hat{p}_B)$",
+                           "$\\displaystyle\\text{s.e.}(\\hat{p}_A - \\hat{p}_B)$")
+  
 
-Both approaches produce an OR of $5.943$.
+  kable( OR2Notation,
+         format = "html",
+         booktabs = TRUE,
+         longtable = FALSE,
+         align = c("c", "c", "c"),
+         col.names = colnames(OR2Notation),
+         caption = "Notation used to distinguish between the two independent groups") %>%
+    row_spec(0, bold = TRUE) 
+}
+```
+
+
+```{r UniMealsTestOutputHTjamovi, fig.show="hold", fig.cap="Software output for computing a CI and conducting a test", fig.align="center", out.width="60%"}
+knitr::include_graphics( "jamovi/UniStudents/UniStudents-Chisq-zTest-All.png")
+```
+
+
+
+
+## Comparing two proportions: $z$-test {#CompareTwoProportions}
+
+To compare the two proportions, the two-tailed RQ is:
+
+> Is the *population* proportion of students eating most meals off-campus the same for students *living with* their parents and for students *not living with* their parents?
+
+We use $N$ to refer to students *not* living with their parents, ad $L$ for students living with their parents.
+Then, following Table\ \@ref(tab:ORHT), the *parameter* in the RQ is the difference between population means: $p_L - p_N$.
+As usual, the population values are unknown, so this is estimated using the statistic $\hat{p}_L - \hat{p}_N$.
+
+Hypothesis testing always begins by assuming that the null hypothesis is true (Sect.\ \@ref(HypothesisNull)).
+In this context, that means assuming that the population proportion of eating most meals off-campus is the same in both groups.
+As a result, the data from the two groups can be combined to determine an overall (or common) proportion of students eating most meals off-campus:  
+\[
+  \hat{p} = \frac{52 + 105}{52 + 105 + 2 + 24} = \frac{157}{183} = 0.85792.
+\]
+This is the overall proportion of students eating most meals off-campus, assuming no difference between students living with and not with their parents.
+
+The two *sample* proportions will vary from sample to sample and so have a sampling distribution (as in Sect.\ \@ref(OnePropTestSamplingDist)).
+The standard error of $\hat{p}$ for each sample is computed using this common proportion, using the same idea as in Eq.\ \@ref(eq:StdErrorPknown):  
+\begin{align*}
+  \text{s.e.}(p_L) &= \sqrt{ \frac{p\times(1 - p)}{n_L}} = \sqrt{ \frac{0.85792\times(1 - 0.85792)}{54}} = 0.047511;
+  \text{and}\\
+  \text{s.e.}(p_N) &= \sqrt{ \frac{p\times(1 - p)}{n_N}} = \sqrt{ \frac{0.85792\times(1 - 0.85792)}{129}} = 0.030739.
+\end{align*}
+The difference between the proportions will vary from sample to sample too, and hence have a sampling distribution.
+The standard error of this sampling distribution for the *difference* between the proportions is
+\[
+  \text{s.e.}(\hat{p}_A - \hat{p}_B) = \sqrt{ \text{s.e.}(\hat{p}_L)^2 +  \text{s.e.}(\hat{p}_N)^2 }
+  =
+  \sqrt{ 0.047511^2 + 0.030739^2} = 0.056588,
+\]
+similar to Eq.\ \@ref(eq:SEtwoproportionsCI).
+
+
+::: {.definition #DEFSamplingDistributionDiffProportions name="Sampling distribution for the difference between two sample proportions"}
+The *sampling distribution of the difference between two sample proportions* $\hat{p}_A$ and $\hat{p}_B$ is (when the appropriate conditions are met; Sect.\ \@ref(Validity-Test-ChiSq)) described by:
+
+* an approximate normal distribution,
+* centred around a sampling mean whose value is ${p_{A}} - {p_{B}}$, the difference between the *population* proportions (from $H_0$),
+* with a standard deviation, called the standard error of the difference between the proportions, of $\displaystyle\text{s.e.}(\hat{p}_A - \hat{p}_B)$.
+
+The standard error for the difference between the proportions is 
+\[
+  \text{s.e.}(\hat{p}_A - \hat{p}_B) = \sqrt{ \text{s.e.}(\hat{p}_A)^2 +  \text{s.e.}(\hat{p}_B)^2 },
+\]
+where 
+\[
+  \text{s.e.}(p_A) = \sqrt{ \frac{p\times(1 - p)}{n_A}}
+  \quad\text{and}\quad
+  \text{s.e.}(p_B) = \sqrt{ \frac{p\times(1 - p)}{n_B}}
+\]
+where $p$ is the common (overall) proportion.
 :::
 
 
-The RQ can be written as comparing proportions, comparing odds, or about odds ratios directly.
-Means are *not* appropriate (the data contain two *qualitative* variables.)
-Using the OR, the RQ could be written as:
+Since the sampling distribution has an approximate normal distribution, the test statistic is\index{Test statistic!$z$-score}  
+\[
+  z = \frac{ (\hat{p}_L - \hat{p}_N) - (p_L - p_N) }{\text{s.e.}(\hat{p}_A - \hat{p}_B)} \
+    = \frac{ 0.14901 - 0}{0.056588} 
+    = 2.633
+\]
+Since the test-statistic is a $z$-score, the $P$-value can be computed from normal distributions (Sect.\ \@ref(ExactAreasUsingTables)) or from software output (Fig.\ \@ref(fig:UniMealsTestOutputHTjamovi)).
+The two-tailed $P$-value reported by jamovi (Fig.\ \@ref(fig:UniMealsTestOutputHTjamovi), under the column `p`) is indeed small: $0.008$ to three decimals.
 
-> Is the *population odds ratio* of eating most meals off-campus, comparing students who live *with their* parents to students *not living with* their parents, equal to one?
+A very small $P$-value ($0.008$ to three decimals) means strong evidence exists to supporting $H_1$: the evidence suggests a difference between the *population* proportions.
+We write:
 
-Alternatively, and probably easier to understand, is to write the RQ in terms of comparing the *odds* in the two groups:
+> The *sample* provides strong evidence ($z = 2.63$; two-tailed $P = 0.008$) that the proportion of students in the *population* of having most meals off-campus is different for students living with their parents (proportion: $0.963$) and students *not* living with their parents (proportion: $0.814$; difference: $0.149$; $95$%\ CI from $0.0633$ and $0.235$, higher for students living with their parents).
+
+The conclusion includes three components (Sect.\ \@ref(WordingConclusion)): the *answer to the RQ*; the *evidence* used to reach that conclusion ('$z = 2.63$; two-tailed $P = 0.008$'); and some *sample summary statistics* (including the $95$%\ CI for the difference between proportions).
+
+The conclusion also makes clear which proportion is higher.
+
+
+## Comparing two odds: $\chi^2$-test {#CompareTwoOdds}
+
+For the $2\times 2$ table of counts in Table\ \@ref(tab:MealsDataTableHT), odds can be compared rather than proportions:
 
 > Are the *population odds* of students eating most meals off-campus the same for students *living with* their parents and for students *not living with* their parents?
 
-Equivalent, the RQ can also be worded as comparing the percentage (or proportion) of students eating meals off-campus in each group, though this is less common.
-In addition, software usually works with odds ratios, so writing hypotheses in terms of odds or odds ratios is more consistent.
+If the odds are the same in the two groups, this is equivalent to an odds ratio of one.
+Hence, the RQ could also be written as
 
-Another alternative, which sounds less direct but is useful for two-way tables larger than $2\times 2$ (see Sect.\ \@ref(ShoppingBagsHT)), is worded in terms of *relationships* or *associations* (but *not* correlations) between the variables:
+> Is the *population odds ratio* of eating most meals off-campus, comparing students who live *with their* parents to students *not living with* their parents, equal to one?
 
-> Is there a relationship (or association) between where students eat most of their meals and whether or not the student lives with their parents?
-
-All these RQs are equivalent.
-Usually, for $2 \times2$ tables, working with *odds* or *odds ratios* is best, because most software (including jamovi) readily produce output for the OR.
-
-
-## Statistical hypotheses and notation {#ORTestHypotheses}
-
-For $2\times 2$ tables of counts, the *parameter* is the population odds ratio.
-As usual, the null hypothesis is the 'no difference, no change, no relationship' position:
+Either way, the *parameter* is the population odds ratio, and the null hypothesis is the 'no difference, no change, no relationship' position:
 
 * $H_0$: The *population* OR is one; or (equivalently):  
   \phantom{$H_0$:{}} The *population* odds are the same in each group.
@@ -233,51 +328,37 @@ The alternative hypothesis is
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-For analysing two-way tables of counts, the alternative hypotheses *are always two-tailed*.
-:::
-
-
-The hypotheses can also be written in terms of differences in percentages (or proportions), though using odds or odds ratios is preferred for consistency, since the software output is usually expressed in terms of odds.
-The hypotheses can also be written in terms of relationships or associations:
-
-* $H_0$: In the *population*, there is *no* association between the two variables
-* $H_1$: In the *population*, there is *an* association between the two variables
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The RQ and hypotheses only need to be given in *one* of these ways.
-The RQ and hypotheses should be consistent; for example, if the RQ is written in terms of odds, the hypotheses should be written in terms of comparing odds.
+For comparing odds, the alternative hypotheses *is always two-tailed*.
 :::
 
 
 In our example then:
 
 * $H_0$: The *population* odds of eating most meals off-campus are the *same* for students living *with* their parents and for students *not living* with their parents.
-
-* $H_1$:  The *population* odds of eating most meals off-campus are *different* for students living *with* their parents and for students *not living* with their parents.
-
+* $H_1$: The *population* odds of eating most meals off-campus are *different* for students living *with* their parents and for students *not living* with their parents.
 
 As usual, the decision-making process starts by *assuming* the null hypothesis is true: that the *population* odds ratio is one (i.e., the population odds in each group are equal).
 
 
-## Finding expected counts {#ExpectedValues}
+
+### Finding expected counts {#ExpectedValues}
 
 Assuming that the odds of having most meals off-campus is the same for both groups (that is, the population OR is one), how would the sample OR be *expected* to vary from sample to sample just because of *sampling variation*?
-If the null hypothesis is true, the odds are the same in both groups (and the percentages are the same in both groups).
-That is, the percentage of students eating most meals off-campus is the same for students *living with* and *not living with* their parents.
+If the null hypothesis is true, the odds are the same in both groups (and the proportions are the same in both groups).
+That is, the proportions of students eating most meals off-campus is the same for students *living with* and *not living with* their parents.
 
 Let's consider the implication.
-From Table\ \@ref(tab:MealsDataTableHT), $157$ students out of $183$ ate most meals off-campus, so that $157\div 183 \times 100 = 85.79$% of students in the entire sample ate most of their meals off-campus.
+From Table\ \@ref(tab:MealsDataTableHT), $157$ students out of $183$ ate most meals off-campus, so that $157\div 183 = 0.8579$ of students in the entire sample ate most of their meals off-campus.
 
-If the percentage of students who eat most of their meals off-campus is the *same* for those who live with their parents and those who don't, then we'd *expect* $85.79$% of students in *both* groups to be eating most meals off-campus.
+If the proportions of students who eat most of their meals off-campus is the *same* for those who live with their parents and those who don't, then we'd *expect* $0.8579$ of students in *both* groups to be eating most meals off-campus.
 (These values were also found in Sect.\ \@ref(ValidityConditionsORCI).)
 That is, we would *expect*:
 
-* $85.79$% of the $54$ students who *live with their parents* (i.e., $46.33$ students) to eat most meals off-campus; and
-* $85.79$% of the $129$ students who *don't live with their parents* (i.e., $110.67$ students) to eat most meals off-campus.
+* A proportion of $0.8579$ of the  $54$ students who *live with their parents* (i.e., $46.33$ students) to eat most meals off-campus; and
+* A proportion of $0.8579$ of the $129$ students who *don't live with their parents* (i.e., $110.67$ students) to eat most meals off-campus.
 
-In other words, the percentage (and hence the odds) of eating most meals off-campus is the same in each group.
-Those are the *expected* counts if the percentage (or odds) was exactly the same in each group (Table\ \@ref(tab:MealsDataTableHTExpected)), if the null hypothesis (the assumption) was true.
+In other words, the proportions (and hence the odds) of eating most meals off-campus is the same in each group.
+Those are the *expected* counts if the proportions (or odds) was exactly the same in each group (Table\ \@ref(tab:MealsDataTableHTExpected)), if the null hypothesis (the assumption) was true.
 
 How close are the *observed* counts (Table\ \@ref(tab:MealsDataTableHT)) to the *expected counts* (Table\ \@ref(tab:MealsDataTableHTExpected))?
 
@@ -295,7 +376,7 @@ However, seeing how the decision-making process works in this context is helpful
 
 
 In previous hypothesis tests, the *sampling distribution* had an approximate normal distribution.
-However, the sampling distribution of the odds ratio is more complicated^[For those interested: The *logarithm* of the sample ORs have an approximate normal distribution, and hence a *standard error*.] so will not be presented.
+However, the sampling distribution of the odds ratio is more complicated^[For those interested: the *logarithm* of the sample ORs have an approximate normal distribution, and hence a *standard error*.] so will not be presented.
 We will use software output to conduct the test.
 
 
@@ -346,12 +427,12 @@ if( knitr::is_html_output() ) {
 
 
 
-## Computing the value of the test statistic: $\chi^2$ values {#TestStatObs}
+### Computing the value of the test statistic {#TestStatObs}
 \index{Hypothesis testing!odds ratio}
 
 The decision-making process compares what is *expected* if the null hypothesis about the parameter is true (Table\ \@ref(tab:MealsDataTableHTExpected)) to what is *observed* in the sample (Table\ \@ref(tab:MealsDataTableHT)).
 Previously, when the summary statistics were means and the sampling distribution was a normal distribution, the test statistic was a $t$-score.
-However, the data here are not summarised by means, the sampling distribution is *not* a normal distribution (but is *related* to a normal distribution), and a different test statistic is needed.
+However, the data here are not summarised by means, the sampling distribution is *not* a normal distribution (but is *related* to a normal distribution), and so a different test statistic is needed.
 
 Here, the test-statistic is a 'chi-squared' statistic,  written $\chi^2$.\index{Test statistic!$\chi^2$-score}\index{chi@$\chi^2$-score}
 The $\chi^2$-score measures the overall size of the differences between the expected counts and observed counts, over the entire $2\times 2$ table.
@@ -382,35 +463,16 @@ htmltools::tags$video(src = "./Movies/chi.mp4",
 
 From the software (Fig.\ \@ref(fig:UniMealsTestOutputHTjamovi)), $\chi^2 = 6.934$.
 But what does this value *mean*?
-Is it a large or small value?
+Is it 'large' or 'small'?
 
-The $\chi^2$-value can be understood by finding the approximately-equivalent $z$-score, which means a $P$-value can be estimated using the $68$--$95$--$99.7$ rule.
-In a $2\times 2$ table of counts, the *square root* of the $\chi^2$ value is equivalent to a $z$-score of about $\sqrt{6.934} = 2.63$.
-This is relatively large $z$-score, so expect a small $P$-value.
-For two-way tables of any size, a more general (but simple) calculation is needed.
-
-
-```{r UniMealsTestOutputHTjamovi, fig.show="hold", fig.cap="The jamovi output for computing a CI and conducting a test", fig.align="center", out.width="55%"}
-knitr::include_graphics( "jamovi/UniStudents/UniStudents-Chisq-All.png")
-```
-
-
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-In a chi-squared test, the value of  
+The $\chi^2$-value can be understood by finding the equivalent $z$-score, which means a $P$-value can be estimated using the $68$--$95$--$99.7$ rule.
+The $\chi^2$-value is equivalent to  
 \[
-  \sqrt{ \chi^2 \div {\text{df}}}
+  z = \sqrt{\chi^2}\qquad\text{for a $2\times 2$ table}.
 \]
-is like a $z$-score, where $\text{df}$ is the 'degrees of freedom' (`df` in the software output).^[For those interested: the degrees of freedom in a two-way table is the number of rows of data less one, times the number of columns of data less one.  For a $2\times 2$ table, $\text{df} = (2 - 1) \times (2 - 1) = 1$.]
-
-This allows the $P$-value to be estimated using the $68$--$95$--$99.7$ rule. 
-:::
-
-
-## Determining $P$-values
-
-The differences between the observed sample statistic (the sample OR) and the hypothesised population parameter (the population OR of one) is summarised by $\chi^2 = 6.934$, approximately equivalent to $z = 2.63$.
+Here, the $\chi^2$ value is equivalent to a $z$-score of $\sqrt{6.934} = 2.633$.
+This is the *same* $z$-score produced when comparing two proportions (Sec.\ \@ref(CompareTwoProportions); Fig.\ \@ref(fig:UniMealsTestOutputHTjamovi)), and hence the $P$-value will be the same also.
 Using the $68$--$95$--$99.7$ rule, a small $P$-value is expected.
-
 The two-tailed $P$-value reported by jamovi (Fig.\ \@ref(fig:UniMealsTestOutputHTjamovi), under the column `p`) is indeed small: $0.008$ to three decimals.
 
    
@@ -432,7 +494,7 @@ Recall that, for two-way tables of counts, the alternative hypotheses *are alway
 `r if (knitr::is_latex_output()) '-->'`
 
 
-## Writing conclusions
+### Writing conclusions {#WritingConclusionChi2}
 
 A very small $P$-value ($0.008$ to three decimals) means strong evidence exists to supporting $H_1$: the evidence suggests a difference in the *population* odds in the two groups.
 We write:
@@ -451,7 +513,235 @@ Usually, RQs are easiest to write when framed in terms of comparing odds.
 
 For consistency: if the RQ is about the odds ratio, the hypotheses and conclusion should be about the odds ratio; if the RQ is about odds, the hypotheses and conclusion should be about the odds; and so on.
 :::
-      
+
+
+## Statistical validity conditions {#Validity-Test-ChiSq}
+\index{Statistical validity!odds ratio}
+
+As usual, these results hold under certain conditions.
+The test above is statistically valid if: 
+
+* All *expected* counts are at least five.
+
+Some books may give other (but similar) conditions.
+
+The statistical validity condition refers to the *expected* (not the *observed*) counts.
+In jamovi, the *expected* counts must be explicitly requested to see if this condition is satisfied (Fig.\ \@ref(fig:UniMealsTestExpectedjamovi)).
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+If all the *observed* counts exceed five, then all *expected* counts will exceed five.
+:::
+
+
+If the statistical validity conditions are not met, other similar options include using a Fisher's exact test\index{Fisher's exact test}  [@conover2003practical] or using resampling methods [@efron2021computer].
+
+
+```{r UniMealsTestExpectedjamovi, fig.cap="The expected values, as computed in jamovi", fig.align="center", out.width="70%"}
+knitr::include_graphics("jamovi/UniStudents/UniStudents-Expected.png")
+```
+
+For the student-eating data, the smallest *observed* count is $2$ (living with parents; most meals off-campus), but the smallest *expected* count is $7.67$, which is greater than five.
+The size of the *expected* counts is important for the statistical validity condition.
+
+
+::: {.example #StatisticalValidityEatingHT name="Statistical validity"}
+For the university-student eating data, *all* the cells have an *expected* count of at least five so the statistical validity condition is satisfied.
+:::
+
+
+```{r}
+data(PetBirds)
+
+PB2 <- xtabs( Counts ~ Pets + LC, 
+              data = PetBirds)
+
+PB2.exp <- chisq.test(PB2)$expected 
+```
+
+
+
+## Tests of independence more generally: $\chi^2$-tests {#CompareManyProportions}
+
+Often a tables of counts is larger than $2\times 2$.
+In these situations, the RQ is worded in terms of *independence*, *relationships* or *associations* (but *not* correlations) between the variables:
+
+> Is there a relationship (or association) between one qualitative variable and another qualitative variable?
+
+The RQ is answered using a $\chi^2$-test comparing odds (not proportions), by extending the ideas in Sect.\ \@ref(CompareTwoOdds), as demonstrated in the following example.
+
+
+:::{.example #ChiSqLarger name="Larger two-way tables"}
+[*Dataset*: `RipsID`]
+@diez2023rip studied Spanish people's knowledge of ocean rips (Table\ \@ref(tab:RipTableSummary), left table).
+The table is a $4\times 2$ two-way table.
+The RQ is
+
+> Is there a relationship (or association) between age group and people's ability to correctly identify a rip?
+
+:::
+
+```{r}
+data(RipsID)
+
+RipTable <- xtabs(Counts ~ AgeGroup + Identification,
+                  data = RipsID)
+
+colnames(RipTable) <- c("Correctly",
+                        "Incorrectly")
+rownames(RipTable) <- c("18 to 24",
+                        "25 to 34",
+                        "35 to 50",
+                        "51 to 65")
+
+if( knitr::is_latex_output() ) {
+  T1 <- kable( pad(RipTable,
+             surroundMaths = TRUE,
+             targetLength = c(3, 2),
+             digits = 0),
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        escape = FALSE,
+        align = "c") %>%
+#     column_spec(1, bold = TRUE) %>%
+     row_spec(0, bold = TRUE) %>%
+    add_header_above( c(" " = 1, 
+                        "Identifying rips" = 2),
+                      line = TRUE,
+                      bold = TRUE)
+
+## 
+
+RipSummary <- array( dim = c(4, 4))
+
+rownames(RipSummary) <- rownames(RipTable)
+colnames(RipSummary) <- c("Odds",
+                          "Odds ratio",
+                          "Percentage",
+                          "$n$")
+
+RipSummary[, 1] <- RipTable[, 1] / RipTable[, 2]
+RipSummary[, 3] <- RipTable[, 1] / rowSums(RipTable)
+RipSummary[, 4] <- rowSums(RipTable)
+
+RipSummary[1, 2] <- RipSummary[1, 1] / RipSummary[4, 1]
+RipSummary[2, 2] <- RipSummary[2, 1] / RipSummary[4, 1]
+RipSummary[3, 2] <- RipSummary[3, 1] / RipSummary[4, 1]
+RipSummary[4, 2] <- NA
+
+
+
+T2 <- kable( pad(RipSummary,
+           surroundMaths = TRUE,
+           targetLength = c(5, 5, 4, 3),
+           digits = c(3, 3, 2, 0) ),
+       escape = FALSE,
+       align = "c",
+       format = "latex",
+       booktabs = TRUE) %>%
+     row_spec(0, bold = TRUE) %>%
+    add_header_above( c(" " = 1, 
+                        "Correctly identifying rips" = 3,
+                        " " = 1),
+                      line = TRUE,
+                      bold = TRUE)
+
+
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "RipTableSummary",
+                       caption = "Identifying rips. Left: the data by age group. Right: a summary table. The odds ratio is relative to the 51 to 65 age group.") %>% 
+    kable_styling(font_size = 8)
+
+  out2 <- prepareSideBySideTable(out) 
+  out2
+}
+
+if( knitr::is_html_output() ) {
+  kable(pad(RipTable,
+             surroundMaths = TRUE,
+             targetLength = c(3, 2),
+             digits = 0),
+               format = "html",
+               booktabs = TRUE,
+               longtable = FALSE,
+               align = "c",
+               caption = "IU IT O*Y OP(Y*P PUIPI")
+}
+```
+
+
+The odds and percentage of people in each age group that can correctly identify rips can be computed (Table\ \@ref(tab:RipTableSummary), right table), but this is not always possible (e.g., for a $3\times 4$ table).
+Odds ratios compare *pairs* of odds, so the odds ratios in Table\ \@ref(tab:RipTableSummary) are all relative to those $51$ to $65$ (hence, no odds ratio is given for the $51$ to $65$ age group, which is the *reference level*).\index{Reference level}
+For example, the odds of someone aged $18$ to $24$ correctly identifying a rip is $1.104$ times the odds of someone aged $51$ to $65$ correctly identifying a rip.
+
+* $H_0$: In the *population*, there *is no association* between age group and being able to correctly identify a rip;
+* $H_1$: In the *population*, there *is an association* between age group and being able to correctly identify a rip.
+
+For a $2\times 2$ table, the *parameter* is the odds ratio, and the test proceeds using a $\chi^2$ value.
+As in Sect.\ \@ref(CompareTwoOdds), the value of $\chi^2$ compares the observed counts to the expected counts (found in the same way as in Sect.\ \@ref(ExpectedValues)).
+For two-way tables larger than $2\times 2$, defining a single parameter to describe the association between the variables is difficult.
+
+When no relationship exists in the sample, the observed and expected values are the same, and $\chi^2 = 0$.
+The larger the difference between the observed and expected values, the larger the value of $\chi^2$.
+Sampling variation means that the observed values will vary from sample to sample, so that $\chi^2$ may not be exactly zero, even if there is no association between the variables.
+
+Software computes $\chi^2 = 2.4062$ (Fig. \@ref(fig:Ripsjamovi)).
+For two-way table of counts larger than $2\times 2$, this is equivalent to a $z$-score of  
+\[
+  z = \sqrt{\chi^2 \div \text{df}},
+\]
+where $\text{df}$ is the *degrees of freedom*,\index{Degrees of freedom}
+where
+\[
+  \text{df} = (\text{number of columns of data} - 1)\times(\text{number of rows of data} - 1).
+\]
+Here, $\text{df} = (4 - 1)\times ( 2 - 1) = 3$, as in the output (Fig. \@ref(fig:Ripsjamovi)).
+Hence, the equivalent $z$-score is  
+\[
+  z = \sqrt{2.4062/3} = 0.896,
+\]
+which is quite small, so we expected a large $P$-value.
+Software confirms this (Fig. \@ref(fig:Ripsjamovi)): $P = 0.492$.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Recall that, for two-way tables of counts, the alternative hypotheses *are always two-tailed*, so a two-tailed $P$-value is always reported.
+:::
+
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+In a chi-squared test, the value of  
+\[
+  \sqrt{ \chi^2 \div {\text{df}}}
+\]
+is like a $z$-score, where $\text{df}$ is the 'degrees of freedom' (`df` in the software output).
+The degrees of freedom in a two-way table is the number of rows of data less one, times the number of columns of data less one.
+
+This allows the $P$-value to be estimated using the $68$--$95$--$99.7$ rule. 
+:::
+
+```{r Ripsjamovi, fig.show="hold", fig.cap="Software output for the hypothesis test about knowledge of ocean rips", fig.align="center", out.width="50%"}
+knitr::include_graphics( "jamovi/RipsID/RipsID-chisq.png")
+```
+
+
+The statistical validity conditions are the same as in Sect.\ \@ref(Validity-Test-ChiSq):\index{Statistical validity!odds ratio} all *expected* counts are at least five.
+
+
+<iframe src="https://learningapps.org/watch?v=ptw49fp0322" style="border:0px;width:100%;height:600px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+
+
+`r if (knitr::is_latex_output()) '<!--'`
+`r if (knitr::is_html_output()){
+  'Click on the hotspots in the following image, and describe what the jamovi output tells us.'
+}`
+
+
+<iframe src="https://learningapps.org/watch?v=p54msvghc22" style="border:0px;width:100%;height:800px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+`r if (knitr::is_latex_output()) '-->'`
+
 
 <!-- ## Standardised residuals -->
 
@@ -502,45 +792,6 @@ For consistency: if the RQ is about the odds ratio, the hypotheses and conclusio
 <!-- but they can be used in larger two-way tables -->
 <!-- (for example,  -->
 <!-- see Sect. \@ref(ORTestDumping)). -->
-
-
-## Statistical validity conditions {#Validity-Test-ChiSq}
-\index{Statistical validity!odds ratio}
-
-As usual, these results hold under certain conditions.
-The test above is statistically valid if: 
-
-* All *expected* counts are at least five.
-
-Some books may give other (but similar) conditions.
-
-The statistical validity condition refers to the *expected* (not the *observed*) counts.
-In jamovi, the *expected* counts must be explicitly requested to see if this condition is satisfied (Fig.\ \@ref(fig:UniMealsTestExpectedjamovi)).
-
-If the statistical validity conditions are not met, other similar options include using a Fisher's exact test\index{Fisher's exact test}  [@conover2003practical] or using resampling methods [@efron2021computer].
-
-
-```{r UniMealsTestExpectedjamovi, fig.cap="The expected values, as computed in jamovi", fig.align="center", out.width="70%"}
-knitr::include_graphics("jamovi/UniStudents/UniStudents-Expected.png")
-```
-
-For the student-eating data, the smallest *observed* count is $2$ (living with parents; most meals off-campus), but the smallest *expected* count is $7.67$, which is greater than five.
-The size of the *expected* counts is important for the statistical validity condition.
-
-
-::: {.example #StatisticalValidityEatingHT name="Statistical validity"}
-For the university-student eating data, *all* the cells have an *expected* count of at least five so the statistical validity condition is satisfied.
-:::
-
-
-```{r}
-data(PetBirds)
-
-PB2 <- xtabs( Counts ~ Pets + LC, 
-              data = PetBirds)
-
-PB2.exp <- chisq.test(PB2)$expected 
-```
 
 
 
@@ -688,14 +939,16 @@ knitr::include_graphics("jamovi/TurtleNests/TurtleNests-Expected.png")
 A study of $400$ residents of  Klang Valley, Malaysia, examined residents' approach to waste management [@choon2017perception].
 One RQ was:
 
-> For residents of Klang Valley, is age associated with whether people bring their own bags when shopping? 
+> For residents of Klang Valley, is age group associated with whether people bring their own bags when shopping? 
 
-
-The data (Table\ \@ref(tab:BagsTableHT)) are given in a $3\times 2$ table of counts.
+The data
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:BagsTableHT), left table)'
+} else {
+   '(Table\\ \\@ref(tab:BagsTableHT))'
+}`
+are given in a $3\times 2$ table of counts.
 The software output is shown in Fig.\ \@ref(fig:BagsChisqjamovi), and a graphical summary in Fig.\ \@ref(fig:BagsSidebysideBar).
-Most of the numerical summary must be produced manually (Table\ \@ref(tab:BagsHTNumerical)), since jamovi only produces odds ratios for $2\times 2$ tables.
-Here are the details of the calculations (notice that Row\ 1 is on the bottom of the fraction):
-
 
 
 ```{r BagsTableHT}
@@ -713,20 +966,75 @@ rownames(BagsTab) <- c("30 and under",
                        "Over 40")
 
 if( knitr::is_latex_output() ) {
-  kable(pad(BagsTab,
+  T1 <- kable(pad(BagsTab,
             surroundMaths = TRUE,
             targetLength = 3,
             digits = 0),
         format = "latex",
-        align = "c",
+        align = c("r", "c", "c"),
+        col.names = c("Yes", "No"),
         longtable = FALSE,
         escape = FALSE,
-        caption = "Whether shoppers bring their own bags, and the shoppers age",
+        #caption = "Whether shoppers bring their own bags, and the shoppers age",
         booktabs = TRUE) %>%
-    kable_styling(font_size = 8) %>%
+    #kable_styling(font_size = 8) %>%
     row_spec(0, bold = TRUE) %>%
-    column_spec(1, bold = TRUE)
+    add_header_above( c(" " = 1,
+                        "Brings own bags" = 2),
+                      bold = TRUE,
+                      line = TRUE)
+  
+  
+  ###
+  
+BagsSummary <- array( dim = c(3, 4) )
+
+colnames(BagsSummary) <- c( "Odds",
+                            "Odds ratio",
+                           "Percentage",
+                           "$n$")
+rownames(BagsSummary) <- rownames(BagsTab)
+  
+BagsSummary[1, ] <- c( 0.913, 
+                       0.289, 
+                       47.7, 
+                       264)
+BagsSummary[2, ] <- c( 1.563, 
+                       0.496, 
+                       61.0, 
+                       82)
+BagsSummary[3, ] <- c(3.154, 
+                      NA, 
+                      75.9, 
+                      54)
+
+ T2 <- kable(pad(BagsSummary,
+            surroundMaths = TRUE,
+            targetLength = c(5, 5, 4, 3),
+            digits = c(3, 3, 1, 0)),
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        escape = FALSE,
+        align = "c") %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c(" " = 1,
+                        "Brings own shopping bags" = 3,
+                        " " = 1),
+                      bold = TRUE,
+                      line = TRUE)
+  
+    out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "BagsTableHT",
+                       caption = "Left: whether shoppers bring their own bags and age group. Right: odds and percentage that people bring their own shopping bags by age groups. The odds ratios are computed relative to those `Over $40$'") %>% 
+    kable_styling(font_size = 8)
+
+  out2 <- prepareSideBySideTable(out) 
+  out2
+
 }
+
 if( knitr::is_html_output() ) {
   kable(pad(BagsTab,
             surroundMaths = TRUE,
@@ -791,21 +1099,7 @@ BagsSummary[3, ] <- c(3.154,
 
 cap.tab <- "Odds and percentage that people bring their own shopping bags by age groups. The odds ratios are computed relative to those 'Over $40$'."
 
-if( knitr::is_latex_output() ) {
-  cap.tab <- "Odds and percentage that people bring their own shopping bags by age groups. The odds ratios are computed relative to those `Over $40$'."
-  kable(pad(BagsSummary,
-            surroundMaths = TRUE,
-            targetLength = c(5, 5, 4, 3),
-            digits = c(3, 3, 1, 0)),
-        format = "latex",
-        booktabs = TRUE,
-        longtable = FALSE,
-        escape = FALSE,
-        align = "c",
-        caption = cap.tab) %>%
-    row_spec(0, bold = TRUE) %>%
-    kable_styling(font_size = 8)
-}
+
 if( knitr::is_html_output() ) {
   kable(pad(BagsSummary,
             surroundMaths = TRUE,
@@ -819,43 +1113,29 @@ if( knitr::is_html_output() ) {
 }
 ```
 
+For the numerical summary table
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:BagsTableHT), right table):'
+} else {
+   '(Table\\ \\@ref(tab:BagsHTNumerical)):'
+}`
 
 * For those '$30$ or under': the *odds* of bringing a shopping bag is $126/138 = 0.913$.
-* For those '$31$ to $40$': the *odds* of bringing a shopping bag is $50/32 = 1.712$.
+* For those '$31$ to $40$': the *odds* of bringing a shopping bag is $50/32 = 1.563$.
 * For those 'Over $40$': the *odds* of bringing a shopping bag is $41/13 = 3.154$.
 
-Then the *odds ratios* can be computed:
+For computing the odds ratios, Row\ 3 is on the bottom of the fraction (as the reference level):\index{Reference level}
 
-* The OR of bringing a shopping bag, comparing people '$31$--$40$' to people 'Over $40$': $0.913/3.154 = 0.289$.
-* The OR of bringing a shopping bag, comparing people 'Over $40$' to people 'Over $40$': $1.563/3.154 = 0.496$.
+* The OR of bringing a shopping bag, comparing people '$30$ and under' to people 'Over $40$': $0.913/3.154 = 0.289$.
+* The OR of bringing a shopping bag, comparing people '$31$--$40$' to people 'Over $40$': $1.563/3.154 = 0.496$.
 
-In Table\ \@ref(tab:BagsHTNumerical), the odds of bringing a shopping bag are relative to those 'Over $40$' (the last row).
-Since Table\ \@ref(tab:BagsHTNumerical) has *three* groups to compare, three odds are needed.
-However, the summary has $3 - 1 = 2$ odds ratios, since odds *ratios* compare *pairs* of odds.
-The level to which the other two are compared is called the *reference level*.
-In Table\ \@ref(tab:BagsHTNumerical), the reference level is 'Over $40$' (i.e., on the bottom of the fraction when computing the odds ratios).
-(In a $2\times 2$ table, with *two* groups to compare, the summary has only $2 - 1 = 1$ odds ratio; i.e., one pair of odds.)
+That is, the odds of bringing a shopping bag for those '$30$ and under' is $0.289$ times (i.e., is smaller than) the odds of those 'Over $40$'.
+Similarly, the odds of bringing a shopping bag for those '$31$ to $40$' is $0.496$ times (i.e., is smaller than) the odds of those 'Over $40$'.
 
-These odds ratios mean:
-
-* The odds of bringing a shopping bag for those '$30$ and under' is $0.289$ times (i.e., is smaller than) the odds of those 'Over $40$'; and
-* The odds of bringing a shopping bag for those '$31$ to $40$' is $0.496$ times (i.e., is smaller than) the odds of those 'Over $40$'.
-
-The hypothesis can be worded in terms of odds:
-
-* $H_0$: The odds of bringing a shopping bag *is the same* for all age groups.
-* $H_1$: The odds of bringing a shopping bag *is not the same* for all age groups.
-
-Alternatively, the hypotheses can be worded in terms of *relationships* or *associations* (but *not* correlations) between the two variables:
+The hypothesis can be worded in terms of odds, but the hypothesis are usually worded in terms of associations (but *not* correlations) for tables larger than $2\times 2$:
 
 * $H_0$: *No association* exists between bringing a shopping bag and age group.
 * $H_1$: *An association* exists between bringing a shopping bag and age group.
-
-For a $2\times 2$ table, the *parameter* is the odds ratio. 
-For two-way tables larger than $2\times 2$, defining a single parameter is difficult; it requires a single number to measure the association between the variables, but we need two ORs to summarise the data.
-Effectively, the $\chi^2$-statistic becomes the parameter that measures the size of the difference between all three odds.
-When no relationship exists in the population, $\chi^2 = 0$; hence $H_0:$ $\chi^2 = 0$.
-The alternative hypothesis is $H_1$: $\chi^2 > 0$; that is, the value of $\chi^2$ in the sample is not zero due to sampling variation.
 
 From the software output (Fig.\ \@ref(fig:BagsChisqjamovi)), $\chi^2 = 16.24$ and $\text{df} = 2$, so this $\chi^2$ value is approximately equivalent to a $z$-score of $\sqrt{16.24\div 2} = 2.85$.
 This is a large $z$-score so, using the $68$--$95$--$99.7$ rule, a small $P$-value is expected; indeed, jamovi reports $P < 0.001$.
@@ -865,21 +1145,40 @@ The conclusion could be written as
 
 > The sample provides very strong evidence ($\chi^2 = 16.24$; $\text{df} = 2$) that the odds of bringing a shopping bag is not the same for the three age groups.
 
-While sample summary information could be added to this conclusion, the statements may then become cumbersome.
-Instead, pointing readers to the numerical summary (Table\ \@ref(tab:BagsHTNumerical)) is probably better.
-Furthermore, CIs are not reported since jamovi does not produce CIs for tables larger than $2\times 2$.
+Adding sample summary information to this conclusion is cumbersome.
+Instead, readers canmbe pointed to the numerical summary (Table\ \@ref(tab:BagsHTNumerical)).
+Furthermore, CIs are not reported since software does not always produce CIs for tables larger than $2\times 2$.
+
+While we know there is an association between the variables, we can only speculate on the nature of the association (i.e., for which group(s) the *population* odds are different).
+Comparing all *pairs* of groups increases the probability of *incorrectly* declaring a difference between the odds (increasing the chance of a Type\ I error;\index{Type I error} Sect.\ \@ref(TypeErrors))
+The correct approach requires methods beyond this book.
 
 All *expected* values exceed $5$ (Fig.\ \@ref(fig:BagsChisqjamovi)), so the results are statistically valid.
 
 
 ## Chapter summary {#TestsOddsRatio-Summary}
 
-To test a hypothesis about a difference between two population means $\mu_A - \mu_B$:
+To test a hypothesis about a difference between two population proportions $p_A - p_B$:
+
+* Write the null hypothesis ($H_0$) and the alternative hypothesis ($H_1$).
+* Initially *assume* the value of $(p_A - p_B)$ in the null hypothesis to be true.
+* Then, describe the *sampling distribution*, which describes what to *expect*  from the difference between the sample proportions based on this assumption: under certain statistical validity conditions, the difference between the sample proportions vary with:
+   *  an approximate normal distribution,
+   *  with sampling mean whose value is the value of $(p_A - p_B)$ (from $H_0$), and
+   *  having a standard deviation of $\displaystyle \text{s.e.}(\hat{p}_A - \hat{p}_B)$.
+* Compute the value of the *test statistic*:  
+\[
+   z = \frac{ (\hat{p}_A - \hat{p}_B) - (p_A - p_B)}{\text{s.e.}(\hat{p}_A - \hat{p}_B)},
+\]
+where $p_A - p_B$ is the hypothesised difference given in the null hypothesis.
+* The $t$-value is like a $z$-score, and so an approximate *$P$-value* can be estimated using the $68$--$95$--$99.7$ rule, or found using software.
+
+To test a hypothesis for comparing two odds, or to test for a relationship between two qualitative variables more generally:
 
 * Write the null hypothesis ($H_0$) and the alternative hypothesis ($H_1$).
 * Initially *assume* no relationship between the two variables.
 * Find the value of the *test statistic* (a $\chi^2$-score) on the software output.
-* The approximately-equaivalent $z$-score is $\sqrt{\chi^2\div\text{df}}$ where $\text{df}$ is the 'degress of freedom' and can be found on the software output.
+* The equivalent $z$-score is $\sqrt{\chi^2\div\text{df}}$ where $\text{df}$ is the 'degress of freedom' and can be found on the software output.
 * An approximate *$P$-value* can be estimated using the $68$--$95$--$99.7$ rule, or found using software.
 
 
@@ -892,7 +1191,7 @@ To test a hypothesis about a difference between two population means $\mu_A - \m
 
 ::: {.webex-check .webex-box}
 @meresa2023effect investigated Ethiopian farmers' adoption of improved soil and water conservation structures on their farms (Table\ \@ref(tab:FarmersData)).
-Output from using jamovi is shown in Fig.\ \@ref(fig:farmersjamoviHT).
+Software output is shown in Fig.\ \@ref(fig:farmersjamoviHT).
 
 ```{r}
 Farmers <- array(dim = c(2, 2))
@@ -930,7 +1229,7 @@ knitr::kable( pad(Farmers,
 \begin{minipage}{0.54\textwidth}%
 \centering
 ```{r, out.width='95%'}
-knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2.png")
+knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2-Expected.png")
 ```
 \caption{jamovi output for the farming study}\label{fig:farmersjamoviHT}
 \end{minipage}
@@ -955,8 +1254,8 @@ if( knitr::is_html_output() ) {
 
 <!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
 `r if (knitr::is_latex_output()) '<!--'`
-```{r farmersjamoviHT, fig.show="hold", fig.cap="jamovi output for the farming study", fig.align="center", out.width="50%"}
-knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2.png")
+```{r farmersjamoviHT, fig.show="hold", fig.cap="Software output for the farming study", fig.align="center", out.width="50%"}
+knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2-Expected.png")
 ```
 
 
@@ -964,6 +1263,8 @@ knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2.png")
 1. What is the $\chi^2$ value? \tightlist
 `r if( knitr::is_html_output() ) {mcq(
   c(answer = 10.7105, 2.2903, 1.3891, 262)  )}`
+1. How many degrees of freedom are there?
+`r if( knitr::is_html_output() ) {fitb(answer = 1, tol = 0.01, num = TRUE)}`
 1. What is the equivalent $z$-score (to two decimal places)?
 `r if( knitr::is_html_output() ) {fitb(answer = 3.28, tol = 0.01, num = TRUE)}`
 1. Using the $68$--$95$--$99.7$ rule, what is the approximate $P$-value?
@@ -978,7 +1279,7 @@ knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2.png")
     answer = "0.00107",
     "2.2903",
     "There is not enough information")  )}`
-1. What is the alternative hypothesis?
+1. Is the alternative hypothesis one- or two-tailed?
 `r if( knitr::is_html_output() ) {longmcq(
   c("One-tailed",
     answer = "Two-tailed",
@@ -986,6 +1287,9 @@ knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2.png")
 1. True or false:
 There is *no* evidence of a difference in odds of adopting of conservation practices, for the two far size categories.
 `r if( knitr::is_html_output() ) {torf(answer=FALSE)}`
+1. True or false:
+The test will be statistically valid.
+`r if( knitr::is_html_output() ) {torf(answer=TRUE)}`
 :::
 
 
@@ -1004,12 +1308,9 @@ Confirm that the *odds* of having most meals off-campus is the same for students
 
 
 
-::: {.exercise #OddsEV}
-Section\ \@ref(Chap29-QuickReview) gives data from a study of the adoption of electric vehicle (EVs) by a certain group of professional Americans (Table\ \@ref(tab:EV10years); @egbue2017mass).
-Software gives the $\chi^2$-score as $1.31$.
-
-1. What is the equivalent $z$-score?
-1. What is the approximate $P$-value for the test?
+::: {.exercise #OddsSame2}
+Consider the expected counts in Fig.\ \@ref(fig:farmersjamoviHT).
+Confirm that the *odds* of being an adopter of improved soil and water conservation structures is the same for smaller and larger farms.
 :::
 
 
@@ -1041,25 +1342,20 @@ rownames(FliesData) <- c("Males",
 \captionof{table}{The sex of sandflies at two heights\label{tab:SandfliesHT}}
 \fontsize{8}{12}\selectfont
 ```{r}
-knitr::kable( pad(FliesData,
+knitr::kable( pad( t(FliesData),
                   surroundMaths = TRUE,
                   targetLength = 3, 
                   textAlign = "right",
                   digits = 0),
          format = "latex",
          align = "c",
-         col.names = c("above ground",
-                       "above ground"),
+         col.names = c("Males",
+                       "Females"),
          booktabs = TRUE,
          longtable = FALSE,
          escape = FALSE,
          table.env = "@empty") %>%
-   row_spec(0, bold = TRUE) %>%
-    add_header_above( c(" " = 1,
-                        "3 feet" = 1,
-                        "35 feet" = 1),
-                      bold = TRUE,
-                      line = FALSE)
+   row_spec(0, bold = TRUE)
    #kable_styling(font_size = 8) %>% # CANNOT USE THIS IN THE MINIPAGE
    #column_spec(1, width = "13mm") %>%
    #column_spec(2, width = "22mm")
@@ -1110,8 +1406,8 @@ if( knitr::is_html_output() ) {
         format = "html",
         align = "c",
         longtable = FALSE,
-        col.names = c("above ground",
-                      "above ground"),
+        col.names = c("Males",
+                      "Females"),
         caption = "The sex of sandflies at two heights",
         booktabs = TRUE) %>%
     kable_styling(full_width = FALSE) %>%
@@ -1120,7 +1416,6 @@ if( knitr::is_html_output() ) {
                         "35 feet" = 1),
                       bold = TRUE,
                       line = FALSE)
-  
 }
 ```
 
@@ -1130,8 +1425,8 @@ FliesSummary <- array( dim = c(3, 3) )
 colnames(FliesSummary) <- c( "Odds",
                              "Percentage",
                              "Sample size")
-rownames(FliesSummary) <- c("3 feet:",
-                            "35 feet:",
+rownames(FliesSummary) <- c("3 feet above ground:",
+                            "35 feet above ground:",
                             "Odds ratio:")
   
   
@@ -1205,7 +1500,7 @@ box()
 
 
 
-```{r Sandfliesjamovi, fig.show="hold", fig.cap="Using jamovi to compute a CI for the sandflies data", fig.align="center", out.width="75%"}
+```{r Sandfliesjamovi, fig.show="hold", fig.cap="Software output for the sandflies data", fig.align="center", out.width="65%"}
 knitr::include_graphics( "jamovi/Sandflies/Sandflies-All.png")
 ```
 
@@ -1226,8 +1521,8 @@ jamovi was used to analyse the data (Fig.\ \@ref(fig:ScarHeightRisk)).
 ```{r ScarsDataHT}
 ScarsData <- array( dim = c(2, 2) )
 
-rownames(ScarsData) <- c("Scar height $0$\\ mm (smooth)",
-                         "Scar height more than $0$\\ mm, less than $1$\\ mm")
+rownames(ScarsData) <- c("$0$\\ mm (smooth)",
+                         "Between $0$\\ mm and $1$\\ mm")
 colnames(ScarsData) <- c("Women",
                          "Men")
 
@@ -1235,7 +1530,7 @@ ScarsData[1, ] <- c(99, 216)
 ScarsData[2, ] <- c(62, 115)
 
 if( knitr::is_latex_output() ) {
-  kable(pad(ScarsData,
+  kable(pad(t(ScarsData),
             surroundMaths = TRUE,
             targetLength = c(2, 3), 
             digits = 0),
@@ -1246,11 +1541,15 @@ if( knitr::is_latex_output() ) {
         align = "c",
         caption = "The number of men and women, with scars of different heights") %>%
     row_spec(0, bold = TRUE) %>%
+    add_header_above( c(" " = 1,
+                        "Scar height" = 2),
+                      bold = TRUE,
+                      line = TRUE) %>%
   kableExtra::kable_styling(latex_options = "hold_position", 
                             font_size = 8)
 }
 if( knitr::is_html_output() ) {
-  kable(pad(ScarsData,
+  kable(pad(t(ScarsData),
             surroundMaths = TRUE,
             targetLength = c(2, 3), 
             digits = 0),
@@ -1265,8 +1564,8 @@ if( knitr::is_html_output() ) {
 ```
 
 
-```{r ScarHeightRisk, fig.show="hold", fig.cap="Using jamovi to compute a CI for the scar-height data", fig.align="center", out.width="55%"}
-knitr::include_graphics( "jamovi/ScarHeight/ScarHeight-All.png")
+```{r ScarHeightRisk, fig.show="hold", fig.cap="Software output for the scar-height data", fig.align="center", out.width="65%"}
+knitr::include_graphics( "jamovi/ScarHeight/ScarHeight-All-Both-Expected.png")
 ```
 
 
@@ -1281,8 +1580,8 @@ They also ran a different set of $42$ turbines for about $3000$\ hrs, and found 
 :::
 
 
-```{r TurbinesOutputHT, fig.show="hold", fig.cap="jamovi output for the turbine data (left); expected counts (right)", fig.align="center", out.width="48%"}
-knitr::include_graphics( "jamovi/Turbines/TurbinesCI-jamovi.png" )
+```{r TurbinesOutputHT, fig.show="hold", fig.cap="Software output for the turbine data (left); expected counts (right)", fig.align="center", out.width="48%"}
+knitr::include_graphics( "jamovi/Turbines/Turbines-Test-Both.png" )
 knitr::include_graphics( "jamovi/Turbines/TurbinesExpected-jamovi.png" )
 ```
 
@@ -1291,15 +1590,22 @@ knitr::include_graphics( "jamovi/Turbines/TurbinesExpected-jamovi.png" )
 ```{r}
 data(EmeraldAug) ### Exercise
 
-EmeraldAug$SOIpos <- factor( EmeraldAug$SOI>0 )
+EmeraldAug$SOIpos <- factor( EmeraldAug$SOI > 0 )
 
-SOI.tab <- xtabs( ~ (SOIpos) + (Rain > 0), 
+SOI.tab2 <- xtabs( ~ (SOIpos) + (Rain > 0), 
                   data = EmeraldAug)
 
-colnames(SOI.tab) <- c("No rainfall recorded", 
-                       "Rainfall recorded")
-rownames(SOI.tab) <- c("Non-positive SOI", 
-                       "Positive SOI")
+
+SOI.tab <- SOI.tab2
+
+SOI.tab[, 1] <- c(SOI.tab2[2, 2],
+                  SOI.tab2[1, 2] )
+SOI.tab[, 2] <- c(SOI.tab2[2, 1],
+                  SOI.tab2[1, 1] )
+colnames(SOI.tab) <- c("Rainfall recorded", 
+                       "No rainfall recorded")
+rownames(SOI.tab) <- c("Positive SOI", 
+                       "Non-positive SOI")
 
 #prop.table(SOI.tab, margin=1 )
 
@@ -1322,7 +1628,7 @@ The rainfall at Emerald (Queensland) was recorded for Augusts between 1889 to 20
 
 ```{r SOItableHT}
 if( knitr::is_latex_output() ) {
-  kable( pad(t(SOI.tab),
+  kable( pad((SOI.tab),
              surroundMaths = TRUE,
              targetLength = 2,
              digits = 0),
@@ -1337,7 +1643,7 @@ if( knitr::is_latex_output() ) {
     column_spec(0, bold = TRUE)
 }
 if( knitr::is_html_output() ) {
-  kable( pad(t(SOI.tab),
+  kable( pad((SOI.tab),
              surroundMaths = TRUE,
              targetLength = 2,
              digits = 0),
@@ -1351,8 +1657,8 @@ if( knitr::is_html_output() ) {
 ```
 
 
-```{r EmeraldRainjamoviOutput, fig.show="hold", fig.cap="jamovi output for the Emerald-rain data", fig.align="center", out.width="70%"}
-knitr::include_graphics( "jamovi/EmeraldRain/EmeraldRain-All.png" )
+```{r EmeraldRainjamoviOutput, fig.show="hold", fig.cap="Software output for the Emerald-rain data", fig.align="center", out.width="65%"}
+knitr::include_graphics( "jamovi/EmeraldRain/EmeraldRain-All-Both.png" )
 ```
 
 
@@ -1377,73 +1683,82 @@ Of the $386$ males observed, $79$ wore hats; of the $366$ females observed, $22$
 1. Compute the odds ratio of wearing a hat, comparing females to males.
 1. Compute the odds ratio of wearing a hat, comparing males to females.
 1. Find the $95$%\ CI for the appropriate OR.
-1. Using the jamovi output in Fig.\ \@ref(fig:SunglassesOutput), perform a hypothesis test to determine if the odds of wearing a hat is the same for females and males.
+1. Using the software output in Fig.\ \@ref(fig:SunglassesOutput), perform a hypothesis test to determine if the odds of wearing a hat is the same for females and males.
 1. Write down the conclusion.
 1. Is the test statistically valid?
 :::
 
 
 
-```{r SunglassesOutput, fig.show="hold", fig.cap="jamovi output for the hats data", fig.align="center", out.width=c("50%", "45%"), fig.show='hold'}
-knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-CI.png" )
-knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-Test.png" )
+```{r SunglassesOutput, fig.show="hold", fig.cap="Software output for the hats data", fig.align="center", out.width=c("50%", "45%"), fig.show='hold'}
+knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-CI-Both.png" )
+knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-Test-Both.png" )
 ```
 
 
 
-::: {.exercise #TestOddsRatioPedestrianPhones}
-@lennon2017pedestrian asked people about their mobile-phone interactions while crossing the road as pedestrians.
-Part of the data are summarised in Table\ \@ref(tab:PedestrianPhonesData).
+::: {.exercise #TestOddsRatioPedestrianBearTree}
+@witmer2020preliminary compared various types of repellents to stop bears damaging trees in an Idaho forest.
+Part of the data are summarised in Table\ \@ref(tab:BearTreeData).
 
 1. Compute the column percentages.
-1. Compute the odds of low exposure to each behaviour.
+1. Compute the odds of new damage for both repellents.
+1. Compute the proportion of trees with new damage.
+1. Compute the odds ratio, and the difference between the proportions.
 1. Write the hypothesis for conducting a hypothesis test.
 1. Compute the *expected counts*.
-1. After analysis in jamovi, the value of $\chi^2$ is $20.923$ with two degrees of freedom. 
+1. Software gives $\chi^2$ is $4.4850$. 
    What is the approximately-equivalent $z$-score? 
    Would you expect a large or small $P$-value?
-1. The $P$-value is given as $P < 0.000$. 
+1. The $P$-value is given as $P = 0.0342$. 
    Write a conclusion.
 :::
 
 
-```{r PedestrianPhonesData}
-PhoneTable <- array( dim = c(2, 3))
-PhoneTable[1, ] <- c(263, 259, 302)
-PhoneTable[2, ] <- c(94, 98, 51)
-colnames(PhoneTable) <- c("Answer call", 
-                          "Respond to text", 
-                          "Reply to email")
-rownames(PhoneTable) <- c("Low exposure", 
-                          "High exposure")
+```{r BearTreeData}
+BearTable <- array( dim = c(2, 2))
+BearTable[1, ] <- c(6, 69)
+BearTable[2, ] <- c(15, 60)
+colnames(BearTable) <- c("Yes",
+                         "No")
+rownames(BearTable) <- c("Bear faeces",
+                         "Control (water)")
 
 if( knitr::is_latex_output() ) {
-  kable(pad(PhoneTable,
+  kable(pad(BearTable,
             surroundMaths = TRUE,
-            targetLength = 3,
+            targetLength = 2,
             digits = 0),
         format = "latex",
         align = "c",
         escape = FALSE,
         longtable = FALSE,
-        caption = "Mobile-phone behaviour of pedestrians. (`Low exposure' means the behaviour was displayed less than once per week; `High exposure' means the behaviour was displayed one per week or more.) ",
+        caption = "The number of trees with new damage by bears, according to different repellents",
       booktabs = TRUE) %>%
     kable_styling(font_size = 8) %>%
     row_spec(0, bold = TRUE) %>%
-    column_spec(0, bold = TRUE)
+    column_spec(0, bold = TRUE) %>%
+add_header_above( c(" " = 1,
+                    "New damage" = 2),
+                  bold = TRUE,
+                  line = TRUE)
 }
 
 
 if( knitr::is_html_output() ) {
-  kable(pad(PhoneTable,
+  kable(pad(BearTable,
             surroundMaths = TRUE,
-            targetLength = 3,
+            targetLength = 2,
             digits = 0),
         format = "html",
         align = "c",
         longtable = FALSE,
-        caption = "Mobile-phone behaviour of pedestrians. ('Low exposure' means the behaviour was displayed less than once per week; 'High exposure' means the behaviour was displayed one per week or more.) ",
-      booktabs = TRUE)
+        caption = "The number of trees with new damage by bears, according to different repellents",
+      booktabs = TRUE) %>%
+add_header_above( c(" " = 1,
+                    "New damage" = 2),
+                  bold = TRUE,
+                  line = TRUE)
 }
 ```
 
@@ -1512,8 +1827,9 @@ if( knitr::is_html_output() ) {
 ```
 
 
-```{r PetBirdsjamovi, fig.show="hold", fig.cap="jamovi output for the pet-birds data", fig.align="center", out.width="50%"}
-knitr::include_graphics("jamovi/PetBirds/Pets-All.png") 
+```{r PetBirdsjamovi, fig.show="hold", fig.cap="jamovi output for the pet-birds data", fig.align="center", out.width=c('49%',"49%"), fig.show='hold'}
+knitr::include_graphics("jamovi/PetBirds/Pets-Test-Both.png") 
+knitr::include_graphics("jamovi/PetBirds/PetsCI-Both.png") 
 ```
 
 
@@ -1554,11 +1870,166 @@ colnames(B12Data) <- c("B12 deficient",
 
 
 
-```{r B12jamoviOutputHT, fig.show="hold", fig.cap="jamovi output for the B12 data", fig.align="center", out.width="70%"}
-knitr::include_graphics( "jamovi/B12/B12-All.png")
+```{r B12jamoviOutputHT, fig.show="hold", fig.cap="jamovi output for the B12 data", fig.align="center", out.width=c("49%", "49%", fig.hold=TRUE)}
+knitr::include_graphics( "jamovi/B12/B12CI-Both.png")
+knitr::include_graphics( "jamovi/B12/B12Test-Both.png")
 ```
 
 `r if( knitr::is_latex_output() ) "\\captionsetup{font=normalsize}"`
+
+
+
+::: {.exercise #DogsHT}
+[*Dataset*: `XXXXXXXXXXXXX`]
+@naughton2024association studied the difference between dogs kept in the city and on farms.
+One RQ was:
+
+> For Northern Ireland dogs, is there an association between length of dog walks, and their location?
+
+The data are shown in Table\ \@ref(tab:DogWalkTable).
+
+1. Write down the hypotheses.
+1. Determine the $\chi^2$ value and perform a hypothesis to answer the RQ, using the output in Fig.\ \@ref(fig:DogWalksjamovi).
+1. Determine the number of degrees freedom.
+1. Compute the equivalent $z$-score for this $\chi^2$-value.
+1. Write down the conclusion.
+1. Is the test statistically valid?
+:::
+
+```{r DogWalkTable}
+DogTable <- array( dim = c(2, 4))
+DogTable[1, ] <- c(138, 84, 13, 264)
+DogTable[2, ] <- c(84, 102, 33, 243)
+colnames(DogTable) <- c("Under $30$",
+                        "$30$ to under $60$",
+                        "$60$ to under $120$",
+                        "Varies")
+rownames(DogTable) <- c("City",
+                        "Farm")
+
+if( knitr::is_latex_output() ) {
+  kable(pad(DogTable,
+            surroundMaths = TRUE,
+            targetLength = 3,
+            digits = 0),
+        format = "latex",
+        align = "c",
+        escape = FALSE,
+        longtable = FALSE,
+        caption = "The length of walks for dogs, living in the city and farms. (`Varies' means usuually short walks, but occasional longer walks.)",
+      booktabs = TRUE) %>%
+    kable_styling(font_size = 8) %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(0, bold = TRUE) %>%
+add_header_above( c(" " = 1,
+                    "Walk length (in mins)" = 4),
+                  bold = TRUE,
+                  line = TRUE)
+}
+
+
+if( knitr::is_html_output() ) {
+  kable(pad(DogTable,
+            surroundMaths = TRUE,
+            targetLength = 3,
+            digits = 0),
+        format = "html",
+        align = "c",
+        longtable = FALSE,
+        caption = "The length of walks for dogs, living in the city and farms. ('Varies' means usuually short walks, but occasional longer walks.)",
+      booktabs = TRUE) %>%
+add_header_above( c(" " = 1,
+                    "Walk length (in mins)" = 4),
+                  bold = TRUE,
+                  line = TRUE)
+}
+```
+
+
+
+```{r DogWalksjamovi, fig.show="hold", fig.cap="Software output for the dog-walking data", fig.align="center", out.width="55%"}
+knitr::include_graphics("jamovi/DogWalks/DogWalks-All.png")
+```
+
+
+
+
+::: {.exercise #ComplianceHT}
+[*Dataset*: `XXXXXXXXXXXXX`]
+@soud2009isolation studied the compliance of students with an isolation request following a large mumps outbreak in Kansas in 2006.
+One RQ was:
+
+> Is there an association between age group, and compliance with the isolation order?
+
+The data are shown in Table\ \@ref(tab:MumpsTable).
+
+1. Write down the hypotheses.
+1. Compute the proportion of each age group that complied with the isolation request.
+1. Compute the odds of each age group that complied with the isolation request.
+1. Compute the relevant odds ratios, and interpret what these mean.
+1. Determine the $\chi^2$ value and perform a hypothesis to answer the RQ, using the output in Fig.\ \@ref(fig:Mumpsjamovi).
+1. Determine the number of degrees freedom.
+1. Compute the equivalent $z$-score for this $\chi^2$-value.
+1. Write down the conclusion.
+1. Is the test statistically valid?
+:::
+
+```{r MumpsTable}
+MumpsTable <- array( dim = c(3, 2))
+MumpsTable[1, ] <- c(40, 10)
+MumpsTable[2, ] <- c(37, 14)
+MumpsTable[3, ] <- c(22, 9)
+rownames(MumpsTable) <- c("$18$ to $19$",
+                        "$20$ to $21$",
+                        "Older than $22$")
+colnames(MumpsTable) <- c("Yes",
+                        "No")
+
+if( knitr::is_latex_output() ) {
+  kable(pad(MumpsTable,
+            surroundMaths = TRUE,
+            targetLength = 2,
+            digits = 0),
+        format = "latex",
+        align = "c",
+        escape = FALSE,
+        longtable = FALSE,
+        caption = "The  compliance of students by age group",
+      booktabs = TRUE) %>%
+    kable_styling(font_size = 8) %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(0, bold = TRUE) %>%
+add_header_above( c(" " = 1,
+                    "Compliance" = 2),
+                  bold = TRUE,
+                  line = TRUE)
+}
+
+
+if( knitr::is_html_output() ) {
+  kable(pad(DogTable,
+            surroundMaths = TRUE,
+            targetLength = 2,
+            digits = 0),
+        format = "html",
+        align = "c",
+        longtable = FALSE,
+        caption =  "The  compliance of students by age group",
+      booktabs = TRUE) %>%
+add_header_above( c(" " = 1,
+                    "Compliance" = 2),
+                  bold = TRUE,
+                  line = TRUE)
+}
+```
+
+
+
+```{r Mumpsjamovi, fig.cap="Software output for the dog-walking data", fig.align="center", out.width="55%", fig.show='hold'}
+knitr::include_graphics("jamovi/Mumps/Mumps-All.png") 
+```
+
+
 
 
 <!-- QUICK REVIEW ANSWERS -->
@@ -1566,10 +2037,12 @@ knitr::include_graphics( "jamovi/B12/B12-All.png")
 ::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
 **Answers to *Quick Revision* questions:**
 **1.** $10.7105$.
-**2.** $3.28$.
-**3.** Smaller than $0.003$.
-**4.** $0.00107$.
-**5.** Two-tailed.
-**6.** False
+**2.** $1$.
+**3.** $3.28$.
+**4.** Smaller than $0.003$.
+**5.** $0.00107$.
+**6.** Two-tailed.
+**7.** False.
+**8.** True.
 :::
 `r if (knitr::is_html_output()) '-->'`
