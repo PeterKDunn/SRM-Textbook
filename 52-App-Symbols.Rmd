@@ -29,6 +29,10 @@
 
 (ref:SamplingDistributionTwoMeansHT) Ch.\ \@ref(TestTwoMeans)
 
+(ref:SamplingDistributionTwoPropsCI) Ch.\ \@ref(OddsRatiosCI)
+
+(ref:SamplingDistributionTwoPropsHT) Ch.\ \@ref(TestsOddsRatio)
+
 (ref:SamplingDistributionORCI) Ch.\ \@ref(OddsRatiosCI)
 
 (ref:SamplingDistributionORHT) Ch.\ \@ref(TestsOddsRatio)
@@ -39,7 +43,7 @@
 
 
 ```{r ParametersStatistics2}
-ParStat <- array( dim = c(16, 6))
+ParStat <- array( dim = c(18, 6))
 
 colnames(ParStat) <- c("",
                        #"Param.",
@@ -56,6 +60,8 @@ rownames(ParStat) <- c("Proportion",
                        "Mean difference",
                        "Difference between means",
                        "Difference between means",
+                       "Diff. between proportions",
+                       "Diff. between proportions",
                        "Odds ratio",
                        "Odds ratio",
                        "Correlation",
@@ -122,49 +128,64 @@ ParStat[8, ] <- c("Test:",
                  "$\\displaystyle \\sqrt{\\text{s.e.}(\\bar{x}_1) + \\text{s.e.}(\\bar{x}_2)}$", 
                   ifelse( knitr::is_latex_output(), "\\ding{52}", "&#10004;"),
                  "HT: (ref:SamplingDistributionTwoMeansHT)")# ParStat[6, ] <- c("$\\sigma$", 
+
 ParStat[9, ] <- c("CI:",
+#                 "$p_1 - p_2$",
+                 "$\\hat{p}_1 - \\hat{p}_2$", 
+                 "$p_1 - p_2$",
+                 "$\\displaystyle \\sqrt{\\text{s.e.}(\\hat{p}_1) + \\text{s.e.}(\\hat{p}_2)}$", 
+                  ifelse( knitr::is_latex_output(), "\\ding{52}", "&#10004;"),
+                 "CI: (ref:SamplingDistributionTwoPropsCI)")
+ParStat[10, ] <- c("Test:",
+#                  "$p_1 - p_2$", 
+                 "$\\hat{p}_1 - \\hat{p}_2$",
+                 "$p_1 - p_2$",
+                 "$\\displaystyle \\sqrt{\\text{s.e.}(\\hat{p}_1) + \\text{s.e.}(\\hat{p}_2)}$", 
+                  ifelse( knitr::is_latex_output(), "\\ding{52}", "&#10004;"),
+                 "HT: (ref:SamplingDistributionTwoPropsHT)")# ParStat[6, ] <- c("$\\sigma$", 
+ParStat[11, ] <- c("CI:",
                  "Sample OR", 
                  "Pop. OR",
                  "(Not given)",
                   ifelse( knitr::is_latex_output(), "\\ding{55}", "&#10008;"),
                  "CI: (ref:SamplingDistributionORCI)")
-ParStat[10, ] <- c("Test:",
+ParStat[12, ] <- c("Test:",
                  "Sample OR", 
                  "Pop. OR",
                  "(Not given)",
                   ifelse( knitr::is_latex_output(), "\\ding{55}", "&#10008;"),
                  "HT: (ref:SamplingDistributionORHT)")
-ParStat[11, ] <- c("Test:",
+ParStat[13, ] <- c("Test:",
                   "$r$",
                   "$\\rho$",
                   "(Not given)",
                   ifelse( knitr::is_latex_output(), "\\ding{55}", "&#10008;"),
                   " ")
-ParStat[12, ] <- c("CI:",
+ParStat[14, ] <- c("CI:",
                   "$r$",
                   "$\\rho$",
                   "(Not given)",
                   ifelse( knitr::is_latex_output(), "\\ding{55}", "&#10008;"),
                   "HT: (ref:SamplingDistributionCorrelationHT)")
-ParStat[13, ] <- c("Test:",
+ParStat[15, ] <- c("Test:",
                   "$b_1$",
                   "$\\beta_1$",
                   "$\\text{s.e.}(b_1)$ (value from software)",
                   ifelse( knitr::is_latex_output(), "\\ding{52}", "&#10004;"),
                   "CI: (ref:SamplingDistributionRegression)")
-ParStat[14, ] <- c("CI:",
+ParStat[16, ] <- c("CI:",
                   "$b_1$",
                   "$\\beta_1$",
                   "$\\text{s.e.}(b_1)$ (value from software)",
                   ifelse( knitr::is_latex_output(), "\\ding{52}", "&#10004;"),
                   "HT: (ref:SamplingDistributionRegression)")
-ParStat[15, ] <- c("Test:",
+ParStat[17, ] <- c("Test:",
                   "$b_0$",
                   "$\\beta_0$",
                   "$\\text{s.e.}(b_0)$ (value from software)",
                   ifelse( knitr::is_latex_output(), "\\ding{52}", "&#10004;"),
                   "CI: (ref:SamplingDistributionRegression)")
-ParStat[16, ] <- c("CI:",
+ParStat[18, ] <- c("CI:",
                   "$b_0$",
                   "$\\beta_0$",
                   "$\\text{s.e.}(b_0)$ (value from software)",
@@ -337,13 +358,14 @@ This formula assumes:
 \[
    z = \frac{\text{value of variable} - \text{mean of the distribution of the variable}}{\text{standard deviation of the distribution of the variable}}.
 \]
-* $t$-scores are like $z$-scores, except the standard deviation of the distribution involves a sample estimate.
+* $t$-scores are like $z$-scores, except for small sample size.
 * When the 'variable' is a sample estimate, the 'standard deviation of the distribution' is a standard error.
 * The **unstandardizing formula** (Sect.\ \@ref(Unstandardising)): $x = \mu + (z\times \sigma)$.
-
-
-
 * The **interquartile range** (IQR): $Q_3 - Q_1$, where $Q_1$ and $Q_3$ are the first and third quartiles respectively (or, equivalently, the $25$th and $75$th percentiles).
+* The **degrees of freedom** for a two-way table of counts:  
+\[
+   \text{df} = (\text{number of columns of data} - 1) \times (\text{number of rows of data} - 1).
+\]
 * The **regression equation** in the *sample*: $\hat{y} = b_0 + b_1 x$, where $b_0$ is the sample intercept and $b_1$ is the sample slope.
 * The **regression equation** in the *population*: $\hat{y} = \beta_0 + \beta_1 x$, where $\beta_0$ is the intercept and $\beta_1$ is the slope.
 
