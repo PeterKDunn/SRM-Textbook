@@ -255,9 +255,11 @@ sortDataFilesByChapter <- function(dataFiles, chapterNumbers){
   # Initialise the list
   listDataFilesByChapter <- list()
   
-  # Now order, with Exercises at end (and rest alpha?)
+#cat(">>> numberChapters:", numberChapters, "\n")
+
+    # Now order, with Exercises at end (and rest alpha?)
   for (j in 1 : numberChapters ) { # For each chapter j with data used
-    
+#    cat("--------\nj:", j)
     startSort <- startNewChapter[j]
     stopSort <-  startNewChapter[j + 1] - 1 
 
@@ -271,8 +273,38 @@ sortDataFilesByChapter <- function(dataFiles, chapterNumbers){
     #    filesUsedThisChapterRaw <- fileUsedRaw[startSort : stopSort] <- sort(fileUsedRaw[startSort : stopSort])
     
     # Remove duplicates WITHIN CHAPTERS
+    # Often we have [Dataset: Fred] when an exercise is declared, but we also use the data to (e.g.) create a table,
+    # so we *also* have data(Fred).
+    # So, we often have Fred (Exercise) and Fred listed in teh one CHAPTER.
+    #
+    # For these purposes, we can probably assume that if *both* appear, it is a 'duplicate'. 
+    # 
+    # THIS IS NOT FOOLPROOF THOUGH!
+    #
+    # So we need to strip the (Exercise) when looking for duplicates, but KEEP the (Exercise) version 
+    # of the usage: filesUsedThisChapterStripped
     filesUsedThisChapter <- filesUsedThisChapter[ !duplicated(filesUsedThisChapter) ]
-
+    
+    # If data, and exercise
+    for (k in (1:length(filesUsedThisChapter)) ){
+      repeatedFileInExercise <- paste0(filesUsedThisChapter[k],"  (Exercise)") %in% filesUsedThisChapter
+      if (repeatedFileInExercise) {
+        # Then the data file is listed as data(fred) and data(fred)  (Exercise)
+#cat(filesUsedThisChapter[k], "YES!\n")
+        filesUsedThisChapter[k] <- NA # Replace with NA
+#cat(filesUsedThisChapter[k], "YES!\n")
+      }
+    } 
+#cat("vvvvvvvvvvvv\n")
+#print( filesUsedThisChapter)
+#cat("==========\n")
+#print(-which(is.na(filesUsedThisChapter)))
+#cat("^^^^^^^^^^^\n")
+  if ( any(is.na(filesUsedThisChapter)) ){
+filesUsedThisChapter <- filesUsedThisChapter[ -which(is.na(filesUsedThisChapter))] # Now, remove the NAs
+}
+    
+#print(filesUsedThisChapter)
     if (length(filesUsedThisChapter) > 2) {
       fileList <- paste( paste0("\"", 
                                 filesUsedThisChapter,
@@ -292,11 +324,12 @@ sortDataFilesByChapter <- function(dataFiles, chapterNumbers){
                         " <- ",
                         fileList)
     
-    # DO NLT include the solutions chapter (currently, chapter 53):
+    # DO NOT include the solutions chapter (currently, chapter 53):
     if (listName != 53 ){
       eval(parse(text = parseText))
     }
   }
+#cat("---\n")
   return(listDataFilesByChapter)
 }
 
@@ -463,12 +496,12 @@ writeDataFileList <- function(fileNames,
 ### DO THE EXTRACTION ###
 dFiles <- findDataFileMentions() # A list of the *lines* that contains mentions of data files
 dFiles1 <- cleanDataFileCalls(dFiles) # Remove trailing text and comments
-out <- classifyDataMentionsTypes(dFiles1)
+out <- classifyDataMentionsTypes(dFiles1) # Find whether mentioned in the chapter, or in an exercise
 chapNum <- out$chapNumbers
 dFiles2 <- out$fileNames
-dFiles3 <- sortDataFilesByChapter(dFiles2, chapNum)
+dFiles3 <- sortDataFilesByChapter(dFiles2, chapNum) # Create a  list()  with an entry for each chapter, giving a vector of data file names 
 
-writeDataFileList(dFiles3, 
+writeDataFileList(dFiles3, # WRITE
                   splitFiles, 
                   addLinks = is_html_output() )
 ######################################################
