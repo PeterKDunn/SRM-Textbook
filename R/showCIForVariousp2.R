@@ -24,6 +24,14 @@ drawCI <- function(CI, pInCI, locateY, p ){
         expression( atop(Values~of~italic(p)~that~could~produce~hat(italic(p)),
                          "("*This~is~the~CI*")")),
         pos = 1)
+  arrows( x0 = CI[1],
+          x1 = CI[2],
+          y0 = locateY - 0.6,
+          y1 = locateY - 0.6,
+          code = 3,
+          angle = 15,
+          length = 0.1)
+  
   # Tickmarks
   xTick <- seq(0, 1, 
                by = 0.1)
