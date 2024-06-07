@@ -1,10 +1,6 @@
 
-
-
-
-
 ### Draw the CI at the bottom
-### Draw the CI at the bottom
+
 drawCI <- function(CI, pInCI, locateY, p ){
   # CI has two elements: c(0.2, 0.4) for instance.
   heightCI <- 0.8
@@ -20,14 +16,13 @@ drawCI <- function(CI, pInCI, locateY, p ){
          y = c(locateY, locateY),
          lwd = 6)
   text( x = mean(CI),
-        y = locateY,
-        expression( atop(Values~of~italic(p)~that~could~produce~hat(italic(p)),
-                         "("*This~is~the~CI*")")),
+        y = locateY - 0.5,
+        expression( The~CI*":"~values~of~italic(p)~that~could~produce~hat(italic(p))),
         pos = 1)
   arrows( x0 = CI[1],
           x1 = CI[2],
-          y0 = locateY - 0.6,
-          y1 = locateY - 0.6,
+          y0 = locateY - 0.7,
+          y1 = locateY - 0.7,
           code = 3,
           angle = 15,
           length = 0.1)
@@ -170,38 +165,3 @@ drawDistribution <- function(mu,
          y = 0,
          pch = 19)
 }
-
-###########################################
-
-# 
-# for (i in 1:length(pVec)){
-#   pInCI <- ifelse( (pVec[i] > ciLo) & (pVec[i] < ciHi), 
-#                    TRUE, 
-#                    FALSE )
-#   
-#   
-#   siLo <- pVec[i] - 2 * pStdDev
-#   siHi <- pVec[i] + 2 * pStdDev
-#   
-# 
-#   ## Canvas
-#   plot( x = c(0, 1),
-#         y = c(maxY * 2.25, 
-#               -maxY * 2.15),
-#         type = "n",
-#         axes = FALSE,
-#         ylab = "",
-#         xlab = expression(Values~of~hat(italic(p))))
-#   
-#   drawCI( CI = c(ciLo, ciHi),
-#           pInCI,
-#           locateY,
-#           pVec[i])
-#   
-#   drawDistribution(mu = pVec[i], 
-#                    sd = 0.1, 
-#                    pHat = pHat,
-#                    SI = c(siLo, siHi),
-#                    maxY,
-#                    locateY)
-# }
