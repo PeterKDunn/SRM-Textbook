@@ -222,7 +222,7 @@ classifyDataMentionsTypes <- function(dataFiles){
     }
     if (substr(fileUsed[i], 2, 6) == "NHANE") { #faithful data set
       fileUsed[i] <- paste(fileUsed[i],
-                           "(*NHANES* package)" )
+                           "(in **NHANES** package)" )
     }
     
     
