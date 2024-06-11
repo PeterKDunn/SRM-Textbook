@@ -13,6 +13,8 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   # if seed is NA (the default), the items are labelled in the correct order.
   # Otherwise, the seed is used to generate the labels in a random order
   
+  
+  ### LABELS
   Labels.Long <- c(
     "Ask the question",
     "Design the study",
@@ -28,7 +30,7 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
                     "5. Analyse",
                     "6. Report")
   
-  ## TMP
+  ## LOAD THE IMAGES
   imageLocations <- ifelse(upDirectory, 
                            "../icons/SixSteps/",
                            "icons/SixSteps/")
@@ -58,6 +60,8 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
                  ImageAnalyse,
                  ImageReport)
   
+  
+  ### MISC
   if ( !is.na(seed)) {
     set.seed(seed)
     
@@ -74,88 +78,83 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
 
   }
   
+  ### CANVAS PARAMETERS
+  boxHeight <- 2.5 # Ht and Width of the boxes (i.e., the six images)
+  boxWidth <- 2.5  # Make square!
+                   # This is the ENLARGED size.
+  shrinkBoxFactor <- 0.9
   
-  # SETTINGS
-  # How much to enlarge chosen image
-  enlargeFactor <- rep(0.50, 6)
-  if (Flag > 0 ) enlargeFactor[Flag] <- 0.70
+  gapHorizontal <- boxWidth  # Total gap between the edges of adjacent boxes
+  gapVertical <- boxHeight * 1.2
   
-  # How much to enlarge chosen box
-  enlargeBoxFactor <- rep(0.60, 6)
-  if (Flag > 0 ) {
-    enlargeBoxFactor[Flag] <- 0.80
-
-    edgeBottomGap <- 1.1 * max( abs(diff(enlargeBoxFactor)) )
-    edgeTopGap <- 1.1 * max( abs( diff(enlargeBoxFactor)) )
-    edgeGap <- 1.6 * edgeBottomGap
+  gapEdgeX <- 0.02  # gap between edge of images, and end of canvas
+  gapEdgeY <- 0.04  # 
+  
+  gapTextHeight <- 0.2 # the height of the text 
+  gapArrowBoxX <- 0.02 # gap between arrow and box
+  gapArrowBoxY <- 0.02
+  
+  # Plotting limits
+  xLo <- 0
+  xHi <- gapEdgeX + (3 * boxWidth) + (2 * gapHorizontal) + gapEdgeX
+  
+  yLo <- 0
+  yHi <- gapEdgeY + (2 * boxHeight) + (1 * gapVertical) + gapTextHeight + gapEdgeY
     
-  } else {
-    edgeBottomGap <- 0.1 
-    edgeTopGap <- 0.1
-    edgeGap <- 0.5
-    
-  }
-
-  boxGapHorizontal <- 1.75
-  boxGapVertical <- 2.5
-  boxWidth <- 2.5
-  boxHeight <- 2.5
-  
-  
-  arrowToImageGap <- 0.55
-  
-  textHeight <- 1.05
-  smallTextHeight <- 0.1
-  textToImagegap <- 0.6
-  
-  plotWidth  <- (2 * edgeGap) + 
-                (3 * boxWidth ) + 
-                (2 * boxGapHorizontal)
-  plotHeight <- edgeTopGap + 
-                edgeBottomGap + 
-                (2 * boxHeight) + 
-                (2 * smallTextHeight) + 
-                (1 * boxGapVertical)
-  
-  
-  # CANVAS
-  ### SETUP
-  par( mar = c(0, 0, 0,0),
-       oma = c(0, 0, 0, 0) ) 
-  plot(x = 1, 
-       y = 1,
-       xlim = c(0.30, plotWidth + 0.30),
-       ylim = c(3.5, plotHeight - 2.5),
-       xlab = "", 
-       ylab = "", 
-       type = "n",
-       axes = FALSE,
-       asp = 1.5
-       )
-#  shape::emptyplot(xlim = c(-0.30, plotWidth + 0.30),
-#                   ylim = c(-0.1, plotHeight + 0.1),
-#                   mar = c(0, 0, 0,0),
-#                   oma = c(0, 0, 0, 0) )
-                   #fin = c(2.3, 2.0) * 1.5)
-#                   asp = 1) # ELSE  asp=1 or requested
-  
-  pos <- array(NA, dim = c(6, 2)) # One for each of the six steps
-  
   
   # DEFINE box *midpoints*
-  boxX <- c(edgeGap +                          (0.5 * boxWidth),
-            edgeGap + (1 * boxGapHorizontal) + (1.5 * boxWidth),
-            edgeGap + (2 * boxGapHorizontal) + (2.5 * boxWidth),
-            edgeGap + (2 * boxGapHorizontal) + (2.5 * boxWidth),
-            edgeGap + (1 * boxGapHorizontal) + (1.5 * boxWidth),
-            edgeGap +                          (0.5 * boxWidth))
-  boxY <- c( plotHeight - edgeTopGap - (0.5 * boxWidth),
-             plotHeight - edgeTopGap - (0.5 * boxWidth),
-             plotHeight - edgeTopGap - (0.5 * boxWidth),
-             edgeBottomGap + (0.5 * boxWidth),
-             edgeBottomGap + (0.5 * boxWidth),
-             edgeBottomGap + (0.5 * boxWidth))
-box(); axis(side=1); axis(side=2)
+  boxX <- c(gapEdgeX +                        (0.5 * boxWidth),  ## STEP 1
+            gapEdgeX + (1 * gapHorizontal) + (1.5 * boxWidth),
+            gapEdgeX + (2 * gapHorizontal) + (2.5 * boxWidth),
+            gapEdgeX + (2 * gapHorizontal) + (2.5 * boxWidth),
+            gapEdgeX + (1 * gapHorizontal) + (1.5 * boxWidth),
+            gapEdgeX +                        (0.5 * boxWidth) ) ## STEP 6
+  
+  boxY <- c( gapEdgeY + gapVertical + (1.5 * boxHeight),  ## STEP 1
+             gapEdgeY + gapVertical + (1.5 * boxHeight),
+             gapEdgeY + gapVertical + (1.5 * boxHeight),
+             gapEdgeY +               (0.5 * boxHeight),
+             gapEdgeY +               (0.5 * boxHeight),
+             gapEdgeY +               (0.5 * boxHeight) )  ## STEP 6
+
+    
+  #####################################################
+  
+  # SETTINGS
+  
+  # How much to enlarge each image
+  boxShrinkage <- rep(shrinkBoxFactor, 6) # i.e. by default, all boxes are shrunk
+  if (Flag > 0 ) boxShrinkage[Flag] <- 1  # Selected box is unshrunk size
+  
+  
+  ### CANVAS AND BOX (IMAGE) LOCATIONS PARAMETERS
+  pos <- array(NA, dim = c(6, 2)) # One for each of the six steps
+
+
+  # CANVAS
+  ### SETUP
+  par( mar = c(0, 0, 0, 0),
+       oma = c(0, 0, 0, 0) ) 
+
+   plot(x = 1, 
+        y = 1,
+        xlim = c(xLo, xHi),
+        ylim = c(yLo, yHi),
+        asp = 1,
+#asp = (yHi - yLo)/(xHi - xLo),
+        xlab = "", 
+        ylab = "", 
+        type = "n",
+        axes = FALSE)
+
+#grid()
+#cat("x:", xLo, xHi, "\n")
+#cat("y:", yLo, yHi, "\n")
+#box(); axis(side=1); axis(side=2)
+#abline(h = 0:10, col="red")
+
+
+  # Plot each box/image
   for (i in 1:6){
     pos[i, ] <- c( boxX[i],
                    boxY[i] )
@@ -164,78 +163,96 @@ box(); axis(side=1); axis(side=2)
   
   # DRAW ARROWS FIRST, then over plot with images
   if (Arrows) {
-    arrPos <- c(0.5, 0.5, 
-                0.45, # A bit lower, to allow for small text
-                0.5, 0.5) 
-    for (i in 1:5){ # FIVE arrow needed between SIX boxes
-      
-      fromArrow <- pos[i, 1]
-      toArrow   <- pos[i + 1, 1]
-      
-      diagram::straightarrow(from = c( pos[i, 1],
-                                       pos[i, 2] ),
-                             to   = c( pos[i + 1, 1],
-                                       pos[i + 1, 2] ),
-                             arr.pos = arrPos[i] )
-    }
+    arrowStartX <- c(boxX[1] + (boxWidth/2) + gapArrowBoxX,  # BOX 1 to box 2
+                     boxX[2] + (boxWidth/2) + gapArrowBoxX,  # BOX 2 to box 3
+                     boxX[3],                                # BOX 3 to box 4
+                     boxX[4] - (boxWidth/2) - gapArrowBoxX,  # BOX 4 to box 5
+                     boxX[5] - (boxWidth/2) - gapArrowBoxX,  # BOX 5 to box 6
+                     boxX[6])
+    arrowEndX <- c(boxX[2] - (boxWidth/2) - gapArrowBoxX,   # Box 1 to BOX 2
+                   boxX[3] - (boxWidth/2) - gapArrowBoxX,   # Box 2 to BOX 3
+                   boxX[4] ,                                # Box 3 to BOX 4
+                   boxX[5] + (boxWidth/2) + gapArrowBoxX,   # Box 4 to BOX 5
+                   boxX[6] + (boxWidth/2) + gapArrowBoxX,   # Box 5 to BOX 6
+                   boxX[1])
     
-    # Draw arrow from box 6 to 1... in a lighter shade
-    diagram::straightarrow(from = c( pos[6, 1],
-                                     pos[6, 2] ),
-                           to   = c( pos[1, 1],
-                                     pos[1, 2] ),
-                           lcol = "grey",
-                           lty = 3,
-                           arr.pos = 0.55) # A bit higher, to allow for small text
-  }
-  
+    arrowStartY <- c(boxY[1],                                # BOX 1 to Box 2
+                     boxY[2],                                # BOX 2 to Box 3
+                     boxY[3] - (boxHeight/2) - gapArrowBoxY, # BOX 3 to Box 4
+                     boxY[4],                                # BOX 4 to box 5
+                     boxY[5],                                # BOX 5 to box 6
+                     boxY[6] + (boxHeight/2) + gapArrowBoxY) # BOX 6 to Box 1
+    arrowEndY <- c(boxY[2],                                # Box 1 to BOX 2
+                   boxY[3],                                # Box 2 to BOX 3
+                   boxY[4] + (boxWidth/2) + gapArrowBoxY,  # Box 3 to BOX 4
+                   boxY[5],                                # Box 4 to BOX 5
+                   boxY[6],                                # Box 5 to BOX 6
+                   boxY[1] - (boxHeight/2) - gapArrowBoxY) # Box 6 to BOX 1
+
+    for (i in 1:6){ # FIVE SOLID arrow needed between SIX boxes, for first circuit
+      
+      diagram::straightarrow(from = c( arrowStartX[i],
+                                       arrowStartY[i] ),
+                             to   = c( arrowEndX[i],
+                                       arrowEndY[i] ),
+                             # Draw box 6 to box 1 is lighter shade, and dashed
+                             lcol = ifelse(i == 6, "grey", "black"),
+                             lty = ifelse(i == 6, 3, 1),
+                             lwd = 2,
+                             arr.pos = 0.5 ) # Where to place the arrow head
+    }
+    }
+
   
   # COVER WITH WHITE BOXES
   for (i in (1:6)){
-    polygon( x = c(pos[i, 1] - (boxWidth/2 * enlargeBoxFactor[i]),
-                   pos[i, 1] - (boxWidth/2 * enlargeBoxFactor[i]),
-                   pos[i, 1] + (boxWidth/2 * enlargeBoxFactor[i]),
-                   pos[i, 1] + (boxWidth/2 * enlargeBoxFactor[i])),
-             y = c(pos[i, 2] - (boxHeight/2 * enlargeBoxFactor[i]),
-                   pos[i, 2] + (boxHeight/2 * enlargeBoxFactor[i]) + 4 * smallTextHeight,
-                   pos[i, 2] + (boxHeight/2 * enlargeBoxFactor[i]) + 4 * smallTextHeight,
-                   pos[i, 2] - (boxHeight/2 * enlargeBoxFactor[i])),
+    polygon( x = c(boxX[i] - boxWidth/2,
+                   boxX[i] + boxWidth/2,
+                   boxX[i] + boxWidth/2,
+                   boxX[i] - boxWidth/2),
+             y = c(boxY[i] + boxHeight/2,
+                   boxY[i] + boxHeight/2,
+                   boxY[i] - boxHeight/2,
+                   boxY[i] - boxHeight/2),
              border = "white", #ifelse( i == Flag, "black", "white"),
              col = "white")
   }
   
   # DRAW IMAGES
-  Deltax <- boxWidth / 2
-  Deltay <- boxHeight / 2 
-  
   for (i in 1 : 6 ) { #SIX steps}
-    
-    xLo <- pos[i, 1] - (Deltax * enlargeFactor[i] )
-    xHi <- pos[i, 1] + (Deltax * enlargeFactor[i] ) 
-    yLo <- pos[i, 2] - (Deltay * enlargeFactor[i] )
-    yHi <- pos[i, 2] + (Deltay * enlargeFactor[i] )
-    
-    
-    
+
+    imageSizeX <-  c( boxX[i] - boxWidth/2 * ifelse(Flag==i, 1, shrinkBoxFactor),
+                      boxX[i] + boxWidth/2 * ifelse(Flag==i, 1, shrinkBoxFactor))
+    imageSizeY <- c( boxY[i] - boxHeight/2 * ifelse(Flag==i, 1, shrinkBoxFactor),
+                     boxY[i] + boxHeight/2 * ifelse(Flag==i, 1, shrinkBoxFactor))
+                 
     plotfunctions::plot_image(img =  imageList[i],
                               type = "png",
-                              keep.ratio = TRUE,
-                              xrange = c( xLo, xHi),
-                              yrange = c( yLo, yHi),
+                              #keep.ratio = TRUE,
+                              xrange = imageSizeX,
+                              yrange = imageSizeY,
                               bty = ifelse(i == Flag, 
-                                           "o",  # Keep box
+                                             "o",  # Keep box
                                            "n"), # Removes box
                               add = TRUE)
   }
   
   # Show small text for each icon
   for (i in 1:6) {
-    text(y = pos[i, 2] + (boxHeight / 2) * enlargeBoxFactor[i] + smallTextHeight,
-         x = pos[i, 1],
-         labels = Labels.Short[i],
-         col = ifelse(i == Flag, "black", grey(0.3)),
-         cex = ifelse(i == Flag, 1, 0.9) )
-  }
+    if (i %in% (1:3)){ # At the top
+      text(x = boxX[i],
+           y = boxY[i] + boxHeight/2 + gapTextHeight,
+           labels = Labels.Short[i],
+           col = ifelse(i == Flag, "black", grey(0.3)),
+           cex = ifelse(i == Flag, 1.2, 1.1) )
+    } else { # At the bottom
+      text(x = boxX[i],
+           y = boxY[i] - boxHeight/2 - gapTextHeight,
+           labels = Labels.Short[i],
+           col = ifelse(i == Flag, "black", grey(0.3)),
+           cex = ifelse(i == Flag, 1.2, 1.1) )
+    }
+    }
   
   
   # SHOW chosen image text
@@ -247,14 +264,15 @@ box(); axis(side=1); axis(side=2)
     )
     
     # Text in centre of image
-    diagram::textrect( mid = c( plotWidth/2, 
-                                plotHeight/2 ),
-                       radx = (plotWidth /2 ) - (boxWidth / 2) * 1.5,
-                       rady = (textHeight/2) + (1.7 * edgeGap),
+    diagram::textrect( mid = c( boxX[2], 
+                                mean( c(boxY[2],
+                                        boxY[5]) ) ),
+                       radx = boxWidth/2 + gapHorizontal,
+                       rady = gapVertical/2,
                        lab = Text,
                        box.col = gray(0.9),
                        lcol = gray(0.9),
-                       cex = 0.95,
+                       cex = 1.1,
                        shadow.size = 0)
   }
   #box()
