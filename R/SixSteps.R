@@ -119,14 +119,25 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   
   
   # CANVAS
-  par( mar = c(0.05, 0.05, 0.05, 0.05),
-       fin = c(2.3, 2.2) * 1.5)
-  
-  
   ### SETUP
-  shape::emptyplot(xlim = c(-0.30, plotWidth + 0.30),
-                   ylim = c(-0.3, plotHeight + 0.3),
-                   asp = 1) # ELSE  asp=1 or requested
+  par( mar = c(0, 0, 0,0),
+       oma = c(0, 0, 0, 0) ) 
+  plot(x = 1, 
+       y = 1,
+       xlim = c(0.30, plotWidth + 0.30),
+       ylim = c(3.5, plotHeight - 2.5),
+       xlab = "", 
+       ylab = "", 
+       type = "n",
+       axes = FALSE,
+       asp = 1.5
+       )
+#  shape::emptyplot(xlim = c(-0.30, plotWidth + 0.30),
+#                   ylim = c(-0.1, plotHeight + 0.1),
+#                   mar = c(0, 0, 0,0),
+#                   oma = c(0, 0, 0, 0) )
+                   #fin = c(2.3, 2.0) * 1.5)
+#                   asp = 1) # ELSE  asp=1 or requested
   
   pos <- array(NA, dim = c(6, 2)) # One for each of the six steps
   
@@ -144,7 +155,7 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
              edgeBottomGap + (0.5 * boxWidth),
              edgeBottomGap + (0.5 * boxWidth),
              edgeBottomGap + (0.5 * boxWidth))
-
+box(); axis(side=1); axis(side=2)
   for (i in 1:6){
     pos[i, ] <- c( boxX[i],
                    boxY[i] )
