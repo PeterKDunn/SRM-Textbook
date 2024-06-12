@@ -87,20 +87,24 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   gapHorizontal <- boxWidth  # Total gap between the edges of adjacent boxes
   gapVertical <- boxHeight * 1.2
   
-  gapEdgeX <- 0.02  # gap between edge of images, and end of canvas
-  gapEdgeY <- 0.04  # 
+  gapEdgeX <- 0.65  # gap between edge of images, and end of canvas
+  gapEdgeY <- 1  # 
   
-  gapTextHeight <- 0.2 # the height of the text 
+  gapTextHeight <- 0.3 # the height of the text 
   gapArrowBoxX <- 0.02 # gap between arrow and box
   gapArrowBoxY <- 0.02
   
   # Plotting limits
   xLo <- 0
   xHi <- gapEdgeX + (3 * boxWidth) + (2 * gapHorizontal) + gapEdgeX
-  
   yLo <- 0
-  yHi <- gapEdgeY + (2 * boxHeight) + (1 * gapVertical) + gapTextHeight + gapEdgeY
+  yHi <- gapEdgeY + (2 * boxHeight) + (1 * gapVertical) + (2 * gapTextHeight) + gapEdgeY
     
+  aspectRatio <- (yHi - yLo)/(xHi - xLo)
+#cat("AR = ", aspectRatio,"\n")
+#cat("X:", xLo, xHi, "\n")
+#cat("Y:", yLo, yHi, "\n")
+  
   
   # DEFINE box *midpoints*
   boxX <- c(gapEdgeX +                        (0.5 * boxWidth),  ## STEP 1
@@ -116,7 +120,7 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
              gapEdgeY +               (0.5 * boxHeight),
              gapEdgeY +               (0.5 * boxHeight),
              gapEdgeY +               (0.5 * boxHeight) )  ## STEP 6
-
+#  boxX <- boxX * aspectRatio
     
   #####################################################
   
@@ -134,14 +138,14 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   # CANVAS
   ### SETUP
   par( mar = c(0, 0, 0, 0),
+       yaxs = "i",
        oma = c(0, 0, 0, 0) ) 
 
-   plot(x = 1, 
-        y = 1,
+   plot(x = c(xLo, xHi), 
+        y = c(yLo, yHi),
         xlim = c(xLo, xHi),
         ylim = c(yLo, yHi),
-        asp = 1,
-#asp = (yHi - yLo)/(xHi - xLo),
+        #asp = aspectRatio,
         xlab = "", 
         ylab = "", 
         type = "n",
@@ -188,6 +192,8 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
                    boxY[5],                                # Box 4 to BOX 5
                    boxY[6],                                # Box 5 to BOX 6
                    boxY[1] - (boxHeight/2) - gapArrowBoxY) # Box 6 to BOX 1
+    
+
 
     for (i in 1:6){ # FIVE SOLID arrow needed between SIX boxes, for first circuit
       
@@ -206,10 +212,10 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   
   # COVER WITH WHITE BOXES
   for (i in (1:6)){
-    polygon( x = c(boxX[i] - boxWidth/2,
-                   boxX[i] + boxWidth/2,
-                   boxX[i] + boxWidth/2,
-                   boxX[i] - boxWidth/2),
+    polygon( x = c(boxX[i] - boxWidth/2 * aspectRatio,
+                   boxX[i] + boxWidth/2 * aspectRatio,
+                   boxX[i] + boxWidth/2 * aspectRatio,
+                   boxX[i] - boxWidth/2 * aspectRatio),
              y = c(boxY[i] + boxHeight/2,
                    boxY[i] + boxHeight/2,
                    boxY[i] - boxHeight/2,
@@ -221,18 +227,18 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   # DRAW IMAGES
   for (i in 1 : 6 ) { #SIX steps}
 
-    imageSizeX <-  c( boxX[i] - boxWidth/2 * ifelse(Flag==i, 1, shrinkBoxFactor),
-                      boxX[i] + boxWidth/2 * ifelse(Flag==i, 1, shrinkBoxFactor))
-    imageSizeY <- c( boxY[i] - boxHeight/2 * ifelse(Flag==i, 1, shrinkBoxFactor),
+    imageLocationX <-  c( boxX[i] - boxWidth/2 * aspectRatio * ifelse(Flag==i, 1, shrinkBoxFactor),
+                      boxX[i] + boxWidth/2 * aspectRatio * ifelse(Flag==i, 1, shrinkBoxFactor))
+    imageLocationY <- c( boxY[i] - boxHeight/2 * ifelse(Flag==i, 1, shrinkBoxFactor),
                      boxY[i] + boxHeight/2 * ifelse(Flag==i, 1, shrinkBoxFactor))
                  
     plotfunctions::plot_image(img =  imageList[i],
                               type = "png",
                               #keep.ratio = TRUE,
-                              xrange = imageSizeX,
-                              yrange = imageSizeY,
+                              xrange = imageLocationX,
+                              yrange = imageLocationY,
                               bty = ifelse(i == Flag, 
-                                             "o",  # Keep box
+                                           "o",  # Keep box
                                            "n"), # Removes box
                               add = TRUE)
   }
