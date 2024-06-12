@@ -10,7 +10,7 @@ showCorrelationalStudyDesign <- function(intervention = FALSE,
   
   
   ### CANVAS
-  par( mar = c(0.015, 0.015, 0.015, 0.015))
+  par( mar = c(0, 0, 0, 0))
   useDefaultCanvas <- TRUE
   xLimLo <- 0
   xLimHi <- 1
