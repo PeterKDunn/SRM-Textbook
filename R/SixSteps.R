@@ -82,7 +82,7 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   boxHeight <- 2.5 # Ht and Width of the boxes (i.e., the six images)
   boxWidth <- 2.5  # Make square!
                    # This is the ENLARGED size.
-  shrinkBoxFactor <- 0.9
+  shrinkBoxFactor <- 0.8
   
   gapHorizontal <- boxWidth  # Total gap between the edges of adjacent boxes
   gapVertical <- boxHeight * 1.2
@@ -250,13 +250,13 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
            y = boxY[i] + boxHeight/2 + gapTextHeight,
            labels = Labels.Short[i],
            col = ifelse(i == Flag, "black", grey(0.3)),
-           cex = ifelse(i == Flag, 1.2, 1.1) )
+           cex = ifelse(i == Flag, 1.2, 1.0) )
     } else { # At the bottom
       text(x = boxX[i],
            y = boxY[i] - boxHeight/2 - gapTextHeight,
            labels = Labels.Short[i],
            col = ifelse(i == Flag, "black", grey(0.3)),
-           cex = ifelse(i == Flag, 1.2, 1.1) )
+           cex = ifelse(i == Flag, 1.2, 1.0) )
     }
     }
   
