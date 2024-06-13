@@ -180,7 +180,7 @@ showYInfluences <- function (showY = TRUE,
          "Response  variable")
     text(x = pos[1, 1],
          y = pos[1, 2] - 0.25,
-         "Total amount of variation\ncomes from different sources")
+         "Total amount of variation in the reponse variable\ncomes from different sources")
     arrows(x0 = 0.5 - responseWidth/2,
            x1 = 0.5 + responseWidth/2,
            y0 = pos[1, 2] - 0.15,

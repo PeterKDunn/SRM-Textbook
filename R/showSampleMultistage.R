@@ -4,7 +4,7 @@ showSampleMultistage <- function(populationSize = 21 * 21,
                                  proportionA = 2/3, # proportion females in the SAMPLE
                                  static = TRUE, 
                                  plotDark = "blue",
-                                 main = "Multistage sampling",
+                                 main = "Multi-stage sampling",
                                  seed = 9182391){ 
   
   set.seed(seed)
