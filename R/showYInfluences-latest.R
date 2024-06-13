@@ -4,15 +4,15 @@ showYInfluences <- function (showY = TRUE,
                              showChance = TRUE,
                              showExtraneous = TRUE,
                              showConfounding = FALSE,
-                             partition = NA,  # PARTITION something like c(3, 5, 2); i.e., *relative* widths: Chance, Extraneous, Explanatory
+                             partition = NA,  # PARTITION something like c(3, 5, 2); i.e., *relative* widths
                              showLurking = FALSE){
   
   leftEdge <- 0
   lowerEdge <- 0.15
   
   boxHeight <- 0.16
-  boxWidth <- 0.215
-  responseWidth <- 0.25
+  boxWidth <- 0.225
+  responseWidth <- 0.30
   
   if (showConfounding | showLurking ){
     # Make some changes in these cases, as these are placed two beside each other
@@ -56,23 +56,11 @@ showYInfluences <- function (showY = TRUE,
     showY <- TRUE
   }
   
-  # Turn  partition  into actual plotting widths
-  if ( !all(is.na( partition) ) ){
-
-    partition <- responseWidth * c(0, cumsum(partition) / sum(partition) )
-    partition <- (1 - responseWidth)/2 + partition 
-    # This is the location of partition: 
-    # - location left edge of "Response" box
-    # - location of [partitions]
-    # location of right edge of "Response" box
-    
-  }
-  ChanceWidth <- diff(partition)[1]
-  ExtraneousWidth <- diff(partition)[2]
-  ExplanatoryWidth <- diff(partition)[3]
-
   
-  # Set up locations
+  if ( !all(is.na( partition) ) ){
+    partition <- responseWidth * c(0, cumsum(partition) / sum(partition) )
+    partition <- (1 - responseWidth)/2 + partition
+  }
   pos <- array(NA, 
                dim = c(5, 2))
   pos[1, ] <- c(0.50, 0.5)   # Response
@@ -88,22 +76,11 @@ showYInfluences <- function (showY = TRUE,
                   lwd = 2)
   }
   if ( !showBasic ) {
-    if ( !all(is.na( partition) ) ) {
-      # Off-center ,
-      straightarrow(from = c( mean( partition[2:3]),
-                              pos[3, 2]), # Extraneous 
-                    to = c( mean( partition[2:3]),
-                            pos[1, 2]),   # Response
-                    lwd = ifelse( showConfounding, 2 , 2),
-                    lcol = ifelse( showConfounding, "black", "grey" ),
-                    lty = ifelse( showLurking, 2, 1) )
-    } else {
-      straightarrow(from = pos[3, ], # Extraneous 
-                    to = pos[1, ],   # Response
-                    lwd = ifelse( showConfounding, 2 , 2),
-                    lcol = ifelse( showConfounding, "black", "grey" ),
-                    lty = ifelse( showLurking, 2, 1) )
-    }
+    straightarrow(from = pos[3, ], # Extraneous 
+                  to = pos[1, ],   # Response
+                  lwd = ifelse( showConfounding, 2 , 2),
+                  lcol = ifelse( showConfounding, "black", "grey" ),
+                  lty = ifelse( showLurking, 2, 1) )
   }
   
   arrowExplanatoryToResponseColour <- "black"
@@ -145,38 +122,16 @@ showYInfluences <- function (showY = TRUE,
                   lwd = 2,
                   lcol = ifelse( showConfounding, "black", "grey" ),
                   lty = ifelse( showLurking, 2, 1) )
-    textrect( pos[3, ], 
-              lab = "", 
-              radx = responseWidth/2,
-              rady = boxHeight/2,
-              shadow.size = 0,
-              lcol = "white",
-              box.col = "white",
-              col = ifelse(showLurking, grey(0.4), "black"))
   }
-
-  # Show Explanatory
-  textrect( pos[4, ], , 
-            lab = "", 
-            radx = responseWidth/2, 
-            rady = boxHeight/2, 
-            shadow.size = 0,
-            box.col = "white",
-            lcol = "grey")
-  textrect( pos[4, ] + c(responseWidth/2 - ExplanatoryWidth/2, 0), 
-            lab = "", 
-            radx = ExplanatoryWidth/2, 
+  
+  textrect( pos[4,], 
+            lab = "Explanatory", 
+            radx = boxWidth/2, 
             rady = boxHeight/2, 
             shadow.size = 0,
             box.col = ExplanatoryColour,
             lcol = ExplanatoryColour)
-  text(x = pos[4, 1],
-       y = pos[4, 2],
-       "Explanatory")
-
-  # Show Response  
   if ( !all(is.na( partition) ) ) {
-    # Partition the response
     if (showChance) {
     polygon( x = c( partition[1] ,
                     partition[1] ,
@@ -243,66 +198,28 @@ showYInfluences <- function (showY = TRUE,
               lcol = ResponseColour)
   }
          
-  # Show Chance
   if (!showBasic) {
     if (showChance) {
-      textrect( pos[2, ], 
-                lab = "",
-                radx = responseWidth/2,
-                rady = boxHeight/2,
-                shadow.size = 0,
-                lcol = "grey",
-                box.col = "white" )
-      textrect( pos[2, ] - c(responseWidth/2 - ChanceWidth/2, 0), 
-                lab = "",
-                radx = ChanceWidth/2,
+      textrect( pos[2,], 
+                lab = "Chance",
+                radx = boxWidth/2,
                 rady = boxHeight/2,
                 shadow.size = 0,
                 lcol = ChanceColour,
                 box.col = ChanceColour )
-      text(x = pos[2, 1],
-           y = pos[2, 2],
-           "Chance")    }
+    }
     
-    # Show Extraneous: Might be off-center, so as to align with "Extraneous" partition in the Response
     ExtraneousText <- "Extraneous"
     if (showConfounding ) ExtraneousText <- "Confounding"
     if (showLurking ) ExtraneousText <- "Lurking"
     
-    if ( !all(is.na( partition) ) ) {
-      # Off-center 
-      textrect( pos[3, ], 
-                lab = "", 
-                radx = responseWidth/2,
-                rady = boxHeight/2,
-                shadow.size = 0,
-                lcol = "grey",
-                box.col = "white",
-                col = ifelse(showLurking, grey(0.4), "black"))
-      textrect( c( mean( partition[2:3] ),
-                   pos[3, 2]),
-                lab = , 
-                radx = ExtraneousWidth/2,
-                rady = boxHeight/2,
-                shadow.size = 0,
-                lcol = ExtraneousColour,
-                box.col = ExtraneousColour,
-                col = ifelse(showLurking, grey(0.4), "black"))
-      text(x = pos[3, 1],
-           y = pos[3, 2],
-           ExtraneousText)
-    } else {
-      # Centre
-    textrect( pos[3, ], 
+    textrect( pos[3,], 
               lab = ExtraneousText, 
-              radx = ExtraneousWidth/2,
+              radx = boxWidth/2,
               rady = boxHeight/2,
               shadow.size = 0,
               lcol = ExtraneousColour,
               box.col = ExtraneousColour,
               col = ifelse(showLurking, grey(0.4), "black"))
-    }
   }
-  
-  #abline(v = partition)
 }
