@@ -66,11 +66,11 @@ showExtraneousTypes <- function (){
   
   text(x = confoundingX[1] + 0.25,
        y = mean( c(lurkingY[1], confoundingY[1]) ),
-       lab = expression(Also~associated~with~explanatory) )
+       lab = expression(Extraneous~also~associated~with~explanatory) )
   
   text(x = mean(lurkingX),
        y = mean(lurkingY),
-       lab = expression(Unrecorded) )
+       lab = expression(Unrecorded~confounders) )
 
   if ( FALSE){
   # Text
