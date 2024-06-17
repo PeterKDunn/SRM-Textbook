@@ -1,0 +1,1010 @@
+# More about tables and graphs {#SummariseComments}
+
+
+
+<!-- Introductions; easier to separate by format -->
+```{r, child = if (knitr::is_html_output()) {'./introductions/17-SummarisingData-HTML.Rmd'} else {'./introductions/17-SummarisingData-LaTeX.Rmd'}}
+```
+
+
+
+## Introduction {#MoreTablesGraphsIntro}
+
+A summary of the data is important for understanding the data, and for planning the direction of the analysis.
+Always remember:
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The purpose of a graph and a table is to display the information in the clearest, simplest possible way, to facilitate understanding the message(s) in the data.
+:::
+
+
+## Preparing graphs {#GraphsConstructing}
+\index{Graphs!preparing}
+
+Usually a computer is used for constructing graphs.
+Using a computer makes it easy to try different graphs, and to change features of graphs.
+
+Helping readers to understand the data is the goal of producing a graph.
+You should be able to sketch graphs by hand, but *usually software is used to produce graphs* (e.g., jamovi).
+When creating graphs, ensure that you:
+
+* *do* make graphs clear and well-labelled
+* *do* add titles and axis labels.
+* *do* add units of measurement where necessary.
+* *do* add informative captions *below* the figure.
+* *do* add units of measurement and axis labels where appropriate.
+* *do* make sure text and details are easy to read.
+* *do* ensure the axis scales are appropriate.
+* *do* add any necessary explanations.
+* *do* make it easy for the reader to be see how the data answer the RQ (for example, to easily make the comparison of greatest interest).
+* *do not* add artificial third dimensions, or other 'chart junk' [@su2008s].
+* *do not* add optical illusions, such as an artificial third dimension.
+* *do not* use distracting colours and fonts; only use different colours and fonts if necessary, and explain that purpose if it is not clear. 
+* *do not* make errors.
+
+
+Two specific optical illusions to avoid are given in the examples that follow.
+
+
+::: {.example #VerticalTruncation name="Truncating bar charts"}
+One common optical illusion occurs when the frequency (or percentage) axis on a bar chart (or dot chart, or histogram) does not start at zero.
+For example, consider data recording the number of lung cancer cases in Fredericia in various age groups.
+
+`r if (knitr::is_latex_output()) {
+'Figure\\ \\@ref(fig:BarchartTruncated1) (left panel) shows the original bar chart with the count (vertical) axis starting at zero; the counts in each age group look similar. In contrast, if the vertical axis starts at $9.75$, the counts look very different (Fig.\\ \\@ref(fig:BarchartTruncated1), right panel) for two age categories, suggesting large difference between the number of lung cancer cases.'
+} else {
+'The animation below shows a bar chart with the count (vertical axis) starting at zero (when the counts in each age group look similar), and then gradually changing where the vertical axis starts... so that the final bar chart make the number of cases in each age groups look very different.'
+}`
+The graph is visually misleading when the graph does not start at a count of zero.
+:::
+
+
+
+```{r animation.hook='gifski', interval=0.5, dev=if (is_latex_output()){"pdf"}else{"png"}}
+data(DanishLC)
+
+ylim.lower.vec <- c( rep(0, 10), 
+                     rep(5, 10),
+                     rep(7, 10),
+                     rep(8.5, 10),
+                     rep(9.75, 10) )
+#                     seq(0, 9.75, by = 0.25) )
+ylim.lower.vec <- c( ylim.lower.vec, 
+                     rep( max(ylim.lower.vec), 10))
+
+draw.bar <- function( ylim.lower) {
+  egdata <- subset( DanishLC, 
+                    City == "Fredericia")
+  
+  upperLimitYAxis <- 11 + (11 - ylim.lower) * 0.05 # Try to keep the gap between top bar and graph edge constant
+  out <- barplot( egdata$Cases, 
+                  las = 1,
+                  col = plot.colour,
+                  xlab = "Age groups",
+                  ylab = "Number of cases",
+                  main = paste("Number of lung cancer cases in Fredericia\n",
+                               ifelse(ylim.lower == 0,
+                                      "(Vertical axis startingm at zero)", 
+                                      paste0("(Vertical axis truncated at ", ylim.lower,")") 
+                               )
+                  ),
+                  xpd = FALSE, # BARS **DON'T** GO outside plotting region
+                  ylim = c( ylim.lower, upperLimitYAxis),
+                  axes = FALSE)
+  
+  # ADD WHITE DOT to ensure many plots are created...
+  for (i in (1:10)){
+    points(2 + (i / 10), 
+           mean( upperLimitYAxis, 11),
+           pch = 19,
+           cex = 0.2,
+           col = "white")
+  }
+  axis(side = 1, 
+       at = out[, 1], 
+       labels = egdata$Age, 
+       las = 2)
+  axis(side = 2, 
+       at = seq( floor(ylim.lower), 12, by = 1), 
+       las = 1)
+  box()
+}
+
+if (knitr::is_html_output()){
+  for (i in 1:length(ylim.lower.vec) ){
+    ylim.lower <- ylim.lower.vec[i]
+    draw.bar( ylim.lower)
+  }
+}
+```
+
+
+
+```{r BarchartTruncated1, fig.align="center", fig.width=10, fig.height=4, out.width='95%', fig.cap="The same bar chart, without truncating the vertical axis (left) and truncating the vertical axis (right)" }
+if (knitr::is_latex_output()){
+  len.ylv <- length(ylim.lower.vec)
+  par( mfrow = c(1, 2))
+  
+  draw.bar( ylim.lower.vec[1] )
+  draw.bar( 9 )
+}
+```
+
+
+Graphs should focus on clear communication, not trying to appear clever or fancy. 
+One way this happens is to use an unnecessary third dimension.
+This is poor: such graphs can be misleading and hard to read [@siegrist1996use].
+
+
+::: {.example #Bar2D3D name="Two- and three-dimensional plots"}
+In the NHANES study [@data:NHANES3:Data], the age and sex of each participant were recorded.
+Using Fig.\ \@ref(fig:Bar3D2D) (left panel), can you easily determine if more females or more males are in each age group?
+
+The artificial third dimension makes determining the heights of the bars hard.
+In contrast, a $2$-D graph (a side-by-side bar graph; Fig.\ \@ref(fig:Bar3D2D), right panel) makes it clear whether each age group has more females or more males.
+:::
+
+
+```{r Bar3D2D, out.width='100%', fig.width=9, fig.height=4.25, fig.align="center", fig.cap="Two plots of the NHANES participants, divided by age group and sex. Left: A three-dimensional bar chart. Right: a side-by-side bar chart"}
+data(NHANES) # NHANES package
+AgeD <- NHANES$AgeDecade
+AgeD.levels <- levels(NHANES$AgeDecade)
+num.levels <- length(AgeD.levels)
+
+levels(AgeD) <- c( AgeD.levels[1:(num.levels - 2)],
+                   rep(" 60+", 2))
+cols <- viridis(9)[3:8]
+
+AgeD.Gender <- xtabs( ~ AgeD + NHANES$Gender)
+
+TwoDData <- data.frame(
+  Counts = c(
+    AgeD.Gender[, 1],  
+    AgeD.Gender[, 2]),
+  Gender = c( rep("F", 7), 
+              rep("M", 7)),
+  Age = levels(AgeD)
+  
+)
+TwoDData <- data.frame(
+  Counts = c(
+    AgeD.Gender[, 1],  
+    AgeD.Gender[, 2]),
+  Gender = c( rep("F", 7), 
+              rep("M", 7)),
+  Age = levels(AgeD)
+  
+)
+TwoDData.mat <- array( dim = c(2, 7))
+TwoDData.mat[1, ] <- TwoDData$Counts[1:7]
+TwoDData.mat[2, ] <- TwoDData$Counts[8:14]
+rownames(TwoDData.mat) <- c("Female", "Male")
+colnames(TwoDData.mat) <- unique(TwoDData$Age)
+
+col.mat <- TwoDData.mat
+col.mat[1, ] <- rep(1, 7)
+col.mat[2, ] <- rep(2, 7)
+
+cols <- c(ResponseColour, DesignColour)
+
+#par( mfrow = c(1, 2))
+layout( matrix(1:2,
+               nrow = 1),
+        widths = c(1.4, 1))
+
+pmat <- plot3D::hist3D(z = TwoDData.mat, 
+                       x = c(0, 1),
+                       y = 1:7,
+                       col = cols,
+                       colvar = col.mat,
+                       border = "black",
+                       colkey = FALSE,
+                       facets = TRUE,
+                       xlab = "Sex",
+                       ylab = "Age group",
+                       zlab = "Number",
+                       #main = "Participants by group",
+                       space = 0.4,
+                       axes = FALSE,
+                       ticktype = "detailed",
+                       zlim = c(0, 900),
+                       ylim = c(0.5, 7.5),
+                       xlim = c(-0.5, 1.5),
+                       expand = 1,
+                       d = 25,
+                       mar = c(2, 2, 0, 0.5))
+
+
+# Set vars
+x.axis <- 0:1
+min.x <- -0.5
+max.x <- 1.5
+y.axis <- 1:7
+min.y <- 0.5
+max.y <- 7.5
+z.axis <- seq(0, 900, 
+              by = 100)
+min.z <- 0
+max.z <- 900
+
+
+# LINES
+lines(trans3d(x = x.axis, 
+              y = min.y, 
+              z = min.z, 
+              pmat) , 
+      col = "black")
+lines(trans3d(x = max.x, 
+              y = y.axis, 
+              z = min.z, 
+              pmat) , 
+      col = "black")
+lines(trans3d(x = min.x, 
+              y = min.y, 
+              z = z.axis, 
+              pmat) , 
+      col = "black")
+
+
+
+# TICKS
+### See: http://entrenchant.blogspot.com/2014_03_01_archive.html
+tick.start <- trans3d(x = x.axis, 
+                      y = min.y, 
+                      z = min.z, 
+                      pmat)
+tick.end <- trans3d(x = x.axis, 
+                    y = (min.y - 0.25), 
+                    z = min.z, 
+                    pmat)
+segments(x0 = tick.start$x, 
+         y0 = tick.start$y, 
+         x1 = tick.end$x, 
+         y1 = tick.end$y)
+
+tick.start <- trans3d(x = max.x,
+                      y = y.axis, 
+                      z = min.z, 
+                      pmat)
+tick.end <- trans3d(x = max.x + 0.20, 
+                    y = y.axis, 
+                    z = min.z, 
+                    pmat)
+segments(x0 = tick.start$x, 
+         y0 = tick.start$y, 
+         x1 = tick.end$x, 
+         y1 = tick.end$y)
+
+tick.start <- trans3d(x = min.x, 
+                      y = min.y, 
+                      z = z.axis, 
+                      pmat)
+tick.end <- trans3d(x = min.x, 
+                    y = (min.y - 0.20), 
+                    z = z.axis, 
+                    pmat)
+segments(x0 = tick.start$x, 
+         y0 = tick.start$y, 
+         x1 = tick.end$x, 
+         y1 = tick.end$y)
+
+
+
+# LABELS
+### See: http://entrenchant.blogspot.com/2014_03_01_archive.html
+labels <- c("F", 
+            "M")
+label.pos <- trans3d(x = x.axis, 
+                     y = (min.y - 0.95),
+                     z = min.z, 
+                     pmat)
+text(x = label.pos$x, 
+     y = label.pos$y, 
+     labels = labels, 
+     adj = c(0, NA), 
+     #srt = 270, 
+     cex = 0.65)
+
+
+labels <- levels(factor(TwoDData$Age))
+label.pos <- trans3d(x = (max.x + 0.25), 
+                     y = y.axis,
+                     z = min.z, 
+                     pmat)
+text(x = label.pos$x, 
+     y = label.pos$y, 
+     labels = labels, 
+     adj = c(0, NA), 
+     srt = 0,
+     cex = 0.65)
+
+labels <- as.character(z.axis)
+label.pos <- trans3d(x = min.x, 
+                     y = (min.y - 0.5), 
+                     z = z.axis, 
+                     pmat)
+text(x = label.pos$x, 
+     y = label.pos$y, 
+     labels = labels, 
+     adj = c(1, NA), 
+     cex = 0.65)
+
+
+### AXIS NAMES
+label.pos <- trans3d(x = mean(x.axis), 
+                     y = (min.y - 1.25),
+                     z = min.z, 
+                     pmat)
+text(x = label.pos$x, 
+     y = label.pos$y, 
+     labels = "Sex",
+     cex = 0.85)
+
+label.pos <- trans3d(x = (max.x + 0.80), 
+                     y = 4.5,
+                     z = min.z, 
+                     pmat)
+text(x = label.pos$x, 
+     y = label.pos$y, 
+     labels = "Age group", 
+     cex = 0.85,
+     srt = 42)
+
+label.pos <- trans3d(x = min.x - 0.9, 
+                     y = (min.y + 0.5), 
+                     z = 250, 
+                     pmat)
+text(x = label.pos$x,
+     y = label.pos$y, 
+     labels = "Number", 
+     srt = 90,
+     cex = 0.85)
+
+title("Participants by group",
+      cex.main = 1.2)
+
+######################################################################################################
+
+# Restore defaults
+par( mar = c(5, 4, 4, 2) + 0.1 )
+
+locatn <- barplot(t( AgeD.Gender ), 
+                  beside = TRUE,
+                  legend = FALSE, 
+                  las = 2, 
+                  cex.names = 0.8,
+                  ylim = c(0, 920),
+                  args.legend = list(x = "bottom", 
+                                     bg = "white", 
+                                     cex = 0.75), 
+                  ylab = "Number",
+                  xlab = "Age group",
+                  main = "Participants by group",
+                  col = cols)
+#text(locatn[1, 4], 700, "F")
+#text(locatn[2, 4], 700, "M")
+legend("top", 
+       legend = c("Females                 ", 
+                  "Males"), 
+       #levels(NHANES$Gender),
+       bty = "n", 
+       xpd = TRUE, 
+       horiz = TRUE, 
+       cex = 0.9, # For the *text* in the legend 
+       fill = cols )
+
+```
+
+
+<iframe src="https://learningapps.org/watch?v=pgn3q7ptv22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
+
+
+::: {.example #PieSmallCounts name="Pie charts with small counts"}
+@data:Solomon2002:Ginko studied the use of ginko for memory enhancement.
+Caregivers blinded\index{Blinding} to the treatment (ginko or placebo)\index{Placebo} reported the impact on subjects' memory.
+The bar chart (Fig.\ \@ref(fig:PieSmallCounts), right panel), for subjects on the placebo, shows that four of the available categories had zero responses, and one had a very small number of responses (two).
+The pie chart (left) make the small category difficult to see, and the categories with zero counts impossible to see.
+:::
+
+```{r PieSmallCounts, fig.width=8.5, fig.height=4, out.width="100%", fig.align="center", fig.cap="Data with zero and small counts are difficult to see in a pie chart (left panel), but easy in a bar chart (right) and dot chart."}
+Responses <- c(0, 2, 31, 77, 0, 0, 0)
+Response.Names <- c("Very much improved",
+                         "Much improved",
+                         "Minimally improved",
+                         "No change",
+                         "Minimally worse",
+                         "Much worse",
+                         "Very much worse")
+
+par( mfrow = c(1, 2) )
+nf <- layout(
+  matrix(c(1,2), 
+         ncol = 2, 
+         byrow = TRUE), 
+  widths = c(3 , 1.5), 
+)
+
+Response.Names.Pie <- c("",
+                        "Much\nimproved",
+                        "Minimally\nimproved",
+                        "No change",
+                        "",
+                        "",
+                        "")
+Response.Names <- c("Very much improved",
+                         "Much improved",
+                         "Minimally improved",
+                         "No change",
+                         "Minimally worse",
+                         "Much worse",
+                         "Very much worse")
+
+
+###
+
+par( mar = c(1, 1, 3, 1))
+pie(Responses,
+    labels = Response.Names.Pie,
+    init.angle = 100,
+    radius = 0.4,
+    main = "Pie chart of responses",
+    col = viridis::viridis(7))
+
+
+###
+
+par( mar = c(10, 4, 2, 1))
+
+barplot(Responses,
+        names.arg = Response.Names,
+    col = viridis::viridis(7),
+    ylim = c(0, 80),
+    main = "Bar chart of responses",
+    ylab = "Number",
+    las = 2)
+```
+
+## Preparing tables
+\index{Tables!preparing}
+
+A computer is helpful for constructing tables.
+Using a computer also makes it easy to try different orientations or layouts.
+
+As with graphs, the purpose of tables is to help readers understand the data.
+When creating numerical summary tables, ensure that you:
+
+* *do* make table clear and well-labelled.
+* *do* use clear row and column labels (as necessary).
+* *do* add units of measurement where necessary.
+* *do* add informative captions *above* the table.
+* *do* add units of measurement and value labels where appropriate.
+* *do* make sure text and details are easy to read.
+* *do* round numbers appropriately (don't necessarily use all significant figures provided by software).
+* *do* align numbers in the table by decimal point if possible, for easier reading and comparing.
+* *do* construct the table to allow readers to easily make the important comparisons, as far as possible (space restriction may take precedence, for example).
+* *do not* use distracting colours and fonts; only use different colours and fonts if necessary, and explain that purpose if it is not clear. 
+* *do not* use vertical lines (in general), and use *very few* horizontal lines.
+  Horizontal lines can be used to group columns (for example, see Table\ \@ref(tab:WaterAccessSummaryCommentsTable)).
+
+
+## Example: water access {#WaterAcessSummary}
+
+@lopez2022farmers recorded data about access to water in three rural communities in Cameroon (see Sects. \@ref(WaterAccessQual) and\ \@ref(WaterAccessQuant)).
+One purposes of the study was to determine contributors to the incidence of diarrhoea in young children ($85$ households had children under\ $5$).
+Relationships between the incidence of diarrhoea and some other variables appear in Figs.\ \@ref(fig:WaterAccessQualCompare) and\ \@ref(fig:WaterAccessCompareQuantFigs).
+A summary table of information can also be constructed (Table\ \@ref(tab:WaterAccessSummaryCommentsTable)).
+
+In this table, note that:
+
+* quantitative and qualitative variables are summarised differently but appropriately.
+* units of measurements are given where appropriate (i.e., only for age).
+* numbers in columns are aligned for easier reading and comparing.
+
+
+```{r WaterAccessSummaryCommentsTable}
+data(WaterAccess)
+
+WAKids <- subset(WaterAccess,
+                 HouseholdUnder5s > 0)
+
+WAkidsTable <- array(dim = c(3, 6))
+
+colnames(WAkidsTable) <- c("$n$",
+                           "Summary",
+                           "$n$",
+                           "Summary",
+                           "$n$",
+                           "Summary")
+
+quantStuff <- function(x, digits = c(1, 1)){
+  c( pad(realLength(x), 
+         digits = 0,
+         surroundMaths = TRUE,
+         targetLength = 2), 
+     paste( pad( median(x, na.rm = TRUE),
+                 surroundMaths = TRUE,
+                 targetLength = 4,
+                 digits = digits[1]),
+            "\\ $(",
+            pad( IQR(x, na.rm = TRUE), 
+                 surroundMaths = FALSE,
+                 targetLength = 4, 
+                 digits = digits[2]),
+            ")$"),
+     #
+     pad(realLength(x[WAKids$Diarrhea == "N"]),
+         digits = 0,
+         surroundMaths = TRUE,
+         targetLength = 2),
+     paste( pad( median(x[WAKids$Diarrhea == "N"], na.rm = TRUE), 
+                 surroundMaths = TRUE,
+                 digits = digits[1],
+                 targetLength = 4),
+            "\\ $(",
+            pad( IQR(x[WAKids$Diarrhea == "N"], na.rm = TRUE), 
+                 surroundMaths = FALSE,
+                 targetLength = 4,
+                 digits = digits[2]),
+            ")$"),
+     #
+     pad( realLength(x[WAKids$Diarrhea == "Y"]), 
+          surroundMaths = TRUE,
+          digits = 0,
+          targetLength = 2),
+     paste( pad( median(x[WAKids$Diarrhea == "Y"], na.rm = TRUE), 
+                 surroundMaths = TRUE,
+                 digits = digits[1],
+                 targetLength = 4),
+            "\\ $(",
+            pad( IQR(x[WAKids$Diarrhea == "Y"], na.rm = TRUE), 
+                 surroundMaths = FALSE,
+                 digits = digits[2],
+                 targetLength = 4),
+            ")$")
+  )
+}
+
+WAkidsTable[1, ]<- quantStuff( WAKids$Age)
+WAkidsTable[2, ]<- quantStuff( WAKids$HouseholdPeople)
+WAkidsTable[3, ]<- quantStuff( WAKids$HouseholdUnder5s)
+
+######
+
+qualStuff <- function(x){
+  if ( !is.factor(x) ) x <- factor(x)
+  numLevels <- nlevels( x )
+  
+  temp <- array( dim = c(numLevels, 6))
+  
+  WAtab <- xtabs( ~ x + WAKids$Diarrhea)
+  
+  temp[1:numLevels, 1] <- pad(rowSums(WAtab), 
+                              digits = 0,
+                              targetLength = 2, 
+                              surroundMaths = TRUE)
+  tabx <- table(x)
+  temp[1:numLevels, 2] <- paste0(pad( round(tabx/sum(tabx) * 100, 1), 
+                                      digits = 1,
+                                      targetLength = 4, 
+                                      surroundMaths = TRUE),
+                                 "\\%")
+  
+  temp[1:numLevels, c(3, 5, 4, 6)] <- array( c( pad(WAtab, 
+                                                    surroundMaths = TRUE,
+                                                    digits = 0,
+                                                    targetLength = 2),
+                                                paste0( pad( round( prop.table(WAtab, 1) * 100, 1),
+                                                             targetLength = 4,
+                                                             digits = 1,
+                                                             surroundMaths = TRUE),
+                                                        "\\%")),
+                                             dim = c(numLevels, 4) )
+  temp
+}
+
+###
+WAkidsTable2 <- array(dim = c(11, 6))
+rownames(WAkidsTable2) <- c( levels(factor(WAKids$Region)),
+                             levels(WAKids$WaterSource),
+                             levels(WAKids$Education),
+                             "No", "Yes")
+
+WAkidsTable2[1:3, ] <- qualStuff(WAKids$Region)
+WAkidsTable2[4:7, ] <- qualStuff(WAKids$WaterSource)
+WAkidsTable2[8:9, ] <- qualStuff(WAKids$Education)
+WAkidsTable2[10:11, ] <- qualStuff(WAKids$HasLivestock)
+
+
+######
+
+
+if( knitr::is_latex_output() ) {
+  rownames(WAkidsTable) <- c("\\textbf{Age (in years)}$^a$",
+                             "\\textbf{Household size}$^a$",
+                             "\\textbf{Under $5$s in household}$^a$")
+  
+  kable( (rbind(WAkidsTable,
+                WAkidsTable2) ),
+         format = "latex",
+         longtable = FALSE,
+         booktabs = TRUE,
+         escape = FALSE,
+         linesep = c("", "", "\\addlinespace",
+                     "", "", "\\addlinespace",
+                     "", "", "", "\\addlinespace",
+                     "", "\\addlinespace",
+                     "", ""),
+         align = "c",
+         digits = 2,
+         caption = "Numerical summary of the water-access data in $85$ households with children. `All households' are broken into those that reported, and did not report, diarrhoea in children under $5$ in the last two weeks.") %>%
+    #row_spec(0, bold = TRUE) %>%
+    kable_styling(font_size = 8) %>%
+    #row_spec(1:3, bold = TRUE) %>%
+    add_header_above( c(" " = 1,
+                        "All households" = 2,
+                        "Diarrhea" = 2,
+                        "No diarrhoea" = 2),
+                      bold = TRUE) %>%
+    pack_rows( "Region$^b$",
+               start_row = 4,
+               end_row = 6,
+               escape = FALSE) %>%
+    pack_rows( "Water source$^b$",
+               start_row = 7,
+               end_row = 10,
+               escape = FALSE) %>%
+    pack_rows( "Education$^b$",
+               start_row = 11,
+               end_row = 12,
+               escape = FALSE) %>%
+    pack_rows( "Has livestock$^b$",
+               start_row = 13,
+               end_row = 14,
+               escape = FALSE) %>%
+    add_footnote(c("Quantitative variables are summarised using medians and IQR", "Qualitative variables are summarised using counts and percentages"), 
+                 notation = "alphabet")
+  
+}
+if( knitr::is_html_output() ) {
+  rownames(WAkidsTable) <- c("Age$^a$",
+                             "Household size$^b$",
+                             "Under 5s in household$^c$")
+  
+  kable(rbind(WAkidsTable,
+              WAkidsTable2),
+        format = "html",
+        longtable = FALSE,
+        booktabs = TRUE,
+        align = "c",
+        digits = 2,
+        caption = "Numerical summary of the water-access data in $85$ households with children, according of whether children under $5$ had reported diarrhoea in the last two weeks")  %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(1:3, bold = TRUE) %>%
+    kable_styling(font_size = 9) %>%
+    add_header_above( c(" " = 1,
+                        "All households" = 2,
+                        "Reported diarrhoea" = 2,
+                        "No reported diarrhoea" = 2),
+                      bold = TRUE) %>%
+    pack_rows( "Region$^b$",
+               start_row = 4,
+               end_row = 6,
+               escape = FALSE) %>%
+    pack_rows( "Water source$^b$",
+               start_row = 7,
+               end_row = 10,
+               escape = FALSE) %>%
+    pack_rows( "Education$^b$",
+               start_row = 11,
+               end_row = 12,
+               escape = FALSE) %>%
+    pack_rows( "Has livestock$^b$",
+               start_row = 13,
+               end_row = 14,
+               escape = FALSE) %>%
+    add_footnote(c("Quantitative variables are summarised using medians and IQR", "Qualitative variables are summarised using counts and percentages"), 
+                 notation = "alphabet") 
+}
+
+```
+
+
+
+The table summarises the sample, but RQs are about the *population*.
+For example, one RQ could be:
+
+>  Is the percentage of households with children under\ $5$ having diarrhoea the same for households that do and do not keep livestock?
+
+Since the observed sample is one of countless possible samples that may have been selected, answering RQs about the population is not straightforward.
+In the observed sample, $85.0$% of households that *did not* keep livestock reported diarrhoea in children under\ $5$, while $64.6$% of households that *did* keep livestock reported diarrhoea in children under\ $5$.
+That is, a difference is seen *in the sample*; but RQs are about the *population*.
+
+Broadly, two possible reasons could explain why the *sample* percentages of households reporting diarrhoea in children are different:
+
+* *the **population** percentages are the same*. 
+The *sample* percentages are *different* simply because of the households selected in this particular sample.
+Another sample, with different households, might produce different sample percentages.
+*Sampling variation explains the difference in the sample percentages*.
+
+* *the **population** percentages are different*.
+The difference between the *sample* percentages reflects this difference between the *population* percentages.
+
+The difficulty is knowing which of these reasons ('hypotheses')\index{Hypotheses} is the most likely explanation for the difference between the sample percentages.
+This question is of prime importance as it answers the RQ.
+
+
+## Quick revision questions {#SummaryCommentsQuickReview}
+
+::: {.webex-check .webex-box}
+Are the following statements *true* or *false*?
+
+1. Graphs usually have their captions *under* the figure. \tightlist
+`r if( knitr::is_html_output() ) {torf(answer = TRUE)}`
+1. Graphs should use as many colours as possible.
+`r if( knitr::is_html_output() ) {torf(answer = FALSE)}`
+1. Graphs should usually be carefully created using computer software.
+`r if( knitr::is_html_output() ) {torf(answer = TRUE)}`
+1. Tables should have plenty of horizontal and vertical lines.
+`r if( knitr::is_html_output() ) {torf(answer = FALSE)}`
+1. Tables usually have their captions *under* the table.
+`r if( knitr::is_html_output() ) {torf(answer = FALSE)}`
+:::
+
+
+## Exercises {#SummariseCommentsExercises}
+
+Answers to odd-numbered exercises are available in App.\ \@ref(Answers).
+
+`r if( knitr::is_latex_output() ) "\\captionsetup{font=small}"`
+
+::: {.exercise #Graphs123}
+What would be the best graph for displaying the data for these situations?
+
+1. To explore the relationship between the pH of water and the temperature of the water, in various creeks.
+`r if( knitr::is_html_output() ) {longmcq( c(
+"A bar chart",
+"A histogram",
+"A boxplot",
+"A histogram of the differences",
+answer = "A scatterplot",
+"A side-by-side bar chart"))}`
+2. Suppose, in a research study, the researchers measures the difference between each swimmers' fastest $100$\ m time and their fastest $200$\ m time.
+The researchers were interested in the average time *difference*.
+`r if( knitr::is_html_output() ) {longmcq( c(
+"A bar chart",
+"A histogram",
+"A boxplot",
+answer = "A histogram of the differences",
+"A scatterplot",
+"A side-by-side bar chart"))}`
+3. A research study examined the way in which students usually came to university (bus; private car; car pooling; etc.) and their program of study.
+`r if( knitr::is_html_output() ) {longmcq( c(
+"A bar chart",
+"A histogram",
+"A boxplot",
+"A histogram of the differences",
+"A scatterplot",
+answer = "A side-by-side bar chart"))}`
+:::
+
+
+::: {.exercise #GraphsLimeTrees}
+@data:ForestBiomass2017 recorded these variables for $385$ lime trees in Russia:
+
+* the foliage biomass, in kg (the response variable);
+* the tree diameter, in cm (the explanatory variable);
+* the age of the tree, in years; and
+* the origin of the tree, one of Coppice, Natural, or Planted.
+
+The purpose of the study is to estimate the foliage biomass from the tree diameter, and perhaps the other extraneous variables.
+What graphs would be useful?
+:::
+
+
+::: {.exercise #GraphsOrthoses2}
+@swinnen2018influence studied the influence of using ankle-foot orthoses in $15$ children with cerebral palsy (Table\ \@ref(tab:DescribeAnkleFoot)).
+(GMFCS is an *ordinal* variable used to describe the impact of cerebral palsy on their motor function: the
+`r if (knitr::is_latex_output()) {
+'Gross Motor Function Classification System.)'
+} else {
+'[Gross Motor Function Classification System](https://en.wikipedia.org/wiki/Gross_Motor_Function_Classification_System).)'
+}`
+Sketch some graphs to explore the *relationships* between these variables.
+:::
+
+
+::: {.exercise #GraphNitrogenInSoil}
+@data:Lane2002:GLMsoilscience recorded the soil nitrogen after applying different fertilizer doses.
+The researchers recorded:
+
+* the fertilizer dose, in kilograms of nitrogen per hectare; 
+* the soil nitrogen, in kilograms of nitrogen per hectare; and
+* the fertilizer source; one of 'inorganic' or 'organic'.
+
+What graphs would be useful for understanding the data?
+:::
+
+
+::: {.exercise #GraphNoisyMiners}
+@data:Maron:eucthreshold counted the number of noisy miners (a small Australian bird) and the number of eucalyptus trees in random quadrats.
+Critique the graph of the data (Fig.\ \@ref(fig:MinerCrabPlot), left panel).
+:::
+
+
+```{r, MinerCrabPlot, fig.cap="Left: the number of noisy miners and the number of eucalyptus trees. Right: a scatterplot of the colour of female horseshoe crabs and the condition of their spines.", fig.align="center", fig.width=8, fig.height=3.25, out.width='95%'}
+par(mfrow = c(1, 2))
+
+data(NMiner) ### Exercise
+
+plot(Minerab ~ Eucs,
+     data = NMiner,
+     ylim = c(0, 35),
+     xlab = "E_trees",
+     ylab = "num_miners",
+     pch = 1:9)
+
+
+###
+
+
+data(HCrabs) ### Exercise
+
+plot( as.numeric( factor(Col) ) ~ as.numeric( factor(Spine) ), 
+      data = HCrabs,
+      xlab = "Condition of the spine",
+      ylab = "Carapace colour",
+      main = "Dot chart of carapace colour\nagainst spine condition",
+      las = 1)
+```
+
+
+::: {.exercise #GraphHorseshoeCrabs}
+@data:brockmann:crabs recorded, among other things, the colour of the carapace ('Light medium', 'Medium', 'Dark medium' or 'Dark') and the condition of the carapace ('Both OK', 'One OK', 'None OK') of $173$ female horseshoe crabs.
+Critique the scatterplot (Fig.\ \@ref(fig:MinerCrabPlot), right panel) used to explore the data.
+:::
+
+
+::: {.exercise #GraphsMADRS}
+@data:Danielsson2014:Depression examined the change in MADRS (a *quantitative* scale measuring level of depression) and treatment group (whether each person was treated using: exercise; body awareness; or advice).
+
+1. What is the response variable?
+1. What is the explanatory variable?
+1. What graphs would be useful for exploring the data and the relationships of interest?
+:::
+
+::: {.exercise #GraphsSkewBar}
+A study of high-performance athletes at the *Australian Institute of Sport* (AIS) [@data:Telford1991:sexsportsize] recorded numerous variables about athletes.
+A plot for the sports played by the athletes is shown in Fig.\ \@ref(fig:AISSportBarchart).
+
+How would you describe the data: Left skewed, right skewed, approximately symmetrical?
+Or something else?
+:::
+
+
+```{r AISSportBarchart, fig.cap="Sports played by athletes in the AIS study", fig.align="center", fig.width=5, fig.height=3.75}
+data(AISsub)  ### Exercise
+
+SPT <- sort( table(AISsub$Sport) ) # Sorted from smallest to largest category
+
+par(mar = c(6, 4, 4, 2) + 0.1 ) # DEFAULT: c(5, 4, 4, 2) + 0.1.
+barplot(SPT, 
+        las = 2,
+        ylab = "Number of AIS athletes",
+        xlab = "Sport",
+        main = "Sports played by AIS athletes",
+        col = plot.colour)
+```
+
+
+::: {.exercise #GraphsTyping}
+[*Dataset*: `Typing`]
+The `Typing` dataset [@pinet2022typing] contains four variables: typing speed (`mTS`), typing accuracy (`mAcc`), age (`Age`). and sex (`Sex`) for $1301$ students.
+Produce graphs necessary for understanding the data, making sure to explain what they reveal.
+
+Does the mean typing speed or mean accuracy appear to differ by the age or sex of the student? 
+What other questions would be useful to ask about the data?
+:::
+
+
+::: {.exercise #WriteExercisesNHANES}
+[*Dataset*: `NHANES`]
+Consider the NHANES data again.
+In preparing a paper about this study, suppose Fig.\ \@ref(fig:ResultsPlot) and Tables\ \@ref(tab:ResultsTable) were produced.
+Critique these.
+:::
+
+
+```{r}
+ResultsTable <- array( dim = c(4, 2))
+colnames(ResultsTable) <- c("Mean", 
+                            "Std dev")
+rownames(ResultsTable) <- c("Current smoker",
+                            "Current non-smoker",
+                            "Difference",
+                            "95% CI") 
+
+ResultsTable[1, ] <- c("$206.6$", "$46$")
+ResultsTable[2, ] <- c("$214.64$", "$48.7945$")
+ResultsTable[3, ] <- c("$8.03$", NA)
+ResultsTable[4, ] <- c("$1.25$", "$14.8$")
+```
+
+
+\begin{figure}
+\begin{minipage}{0.45\textwidth}
+\captionof{table}{A table of results\label{tab:ResultsTable}}
+\fontsize{8}{12}\selectfont
+```{r}
+colnames(ResultsTable) <- c("\\textbf{Mean}", 
+                            "\\textbf{Std dev}")
+rownames(ResultsTable) <- c("\\textbf{Current smoker}",
+                            "\\textbf{Current non-smoker}",
+                            "\\textbf{Difference}",
+                            "\\textbf{CI}")
+kable(ResultsTable,
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        table.env = "@empty",
+        escape = FALSE,
+        align = c("l", "l") )  
+   #kable_styling(font_size = 10) %>% # CANNOT USE THIS IS THE MINIPAGE
+#   column_spec(1, width = "13mm") %>%
+#   column_spec(2, width = "22mm")### NOT IN MINIPAGE    kable_styling(font_size = 10)
+```
+\end{minipage}
+\hspace{0.1\textwidth}
+\begin{minipage}{0.45\textwidth}%
+```{r, fig.width=5, fig.height=4, out.width='95%'}
+data(NHANES)
+
+plot(BPSys1 ~ SmokeNow, 
+     data = NHANES, 
+	xlab = "",
+	col = "purple") 
+```
+\captionof{figure}{A boxplot\label{fig:ResultsPlot}}
+\end{minipage}
+\end{figure}
+
+
+```{r ResultsTable}
+if( knitr::is_html_output() ) {
+  kable(ResultsTable,
+        format = "html", 
+        col.names = colnames(ResultsTable),
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = c("l", "l"),
+        caption = "A table of results")
+}
+
+```
+
+<!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r ResultsPlot, fig.width=5, fig.height=4, out.width='55%', fig.align="center", fig.cap="A boxplot"}
+plot(BPSys1 ~ SmokeNow, 
+     data = NHANES, 
+	xlab = "",
+	col = "purple") 
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+`r if( knitr::is_latex_output() ) "\\captionsetup{font=normalsize}"`
+
+
+<!-- QUICK REVIEW ANSWERS -->
+`r if (knitr::is_html_output()) '<!--'`
+::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
+**Answers to *Quick Revision* questions:**
+**1.** True.
+**2.** False. Use different colours only if they have a purpose (and explain that purpose if it is not clear).
+**3.** True.
+**4.** False: very few vertical lines (if any)l minimum of horizontal lines.
+**5.** False.
+:::
+`r if (knitr::is_html_output()) '-->'`
+
+
