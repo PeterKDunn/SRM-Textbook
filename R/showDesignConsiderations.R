@@ -1,27 +1,28 @@
-showDesignConsiderations <- function(studyType="FRED", addIcons = FALSE){
+showDesignConsiderations <- function(studyType="Experiment", addIcons = FALSE){
   
   par( mar = c(0.5, 0.5, 0.5, 0.5))
-  openplotmat()
+  openplotmat(ylim = c(-0.1, 1) )
   
-  pos <- array(NA, dim = c(14, 2))
+  pos <- array(NA, dim = c(15, 2))
   
   # Problems
-  pos[1, ] <- c(0.45, 0.74) # Confounding
-  pos[2, ] <- c(0.45, 0.58) # Hawthorne
-  pos[3, ] <- c(0.45, 0.42) # Placebo
-  pos[4, ] <- c(0.45, 0.26) # Observer
-  pos[5, ] <- c(0.45, 0.10) # Carry-over
+  pos[1, ] <- c(0.45, 0.75) # Confounding
+  pos[2, ] <- c(0.45, 0.60) # Hawthorne
+  pos[3, ] <- c(0.45, 0.37) # Placebo
+  pos[4, ] <- c(0.45, 0.15) # Observer
+  pos[5, ] <- c(0.45, 0.00) # Carry-over
   
   # Solutions
-  pos[7, ] <- c(0.8, 0.90) # Extraneous vars/Analysis
-  pos[8, ] <- c(0.1, 0.74) # Random allocation
+  pos[7, ]  <- c(0.8, 0.90) # Extraneous vars/Analysis
+  pos[8, ]  <- c(0.1, 0.75) # Random allocation
   pos[13, ] <- c(0.45, 0.90) # Blocking
-  pos[14, ] <- c(0.8, 0.74) # Restrictions
+  pos[14, ] <- c(0.8, 0.75) # Restrictions
   
-  pos[9, ] <- c(0.8, 0.58) # Blind individuals
-  pos[10, ] <- c(0.8, 0.42) # Objective outcomes
-  pos[11, ] <- c(0.8, 0.26) # Blind researchers
-  pos[12, ] <- c(0.8, 0.10) # Washout
+  pos[9, ]  <- c(0.8, 0.60) # Blind individuals
+  pos[10, ] <- c(0.8, 0.45) # Objective outcomes
+  pos[15, ] <- c(0.8, 0.30) # Controls
+  pos[11, ] <- c(0.8, 0.15) # Blind researchers
+  pos[12, ] <- c(0.8, 0.00) # Washout
   
   
   
@@ -91,6 +92,11 @@ showDesignConsiderations <- function(studyType="FRED", addIcons = FALSE){
               curve = 0, 
               lty = 1, 
               lwd = 2)
+  curvedarrow(from = pos[3, ] + extendArrowStart, # Placebo
+              to = pos[15, ] - extendArrowStart/2,  # Controls
+              curve = 0, 
+              lty = 1, 
+              lwd = 2)
   curvedarrow(from = pos[4, ] + extendArrowStart, # Observer effect
               to = pos[11, ],  # Blind researchers
               curve = 0, 
@@ -100,7 +106,7 @@ showDesignConsiderations <- function(studyType="FRED", addIcons = FALSE){
   ### TEXT
   textrect( pos[1, ], 
             lab = "Confounding", 
-            radx = 0.11, 
+            radx = 0.10, 
             rady = 0.050, 
             adj = 0.6,
             shadow.size = 0,
@@ -108,7 +114,7 @@ showDesignConsiderations <- function(studyType="FRED", addIcons = FALSE){
             lcol = ExtraneousColour)
   textrect( pos[2, ], 
             lab = "Hawthorne\n effect", 
-            radx = 0.11, 
+            radx = 0.10, 
             rady = 0.050, 
             adj = 0.6,
             shadow.size = 0,
@@ -181,6 +187,13 @@ showDesignConsiderations <- function(studyType="FRED", addIcons = FALSE){
             lcol = DesignColour)
   textrect( pos[10, ], 
             lab = "Objective\noutcomes", 
+            radx = 0.08, 
+            rady = 0.050, 
+            shadow.size = 0,
+            box.col = DesignColour,
+            lcol = DesignColour)
+  textrect( pos[15, ], 
+            lab = "Controls", 
             radx = 0.08, 
             rady = 0.050, 
             shadow.size = 0,
