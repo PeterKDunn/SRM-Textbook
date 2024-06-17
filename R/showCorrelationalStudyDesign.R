@@ -17,7 +17,7 @@ showCorrelationalStudyDesign <- function(intervention = FALSE,
   
   
   # Canvas
-  diagram::openplotmat()
+  diagram::openplotmat( ylim = c(0.05, 0.9) )
   
   
   # STATE NAMES

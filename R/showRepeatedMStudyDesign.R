@@ -17,7 +17,7 @@ showRepeatedMStudyDesign <- function(intervention = FALSE,
   
   
   # Canvas
-  diagram::openplotmat()
+  diagram::openplotmat( ylim = c(0.0, 0.85))
   
   
   # OUTCOME NAMES
