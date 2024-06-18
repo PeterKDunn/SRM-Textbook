@@ -76,7 +76,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
   }
   
   
-  if ( is.na(outcomeName)) outcomeName <- "Outcomes"
+  if ( is.na(outcomeName)) outcomeName <- "outcomes"
   ### SETUP
   pos <- array(NA, dim = c(14, 2))
   # pos[1:3, ] refer to the Groups; see below
@@ -298,14 +298,14 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                      radx = 0.075,
                      rady = 0.07,
                      shadow.size = 0,
-                     lcol = GroupColour,
+                     lcol = ChanceColour,
                      box.col = GroupColour)
   diagram::textrect( pos[2, ], 
                      lab = addGroupNames[2], 
                      radx = 0.075,
                      rady = 0.07,
                      shadow.size = 0,
-                     lcol = GroupColour,
+                     lcol = ChanceColour,
                      box.col = GroupColour)
   if (length(addGroupNames) == 3) {
     diagram::textrect( pos[3, ], 
@@ -313,7 +313,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                        radx = 0.075,
                        rady = 0.07,
                        shadow.size = 0,
-                       lcol = GroupColour,
+                       lcol = ChanceColour,
                        box.col = GroupColour)
   }
   

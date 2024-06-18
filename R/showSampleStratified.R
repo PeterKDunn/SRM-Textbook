@@ -4,7 +4,7 @@ showSampleStratified <- function(sizeHorizontal = 21,
                                  proportionA = 2/3, # proportion females/younger in the POPULATION
                                  sampleA = 1/2, # proportion females/younger in the SAMPLE
                                  static = TRUE, 
-                                 plotDark = "blue",
+                                 plotDark = plotSolid,
                                  main = "",
                                  seed = 91827391){ 
   

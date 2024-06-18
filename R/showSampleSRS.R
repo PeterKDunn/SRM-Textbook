@@ -3,7 +3,7 @@ showSampleSRS <- function(sizeHorizontal = 21,
                           sampleSize = 40,
                           static = TRUE,
                           proportionA = 2/3, # proportion females/younger in the POPULATION
-                          plotDark = "blue",
+                          plotDark = plotSolid,
                           seed = 91827391){ 
   
   set.seed(seed)

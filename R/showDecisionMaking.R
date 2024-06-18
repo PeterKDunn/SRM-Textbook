@@ -8,9 +8,6 @@
                                                                      bold(observed)~statistic)),
                                 Decision = "Neither"){ # "Neither", "Reject" or "Accept"
    
-   DMcolours <- viridis::viridis(5,
-                                 alpha = 0.2)
-   
    PopulationColour <- rgb(216, 204, 220, 
                          maxColorValue = 256)
    SampleColour <- rgb(217, 220, 231, 
@@ -22,6 +19,12 @@
    ContradictColour <- rgb(254, 250, 215, 
                         maxColorValue = 256)
    
+
+    PopulationColour <- ChanceColour
+    SampleColour <- GroupColour
+    CompareColour <- DesignColour
+    SupportColour <- BlockColour
+    ContradictColour <- ResponseColour
    
    pos <- array( dim = c(7, 2) )
    

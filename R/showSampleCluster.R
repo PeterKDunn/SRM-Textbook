@@ -4,7 +4,7 @@ showSampleCluster <- function(populationSize = 21 * 21,
                               sampleA = 1/2, # proportion females in the SAMPLE
                               static = TRUE,
                               proportionA = 2/3,
-                              plotDark = "blue",
+                              plotDark = plotSolid,
                               main = "Cluster sampling",
                               seed = 9182391){ 
   

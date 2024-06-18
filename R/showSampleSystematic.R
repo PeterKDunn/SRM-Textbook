@@ -4,7 +4,7 @@ showSampleSystematic <- function(sizeHorizontal = 21,
                                  static = TRUE,
                                  proportionA = 2/3, # proportion females/younger in the POPULATION
                                  start = NA,
-                                 plotDark = "blue",
+                                 plotDark = plotSolid,
                                  seed = 91827391){ 
   set.seed(seed)
   

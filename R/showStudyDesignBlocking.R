@@ -76,8 +76,8 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
                     rady = 0.335,
                     shadow.size = 0,
                     lab = "",
-                    box.col = grey(0.8),
-                    lcol = grey(0.8))
+                    box.col = grey(0.85),
+                    lcol = grey(0.85))
   
   # Second, draw the arrow head
   diagram::textmulti(mid = c( pos[1, 1], 0.90),
@@ -96,8 +96,8 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
                      angle = 270, # ROTATION DEGREES
                      shadow.size = 0,
                      lab = "",
-                     box.col = grey(0.8),
-                     lcol = grey(0.8))
+                     box.col = grey(0.85),
+                     lcol = grey(0.85))
   
   
   # Third, add "Comparison" text
@@ -221,14 +221,14 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
                      radx = 0.075,
                      rady = 0.07,
                      shadow.size = 0,
-                     lcol = GroupColour,
+                     lcol = ChanceColour,
                      box.col = GroupColour)
   diagram::textrect( pos[2, ], 
                      lab = addGroupNames[2], 
                      radx = 0.075,
                      rady = 0.07,
                      shadow.size = 0,
-                     lcol = GroupColour,
+                     lcol = ChanceColour,
                      box.col = GroupColour)
 
   diagram::textrect( c( pos[1, 1], -pos[1, 2]), 
@@ -236,14 +236,14 @@ showStudyDesignBlocking <- function(studyType, # One of "TrueExp", "QuasiExp", "
                      radx = 0.075,
                      rady = 0.07,
                      shadow.size = 0,
-                     lcol = GroupColour,
+                     lcol = ChanceColour,
                      box.col = GroupColour)
   diagram::textrect( c( pos[2, 1], -pos[2, 2]), 
                      lab = addGroupNames[1], 
                      radx = 0.075,
                      rady = 0.07,
                      shadow.size = 0,
-                     lcol = GroupColour,
+                     lcol = ChanceColour,
                      box.col = GroupColour)
   
   # ADD INDIVIDUALS
