@@ -3,8 +3,6 @@ showPropOdds <- function(){
   
   
   # Proportion
-  #diagram::openplotmat(mar = c(0.05, 0.05, 0.05, 0.05))
-  
   par(mar = c(0.05, 0.05, 0.05, 0.05))
   plot( x = c(0.05, 0.95),
         y = c(0.05, 0.95),
@@ -15,11 +13,8 @@ showPropOdds <- function(){
         xlab = "",
         ylab = "")
   
-  pCol <- viridis::viridis(10)[3]
-  qCol <- viridis::viridis(10)[8]
-  
-  #polyon(x = c(0.9, 0.9, 0.8, 0.8),
-  #       y = c())
+  pCol <- ifelse( knitr::is_latex_output(), ResponseColour, viridis::viridis(10)[3])
+  qCol <- ifelse( knitr::is_latex_output(), IndividualColour,  viridis::viridis(10)[8])
   
   
   # Proportions image
@@ -39,9 +34,6 @@ showPropOdds <- function(){
   polygon( y = c(0.4, 0.4, 0.3, 0.3),
            x = c(0.6, 0.7, 0.7, 0.6) + 0.1,
            col = pCol)
-  #polygon( y = c(0.2, 0.2, 0.1, 0.1),
-  #         x = c(0.6, 0.7, 0.7, 0.6),
-  #         col = pCol)
   polygon( y = c(0.2, 0.2, 0.1, 0.1),
            x = c(0.65, 0.85, 0.85, 0.65),
            col = qCol)
