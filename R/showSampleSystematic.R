@@ -13,7 +13,7 @@ showSampleSystematic <- function(sizeHorizontal = 21,
   
   # Identify younger:
   younger <- sample(1:populationSize,
-                    populationSize * (1 - proportionA) )
+                    populationSize * ( proportionA) )
   # Identify chosen:
   selected <- sample(1:populationSize, 
                      sampleSize)
@@ -98,6 +98,12 @@ showSampleSystematic <- function(sizeHorizontal = 21,
             col = sample.col,
             bg  = sample.bg,
             cex = sample.cex)
+    
+    # Indicate the initial, randomly-chosen starting selection
+    points(x = start,
+           y = 1,
+           cex = 2,
+           pch = 0)
   }
   
   invisible( list( sampleSizeOlder = sampleSizeOlder,
