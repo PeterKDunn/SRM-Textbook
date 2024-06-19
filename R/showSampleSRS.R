@@ -13,7 +13,7 @@ showSampleSRS <- function(sizeHorizontal = 21,
 
   # Identify younger:
   younger <- sample(1:populationSize,
-                    populationSize * (1 - proportionA) )
+                    populationSize * ( proportionA) )
   # Identify chosen:
   selected <- sample(1:populationSize, 
                      sampleSize)

@@ -21,7 +21,7 @@ showSampleMultistage <- function(populationSize = 21 * 21,
   
   # Identify younger:
   younger <- sample(1:populationSize,
-                    populationSize * (1 - proportionA) )
+                    populationSize * ( proportionA) )
   # Identify chosen:
   selected <- sample(1:populationSize, 
                      sampleSize)
@@ -92,7 +92,7 @@ showSampleMultistage <- function(populationSize = 21 * 21,
     }
   }
   
-  ###########################################################################
+  ###
   
   this.pch <- sample.pch
   this.col <- sample.col
@@ -107,10 +107,15 @@ showSampleMultistage <- function(populationSize = 21 * 21,
     if (i %in% selectedTutorials){
       selectedStudents <- sort( sample(1:numStudentsInTutorials[i], 
                                        numStudentsSelectedEachTutorial) )
-      minSelect <- sum( numStudentsInTutorials[1:(i - 1)])
-      linearSelect <- minSelect + selectedStudents
       
-      selection <- (sum(numStudentsInTutorials[1:(i - 1)]) + 1) : sum(numStudentsInTutorials[1:i])
+      if (i == 1 ){
+        selection <- (1 : sum(numStudentsInTutorials[1:i]) )
+        minSelect <- 1
+      } else {
+        selection <- (sum(numStudentsInTutorials[1:(i - 1)]) + 1) : sum(numStudentsInTutorials[1:i])
+        minSelect <- sum( numStudentsInTutorials[1:(i - 1)])
+      }
+      linearSelect <- minSelect + selectedStudents
       
       this.pch[ linearSelect[ sample.pch[ linearSelect ] == 1] ] <- 19
       this.pch[ linearSelect[ sample.pch[ linearSelect ] == 6] ] <- 25
@@ -121,15 +126,20 @@ showSampleMultistage <- function(populationSize = 21 * 21,
     }
   }
   
-  
+  #########################################################################################
   if (static){
     plotBackground()
     
     for (i in (1:numberTutorials)){
       
       if (i %in% selectedTutorials) {
-        selection <- (sum(numStudentsInTutorials[1:(i - 1)]) + 1) : sum(numStudentsInTutorials[1:i])
-        
+
+        if (i == 1 ){
+          selection <- (1 : sum(numStudentsInTutorials[1:i]) )
+        } else {
+          selection <- (sum(numStudentsInTutorials[1:(i - 1)]) + 1) : sum(numStudentsInTutorials[1:i])
+        }
+
         points(x = 1:numStudentsInTutorials[i], 
                y = rep(i, numStudentsInTutorials[i]),
                pch = this.pch[selection],
@@ -139,7 +149,7 @@ showSampleMultistage <- function(populationSize = 21 * 21,
         
         sampleSizeOlder   <- sampleSizeOlder + sum( this.pch[selection] == 19)
         sampleSizeYounger <- sampleSizeYounger + sum( this.pch[selection] == 25)
-
+        
       }
       
     }
@@ -147,14 +157,14 @@ showSampleMultistage <- function(populationSize = 21 * 21,
           side = 1,
           cex = 0.9,
           at = (1 + maxTutorial) / 2 )
-  } else { #################################### NOT STATIC (static = FALSE)
+  } else { # NOT STATIC (static = FALSE) ######################################################
     # Step 1
     plotBackground(showSelectedClasses = FALSE)
     mtext( "The whole group",
            side = 1,
            cex = 0.9,
            at = (1 + maxTutorial) / 2 )
-
+    
     # Step 2: Select classes
     plotBackground()
     mtext(paste("Selected classes:", paste( sort(selectedTutorials), collapse = ", ")),   
@@ -162,22 +172,27 @@ showSampleMultistage <- function(populationSize = 21 * 21,
           cex = 0.9,
           at = (1 + maxTutorial) / 2 )
     
-
+    
     # Step 3: Selected students in chosen classes (so initially repeat Step 2)      
     plotBackground()
     for (i in (1:numberTutorials)){
       if (i %in% selectedTutorials){
         
         selectedStudents <- sample(1 : numStudentsInTutorials[i], 
-                                   numStudentsSelectedEachTutorial)
-        selection <- (sum(numStudentsInTutorials[1:(i - 1)]) + 1) : sum(numStudentsInTutorials[1:i])
+                                   numStudentsSelectedEachTutorial) # The students select in this tutorial (fro 1 : class size)
+        
+        if (i == 1 ){
+          selection <- (1 : sum(numStudentsInTutorials[1:i]) )
+        } else {
+          selection <- (sum(numStudentsInTutorials[1:(i - 1)]) + 1) : sum(numStudentsInTutorials[1:i])
+        }
         
         points(1:numStudentsInTutorials[i], rep(i, numStudentsInTutorials[i]),
                pch = this.pch[selection],
                col = this.col[selection],
                cex = this.cex[selection],
                bg  = this.bg[ selection])
-
+        
         sampleSizeOlder   <- sampleSizeOlder + sum( this.pch[selection] == 19)
         sampleSizeYounger <- sampleSizeYounger + sum( this.pch[selection] == 25)
       }    

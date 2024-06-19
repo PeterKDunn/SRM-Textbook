@@ -1,7 +1,6 @@
 showSampleCluster <- function(populationSize = 21 * 21,
                               sampleSize = 40,
                               numberTutorials = 20,
-                              sampleA = 1/2, # proportion females in the SAMPLE
                               static = TRUE,
                               proportionA = 2/3,
                               plotDark = plotSolid,
@@ -23,7 +22,8 @@ showSampleCluster <- function(populationSize = 21 * 21,
   
   # Identify younger:
   younger <- sample(1:populationSize,
-                    populationSize * (1 - proportionA) )
+                    populationSize * (proportionA) )
+  
   # Identify chosen:
   selected <- sample(1:populationSize, 
                      sampleSize)

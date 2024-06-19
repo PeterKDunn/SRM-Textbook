@@ -1,8 +1,8 @@
 showSampleStratified <- function(sizeHorizontal = 21,
                                  sizeVertical = 21,
                                  sampleSize = 40,
-                                 proportionA = 2/3, # proportion females/younger in the POPULATION
-                                 sampleA = 1/2, # proportion females/younger in the SAMPLE
+                                 proportionA = 2/3, # proportion younger in the POPULATION
+                                 sampleA = 1/2, # proportion younger in the SAMPLE
                                  static = TRUE, 
                                  plotDark = plotSolid,
                                  main = "",
@@ -44,12 +44,12 @@ showSampleStratified <- function(sizeHorizontal = 21,
   selectedB <- sample(1:(numB * sizeVertical), 
                       sampleB)
   
-  separation <- sizeHorizontal * proportionA + 0.95 # LEFT: Females/younger: RIGHT: Males/older
+  separation <- sizeHorizontal * proportionA + 0.95 # LEFT: younger: RIGHT: older
   populationSex <- rep("F", 
                        length = populationSize)
   
-  populationSizeFemales <- round(populationSize * proportionA)
-  populationSizeMales   <- populationSize - populationSizeFemales
+  populationSizeYounger <- round(populationSize * proportionA)
+  populationSizeOlder   <- populationSize - populationSizeYounger
   
   
   plotPopulation <- function(){
@@ -64,8 +64,8 @@ showSampleStratified <- function(sizeHorizontal = 21,
     
     abline(v = separation, 
            col = grey(0.7), 
-           lwd = 2) # LEFT: Females/younger: RIGHT: Males/older
-    mtext( paste("Total younger: ", populationSizeFemales, sep = ""), 
+           lwd = 2) # LEFT: Younger/younger: RIGHT: Older/older
+    mtext( paste("Total younger: ", populationSizeYounger, sep = ""), 
            side = 3, 
            cex = 0.9,
            at = separation / 2)
@@ -74,7 +74,7 @@ showSampleStratified <- function(sizeHorizontal = 21,
           cex = 0.9,
           at = separation / 2)
     
-    mtext( paste("Total older: ",  populationSizeMales, sep = ""), 
+    mtext( paste("Total older: ",  populationSizeOlder, sep = ""), 
            side = 3, 
            cex = 0.9,
            at = separation + (sizeHorizontal - separation) / 2)
@@ -111,7 +111,7 @@ showSampleStratified <- function(sizeHorizontal = 21,
     
     plotPopulation()
     
-    ### Plot the selected **Females/younger**
+    ### Plot the selected **Younger/younger**
     sample.pchF <- rep(6, 
                        length = numA * sizeVertical)
     sample.pchF[selectedA] <- 25
@@ -138,7 +138,7 @@ showSampleStratified <- function(sizeHorizontal = 21,
     sampleSizeYounger <- sum( sample.pchF == 25)
     
     
-    ### Plot the selected **Males/older**
+    ### Plot the selected **Older/older**
     sample.pchM <- rep(1, 
                        length = numB * sizeVertical)
     sample.pchM[selectedB] <- 19
@@ -186,7 +186,7 @@ showSampleStratified <- function(sizeHorizontal = 21,
       
       plotPopulation()
       
-      ### Plot the selected **Females/younger**
+      ### Plot the selected **Younger/younger**
       sample.pchF <- rep(6, 
                          length = numA * sizeVertical)
       sample.colF <- rep("black", 
@@ -212,10 +212,10 @@ showSampleStratified <- function(sizeHorizontal = 21,
       
     }
     
-    ### Plot the selected **Males/older**
+    ### Plot the selected **Older/older**
     
     for ( j in selectedB ) {
-      ### Need to plot *all* the females first, before looping through the males
+      ### Need to plot *all* the younger first, before looping through the older
       plotPopulation()
       points( expand.grid(1:numA, 
                           1:sizeVertical), 
@@ -224,7 +224,7 @@ showSampleStratified <- function(sizeHorizontal = 21,
               bg  = sample.bgF,
               cex = sample.cexF)
 
-      # Now loop the males
+      # Now loop the older
       locatei <- which(selectedB == j )
       plotThese <- selectedB[1 : locatei]
       
