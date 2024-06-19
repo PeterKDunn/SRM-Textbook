@@ -658,7 +658,7 @@ This is a *proportional* sample.
 
 
 
-```{r SamplesStrat, fig.align="center", fig.width=8, fig.height=5,  out.width='100%', fig.cap="Two different stratified sampling methods for taking a random sample of size $40$ from a class of $441$. Left: equal numbers of younger and older students. Right: proportional numbers of younger and older students. Triangles $\\bigtriangledown$ represent younger students, circles $\\bigcirc$ represent older students, and filled shapes represent those individuals selected in the sample." } 
+```{r SamplesStrat, fig.align="center", fig.width=8, fig.height=5,  out.width='100%', fig.cap="Two stratified sampling methods for taking a random sample of size $40$ from a class of $441$. Left: equal numbers of younger and older students. Right: proportional numbers of younger and older students. Triangles $\\bigtriangledown$ represent younger students, circles $\\bigcirc$ represent older students, and filled shapes represent those individuals selected in the sample." } 
 
 if (knitr::is_latex_output()){
   
@@ -736,7 +736,7 @@ For the study in Example\ \@ref(exm:Typing), a simple random sample of (say) thr
 } else {
    '(see animation below).'
 }`
-Due to the classes chosen, the sample size is $n = 43$ ($30$\ older; $13$\ younger).
+By chance, the chosen classes produce a sample size of $n = 43$ ($31$\ younger; $16$\ older).
 :::
 
 
@@ -786,7 +786,7 @@ For the study in Example\ \@ref(exm:Typing), a *simple random sample* of ten of 
 } else {
    '(see animation below).'
 }`
-The sample size is $10\times 4 = 40$, comprising $24$\ older students and $16$\ younger students.
+The sample size is $10\times 4 = 40$, comprising (by chance) $24$\ younger students and $16$\ older students.
 :::
 
 
@@ -816,15 +816,76 @@ This is cheaper than simple random sampling, as data collectors can be deployed 
 :::
 
 
-Sampling | Younger students | Older students | Sample size | %younger in sample
----------|----------------|----------------|-------------|-----------------------
-SRS  | 26 | 14 | 40 | 65%
-Systematic | 31 | 9 | 40 | 65%
-Stratified: equal | 20 | 20 | 50%
-Stratified: proportional | 27 | 13 | 40 | 67.5%
-Cluster | 31 | 16 | 47 | 66.0%
-Multi-stage | 24 | 16 | 40 | 60% 
+### Comparing the samples
 
+The different random sampling methods produce different samples, with different proportions of younger and older students (Table\ \@ref(tab:samplesSummaryTable)).
+Of course, repeating the random sampling processes would produce different samples each time.
+
+
+```{r samplesSummaryTable}
+samplingTable <- array( dim = c(6, 4) )
+
+colnames(samplingTable) <- c("students",
+                             "students",
+                             "size",
+                             "students in sample")
+rownames(samplingTable) <- c("SRS",
+                             "Systematic",
+                             "Stratified: equal",
+                             "Stratified: proportional",
+                             "Cluster",
+                             "Multi-stage")
+samplingTable[1, ] <- c(26, 14, 40, 65.0)
+samplingTable[2, ] <- c(31,  9, 40, 77.5)
+samplingTable[3, ] <- c(20, 20, 40, 50.0)
+samplingTable[4, ] <- c(27, 13, 40, 67.5)
+samplingTable[5, ] <- c(31, 16, 47, 66.0)
+samplingTable[6, ] <- c(24, 16, 40, 60.0)
+
+if (knitr::is_latex_output()){
+knitr::kable(pad( samplingTable,
+                  surroundMaths = TRUE,
+                  targetLength = c(2, 2, 2, 3),
+                  digits = c(0, 0, 0, 1) ),
+             format = "latex",
+             booktabs = TRUE,
+             escape = FALSE,
+             caption = "A summary of the various random samples selected using different random sampling methods. In the population, $66.7$\\% of students are younger students.",
+             linesep = c("", "\\addlinespace", "", "\\addlinespace", "", ""), 
+             align = c("c", "c", "c", "c") ) %>%
+  kableExtra::kable_styling(font_size = 8) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = TRUE) %>%
+  add_header_above( c(" " = 1,
+                      "Num. younger" = 1,
+                      "Num. older" = 1,
+                      "Total sample" = 1,
+                      "Percentage younger" = 1),
+                    bold = TRUE,
+                    line = FALSE)
+} else {
+  knitr::kable(pad( samplingTable,
+                  surroundMaths = TRUE,
+                  targetLength = c(2, 2, 2, 3),
+                  digits = c(0, 0, 0, 1) ),
+             format = "html",
+             booktabs = TRUE,
+             escape = FALSE,
+             caption = "A summary of the various random samples selected using different random sampling methods. In the population, $66.7$% of students are younger students.",
+             linesep = c("", "\\addlinespace", "", "\\addlinespace", "", ""), 
+             align = c("c", "c", "c", "c") ) %>%
+  kableExtra::kable_styling(font_size = 8) %>%
+  row_spec(0, bold = TRUE) %>%
+  column_spec(1, bold = TRUE) %>%
+  add_header_above( c(" " = 1,
+                      "Num. younger" = 1,
+                      "Num. older" = 1,
+                      "Total sample" = 1,
+                      "Percentage younger" = 1),
+                    bold = TRUE,
+                    line = FALSE)
+}
+```
 
 
 ## Representative sampling {#Representative-samples}
@@ -834,7 +895,7 @@ Obtaining a truly random sample is usually hard or impossible in practice.
 Sometimes the best compromise is to select a sample sufficiently diverse so that it is likely to be *somewhat representative* of the diversity in the population.
 That is, those *in* the sample are not likely to be different than those *not in* the sample, at least for the variables of interest.
 
-As always, the results from any non-random sample *may not generalise* to the intended population (but generalise to the population which the sample *does* represent).
+As always, the results from any non-random sample *may not generalise* to the intended population (but will generalise to the population which the sample *does* represent).
 
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
@@ -843,9 +904,9 @@ As always, the results from any non-random sample *may not generalise* to the in
 
 
 ::: {.example name="Representative sample"}
-Suppose we wish to evaluate the *functionality* of two types of hand prosthetics.
+Suppose we wish to evaluate the functionality of two types of hand prosthetics.
 
-A randomly-chosen group of Alaskan and Texan residents is asked for their feedback, probably (but not certainly) their views would be similar to those of all Americans.
+A randomly-chosen group of Alaska and Texas residents is asked for their feedback, probably (but not certainly) their views would be similar to those of all Americans.
 No obvious reason exists for why residents of Alaska and Texas would be very different from residents in the rest of the United States, regarding their view of hand prosthetic functionality.
 	
 Even though the sample is not a random sample of all Americans, the results *may* generalise to all Americans (though we cannot be sure).
@@ -887,7 +948,7 @@ In a study of diets of children at child-care centres, researchers used samples 
 
 Sometimes, practicalities dictate how the sample is obtained, which may result in a non-random sample.
 Even so, the impact of using a non-random sample on the conclusions should be discussed (Chap.\ \@ref(Interpretation)).
-Sometimes, ways exist to obtain a non-random sample that is *more likely* to be representative.
+Sometimes, simple steps can be taken to obtain a sample that is *more likely* to be representative.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -902,17 +963,15 @@ Try to ensure that a broad cross-section of the target population appears in the
 </div>
 
 
-
 ::: {.example #RepresentativeUni name="Representative sample"}
-For the typing study in Example\ \@ref(exm:Typing), only selecting students attending the gym, or only students who at a certain Cafe, is unlikely to be somewhat representative of the student population.
-
+For the typing study in Example\ \@ref(exm:Typing), only selecting students who attend the gym, or only students who are at a certain Cafe, is unlikely to be somewhat representative of the student population.
 Instead, the researchers could approach:
 
 * Students at the Cafe on Monday at $8$am;
 * Students at the gym on Tuesday at $11$:$30$am; and
 * Students entering the Library on Thursdays at $2$pm.
 
-*This is not a random sample*, but this sample is likely to comprises a variety of student types.
+*This is not a random sample*, but this sample is likely to comprises a variety of students.
 Ideally, *students would not be included more than once in our sample*, though this is often difficult to ensure.
 :::
 
@@ -943,10 +1002,10 @@ For example, the sex and age of a sample of university students may be recorded;
 
 
 ::: {.example #CFSamplePop name="Comparing samples and populations"}
-@egbue2017mass studied of the adoption of electric vehicles (EVs) by Americans, using a sample of $121$ people found through social media (such as Facebook) and professional engineering channels.
-This is *not* a random sample.
+@egbue2017mass studied the adoption of electric vehicles (EVs) by Americans, using a sample of $121$ people found through social media (such as Facebook) and professional engineering channels.
+This is *not* a random sample of Americans.
 
-The authors compared some characteristics of the sample with the American population from the 2010 census.
+The authors compared some characteristics of the sample with the American population from the $2010$ census.
 Compared to the US population, the sample contained a higher percentage of males, a higher percentage of people aged $18$--$44$, and a higher percentage of wealthy individuals.
 :::
 
@@ -1177,7 +1236,7 @@ Sampling students at your university, because it is easier than finding a random
 ## Chapter summary {#Chap5-Summary}
 
 Almost always, the entire population of interest cannot be studied, so a *sample* (a subset of the population) must be studied.
-*Many* samples are possible; we only study one sample.
+*Many* samples are possible; only one sample is studied.
 Samples can be obtained using *random* or *non-random* methods.
 Conclusions made from random samples can usually be generalized to the population (that is, they are externally valid and accurate).
 
