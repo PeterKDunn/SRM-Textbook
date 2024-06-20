@@ -71,6 +71,43 @@ BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
   
   
   ### START RotateMatrix
+## THIS IS FROM CHATGPT, hoping to get the rotation correct and not have the "bars" (which I might change to points) perpendicular... 
+### but maybe that is a  asp  issue anyway.
+  
+  rotate_points <- function(points, theta, X0, Y0) {
+    # Convert theta from degrees to radians
+    theta_rad <- theta * pi / 180
+    
+    # Create the rotation matrix
+    rotation_matrix <- matrix(c(cos(theta_rad), -sin(theta_rad),
+                                sin(theta_rad), cos(theta_rad)), nrow = 2)
+    
+    # Translate points to origin (subtract (X0, Y0))
+    translated_points <- t(t(points) - c(X0, Y0))
+    
+    # Apply the rotation matrix
+    rotated_points <- t(rotation_matrix %*% t(translated_points))
+    
+    # Translate points back to the original position (add (X0, Y0))
+    final_points <- t(t(rotated_points) + c(X0, Y0))
+    
+    return(final_points)
+  }
+  
+  # # Example usage
+  # points <- matrix(c(1, 2,
+  #                    3, 4,
+  #                    5, 6), ncol = 2, byrow = TRUE)
+  # theta <- 45
+  # X0 <- 2
+  # Y0 <- 3
+  # 
+  # rotated_points <- rotate_points(points, theta, X0, Y0)
+  # print(rotated_points)
+  # 
+  
+  
+  
   RotateMatrix <- function(X, angle, locate.fulcrum = locate.fulcrum){
     RM <- matrix( c( cos(angle), 
                      sin(angle), 
@@ -137,11 +174,11 @@ BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
   
   # Draw data
   base <- 4
-  for (i in 1:length(data.table)){
-    polygon( Pos[(1:5) + base, 1], 
-             Pos[(1:5) + base, 2], 
+  for (i in 1:length(data.table)){ # For each observation
+    polygon( x = Pos[(1:5) + base, 1], 
+             y = Pos[(1:5) + base, 2], 
              col = grey(0.8))
-    
+points(Pos[1:5,])    
     base <- base + 5
   }
   
