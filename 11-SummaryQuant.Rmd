@@ -51,7 +51,7 @@ The data in
 } else {
   'Table\\ \\@ref(tab:CycloneDataLATEX)'
 }`
-show the number of severe cyclones (also called hurricanes or typhoons) in the Australian region, for each year from 16969 to 2005.
+show the number of severe cyclones (also called hurricanes or typhoons) in the Australian region, for each year from 1969 to 2005.
 
 A frequency table can be constructed by binning each discrete value individually (Table\ \@ref(tab:CycloneFrequencyTable), left table) or grouped in pairs (Table\ \@ref(tab:CycloneFrequencyTable), right table).
 :::
@@ -66,14 +66,18 @@ CC <- cbind(Cyclones$Year,
 
 ```{r CyclonesLATEX}
 if( knitr::is_latex_output() ) {
-  T1 <- kable( pad(CC[1:5, ],
+  
+  CC2 <- rbind(CC[1:5, ],
+               c("$\\vdots$", "$\\vdots$") )
+  T1 <- kable( pad(CC2,
                    surroundMaths = TRUE,
-                   targetLength = c(4, 2),
+                   targetLength = c(4, 1),
                    digits = c(0, 0)),
                format = "latex",
                longtable = FALSE,
                row.names = FALSE,
                escape = FALSE,
+               linesep = "",
                align = c("c", "c"),
                digits = c(0, 0),
                col.names = c("Year", 
@@ -81,14 +85,17 @@ if( knitr::is_latex_output() ) {
                booktabs = TRUE) %>%
     row_spec(0, bold = TRUE)
 
-  T2 <- kable( pad(CC[33:37, ],
+  CC3 <- rbind(c("$\\vdots$", "$\\vdots$"),
+               CC[33:37, ])
+  T2 <- kable( pad(CC3,
                    surroundMaths = TRUE,
-                   targetLength = c(4, 2),
+                   targetLength = c(4, 1),
                    digits = c(0, 0)),
                format = "latex",
                longtable = FALSE,
                row.names = FALSE,
                escape = FALSE,
+               linesep = "",
                digits = c(0, 0),
                align = c("c", "c"),
                col.names = c("Year", 
@@ -247,7 +254,7 @@ The data in
 give the weights of $44$ babies born in a hospital on one day [@mypapers:Dunn:dataset:1999; @data:Steele:BabyBoom], plus the gender of each baby, and the number of minutes after midnight of the birth.
 The data are given in the order in which the births occurred.
 
-To display the distribution, the weights can be grouped into clearly-defined weight intervals (Table\ \@ref(tab:BabyBoomTable), left column).
+To display the distribution of birth weights, the weights can be grouped into clearly-defined weight intervals (Table\ \@ref(tab:BabyBoomTable), left column).
 Alternatively, the breaks between the bins can be given to one more decimal place than the data to avoid observations landing exactly on the bin divisions (final column).
 
 The table also gives percentages in each bin; for example, the percentage of babies over $4.0$\ kg is $1/44 \times 100 = 2.27$%, or about $2$%. 
@@ -505,6 +512,7 @@ This means care is needed when defining boundaries between bins, and ensuring cl
 One way to do this is to create boundaries between bins to one more decimal place than the given data.
 
 The choice of bin size and bin boundaries can substantially change how a histogram displays the data (Examples\ \@ref(exm:Histograms) and \@ref(exm:BinWidthFaithful)).
+For large data sets, these choices tend to matter less.
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
@@ -726,7 +734,7 @@ if (knitr::is_latex_output()){
 
 
 
-```{r BBHistTwo, fig.align="center", fig.width=7.0, fig.height=2.15, out.width='100%', fig.cap="Histograms can be constructed in different ways to manage observations on the boundary of bins. Left: boundary values counted in the higher box. Centre: boundary values counted in the lower box. Right: define boundaries with one more decimal places that the data." }
+```{r BBHistTwo, fig.align="center", fig.width=7.0, fig.height=2.15, out.width='100%', fig.cap="Histograms can be constructed in different ways to manage observations on the boundary of bins. Left: boundary values counted in the higher box. Centre: boundary values counted in the lower box. Right: defining boundaries with one more decimal places than the data." }
 par( mfrow = c(1, 3))
 
   Wts <- sort( BB$Weight )
@@ -1157,7 +1165,7 @@ if (knitr::is_latex_output()){
       points(  i, 4, 
                pch = 1, 
                col = plotDark, 
-               lwd = 3, 
+               lwd = 3,  
                cex = 4 )
     }
 
@@ -1337,71 +1345,71 @@ if (knitr::is_latex_output()){
 if (knitr::is_latex_output()){
   Wts <- sort(BB$Weight)
   
-    # Produce the stemplot
-    stemgrid.x <- 34
-    stemgrid.y <- 4
-    stemcounts <- array(1, dim = stemgrid.y)
+  # Produce the stemplot
+  stemgrid.x <- 34
+  stemgrid.y <- 4
+  stemcounts <- array(1, dim = stemgrid.y)
+  
+  plot( expand.grid(1:stemgrid.x, 1:stemgrid.y), 
+        type = "n",
+        xlab = "2 | 6 means 2.6 kg",
+        ylab = "",
+        main = "Stemplot of birthweights",
+        xlim = c(0, 34),
+        ylim = c(0.8, 4.2),
+        axes = FALSE)
+  
+  mtext("1", 
+        side = 2, 
+        line = 1, 
+        las = 1, 
+        at = 4)
+  mtext("2", 
+        side = 2, 
+        line = 1, 
+        las = 1, 
+        at = 3)
+  mtext("3", 
+        side = 2, 
+        line = 1, 
+        las = 1, 
+        at = 2)
+  mtext("4", 
+        side = 2, 
+        line = 1, 
+        las = 1, 
+        at = 1)
+  
+  # Divide the stems and leaves
+  abline(v = 0, 
+         lwd = 2)
+  
+  # Plot leaves
+  for (j in (1:44) ){
+    if ( Wts[j] < 2) {
+      points( stemcounts[1], 4, 
+              pch = substr( as.character(Wts[j] - 1), 3, 3) )
+      stemcounts[1] <- stemcounts[1] + 1
+    } 
     
-    plot( expand.grid(1:stemgrid.x, 1:stemgrid.y), 
-          type = "n",
-          xlab = "2 | 6 means 2.6 kg",
-          ylab = "",
-          main = "Stemplot of birthweights",
-          xlim = c(0, 34),
-          ylim = c(0.8, 4.2),
-          axes = FALSE)
+    if ( (Wts[j] >= 2) & (Wts[j] < 3) ) {
+      points( stemcounts[2], 3, 
+              pch = substr( as.character(Wts[j] - 2), 3, 3) )
+      stemcounts[2] <- stemcounts[2] + 1
+    }
     
-    mtext("1", 
-          side = 2, 
-          line = 1, 
-          las = 1, 
-          at = 4)
-    mtext("2", 
-          side = 2, 
-          line = 1, 
-          las = 1, 
-          at = 3)
-    mtext("3", 
-          side = 2, 
-          line = 1, 
-          las = 1, 
-          at = 2)
-    mtext("4", 
-          side = 2, 
-          line = 1, 
-          las = 1, 
-          at = 1)
-    
-    # Divide the stems and leaves
-    abline(v = 0, 
-           lwd = 2)
-    
-    # Plot leaves
-    for (j in (1:44) ){
-      if ( Wts[j] < 2) {
-        if (j != i) points( stemcounts[1], 4, 
-                            pch = substr( as.character(Wts[j] - 1), 3, 3) )
-        stemcounts[1] <- stemcounts[1] + 1
-      } 
-      
-      if ( (Wts[j] >= 2) & (Wts[j] < 3) ) {
-        if (j != i ) points( stemcounts[2], 3, 
-                            pch = substr( as.character(Wts[j] - 2), 3, 3) )
-        stemcounts[2] <- stemcounts[2] + 1
-      }
-      
-      if ( (Wts[j] >= 3) & (Wts[j] < 4) ) { 
-        if (j != i ) points( stemcounts[3], 2, 
-                            pch = substr( sprintf("%1.1f", Wts[j]), 3, 3) )
-        stemcounts[3] <- stemcounts[3] + 1
-      }
-      if ( Wts[j] >= 4 ) {
-        points( stemcounts[4], 1, 
-                            pch = substr( as.character(Wts[j] - 4), 3, 3) )
-        stemcounts[4] <- stemcounts[4] + 1
-      }
+    if ( (Wts[j] >= 3) & (Wts[j] < 4) ) { 
+      points( stemcounts[3], 2, 
+              pch = substr( sprintf("%1.1f", Wts[j]), 3, 3) )
+      stemcounts[3] <- stemcounts[3] + 1
+    }
+    if ( Wts[j] >= 4 ) {
+      points( stemcounts[4], 1, 
+              pch = substr( as.character(Wts[j] - 4), 3, 3) )
+      stemcounts[4] <- stemcounts[4] + 1
     }
   }
+}
 ```
 
 
@@ -1410,7 +1418,7 @@ For stemplots:
 
 * place the larger digit (e.g., kilograms) on the left (stems).
 * place the smaller digit (e.g., first decimal of a kilogram) on the right (leaves).
-* some data do not work well with stemplots.
+* some data do not work well.
 * sometimes, data may need suitable rounding before creating the stemplot (the baby weights were originally given to three decimal places).
 * the numbers in each row should be evenly spaced, with the numbers in the columns under each other, so the length of each stem is proportional to the number of observations.
 * within each stem, the observations are *ordered* so patterns can be seen.
@@ -1895,7 +1903,7 @@ if (knitr::is_latex_output()){
 
 Dot charts show the original data on a single (usually horizontal) axis, with each observation represented by a dot (or other symbol).
 Sometimes, observations are identical, or nearly so, and to avoid points being plotted on top of other points (called *overplotting*),\index{Overplotting}
-are *jittered*\index{Overplotting!jittering} (placed with some added randomness in the vertical direction)\index{Overplotting!stacking} or *stacked* (plotted above each other).
+the points are *jittered*\index{Overplotting!jittering} (placed with some added randomness in the vertical direction)\index{Overplotting!stacking} or *stacked* (plotted above each other).
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -1942,7 +1950,7 @@ The points have been *stacked*.\index{Overplotting!stacking}
 :::
 
 
-```{r FriesBabiesPDF, fig.cap="A dot chart of the baby-weight data (left panel), where similar observations are jittered. Gorilla chest-beating rates (right panel), where similar observations are stacked.", fig.align="center", fig.width=9, fig.height=2.15, out.width='95%'}
+```{r FriesBabiesPDF, fig.cap="Left; a dot chart of the baby-weight data, where similar observations are jittered. Right: a dot chart of the gorilla chest-beating rates, where similar observations are stacked.", fig.align="center", fig.width=9, fig.height=2.15, out.width='95%'}
 if (knitr::is_latex_output()){
   
   par( mfrow = c(1, 2),
@@ -2279,7 +2287,7 @@ par(mfrow = c(1, 1))
 
 ::: {.example #BimodalFaithful name="Bimodal data"}
 The *Old Faithful* geyser in Yellowstone National Park (USA) erupts regularly [@hardle1991smoothing].
-The original histogram for the time between eruptions (Fig.\ \@ref(fig:BimodalFaithfulHistoChangeBins), left panel) is bimodal, with peaks near $55$\ min and $80$\ min.
+The histogram for the time between eruptions (Fig.\ \@ref(fig:BimodalFaithfulHistoChangeBins), top left panel) is bimodal, with peaks near $55$\ min and $80$\ min.
 :::
 
 
@@ -2391,14 +2399,7 @@ htmltools::tags$video(src ="./Movies/mu.mp4",
 ::::
 
 
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/jersey-cow-4269262_640.jpg" width="200px"/>
-</div>
-
-
-
-
-::: {.example #JerseyCows name="A small dataset"}
+::: {.example #SmallDataSet name="A small dataset"}
 Consider a small dataset for answering this descriptive RQ: 'For gorillas aged under $20$, what is the average chest-beating rate?'
 The population mean rate (denoted $\mu$) is to be estimated.
 
@@ -2412,14 +2413,6 @@ Measurements were taken from $14$ young gorillas
   '(Fig\\ \\@ref(fig:GorillasStem), left panel).'
 }`
 :::
-
-
-```{r BFatData}
-BFat <- c(4.8, 6.5, 5.2, 4.5, 5.2, 5.7, 5.4, 4.8, 5.2, 5.2)
-BFat <- array( BFat, 
-               dim = c(1, 10))
-
-```
 
 
 The sample mean is the 'balance point' of the
