@@ -6,16 +6,19 @@ showDesignConsiderations <- function(studyType="Experiment", addIcons = FALSE){
   pos <- array(NA, dim = c(15, 2))
   
   # Problems
-  pos[1, ] <- c(0.45, 0.75) # Confounding
-  pos[2, ] <- c(0.45, 0.60) # Hawthorne
-  pos[3, ] <- c(0.45, 0.37) # Placebo
+  # pos[1, ] <- c(0.45, 0.75) # Confounding
+  # pos[2, ] <- c(0.45, 0.60) # Hawthorne
+  # pos[3, ] <- c(0.45, 0.37) # Placebo
+  pos[1, ] <- c(0.45, 0.60) # Confounding
+  pos[2, ] <- c(0.45, 0.45) # Hawthorne
+  pos[3, ] <- c(0.45, 0.30) # Placebo
   pos[4, ] <- c(0.45, 0.15) # Observer
   pos[5, ] <- c(0.45, 0.00) # Carry-over
   
   # Solutions
-  pos[7, ]  <- c(0.8, 0.90) # Extraneous vars/Analysis
-  pos[8, ]  <- c(0.1, 0.75) # Random allocation
-  pos[13, ] <- c(0.45, 0.90) # Blocking
+  pos[7, ]  <- c(0.57, 0.85) # Analysis
+  pos[8, ]  <- c(0.1, 0.60) # Random allocation
+  pos[13, ] <- c(0.33, 0.85) # Blocking
   pos[14, ] <- c(0.8, 0.75) # Restrictions
   
   pos[9, ]  <- c(0.8, 0.60) # Blind individuals
@@ -28,7 +31,12 @@ showDesignConsiderations <- function(studyType="Experiment", addIcons = FALSE){
   
   # Confounding, to...
   extendArrowStart <- c(0.07, 0) # Move the arrow start out a bit, closer to edge of the box
-  curvedarrow(from = pos[1, ], # Confounding
+  if (addIcons){
+    extendArrowStartTopRow <- c(0.07, 0) # Move the arrow start out a bit, closer to edge of the box
+  } else {
+    extendArrowStartTopRow <- c(0, 0) # Move the arrow start out a bit, closer to edge of the box
+  }
+  curvedarrow(from = pos[1, ] + extendArrowStartTopRow, # Confounding
               to = pos[13, ],  # Blocking 
               curve = 0,
               arr.pos = 0.55,
@@ -39,7 +47,7 @@ showDesignConsiderations <- function(studyType="Experiment", addIcons = FALSE){
               curve = 0, 
               lty = 1, 
               lwd = 2)
-  curvedarrow(from = pos[1, ] + extendArrowStart, # Confounding 
+  curvedarrow(from = pos[1, ] + extendArrowStartTopRow, # Confounding 
               to = pos[7, ],   # Analysis
               curve = 0, 
               lty = 1, 
@@ -61,7 +69,7 @@ showDesignConsiderations <- function(studyType="Experiment", addIcons = FALSE){
               lwd = 2 ) 
   text( x = mean( pos[c(1, 8), 1]) - delta,
         y = mean( pos[c(1, 8), 2]),
-        "Experiments",
+        "True\nexperiments",
         cex = 0.90,
         pos = 3)
   text( x = mean( pos[c(1, 8), 1]) - delta,
@@ -108,42 +116,43 @@ showDesignConsiderations <- function(studyType="Experiment", addIcons = FALSE){
             lab = "Confounding", 
             radx = 0.10, 
             rady = 0.055, 
-            adj = 0.6,
+            adj = ifelse(addIcons, 0.6, 0.5),
             shadow.size = 0,
-            box.col = ExtraneousColour,
-            lcol = ExtraneousColour)
+            box.col = ResponseColour,
+            lcol = ResponseColour)
   textrect( pos[2, ], 
             lab = "Hawthorne\n effect", 
             radx = 0.10, 
             rady = 0.055, 
-            adj = 0.6,
+            adj = ifelse(addIcons, 0.6, 0.5),
             shadow.size = 0,
-            box.col = ExtraneousColour,
-            lcol = ExtraneousColour)
+            box.col = ResponseColour,
+            lcol = ResponseColour)
   textrect( pos[3, ], 
             lab = "Placebo\neffect", 
             radx = 0.10, 
             rady = 0.055, 
-            adj = 0.6,
+            adj = ifelse(addIcons, 0.6, 0.5),
             shadow.size = 0,
-            box.col = ExtraneousColour,
-            lcol = "black") # As experimental only
+            box.col = ResponseColour,
+            lcol = "black",
+            lwd = 2) # As experimental only
   textrect( pos[4, ], 
             lab = "Observer\neffect", 
             radx = 0.10, 
             rady = 0.055, 
-            adj = 0.6,
+            adj = ifelse(addIcons, 0.6, 0.5),
             shadow.size = 0,
-            box.col = ExtraneousColour,
-            lcol = ExtraneousColour)
+            box.col = ResponseColour,
+            lcol = ResponseColour)
   textrect( pos[5, ], 
             lab = "Carry-over\neffect", 
             radx = 0.10, 
             rady = 0.055, 
-            adj = 0.6,
+            adj = ifelse(addIcons, 0.6, 0.5),
             shadow.size = 0,
-            box.col = ExtraneousColour,
-            lcol = ExtraneousColour)
+            box.col = ResponseColour,
+            lcol = ResponseColour)
   
   
   
@@ -155,9 +164,9 @@ showDesignConsiderations <- function(studyType="Experiment", addIcons = FALSE){
             box.col = DesignColour,
             lcol = DesignColour)
   textrect( pos[8, ], 
-            lab = "Random\nallocation", 
+            lab = "Random\nallocation to\ncomparison\ngroups", 
             radx = 0.08, 
-            rady = 0.055, 
+            rady = 0.12, 
             shadow.size = 0,
             col = ifelse( studyType =="Experiment", "black", "grey"), # TEXT COLOUR
             box.col = ifelse(studyType == "Experiment", DesignColour, "white"), # BOX FILL COLOUR
