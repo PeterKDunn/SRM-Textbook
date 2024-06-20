@@ -1,6 +1,7 @@
 BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
                         numberImages, # 
-                        iteration){ # Which to show
+                        iteration,  # Which to show
+                        main = "Trying to find the balance point..."){
   # Parameters
   
   #locate.fulcrum <- 5
@@ -36,9 +37,7 @@ BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
   data.width <- 0.02
   data.table <- table(beat)
   
-  data.counter <- array( 0, 
-                         dim = length(data.table) )
-  
+
   base.counter <- 4
   for (i in (1:length(data.table))){
     
@@ -55,6 +54,7 @@ BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
     
     base.counter <- base.counter + 5
   }
+cat("data.table:",data.table,"\n")
   
   levelPos <- Pos
   
@@ -159,7 +159,7 @@ BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
         y = c(-0.5, 1.15),
         type = "n",
         axes = FALSE,
-        main = "Trying to find the balance point...",
+        main = main,
         xlab = "",
         ylab = "")
   
@@ -175,22 +175,46 @@ BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
   # Draw data
   base <- 4
   for (i in 1:length(data.table)){ # For each observation
-    polygon( x = Pos[(1:5) + base, 1], 
-             y = Pos[(1:5) + base, 2], 
-             col = grey(0.8))
-points(Pos[1:5,])    
-    base <- base + 5
+    #polygon( x = Pos[(1:5) + base, 1],
+    #         y = Pos[(1:5) + base, 2], 
+    #         col = grey(0.8))
+    
+    #cat( Pos[1 + base, ], "\n")
+    #cat( Pos[2 + base, ], "\n")
+    #cat( Pos[3 + base, ], "\n")
+    #cat( Pos[4 + base, ], "\n")
+    #cat( Pos[5 + base, ], "\n\n")
+
+    pointsXlo <- mean( Pos[c(1, 4) + base + data.width, 1])
+    pointsXhi <- mean( Pos[c(2, 3) + base + data.width, 1])
+    pointsYlo <- mean( Pos[c(1, 4) + base + data.width, 2]) + h.ruler
+    pointsYhi <- mean( Pos[c(2, 3) + base + data.width, 2])
+
+    locateX <- seq(pointsXlo, 
+                   pointsXhi, 
+                   length = data.table[i] )
+    locateY <- seq(pointsYlo,
+                   pointsYhi,
+                   length = data.table[i])
+    
+    
+      points(x = locateX,
+             y = locateY,
+       pch = 19,
+       cex = 1.6)    
+
+    base <- base + 5 # Because 5 elements of Pos[*, ] are used to define the box, so this moves to the *next* point that starts defining the next box
   }
   
   # Draw "number line"
   xLineLabs <- seq( min(beat), 
                     max(beat), 
                     by = 0.5)
-  segments( x0 = xLineLabs,
+  segments( x0 = xLineLabs, # The tick marks
             y0 = 0,
             y1 = -0.05 * h.fulcrum,
             col = grey(0.2) )
-  text(x = xLineLabs,
+  text(x = xLineLabs, # The labels
        y = -0.05 * h.fulcrum,
        labels = xLineLabs,
        cex = 0.75,
@@ -201,7 +225,7 @@ points(Pos[1:5,])
   plotDataPlaces <- seq(6, dim(Pos)[1], 
                         by = 5)
   text( x = Pos[plotDataPlaces, 1] + data.width,
-        y = Pos[plotDataPlaces, 2] + data.ht,
+        y = Pos[plotDataPlaces, 2] + 2 * data.ht,
         labels = names(data.table),
         srt = (-180 * theta / pi) + 90,
         cex = 0.75,
