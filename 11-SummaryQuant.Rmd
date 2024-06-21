@@ -544,9 +544,6 @@ Notice that the choice impacts the look of the histogram.
 
 
 
-
-
-
 ```{r animation.hook="gifski", interval=0.55, fig.height=7}
 ### BUILD A HISTOGRAM
 if (knitr::is_html_output()) {
@@ -564,7 +561,7 @@ if (knitr::is_html_output()) {
     plot( expand.grid(1:datagrid.x, 
                       1:datagrid.y),
           type = "n",
-          ylim = c(0.7, 4.3),
+          ylim = c(0.7, 4.4),
           main = "The data (in order)",
           xlab = "",
           ylab = "",
@@ -2480,7 +2477,7 @@ if (knitr::is_latex_output()){
 #knitr::include_graphics("OtherImages/SPACER.png")
 
 if (knitr::is_latex_output()){
-  FindMean( mean(GYoung), 
+  FindMean( mean(GYoung),  
             numberImages = 1, 1 )
 }
 ```
@@ -2703,25 +2700,27 @@ LessThanMean <- sum( MaryRiver$Mean[MaryRiver$Month == 2] < 1123.2,
 Consider the daily streamflow at the Mary River (Bellbird Creek) during February again (Example\ \@ref(exm:Averages)): the *mean* daily streamflow is $1\ 123$\ ML, and the *median* daily streamflow is $146.1$\ ML.
 Which is 'best' for measuring the average streamflow?
 
-For these data, about $86$% of the observations are *less* than the mean, but $50$% the values are less than the median (by definition).
+For these data, about $86$% of the observations are *less* than the mean, but $50$% of the observations are less than the median (by definition).
 The mean is hardly a *central* value...
 
-A dot chart of the daily streamflow (Fig.\ \@ref(fig:DailyStreamflow); jittering)\index{Overplotting!jittering} shows that the data are *very* highly right-skewed, with many *very* large outliers\index{Outliers} (presumably during flood events); the extreme outliers are seen in the frequency table too (Table\ \@ref(tab:DailyStreamflowTab)).
+A dot chart of the daily streamflow (Fig.\ \@ref(fig:DailyStreamflow); jittered)\index{Overplotting!jittering} shows that the data are *very* highly right-skewed, with many *very* large outliers\index{Outliers} (presumably during flood events).
+
+
 
 
 ```{r DailyStreamflow, fig.cap="A dot plot of the daily streamflow at Mary River from 1960 to 2017, for February ($n = 1650$). The vertical grey line is the mean value. Many large outliers exist, so the data near zero are all squashed together. Note: values have been jittered in the vertical direction, but overplotting is still present near $0$.\\index{Overplotting}", fig.align="center", out.width='90%', fig.width=9, fig.height=3}
 par(mfrow = c(1, 1))
 set.seed(183763286)
-stripchart(MaryRiver$Mean[MaryRiver$Month == 2], 
+stripchart(MaryRiver$Mean[MaryRiver$Month == 2],
            main = "Dot plot of daily streamflow at\nMary Creek (Bell River) in Feb.",
            xlab = "Daily streamflow (in ML)",
            sub = "(From 01 October 1959 to 17 January 2019)",
-           method = "jitter", 
-           pch = 19, 
+           method = "jitter",
+           pch = 19,
            axes = FALSE,
            col = grey(0.3),
-           jitter = 0.75, 
-           ylim = c(0.2, 1.8), 
+           jitter = 0.75,
+           ylim = c(0.2, 1.8),
            cex = 0.5)
 axis(side = 1,
      at = seq(0, 160000, by = 50000),
@@ -2731,97 +2730,98 @@ axis(side = 1,
                 "150,000"))
 box()
 
-abline( v = Mn[2,2], 
+abline( v = Mn[2,2],
         col = "grey")
 
 ```
 
 
-```{r DailyStreamflowTab}
-out <- hist(MaryRiver$Mean[MaryRiver$Month == 2],
-            breaks = seq(0, 160000,
-                         by = 20000),
-            right = FALSE,
-            plot = FALSE)
-lowerLim <- out$breaks[ -length(out$breaks)]
-upperLim <- out$breaks[ -1 ]
-Intervals <- paste0("$",
-                   format(lowerLim,
-                          big.mark = ",",
-                          trim = TRUE,
-                          scientific = FALSE),
-                   "$ to under $", 
-                   format(upperLim,
-                          big.mark = ",",
-                          trim = TRUE,
-                          scientific = FALSE),
-                   "$")
-MaryRiverTable <- cbind(Intervals = Intervals, 
-                        Counts = out$counts)
+<!-- ```{r DailyStreamflowTab} -->
+<!-- out <- hist(MaryRiver$Mean[MaryRiver$Month == 2], -->
+<!--             breaks = seq(0, 160000, -->
+<!--                          by = 20000), -->
+<!--             right = FALSE, -->
+<!--             plot = FALSE) -->
+<!-- lowerLim <- out$breaks[ -length(out$breaks)] -->
+<!-- upperLim <- out$breaks[ -1 ] -->
+<!-- Intervals <- paste0("$", -->
+<!--                    format(lowerLim, -->
+<!--                           big.mark = ",", -->
+<!--                           trim = TRUE, -->
+<!--                           scientific = FALSE), -->
+<!--                    "$ to under $", -->
+<!--                    format(upperLim, -->
+<!--                           big.mark = ",", -->
+<!--                           trim = TRUE, -->
+<!--                           scientific = FALSE), -->
+<!--                    "$") -->
+<!-- MaryRiverTable <- cbind(Intervals = Intervals, -->
+<!--                         Counts = out$counts) -->
 
 
-if( knitr::is_latex_output() ) {
-  
-  T1 <- knitr::kable( pad(MaryRiverTable[1:4, ],
-                          surroundMaths = TRUE,
-                          targetLength = c(0, 4),
-                          digits = 0),
-                      format = "latex",
-                      col.names = c("streamflow (ML)",
-                                    "of days"),
-                      align = c("c", "r"),
-                      escape = FALSE,
-                      booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Daily" = 1,
-                        "Number" = 1),
-                      line = FALSE,
-                      bold = TRUE)
+<!-- if( knitr::is_latex_output() ) { -->
 
-  T2 <- knitr::kable(pad(MaryRiverTable[5:8, ],
-                         surroundMaths = TRUE,
-                         targetLength = c(0, 4),
-                         digits = 0),
-                     format = "latex",
-                      col.names = c("streamflow (ML)",
-                                    "of days"),
-                      align = c("c", "r"),
-                      escape = FALSE,
-                      booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-    add_header_above( c("Daily" = 1,
-                        "Number" = 1),
-                      line = FALSE,
-                      bold = TRUE)
-  
-  out2 <- knitr::kables(list(T1, T2),
-                        format = "latex",
-                        caption = "Mary River daily streamflow for February (in ML). The mean value is 1\ 123ML.",
-                        label = "DailyStreamflowTab") %>% 
-    kable_styling(font_size = 8)
-  
-  prepareSideBySideTable(out2)
-}
+<!--   T1 <- knitr::kable( pad(MaryRiverTable[1:4, ], -->
+<!--                           surroundMaths = TRUE, -->
+<!--                           targetLength = c(0, 4), -->
+<!--                           digits = 0), -->
+<!--                       format = "latex", -->
+<!--                       col.names = c("streamflow (ML)", -->
+<!--                                     "of days"), -->
+<!--                       align = c("c", "r"), -->
+<!--                       escape = FALSE, -->
+<!--                       booktabs = TRUE) %>% -->
+<!--     row_spec(0, bold = TRUE) %>% -->
+<!--     add_header_above( c("Daily" = 1, -->
+<!--                         "Number" = 1), -->
+<!--                       line = FALSE, -->
+<!--                       bold = TRUE) -->
 
-if( knitr::is_html_output() ) {
-  kable( pad(MaryRiverTable,
-             surroundMaths = TRUE,
-             targetLength = c(0, 4),
-             digits = 0),
-         format = "html",
-         col.names = c("Daily streamflow (ML)",
-                       "Number of days"),
-         align = c("c", "r"),
-         booktabs = TRUE,
-         longtable = FALSE,
-         caption = "Mary River daily streamflow for February (in ML). The mean value is 1\ 123ML.") %>%
-    row_spec(0, bold = TRUE)
-}
+<!--   T2 <- knitr::kable(pad(MaryRiverTable[5:8, ], -->
+<!--                          surroundMaths = TRUE, -->
+<!--                          targetLength = c(0, 4), -->
+<!--                          digits = 0), -->
+<!--                      format = "latex", -->
+<!--                       col.names = c("streamflow (ML)", -->
+<!--                                     "of days"), -->
+<!--                       align = c("c", "r"), -->
+<!--                       escape = FALSE, -->
+<!--                       booktabs = TRUE) %>% -->
+<!--     row_spec(0, bold = TRUE) %>% -->
+<!--     add_header_above( c("Daily" = 1, -->
+<!--                         "Number" = 1), -->
+<!--                       line = FALSE, -->
+<!--                       bold = TRUE) -->
 
-```
+<!--   out2 <- knitr::kables(list(T1, T2), -->
+<!--                         format = "latex", -->
+<!--                         caption = "Mary River daily streamflow for February (in ML). The mean value is 1\ 123ML.", -->
+<!--                         label = "DailyStreamflowTab") %>% -->
+<!--     kable_styling(font_size = 8) -->
+
+<!--   prepareSideBySideTable(out2) -->
+<!-- } -->
+
+<!-- if( knitr::is_html_output() ) { -->
+<!--   kable( pad(MaryRiverTable, -->
+<!--              surroundMaths = TRUE, -->
+<!--              targetLength = c(0, 4), -->
+<!--              digits = 0), -->
+<!--          format = "html", -->
+<!--          col.names = c("Daily streamflow (ML)", -->
+<!--                        "Number of days"), -->
+<!--          align = c("c", "r"), -->
+<!--          booktabs = TRUE, -->
+<!--          longtable = FALSE, -->
+<!--          caption = "Mary River daily streamflow for February (in ML). The mean value is 1\ 123ML.") %>% -->
+<!--     row_spec(0, bold = TRUE) -->
+<!-- } -->
+
+<!-- ``` -->
 
 
-The streamflow data are *very* highly right skewed, which is important:
+
+The streamflow data are *very* highly right skewed, which is important for choosin between the mean and the median:
 
 * *Means* are best used for approximately symmetric data: the mean is influenced by outliers and skewness.
 * *Medians* are best used for data that are highly skewed or contain outliers: the median is *not* influenced by outliers and skewness.
