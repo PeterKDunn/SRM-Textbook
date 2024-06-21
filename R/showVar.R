@@ -64,6 +64,7 @@ showVar <- function(){
           sprintf("%.4f", (sort(beat)[i] - locate.x)),
           col = ifelse( locate.x - sort(beat)[i] > 0, "red", "green4"),
           adj = 1,
+          font = ifelse( (sort(beat)[i] - locate.x) < 0, 2, 3), # ITALIC for positive; BOLD for negative (so - signs more visible)
           cex = 0.95)
     
     # The distances^2

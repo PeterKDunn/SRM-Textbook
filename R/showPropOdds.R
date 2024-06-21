@@ -79,7 +79,9 @@ showPropOdds <- function(){
   
   # Divider
   abline(h = 0.65, 
-         col = "grey")
+         col = "grey",
+         lty = 2,
+         lwd = 2)
   
   # Debugging:
   #box()

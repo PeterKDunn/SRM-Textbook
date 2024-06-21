@@ -142,11 +142,13 @@ if (knitr::is_html_output()) {
                caption = "Demographic information for the AV data for $400$ respondents") %>%
     kable_styling(font_size = 8) %>%
     row_spec(0, bold = TRUE) %>%
-    pack_rows( "Gender",
+    pack_rows( "Gender ($n = 400$)",
                start_row = 1,
+               escape = FALSE,
                end_row = 2) %>%
-    pack_rows( "Age group",
+    pack_rows( "Age group ($n = 400$)",
                start_row = 3,
+               escape = FALSE,
                end_row = 8) 
 }
 ```
@@ -275,7 +277,14 @@ For the AV study in Example\ \@ref(exm:AVstudy), a dot chart of the age group of
 
 par(mfrow = c(2, 2))
 par( mar = c(6, 4, 4, 2) + 0.1 )
-cols <- viridis(9)[3:8]
+
+if( knitr::is_latex_output()) {
+  cols <- grey.colors(n = 6,
+                      start = 0.15,
+                      end = 0.9)
+} else {
+  cols <- viridis(9)[3:8]
+}
 
 AVdemographics2 <- AVdemographics
 AVdemographics2.names <- names(AVdemographics2)
@@ -372,7 +381,7 @@ For bar charts:
 
 * place the qualitative variable on the horizontal or vertical axis (and label with the levels of the variable).
 * use counts or percentages on the other axis.
-* for nominal data, levels can be ordered any way: *Think about the most helpful order*.
+* for nominal data, levels can be ordered any way: *think about the most helpful order*.
 * bars have gaps between bars, as the bars represent distinct categories.
 
 
@@ -398,7 +407,7 @@ Pie charts may present challenges:
 * Pie charts only work when *all* options are present ('exhaustive').
 * Pie charts are difficult to use with levels having zero or small counts (see Example\ \@ref(fig:PieSmallCounts)).
 * Pie charts are difficult to interpret when many categories are present.
-* Pie charts are hard to read: Humans compare *lengths* (bar and dot charts) better than *angles* (pie charts) [@data:Friel:Graphs].
+* Pie charts are hard to read: humans compare *lengths* (bar and dot charts) better than *angles* (pie charts) [@data:Friel:Graphs].
 
 
 ::: {.example #PieUnsuitable name="Pie chart unsuitable"}
@@ -473,7 +482,7 @@ Since $n = 400$, the median response will be halfway between the location of the
 * the *median* response to the walking question is 'Neutral'.
 :::
 
-Qualitative cannot also be *numerically* summarised using proportions, percentage (Sect.\ \@ref(QualitativeProportionsPercentages)) or odds (Sect.\ \@ref(QualOdds)).
+Qualitative data can also be *numerically* summarised using proportions, percentages (Sect.\ \@ref(QualitativeProportionsPercentages)) or odds (Sect.\ \@ref(QualOdds)).
 Importantly, these numerical quantities are computed from a sample (i.e., are statistics; Def.\ \@ref(def:Statistic)), even though the whole population is of interest (i.e., the parameter; Def.\ \@ref(def:Parameter)).
 
 Means are generally not suitable for numerically summarising qualitative data.
@@ -515,7 +524,7 @@ The symbol $\hat{p}$ is pronounced 'pee-hat', and refers to a *sample* proportio
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-As always, only one possible samples is studied.
+As always, only one possible sample is studied.
 *Statistics* are estimates of *parameters*, and the value of the *statistic* is not the same for every possible *sample*.
 :::
 
@@ -555,13 +564,14 @@ The *odds* are how many *times* an event *happens* compared to the event *not ha
 :::
 
 
-::: {.example #AVOddsMale name="Odds males"}
+::: {.example #AVOddsMale name="Odds of males"}
 The AV data in Table\ \@ref(tab:AVtable1) includes $204$ females and $196$ males.
-The *odds* that a respondent is female is $1.04$, as found above.
-The odds is greater than one, as the number of females is larger than the number of males.
+The *odds* that a respondent is female are $1.04$, as found above.
+The odds are greater than one, as the number of females is larger than the number of males.
+Alternatively, there are $104$ females for every $100$ males.
 
-The *odds* that a respondent is male is $196/204 = 0.96$; there are $0.96$ *times* as many males as females.
-The odds is less than one, as the number of males is smaller than the number of females.
+The *odds* that a respondent is male are $196/204 = 0.96$; there are $0.96$ *times* as many males as females.
+The odds are less than one, as the number of males is smaller than the number of females.
 Alternatively, there are $96$ males for every $100$ females.
 :::
 
@@ -587,14 +597,14 @@ When interpreting odds:
 * odds are *less* than $1$ mean the event is *less* likely to happen than not.
 
 *Population* odds are almost always unknown. 
-Instead, the *population* odds (the parameter) is estimated by a *sample* odds (a statistic).\
-No symbol is commonly-used to denote odds.
+Instead, the *population* odds (the parameter) is estimated by a *sample* odds (a statistic).
+No symbol is commonly used to denote odds.
 
 Take care: proportions and odds are similar, but are different ways of numerically summarising quantitative data (Fig.\ \@ref(fig:PropOdds)).
 
 
-```{r PropOdds, fig.align="center", out.width='90%', fig.width=9, fig.height=3.75, fig.cap="Proportions (left) are the number of interest divided by the total number; odds (right) are the number of interest divided by the rest."}
-source("R/showPropOdds.R")  
+```{r PropOdds, fig.align="center", out.width='90%', fig.width=9, fig.height=2.0, fig.cap="Proportions (left) are the number of interest divided by the total number; odds (right) are the number of interest divided by the rest."}
+source("R/showPropOdds.R")   
 showPropOdds()  
 ```
 
@@ -611,7 +621,7 @@ An example of a summary table is given in the next section.
 
 @lopez2022farmers recorded data about access to water for three rural communities in Cameroon (see Sect. \@ref(WaterAccessQuant)).
 Numerous qualitative variables are recorded; some are displayed in Fig.\ \@ref(fig:WaterAcessQual), and a summary table in Table\ \@ref(tab:WaterAccessQual).
-Notice that the levels of the two ordinal variables are displayed in the natural order.
+Notice that the levels of the two ordinal variables are displayed in their natural order.
 
 The distance to the nearest water source is usually less than $1$\ km, and the wait is often over $15$\ mins.
 The most common water source is a bore ($68.6$%).
@@ -727,13 +737,15 @@ if( knitr::is_latex_output() ) {
         booktabs = TRUE,
         align = c("r")) %>%
     row_spec(0, bold = TRUE) %>%
-    pack_rows("Distance to water source",
+    pack_rows("Distance to water source ($n = 121$)",
               start_row = 1,
               end_row = 3,
+              escape = FALSE,
               bold = TRUE) %>%
-    pack_rows("Wait time at water source",
+    pack_rows("Wait time at water source ($n = 120$)",
               start_row = 4,
               end_row = 6,
+              escape = FALSE,
               bold = TRUE)
   
   T2 <- kable( WaterAccessTable2B,
@@ -745,18 +757,19 @@ if( knitr::is_latex_output() ) {
         booktabs = TRUE,
         align = c("c")) %>%
     row_spec(0, bold = TRUE) %>%
-    pack_rows("Water source",
+    pack_rows("Water sourc ($n = 121$)",
               start_row = 1,
               end_row = 4,
+              escape = FALSE,
               bold = TRUE)
   
     out <- knitr::kables(list(T1, T2),
                        format = "latex",
                        label = "WaterAccessQual",
-                       caption = "Summarising some qualitative data in the water-access study") %>% 
+                       caption = "Summarising some qualitative data in the water-access study. Left: the ordinal variables. Right: the nominal variable.") %>% 
     kable_styling(font_size = 8)
   out2 <- prepareSideBySideTable(out, 
-                                 gap = "\\enskip") 
+                                 gap = "\\qquad\\qquad") 
   out2
 }
 if( knitr::is_html_output() ) {
@@ -767,7 +780,7 @@ if( knitr::is_html_output() ) {
                col.names = colnames(WaterAccessTable2A),
                booktabs = TRUE,
                align = c("r"),
-               caption = "Summarising some qualitative data in the water-access study") %>%
+               caption = "Summarising some qualitative data in the water-access study. Left: the ordinal variables. Right: the nominal variable.") %>%
    kable_styling(full_width = FALSE) %>%
     pack_rows("Distance to water source",
               start_row = 1,
@@ -1096,7 +1109,7 @@ if( knitr::is_latex_output() ) {
                        "Height",
                        "Gender",
                        "Smoking"),
-         align = c("r", "c") ) %>%
+         align = c("c") ) %>%
     row_spec(0, bold = TRUE) %>% 
     kable_styling(font_size = 8)
 } else { #HTML

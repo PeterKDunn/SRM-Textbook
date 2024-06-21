@@ -29,7 +29,7 @@ stripchart( Perm$Perm,
             pch = 19,
             #col = "grey",
             axes = FALSE,
-            ylim = c(0, 2.25),
+            ylim = c(0, 2.5),
             xlim = c(0, 175),
             xlab = "Permeability (in s)")
 
@@ -45,10 +45,11 @@ polygon( x = c(locationOfOutliers,
          border = NA)
 
 
+# Mark the mean
 lines(x = c(meanPerm,
             meanPerm),
       y = c(0, 2),
-      lwd = 2)
+      lwd = 3)
 text(x = meanPerm, 
      y = 2,
      pos = 3,
@@ -61,26 +62,33 @@ lines(x = c(locationOfOutliers,
       lwd = 2)
 arrows(x0 = meanPerm,
        x1 = locationOfOutliers,
-       y0 = 1.7,
-       y1 = 1.7,
+       y0 = 1.75,
+       y1 = 1.75,
        angle = 15,
        length = 0.1)
 
 # Markers of number std dev
 points(x = meanPerm + sdPerm,
-       y = 1.7,
-       pch = 19,
+       y = 1.75,
+       pch = 4,
        cex = 0.7)
 points(x = meanPerm + (2 * sdPerm),
-       y = 1.7,
-       pch = 19,
+       y = 1.75,
+       pch = 4,
        cex = 0.7)
 text(x = mean( c(meanPerm,
                  locationOfOutliers)),
-     y = 1.7,
-     #pos = 3,
+     y = 1.75,
+     pos = 3,
      cex = 0.95,
-     labels = "Three std. devs\nfrom the mean" )
+     labels = "Three std. devs")
+text(x = mean( c(meanPerm,
+                 locationOfOutliers)),
+     y = 1.75,
+     pos = 1,
+     cex = 0.95,
+     labels = expression(italic(above)~the~mean ))
+
 text(x = locationOfOutliers,
      y = 2,
      pos = 3,
@@ -89,7 +97,7 @@ text(x = locationOfOutliers,
 
 text(x = mean(sort(Perm$Perm,
               decreasing = TRUE)[1:2]),
-     y = 0.25,
+     y = 0.5,
      pos = 1,
      cex = 0.95,
      labels = "Identified as outliers")
