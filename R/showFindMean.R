@@ -66,6 +66,7 @@ FindMean <- function(locate.x = .22214, numberImages, iteration){
                         "red", 
                         "green4"),
           adj = 1,
+          font = ifelse( (sort(beat)[i] - locate.x) < 0, 2, 3), # ITALIC for positive; BOLD for negative (so - signs more visible)
           cex = 1)
     
     jump <- jump + jump.extra
