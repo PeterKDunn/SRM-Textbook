@@ -50,7 +50,9 @@
    
    
    
-   openplotmat(mar = c(0.3, 0.25, 0.3, 0.25))
+#   openplotmat(mar = c(0.3, 0.25, 0.3, 0.25))
+   openplotmat(mar = c(0, 0, 0, 0), 
+               oma = c(0, 0, 0, 0))
    
    # 'Background' squares delineating the steps
    polygon( x = edgesX[ c(1, 1, 2, 2)],

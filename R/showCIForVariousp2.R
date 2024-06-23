@@ -33,7 +33,16 @@ drawCI <- function(CI, pInCI, locateY, p ){
   points(x = xTick,
          y = rep(locateY, length(xTick)),
          col = "grey",
+         cex = 2,
          pch = 20)
+  text(x = xTick[1], 
+       y = locateY,
+       pos = 1,
+       label = "0")
+  text(x = xTick[length(xTick)], 
+       y = locateY,
+       pos = 1,
+       label = "1")
   
   
 
