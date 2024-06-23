@@ -1,12 +1,22 @@
-### ADD FIRST NORMAL
+showCIrelationships <- function(type = "sampling"){ # Either  "sampling"  or  "confidence"
+
+
+  normalTitle <- ifelse(type == "sampling",
+                        expression(
+                          atop( bold(Sample)*":"~Values~of~hat(italic(p))~likely~to~be,
+                                produced~with~the~given~value~of~italic(p) )),
+                        expression(
+                          atop( bold(Population)*":"~Values~of~italic(p)~likely~to~be,
+                                have~produced~the~given~value~of~italic(hat(p)) )) 
+                        )
+  
+  
+      ### ADD FIRST NORMAL
 out1 <- plotNormal(mu = 0, 
                    sd = 1,
                    ylim = c(-0.50, 0.45),
                    showXaxis = FALSE,
-                   main = expression(
-                     atop( bold(Sample)*":"~Values~of~hat(italic(p))~likely~to~be,
-                           produced~with~the~given~value~of~italic(p) )
-                   ) )
+                   main = normalTitle )
 text(3.1, 0, 
      expression( hat(italic(p)) ),
      cex = 0.95,
@@ -88,7 +98,7 @@ text( x = 0,
       "95% sampling interval")
 
 
-
+}
 
 # 
 # 

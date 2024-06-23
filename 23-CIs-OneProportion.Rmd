@@ -287,7 +287,7 @@ if (knitr::is_html_output()){
 </center>
 
 
-```{r RollDiceHistFig, fig.align="center", fig.height=3, fig.width=6.5, out.width='65%', fig.cap="The proportion of rolls that are even $\\hat{p}$ changes from one sample of $25$ rolls to the next sample of $25$ rolls, around a mean of $p = 0.5$." }
+```{r RollDiceHistFig, fig.align="center", fig.height=3, fig.width=6.5, out.width='65%', fig.cap="The proportion of rolls that are even, $\\hat{p}$, changes from one sample of $25$ rolls to the next sample of $25$ rolls, around a mean of $p = 0.5$." }
 if (knitr::is_latex_output()){
   set.seed(99100991)
   num.rolls <- 25
@@ -343,7 +343,7 @@ se.die <- sqrt(0.5 * (1 - 0.5) / 25)
 ```
 
 The shape of the histogram is roughly a normal distribution.
-The sampling distribution will always be a normal distribution when certain conditions are met: see Sect.\ \@ref(ValidityProportions).
+The sampling distribution will always be approximately a normal distribution when certain conditions are met: see Sect.\ \@ref(ValidityProportions).
 The mean of this distribution is called the *sampling mean*, and the standard deviation for this sampling distribution is called the *standard error*, denoted $\text{s.e.}(\hat{p})$ (see Fig.\ \@ref(fig:NormalDieTheory)).
 
 More specifically, the *values* of the mean and standard deviation of the normal distribution
@@ -437,7 +437,6 @@ For the die example, where $n = 25$ rolls and the population proportion of even 
    (\#eq:StdErrorExampleDie)
 \end{equation}
 This standard error is the standard deviation of the normal distribution in Fig.\ \@ref(fig:NormalDieTheory).
-
 However, almost always, the value of $p$ is unknown.
 This situation is studied from Sect.\ \@ref(SamplingDistributionUnknownp) onwards.
 
@@ -447,7 +446,7 @@ When the value of $p$ is *known*, the *sampling distribution of the sample propo
 
 * an approximate normal distribution,
 * centred around the sampling mean whose value is $p$,
-* with a standard deviation (called the *standard error* of $\hat{p}$), denoted $\text{s.e.}(\hat{p})$, whose value is  
+* with a standard deviation (called the *standard error* of $\hat{p}$), denoted $\text{s.e.}(\hat{p})$, whose value is
 \begin{equation}
    \text{s.e.}(\hat{p}) = \sqrt{\frac{ p \times (1 - p)}{n}},
    (\#eq:StdErrorPknown)
@@ -465,7 +464,7 @@ So, about $68$% of the time, the proportion of even rolls in a sample of $25$ ro
 Similarly, about $95$% of the time, the proportion of even rolls will be between $0.5$ give-or-take $(2\times`r round(se.die, 3)`$), or between $`r round(0.5 - 2 * se.die, 3)`$ and $`r round(0.5 + 2 * se.die, 3)`$.
 
 These intervals tell us what values of $\hat{p}$ are likely to be observed in samples of size $25$.
-Most of the time (i.e., approximately $95$% of the time), the value of $\hat{p}$ is expected to be between $0.30$ and $0.70$.
+Most of the time (i.e., approximately $95$% of the time), the value of $\hat{p}$ is expected to be between $0.30$ and $0.70$ (Fig.\ \@ref(fig:CIrelationshipsSI)).
 
 Formally, the sample proportion $\hat{p}$ is likely to lie within the interval
 $$
@@ -476,10 +475,12 @@ This is called a *sampling interval*.
 
 
 
-```{r CIrelationships, out.width='75%', fig.align="center", fig.cap="A known value of $p$ produces a range of $\\hat{p}$ values.", fig.width = 7, fig.height=3.75}
+```{r CIrelationshipsSI, out.width='75%', fig.align="center", fig.cap="A known value of $p$ produces a range of $\\hat{p}$ values.", fig.width = 7, fig.height=3.75}
 par(mar = c(1, 1, 5.5, 1) + 0.5 )   
 
-source("R/showCIrelationships.R")       
+source("R/showCIrelationships.R") 
+showCIrelationships(type = "sampling")
+
 ```
 
 
@@ -491,7 +492,7 @@ The symbol '$\pm$' means 'plus or minus', or (colloquially) 'give-or-take'.
 
 The *multiplier* depends on how confident we wish to be that the interval contains the value of $\hat{p}$.
 For a $95$% interval, the multiplier is *approximately* $2$, based on the $68$--$95$--$99.7$ rule: approximately $95$% of observations are within *two* standard deviations of the value of $p$ (the mean of the normal distribution in  Fig.\ \@ref(fig:NormalDieTheory)).
-That is, the *approximate* $95$% sampling interval is:  
+That is, the *approximate* $95$% sampling interval is:
 \begin{equation}
    p \pm (2 \times \text{s.e.}(\hat{p}) ).
    (\#eq:CIpKnownp)
@@ -504,12 +505,7 @@ For a $90$% sampling interval, for example, either tables or a computer would be
 
 In the die example (Sects.\ \@ref(SamplingDistributionKnownp) and\ \@ref(CIpKnownp)), the value of $p$ was known.
 However, usually the value of $p$ (the *parameter*) is *unknown*; after all, the reason for taking a sample is to *estimate* the unknown value of $p$.
-
-When $p$ is unknown, the best available estimate of $p$ (which is $\hat{p}$) is used to compute the standard error.
-*When the value of $p$ is unknown*, the standard error of the sample proportion (written $\text{s.e.}(\hat{p})$) is approximately
-$$
-   \text{s.e.}(\hat{p}) = \sqrt{\frac{ \hat{p} \times (1 - \hat{p})}{n}}.
-$$
+When the value of $p$ is unknown, the standard error is computed using the best available estimate of $p$, which is $\hat{p}$.
 
 
 ::: {.definition #DEFSamplingDistributionPhat name="Sampling distribution of a sample proportion with $p$ unknown"}
@@ -517,7 +513,7 @@ When the value of $p$ is *unknown*, the *sampling distribution of the sample pro
 
 * an approximate normal distribution,
 * centred around the sampling mean, whose value is $p$,
-* with a standard deviation (called the *standard error* of $\hat{p}$) whose value is  
+* with a standard deviation (called the *standard error* of $\hat{p}$) whose value is
 \begin{equation}
    \text{s.e.}(\hat{p}) = \sqrt{\frac{ \hat{p} \times (1-\hat{p})}{n}},
    (\#eq:stderrorphat)
@@ -589,34 +585,60 @@ Also: don't forget to take the square root!
 :::
 
 
+
+## Confidence intervals for $p$: unknown proportion {#ConfIntPUnknownP}
+\index{Confidence intervals!one proportion}
+
 Let's *pretend* for the moment that the proportion of even rolls on a die is *unknown* (to demonstrate ideas).
 An *estimate* of the proportion of even rolls can be found by rolling a die $n = 25$ times, and computing $\hat{p}$ (an estimate of $p$).
-
 Suppose $11$ of the $n = 25$ rolls produced an even number, so that $\hat{p} = 11/25 = 0.44$.
-The unknown value of $p$ could be a bit larger than $\hat{p} = 0.44$, or a bit smaller than $\hat{p} = 0.44$.
-In other words, the unknown value of $p$ is likely to be $\hat{p}$, give-or-take a bit.
 
-Since the sampling distribution has an approximate normal distribution (Def.\ \@ref(def:DEFSamplingDistributionPhat)), the $68$--$95$--$99.7$ rule can be used to compute the approximate give-or-take amount (using the ideas in Sect.\ \@ref(CIpKnownp)): the give-or-take amount, called the *margin of error*, is $\left(\text{multiplier}\times\text{s.e.}(\hat{p})\right)$.\index{68@$68$--$95$--$99.7$ rule}\index{Margin of error}
-This means that the interval is
+Then, using Def.\ \@ref(def:DEFSamplingDistributionPhat), the sample proportions will vary with an approximate normal distribution around $p$ (whose value is unknown), with a standard deviation (called the standard error) of 
 $$
-  \hat{p} \pm \left(\text{multiplier}\times\text{s.e.}(\hat{p})\right),
+  \text{s.e.}(\hat{p}) = \sqrt{\frac{ 0.44 \times (1 - 0.44)}{25}} = 0.09927739.
+$$
+Previously, the sampling distribution was used to construct a sampling interval (using the $68$--$95$--$99.7$ rule) that could contain the value of $\hat{p}$.
+However, here the value of $\hat{p}$ is known, so instead an interval is created for the unknown value of $p$.
+Since the unknown value of $p$ could be a little smaller or a little larger than the value of $\hat{p}$, the interval is
+$$
+  \hat{p} \pm \left(\text{multiplier}\times\text{s.e.}(\hat{p})\right)
 $$
 for a suitable multiplier.
 This interval for $p$ is called a *confidence interval*.
-The multiplier is a $z$-score, and the $68$--$95$--$99.7$ rule gives approximate values for the multipliers.
-
-Using $\hat{p} = 0.44$ and $n = 25$, then
+The multiplier is a $z$-score, and the $68$--$95$--$99.7$\index{68@$68$--$95$--$99.7$ rule} rule gives approximate values for the multipliers.
+The give-or-take amount, called the *margin of error*, is $\left(\text{multiplier}\times\text{s.e.}(\hat{p})\right)$.\index{Margin of error}
+ 
+ 
+Using the approximate multiplier of $2$ (from the $68$--$95$--$99.7$ rule), the approximate $95$%\ CI is
 $$
-   \text{s.e.}(\hat{p}) = \sqrt{ \frac{ 0.44 \times (1 - 0.44)}{25}} = 0.099277.
+   0.44 \pm (2 \times 0.099277), \quad\text{or $0.44\pm 0.1986$.}
 $$
-So, the approximate $95$%\ CI (using the approximate multiplier of $2$ from the $68$--$95$--$99.7$ rule) is $0.44 \pm (2 \times 0.099277)$, or from $0.241$ to $0.639$.
-This confidence interval is an interval containing values of $p$ that could have reasonably produced the observed value of $\hat{p}$
+That is, the interval is from 
+\begin{align*}
+                 0.44 - 0.1986 &\qquad\text{(which is $0.241$)}\\
+  \text{to}\quad 0.44 + 0.1986 &\qquad\text{(which is $0.639$)}.
+\end{align*}
+The interval is from $0.2414$ to $0.639$.
+This is an interval containing values of $p$ that could have reasonably produced the observed value of $\hat{p}$
 `r if (knitr::is_latex_output()) {
    '(Fig.\\ \\@ref(fig:pProducingpHatLATEX)),'
 } else {
    '(Fig.\\ \\@ref(fig:pProducingpHatHTML)),'
 }`
 with $95$% confidence.
+
+
+```{r CIrelationshipsCI, out.width='75%', fig.align="center", fig.cap="A known value of $p$ produces a range of $\\hat{p}$ values.", fig.width = 7, fig.height=3.75}
+par(mar = c(1, 1, 5.5, 1) + 0.5 )   
+
+source("R/showCIrelationships.R") 
+
+showCIrelationships(type = "confidence")
+```
+
+
+
+
 
 ```{r}
 source("R/showCIForVariousp2.R")
@@ -686,9 +708,11 @@ for (i in 1:length(pVec)){
 
 
 
-```{r pProducingpHatLATEX, fig.width=7.5, fig.height=8, out.width='100%', fig.cap="The CI gives an interval containing values of $p$ that may have produced the observed value of $\\hat{p}$. Here, the CI is $0.241$ to $0.639$.", fig.align="center"}
+```{r pProducingpHatLATEX, fig.width=7.5, fig.height=8, out.width='100%', fig.cap="The CI gives an interval containing values of $p$ that may have produced the observed value of $\\hat{p}$. Here, the CI is $0.241$ to $0.639$, shown as the thick black line under the plots.", fig.align="center"}
 if (knitr::is_latex_output()) {
-  par(mfrow = c(2, 2), mar = c(0.25, 0.3, 4.5, 0.3))
+  par(mfrow = c(2, 2),
+      xpd = NA,
+      mar = c(0.25, 0.3, 4.5, 0.3))
 
   pVec <- c(0.25, 0.4, 0.60, 0.70)
 
@@ -700,19 +724,19 @@ if (knitr::is_latex_output()) {
     siHi <- pVec[i] + 2 * pStdDev
 
     ## Canvas
-    par(mar = c(0.3, 0.3, 4.5, 0.3))
+#    par(mar = c(0.3, 0.3, 4.5, 0.3))
 
     plot(x = c(0, 1),
          y = c(maxY * 2.25, -maxY * 2.15),
          type = "n",
          axes = FALSE,
          ylab = "",
-         xlab = expression(Values ~ of ~ hat(italic(p)))
+         xlab = ""#expression(Values ~ of ~ hat(italic(p)))
          )
 #box()
 #box("outer", col = "purple")
 #box("inner", col = "green")
-    box("figure", col = "grey")
+#    box("figure", col = "grey")
     drawCI(CI = c(ciLo, ciHi), 
            pInCI, locateY, pVec[i])
 
@@ -723,6 +747,16 @@ if (knitr::is_latex_output()) {
                      maxY,
                      locateY)
   }
+  segments(x0 = -3,
+           y0 = 14,
+           x1 = 3,
+           y1 = 14, 
+         col="grey")
+  segments(x0 = -0.05, 
+           y0 = -10, 
+           x1 = -0.05 ,
+           y1 = 50, 
+           col="grey")
 }
 ```
 
@@ -888,14 +922,6 @@ After all, that's why we take a sample: to *estimate* the value of the unknown p
 :::
 
 
-
-## Confidence intervals for $p$: unknown proportion {#ConfIntPUnknownP}
-\index{Confidence intervals!one proportion}
-
-
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/pexels-skitterphoto-705171.jpg" width="200px"/>
-</div>
 
 
 Suppose *thousands* of people rolled a die $25$ times, and *each* person found $\hat{p}$ for their sample, and hence computed the CI for their sample of $25$ rolls.
