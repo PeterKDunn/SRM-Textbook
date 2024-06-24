@@ -6,8 +6,8 @@ showCIrelationships <- function(type = "sampling"){ # Either  "sampling"  or  "c
                           atop( bold(Sample)*":"~Values~of~hat(italic(p))~likely~to~be,
                                 produced~with~the~given~value~of~italic(p) )),
                         expression(
-                          atop( bold(Population)*":"~Values~of~italic(p)~likely~to~be,
-                                have~produced~the~given~value~of~italic(hat(p)) )) 
+                          atop( bold(Population)*":"~Values~of~italic(p)~likely~to~have,
+                                produced~the~given~value~of~italic(hat(p)) )) 
                         )
   
   
@@ -17,9 +17,14 @@ out1 <- plotNormal(mu = 0,
                    ylim = c(-0.50, 0.45),
                    showXaxis = FALSE,
                    main = normalTitle )
-text(3.1, 0, 
-     expression( hat(italic(p)) ),
-     cex = 0.95,
+
+# Axis label
+text(x = 3.1, 
+     y = 0, 
+     label = ifelse( type == "sampling",
+                     expression( hat(italic(p)) ),
+                     expression( italic(p) ) ),
+                     cex = 0.95,
      adj = c(0.5, -0.25) )
 
 shadeNormal(out1$x,
@@ -31,13 +36,19 @@ shadeNormal(out1$x,
 points( x = 0,
         y = -0.40,
         pch = 19)
+
+whatIsKnown <- ifelse( type == "sampling",
+                       expression(bold(Population)*":"~Value~of~italic(p)~known),
+                       expression(bold(Sample)*":"~Value~of~hat(italic(p))~known)
+                       )
+
 text(x = 0,
      y = -0.40,
-     expression(bold(Population)*":"~Value~of~italic(p)~known),
+     label = whatIsKnown,
      pos = 1)
 
 
-## ADD SAMPLES
+## ADD SAMPLES and ARROWS
 points( x = c(-2, -0.5, 0.9, 1.2, 1.6),
         y = rep(0, 5),
         pch = 19,
@@ -47,32 +58,48 @@ arrows(x0 = 0,
        y0 = -0.40,
        y1 = 0,
        angle = 15,
-       length = 0.10)
+       length = 0.10,
+       code = ifelse(type == "sampling",
+                     2, 
+                     1))
 arrows(x0 = 0,
        x1 = -0.5,
        y0 = -0.40,
        y1 = 0,
        angle = 15,
-       length = 0.10)
+       length = 0.10,
+       code = ifelse(type == "sampling",
+                     2, 
+                     1))
 arrows(x0 = 0,
        x1 = 0.9,
        y0 = -0.4,
        y1 = 0,
        angle = 15,
-       length = 0.10)
+       length = 0.10,
+       code = ifelse(type == "sampling",
+                     2, 
+                     1))
 arrows(x0 = 0,
        x1 = 1.2,
        y0 = -0.40,
        y1 = 0,
        angle = 15,
-       length = 0.10)
+       length = 0.10,
+       code = ifelse(type == "sampling",
+                     2, 
+                     1))
 
 arrows(x0 = 0,
        x1 = 1.6,
        y0 = -0.40,
        y1 = 0,
        angle = 15,
-       length = 0.10)
+       length = 0.10,
+       code = ifelse(type == "sampling",
+                     2, 
+                     1))
+
 polygon( x = c(-4, 4, 4, -4),
          y = c(-0.15, -0.15, -0.25, -0.25),
          border = NA, # No borders
@@ -80,7 +107,10 @@ polygon( x = c(-4, 4, 4, -4),
 
 text(x = 0,
      y = -0.2,
-     expression(Various~samples~give~different~estimates~of~italic(p)) )
+     label = ifelse( type == "sampling",
+                     expression(Various~samples~give~different~estimates~of~italic(p)),
+                     expression(Various~values~of~italic(p)~may~have~produced~the~observed~value~of~hat(italic(p))) )
+)
 
 
 # ADD CI
@@ -95,7 +125,9 @@ text( x = 0,
       y = 0.025,
       pos = 3,
       cex = 0.95,
-      "95% sampling interval")
+      label = ifelse(type == "sampling", 
+                     "95% sampling interval",
+                     "95% confidence interval") )
 
 
 }
