@@ -79,13 +79,13 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   }
   
   ### CANVAS PARAMETERS
-  boxHeight <- 2.5 # Ht and Width of the boxes (i.e., the six images)
+  boxHeight <- 2.5 # Ht and Width of the boxes (i.e., the six IMAGES)
   boxWidth <- 2.5  # Make square!
                    # This is the ENLARGED size.
   shrinkBoxFactor <- 0.8
   
   gapHorizontal <- boxWidth  # Total gap between the edges of adjacent boxes
-  gapVertical <- boxHeight * 1.2
+  gapVertical <- boxHeight * 1.4
   
   gapEdgeX <- 0.65  # gap between edge of images, and end of canvas
   gapEdgeY <- 1  # 
@@ -247,13 +247,13 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   for (i in 1:6) {
     if (i %in% (1:3)){ # At the top
       text(x = boxX[i],
-           y = boxY[i] + boxHeight/2 + gapTextHeight,
+           y = boxY[i] + boxHeight/2 + (2 * gapTextHeight),
            labels = Labels.Short[i],
            col = ifelse(i == Flag, "black", grey(0.3)),
            cex = ifelse(i == Flag, 1.2, 1.0) )
     } else { # At the bottom
       text(x = boxX[i],
-           y = boxY[i] - boxHeight/2 - gapTextHeight,
+           y = boxY[i] - boxHeight/2 - (2 * gapTextHeight),
            labels = Labels.Short[i],
            col = ifelse(i == Flag, "black", grey(0.3)),
            cex = ifelse(i == Flag, 1.2, 1.0) )
@@ -274,7 +274,7 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
                                 mean( c(boxY[2],
                                         boxY[5]) ) ),
                        radx = boxWidth/2 + gapHorizontal,
-                       rady = gapVertical/2,
+                       rady = gapVertical/2 - (2 * gapTextHeight),
                        lab = Text,
                        box.col = gray(0.9),
                        lcol = gray(0.9),
