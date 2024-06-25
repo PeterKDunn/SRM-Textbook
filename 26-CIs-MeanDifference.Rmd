@@ -13,7 +13,7 @@
 
 
 
-## Introduction: students starting university {#PairedIntro}
+## Introduction: six-minute walk test {#PairedIntro}
 
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
@@ -21,99 +21,92 @@
 </div>
 
 
-What happens to students' eating habits when they start university?
-Many students will be responsible for their own meals for the first time, so some  may forgo healthy foods for convenient, but less healthy, foods.
-Alternatively, some may not be able to afford sufficient or healthy food.
+The Six-minute Walk Test (6MWT) measures how far subjects can walk in six minutes, and is used as a simple, low cost evaluation of fitness and other health-related measures.
+The recommended setting for the test is usually a walkway of at least $30$\ m.
+@saiphoklang2022comparison compared the mean 6MWT when the same subjects used both using $20$\ m and $30$\ m walkways:
 
-One approach to studying this is to take a sample of students who are beginning university and measure their weight, and then a sample of *different* students some later time and measure their weight.
-This is comparing *between* individuals.
-This between-individuals design compares the means of two groups of *different* students, the topic of the next chapter.
+> For Thai patients with chronic obstructive pulmonary disease (COPD), what is the mean difference between the 6MWT when subjects use a $20$\ m walkway and a $30$\ m walkway?
 
-Another approach is to record some students' weights as they begin university, and then obtain *the same* students' weight some later time.
 The comparison is *within* individuals (Sect.\ \@ref(RQsRepeatedMeasures)); this is a *repeated-measures* study.
-Each student has a *pair* of weight measurements, and the study produces *paired data*, the topic of this chapter.
-
-@levitsky2004freshman used this second approach to answer this question: 
-
-> For Cornell University students, what is the *mean weight change* in students after $12$ weeks at university?
+Each subject has a *pair* of 6MWT measurements, and the study produces *paired data*, the topic of this chapter.
 
 The data collected to answer this RQ are shown
 `r if (knitr::is_latex_output()) {
-   'in  Table\\ \\@ref(tab:DataWeightChange) [@DASL:WeightChange].'
+   'in  Table\\ \\@ref(tab:Data6MWT).'
 } else {
-   'below [@DASL:WeightChange].'
+   'below.'
 }`
 
 
 ```{r DataWeightChange}
-data(StudentWt)
+data(SixMWT)
 
-SWlen <- length(StudentWt$Week1)
+WTlen <- dim(SixMWT[1])
 
 Labels <- paste("No.", 
-                1 : length(StudentWt$Student))
+                1 : WTlen)
 
 tb1 <- array( cbind( Labels[1:5 ],
-                     StudentWt$Week1[1:5 ],
-                     StudentWt$Week12[1:5 ],
-                     StudentWt$GainWt[1:5 ]),
+                     SixMWT$Distance20[1:5 ],
+                     SixMWT$Distance30[1:5 ],
+                     SixMWT$Distance30[1:5 ] - SixMWT$Distance20[1:5 ]),
                      dim = c(5, 4) )
                      
 
 T1 <- knitr::kable(pad(tb1,
                        surroundMaths = TRUE,
-                       targetLength = 4,
+                       targetLength = c(0, 5, 5, 5),
                        digits = 1),
                    format = "latex",
                    valign = 't',
                    align = "c",
                    linesep = "",
-                   col.names = c("Student", 
-                                 "Week 1", 
-                                 "Week 12", 
-                                 "Weight gain"),
+                   col.names = c(" ", 
+                                 "20m w'way", 
+                                 "30m w'way", 
+                                 "Diff."),
                    row.names = FALSE,
                    escape = FALSE,
                    booktabs = TRUE) %>%
   add_header_above(c( " " = 1, 
-                      "Weight (in kg)" = 3),
+                      "Distance walked (in m)" = 3),
                    line = TRUE,
                    bold = TRUE) %>%
   row_spec(0, bold = TRUE)
 
 
-tb2 <- array( cbind( Labels[(SWlen - 4):SWlen ],
-                     StudentWt$Week1[(SWlen - 4):SWlen ],
-                     StudentWt$Week12[(SWlen - 4):SWlen ],
-                     StudentWt$GainWt[(SWlen - 4):SWlen ]),
+tb2 <- array( cbind( Labels[(WTlen - 4):WTlen ],
+                     SixMWT$Distance20[(WTlen - 4):WTlen ],
+                     SixMWT$Distance20[(WTlen - 4):WTlen ],
+                     SixMWT$Distance30[(WTlen - 4):WTlen ] - SixMWT$Distance20[(WTlen - 4):WTlen ]),
                      dim = c(5, 4) )
 
 
 T2 <- knitr::kable(pad(tb2,
                        surroundMaths = TRUE,
-                       targetLength = 4,
+                       targetLength = c(0, 5, 5, 4),
                        digits = 1),
                    format = "latex",
                    valign = 't',
                    align = "c",
                    linesep = "",
-                   col.names = c("Student", 
-                                 "Week 1", 
-                                 "Week 12", 
-                                 "Weight gain"),
+                   col.names = c(" ", 
+                                 "20m w'way", 
+                                 "30m w'way", 
+                                 "Diff."),
                    row.names = FALSE,
                    escape = FALSE,
                    booktabs = TRUE) %>%
   add_header_above(c( " " = 1, 
-                      "Weight (in kg)" = 3),
+                      "Distance walked (in m)" = 3),
                    line = TRUE,
                    bold = TRUE) %>%
   row_spec(0, bold = TRUE)
 
 out <- knitr::kables(list(T1, T2),
                      format = "latex",
-                     label = "DataWeightChange",
-                     caption = "The student weight-change data, showing the weight of students in Week\\ 1 at university, in Week\\ 12, and the weight gain (all in kg). These are the first five and the last five of the $68$ total observations. (A negative weight gain means a weight loss.)") %>% 
+                     label = "Data6MWT",
+                     caption = "The six-minute walk test (6MWT) distance, for walkways of $20$\\ m and $30$\\ m length. These are the first five and the last five of the $50$ total observations. (A negative difference means the $20$\\ m distance is greater than the $30$\\ m distance.)") %>% 
   kable_styling(font_size = 8)
 out2 <- prepareSideBySideTable(out,
                                gap = "\\enskip") 
@@ -123,23 +116,23 @@ out2
 
 ```{r}
 if( knitr::is_html_output() ) {
-  DT::datatable(StudentWt,
+  DT::datatable(SixMWT,
                fillContainer = FALSE, # Make more room, so we don't just have ten values
-               colnames = c("Student", 
-                            "Week 1",
-                            "Week 12",
-                            "Weight gain"),
+               colnames = c("Subject", 
+                            "Distance (20m walkway)",
+                            "Distance (30m walkway)",
+                            "Difference"),
                filter = "none",
                options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
-               caption = "Weight at 1 and 12 weeks after the start of semester (in kg)")
+               caption = "The six-minute walk test (6MWT) distance, for walkways of $20$\\ m and $30$\\ m length. (A negative difference means the $20$\\ m distance is greater than the $30$\\ m distance.)")
 }
 ```
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Some weight gains are *negative*.
-This does *not* mean a negative weight.
-Since the differences are computed as *Week\ $12$* minus *Week\ $1$*, a negative difference means the *Week\ $1$ weight* is greater than the *Week\ $12$ weight* value (i.e., a weight *loss*).
+Some differences are *negative*.
+This does *not* mean a negative distance.
+Since the differences are computed as the $30$\ m distance minus the $20$\ m distance, a negative difference means the $20$\ m distance is greater than the $30$\ m distance.
 :::
 
 
@@ -148,7 +141,7 @@ Since the differences are computed as *Week\ $12$* minus *Week\ $1$*, a negative
 
 The data
 `r if (knitr::is_latex_output()) {
-   'in  Table\\ \\@ref(tab:DataWeightChange)'
+   'in  Table\\ \\@ref(tab:Data6MWT)'
 } else {
    'above'
 }`
@@ -157,9 +150,9 @@ The RQ is a special case of a *repeated-measures RQs* (Sect.\ \@ref(RQsRepeatedM
 Computing the *differences* or *changes* between the pairs of observations makes sense.
 
 Pairing data, when appropriate, is useful because individuals can vary substantially, and pairing means that extraneous variables (potentially, *confounding* variables) are held constant for those paired observations.
-For example, each pair of weights recorded in
+For example, each pair of distances recorded in
 `r if (knitr::is_latex_output()) {
-   'Table\\ \\@ref(tab:DataWeightChange)'
+   'Table\\ \\@ref(tab:Data6MWT)'
 } else {
    'the data above'
 }`
@@ -192,44 +185,46 @@ We only study *pairs* of measurements, and only for quantitative variable.
 
 ## Summarising the data {#SummarisingPairedCI}
 
-For the student-eating study, weight is measured for the same students at the start of university and after $12$\ weeks at university.
-Each student receives two measurements, and the *change* in weight for each individual is recorded.
+For the 6MWT study, the distance is measured for the same subjects for two different walkway distance.
+Each subject receives two measurements, and the *change* in the distance walked for each individual is recorded.
 
-Since data are paired, an appropriate graph is *a histogram* of the differences (Chap.\ \@ref(SummariseWithin)); specifically, weight *gains*.
-A boxplot comparing students' weights at Week\ $1$ and at Week\ $12$ (that is, *not* pairing the data) shows the distribution of weights, and the median weights, are very similar (Fig.\ \@ref(fig:ComparePairedBoxplotsHistogram), left panel).
-Any change in individuals' weights is difficult to see and detect.
-In addition, the link between the weights of students in Week\ $1$ and Week\ $12$ has been lost.
+Since data are paired, an appropriate graph is *a histogram* of the differences (Chap.\ \@ref(SummariseWithin)); specifically, $30$\ m distance minus the $20$\ m distance.
+A boxplot comparing 6MWT distance for both walkway lengths (that is, *not* pairing the data) shows the distribution of distances, and the median distances, are very similar (Fig.\ \@ref(fig:ComparePairedBoxplotsHistogram), left panel).
+Any difference in individuals' 6MWT distances is difficult to see and detect.
+In addition, the link between the 6MWT distances for each subject has been lost.
 
-The *histogram* of the weight *gains* makes the change in individuals' weights easier to see (Fig.\ \@ref(fig:ComparePairedBoxplotsHistogram), right panel).
-The histogram also makes it easy to see that some students *lost* weight and some students *gained* weight from Week\ $1$ to Week\ $12$.
-Individually graphing the Week\ $1$ and Week\ $12$ data may also be useful too, but a graph of the differences is *crucial*, as the RQ is about those differences.
+The *histogram* of the difference in the 6MWT distances makes the difference in individuals' distances easier to see (Fig.\ \@ref(fig:ComparePairedBoxplotsHistogram), right panel).
+The histogram also makes it easy to see that some subjects walked further with a $20$\ m walkway, and some further for a $30$\ m walkway.
+Individually graphing the 6MWt for both walkway distances may also be useful too, but a graph of the differences is *crucial*, as the RQ is about those differences.
 A case-profile plot (Sect.\ \@ref(CaseProfilePlot)) is also appropriate, but is difficult to read for these data as the sample size is large (a line is needed for each unit of analysis).
 
 
-```{r ComparePairedBoxplotsHistogram, fig.align="center", out.width='80%', fig.cap="Plots of the weight-loss data. Left: graphing the data incorrectly as not paired. Right: a histogram of weight changes (the vertical grey line represents no change in weight).", fig.height = 3.25, fig.width = 7}
+```{r ComparePairedBoxplotsHistogram, fig.align="center", out.width='90%', fig.cap="Plots of the 6MWT data. Left: graphing the data incorrectly as not paired. Right: a histogram of 6MWT distances changes ($30$\\ m walkway distance minus $20$\\ m walkway distance; the vertical grey line represents no change in distance).", fig.height = 3.25, fig.width = 7.5}
 
 par(mfrow = c(1, 2))
 
-boxplot( cbind(StudentWt$Week1,
-               StudentWt$Week12),
-         names = c("Week 1", "Week 12"),
+boxplot( cbind(SixMWT$Distance20,
+               SixMWT$Distance30),
+         names = c("20m", "30m"),
          las = 1,
          col = plot.colour,
-         ylim = c(40, 105),
-         ylab = "Weight (in kg)",
-         main = "A boxplot of student weights\nin Week 1 and Week 12")
+         ylim = c(180, 600),
+         ylab = "Walk distance (in m)",
+         xlab = "Walkway distance",
+         main = "A boxplot of 6MWT distance\nfor two walkway lengths")
 
-out <- hist( StudentWt$GainWt,
-             breaks = seq(-3, 4, by = 0.5),
+out <- hist( SixMWT$Distance30 - SixMWT$Distance20,
+             breaks = seq(-40, 80, by = 10),
              plot = FALSE)
 
-plot(x = c(-3, 4),
-     y = c(0, 15),
-      xlab = "Weight gain (kg)",
+plot(x = c(-40, 80),
+     y = c(0, 18),
+     xlim = c(-45, 80),
+      xlab = "Difference in distances (in m)",
       ylab = "Frequency",
-      las = 1,
-     type = "n",
-      main = "Histogram of weight gains\nfrom Week 1 to Week 12")
+      las = 2,
+      type = "n",
+      main = "Histogram of 6MWT distance\nfor two walkways lengths")
 box()
 
 abline(v = 0, 
@@ -239,6 +234,35 @@ abline(v = 0,
 plot(out,
      add = TRUE,
      col = plot.colour)
+
+arrows(x0 = 5,
+      x1 = 75,
+      y0 = 16,
+      y1 = 16,
+      code = 3,
+      angle = 15,
+      length = 0.1,
+      col = "grey")
+text( x = 40,
+      y = 16,
+      pos = 1,
+      cex = 0.9,
+      label = "30m greater")
+
+
+arrows(x0 = -5,
+      x1 = -41,
+      y0 = 16,
+      y1 = 16,
+      code = 3,
+      angle = 15,
+      length = 0.1,
+      col = "grey")
+text( x = -23,
+      y = 16,
+      pos = 1,
+      cex = 0.9,
+      label = "20m greater")
 ```
 
 
@@ -246,38 +270,38 @@ plot(out,
 <!-- for (i in (1:68)){lines( x=c(1,2), y = c(StudentWt$Week1[i], StudentWt$Week12[i]));  -->
 <!-- points(x=c(1,2), y = c(StudentWt$Week1[i], StudentWt$Week12[i]), pch= 19, cex = 0.5)} -->
 
-The Week\ $1$ and the Week\ $12$ weights can be summarised individually (the first two rows of Table\ \@ref(tab:WeightGainSummary)) using the methods of Chap.\ \@ref(OneMeanConfInterval).
-All statistics are slightly different in Weeks\ $1$ and\ $12$; in particular, a slight weight gain is seen.
-However, since the RQ is about weight *change* in individuals, a numerical summary of the *differences* is essential.
+The 6MWT distances for each walkway length can be summarised individually (the first two rows of Table\ \@ref(tab:Data6MWT)) using the methods of Chap.\ \@ref(OneMeanConfInterval).
+All statistics are slightly different for the two walkway distance; in particular, the $30$\ m walkway distances are slightly larger.
+However, since the RQ is about the difference between the distances, a numerical summary of the *differences* is essential.
 
 
 
-```{r WeightGainSummary}
-WtGain.DataSummary <- array( dim = c(3, 4))
+```{r SMWTSummary}
+SMWT.DataSummary <- array( dim = c(3, 4))
 
-WtGain.DataSummary[1, 1] <- mean(StudentWt$Week1)
-WtGain.DataSummary[2, 1] <- mean(StudentWt$Week12)
-WtGain.DataSummary[3, 1] <- mean(StudentWt$GainWt)
+SMWT.DataSummary[1, 1] <- mean(SixMWT$Distance20)
+SMWT.DataSummary[2, 1] <- mean(SixMWT$Distance30)
+SMWT.DataSummary[3, 1] <- mean(SixMWT$Distance30 - SixMWT$Distance20)
 
-WtGain.DataSummary[1, 2] <- median(StudentWt$Week1)
-WtGain.DataSummary[2, 2] <- median(StudentWt$Week12)
-WtGain.DataSummary[3, 2] <- median(StudentWt$GainWt)
+SMWT.DataSummary[1, 2] <- median(SixMWT$Distance20)
+SMWT.DataSummary[2, 2] <- median(SixMWT$Distance30)
+SMWT.DataSummary[3, 2] <- median(SixMWT$Distance30 - SixMWT$Distance20)
 
-WtGain.DataSummary[1, 3] <- sd(StudentWt$Week1)
-WtGain.DataSummary[2, 3] <- sd(StudentWt$Week12)
-WtGain.DataSummary[3, 3] <- sd(StudentWt$GainWt)
+SMWT.DataSummary[1, 3] <- sd(SixMWT$Distance20)
+SMWT.DataSummary[2, 3] <- sd(SixMWT$Distance30)
+SMWT.DataSummary[3, 3] <- sd(SixMWT$Distance30 - SixMWT$Distance20)
 
-WtGain.DataSummary[1, 4] <- findStdError(StudentWt$Week1)
-WtGain.DataSummary[2, 4] <- findStdError(StudentWt$Week12)
-WtGain.DataSummary[3, 4] <- findStdError(StudentWt$GainWt)
+SMWT.DataSummary[1, 4] <- findStdError(SixMWT$Distance20)
+SMWT.DataSummary[2, 4] <- findStdError(SixMWT$Distance20)
+SMWT.DataSummary[3, 4] <- findStdError(SixMWT$Distance30 - SixMWT$Distance20)
 
-rownames(WtGain.DataSummary) <- c("Week 1 weight (in kg)", 
-                                  "Week 12 weight (in kg)", 
-                                  "Weight gain (in kg)")
+rownames(SMWT.DataSummary) <- c("20m walkway distance (in m)", 
+                                "30m walkway distance (in m)", 
+                                "Difference (in m)")
 
 if( knitr::is_latex_output() ) {
-  kable(pad(WtGain.DataSummary,
-            targetLength = c(5, 4, 6, 5),
+  kable(pad(SMWT.DataSummary,
+            targetLength = c(6, 5, 6, 6),
             surroundMaths = TRUE,
             digits = c(2, 1, 3, 3)),
         format = "latex",
@@ -287,13 +311,13 @@ if( knitr::is_latex_output() ) {
         align = "c",
         col.names = c("Mean", "Median", "Standard deviation", "Standard error"),
         digits = 2,
-        caption = "The mean, median, standard deviation and standard error for the weight-gain data") %>%
+        caption = "The mean, median, standard deviation and standard error for the 6MWT data") %>%
     row_spec(0, bold = TRUE) %>%
     row_spec(3, italic = TRUE) %>%
     kable_styling(font_size = 8)
 } else {
-  kable(pad(WtGain.DataSummary,
-            targetLength = c(5, 4, 6, 5),
+  kable(pad(SMWT.DataSummary,
+            targetLength = c(6, 5, 6, 6),
             surroundMaths = TRUE,
             digits = c(2, 1, 3, 3)),
         format = "html",
@@ -303,7 +327,7 @@ if( knitr::is_latex_output() ) {
         align = "c",
         col.names = c("Mean", "Median", "Standard deviation", "Standard error"),
         digits = 2,
-        caption = "The mean, median, standard deviation and standard error for the weight-gain data") %>%
+        caption = "The mean, median, standard deviation and standard error for the 6MWT data") %>%
     row_spec(0, bold = TRUE) 
 }
 ```
@@ -316,9 +340,9 @@ if( knitr::is_latex_output() ) {
 ## Confidence intervals for  $\mu_d$  {#MeanDiffCI}
 \index{Sampling distribution!paired quantitative data}
 
-Every possible sample of $n = 68$ students comprises different students, and hence produces different Week\ $1$ weights and Week\ $12$ weights.
-For this reason, the Week\ $1$ and Week\ $12$ summarises in Table\ \@ref(tab:WeightGainSummary) include standard errors.
-Since the Week $1$ and Week\ $12$ weight vary from sample to sample, the weight *changes* vary from sample to sample too, and also have a *sampling distribution*.
+Every possible sample of $n = 50$ subjects comprises different people, and hence produces different 6MWT distance for $20$\ m and $30$\ m walkways.
+For this reason, the 6MWT distance summaries in Table\ \@ref(tab:SMWTSummary) include standard errors.
+Since the 6MWT distance vary from sample to sample, the *difference* between the distances for each subject vary from sample to sample too, and also have a *sampling distribution*.
 
 The differences can be treated like a single sample of data (Chap.\ \@ref(OneMeanConfInterval)), and so the sampling distribution for the differences has a similar sampling distribution to that of $\bar{x}$ (provided the conditions are met; Sect.\ \@ref(ValidityPaired)).
 In addition, the notation when working with paired data is similar to that used when working with the one-mean case too (Table\ \@ref(tab:PairedNotation)).
@@ -402,46 +426,43 @@ if( knitr::is_html_output() ) {
 ```
 
 
-
-
-
-For the student-eating data, the sample mean differences $\bar{d}$ are described by (Fig.\ \@ref(fig:WtGainSamplingDist)):
+For the 6MWT data, the sample mean differences $\bar{d}$ are described by (Fig.\ \@ref(fig:SMWTSamplingDist)):
 
 * approximate normal distribution,
 * with a sampling mean whose value is $\mu_{{d}}$,
 * with a *standard error* of
 $$
-  \text{s.e.}(\bar{x}) =  \frac{0.956366}{\sqrt{68}} = 0.11598.
+  \text{s.e.}(\bar{d}) =  \frac{22.039}{\sqrt{50}} = 3.117.
 $$
 
-The summary information for the weight gains can be added to the summary table (the third row of Table\ \@ref(tab:WeightGainSummary)), after appropriate rounding. 
-Notice that the standard deviation of the difference is *not* the difference between the standard deviations for the Week\ $1$ and Week\ $12$ data. 
+The summary information for the difference in 6MWT distance can be added to the summary table (the third row of Table\ \@ref(tab:SMWTSummary)), after appropriate rounding. 
+Notice that the standard deviation of the difference is *not* the difference between the standard deviations for the $20$\ m and $30$\ m distances. 
 (The same applies for the standard error and the median.)
-Instead, the standard deviation of the list of differences is found (i.e., the column **Weight gain** in the data table).
+Instead, the standard deviation of the list of differences is found (i.e., the column **Diff.** in the data table).
 
  
 
-```{r WtGainSamplingDist, fig.cap="The sampling distribution is a normal distribution; it describes how the sample mean weight gain varies in samples of size $n = 68$", fig.align="center", fig.width=9.0, fig.height=2.5, out.width='95%'}
-mn <- mean(StudentWt$GainWt)
-n <- length(StudentWt$GainWt)
-stdd <- sd(StudentWt$GainWt)
+```{r SMWTSamplingDist, fig.cap="The sampling distribution is a normal distribution; it describes how the sample mean difference between the 6MWT distances varies in samples of size $n = 50$", fig.align="center", fig.width=9.0, fig.height=2.5, out.width='95%'}
+mn <- mean(SixMWT$Distance20 - SixMWT$Distance30)
+n <- length(SixMWT$Distance20)
+stdd <- sd(SixMWT$Distance20 - SixMWT$Distance30)
 
 se <- stdd/sqrt(n)
 
 par( mar = c(4, 0.5, 0.5, 0.5) )
 out <- plotNormal(0,
                   se,
-                  xlab = "Sample mean difference in weight gain (in kg)", 
+                  xlab = "Sample mean difference in 6MWT distances (in m)", 
                   cex.axis = 0.95,
-                  ylim = c(0, 5.0),
+                  ylim = c(0, 0.18),
                   showXlabels = c( 	
-                    expression( mu[d]-0.348),
-                    expression( mu[d]-0.232), 
-                    expression( mu[d]-0.116), 
+                    expression( mu[d]-9.350),
+                    expression( mu[d]-6.234), 
+                    expression( mu[d]-3.117), 
                     expression( mu[d] ),
-                    expression( mu[d] + 0.116), 
-                    expression( mu[d] + 0.232), 
-                    expression( mu[d] + 0.348) ) )
+                    expression( mu[d] + 3.117), 
+                    expression( mu[d] + 6.234), 
+                    expression( mu[d] + 9.350) ) )
 
 arrows(x0 = 0,
        x1 = 0,
@@ -468,7 +489,7 @@ arrows(x0 = 0,
 text(x = 0 + (se / 2),
      y = 0.30 * max(out$y),
      labels = expression( atop(Std.~error,
-                               s.e.(bar(italic(d)))==0.116)) )
+                               s.e.(bar(italic(d)))==3.117)) )
 
 
 arrows(x0 = mn,
@@ -495,34 +516,33 @@ $$
 As usual, for an approximate $95$% confidence interval (CI), the approximate multiplier is $2$ (from the $68$--$95$--$99.7$ rule).
 This is the same as the CI for $\bar{x}$ if the differences are treated as the data.
 
-For the student-eating data:
+For the 6MWT data:
 $$
-	0.8618 \pm (2 \times 0.1159764),
+	22.03 \pm (2 \times 3.117)
 $$
-or $0.862\pm 0.232$ (so the *margin of error* is $0.232$).
-Equivalently, the CI is from $0.862 - 0.232 = 0.630$, up to $0.862 + 0.232 = 1.094$.
+or $22.03\pm 6.234$ (so the *margin of error* is $6.234$).
+Equivalently, the CI is from $22.03 - 6.234 = 15.796$, up to $22.03 + 6.234 = 28.264$.
 We write:
 
-> The mean weight gain from Week\ $1$ to\ $12$ is $0.86$\ kg ($\text{s.e.} = 0.116$; $n = 68$), with an *approximate* $95$%\ CI from $0.63$\ kg to $1.09$\ kg.
+> The mean difference in the 6MWT distances when using a $20$\ m and $30$\ m walkway is $22.03$\ m ($\text{s.e.} = 3.117$; $n = 50$), with an *approximate* $95$%\ CI from $15.80$\ m to $28.26$\ m, further for a $30$\ m walkway.
 
-The CI means that the reasonable values for the population mean weight gain are between $0.63$\ kg and $1.09$\ kg.
-Alternatively, 
-we are $95$% confident that, between Weeks\ $1$ and\ $12$, the population mean weight gain is between $0.63$\ kg and $1.09$\ kg.
-A weight gain of this magnitude probably has no practical importance.\index{Practical importance}
+The CI means that the reasonable values for the population mean difference in 6MTW distances are between $15.80$\ m and $28.26$\ m.
+Alternatively, we are $95$% confident that the population mean difference between the 6MWT distances is between $15.80$\ m and $28.26$\ m (further for $30$\ m walkway).
+A difference of this magnitude probably has practical importance.\index{Practical importance}
 
 
 <iframe src="https://learningapps.org/watch?v=piue8vvyk22" style="border:0px;width:100%;height:600px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
 
 
 Statistical software\index{jamovi output!mean difference} produces *exact* $95$%\ CIs, which may be slightly different than the *approximate* $95$%\ CI (the $68$--$95$--$99.7$ rule gives *approximate* multipliers).
-For the student-eating data, the *approximate* and *exact* $95$%\ CIs are the same to two decimal places (Fig.\ \@ref(fig:WeightGainTestOutput)).
+For the 6MWT data, the *approximate* and *exact* $95$%\ CIs are the same to one decimal place (Fig.\ \@ref(fig:SMWTTestOutput)).
 We write:
 
-> The mean weight gain from Week\ $1$ to Week\ $12$ is $0.86$\ kg ($\text{s.e.} = 0.116$; $n= 68$), with a $95$%\ CI between $0.63$ to $1.09$\ kg.
+> The mean difference in the 6MWT distances when using a $20$\ m and $30$\ m walkway is $22.03$\ m ($\text{s.e.} = 3.117$; $n = 50$), with an $95$%\ CI from $15.76$\ m to $28.29$\ m further for a $30$\ m walkway.
 
 
-```{r WeightGainTestOutput, fig.cap="The weight-gain data: software output", fig.align="center", out.width="100%", fig.show="hold"}
-knitr::include_graphics("jamovi/WeightGain/WeightGain-PairedTOutput.jpg")
+```{r SMWTTestOutput, fig.cap="The weight-gain data: software output", fig.align="center", out.width="100%", fig.show="hold"}
+knitr::include_graphics("jamovi/SMWT/SMWT-PairedT.png")
 ```
 
 
@@ -550,8 +570,8 @@ If the statistical validity conditions are not met, resampling methods\index{Res
 
 
 ::: {.example #StatisticalValidityWeightGain name="Statistical validity"}
-For the eating data, the sample size is $n = 68$, so the results are statistically valid.
-The differences *in the population*, nor the weights in Week\ $1$ and Week\ $12$, need to follow a normal distribution.
+For the SMWT data, the sample size is $n = 50$, so the results are statistically valid.
+Neither the differences *in the population*, nor the distances for each walkway length, need to follow a normal distribution.
 :::
 
 
@@ -583,7 +603,6 @@ Explaining *how* the differences are computed is important.
 The differences here are skypilot minus willow first-flowering days.
 Positive values mean willow flowered first; negative values mean skypilot flowered first.
 :::
-
 
 The data are summarised graphically (Fig.\ \@ref(fig:FloweringPlots)) and numerically (Table\ \@ref(tab:FloweringSummary)), using software output (Fig.\ \@ref(fig:Floweringjamovi)).
 
