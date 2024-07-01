@@ -3467,6 +3467,7 @@ CI gives an interval for the population *mean*, and *not sample mean*.
 ### Chap.\ \@ref(PairedCI): CIs for paired data {.unlisted .unnumbered}
 
 :::::: {.ChapAnswers data-latex=""}
+
 ::: {.answer data-latex=""}
 **Ex.\ \@ref(exr:MeanDiffWhichPaired).**
 **1.** Paired.
@@ -3581,6 +3582,7 @@ Very similar.
 Stat. valid.
 $-1.09$ to $-0.63$\ kg.
 Probably not.
+:::
 `r if( !includeEvenAnswers) "-->"`
 
 ::::::
@@ -5464,8 +5466,8 @@ The test is stat. valid.
 
 ::: {.answer data-latex=""}
 **Ex.\ \@ref(exr:PetBirdsTest).**
-From software: $\chi^2 = 22.374$, approx. $z = 4.730$: very large; small $P$-value.
-From software: $P < 0.001$.
+$\chi^2 = 22.374$, so $z = 4.730$: very large; small $P$-value.
+$P < 0.001$.
 The *sample* provides very strong evidence ($\chi^2 = 22.374$; two-tailed  $P < 0.001$) that the odds in the *population* of having a pet bird is not the same for people with lung cancer (odds: $0.695$) and for people without lung cancer (odds: $0.308$; OR: $2.26$; $95$%\ CI from $1.6$ to $3.2$).
 :::
 
@@ -5475,14 +5477,14 @@ The *sample* provides very strong evidence ($\chi^2 = 22.374$; two-tailed  $P < 
 ::: {.answer data-latex=""}
 **Ex.\ \@ref(exr:B12Deficiency).**
 **1.** RQ could be worded in terms of odds, odds ratios, proportions or associations.
-$H_0$: $\text{pop. odds, vegetarians} = \text{pop. odds non-vegetarians}$;
-$H_1$:  $\text{pop. odds, vegetarians} \ne \text{pop. odds non-vegetarians}$.
-**2.** The pop. OR, comparing the odds of being B12 deficient, for vegetarians to non-vegetarians.
+$H_0$: $\text{pop. odds, veg.} = \text{pop. odds non-veg.}$;
+$H_1$:  $\text{pop. odds, veg.} \ne \text{pop. odds non-veg.}$.
+**2.** The pop. OR, comparing the odds of being B12 deficient, for veg. to non-vegs.
 **3.** $\chi^2 = 4.707$.
 **4.** Equivalent to $z = 2.17$, so small-ish $P$; $P = 0.030$ from output.
 **5.** The sample provides *moderate evidence* ($\chi^2 = 4.707$; $P = 0.030$) that the odds in the population of being vitamin B12 deficient is different for vegetarian women (odds: $0.3077$) compared to non-vegetarian women (odds: $0.0976$; OR: $3.2$; $95$%\ CI: $1.08$ to $9.24$).
-**6.** Using the jamovi output, the smallest expected count is $4.39$.
-Only *one* cell has an expected count less than\ $5$, and only *just*; we shouldn't be too concerned (it should be noted).
+**6.** Smallest expected count: $4.39$, less than five.
+*One* cell has expected count just less than\ $5$; shouldn't be too concerned.
 :::
 `r if( !includeEvenAnswers) "-->"`
 
@@ -5491,10 +5493,8 @@ Only *one* cell has an expected count less than\ $5$, and only *just*; we should
 **Ex.\ \@ref(exr:DogsHT).**
 **1.** $H_0$: No association; $H_1$ An association.
 **2.** $23.0522$; $P = 0.00004$.
-**3.** $4$.
-**4.** $z = 2.772$.
-**5.** Very strong evidence of an association.
-**6.** Yes.
+**3.** Very strong evidence of an association.
+**4.** Yes.
 :::
 
 
@@ -5506,15 +5506,10 @@ Only *one* cell has an expected count less than\ $5$, and only *just*; we should
 **3.** $4$, $2.642$, $2.444$.
 **4.** $1.637$, $1.081$; reference level.
 **5.** $1.0989$; $P = 0.577$.
-**6.** $2$.
-**7.** $0.741$.
-**8.** No evidence of an association.
-**9.** Yes.
+**6.** No evidence of an association.
+**7.** Yes.
 :::
 `r if( !includeEvenAnswers) "-->"`
-
-
-::::::
 
 
 ```{r PhoneTableExpected, eval=includeGraphsTables}
@@ -5565,6 +5560,94 @@ if( knitr::is_html_output() ) {
 }
 ```
 
+
+
+::: {.answer data-latex=""}
+**Ex.\ \@ref(exr:ShoppingBags).**
+**1.** to **3.** Table not shown.
+**4.** $H_0$: *No association* exists between bringing a bag and age group. $H_1$: *An association* exists between bringing a bag and age group.
+**5.** $\chi^2 = 16.24$; $P < 0.001$.
+**6.** Very strong evidence in the sample that bringing a bag is not the same for all three age groups.
+**7.** Stat. valid.
+:::
+
+
+```{r BagsHTNumerical, eval=includeGraphsTables}
+data(ShoppingBags)
+
+ShoppingBags$BringBags <- ordered(ShoppingBags$BringBags, # Swap order
+                                  levels = c("y", "n"))
+BagsTab <- xtabs(Counts ~ AgeGroup + BringBags, 
+                 data = ShoppingBags)
+
+colnames(BagsTab) <- c("Brings own bags", 
+                       "Does not bring own bags" )
+rownames(BagsTab) <- c("30 and under",
+                       "31 to 40",
+                       "Over 40")
+
+
+BagsSummary <- array( dim = c(3, 4) )
+
+colnames(BagsSummary) <- c( "Odds",
+                            "Odds ratio",
+                           "Percentage",
+                           "$n$")
+rownames(BagsSummary) <- rownames(BagsTab)
+  
+BagsSummary[1, ] <- c( 0.913, 
+                       0.289, 
+                       47.7, 
+                       264)
+BagsSummary[2, ] <- c( 1.563, 
+                       0.496, 
+                       61.0, 
+                       82)
+BagsSummary[3, ] <- c(3.154, 
+                      NA, 
+                      75.9, 
+                      54)
+  
+cap.tab <- "Odds and percentage that people bring their own shopping bags by age groups. The odds ratios are computed relative to those 'Over $40$'."
+
+
+if( knitr::is_latex_output() ) {
+  kable(pad(BagsSummary,
+            surroundMaths = TRUE,
+            targetLength = c(5, 5, 4, 3),
+            digits = c(3, 3, 1, 0)),
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        escape = FALSE,
+        align = "c",
+        caption = cap.tab) %>%
+    kable_styling(font_size = 7)
+} else {
+  kable(pad(BagsSummary,
+            surroundMaths = TRUE,
+            targetLength = c(5, 5, 4, 3),
+            digits = c(3, 3, 1, 0)),
+        format = "html",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = "c",
+        caption = cap.tab)
+}
+```
+
+
+
+`r if( !includeEvenAnswers) "<!--"`
+::: {.answer data-latex=""}
+**Ex.\ \@ref(exr:CrabShells).**
+$\chi^2 = 3.8764$; $P = 0.423$.
+There is no evidence of a relationship between the vertical and horizontal placement of the anemones.
+The test may not be statistically valid.
+:::
+`r if( !includeEvenAnswers) "-->"`
+
+::::::
 
 
 
