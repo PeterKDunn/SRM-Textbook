@@ -566,7 +566,12 @@ The RQ is answered using a $\chi^2$-test, by extending the ideas in Sect.\ \@ref
 
 :::{.example #ChiSqLarger name="Larger two-way tables"}
 [*Dataset*: `RipsID`]
-@diez2023rip studied Spanish people's knowledge of ocean rips (Table\ \@ref(tab:RipTableSummary), left table).
+@diez2023rip studied Spanish people's knowledge of ocean rips
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:RipTableSummary), left table).'
+} else {
+   '(Table\\ \\@ref(tab:RipTableDataHTML).'
+}`
 The table is a $4\times 2$ two-way table.
 The rows are the age groups, as the age groups are being compared.
 The RQ is
@@ -575,7 +580,7 @@ The RQ is
 
 :::
 
-```{r RipTableSummary}
+```{r RipTableSetup}
 data(RipsID)
 
 RipTable <- xtabs(Counts ~ AgeGroup + Identification,
@@ -588,6 +593,26 @@ rownames(RipTable) <- c("18 to 24",
                         "35 to 50",
                         "51 to 65")
 
+
+RipSummary <- array( dim = c(4, 4))
+
+rownames(RipSummary) <- rownames(RipTable)
+colnames(RipSummary) <- c("Odds",
+                          "Odds ratio",
+                          "Percentage",
+                          "$n$")
+
+RipSummary[, 1] <- RipTable[, 1] / RipTable[, 2]
+RipSummary[, 3] <- RipTable[, 1] / rowSums(RipTable) * 100
+RipSummary[, 4] <- rowSums(RipTable)
+
+RipSummary[1, 2] <- RipSummary[1, 1] / RipSummary[4, 1]
+RipSummary[2, 2] <- RipSummary[2, 1] / RipSummary[4, 1]
+RipSummary[3, 2] <- RipSummary[3, 1] / RipSummary[4, 1]
+RipSummary[4, 2] <- NA
+```
+
+```{r RipTableSummary}
 if( knitr::is_latex_output() ) {
   T1 <- kable( pad(RipTable,
              surroundMaths = TRUE,
@@ -607,29 +632,11 @@ if( knitr::is_latex_output() ) {
 
 ## 
 
-RipSummary <- array( dim = c(4, 4))
-
-rownames(RipSummary) <- rownames(RipTable)
-colnames(RipSummary) <- c("Odds",
-                          "Odds ratio",
-                          "Percentage",
-                          "$n$")
-
-RipSummary[, 1] <- RipTable[, 1] / RipTable[, 2]
-RipSummary[, 3] <- RipTable[, 1] / rowSums(RipTable)
-RipSummary[, 4] <- rowSums(RipTable)
-
-RipSummary[1, 2] <- RipSummary[1, 1] / RipSummary[4, 1]
-RipSummary[2, 2] <- RipSummary[2, 1] / RipSummary[4, 1]
-RipSummary[3, 2] <- RipSummary[3, 1] / RipSummary[4, 1]
-RipSummary[4, 2] <- NA
-
-
 
 T2 <- kable( pad(RipSummary,
            surroundMaths = TRUE,
            targetLength = c(5, 5, 4, 3),
-           digits = c(3, 3, 2, 0) ),
+           digits = c(3, 3, 1, 0) ),
        escape = FALSE,
        align = "c",
        format = "latex",
@@ -645,13 +652,15 @@ T2 <- kable( pad(RipSummary,
   out <- knitr::kables(list(T1, T2),
                        format = "latex",
                        label = "RipTableSummary",
-                       caption = "Identifying rips. Left: the data by age group. Right: a summary table. The odds ratio is relative to the 51 to 65 age group.") %>% 
+                       caption = "Identifying rips. Left: the data by age group. Right: a summary table. The odds ratio is relative to the $51$ to $65$ age group.") %>% 
     kable_styling(font_size = 8)
 
   out2 <- prepareSideBySideTable(out) 
   out2
 }
+```
 
+```{r RipTableDataHTML}
 if( knitr::is_html_output() ) {
   kable(pad(RipTable,
              surroundMaths = TRUE,
@@ -661,21 +670,55 @@ if( knitr::is_html_output() ) {
                booktabs = TRUE,
                longtable = FALSE,
                align = "c",
-               caption = "Identifying rips. Left: the data by age group. Right: a summary table. The odds ratio is relative to the 51 to 65 age group.")
+               caption = "Identifying rips: data by age group" )
 }
 ```
 
+```{r RipTableSummaryHTML}
+if( knitr::is_html_output() ) {
+knitr::kable( pad(RipSummary,
+             surroundMaths = TRUE,
+             targetLength = c(5, 5, 4, 3),
+             digits = c(3, 3, 1, 0) ),
+       escape = FALSE,
+       align = "c",
+       format = "html",
+       caption = "Identifying rips: a summary table. The odds ratio is relative to the $51$ to $65$ age group.",
+       booktabs = TRUE) %>%
+     row_spec(0, bold = TRUE) %>%
+    add_header_above( c(" " = 1, 
+                        "Correctly identifying rips" = 3,
+                        " " = 1),
+                      line = TRUE,
+                      bold = TRUE)
+}
+```
 
-The odds and percentage of people in each age group that can correctly identify rips can be computed (Table\ \@ref(tab:RipTableSummary), right table), but this is not always possible (e.g., for a $3\times 4$ table).
+The odds and percentage of people in each age group that can correctly identify rips can be computed
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:RipTableSummary), right table),'
+} else {
+   '(Table\\ \\@ref(tab:RipTableSummaryHTML),'
+}`
+but this is not always possible (e.g., for a $3\times 4$ table).
 Odds ratios compare *pairs* of odds, so the odds ratios in Table\ \@ref(tab:RipTableSummary) are all relative to those $51$ to $65$ (hence, no odds ratio is given for the $51$ to $65$ age group, which is the *reference level*).\index{Reference level}
 For example, the odds of someone aged $18$ to $24$ correctly identifying a rip is $1.104$ times the odds of someone aged $51$ to $65$ correctly identifying a rip.
 
-* $H_0$: In the *population*, there *is no association* between age group and being able to correctly identify a rip;
-* $H_1$: In the *population*, there *is an association* between age group and being able to correctly identify a rip.
+Because odds can be computed, the hypothesis can be worded in terms of comparing odds:
+
+* $H_0$: The odds of bringing a shopping bag is the same for all age groups.
+* $H_1$: The odds of bringing a shopping bag is *not* the same for all age groups.
+
+This hypothesis encompasses many possibilities: for example, that the three odds are *all* different from each other, or that the odds for the first age group is different than the other two (which are the same).
+
+For tables larger than $2\times 2$, the hypothesis are usually worded in terms of associations (but *not* correlations):
+
+* $H_0$: In the *population*, there *is no association* between bringing a shopping bag and age grpup;
+* $H_1$: In the *population*, there *is an association* between bringing a shoopingbag and age grop.
 
 For a $2\times 2$ table, the *parameter* is the odds ratio, and the test proceeds using a $\chi^2$ value.
 As in Sect.\ \@ref(CompareTwoOdds), the value of $\chi^2$ compares the observed counts to the expected counts (found in the same way as in Sect.\ \@ref(ExpectedValues)).
-For two-way tables larger than $2\times 2$, defining a single parameter to describe the association between the variables is difficult.
+For two-way tables larger than $2\times 2$, the parameter describing the association between the variables is the $\chi^2$ value.
 
 When no relationship exists in the sample, the observed and expected values are the same, and $\chi^2 = 0$.
 The larger the difference between the observed and expected values, the larger the value of $\chi^2$.
@@ -686,17 +729,16 @@ For two-way table of counts larger than $2\times 2$, this is equivalent to a $z$
 $$
   z = \sqrt{\chi^2 \div \text{df}},
 $$
-where $\text{df}$ is the *degrees of freedom*,\index{Degrees of freedom}
-where
+where $\text{df}$ is the *degrees of freedom*,\index{Degrees of freedom} and
 $$
   \text{df} = (\text{number of columns of data} - 1)\times(\text{number of rows of data} - 1).
 $$
-Here, $\text{df} = (4 - 1)\times ( 2 - 1) = 3$, as in the output (Fig. \@ref(fig:Ripsjamovi)).
+Here, $\text{df} = (4 - 1)\times (2 - 1) = 3$, as in the output (Fig. \@ref(fig:Ripsjamovi)).
 Hence, the equivalent $z$-score is
 $$
   z = \sqrt{2.4062/3} = 0.896,
 $$
-which is quite small, so we expected a large $P$-value.
+which is quite small, so we expected a large (two-tailed) $P$-value.
 Software confirms this (Fig. \@ref(fig:Ripsjamovi)): $P = 0.492$.
 
 
@@ -928,84 +970,82 @@ knitr::include_graphics("jamovi/TurtleNests/TurtleNests-Expected.png")
 ```
 
 
-## Example: shopping bags {#ShoppingBagsHT}
+## Example: health of female burros {#asxhaiuhpiauhapxhpxuihpaxhsap}
 
-A study of $400$ residents of  Klang Valley, Malaysia, examined residents' approach to waste management [@choon2017perception].
+johnson1987demography studied $631$ introduced donkeys (burros) in the Mojave Desert (California) to understand management processes. 
 One RQ was:
 
-> For residents of Klang Valley, is age group associated with whether people bring their own bags when shopping? 
+> For these female burros, is the reproductive status of the burros related to their health?
 
 The data
 `r if (knitr::is_latex_output()) {
-   '(Table\\ \\@ref(tab:BagsTableHT), left table)'
+   '(Table\\ \\@ref(tab:BurrosData), left table)'
 } else {
-   '(Table\\ \\@ref(tab:BagsTableHT))'
+   '(Table\\ \\@ref(tab:BurrosDataHTML))'
 }`
-are given in a $3\times 2$ table of counts.
-The software output is shown in Fig.\ \@ref(fig:BagsChisqjamovi), and a graphical summary in Fig.\ \@ref(fig:BagsSidebysideBar).
+are given in a $3\times 3$ table of counts.
+The software output is shown in Fig.\ \@ref(fig:BurrosChisquareTest), and a graphical summary in Fig.\ \@ref(fig:BurrosSidebysideBar).
 
 
-```{r BagsTableHT}
-data(ShoppingBags)
+```{r Burros}
+data(Burros)
 
-ShoppingBags$BringBags <- ordered(ShoppingBags$BringBags, # Swap order
-                                  levels = c("y", "n"))
-BagsTab <- xtabs(Counts ~ AgeGroup + BringBags, 
-                 data = ShoppingBags)
+BurroTab <- xtabs(Counts ~ Status + Health, 
+                 data = Burros)
 
-colnames(BagsTab) <- c("Brings own bags", 
-                       "Does not bring own bags" )
-rownames(BagsTab) <- c("30 and under",
-                       "31 to 40",
-                       "Over 40")
+colnames(BurroTab) <- c("Excellent", 
+                       "Fair",
+                       "Poor")
+rownames(BurroTab) <- c("Barren",
+                       "Pregnant",
+                       "Lactating")
+  ###
+  
+BurroSummary <- array( dim = c(3, 3) )
 
+colnames(BurroSummary) <- c( "Odds",
+                             "Percentage",
+                             "$n$")
+rownames(BurroSummary) <- rownames(BurroTab)
+  
+BurroSummary[1, 1] <- BurroTab[1, 1] / BurroTab[1, 3]
+BurroSummary[2, 1] <- BurroTab[2, 1] / BurroTab[2, 3]
+BurroSummary[3, 1] <- BurroTab[3, 1] / BurroTab[3, 3]
+
+BurroSummary[1, 2] <- BurroTab[1, 1] / sum( BurroTab[1, ]) * 100
+BurroSummary[2, 2] <- BurroTab[2, 1] / sum( BurroTab[2, ]) * 100
+BurroSummary[3, 2] <- BurroTab[3, 1] / sum( BurroTab[3, ]) * 100
+
+BurroSummary[, 3] <- rowSums(BurroTab)
+
+             
+```
+
+```{r}
 if( knitr::is_latex_output() ) {
-  T1 <- kable(pad(BagsTab,
+  T1 <- kable(pad(BurroTab,
             surroundMaths = TRUE,
             targetLength = 3,
             digits = 0),
         format = "latex",
-        align = c("r", "c", "c"),
-        col.names = c("Yes", "No"),
+        align = c("c", "c", "c"),
         longtable = FALSE,
         escape = FALSE,
-        #caption = "Whether shoppers bring their own bags, and the shoppers age",
         booktabs = TRUE) %>%
     #kable_styling(font_size = 8) %>%
     row_spec(0, bold = TRUE) %>%
     add_header_above( c(" " = 1,
-                        "Brings own bags" = 2),
+                        "Health" = 3),
                       bold = TRUE,
                       line = TRUE)
   
   
-  ###
-  
-BagsSummary <- array( dim = c(3, 4) )
+###
 
-colnames(BagsSummary) <- c( "Odds",
-                            "Odds ratio",
-                           "Percentage",
-                           "$n$")
-rownames(BagsSummary) <- rownames(BagsTab)
-  
-BagsSummary[1, ] <- c( 0.913, 
-                       0.289, 
-                       47.7, 
-                       264)
-BagsSummary[2, ] <- c( 1.563, 
-                       0.496, 
-                       61.0, 
-                       82)
-BagsSummary[3, ] <- c(3.154, 
-                      NA, 
-                      75.9, 
-                      54)
-
- T2 <- kable(pad(BagsSummary,
+ T2 <- kable(pad(BurroSummary,
             surroundMaths = TRUE,
-            targetLength = c(5, 5, 4, 3),
-            digits = c(3, 3, 1, 0)),
+            targetLength = c(5, 5, 3),
+            digits = c(3, 1, 0)),
         format = "latex",
         booktabs = TRUE,
         longtable = FALSE,
@@ -1013,112 +1053,87 @@ BagsSummary[3, ] <- c(3.154,
         align = "c") %>%
     row_spec(0, bold = TRUE) %>%
     add_header_above( c(" " = 1,
-                        "Brings own shopping bags" = 3,
-                        " " = 1),
+                        "Excellent health" = 3),
                       bold = TRUE,
                       line = TRUE)
   
     out <- knitr::kables(list(T1, T2),
                        format = "latex",
-                       label = "BagsTableHT",
-                       caption = "Left: whether shoppers bring their own bags and age group. Right: odds and percentage that people bring their own shopping bags by age groups. The odds ratios are computed relative to those `Over $40$'") %>% 
+                       label = "BurrosData",
+                       caption = "Left: the health and reproductive status of female burros. Right: summary of the burro data.  The odds are relative to burros lactating. (Pregnant and lactating burros are counted in the lactating data.)") %>% 
     kable_styling(font_size = 8)
 
   out2 <- prepareSideBySideTable(out) 
   out2
 
 }
+```
 
+
+```{r BurrosDataHTML}
 if( knitr::is_html_output() ) {
-  kable(pad(BagsTab,
+  kable(pad(BurroData,
             surroundMaths = TRUE,
             targetLength = 3,
             digits = 0),
         format = "html",
         align = "c",
         longtable = FALSE,
-        caption = "Whether shoppers bring their own bags, and the shoppers age",
+        caption = "The health and reproductive status of female burros.  (Pregnant and lactating burros are counted in the lactating data.)",
+        booktabs = TRUE)
+}
+```
+
+```{r BurrosSummaryHTML}
+if( knitr::is_html_output() ) {
+  kable(pad(BurroSummary,
+            surroundMaths = TRUE,
+            targetLength = 3,
+            digits = 0),
+        format = "html",
+        align = "c",
+        longtable = FALSE,
+        caption = "Summary of the burro data",
         booktabs = TRUE)
 }
 ```
 
 
 
-
-```{r BagsChisqjamovi, fig.show="hold", fig.cap="Software output for the shopping-bags data", fig.align="center", out.width=c("43%", "56%")}
-knitr::include_graphics( "jamovi/ShoppingBags/ShoppingBags-Test.png")
-knitr::include_graphics( "jamovi/ShoppingBags/ShoppingBags-Expected.png")
+```{r BurrosChisqjamovi, fig.show="hold", fig.cap="Software output for the burro-health data", fig.align="center", out.width=c("43%", "56%")}
+knitr::include_graphics( "jamovi/Burros/BurrosChisquareTest.png")
+knitr::include_graphics( "jamovi/Burros/BurrosExpected.png")
 ```
 
 
-```{r BagsSidebysideBar, fig.cap="A side-by-side bar chart for the shopping-bags data", fig.align="center", out.width="70%", fig.height=3.25, fig.width=7}
-barplot(t(BagsTab), 
+```{r BurrosSidebysideBar, fig.cap="A side-by-side bar chart for the burro-health data", fig.align="center", out.width="70%", fig.height=3.25, fig.width=7}
+barplot(t(BurroTab), 
         beside = TRUE,
         las = 1,
-        ylim = c(0, 140),
+        ylim = c(0, 80),
         ylab = "Counts",
         xlab = "Age group",
-        main = "Side-by-side bar chart\n for shopping-bags data",
+        main = "Side-by-side bar chart\n for burro-health data",
         legend.text = TRUE, 
         args.legend = list( bty = "n", 
                             ncol = 1,
-                            x = "topright"))
+                            x = "topleft"))
 
-#knitr::include_graphics( "SPSS/Kerbside/Kerbside-SidebysideBar.png")
 ```
 
-
-```{r BagsHTNumerical}
-BagsSummary <- array( dim = c(3, 4) )
-
-colnames(BagsSummary) <- c( "Odds",
-                            "Odds ratio",
-                           "Percentage",
-                           "Sample size")
-rownames(BagsSummary) <- rownames(BagsTab)
-  
-BagsSummary[1, ] <- c( 0.913, 
-                       0.289, 
-                       47.7, 
-                       264)
-BagsSummary[2, ] <- c( 1.563, 
-                       0.496, 
-                       61.0, 
-                       82)
-BagsSummary[3, ] <- c(3.154, 
-                      NA, 
-                      75.9, 
-                      54)
-
-
-cap.tab <- "Odds and percentage that people bring their own shopping bags by age groups. The odds ratios are computed relative to those 'Over $40$'."
-
-
-if( knitr::is_html_output() ) {
-  kable(pad(BagsSummary,
-            surroundMaths = TRUE,
-            targetLength = c(5, 5, 4, 3),
-            digits = c(3, 3, 1, 0)),
-        format = "html",
-        booktabs = TRUE,
-        longtable = FALSE,
-        align = "c",
-        caption = cap.tab)
-}
-```
 
 For the numerical summary table
 `r if (knitr::is_latex_output()) {
-   '(Table\\ \\@ref(tab:BagsTableHT), right table):'
+   '(Table\\ \\@ref(tab:BurrosData), right table)'
 } else {
-   '(Table\\ \\@ref(tab:BagsHTNumerical)):'
+   '(Table\\ \\@ref(tab:BurrosSummaryHTML))'
 }`
 
-* For those '$30$ or under': the *odds* of bringing a shopping bag is $126/138 = 0.913$.
-* For those '$31$ to $40$': the *odds* of bringing a shopping bag is $50/32 = 1.563$.
-* For those 'Over $40$': the *odds* of bringing a shopping bag is $41/13 = 3.154$.
+* For barren burros: the *odds* of excellent health (compared to poor health) is $16/38 = 0.421$.
+* For pregnant (but not lactating) burros: the *odds* of excellent health (compared to poor health) is $14/62 = 0.226$.
+* For lactating burros: the odds of *excellent* health (compared to poor health) is $4/78 = 0.0513$.
 
-For computing the odds ratios, Row\ 3 is on the bottom of the fraction (as the reference level):\index{Reference level}
+For computing the odds ratios, ???????????????? Row\ 3 is on the bottom of the fraction (as the reference level):\index{Reference level}
 
 * The OR of bringing a shopping bag, comparing people '$30$ and under' to people 'Over $40$': $0.913/3.154 = 0.289$.
 * The OR of bringing a shopping bag, comparing people '$31$--$40$' to people 'Over $40$': $1.563/3.154 = 0.496$.
@@ -1126,25 +1141,24 @@ For computing the odds ratios, Row\ 3 is on the bottom of the fraction (as the r
 That is, the odds of bringing a shopping bag for those '$30$ and under' is $0.289$ times (i.e., is smaller than) the odds of those 'Over $40$'.
 Similarly, the odds of bringing a shopping bag for those '$31$ to $40$' is $0.496$ times (i.e., is smaller than) the odds of those 'Over $40$'.
 
-The hypothesis can be worded in terms of odds, but the hypothesis are usually worded in terms of associations (but *not* correlations) for tables larger than $2\times 2$:
+The hypothesis can be worded in terms of odds, but for tables larger than $2\times 2$, the hypothesis are usually worded in terms of associations (but *not* correlations):
 
-* $H_0$: *No association* exists between bringing a shopping bag and age group.
-* $H_1$: *An association* exists between bringing a shopping bag and age group.
+* $H_0$: *No association* exists between reproductive status and overall health.
+* $H_1$: *An association* exists between reproductive status and overall health.
 
-From the software output (Fig.\ \@ref(fig:BagsChisqjamovi)), $\chi^2 = 16.24$ and $\text{df} = 2$, so this $\chi^2$ value is approximately equivalent to a $z$-score of $\sqrt{16.24\div 2} = 2.85$.
-This is a large $z$-score so, using the $68$--$95$--$99.7$ rule, a small $P$-value is expected; indeed, software reports $P < 0.001$.
-This suggests very strong evidence in the sample that bringing a shopping bag is not the same for all three age groups.
+From the software output (Fig.\ \@ref(fig:BurroChisquareTest)), $\chi^2 = 23.585$ and $\text{df} = 4$.
+Software reports $P < 0.001$, which suggests very strong evidence in the sample that a relationship exists between reproductive status and overall health.
 
 The conclusion could be written as
 
-> The sample provides very strong evidence ($\chi^2 = 16.24$; $\text{df} = 2$) that the odds of bringing a shopping bag is not the same for the three age groups.
+> The sample provides very strong evidence ($\chi^2 = 23.585$; $\text{df} = 4$) of an association between reproductive status and overall health of female burros.
 
 Adding sample summary information to this conclusion is cumbersome.
 Instead, readers can be pointed to the numerical summary
 `r if (knitr::is_latex_output()) {
-   '(Table\\ \\@ref(tab:BagsTableHT), right table).'
+   '(Table\\ \\@ref(tab:BurrosSummary), right table).'
 } else {
-   '(Table\\ \\@ref(tab:BagsHTNumerical)).'
+   '(Table\\ \\@ref(tab:BurrosSummaryHTML)).'
 }`
 Furthermore, CIs are not reported since software does not always produce CIs for tables larger than $2\times 2$.
 
@@ -1152,7 +1166,8 @@ While we know there is an association between the variables, we can only specula
 Comparing all *pairs* of groups increases the probability of *incorrectly* declaring a difference between the odds (increasing the chance of a Type\ I error;\index{Type I error} Sect.\ \@ref(TypeErrors))
 The correct approach requires methods beyond this book.
 
-All *expected* values exceed $5$ (Fig.\ \@ref(fig:BagsChisqjamovi)), so the results are statistically valid.
+All *expected* values exceed $5$ (Fig.\ \@ref(fig:BurrosExpected)), so the results are statistically valid.
+
 
 
 ## Chapter summary {#TestsOddsRatio-Summary}
@@ -1177,8 +1192,8 @@ To test a hypothesis for comparing two odds, or to test for a relationship betwe
 * Write the null hypothesis ($H_0$) and the alternative hypothesis ($H_1$).
 * Initially *assume* no relationship between the two variables.
 * Find the value of the *test statistic* (a $\chi^2$-score) on the software output.
-* The equivalent $z$-score is $\sqrt{\chi^2\div\text{df}}$ where $\text{df}$ is the 'degrees of freedom' and can be found on the software output.
-* An approximate *$P$-value* can be estimated using the $68$--$95$--$99.7$ rule, or found using software.
+  (For $2\times 2$ tables only, the equivalent $z$-score is $\sqrt{\chi^2}$.
+* A *$P$-value* is found using software.
 
 
 ## Quick review questions {#TestsOddsRatio-QuickReview}
@@ -2031,6 +2046,245 @@ add_header_above( c(" " = 1,
 ```{r Mumpsjamovi, fig.cap="Software output for the dog-walking data", fig.align="center", out.width="55%", fig.show='hold'}
 knitr::include_graphics("jamovi/Mumps/Mumps-All.png") 
 ```
+
+
+
+::: {.exercise #ShoppingBags}
+[*Dataset*: `ShoppingBags`]
+
+A study of $400$ residents of  Klang Valley, Malaysia, examined residents' approach to waste management [@choon2017perception].
+One RQ was:
+
+> For residents of Klang Valley, is age group associated with whether people bring their own bags when shopping? 
+The data
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:BagsTableHT), left table)'
+} else {
+   '(Table\\ \\@ref(tab:BagsTableHT))'
+}`
+are given in a $3\times 2$ table of counts.
+The software output is shown in Fig.\ \@ref(fig:BagsChisqjamovi), and a graphical summary in Fig.\ \@ref(fig:BagsSidebysideBar).
+
+
+```{r BagsTableHT}
+data(ShoppingBags)
+
+ShoppingBags$BringBags <- ordered(ShoppingBags$BringBags, # Swap order
+                                  levels = c("y", "n"))
+BagsTab <- xtabs(Counts ~ AgeGroup + BringBags, 
+                 data = ShoppingBags)
+
+colnames(BagsTab) <- c("Brings own bags", 
+                       "Does not bring own bags" )
+rownames(BagsTab) <- c("30 and under",
+                       "31 to 40",
+                       "Over 40")
+
+if( knitr::is_latex_output() ) {
+  T1 <- kable(pad(BagsTab,
+            surroundMaths = TRUE,
+            targetLength = 3,
+            digits = 0),
+        format = "latex",
+        align = c("r", "c", "c"),
+        col.names = c("Yes", "No"),
+        longtable = FALSE,
+        escape = FALSE,
+        #caption = "Whether shoppers bring their own bags, and the shoppers age",
+        booktabs = TRUE) %>%
+    #kable_styling(font_size = 8) %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c(" " = 1,
+                        "Brings own bags" = 2),
+                      bold = TRUE,
+                      line = TRUE)
+  
+  
+  ###
+  
+BagsSummary <- array( dim = c(3, 4) )
+
+colnames(BagsSummary) <- c( "Odds",
+                            "Odds ratio",
+                           "Percentage",
+                           "$n$")
+rownames(BagsSummary) <- rownames(BagsTab)
+  
+BagsSummary[1, ] <- c( 0.913, 
+                       0.289, 
+                       47.7, 
+                       264)
+BagsSummary[2, ] <- c( 1.563, 
+                       0.496, 
+                       61.0, 
+                       82)
+BagsSummary[3, ] <- c(3.154, 
+                      NA, 
+                      75.9, 
+                      54)
+
+ T2 <- kable(pad(BagsSummary,
+            surroundMaths = TRUE,
+            targetLength = c(5, 5, 4, 3),
+            digits = c(3, 3, 1, 0)),
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        escape = FALSE,
+        align = "c") %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c(" " = 1,
+                        "Brings own shopping bags" = 3,
+                        " " = 1),
+                      bold = TRUE,
+                      line = TRUE)
+  
+    out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "BagsTableHT",
+                       caption = "Left: whether shoppers bring their own bags and age group. Right: odds and percentage that people bring their own shopping bags by age groups. The odds ratios are computed relative to those `Over $40$'") %>% 
+    kable_styling(font_size = 8)
+
+  out2 <- prepareSideBySideTable(out) 
+  out2
+
+}
+
+if( knitr::is_html_output() ) {
+  kable(pad(BagsTab,
+            surroundMaths = TRUE,
+            targetLength = 3,
+            digits = 0),
+        format = "html",
+        align = "c",
+        longtable = FALSE,
+        caption = "Whether shoppers bring their own bags, and the shoppers age",
+        booktabs = TRUE)
+}
+```
+
+
+
+
+```{r BagsChisqjamovi, fig.show="hold", fig.cap="Software output for the shopping-bags data", fig.align="center", out.width=c("43%", "56%")}
+knitr::include_graphics( "jamovi/ShoppingBags/ShoppingBags-Test.png")
+knitr::include_graphics( "jamovi/ShoppingBags/ShoppingBags-Expected.png")
+```
+
+
+
+```{r BagsHTNumerical}
+BagsSummary <- array( dim = c(3, 4) )
+
+colnames(BagsSummary) <- c( "Odds",
+                            "Odds ratio",
+                           "Percentage",
+                           "Sample size")
+rownames(BagsSummary) <- rownames(BagsTab)
+  
+BagsSummary[1, ] <- c( 0.913, 
+                       0.289, 
+                       47.7, 
+                       264)
+BagsSummary[2, ] <- c( 1.563, 
+                       0.496, 
+                       61.0, 
+                       82)
+BagsSummary[3, ] <- c(3.154, 
+                      NA, 
+                      75.9, 
+                      54)
+
+
+cap.tab <- "Odds and percentage that people bring their own shopping bags by age groups. The odds ratios are computed relative to those 'Over $40$'."
+
+
+if( knitr::is_html_output() ) {
+  kable(pad(BagsSummary,
+            surroundMaths = TRUE,
+            targetLength = c(5, 5, 4, 3),
+            digits = c(3, 3, 1, 0)),
+        format = "html",
+        booktabs = TRUE,
+        longtable = FALSE,
+        align = "c",
+        caption = cap.tab)
+}
+```
+
+For the numerical summary table
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:BagsTableHT), right table):'
+} else {
+   '(Table\\ \\@ref(tab:BagsHTNumerical)):'
+}`
+
+* For those '$30$ or under': the *odds* of bringing a shopping bag is $126/138 = 0.913$.
+* For those '$31$ to $40$': the *odds* of bringing a shopping bag is $50/32 = 1.563$.
+* For those 'Over $40$': the *odds* of bringing a shopping bag is $41/13 = 3.154$.
+
+For computing the odds ratios, Row\ 3 is on the bottom of the fraction (as the reference level):\index{Reference level}
+
+* The OR of bringing a shopping bag, comparing people '$30$ and under' to people 'Over $40$': $0.913/3.154 = 0.289$.
+* The OR of bringing a shopping bag, comparing people '$31$--$40$' to people 'Over $40$': $1.563/3.154 = 0.496$.
+
+That is, the odds of bringing a shopping bag for those '$30$ and under' is $0.289$ times (i.e., is smaller than) the odds of those 'Over $40$'.
+Similarly, the odds of bringing a shopping bag for those '$31$ to $40$' is $0.496$ times (i.e., is smaller than) the odds of those 'Over $40$'.
+
+The hypothesis can be worded in terms of odds, but for tables larger than $2\times 2$, the hypothesis are usually worded in terms of associations (but *not* correlations):
+
+* $H_0$: *No association* exists between bringing a shopping bag and age group.
+* $H_1$: *An association* exists between bringing a shopping bag and age group.
+
+From the software output (Fig.\ \@ref(fig:BagsChisqjamovi)), $\chi^2 = 16.24$.
+Software reports $P < 0.001$.
+This suggests very strong evidence in the sample that bringing a shopping bag is not the same for all three age groups.
+
+The conclusion could be written as
+
+> The sample provides very strong evidence ($\chi^2 = 16.24$; $\text{df} = 2$) that the odds of bringing a shopping bag is not the same for the three age groups.
+
+Adding sample summary information to this conclusion is cumbersome.
+Instead, readers can be pointed to the numerical summary
+`r if (knitr::is_latex_output()) {
+   '(Table\\ \\@ref(tab:BagsTableHT), right table).'
+} else {
+   '(Table\\ \\@ref(tab:BagsHTNumerical)).'
+}`
+Furthermore, CIs are not reported since software does not always produce CIs for tables larger than $2\times 2$.
+
+While we know there is an association between the variables, we can only speculate on the nature of the association (i.e., for which group(s) the *population* odds are different).
+Comparing all *pairs* of groups increases the probability of *incorrectly* declaring a difference between the odds (increasing the chance of a Type\ I error;\index{Type I error} Sect.\ \@ref(TypeErrors))
+The correct approach requires methods beyond this book.
+
+All *expected* values exceed $5$ (Fig.\ \@ref(fig:BagsChisqjamovi)), so the results are statistically valid.
+:::
+
+
+::: {.exercise CrabShells}
+[*Dataset*: `CrabShell`]
+
+Hermit crabs place sea anemones on their shells for protection.
+@brooks1989hermit studied the placement of the anemones:
+
+> RQ HERE
+
+The data are shown in Table\ \@ref(tab:CrabShellData), and output in Fig.\ \@ref(fig:CrabShellsChisqjamovi).
+:::
+
+```{r CrabShellData}
+data(CrabShells)
+```
+
+
+```{r CrabShellsChisqjamovi, fig.show="hold", fig.cap="Software output for the crab-shell data", fig.align="center", out.width=c("43%", "56%")}
+knitr::include_graphics( "jamovi/CrabShells/CrabShellsChisquareTest.png")
+knitr::include_graphics( "jamovi/CrabShells/CrabShellsExpected.png")
+```
+
+
+
+`r if( knitr::is_latex_output() ) "\\captionsetup{font=normalsize}"`
 
 
 
