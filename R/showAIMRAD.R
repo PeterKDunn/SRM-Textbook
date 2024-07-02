@@ -1,6 +1,6 @@
 showAIMRAD <- function(debug = FALSE){
 
-  openplotmat(mar = c(0.10, 0.10, 0.10, 0.10))
+  openplotmat(mar = c(0.010, 0.10, 0.10, 0.010) )
   
   paperColour <- ifelse(knitr::is_html_output(), 
                         "lightcoral",
