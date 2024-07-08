@@ -54,8 +54,7 @@ BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
     
     base.counter <- base.counter + 5
   }
-cat("data.table:",data.table,"\n")
-  
+
   levelPos <- Pos
   
   ## Rotate ruler
