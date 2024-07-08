@@ -420,12 +420,14 @@ writeDataFileList <- function(fileNames,
   
   for (i in 1:numberOfDataFiles){
 
-    if ( i %in% startPage){
-      # START PAGE with column set-up info for the whole PAGE
-      cat(':::::: {.cols data-latex=\"[T]\"}\n')
-      cat("::: {.col data-latex=\"{0.48\\textwidth}\"}\n")
-    }
-    
+    # Only need the two columns for LateX; it looks silly in HTML
+    if ( is_latex_output()) {
+      if ( i %in% startPage){
+        # START PAGE with column set-up info for the whole PAGE
+        cat(':::::: {.cols data-latex=\"[T]\"}\n')
+        cat("::: {.col data-latex=\"{0.48\\textwidth}\"}\n")
+      }
+    }    
 
     if (i %in% startChapter){
       cat("\n\\medskip\n**Chapter ",
@@ -470,22 +472,25 @@ writeDataFileList <- function(fileNames,
            "\n") 
     }
     
-    
-    if ( i %in% startRightColumns){
-      cat('::: \n')
-      cat('::: {.col data-latex=\"{0.03\\textwidth}\"} \n')
-      cat('\\ \n') 
-      ## <!-- an empty Div (with a white space), serving as
-      ## a column separator -->
-      cat(':::\n')
-      cat('::: {.col data-latex=\"{0.48\\textwidth}\"}\n')
+    # Only need the two columns for LateX; it looks silly in HTML
+    if ( is_latex_output()) {
+      if ( i %in% startRightColumns){
+        cat('::: \n')
+        cat('::: {.col data-latex=\"{0.03\\textwidth}\"} \n')
+        cat('\\ \n') 
+        ## <!-- an empty Div (with a white space), serving as
+        ## a column separator -->
+        cat(':::\n')
+        cat('::: {.col data-latex=\"{0.48\\textwidth}\"}\n')
+      }
     }
-
     
-    if (i %in% endRightColumns ){ 
-      cat(':::\n')
-      cat('::::::\n')
-
+    # Only need the two columns for LateX; it looks silly in HTML
+    if ( is_latex_output()) {
+      if (i %in% endRightColumns ){ 
+        cat(':::\n')
+        cat('::::::\n')
+      }
     }
     
 
