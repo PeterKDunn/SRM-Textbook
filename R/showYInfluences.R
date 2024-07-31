@@ -147,7 +147,7 @@ showYInfluences <- function (showY = TRUE,
                   lty = ifelse( showLurking, 2, 1) )
     textrect( pos[3, ], 
               lab = "", 
-              radx = responseWidth/2,
+              radx = responseWidth/2 * 1.2, # Extra space for longer words, so arrow lines don't get too close
               rady = boxHeight/2,
               shadow.size = 0,
               lcol = "white",
@@ -233,6 +233,14 @@ showYInfluences <- function (showY = TRUE,
            code = 3, # Both ends
            length = 0.1,
            angle = 15)
+    # Small lines at the end, as arrows with angle = 90
+    arrows(x0 = 0.5 - responseWidth/2,
+           x1 = 0.5 + responseWidth/2,
+           y0 = pos[1, 2] - 0.15,
+           y1 = pos[1, 2] - 0.15,
+           code = 3, # Both ends
+           length = 0.08,
+           angle = 90)
   }  else {
     textrect( pos[1,], 
               lab = "Response", 
@@ -266,6 +274,7 @@ showYInfluences <- function (showY = TRUE,
     
     # Show Extraneous: Might be off-center, so as to align with "Extraneous" partition in the Response
     ExtraneousText <- "Extraneous"
+
     if (showConfounding ) ExtraneousText <- "Confounding"
     if (showLurking ) ExtraneousText <- "Lurking"
     

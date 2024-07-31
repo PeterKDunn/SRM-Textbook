@@ -1,5 +1,5 @@
 
-counts <- array( dim=c(4, 2))
+counts <- array( dim = c(4, 2))
 
 for (varR1 in (0:43)) {
   for (varR2 in (0:43)) {
