@@ -62,6 +62,8 @@ drawTarget <- function(){
 
 drawBullsEye <- function(){
   points(0, 0,
-         pch = 19, 
-         col = "black")
+         pch = 4, 
+         cex = 1.5,
+         lwd = 2,
+         col = grey(0.3))
 }
