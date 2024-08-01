@@ -118,23 +118,23 @@ showDesignConsiderations <- function(studyType="Experiment", addIcons = FALSE){
             rady = 0.055, 
             adj = ifelse(addIcons, 0.6, 0.5),
             shadow.size = 0,
-            box.col = ResponseColour,
-            lcol = ResponseColour)
+            box.col = DesignColour,
+            lcol = DesignColour)
   textrect( pos[2, ], 
             lab = "Hawthorne\n effect", 
             radx = 0.10, 
             rady = 0.055, 
             adj = ifelse(addIcons, 0.6, 0.5),
             shadow.size = 0,
-            box.col = ResponseColour,
-            lcol = ResponseColour)
+            box.col = DesignColour,
+            lcol = DesignColour)
   textrect( pos[3, ], 
             lab = "Placebo\neffect", 
             radx = 0.10, 
             rady = 0.055, 
             adj = ifelse(addIcons, 0.6, 0.5),
             shadow.size = 0,
-            box.col = ResponseColour,
+            box.col = DesignColour,
             lcol = "black",
             lwd = 2) # As experimental only
   textrect( pos[4, ], 
@@ -143,16 +143,16 @@ showDesignConsiderations <- function(studyType="Experiment", addIcons = FALSE){
             rady = 0.055, 
             adj = ifelse(addIcons, 0.6, 0.5),
             shadow.size = 0,
-            box.col = ResponseColour,
-            lcol = ResponseColour)
+            box.col = DesignColour,
+            lcol = DesignColour)
   textrect( pos[5, ], 
             lab = "Carry-over\neffect", 
             radx = 0.10, 
             rady = 0.055, 
             adj = ifelse(addIcons, 0.6, 0.5),
             shadow.size = 0,
-            box.col = ResponseColour,
-            lcol = ResponseColour)
+            box.col = DesignColour,
+            lcol = DesignColour)
   
   
   
@@ -161,68 +161,68 @@ showDesignConsiderations <- function(studyType="Experiment", addIcons = FALSE){
             radx = 0.08, 
             rady = 0.055, 
             shadow.size = 0,
-            box.col = DesignColour,
-            lcol = DesignColour)
+            box.col = GroupColour,
+            lcol = GroupColour)
   textrect( pos[8, ], 
             lab = "Random\nallocation to\ncomparison\ngroups", 
             radx = 0.08, 
             rady = 0.12, 
             shadow.size = 0,
             col = ifelse( studyType =="Experiment", "black", "grey"), # TEXT COLOUR
-            box.col = ifelse(studyType == "Experiment", DesignColour, "white"), # BOX FILL COLOUR
-            lcol = ifelse(studyType == "Experiment", DesignColour, "grey") ) # LINES
+            box.col = ifelse(studyType == "Experiment", GroupColour, "white"), # BOX FILL COLOUR
+            lcol = ifelse(studyType == "Experiment", GroupColour, "grey") ) # LINES
   
   textrect( pos[13, ], 
             lab = "Blocking", 
             radx = 0.08, 
             rady = 0.055, 
             shadow.size = 0,
-            box.col = DesignColour,
-            lcol = DesignColour)
+            box.col = GroupColour,
+            lcol = GroupColour)
   textrect( pos[14, ], 
             lab = "Restrict", 
             radx = 0.08, 
             rady = 0.055, 
             shadow.size = 0,
-            box.col = DesignColour,
-            lcol = DesignColour)
+            box.col = GroupColour,
+            lcol = GroupColour)
   
   textrect( pos[9, ], 
             lab = "Blind\nindividuals",
             radx = 0.08, 
             rady = 0.055, 
             shadow.size = 0,
-            box.col = DesignColour,
-            lcol = DesignColour)
+            box.col = GroupColour,
+            lcol = GroupColour)
   textrect( pos[10, ], 
             lab = "Objective\noutcomes", 
             radx = 0.08, 
             rady = 0.055, 
             shadow.size = 0,
-            box.col = DesignColour,
-            lcol = DesignColour)
+            box.col = GroupColour,
+            lcol = GroupColour)
   textrect( pos[15, ], 
             lab = "Controls", 
             radx = 0.08, 
             rady = 0.055, 
             shadow.size = 0,
-            box.col = DesignColour,
-            lcol = DesignColour)
+            box.col = GroupColour,
+            lcol = GroupColour)
   textrect( pos[11, ], 
             lab = "Blind\nresearchers", 
             radx = 0.08, 
             rady = 0.055, 
             shadow.size = 0,
-            box.col = DesignColour,
-            lcol = DesignColour)
+            box.col = GroupColour,
+            lcol = GroupColour)
   textrect( pos[12, ], 
             lab = "Washout", 
             radx = 0.08, 
             rady = 0.055, 
             shadow.size = 0,
             col = ifelse( studyType =="Experiment", "black", "grey"), # TEXT COLOUR
-            box.col = ifelse(studyType == "Experiment", DesignColour, "white"), # BOX FILL COLOUR
-            lcol = ifelse(studyType == "Experiment", DesignColour, "grey") ) # LINES
+            box.col = ifelse(studyType == "Experiment", GroupColour, "white"), # BOX FILL COLOUR
+            lcol = ifelse(studyType == "Experiment", GroupColour, "grey") ) # LINES
   
   # Note placebo effect only for experiments
   delta2 <- 0.06
