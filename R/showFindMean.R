@@ -29,7 +29,7 @@ FindMean <- function(locate.x = .22214, numberImages, iteration){
         y = c(-0.5, 3.5),
         type = "n",
         axes = FALSE,
-        main = "Finding the mean:\n where the sum is zero",
+        main = "Finding the mean: where the\n sum of deviations is zero",
         xlab = "",
         ylab = "")
  

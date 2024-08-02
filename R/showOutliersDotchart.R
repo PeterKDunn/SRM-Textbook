@@ -73,13 +73,13 @@ lines( x = c( Perm.quantiles[2],
        y = c(-1, 1.95),
        col = "grey",
        lty = 1,
-       lwd = 1)
+       lwd = 4)
 lines( x = c( Perm.quantiles[4],
               Perm.quantiles[4] ),
        y = c(-1, 1.95),
        col = "grey",
        lty = 1,
-       lwd = 1)
+       lwd = 4)
 
 
 
@@ -94,6 +94,7 @@ arrows(x0 = Perm.quantiles[2],
        length = 0.1)
 text(labels = "IQR",
      y = 1.75,
+     cex = 1.25,
      x = mean( Perm.quantiles[c(2, 4)]),
      pos = 3)
 

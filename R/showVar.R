@@ -29,7 +29,7 @@ showVar <- function(){
   # Canvas
   par( mar = c(0.15, 0.5, 3, 0.5) + 0.1)
   
-  plot( x = c(0.5, 9), 
+  plot( x = c(0.5, 8), 
         y = c(-0.25, 2.9),
         type = "n",
         #asp = 1,
@@ -93,7 +93,7 @@ showVar <- function(){
              x1 = 7.7)
   
   text( 6.5, -0.15, 
-        sprintf("%.4f", sum( (sort(beat)- locate.x))),
+        sprintf("%.4f", abs(sum( (sort(beat)- locate.x)))),
         adj = 1,
         cex = 0.95)
   text( 6.5, jump + jump.extra, 
