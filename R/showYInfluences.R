@@ -124,7 +124,7 @@ showYInfluences <- function (showY = TRUE,
          y = pos[4, 2],
          cex = 0.85,
          pos = 1,
-         labels = "link")
+         labels = "association")
   }
   if (showConfounding) {
     text(x = 0.666,
@@ -136,7 +136,7 @@ showYInfluences <- function (showY = TRUE,
          y = pos[4, 2] + 0.02,
          cex = 0.85,
          pos = 1,
-         labels = "link")
+         labels = "association")
   }
   
   if (showConfounding | showLurking ) {
