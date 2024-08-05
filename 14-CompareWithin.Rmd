@@ -30,8 +30,10 @@ This chapter considers how to summarise within-individuals changes in *quantitat
 ## Summarising the comparison: mean differences {#WithinSummaryTables}
 \index{Quantitative data!changes \textit{within} individuals!summary tables}
 
-The best way to compare the two groups is to summarise the *differences* between the before and after measurements; for example, using the *mean difference*.
-A numerical summary table can be constructed summarising both group, plus the differences.
+The best way to compare *two* observations for each individual is to summarise the *differences* between both observations for the individuals; for example, using the *mean difference*.
+A numerical summary table can be constructed summarising both groups, plus the differences.
+
+When *more than two* observations are made for each individual, often the changes from the first observation can be computed (as the first observation is often a pre-intervention observation, or a benchmark observation); for example, using the *mean change*.
 
 
 :::{.example #WithinIndividualComparison name="Within-individual comparisons"}
@@ -161,6 +163,8 @@ if( knitr::is_latex_output() ) {
                 align =  "c",
                 caption = "A numerical summary of the IgE data (in $\\mu$g/L)") %>%
     kable_styling(full_width = FALSE) %>%
+    row_spec(2, 
+             hline_after = TRUE) %>%
     row_spec(row = 0, 
              bold = TRUE) %>%
     row_spec(row = 3,
@@ -207,7 +211,7 @@ For within-individual changes for a *quantitative* variable, options for plottin
 ### Histogram of differences {#HistoDiffPlot}
 \index{Histogram!of differences}\index{Graphs!histogram of  differences}
 
-Sometimes the same variable is measured on each unit of analysis twice, when the *changes* (or *differences*) for each individual can be produced, and a histogram constructed.
+Sometimes the same variable is measured on each unit of analysis twice, when the *changes* (or *differences*) for each individual can be produced, and a histogram of the changes or differences can be constructed.
 The direction of the differences should be clear (e.g., first measurement minus second, or second measurement minus first).
 
 Issues relevant for constructing histograms (Sect.\ \@ref(Histograms)), such as bin widths and boundary values, also apply here.
@@ -230,7 +234,7 @@ For the IgE data (Table\ \@ref(tab:IgEChanges)), the *reduction* in IgE for each
 
 
 
-```{r PairedGraphCaseProfileLATEX, fig.cap="The IgE data. Left: a histogram of the differences. Right: a case-profile plot, where each line joins each person's pre-intervention to their post-intervention measurement.", fig.align="center", fig.width=9.25, fig.height=3.25, out.width='100%'}
+```{r PairedGraphCaseProfileLATEX, fig.cap="The IgE data. Left: a histogram of the differences (reductions). Right: a case-profile plot, where each line joins each person's pre-intervention to their post-intervention measurement.", fig.align="center", fig.width=9.25, fig.height=3.25, out.width='100%'}
 
 if( knitr::is_latex_output() ) {
   par(mfrow  = c(1, 2) )
@@ -465,7 +469,7 @@ segments(x0 = i,
 
 ```
 
-As in the last example, the case-profile plot is hard to read with large numbers of individuals, and so sometimes the mean (or median, as appropriate) is shown, with some measure of the variation of the observations (Fig.\ \@ref(fig:RunningRM) shows the minimum and maximum values for each method, for instance).
+As in Example\ \@ref(exm:CaseProfileRunning), the case-profile plot is hard to read with large numbers of individuals, and so sometimes the mean (or median, as appropriate) is shown, with some measure of the variation of the observations (Fig.\ \@ref(fig:RunningRM) shows the minimum and maximum values for each method, for instance).
 
 
 
@@ -474,7 +478,7 @@ As in the last example, the case-profile plot is hard to read with large numbers
 ## Example: invasive plants {#CompareWithinInvasivePlantsCI}
 
 Skypilot (*Polemonium viscosum*) is a native alpine wildflower growing in the Colorado Rocky Mountains (USA).
-In recent years, a willow shrub (*Salix*) has been encroaching on skypilot territory and, because willow often flowers early, researchers [@kettenbach2017shrub] are concerned that the willow may 'negatively affect pollination regimes of resident alpine wildflower species' (p.\ 6965).
+In recent years, a willow shrub (*Salix*) has been encroaching on skypilot territory and, because willow often flowers early, researchers [@kettenbach2017shrub] are concerned that the willow may 'negatively affect pollination regimes of resident alpine wildflower species' (p.\ 6\ 965).
 One RQ was:
 
 > In the Colorado Rocky Mountains, what is the mean difference between first-flowering day for the native skypilot and the encroaching willow?
@@ -578,7 +582,7 @@ rownames(FloweringSummary) <- c("Willow (encroaching)",
                             "Skypilot (native)",
                             "Differences")
 colnames(FloweringSummary) <- c("Mean",
-                            "Std. dev.",
+                            "Standard deviation",
                             "Std. error",
                             "Sample size")
 
@@ -602,7 +606,7 @@ FloweringSummary[1:2, 1] <- round(FloweringSummary[1:2, 1], 3)
 
 if( knitr::is_latex_output() ) {
   
-  knitr::kable(pad(FloweringSummary,
+  knitr::kable(pad(FloweringSummary[, c(1, 2, 4)],
                    surroundMaths = TRUE,
                    targetLength = c(5, 6, 5, 2),
                    digits = c(1, 2, 2, 0)),
@@ -621,7 +625,7 @@ if( knitr::is_latex_output() ) {
 }
 
 if( knitr::is_html_output() ) {
-  kable( pad(FloweringSummary,
+  kable( pad(FloweringSummary[, c(1, 2, 4)],
                    surroundMaths = TRUE,
                    targetLength = c(6, 7, 6, 2),
                    digits = c(2, 3, 3, 0)),
@@ -636,7 +640,7 @@ if( knitr::is_html_output() ) {
 ```
 
 
-```{r, FloweringPlots, out.width='100%', fig.width=9, fig.height=3.5, fig.align="center", fig.cap="The flowering-day data. Left: a histogram of the difference between the first-flowering days (skypilot minus willow). Right: a case-profile plot of days of first flowering (unfilled points and dashed lines indicate earlier dates (smaller values) for willow)"}
+```{r, FloweringPlots, out.width='100%', fig.width=9, fig.height=3.5, fig.align="center", fig.cap="The flowering-day data. Left: a histogram of the difference between the first-flowering days (skypilot minus willow). Right: a case-profile plot of days of first flowering (unfilled points and dashed lines indicate earlier dates (smaller values) for willow)."}
 par( mfrow = c(1, 2))
 
  hist(FloweringTab$Change,
@@ -718,7 +722,7 @@ The pain threshold are increasing slightly as time progresses.
 
 
 
-```{r TapeRepeated, fig.cap="Pain threshold (left arm) at three time points when using Kinesio Tape, without applying tension, for $n = 26$ subjects. The black points represent the means for each time point.", fig.align="center", out.width='80%', fig.width=7, fig.height=3.25}
+```{r TapeRepeated, fig.cap="Pain threshold (left arm) at three time points when using Kinesio Tape, without applying tension, for $n = 16$ subjects. The black points represent the means for each time point.", fig.align="center", out.width='80%', fig.width=7, fig.height=3.25}
 data(Tape)
 
 Pre <- Tape$Pre.Left.KT.NoTension
@@ -876,12 +880,13 @@ Answers to odd-numbered exercises are available in App.\ \@ref(Answers).
 
 :::{.exercise #CompareWithinInsulation}
 [*Dataset*: `Insulation`]
-The *Electricity Council* in Bristol wanted to determine if a certain type of wall-cavity insulation reduced energy consumption in winter (@data:OpenUni:insulationBA, @data:hand:handbook).
+The *Electricity Council* in Bristol wanted to determine if a certain type of wall-cavity insulation reduced average energy consumption in winter (@data:OpenUni:insulationBA, @data:hand:handbook).
 Their RQ was:
 
 > In Bristol homes, what is the *mean reduction* in energy consumption after adding home insulation?
 
 1. What are the individuals (units of analysis)?
+1. Explain why this study uses a within-individuals comparison.
 1. Use the collected data
 `r if (knitr::is_latex_output()) {
    '(Table \\@ref(tab:DataInsulation))'
@@ -889,8 +894,8 @@ Their RQ was:
    '(shown below)'
 }`
    to sketch a case-profile plot.
-2. Use the data to sketch a histogram of the differences.
-2. Use software or a calculator to prepare a summary table.
+1. Use the data to sketch a histogram of the differences.
+1. Use software or a calculator to prepare a summary table.
 :::
 
 
@@ -959,7 +964,7 @@ if( knitr::is_html_output(exclude = "epub") ) {
 [*Dataset*: `Captopril`]
 In a study of hypertension [@data:hand:handbook; @data:macgregor:essential], $15$ patients were given a drug (Captopril) and their systolic blood pressure measured (in mm\ Hg) immediately before and two hours after being given the drug (Table\ \@ref(tab:CICaptoprilData)).
 
-1. Explain why this is a within-individuals comparison.
+1. Explain why this study uses a within-individuals comparison.
 1. Construct a histogram of the differences.
 1. Construct a case-profile plot for the data.
 :::
@@ -1053,7 +1058,7 @@ if( knitr::is_html_output() ) {
 
 :::{.exercise #CompareWithinPainRelief}
 [*Dataset*: `PainRelief`]
-@augustino2023dataset measured the reported pain of new mothers in Dodoma (Tanzania) at four times: near giving birth, then $20$, $40$ and $60$ minutes after giving birth.
+@augustino2023dataset measured the reported pain of new mothers in Dodoma (Tanzania) at four times: near giving birth, then $20$, $40$ and $60$\ mins after giving birth.
 Mothers were administered either paracetamol or a cold pack as pain relief.
 Pain was recorded using a 'numeric rating scale represented by the horizontal line marked from zero to ten', where higher scores mean greater pain.
 
@@ -1149,7 +1154,7 @@ knitr::kable( pad(PRtable,
                             "20 mins",
                             "40 mins",
                             "60 mins"),
-              caption = "Reported pain for mothers after giving birth",
+              caption = "A summary table of reported pain for mothers after giving birth",
               booktabs = TRUE) %>%
   row_spec(0, bold = TRUE) %>%
   column_spec(1, bold = TRUE) %>%
@@ -1173,7 +1178,7 @@ knitr::kable( pad(PRtable,
               linesep = c("", "", "", "\\addlinespace"),
               row.names = TRUE,
               escape = FALSE,
-              caption = "Reported pain for mothers after giving birth",
+              caption = "A summary table of reported pain for mothers after giving birth",
               booktabs = TRUE) %>%
   row_spec(0, bold = TRUE) %>%
   column_spec(1, bold = TRUE)
@@ -1201,7 +1206,7 @@ rownames(STtable) <- c("12--14 hours before surgery",
                        "10 minutes before surgery",
                        "Increase")
 colnames(STtable) <- c("Sample mean",
-                       "Std deviation",
+                       "Standard deviation",
                        "Std error",
                        "Sample size")
 
@@ -1218,7 +1223,7 @@ STtable[, 3] <- STtable[, 2] / sqrt( STtable[, 4])
 
 
 if( knitr::is_latex_output() ) {
-kable(pad(STtable,
+kable(pad(STtable[, c(1, 2, 4)],
           surroundMaths = TRUE,
           targetLength = c(5, 6, 5, 2),
           digits = c(2, 3, 3, 0) ),
@@ -1235,7 +1240,7 @@ kable(pad(STtable,
   kable_styling(font = 8)
 }
 if( knitr::is_html_output() ) {
-kable(pad(STtable,
+kable(pad(STtable[, c(1, 2, 4)],
           surroundMaths = TRUE,
           targetLength = c(5, 6, 5, 2),
           digits = c(2, 3, 3, 0) ),
@@ -1251,7 +1256,7 @@ kable(pad(STtable,
 ```
 
 
-1. Explain why this is a within-individuals comparison.
+1. Explain why this study uses a within-individuals comparison.
 1. Construct a histogram of the differences.
 1. Construct a case-profile plot for the data.
 :::
@@ -1259,12 +1264,11 @@ kable(pad(STtable,
 
 
 
-::: {.exercise #CompareWithinCOVIDCI}
+::: {.exercise #CompareWithinCOVID}
 @romero2020physical measured (among other things) the number of minutes of vigorous physical activity (PA) performed by Spanish health students *before* and *during* the COVID-19 lockdown (from March to April 2020 in Spain).
 Since the *before* and *during* lockdown were both measured on *each* participant, the data are *paired* (within individuals).
 The data are summarised in Table\ \@ref(tab:COVIDsummaryTable).
 
-1. Explain why this is a within-individuals comparison.
 1. Construct a histogram of the differences.
 1. Construct a case-profile plot for the data.
 :::

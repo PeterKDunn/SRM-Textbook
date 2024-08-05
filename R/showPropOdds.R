@@ -70,14 +70,14 @@ showPropOdds <- function(){
            col = qCol)
   
   arrows(x0 = 0.25,
-         y0 = 0.72,
+         y0 = 0.70,
          x1 = 0.35,
          y1 = 0.82,
          lwd = 2,
          angle = 15,
          length = 0.1)
   arrows(x0 = 0.75,
-         y0 = 0.72,
+         y0 = 0.70,
          x1 = 0.65,
          y1 = 0.82,
          lwd = 2,
@@ -85,24 +85,24 @@ showPropOdds <- function(){
          length = 0.1)
   
   
-  textrect(mid = c(0.25, 0.72),
-           radx = 0.2,
-           rady = 0.03,
+  textrect(mid = c(0.2, 0.72),
+           radx = 0.09,
+           rady = 0.04,
            box.col = "white",
            lcol = "white",
            shadow.size = 0,
-           lab = expression(Number~of~interest*":") )
+           lab = expression(Number~of~interest) )
 #  polygon( y = c(0.8, 0.8, 0.9, 0.9),
 #           x = c(0.28, 0.38, 0.38, 0.28),
 #           col = pCol)
 
-  textrect(mid = c(0.75, 0.72),
-           radx = 0.2,
-           rady = 0.03,
+  textrect(mid = c(0.80, 0.72),
+           radx = 0.1,
+           rady = 0.04,
            box.col = "white",
            lcol = "white",
            shadow.size = 0,
-           lab = expression(Number~bold(not)~of~interest*":") )
+           lab = expression(Number~bold(not)~of~interest) )
   
   
 #  text(x = 0.75,
