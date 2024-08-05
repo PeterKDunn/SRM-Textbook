@@ -5,9 +5,9 @@ showPropOdds <- function(){
   # Proportion
   par(mar = c(0.05, 0.05, 0.05, 0.05))
   plot( x = c(0.05, 0.95),
-        y = c(0.05, 0.95),
+        y = c(0.05, 1.15),
         xlim = c(0.05, 0.95),
-        ylim = c(0.05, 0.95),
+        ylim = c(0.05, 1.05),
         axes = FALSE,
         type = "n",
         xlab = "",
@@ -62,20 +62,55 @@ showPropOdds <- function(){
   
   
   # Top explanation
-  text(x = 0.15,
-       y = 0.85,
-       expression(Number~of~interest*":") )
   polygon( y = c(0.8, 0.8, 0.9, 0.9),
-           x = c(0.28, 0.38, 0.38, 0.28),
+           x = c(0.35, 0.45, 0.45, 0.35),
            col = pCol)
-  
-  
-  text(x = 0.59,
-       y = 0.85,
-       expression(Number~bold(not)~of~interest*":") )
   polygon( y = c(0.8, 0.8, 0.9, 0.9),
-           x = c(0.75, 0.95, 0.95, 0.75),
+           x = c(0.45, 0.65, 0.65, 0.45),
            col = qCol)
+  
+  arrows(x0 = 0.25,
+         y0 = 0.72,
+         x1 = 0.35,
+         y1 = 0.82,
+         lwd = 2,
+         angle = 15,
+         length = 0.1)
+  arrows(x0 = 0.75,
+         y0 = 0.72,
+         x1 = 0.65,
+         y1 = 0.82,
+         lwd = 2,
+         angle = 15,
+         length = 0.1)
+  
+  
+  textrect(mid = c(0.25, 0.72),
+           radx = 0.2,
+           rady = 0.03,
+           box.col = "white",
+           lcol = "white",
+           shadow.size = 0,
+           lab = expression(Number~of~interest*":") )
+#  polygon( y = c(0.8, 0.8, 0.9, 0.9),
+#           x = c(0.28, 0.38, 0.38, 0.28),
+#           col = pCol)
+
+  textrect(mid = c(0.75, 0.72),
+           radx = 0.2,
+           rady = 0.03,
+           box.col = "white",
+           lcol = "white",
+           shadow.size = 0,
+           lab = expression(Number~bold(not)~of~interest*":") )
+  
+  
+#  text(x = 0.75,
+#       y = 0.72,
+#       expression(Number~bold(not)~of~interest*":") )
+#  polygon( y = c(0.8, 0.8, 0.9, 0.9),
+#           x = c(0.75, 0.95, 0.95, 0.75),
+#           col = qCol)
   
   # Divider
   abline(h = 0.65, 
@@ -83,9 +118,23 @@ showPropOdds <- function(){
          lty = 2,
          lwd = 2)
   
+  # Total number
+  arrows(x0 = 0.35,
+         x1 = 0.65,
+         y0 = 0.93,
+         y1 = 0.93,
+         lwd = 2,
+         code = 3,
+         angle = 15,
+         length = 0.1)
+  text(x = 0.5,
+       y = 0.93,
+       pos = 3,
+       cex = 0.9,
+       labels = expression(Total~number))
   # Debugging:
-  #box()
+#  box()
   #axis(side = 1)
-  #axis(side = 2)
+ # axis(side = 2)
   
 }
