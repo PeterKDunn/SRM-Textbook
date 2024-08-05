@@ -158,7 +158,7 @@ arrows( x0 = 1,
         lwd = 2)
 text(x = 1,
      y = CBR.quantiles[5],
-     labels = "Max.value",
+     labels = "Max. value",
      pos = 2)
 
 
