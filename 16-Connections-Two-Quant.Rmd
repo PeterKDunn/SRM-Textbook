@@ -310,10 +310,16 @@ In general, summarising the relationship between two quantitative variables is d
 However, if we focus only on approximately *linear* relationships, the best way to numerically summarise the relationship between the variables is to use a *correlation coefficient*.
 Each variable can also be numerically summarised individually.
 
+
+::: {.definition #CorrelationCoefficient name="Correlation coefficient"}
 The Pearson correlation coefficient measures the *strength* and *direction* of the *linear* relationship between two quantitative variables.
-(Other correlation coefficients also exist, such as the *Spearman* correlation, which may be used for increasing-only or decreasing-only  non-linear relationships.
-In this book, correlation coefficients are all Pearson correlation coefficients.)
-Correlation coefficients only apply if the form is approximately *linear*, so checking the scatterplot first is important.
+Its value is always between $-1$ and $1$.
+:::
+
+
+Pearson correlation coefficients only apply if the form is approximately *linear*, so checking the scatterplot first is important.
+All correlations in this book are Pearson correlation coefficients.
+Only the *Pearson* correlation coefficient is discussed here, but other correlation coefficients also exist (such as the *Spearman* correlation coefficient\index{Correlation coefficient!Spearman}, which may be used for increasing-only or decreasing-only *non-linear* relationships).
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -488,7 +494,7 @@ For the red-deer data
   '(Fig.\\ \\@ref(fig:RedDeerScatter)),'
 }
 `
-the relationship is approximately linear, and the output from jamovi shows that $r = -0.584$ (Fig.\ \@ref(fig:RedDeerCorrelationjamovi)).
+the relationship is approximately linear, and the software output shows that $r = -0.584$ (Fig.\ \@ref(fig:RedDeerCorrelationjamovi)).
 The value of $r$ is *negative* because, in general, *older* deer ($x$) are associated with *smaller* weight molars ($y$).
 The relationship may be described as 'moderately strong' perhaps.
 :::
@@ -510,7 +516,7 @@ It's very difficult!
 <iframe src="https://learningapps.org/watch?v=psq8a3mfj22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
 
 
-```{r RedDeerCorrelationjamovi, fig.cap="jamovi correlation output for the red-deer data", fig.align="center", out.width="50%", fig.show="hold"}
+```{r RedDeerCorrelationjamovi, fig.cap=" Software output for correlation for the red-deer data", fig.align="center", out.width="50%", fig.show="hold"}
 knitr::include_graphics("jamovi/RedDeer/RedDeer-Correlation.png")
 #knitr::include_graphics("SPSS/RedDeer/RedDeer-Correlation.png")
 ```
@@ -526,13 +532,19 @@ Interpretation is easier using $R^2$: the square of the value of $r$.
 }`
 
 
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-The value of $R^2$ is *never* negative, and is usually multiplied by $100$ and expressed as a percentage.
+::: {.definition #R2 name="$R^2$"}
+The value of $R^2$ is how much the unexplained variation in the values of $y$ is reduced due to using the extra information in the values of $x$.
 :::
+
 
 ::: {.pronounceBox .pronounce data-latex="{iconmonstr-microphone-7-240.png}"}
 $R^2$ is pronounced as '$r$-squared'.
 :::
+
+
+
+The value of $R^2$ is *never* negative, and is usually multiplied by $100$ and expressed as a percentage.
+
 
 <!-- need to watch! Unfortunate line breaks can happen! Need to avoid, e.g., breaking -0.25 across lines -->
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"} 
@@ -555,7 +567,7 @@ For the red-deer data
 the value of $R^2$ is $R^2 = (-0.584)^2 = 0.341$, usually written as a percentage: $34.1$%.
 The value of $R^2$ is positive, even though the value of $r$ is negative.
 
-This means a reduction of about $34.1$% in the unknown variation of the molar weights, due to using the information in the age of the deer.
+This means a reduction of about $34.1$% in the unexplained variation of the molar weights, due to using the information in the age of the deer.
 The rest of the variation in molar weights is due to chance, and to extraneous variables, such as weight, diet, amount of exercise, genetics, etc.
 :::
 
@@ -720,7 +732,7 @@ deerMeanResiduals <- summary( lm(Weight ~ 1,
                                  data = RedDeer))$residuals
 hist( deerMeanResiduals,
       las = 1,
-      xlim = c(-2.5, 2.5),
+      xlim = c(-2.5, 3),
       ylim = c(0, 30),
       border = grey(0.5),
       main = expression( atop(Unexplained~variation~"in",
@@ -741,7 +753,7 @@ arrows(x0 = -2,
 deerResiduals <- summary(mDeer)$residuals
 hist( deerResiduals,
       las = 1,
-      xlim = c(-2.5, 2.5),
+      xlim = c(-2.5, 3),
       ylim = c(0, 30),
       border = grey(0.5),
       main = expression(atop(Unexplained~variation~knowing,
@@ -825,6 +837,47 @@ knitr::kable( pad(RDTable,
 
 
 
+
+
+## Example: removal efficiency {#ScatterplotsRemoval-Efficiency}
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-lisa-fotios-3264779.jpg" width="200px"/>
+</div>
+
+
+In wastewater treatment facilities, air from biofiltration is passed through a membrane and dissolved in water, and is transformed into harmless byproducts.
+The removal efficiency $y$ (in %) may depend on the inlet temperature (in $^\circ$C; $x$).
+@chitwood2001treatment asked:
+
+> In treating biofiltation wastewater, is the removal efficiency linearly associated with the inlet temperature?
+
+A scatterplot of $n = 32$ observations (Fig.\ \@ref(fig:ScatterplotRemovalEfficiency), left panel) suggests an approximately linear relationship [@DevoreBerk2007].
+The direction is positive: larger inlet temperatures are associated with a larger removal efficiency, in general.
+The variation is always hard to describe, but is perhaps 'reasonably small'.
+
+A more precise way to measure the strength of the linear association is to use the correlation coefficient.
+Using software output (Fig.\ \@ref(fig:ScatterplotRemovalEfficiency), right panel), $r = 0.891$, and so $R^2 = (0.891)^2 = 79.4$%.
+This means that about $79.4$% of the variation in removal efficiency can be explained by knowing the inlet temperature.
+
+
+```{r ScatterplotRemovalEfficiency, fig.cap="The relationship between removal efficiency and inlet temperature. Left: scatterplot. Right: software output.", fig.align="center", fig.width=5, fig.height=3.25, out.width=c("52%", "2%", "41%"), fig.show="hold"}
+data(Removal)
+
+plot(Removal ~ Temp, 
+     data = Removal,
+     main = "Removal efficiency",
+     xlab = "Temperature (degrees C)",
+     ylab = "Removal efficiency (%)",
+     pch = 19,
+     ylim = c(97.5, 99.0),
+     xlim = c(5, 18),
+     las = 1
+     )
+knitr::include_graphics("OtherImages/SPACER.png")
+knitr::include_graphics("jamovi/Removal/RemovalCorrelation.png")
+```
 
 
 ## Chapter summary {#TwoQuant-Summary}
