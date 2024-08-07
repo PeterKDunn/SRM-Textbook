@@ -1,7 +1,7 @@
  showDecisionMaking <- function(populationText = expression( atop(bold(POPULATION)~"with",
                                                                   bold(assumed)~parameter)),
-                                expectationText = expression(atop(bold(Expectation)~"of", 
-                                                                  statistics) ),
+                                expectationText = expression(atop(bold(Expectated)~values~"of", 
+                                                                  all~possible~statistics) ),
                                 oneSampleText = expression( atop(One~possible,
                                                                  bold(SAMPLE)) ),
                                 oneStatisticText =  expression( atop(One~possible,
@@ -51,8 +51,19 @@
    
    
 #   openplotmat(mar = c(0.3, 0.25, 0.3, 0.25))
-   openplotmat(mar = c(0, 0, 0, 0), 
-               oma = c(0, 0, 0, 0))
+#   openplotmat(mar = c(0, 0, 0, 0), 
+#               oma = c(0, 0, 0, 0))
+   par( mar = c(0, 0, 0, 0),
+        oma = c(0, 0, 0, 0))
+   plot(x = 0,
+        y = 0,
+        type = "n",
+        xlab = "",
+        ylab = "",
+        ylim = c(0, 1),
+        xlim = c(0.025, 0.975),
+        axes = FALSE
+        )
    
    # 'Background' squares delineating the steps
    polygon( x = edgesX[ c(1, 1, 2, 2)],
@@ -201,19 +212,19 @@
    # STEPS
    text(x = pos[1, 1],
         y = 0.965,
-        cex = 0.90,
+        cex = 0.95,
         labels = "1. Make an assumption")
    text(x = pos[2, 1],
         y = 0.965,
-        cex = 0.90,
+        cex = 0.95,
         labels = "2. Describe what is expected")
    text(x = mean( pos[1:2, 1]),
         y = 0.02,
-        cex = 0.90,
+        cex = 0.95,
         labels = "3. Observe sample statistic")
    text(x = pos[5, 1],
         y = 0.02,
-        cex = 0.90,
+        cex = 0.95,
         labels = "4. Make decision")
    
  }
