@@ -51,97 +51,6 @@ When creating graphs, ensure you:
 Some specific problems to be aware of are discussed in the subsections that follows.
 
 
-### Recognise when to avoid truncating axes {#TruncatingAxes}
-
-One common optical illusion occurs when the frequency (or percentage) axis does not start at zero.
-This is a problem in graphs where the distance represented visually implies the frequency of those observations, as may be the case for bar charts, dot charts, or histograms.
-This is *not* a problem in, for example, scatterplots, where the distance of points from zero do not visually imply any quantity of interest.
-
-
-::: {.example #VerticalTruncation name="Truncating bar charts"}
-Consider data recording the number of lung cancer cases in Fredericia in various age groups [@data:andersen:1977].
-
-`r if (knitr::is_latex_output()) {
-'Figure\\ \\@ref(fig:BarchartTruncated1) (left panel) shows a good bar chart with the count (vertical) axis starting at zero; the counts in each age group look similar. In contrast, if the vertical axis starts at $9.75$, the counts look very different (Fig.\\ \\@ref(fig:BarchartTruncated1), right panel) for two age categories, suggesting large difference between the number of lung cancer cases.'
-} else {
-'The animation below shows a bar chart with the count (vertical axis) starting at zero (when the counts in each age group look similar), and then gradually changing where the vertical axis starts... so that the final bar chart make the number of cases in each age groups look very different.'
-}`
-The graph is visually misleading when the graph does not start at a count of zero, since the height of the bars from the axis visually implies the frequency of those observations.
-:::
-
-
-
-```{r animation.hook='gifski', interval=0.5, dev=if (is_latex_output()){"pdf"}else{"png"}}
-data(DanishLC)
-
-ylim.lower.vec <- c( rep(0, 10), 
-                     rep(5, 10),
-                     rep(7, 10),
-                     rep(8.5, 10),
-                     rep(9.75, 10) )
-#                     seq(0, 9.75, by = 0.25) )
-ylim.lower.vec <- c( ylim.lower.vec, 
-                     rep( max(ylim.lower.vec), 10))
-
-draw.bar <- function( ylim.lower) {
-  egdata <- subset( DanishLC, 
-                    City == "Fredericia")
-  
-  upperLimitYAxis <- 11 + (11 - ylim.lower) * 0.05 # Try to keep the gap between top bar and graph edge constant
-  out <- barplot( egdata$Cases, 
-                  las = 1,
-                  col = plot.colour,
-                  xlab = "Age groups",
-                  ylab = "Number of cases",
-                  main = paste("Number of lung cancer cases in Fredericia\n",
-                               ifelse(ylim.lower == 0,
-                                      "(Vertical axis starting at zero)", 
-                                      paste0("(Vertical axis truncated at ", ylim.lower,")") 
-                               )
-                  ),
-                  xpd = FALSE, # BARS **DON'T** GO outside plotting region
-                  ylim = c( ylim.lower, upperLimitYAxis),
-                  axes = FALSE)
-  
-  # ADD WHITE DOT to ensure many plots are created...
-  for (i in (1:10)){
-    points(2 + (i / 10), 
-           mean( upperLimitYAxis, 11),
-           pch = 19,
-           cex = 0.2,
-           col = "white")
-  }
-  axis(side = 1, 
-       at = out[, 1], 
-       labels = egdata$Age, 
-       las = 2)
-  axis(side = 2, 
-       at = seq( floor(ylim.lower), 12, by = 1), 
-       las = 1)
-  box()
-}
-
-if (knitr::is_html_output()){
-  for (i in 1:length(ylim.lower.vec) ){
-    ylim.lower <- ylim.lower.vec[i]
-    draw.bar( ylim.lower)
-  }
-}
-```
-
-
-
-```{r BarchartTruncated1, fig.align="center", fig.width=10, fig.height=4, out.width='95%', fig.cap="The same dat presented in two bar charts, without truncating the vertical axis (left) and truncating the vertical axis (right)" }
-if (knitr::is_latex_output()){
-  len.ylv <- length(ylim.lower.vec)
-  par( mfrow = c(1, 2))
-  
-  draw.bar( ylim.lower.vec[1] )
-  draw.bar( 9 )
-}
-```
-
-
 ### Avoid unnecessary third dimensions {#ThirdDimensions}
 
 Graphs should focus on clear communication.
@@ -154,7 +63,7 @@ In the NHANES study [@data:NHANES3:Data], the age and sex of each participant we
 Using Fig.\ \@ref(fig:Bar3D2D) (left panel), can you easily determine if more females or more males are present in each age group?
 
 The artificial third dimension makes determining the heights of the bars hard.
-In contrast, a $2$-D graph (a side-by-side bar graph; Fig.\ \@ref(fig:Bar3D2D), right panel) makes it clear whether each age group has more females or more males.
+In contrast, a $2$-D graph (a side-by-side bar graph; Fig.\ \@ref(fig:Bar3D2D), right panel) makes it clear whether each age group has more females or more males.\index{Bar chart!side-by-side}\index{Graphs!side-by-side bar chart}
 :::
 
 
@@ -410,10 +319,144 @@ legend("top",
 ```
 
 
+### Avoid overplotting {#Overplotting}
+
+Some plots, such as dot charts and scatterplots, may suffer from *overplotting*:\index{Overplotting} when multiple observations have the same (or nearly the same) values, and these cannot be distinguished on the graph.
+Overplotting can especially be a problem when plotting *discrete* quantitative data.
+In one-dimensional cases (such as dot plots), points can be *stacked*\index{Overplotting!stacking}; see Sect.\ \@ref(DotChartsOneVar).
+More generally, points may be jittered\index{Overplotting!jittering} by adding a small amount of randomness to the observations; see Example\ \@ref(exm:Dotchart2DGorillas).
+Overplotted points can change readers' impression of the data, since some observations are obscured and are effectively 'lost' to the reader.
+
+
+### Take care when truncating axes  {#TruncatingAxes}
+
+One common optical illusion occurs when the frequency (or percentage) axis does not start at zero.
+This is a problem in graphs where the distance represented visually implies the frequency of those observations, as may be the case for bar charts, dot charts, or histograms.
+This is *not* a problem in, for example, scatterplots, where the distance of points from zero do not visually imply any quantity of interest.
+
+
+::: {.example #VerticalTruncation name="Truncating is not appropriate"}
+Consider data recording the number of lung cancer cases in Fredericia in various age groups [@data:andersen:1977].
+
+`r if (knitr::is_latex_output()) {
+'Figure\\ \\@ref(fig:BarchartTruncated1) (left panel) shows a good bar chart with the count (vertical) axis starting at zero; the counts in each age group look similar. In contrast, if the vertical axis starts at $9.75$, the counts look very different (Fig.\\ \\@ref(fig:BarchartTruncated1), right panel) for two age categories, suggesting large difference between the number of lung cancer cases.'
+} else {
+'The animation below shows a bar chart with the count (vertical axis) starting at zero (when the counts in each age group look similar), and then gradually changing where the vertical axis starts... so that the final bar chart make the number of cases in each age groups look very different.'
+}`
+The graph is visually misleading when the graph does not start at a count of zero, since the height of the bars from the axis visually implies the frequency of those observations.
+:::
+
+
+
+```{r animation.hook='gifski', interval=0.5, dev=if (is_latex_output()){"pdf"}else{"png"}}
+data(DanishLC)
+
+ylim.lower.vec <- c( rep(0, 10), 
+                     rep(5, 10),
+                     rep(7, 10),
+                     rep(8.5, 10),
+                     rep(9.75, 10) )
+#                     seq(0, 9.75, by = 0.25) )
+ylim.lower.vec <- c( ylim.lower.vec, 
+                     rep( max(ylim.lower.vec), 10))
+
+draw.bar <- function( ylim.lower) {
+  egdata <- subset( DanishLC, 
+                    City == "Fredericia")
+  
+  upperLimitYAxis <- 11 + (11 - ylim.lower) * 0.05 # Try to keep the gap between top bar and graph edge constant
+  out <- barplot( egdata$Cases, 
+                  las = 1,
+                  col = plot.colour,
+                  xlab = "Age groups",
+                  ylab = "Number of cases",
+                  main = paste("Number of lung cancer cases in Fredericia\n",
+                               ifelse(ylim.lower == 0,
+                                      "(Vertical axis starting at zero)", 
+                                      paste0("(Vertical axis truncated at ", ylim.lower,")") 
+                               )
+                  ),
+                  xpd = FALSE, # BARS **DON'T** GO outside plotting region
+                  ylim = c( ylim.lower, upperLimitYAxis),
+                  axes = FALSE)
+  
+  # ADD WHITE DOT to ensure many plots are created...
+  for (i in (1:10)){
+    points(2 + (i / 10), 
+           mean( upperLimitYAxis, 11),
+           pch = 19,
+           cex = 0.2,
+           col = "white")
+  }
+  axis(side = 1, 
+       at = out[, 1], 
+       labels = egdata$Age, 
+       las = 2)
+  axis(side = 2, 
+       at = seq( floor(ylim.lower), 12, by = 1), 
+       las = 1)
+  box()
+}
+
+if (knitr::is_html_output()){
+  for (i in 1:length(ylim.lower.vec) ){
+    ylim.lower <- ylim.lower.vec[i]
+    draw.bar( ylim.lower)
+  }
+}
+```
+
+
+
+```{r BarchartTruncated1, fig.align="center", fig.width=10, fig.height=4, out.width='95%', fig.cap="The same dat presented in two bar charts, without truncating the vertical axis (left) and truncating the vertical axis (right)" }
+if (knitr::is_latex_output()){
+  len.ylv <- length(ylim.lower.vec)
+  par( mfrow = c(1, 2))
+  
+  draw.bar( ylim.lower.vec[1] )
+  draw.bar( 9 )
+}
+```
+
+
+
+::: {.example #VerticalTruncation name="Truncating is appropriate"}
+Consider data recording the body temperature of $n = 130$ people (@data:mackowiak:bodytemp, @data:Shoemaker1996:Temperature).
+A histogram of the data (Fig.\ \@ref(fig:HistosTemp), left panel) clearly shows the distribution of body temperatures.
+The horizontal axis starts at $35.5$^o^C.
+However, this does not create any problems as the *distances* from a temperature of $0$^o^C do not visual imply any quantity of interest.\index{Histogram}\index{Graphs!histogram}
+
+In contrast, starting the horizontal axis at a temperature of $0$^o^C (Fig.\ \@ref(fig:HistosTemp), right panel) makes any details in the histogram difficult to see; the histogram is pointless.
+:::
+
+
+
+```{r HistosTemp, fig.align="center", fig.width=10, fig.height=4, out.width='100%', fig.cap="Three histograms displaying the body temperature of $130$ people." }
+data(BodyTemp)
+
+par(mfrow = c(1, 2))
+
+hist(BodyTemp$BodyTempC,
+     las = 1,
+     xlab = "Body Temp. (in degrees C)",
+     ylab = "Frequency",
+     main = "Histogram of body temp.:\nTruncation used")
+
+hist(BodyTemp$BodyTempC, 
+     xlim = c(0, 38.5),
+     las = 1,
+     xlab = "Body Temp. (in degrees C)",
+     ylab = "Frequency",
+     main = "Histogram of body temp.:\nNo truncation used")
+```
+
+
 <iframe src="https://learningapps.org/watch?v=pgn3q7ptv22" style="border:0px;width:100%;height:500px" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true"></iframe>
 
 
-### Recognise that pie charts may be difficult to read {#PieChartProblems}
+### Take care when using pie charts {#PieChartProblems}
+\index{Bar chart}\index{Graphs!bar chart}\index{Pie chart}\index{Graphs!pie chart}
+
 
 As noted in Sect.\ \@ref(PieCharts), using pie charts may present challenges since they are hard to read: humans compare *lengths* (bar and dot charts) better than *angles* (pie charts) [@data:Friel:Graphs].
 Pie charts are also difficult to use with levels having zero or small counts.
@@ -422,11 +465,11 @@ Pie charts are also difficult to use with levels having zero or small counts.
 ::: {.example #PieSmallCounts name="Pie charts with small counts"}
 @data:Solomon2002:Ginko studied the use of ginko for memory enhancement.
 Caregivers blinded\index{Blinding} to the treatment (ginko or placebo)\index{Placebo} reported the impact on subjects' memory.
-The bar chart (Fig.\ \@ref(fig:PieSmallCounts), right panel), for subjects on the placebo, shows that four of the available categories had zero responses, and one had a very small number of responses (two).
-The pie chart (left) make the small category difficult to see, and the categories with zero counts impossible to see.
+The bar chart (Fig.\ \@ref(fig:PieSmallCounts), left panel), for subjects on the placebo, shows that four of the available categories had zero responses, and one had a very small number of responses (two).
+The pie chart (right) make the small category difficult to see, and the categories with zero counts impossible to see.
 :::
 
-```{r PieSmallCounts, fig.width=8.5, fig.height=4, out.width="100%", fig.align="center", fig.cap="Data with zero and small counts are difficult to see in a pie chart (left panel), but easy in a bar chart (right) and dot chart."}
+```{r PieSmallCounts, fig.width=8.5, fig.height=4, out.width="100%", fig.align="center", fig.cap="Data with zero and small counts are easy to see in a bar chart (left panel) and dot chart, but difficult to see in a pie chart (right panel)."}
 if( knitr::is_latex_output() ) {
   colList <- grey.colors(n = 4, 
                          start = 0, 
@@ -447,12 +490,13 @@ Response.Names <- c("Very much improved",
                          "Much worse",
                          "Very much worse")
 
-par( mfrow = c(1, 2) )
+par( mfrow = c(1, 2),
+     oma = c(1, 1, 1, 1) )
 nf <- layout(
   matrix(c(1,2), 
          ncol = 2, 
          byrow = TRUE), 
-  widths = c(3 , 1.5), 
+  widths = c(1.5, 2), 
 )
 
 Response.Names.Pie <- c("",
@@ -471,16 +515,6 @@ Response.Names <- c("Very much improved",
                          "Very much worse")
 
 
-###
-
-par( mar = c(1, 1, 3, 1))
-pie(Responses,
-    labels = Response.Names.Pie,
-    init.angle = 100,
-    radius = 0.4,
-    main = "Pie chart of responses",
-    col = colList)
-
 
 ###
 par( mar = c(10, 4, 2, 1))
@@ -492,16 +526,23 @@ barplot(Responses,
     main = "Bar chart of responses",
     ylab = "Number",
     las = 2)
+#box()
+###
+
+par( mar = c(1, 0, 2.4, 0))
+pie(Responses,
+    labels = Response.Names.Pie,
+    init.angle = 100,
+    radius = 0.4,
+    main = "Pie chart of responses",
+    col = colList)
+#box()
+
+
 ```
 
 
 
-### Recognise the dangers of overplotting {#Overplotting}
-
-Some plots, such as dot charts and scatterplots, may suffer from *overplotting*:\index{Overplotting} when multiple observations have the same (or nearly the same) values, and these cannot be distinguished on the graph.
-Overplotting can especially be a problem when plotting *discrete* quantitative data.
-In these case, points can be *stacked*\index{Overplotting!stacking} or jittered\index{Overplotting!jittering}; see Example\ \@ref(exm:Dotchart2DGorillas).
-Overplotted points can change readers' impression of the data, since some observations are obscured and are effectively 'lost' to the reader.
 
 
 ## Preparing tables
@@ -800,7 +841,7 @@ Answers to odd-numbered exercises are available in App.\ \@ref(Answers).
 ::: {.exercise #Graphs123}
 What would be the best graph for displaying the data for these situations?
 
-1. To explore the relationship between the pH of water and the temperature of the water, in various creeks.
+1. Researchers record the pH of water and the temperature of the water, in various creeks, to explore the relationship.
 `r if( knitr::is_html_output() ) {longmcq( c(
 "A bar chart",
 "A histogram",
@@ -808,7 +849,7 @@ What would be the best graph for displaying the data for these situations?
 "A histogram of the differences",
 answer = "A scatterplot",
 "A side-by-side bar chart"))}`
-2. Suppose, in a research study, the researchers measures the difference between each swimmers' fastest $100$\ m time and their fastest $200$\ m time.
+2. Researchers measure the difference between each swimmers' fastest $100$\ m time and their fastest $200$\ m time.
 The researchers were interested in the average time *difference*.
 `r if( knitr::is_html_output() ) {longmcq( c(
 "A bar chart",
@@ -828,6 +869,38 @@ answer = "A side-by-side bar chart"))}`
 :::
 
 
+::: {.exercise #Graphs456}
+What would be the best graph for displaying the data for these situations?
+
+1. Researchers record the number of times a specific recycling bin is used each day at a shopping centre, over many days.
+`r if( knitr::is_html_output() ) {longmcq( c(
+"A bar chart",
+answer = "A histogram",
+"A boxplot",
+"A histogram of the differences",
+"A scatterplot",
+"A side-by-side bar chart"))}`
+2. Researchers measure the difference between heart rate before and two hours after drinking a cup of coffee.
+The researchers were interested in the average increase in heart rate.
+`r if( knitr::is_html_output() ) {longmcq( c(
+"A bar chart",
+"A histogram",
+"A boxplot",
+answer = "A histogram of the differences",
+"A scatterplot",
+"A side-by-side bar chart"))}`
+3. A research study recorded the diet of students (vegan; vegetarian; other) and the cost of groceries in the previous week, for many students.
+The researchers were exploring if there was any relationship between diet and cost of groceries.
+`r if( knitr::is_html_output() ) {longmcq( c(
+"A bar chart",
+"A histogram",
+answer = "A boxplot",
+"A histogram of the differences",
+"A scatterplot",
+"A side-by-side bar chart"))}`
+:::
+
+
 ::: {.exercise #GraphsLimeTrees}
 @data:ForestBiomass2017 recorded these variables for $385$ lime trees in Russia:
 
@@ -838,18 +911,6 @@ answer = "A side-by-side bar chart"))}`
 
 The purpose of the study is to estimate the foliage biomass from the tree diameter, and perhaps the other extraneous variables.
 What graphs would be useful?
-:::
-
-
-::: {.exercise #GraphsOrthoses2}
-@swinnen2018influence studied the influence of using ankle-foot orthoses in $15$ children with cerebral palsy (Table\ \@ref(tab:DescribeAnkleFoot)).
-(GMFCS is an *ordinal* variable used to describe the impact of cerebral palsy on their motor function: the
-`r if (knitr::is_latex_output()) {
-'Gross Motor Function Classification System.)'
-} else {
-'[Gross Motor Function Classification System](https://en.wikipedia.org/wiki/Gross_Motor_Function_Classification_System).)'
-}`
-Sketch some graphs to explore the *relationships* between these variables.
 :::
 
 
@@ -891,15 +952,15 @@ data(HCrabs) ### Exercise
 
 plot( as.numeric( factor(Col) ) ~ as.numeric( factor(Spine) ), 
       data = HCrabs,
-      xlab = "Condition of the spine",
-      ylab = "Carapace colour",
-      main = "Dot chart of carapace colour\nagainst spine condition",
+      xlab = "spine",
+      ylab = "colour",
+      main = "Dot chart",
       las = 1)
 ```
 
 
 ::: {.exercise #GraphHorseshoeCrabs}
-@data:brockmann:crabs recorded, among other things, the colour of the carapace ('Light medium', 'Medium', 'Dark medium' or 'Dark') and the condition of the carapace ('Both OK', 'One OK', 'None OK') of $173$ female horseshoe crabs.
+@data:brockmann:crabs recorded, among other things, the colour of the carapace ('Light medium', 'Medium', 'Dark medium' or 'Dark') and the condition of the carapace ('Both OK', 'One OK', 'None OK') of $n = 173$ female horseshoe crabs.
 Critique the scatterplot (Fig.\ \@ref(fig:MinerCrabPlot), right panel) used to explore the data.
 :::
 
@@ -916,7 +977,7 @@ Critique the scatterplot (Fig.\ \@ref(fig:MinerCrabPlot), right panel) used to e
 A study of high-performance athletes at the *Australian Institute of Sport* (AIS) [@data:Telford1991:sexsportsize] recorded numerous variables about athletes.
 A plot for the sports played by the athletes is shown in Fig.\ \@ref(fig:AISSportBarchart).
 
-How would you describe the data: Left skewed, right skewed, approximately symmetrical?
+How would you describe the data: left skewed, right skewed, approximately symmetrical?
 Or something else?
 :::
 
