@@ -30,7 +30,7 @@ plotWheel <- function(wheelSize = c(10, 4), numberColours){
         xlab = "", 
         ylab = "",
         type = "n", # DO the outer lines later to define them properly
-        mar = c(0.2, 0.2, 0.2, 0.2),
+        mar = c(0.1, 0.1, 0.1, 0.1),
         asp = 1)
   
   for (i in (1:37)){ # For each wheel segment...
@@ -74,7 +74,7 @@ plotWheel <- function(wheelSize = c(10, 4), numberColours){
          y = sin( deg2rad( textAngle[i])) * radiusForNumbers * DD,
          labels = numberLabels[i],
          srt = textAngle[i] - 90,
-         cex = 0.7,
+         cex = 0.75,
          col = "black")
   }  
   # Redo outside wheel outline
@@ -146,7 +146,7 @@ plotSpinningWheel <- function(angle,
     seq(30, 36, by = 2)
   )
   numberColours <- rep(NA, 38)
-  numberColours <- rep( rgb(0, 0, 0, 
+  numberColours <- rep( rgb(0.25, 0.25, 0.25, 
                             max = 255, 
                             alpha = 125, 
                             names = "blackWheel"), 
