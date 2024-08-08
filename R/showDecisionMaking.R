@@ -195,7 +195,7 @@
              lab = expression( atop(bold(Yes):~Supports,
                                     assumption) ),
              col = ifelse( Decision == "Reject", 
-                           grey(0.70), 
+                           grey(1), 
                            "black")) # CHECKMARK
    textrect( pos[7, ],
              radx = 0.11,
@@ -206,25 +206,25 @@
              lab = expression( atop(bold(No):~Contradicts,
                                     assumption) ),
              col = ifelse( Decision == "Accept", 
-                           grey(0.70), 
+                           grey(1), 
                            "black")) # CHECKMARK
    
    # STEPS
    text(x = pos[1, 1],
         y = 0.965,
-        cex = 0.95,
+        cex = 1,
         labels = "1. Make an assumption")
    text(x = pos[2, 1],
         y = 0.965,
-        cex = 0.95,
+        cex = 1,
         labels = "2. Describe what is expected")
    text(x = mean( pos[1:2, 1]),
         y = 0.02,
-        cex = 0.95,
+        cex = 1,
         labels = "3. Observe sample statistic")
    text(x = pos[5, 1],
         y = 0.02,
-        cex = 0.95,
+        cex = 1,
         labels = "4. Make decision")
    
  }
