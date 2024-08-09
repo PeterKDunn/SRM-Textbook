@@ -206,8 +206,8 @@ Here, the *population proportion* of even rolls is $p = 0.5$ (using the classica
 Each sample of $n = 25$ rolls produces a *sample* proportion, denoted by $\hat{p}$, which varies from sample to sample.
 <!-- For these ten samples, the proportion of even rolls ranged from $\hat{p} = 0.32$ to $\hat{p} = 0.60$. -->
 
-The sample proportions would be expected to vary around $p = 0.5$ (the *population proportion*).
-Of course, the value of the sample proportion in $25$ rolls could be very small or very high by chance, but we wouldn't expect to see that very often.
+The sample proportions would be expected to vary around $p = 0.5$ (the *population proportion*): some larger than $p$ and some smaller than $p$.
+The value of the sample proportion in $25$ rolls could be *very* small or *very* high by chance, but we wouldn't expect to see that very often.
 The sample proportions exhibit sampling variation, and the *amount* of sampling variation is quantified using a *standard error*.
 
 
@@ -216,7 +216,7 @@ $p$ refers to the *population* proportion, and $\hat{p}$ refers to a *sample* pr
 :::
 
 
-Suppose a fair die was rolled $25$ times, and this was repeated *thousands* of times, and the proportion of even rolls was recorded for every one of those thousands of samples.
+Suppose a fair die was rolled $25$ times, and this was repeated *thousands* of times, and the proportion of even rolls was recorded for every one of those thousands of sets of $25$ rolls.
 These thousands of sample proportions $\hat{p}$ (one from every sample of $n = 25$ rolls) could be shown using a
 `r if (knitr::is_latex_output()) {
    'histogram (Fig.\\ \\@ref(fig:RollDiceHistFig)).'
@@ -287,7 +287,7 @@ if (knitr::is_html_output()){
 </center>
 
 
-```{r RollDiceHistFig, fig.align="center", fig.height=3, fig.width=6.5, out.width='65%', fig.cap="The proportion of rolls that are even, $\\hat{p}$, changes from one sample of $25$ rolls to the next sample of $25$ rolls, around a mean of $p = 0.5$. The solid line is the normal distribution used to model the sampling distribution." }
+```{r RollDiceHistFig, fig.align="center", fig.height=3, fig.width=6.5, out.width='65%', fig.cap="The proportion of rolls that are even, $\\hat{p}$, is not the same for every sample of $25$ rolls; it varies around a mean of $p = 0.5$. The solid line is the normal distribution used to model the sampling distribution." }
 if (knitr::is_latex_output()){
   set.seed(99100991)
   num.rolls <- 25
@@ -301,6 +301,8 @@ if (knitr::is_latex_output()){
     prop.even[i] <- sum(roll/2 == floor(roll/2)) / num.rolls
   }
   
+  
+  par( mar = c(4, 1, 4, 1) )
   out <- hist( prop.even,
                breaks = seq(0.05, 0.95, by = 0.04) - 0.03,
                las = 1,
@@ -356,12 +358,13 @@ More specifically, the *values* of the mean and standard deviation of the normal
 can be determined:
 
 * the *sampling mean* has the value of $p = 0.5$,
-* the standard deviation, called the *standard error* $\text{s.e.}(\hat{p})$, has the value $`r round(se.die, 3)`$. (Where this number comes from will be revealed later, in Eq.\ \@ref(eq:StdErrorExampleDie).)
+* the standard deviation, called the *standard error* $\text{s.e.}(\hat{p})$, has the value $`r round(se.die, 3)`$.
+  (The source of this number will be revealed later, in Eq.\ \@ref(eq:StdErrorExampleDie).)
 
 This distribution is the *sampling distribution* (Sect.\ \@ref(SamplingVariationIntro)), whose standard deviation is called a *standard error*.
 A picture of this normal distribution can be drawn (Fig.\ \@ref(fig:NormalDieTheory)).
 While we still don't know *exactly* what the next roll will produce, we have some idea of *how* the sample proportion varies in samples of $25$ rolls.
-For instance, values of $\hat{p}$ less than $0.2$, or greater than $0.8$ are unlikely to be observed from a fair die.
+For instance, values of $\hat{p}$ less than $0.2$, or greater than $0.8$ are unlikely to be observed from a fair die (with $p = 0.5$).
 
 
 ```{r NormalDieTheory, fig.cap="The normal distribution, showing a model of how the proportion of even rolls varies when a die is rolled $25$ times", fig.align="center", fig.width=8.25, fig.height=3.25, out.width='100%'}
@@ -379,14 +382,6 @@ out <- plotNormal(mu = pop.p,
                   showX = seq(0,1, by = 0.1),
                   ylim = c(0, 7.5), # To allow room for "Sampling mean"
                   showZ = TRUE) # Vertical lines at z = -3:3
-# lines( x = c(0.5, 0.5),
-#        y = c(0, dnorm(0.5, mean = pop.p, sd = se.p)),
-#        col = "grey",
-#        lwd = 2)
-# lines( x = c(0.6, 0.6),
-#        y = c(0, max(out$y)),
-#        col = "grey",
-#        lwd = 2)
 
 arrows(x0 = 0.5,
        x1 = 0.5,
@@ -416,6 +411,18 @@ text(x = 0.55,
      y = 0.27 * max(out$y),
      pos = 1,
      labels = expression(plain(s.e.)(hat(italic(p)))))
+
+# Explanations at left and right
+text(x = 0.13,
+     y = 0.3 * max(out$y),
+     pos = 3,
+     labels = expression(Values~of~hat(italic(p))~smaller~than~italic(p)) )
+text(x = 0.87,
+     y = 0.3 * max(out$y),
+     pos = 3,
+     labels = expression(Values~of~hat(italic(p))~larger~than~italic(p)) )
+
+
 ```
 
 
@@ -440,7 +447,7 @@ where $n$ is the size of the sample used to compute $\hat{p}$, and $p$ is the po
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 The parameter $p$ and the statistic $\hat{p}$ are both *proportions*.
 
-However, the *average value* of the sample proportions can be described by a *sampling mean*, whose value is $p$, and the amount of variation in the sample proportions can be described by a *standard deviation* (called a *standard error* in this context), denoted $\text{s.e.}(\hat{p})$.
+However, the *average value* of the sample proportions from all possible samples can be described by a *sampling mean*, whose value is $p$, and the amount of variation in the sample proportions can be described by a *standard deviation* (called a *standard error* in this context), denoted $\text{s.e.}(\hat{p})$.
 
 The sampling mean of the sampling distribution is the 'average' value of all possible sample proportions, $\hat{p}$.
 :::
@@ -452,7 +459,7 @@ For the die example, where $n = 25$ rolls and the population proportion of even 
    (\#eq:StdErrorExampleDie)
 \end{equation}
 This standard error is the standard deviation of the normal distribution in Fig.\ \@ref(fig:NormalDieTheory).
-However, almost always, the value of $p$ is unknown.
+However, in practice the value of $p$ is almost always unknown.
 This situation is studied from Sect.\ \@ref(SamplingDistributionUnknownp) onwards.
 
 
@@ -476,19 +483,18 @@ This is called a *sampling interval*.
 
 
 
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The symbol '$\pm$' means 'plus or minus', or (colloquially) 'give-or-take'.
+:::
+
+
 ```{r CIrelationshipsSI, out.width='75%', fig.align="center", fig.cap="A known value of $p$ produces a range of $\\hat{p}$ values.", fig.width = 7, fig.height=3.75}
-par(mar = c(1, 1, 5.5, 1) + 0.5 )   
+par(mar = c(0, 1, 5.0, 1) + 0.25 )   
 
 source("R/showCIrelationships.R") 
 showCIrelationships(type = "sampling")
 
 ```
-
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The symbol '$\pm$' means 'plus or minus', or (colloquially) 'give-or-take'.
-:::
 
 
 The *multiplier* depends on how confident we wish to be that the interval contains the value of $\hat{p}$.
@@ -498,9 +504,7 @@ That is, the *approximate* $95$% sampling interval is:
    p \pm (2 \times \text{s.e.}(\hat{p}) ).
    (\#eq:CIpKnownp)
 \end{equation}
-CIs are commonly $95$%\ CIs, but *any* level of confidence can be used (but a different multiplier is needed).
-In this book, a multiplier of $2$ is used when *approximate* $95$%\ CIs are created manually, and otherwise software is used.
-Commonly, CIs are computed at $90$%, $95$% and $99$% confidence levels.
+*Any* level of confidence can be used (but a different multiplier is needed).
 
 
 ## Sampling distribution for $\hat{p}$: unknown proportion {#SamplingDistributionUnknownp}
@@ -584,7 +588,7 @@ In general, the approximation gets better as the sample size gets larger.
 When computing the standard error for a proportion, take care!
 
 Make sure you use a *proportion* in the formula, not a *percentage* (i.e.,  $0.5$ rather than $50$%). 
-Also: don't forget to take the square root!
+Also: don't forget to take the square root.
 :::
 
 
@@ -606,7 +610,7 @@ However, here the value of $\hat{p}$ is known, so instead an interval is created
 
 
 ```{r CIrelationshipsCI, out.width='75%', fig.align="center", fig.cap="Many values of $p$ may have produced the observed value of $\\hat{p}$", fig.width = 7, fig.height=3.75}
-par(mar = c(1, 1, 5.5, 1) + 0.5 )   
+par(mar = c(0, 1, 5.0, 1) + 0.25 )   
 
 source("R/showCIrelationships.R") 
 
@@ -634,14 +638,14 @@ That is, the interval is from
                  0.44 - 0.1986 &\qquad\text{(which is $0.241$)}\\
   \text{to}\quad 0.44 + 0.1986 &\qquad\text{(which is $0.639$)}.
 \end{align*}
-The interval, from $0.2414$ to $0.639$, is an interval containing values of $p$ that could have reasonably produced the observed value of $\hat{p}$
+The interval, from $0.241$ to $0.639$, is an interval containing values of $p$ that could have reasonably produced the observed value of $\hat{p}$
 `r if (knitr::is_latex_output()) {
    '(Fig.\\ \\@ref(fig:pProducingpHatLATEX))'
 } else {
    '(Fig.\\ \\@ref(fig:pProducingpHatHTML))'
 }`
 via sampling variation.
-We can say the interval $0.2414$ to $0.639$ has a $95$% chance of straddling the population proportion\ $p$.
+We can say the interval $0.241$ to $0.639$ has a $95$% chance of straddling the population proportion\ $p$.
 
 
 ::: {.definition #ConfidenceIntervalp name="Confidence interval for $p$"}
@@ -690,20 +694,16 @@ locateY <- (-maxY * 1.1)
 ```{r pProducingpHatHTML, fig.show="animate", animation.hook="gifski", interval=0.4, loop=FALSE, fig.cap="The CI gives an interval containing values of $p$ that may have produced the observed value of $\\hat{p}$. Here, the CI is $0.241$ to $0.639$.", fig.align="center"}
 if (knitr::is_html_output()){
 
-par( #mfrow = c(1, 4),
-    mar = c(0.25, 0.3, 1.5, 0.3) )
-
+par(mar = c(0.25, 0.3, 1.5, 0.3) )
 
 for (i in 1:length(pVec)){
   pInCI <- ifelse( (pVec[i] > ciLo) & (pVec[i] < ciHi), 
                    TRUE, 
                    FALSE )
   
-  
   siLo <- pVec[i] - 2 * pStdDev
   siHi <- pVec[i] + 2 * pStdDev
   
-
   ## Canvas
   plot( x = c(0, 1),
         y = c(maxY * 2.25, 
@@ -729,7 +729,7 @@ for (i in 1:length(pVec)){
 ```
 
 
-```{r pProducingpHatLATEX, fig.width=7.5, fig.height=8, out.width='100%', fig.cap="The CI gives an interval containing values of $p$ that may have produced the observed value of $\\hat{p}$. Here, the CI is $0.241$ to $0.639$, shown as the thick black line under the plots.", fig.align="center"}
+```{r pProducingpHatLATEX, fig.width=7.5, fig.height=8, out.width='100%', fig.cap="The CI gives an interval containing values of $p$ that may have produced the observed value of $\\hat{p}$. Here, the CI is $0.241$ to $0.639$, shown as the thick black horizontal line under the plots.", fig.align="center"}
 if (knitr::is_latex_output()) {
   par(mfrow = c(2, 2),
       xpd = NA,
@@ -782,9 +782,8 @@ if (knitr::is_latex_output()) {
 ```
 
 
-
 In general, we do not know if the computed confidence interval straddles the actual value of $p$, since the value of $p$ is usually unknown.
-However, in this contrived example, the CI *does* straddle the known value of $p = 0.5$ with $95$% confidence.
+However, in this contrived example, the CI *does* happen to straddle the value of $p = 0.5$.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
@@ -800,7 +799,7 @@ However, *about $95$% of these thousands of confidence intervals from those thou
 
 
 
-Since we usually don't know the value of $p$, and we usually only have one sample (and hence one CI), in general *we never know whether the CI computed from the single sample we have straddles the value of $p$ or not*.
+Since we usually don't know the value of $p$, and since we usually only have one sample (and hence one CI), in general *we never know whether the CI computed from the single sample we have straddles the value of $p$ or not*.
 
 Again, consider letting the computer simulate the situation.
 Suppose the process of recording the sample proportion of even numbers in $n = 25$ rolls is repeated fifty times, and for each of those fifty sets of 25 rolls a CI is produced
@@ -810,7 +809,7 @@ Suppose the process of recording the sample proportion of even numbers in $n = 2
    '(see the animation below).'
 }`
 About $95$% of those $95$%\ CIs straddle the value $p = 0.5$ (shown as solid lines), but some do not (shown as dashed lines).
-Of course, since the value of $p$ is usually unknown, we never know if the CI computed from our single sample contains $p$ or not.
+Of course, value of $p$ is usually unknown, so we never know if the CI computed from our single sample contains $p$ or not.
 
 
 ```{r RollDiceCIMovie, animation.hook="gifski", interval=0.1, dev=if (is_latex_output()){"pdf"}else{"png"}}
@@ -1000,14 +999,14 @@ To form *exact* CIs, software would be used.
 
 The *correct* interpretation (see Def.\ \@ref(def:ConfidenceInterval)) of a $95$%\ CI is the following:
 
-> If the same size samples were repeatedly taken many times, and the $95$% confidence interval computed for each sample, $95$% of these confidence intervals formed would contain the population parameter.
+> If the same size samples were repeatedly taken many times, and the $95$% confidence interval computed for each sample, $95$% of these confidence intervals formed would contain the value of the parameter.
 
 In Sect.\ \@ref(ConfIntPUnknownP), the CI was interpreted as giving a range of values of $p$ that could reasonably be expected to produce the observed value of $\hat{p}$.
 The CI can also be seen as having a $95$% chance of straddling the unknown value of the parameter.
 These are close to the correct interpretation.
 
-Commonly, the CI is interpreted as having a $95$% chance of containing the value of population parameter $p$.
-This is not strictly correct (the CI either *does* or *does not* contain the value of $p$), but is like a convenience that captures the essence of the correct interpretation.
+Commonly, the CI is interpreted as having a $95$% chance of containing the value of population parameter $p$ (even though the CI either *does* or *does not* contain the value of $p$).
+This is like a convenience that captures the essence of the correct interpretation.
 More details on interpreting a CI are given in Sect.\ \@ref(CIInterpretation).
 
 
@@ -1017,16 +1016,16 @@ More details on interpreting a CI are given in Sect.\ \@ref(CIInterpretation).
 ## Statistical validity conditions {#ValidityProportions}
 \index{Statistical validity!one proportion}
 
-The confidence intervals formed in this chapter assume the sampling distribution is approximately a normal distribution (and so, for example, the $68$--$95$--$99.7$ rule applies).
-This is true if certain conditions are met.
-If these conditions are met, the confidence interval is *statistically valid*.
+The confidence intervals formed in this chapter assume the sampling distribution is approximately a normal distribution (and so, for example, the $68$--$95$--$99.7$ rule can be applied).
+This is only true if certain conditions are met.
+If these conditions are met (so that the sampling distribution has an approximate normal distribution), the confidence interval is statistically valid.
 Whenever a confidence interval is formed, the relevant statistical validity conditions need to be  checked.
 
-If the statistical validity conditions are not met, resampling methods\index{Resampling methods} may be used [@efron2021computer].
+If the statistical validity conditions are not met, an alternative method\index{Non-parametric statistics} [@conover2003practical] or resampling methods\index{Resampling methods} may be used [@efron2021computer].
 
 
 ::: {.definition #StatisticalValidity name="Statistical validity"}
-A result is *statistically valid* if the conditions for the underlying mathematical calculations and assumptions to be approximately correct are met, such as the sampling distribution having an approximate normal distribution.
+A result is *statistically valid* if the conditions for the underlying mathematical calculations to be approximately correct are met, such as the sampling distribution having an approximate normal distribution.
 :::
 
 
@@ -1053,18 +1052,17 @@ The CI for a single proportion is *statistical validity* if:
 * the number of individuals of interest exceeds\ $5$, *and*
 * the number of individuals *not* of interest exceeds\ $5$.
 
-The value of\ $5$ here is a rough figure; some books give other values (such as $10$).
-These conditions ensure that the sampling distribution of $\hat{p}$ has an approximate normal distribution, so that the $68$--$95$--$99.7$ rule (approximately) applies.
-If this condition is not met, the normal distribution may not approximate the sampling distribution well, so the $68$--$95$--$99.7$ rule may be inappropriate, and so the CI may also be  slightly unreliable.
 The units of analysis are also assumed to be *independent* (e.g., from a simple random sample).
+The value of\ $5$ here is a rough figure; some books give other values (such as $10$).
 
+These conditions ensure that the sampling distribution of $\hat{p}$ has an approximate normal distribution, so that the $68$--$95$--$99.7$ rule (approximately) applies.
+If these conditions are not met, the normal model may not be a good approximation to the sampling distribution, so using the $68$--$95$--$99.7$ rule may be inappropriate, and so the CI may also be  slightly unreliable.
 
 
 ::: {.example #DiceStatValidity name="Statistical validity"}
 For the die-throwing example in Sect.\ \@ref(SamplingDistributionUnknownp), $11$ even rolls and $14$\ odd rolls were observed.
 Both these values exceed $5$, so the CI is statistically valid.
 :::
-
 
 
 :::{.example #StatisticalValidityPHat name="Statistical validity conditions"}
@@ -1141,6 +1139,13 @@ lines( y ~ x,
        col = "black",
        lwd = 2)
 
+# Extend axis into negative territory, but use grey
+axis( side = 1, 
+      at = seq(0, -0.4, 
+               by = -0.1), 
+      labels = NA, 
+      col="grey")
+
 ######
 
 outH <- hist(sampOK,
@@ -1203,7 +1208,7 @@ Many decimal places are used in the working,  but final answers are rounded.
 
 ## Chapter summary {#Chap20-Summary}
 
-To compute a confidence interval (CI) for a proportion, compute the sample proportion, $\hat{p}$, and identify the sample size $n$.
+To compute a confidence interval (CI) for a proportion, compute the sample proportion, $\hat{p}$, and identify the sample size $n$ used to compute $\hat{p}$.
 Then compute the standard error, which quantifies how much the value of $\hat{p}$ varies across all possible samples:
 $$
   \text{s.e.}(\hat{p})
@@ -1271,12 +1276,12 @@ Answers to odd-numbered exercises are available in App.\ \@ref(Answers).
 
 
 ::: {.exercise #CIParamedic}
-@lord2009impact studied how paramedics administer pain medication, and found that $791$ of patients reporting pain did *not* receive pain relief, out of $1\,766$ patients in the study who reported pain.
+@lord2009impact studied how paramedics administer pain medication, and found that $791$ of patients reporting pain did *not* receive pain relief, out of $1\,766$ patients in the study who initially reported pain.
 
 1. Compute the sample proportion of patient who did not received pain medication.
 1. Find an approximate $95$%\ CI for the proportion of patients who did not receive pain medication.
 1. Check if the statistical validity conditions are met or not.
-1. Draw a sketch of how the sample proportion varies for samples of size $1766$.
+1. Draw a sketch of how the sample proportion varies for samples of size $1 766$.
 :::
 
 
@@ -1298,7 +1303,7 @@ They found that $8$ students out of $154$ met the recommendation for eating a su
 @data:Dexter2018:Koalas found that $18$ of the $n = 51$ koalas studied in a certain area over $30$ months had crossed at least one road during that time.
 The unknown parameter is $p$, the *population* proportion of koalas that had crossed at least one road over the $30$ months.
 
-1. Find an approximate $95$%\ CI for the proportion of koalas that had crossed the road at least once.
+1. Find an approximate $95$%\ CI for the proportion of koalas that had crossed the road at least once in the $30$ months.
 1. Check if the statistical validity conditions are met or not.
 1. Draw a sketch of how the sample proportion varies for samples of size $51$.
 :::
