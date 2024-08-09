@@ -18,12 +18,17 @@ out1 <- plotNormal(mu = 0,
                    showXaxis = FALSE,
                    main = normalTitle )
 
+# Tick for mean
+lines( x = c(0, 0),
+       y = c(0, -0.05) )
+
+
 # Axis label
 text(x = 3.1, 
      y = 0, 
      label = ifelse( type == "sampling",
-                     expression( hat(italic(p)) ),
-                     expression( italic(p) ) ),
+                     expression( Values~of~hat(italic(p)) ),
+                     expression( Values~of~italic(p) ) ),
                      cex = 0.95,
      adj = c(0.5, -0.25) )
 
@@ -58,7 +63,7 @@ arrows(x0 = 0,
        y0 = -0.40,
        y1 = 0,
        angle = 15,
-       length = 0.10,
+       length = 0.15,
        code = ifelse(type == "sampling",
                      2, 
                      1))
@@ -67,7 +72,7 @@ arrows(x0 = 0,
        y0 = -0.40,
        y1 = 0,
        angle = 15,
-       length = 0.10,
+       length = 0.15,
        code = ifelse(type == "sampling",
                      2, 
                      1))
@@ -76,7 +81,7 @@ arrows(x0 = 0,
        y0 = -0.4,
        y1 = 0,
        angle = 15,
-       length = 0.10,
+       length = 0.15,
        code = ifelse(type == "sampling",
                      2, 
                      1))
@@ -85,7 +90,7 @@ arrows(x0 = 0,
        y0 = -0.40,
        y1 = 0,
        angle = 15,
-       length = 0.10,
+       length = 0.15,
        code = ifelse(type == "sampling",
                      2, 
                      1))
@@ -95,7 +100,7 @@ arrows(x0 = 0,
        y0 = -0.40,
        y1 = 0,
        angle = 15,
-       length = 0.10,
+       length = 0.15,
        code = ifelse(type == "sampling",
                      2, 
                      1))
@@ -116,8 +121,8 @@ text(x = 0,
 # ADD CI
 arrows( x0 = -2,
         x1 = 2,
-        y0 = 0.025,
-        y1 = 0.025,
+        y0 = 0.035,
+        y1 = 0.035,
         length = 0.10,
         angle = 15,
         code = 3)

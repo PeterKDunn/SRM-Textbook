@@ -16,13 +16,13 @@ drawCI <- function(CI, pInCI, locateY, p ){
          y = c(locateY, locateY),
          lwd = 6)
   text( x = mean(CI),
-        y = locateY - 0.5,
-        expression( The~CI*":"~values~of~italic(p)~that~could~produce~hat(italic(p))),
+        y = locateY - 1,
+        expression( The~CI*":"~values~of~italic(p)~that~could~have~produced~hat(italic(p))),
         pos = 1)
   arrows( x0 = CI[1],
           x1 = CI[2],
-          y0 = locateY - 0.7,
-          y1 = locateY - 0.7,
+          y0 = locateY - 1.5,
+          y1 = locateY - 1.5,
           code = 3,
           angle = 15,
           length = 0.1)
@@ -144,7 +144,7 @@ drawDistribution <- function(mu,
   text(x = mu,
        y = maxY,
        bquote( atop(Values~of~hat(italic(p))~that~could~be,
-                        produced~from~italic(p)==.(mu))),
+                        produced~when~italic(p)==.(mu))),
        pos = 3)
  
     arrows(x0 = SI[1],
