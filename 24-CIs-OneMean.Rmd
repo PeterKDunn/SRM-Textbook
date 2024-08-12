@@ -434,42 +434,41 @@ Since the values of $\bar{x}$ vary from sample to sample (*sampling variation*) 
 This is a *confidence interval*.
 
 A confidence interval (CI) for the population mean is an interval surrounding a sample mean.
-In general, a confidence interval (CI) for $\mu$ is
+In general, a confidence interval for $\mu$ is
 $$
-   \bar{x} \pm \overbrace{(\text{multiplier}\times\text{s.e.}(\bar{x}))}^{\text{The `margin of error'}}.
+   \bar{x} \pm \overbrace{\big(\text{multiplier}\times\text{s.e.}(\bar{x})\big)}^{\text{The `margin of error'}}.
 $$
 For an approximate $95$%\ CI, the multiplier is about $2$ (since about $95$% of values are within two standard deviations of the mean, from the $68$--$95$--$99.7$ rule).
 
 
-::: {.definition #ConfidenceIntervalp name="Confidence interval for $\mu$"}
-A *confidence interval* (CI) for the unknown value of the population proportion $\mu$ is
+::: {.definition #ConfidenceIntervalmu name="Confidence interval for $\mu$"}
+A *confidence interval* (CI) for the unknown value of the population mean $\mu$ is
 \begin{equation}
-  \bar{x} \pm ( \text{multiplier} \times \text{s.e.}(\bar{x})), 
+  \bar{x} \pm \big( \text{multiplier} \times \text{s.e.}(\bar{x})\big), 
   (\#eq:CImu)
 \end{equation}
-where $( \text{multiplier} \times \text{s.e.}(\bar{x}))$ is the *margin of error*, and
+where $\big( \text{multiplier} \times \text{s.e.}(\hat{p})\big)$ is the *margin of error*, and
 $$
-   \text{s.e.}(\hat{p}) 
+   \text{s.e.}(\bar{x}) 
    =
-   \sqrt{\frac{ \hat{p} \times (1 - \hat{p}) }{n}}
+   \frac{s}{\sqrt{n}}
 $$
-is the *standard error* of $\hat{p}$, where $\hat{p}$ is the sample proportion, and $n$ is the sample size.
+is the *standard error* of $\bar{x}$, where $\bar{x}$ is the sample mean, and $n$ is the sample size.
 For an *approximate* $95$%\ CI, the multiplier is $2$.
-The quantity $( \text{multiplier} \times \text{s.e.}(\hat{p}))$ is called the *margin of error*.
+The quantity $\big( \text{multiplier} \times \text{s.e.}(\bar{x})\big)$ is called the *margin of error*.
 :::
 
 
-CIs are commonly $95$%\ CIs, but *any* level of confidence can be used (but a different multiplier is needed).
+CIs are commonly $95$%\ CIs, but *any* level of confidence can be used (with the appropriate multiplier).
 In this book, a multiplier of $2$ is used when *approximate* $95$%\ CIs are created manually, and otherwise software is used.
 Commonly, CIs are computed at $90$%, $95$% and $99$% confidence levels.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-In Chap.\ \@ref(CIOneProportion), the multiplier was a $z$-score, and approximate values can be found using the $68$--$95$--$99.7$ rule.
-Here the multiplier is *not* actually a $z$-score (but is *like* a $z$-score).
-
-The multiplier is a $z$-score if the value of the *population* standard deviation is known (e.g., the situation in Sect.\ \@ref(SamplingDistSampleMeanSigmaKnown)).
-When $\sigma$ is unknown, and the *sample* standard deviation is used instead, the multiplier is called a $t$-score.
+In Chap.\ \@ref(CIOneProportion), the multiplier was a $z$-score, and approximate values for the multiplier can be found using the $68$--$95$--$99.7$ rule.
+When computing the CI for a sample mean, the multiplier is *not* a $z$-score (but is very *similar* to a $z$-score).
+The multiplier is only a $z$-score when the value of the *population* standard deviation is known (e.g., the situation in Sect.\ \@ref(SamplingDistSampleMeanSigmaKnown)).
+When $\sigma$ is unknown (almost always), and the *sample* standard deviation is used instead, the multiplier is a $t$-score (Sect.\ \@ref(Tscores)).
 
 The values of $t$- and $z$-multipliers are *very* similar, and (except for small sample sizes) using an approximate multiplier of\ $2$ is reasonable for computing *approximate* $95$%\ CIs in either case.
 :::
@@ -488,7 +487,7 @@ The sample means vary with an approximate normal distribution, centred around th
 ```
 
 
-```{r DiceMeanNormal, fig.cap="The sampling distribution is a normal distribution; it shows how the sample mean of 25 die rolls varies in samples of size $n = 25$", fig.align="center", fig.width=9.5, fig.height=2.75, out.width='95%'}
+```{r DiceMeanNormal, fig.cap="The sampling distribution is an approximate normal distribution; it shows a model of how the mean roll varies when a die is rolled $25$ times", fig.align="center", fig.width=9.5, fig.height=2.75, out.width='95%'}
 
 mn <- 3.5
 n <- 25
@@ -539,15 +538,28 @@ text(x = mn + (se / 2),
      y = 0.32 * max(out$y),
      pos = 1,
      labels = expression(plain(s.e.)(bar(italic(x)))))
+
+
+# Explanations at left and right
+text(x = 2.2,
+     y = 0.3 * max(out$y),
+     pos = 3,
+     labels = expression(Values~of~bar(italic(x))~smaller~than~mu))
+text(x = 4.8,
+     y = 0.3 * max(out$y),
+     pos = 3,
+     labels = expression(Values~of~bar(italic(x))~larger~than~mu) )
+
 ```
 
 
 Our estimate of $\bar{x} = 3.2$ may be a bit smaller than the value of $\mu$, or a bit larger than the value of $\mu$; that is, the value of $\mu$ is $\bar{x}$ give-or-take a bit.
-A range of $\bar{x}$ values that are likely to straddle $\mu$ is given by a CI.
+A range of $\mu$ values that are likely to straddle $\bar{x}$ is given by a CI.
 An *approximate* $95$%\ CI is from $3.2 - (2 \times 0.5)$ and $3.2 + (2 \times 0.5)$, or from $2.2$ to $4.2$.
 Hence, values of $\mu$ between $2.2$ to $4.2$ could reasonably have produced a sample mean of $\bar{x} = 3.2$. 
 <!-- (Fig.\ \@ref(fig:CIrelationshipsMu)). -->
 
+Usig software, the exact $95$% CI is from $2.17$ to $4.23$, the same as the approximate CI to one decimal place.
 
 
 <!-- ```{r, CIrelationshipsMu, out.width='90%', fig.align="center", fig.cap="Various values of $\\mu$ from which the observed value of $\\bar{x}$ could reasonably be observed. The intervals are the $95$\\% sampling intervals for the given value of $\\mu$. The confidence interval contains the values for which the sampling interval contains the observed value of $\\bar{x}$.", fig.width=8, fig.height=5} -->
@@ -586,14 +598,14 @@ As with any confidence interval, the underlying mathematics requires certain con
 
 Statistical validity can be assessed using these criteria:
 
-* When $n \ge 25$, the test is statistically valid provided the distribution of data is *not* highly skewed.
+* When $n \ge 25$, the test is statistically valid when the distribution of data is *not* highly skewed.
 * When $n < 25$, the test is statistically valid only if the data come from a *population* with a normal distribution.
 
 The sample size of $25$ is a rough figure, and some books give other values (such as $30$).
 Data with severe skewness or large outliers may need a larger sample size for the CI to be statistically valid.
 
 
-This condition ensures that the *sampling distribution of the sample means has an approximate normal distribution* (so that the $68$--$95$--$99.7$ rule can be used).\index{68@$68$--$95$--$99.7$ rule}
+This condition ensures that the *sampling distribution of the sample means has an approximate normal distribution* (so that, for example, the $68$--$95$--$99.7$ rule can be used).\index{68@$68$--$95$--$99.7$ rule}
 Provided the sample size is larger than about $25$, this will be approximately true *even if* the distribution of the individuals in the
 population do not have a normal distribution.
 That is, when $n \ge 25$ the sample means generally have an approximate normal distribution, even if the data themselves do not follow a normal distribution.
@@ -734,10 +746,11 @@ Answers to odd-numbered exercises are available in App.\ \@ref(Answers).
 `r if( knitr::is_latex_output() ) "\\captionsetup{font=small}"`
 
 ::: {.exercise #OneMeanCIBears}
-@bartareau2017estimating studied of American black bears, and found the mean weight of the $n = 185$ male bears was  $\bar{x} = 84.9$\ kg, with a standard deviation of $s = 51.1$\ kg.
+@bartareau2017estimating studied American black bears, and found the mean weight of the $n = 185$ male bears was  $\bar{x} = 84.9$\ kg, with a standard deviation of $s = 51.1$\ kg.
 
 1. Define the *parameter* of interest.
 1. Compute the standard error of the mean.
+1. Draw a picture of the approximate sampling distribution for $\bar{x}$.
 1. Compute the approximate $95$%\ CI.
 1. Write a conclusion.
 1. Is the CI statistically valid?
@@ -745,11 +758,12 @@ Answers to odd-numbered exercises are available in App.\ \@ref(Answers).
 
 
 ::: {.exercise #BagsCI}
-@data:Dianat2014:schoolbags studied the weight of the school bags of $586$ children in Grades 6--8 in Tabriz, Iran.
+@data:Dianat2014:schoolbags studied the weight of the school bags of a sample of $586$ children in Grades $6$--$8$ in Tabriz, Iran.
 The mean weight was $\bar{x} = 2.8$\ kg with a standard deviation of $s = 0.94$\ kg.
 
 1. Define the *parameter* of interest.
 1. Compute the standard error of the mean.
+1. Draw a picture of the approximate sampling distribution for $\bar{x}$.
 1. Compute the approximate $95$%\ CI.
 1. Write a conclusion.
 1. Is the CI statistically valid?
@@ -758,7 +772,7 @@ The mean weight was $\bar{x} = 2.8$\ kg with a standard deviation of $s = 0.94$\
 
 ::: {.exercise #CIOneMeanLungCapacityInChildren}
 @data:Tager:FEV studied the lung capacity of children in East Boston.
-They measured the forced expiratory volume (FEV) of $n = 45$ eleven-year-old girls.
+They measured the forced expiratory volume (FEV) of a sample of $n = 45$ eleven-year-old girls.
 For these children, the mean lung capacity was $\bar{x} = 2.85$ litres and the standard deviation was $s = 0.43$ litres [@BIB:data:FEV].
 Find an approximate $95$%\ CI for the population mean lung capacity of eleven-year-old females from East Boston.
 :::
@@ -766,16 +780,16 @@ Find an approximate $95$%\ CI for the population mean lung capacity of eleven-ye
 
 ::: {.exercise #CIOneMeanEnvironmentalPollution}
 @data:Taylor2013:Lead studied lead smelter emissions near children's public playgrounds.
-They found the mean lead concentration at one playground (Memorial Park, Port Pirie, in South Australia) was $6956.41$ micrograms per square metre, with a standard deviation of $7571.74$ micrograms of lead per square metre, from a sample of $n = 58$ wipes taken over a seven-day period.
+They found the mean lead concentration at one playground (Memorial Park, Port Pirie, in South Australia) was $6\ 956.41$ micrograms per square metre, with a standard deviation of $7\ 571.74$ micrograms of lead per square metre, from a sample of $n = 58$ wipes taken over a seven-day period.
 (As a reference, the Western Australian Government recommends a maximum of $400$ micrograms of lead per square metre.)
 
 Find an approximate $95$%\ CI for the mean lead concentration at this playground.
-Would these results apply to other playgrounds?
+Would these results apply to playgrounds in other parts of Australia?
 :::
 
 
 ::: {.exercise #CIOneMeanToothbrushing}
-@data:Macgregor1985:ToothbrushinghYoungAdults studied the brushing time for $60$ young adults (aged 18--22 years old), and found the mean brushing time was $33.0$ seconds, with a standard deviation of $12.0$ seconds.
+@data:Macgregor1985:ToothbrushinghYoungAdults studied the brushing time for $60$ young adults (aged 18--22 years old), and found the mean tooth brushing time was $33.0$\ s, with a standard deviation of $12.0$\ s.
 Find an approximate $95$%\ CI for the mean brushing time for young adults.
 :::
 
@@ -786,7 +800,7 @@ When the actual amount of blood spill on concrete was $1000$\ ml, the mean guess
 
 1. What is the approximate $95$%\ CI for the mean guess of blood loss?
 1. Do you think the participants are good at estimating the amount of blood loss on concrete?
-1. Is this CI likely to be valid?
+1. Is this CI statistically valid?
 :::
 
 
@@ -823,16 +837,16 @@ Which (if any) of the following is correct?
 
 
 ::: {.exercise #CIPizzas}
-In 2011, *Eagle Boy's Pizza* ran a campaign that claimed (among many other claims) that Eagle Boy's pizzas were  'Real size $12$-inch large pizzas' in an effort to out-market *Domino's Pizza*.
-Eagle Boy's made the data behind the campaign publicly available [@mypapers:Dunn:PizzaSize].
-A summary of the diameters of a sample of $125$ of Eagle Boys' large pizzas is shown in Fig.\ \@ref(fig:PizzaCIjamovi).
+In 2011, *Eagle Boys Pizza* ran a campaign that claimed (among many other claims) that *Eagle Boys* pizzas were 'Real size $12$-inch large pizzas' in an effort to out-market *Domino's Pizza*.
+*Eagle Boys* made the data behind the campaign publicly available [@mypapers:Dunn:PizzaSize].
+A summary of the diameters of a sample of $125$ of *Eagle Boys* large pizzas is shown in Fig.\ \@ref(fig:PizzaCIjamovi).
 
 1. What do $\mu$ and $\bar{x}$ represent in this context? \tightlist 
 2. Write down the *values* of $\mu$ and $\bar{x}$.
 3. Write down the *values* of $\sigma$ and $s$.
 4. Compute the value of the standard error of the mean.
 5. Explain the difference in *meaning* between $s$ and $\text{s.e.}(\bar{x})$ here.
-6. If someone else takes a sample of $125$ Eagle Boy's pizzas, will the sample mean be $11.486$ inches again (as it is in this sample)?
+6. If someone else takes a sample of $125$ *Eagle Boys* pizzas, will the sample mean be $11.486$ inches again (as in this sample)?
    Why or why not?
 7. Draw a picture of the approximate sampling distribution for $\bar{x}$.
 8. Compute an approximate $95$% confidence interval for the mean pizza diameter.
@@ -845,9 +859,7 @@ A summary of the diameters of a sample of $125$ of Eagle Boys' large pizzas is s
     - The population has a normal distribution.
     - The population standard deviation is known.
     - The sample has a normal distribution.
-12. If we wanted to estimate the population mean diameter to within $1$\ mm (or $0.04$\ inches) with $95$% confidence, what size sample would we need?  
-    What is a reasonable level of accuracy with which we could measure the diameter of a pizza?
-13. Do you think that, on average, the pizzas do have a mean diameter of $12$\ inches in the population, as Eagle Boy's claim?
+12. Do you think that, on average, the pizzas do have a mean diameter of $12$\ inches in the population, as Eagle Boy's claim?
     Explain.
 :::
 
