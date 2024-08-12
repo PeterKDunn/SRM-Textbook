@@ -585,22 +585,19 @@ Statistical validity can be assessed using these criteria:
 
 The sample size of $25$ is a rough figure; some books give other values (such as $30$).
 
-This condition ensures that the *distribution of the sample means has an approximate normal distribution* (so the $68$--$95$--$99.7$ rule can be used).
+This condition ensures that the *distribution of the sample means has an approximate normal distribution* (so that, for example, the $68$--$95$--$99.7$ rule can be used).
 Provided the sample size is larger than about $25$, this will be approximately true *even if* the distribution of the differences in the population does not have a normal distribution.
 That is, when $n \ge 25$ the sample means generally have an approximate normal distribution, even if the data themselves don't have a normal distribution.
-
 The units of analysis are also assumed to be *independent* (e.g., from a simple random sample).
 
 If the statistical validity conditions are not met, other methods (e.g., non-parametric methods\index{Non-parametric statistics} [@conover2003practical]; resampling methods\index{Resampling methods} [@efron2021computer]) may be used.
-
+For paired qualitative data, McNemar's test can be used [@conover2003practical].
 
 
 ::: {.example #StatisticalValidityWeightGain name="Statistical validity"}
-For the SMWT data, the sample size is $n = 50$, so the results are statistically valid.
+For the 6MWT data, the sample size is $n = 50$, so the results are statistically valid.
 Neither the differences *in the population*, nor the distances *in the population* for each walkway length, need to follow a normal distribution.
 :::
-
-
 
 
 ## Example: invasive plants {#PairedInvasivePlantsCI}
@@ -670,20 +667,20 @@ For the *tea group*, the standard error of the *reduction* in TG is $\text{s.e.}
 For the *control group*, the standard error of the *reduction* in TG is $\text{s.e.}(\bar{d}) = 36.66/\sqrt{32} = 6.48$.
 Thus, the approximate $95$%\ CI for the *reduction* in TG is:
 
-* Tea-drinking group: $38.62\pm (2\times 5.37)$, or from $27.88$ to $49.36$ mg.dl$^{-1}$.
-* Control group: $-7.12\pm (2\times 6.48)$, or from $-20.08$ to $5.84$ mg.dl$^{-1}$.
+* \makebox[31mm][l]{Tea-drinking group:} $38.62\pm (2\times 5.37)$, or from $27.88$ to $49.36$ mg.dl$^{-1}$.
+* \makebox[31mm][l]{Control group:} $-7.12\pm (2\times 6.48)$, or from $-20.08$ to $5.84$ mg.dl$^{-1}$.
 
-(A *negative* reduction in TG means an *increase* in TG.)
+(A *negative reduction* in TG means an *increase* in TG.)
 The chamomile tea appears to reduce TG, but not the hot water.
 Is the difference between the two treatments due to sampling variation?
 This question is studied further in Sect.\ \@ref(ChamomileTea-Paired-HT).
 
 
 ```{r TGsummaryTable}
-TGsummary <- array(dim = c(3, 7) )
+TGsummary <- array(dim = c(3, 8) )
 
 rownames(TGsummary) <- c("Chamomile tea",
-                          "Control",
+                          "Control (hot water)",
                           "Difference")
 colnames(TGsummary) <- c("n",
                           "BaselineMean",
@@ -691,35 +688,36 @@ colnames(TGsummary) <- c("n",
                           "PostMean",
                           "PostSD",
                           "ChangeMean",
-                          "ChangeSD")
+                          "ChangeSD",
+                          "ChangesSE")
 
 TGsummary[1, ] <- c(32, 
                      203.00, 54.96,
                      164.37, 50.70,
-                     38.62, 30.37)
+                     38.62, 30.37, 30.37/sqrt(32) )
 TGsummary[2, ] <- c(32,
                      178.25, 53.06,
                      185.37, 52.59,
-                     -7.12, 36.66)
+                     -7.12, 36.66, 36.66/sqrt(32) )
 TGsummary[3, ] <- c(NA,
                      24.75, NA,
                      21.00, NA,
-                     45.74, NA)
+                     45.74, NA, NA)
 
 if( knitr::is_latex_output() ) {
   
   knitr::kable(pad(TGsummary,
                    surroundMaths = TRUE,
-                   targetLength = c(2, 6, 5, 6, 5, 5, 5),
-                   digits = c(0, 2, 2, 2, 2, 2, 2)),
+                   targetLength = c(2, 6, 5, 6, 5, 5, 5, 5),
+                   digits = c(0, 2, 2, 2, 2, 2, 2, 2, 2)),
                format = "latex",
                align = "c",
                linesep = "",
-               caption = "The total glucose (TG; in mg.dl$^{-1}$) for two groups: those who drank chamomile tea, and those who drank hot water (the control group)",
+               caption = "The total glucose (TG; in mg.dl$^{-1}$) for two groups: those who drank chamomile tea, and those who drank hot water (the control group). The Reduction columns summarise the reduction in TG for each group.",
                col.names = c("$n$",
                              "Mean", "Std. dev.", 
                              "Mean", "Std. dev.",
-                             "Mean", "Std. dev."),
+                             "Mean", "Std. dev.", "Std. error"),
                row.names = TRUE,
                escape = FALSE,
                booktabs = TRUE) %>%
@@ -729,15 +727,15 @@ if( knitr::is_latex_output() ) {
     add_header_above( c(" " = 2,
                         "Baseline" = 2,
                         "After 8 weeks" = 2,
-                        "Reduction" = 2),
+                        "Reduction" = 3),
                       bold = TRUE)
 }
 
 if( knitr::is_html_output() ) {
   kable( pad(TGsummary,
                    surroundMaths = TRUE,
-                   targetLength = c(2, 6, 5, 6, 5, 5, 5),
-                   digits = c(0, 2, 2, 2, 2, 2, 2)),
+                   targetLength = c(2, 6, 5, 6, 5, 5, 5, 5),
+                   digits = c(0, 2, 2, 2, 2, 2, 2, 2)),
          format = "html",
          align = "c",
          booktabs = TRUE,
@@ -745,16 +743,21 @@ if( knitr::is_html_output() ) {
          col.names =  c("$n$",
                         "Mean", "Std. dev.", 
                         "Mean", "Std. dev.",
-                        "Mean", "Std. dev."),
+                        "Mean", "Std. dev.", "Std. error"),
          caption = "The total glucose (in mg.dl$^{-1}$)") %>% 
-    row_spec(0, bold = TRUE)
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c(" " = 2,
+                        "Baseline" = 2,
+                        "After 8 weeks" = 2,
+                        "Reduction" = 3),
+                      bold = TRUE)
 }
 
 ```
 
 We write:
 
-> The mean reduction in TG for those drinking chamomile tea is $38.62$\ mg.dl^$-1$^ (approx. $95$%\ CI: $27.88$ to $49.36$\ mg.dl^$-1$^), and $-7.12$\ mg.dl^$-1$^ for those drinking water (approx. $95$%\ CI: $-20.08$ and $-5.84$\ mg.dl^$-1$^).
+> The mean reduction in TG for those drinking chamomile tea is $38.62$\ mg.dl^$-1$^ (approx. $95$%\ CI: $27.88$ to $49.36$\ mg.dl^$-1$^), and $-7.12$\ mg.dl^$-1$^ for those drinking hot water (approx. $95$%\ CI: $-20.08$ and $-5.84$\ mg.dl^$-1$^).
 
 The intervals have a $95$% chance of straddling the population mean reduction in TG.
 The sample sizes are larger than $25$, so the results are statistically valid.
@@ -816,15 +819,15 @@ Which (if any) of these scenarios are *paired*?
 ::: {.exercise #MeanDiffWhichPaired2}
 Which (if any) of these scenarios are *paired*?
 
-1. Heart rate was recorded for $36$ people, both before and after exercise, to determine how much the average heart rate increase.
 1. The mean HDL cholesterol concentration is recorded for a group of males and a group of females, and the means compared.
+1. Heart rate was recorded for $36$ people, both before and after exercise, to determine how much the average heart rate increase.
 :::
 
 
 ::: {.exercise #MeanDiffGrowingSquashCI}
 [*Dataset*: `Fruit`]
 @mukherjee2019diversity studied the effect of rainfall on growing Chayote squash (*Sechium edule*).
-They compared the size of the fruit in a year with normal rainfall (2015) compared to a dry year (2014) on $24$ farms:
+They compared the size of the fruit in a year with normal rainfall (2015) compared to a dry year (2014) on the same $24$ farms:
 
 > For Chayote squash grown in Bangalore, what is the mean difference in fruit weight between a normal and dry year?
 
@@ -895,7 +898,7 @@ if( knitr::is_latex_output() ) {
   out <- knitr::kables(list(T1, T2),
                        format = "latex",
                        label = "FruitsData",
-                       caption = "The average weight of fruits (in g) in two different years, from $424$ farms. One observation is missing for Farm\ 20.") %>% 
+                       caption = "The average weight of fruits (in g) in two different years, from $24$ farms. One observation is missing for Farm\ 20. The change is computed as the normal year minus dry year.") %>% 
     kable_styling(font_size = 8)
   out2 <- prepareSideBySideTable(out) 
   out2 
@@ -914,7 +917,7 @@ if( knitr::is_html_output() ) {
                        "Dry", 
                        "Normal",
                        "Change (in g)"),
-         caption = "The weight of fruits (in g) in two different years. One observation is missing for Field\ 20.") %>% 
+         caption = "The weight of fruits (in g) in two different years, from $24$ farms. One observation is missing for Farm\ 20. The change is computed as the normal year minus dry year.") %>% 
     row_spec(0, bold = TRUE)
 }
 ```
@@ -925,11 +928,12 @@ if( knitr::is_html_output() ) {
 3. Create a suitable graph to display the data.
 4. Construct an approximate $95$%\ CI for the mean difference in fruit weight.
 5. Is this CI statistically valid?
+6. What is the advantage of using the same $24$ farms twice each?
 :::
 
 
 
-```{r FruitDescriptivesjamovi, fig.cap="Software output for the fruit data", fig.align="center", out.width='70%'}
+```{r FruitDescriptivesjamovi, fig.cap="Software output for the fruit data", fig.align="center", out.width='80%'}
 knitr::include_graphics("jamovi/Fruit/Fruit-Descriptives.png")
 ```
 
@@ -963,6 +967,7 @@ Patients were given a drug (Captopril) and their systolic blood pressure measure
 1. Write down the *exact* $95$%\ CI using the computer output (Fig.\ \@ref(fig:CaptoriljamoviCI)). 
 1. Is this CI statistically valid?
 1. Why are the two CIs different?
+1. What is the advantage of using the same patients for both the before and after measurements, rather than one group for before measurements and a different group of people for after measurements?
 :::
 
 
@@ -981,7 +986,7 @@ People often struggle to eat the recommended intake of vegetables.
 Teens rated the taste of raw broccoli, and raw broccoli served with a specially-made dip.
 
 Each teen ($n = 100$) had a *pair* of measurements: the taste rating of the broccoli *with* and *without* dip.
-Taste was assessed using a '$100$\ mm visual analog scale', where a *higher* score means a *better* taste.
+Taste was assessed using a 'visual analog scale', where a *higher* score means a *better* taste.
 In summary:
 
 * For raw broccoli, the mean taste rating was $56.0$ (with $s = 26.6$);
@@ -995,6 +1000,7 @@ From this information:
 1. Construct a suitable numerical summary table.
 1. Compute the approximate $95$%\ CI for the mean difference in taste ratings.
 1. Is this CI statistically valid?
+1. What does a positive difference mean?
 :::
 <!-- (working backwards from the $t$-score). Looks like $n=101$. n=100...? -->
 
@@ -1005,9 +1011,11 @@ From this information:
 Men and women were assessed on their 'intention to smoke', both before and after exercise for each subject (using two quantitative questionnaires).
 Smokers ('smoking at least five cigarettes per day') aged\ $18$ to\ $40$ were enrolled for the study.
 For the $23$ women in the study, the mean intention to smoke after exercise *reduced* by $0.66$ (with a standard error of $0.37$).
+(Larger values for 'intention to smoke' mean a greater intent to smoke.)
 
 1. Find an approximate $95$% confidence interval for the population mean reduction in intention to smoke for women after exercising.
 1. Is this CI statistically valid?
+1. What does a positive difference mean?
 :::
 
 ```{r out.width='80%'}
@@ -1020,15 +1028,15 @@ ANCB <- subset(Anorexia,
 
 ::: {.exercise #PairedCIExercisesAnorexia}
 [*Dataset*: `Anorexia`]
-Young girls ($n = 29$) with anorexia received cognitive behavioural treatment (@data:hand:handbook), and their weight before and after treatment were recorded.
+Young girls with anorexia ($n = 29$) received cognitive behavioural treatment (@data:hand:handbook), and their weight before and after treatment were recorded.
 In summary:
 
 * Before the treatment, the mean weight was $82.69$ pounds ($s = 4.845$ pounds);
 * After the treatment, the mean weight was $85.70$ pounds ($s = 8.352$ pounds).
 
-The mean weight loss per girls was $`r round(mean( ANCB$After - ANCB$Before), 2)`$ pounds, with a standard deviation of $`r round(sd( ANCB$After - ANCB$Before), 2)`$ pounds
-Find an approximate $95$%\ CI for the population mean weight loss. 
-Do you think the treatment had any meaningful impact on the mean weight of the girls, based solely on these data?
+The mean weight gain per girls was $`r round(mean( ANCB$After - ANCB$Before), 2)`$ pounds, with a standard deviation of $`r round(sd( ANCB$After - ANCB$Before), 2)`$ pounds
+Find an approximate $95$%\ CI for the population mean weight gain. 
+Do you think the treatment had any meaningful impact on the mean weight gain of the girls, based solely on these data?
 :::
 
 
@@ -1036,11 +1044,11 @@ Do you think the treatment had any meaningful impact on the mean weight of the g
 [*Dataset*: `Stress`]
 The concentration of beta-endorphins in the blood is a sign of stress.
 @hoaglin2011exploring measured the beta-endorphin concentration for $19$ patients about to undergo surgery [@data:hand:handbook].
-Each patient had their beta-endorphin concentrations measured $12$--$14$ hours before surgery, and also $10$ minutes before surgery.
-A numerical summary appears is in Table\ \@ref(tab:StressTable).
+Each patient had their beta-endorphin concentrations (in fmol.mol^$-1$^) measured $12$--$14$ hours before surgery, and also $10$ minutes before surgery.
+A numerical summary appears in Table\ \@ref(tab:StressTable).
 
-1. Use the software output in Fig.\ \@ref(fig:StressDescriptivesjamovi) to construct an *approximate* $95$%\ CI for the *increase* in stress as surgery gets closer.
-2. Use the software output in Fig.\ \@ref(fig:StressDescriptivesjamovi) to write down the *exact* $95$%\ CI for the *increase* in stress as surgery gets closer.
+1. Use the software output in Fig.\ \@ref(fig:StressDescriptivesjamovi) to construct an *approximate* $95$%\ CI for the *increase* in beta-endorphin concentrations as surgery gets closer.
+2. Use the software output in Fig.\ \@ref(fig:StressDescriptivesjamovi) to write down the *exact* $95$%\ CI for the *increase* in beta-endorphin concentrations as surgery gets closer.
 3. Why is there a difference between the two CIs?
 4. Is the CI statistically valid?
 :::
@@ -1051,17 +1059,6 @@ knitr::include_graphics("jamovi/Stress/StressDescriptives.png")
 ```
 
 
-
-
-::: {.exercise #MeanDiffCOVIDCI}
-A study of $n = 213$ Spanish health students [@romero2020physical] measured (among other things) the number of minutes of vigorous physical activity (PA) performed by students *before* and *during* the COVID-19 lockdown (from March to April 2020 in Spain).
-Since the *before* and *during* lockdown were both measured on *each* participant, the data are *paired*.
-The data are summarised in Table\ \@ref(tab:COVIDsummaryTable).
-
-1. Explain what the differences *mean*.
-1. Compute the standard error of the differences.
-1. Compute the approximate $95$%\ CI, and interpret what it means.
-:::
 
 
 
@@ -1078,6 +1075,19 @@ Suppose, in the example of Sect.\ \@ref(ChamomileTea-Paired-CI), the differences
 
 Write down, and interpret the meaning of, the confidence interval for the mean increase in TG for the tea-drinking group.
 :::
+
+
+
+::: {.exercise #MeanDiffCOVIDCI}
+A study of $n = 213$ Spanish health students [@romero2020physical] measured (among other things) the number of minutes of vigorous physical activity (PA) performed by students *before* and *during* the COVID-19 lockdown (from March to April 2020 in Spain).
+Since the *before* and *during* lockdown were both measured on *each* participant, the data are *paired*.
+The data are summarised in Table\ \@ref(tab:COVIDsummaryTable).
+
+1. Explain what the differences *mean*.
+1. Compute the standard error of the differences.
+1. Compute the approximate $95$%\ CI, and interpret what it means.
+:::
+
 
 
 ::: {.exercise #MeanDiffStudentEatingHabits}
@@ -1104,13 +1114,6 @@ The data collected to answer this RQ are shown
 4. Are the CIs statistically valid?
 5. Write down the (exact) $95$% CI for the weight *loss* from Weeks\ $1$ to\ $12$.
 6. Do you think the weight gain would be of practical importance?
-
-
-```{r WeightGainOutput, fig.cap="The weight-gain data: software output", fig.align="center", out.width=c("60%", "100%"), fig.show="hold"}
-knitr::include_graphics("jamovi/WeightGain/WeightGain-Numericals.png")
-knitr::include_graphics("jamovi/WeightGain/WeightGain-PairedT.png")
-```
-
 
 
 ```{r DataWeightChange}
@@ -1189,6 +1192,8 @@ out2
 
 ```
 
+
+
 ```{r}
 if( knitr::is_html_output() ) {
   DT::datatable(StudentWt,
@@ -1203,6 +1208,13 @@ if( knitr::is_html_output() ) {
 }
 ```
 
+
+
+
+```{r WeightGainOutput, fig.cap="The weight-gain data: software output", fig.align="center", out.width=c("60%", "100%"), fig.show="hold"}
+knitr::include_graphics("jamovi/WeightGain/WeightGain-Numericals.png")
+knitr::include_graphics("jamovi/WeightGain/WeightGain-PairedT.png")
+```
 :::
 
 
