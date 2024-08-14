@@ -413,15 +413,28 @@ That is, the two *conditional* probabilities\index{Probability!conditional} woul
 The overall percentage of students eating meals off-campus is $157/183\times 100 = 85.79$% (from Table\ \@ref(tab:MealsDataTable)).
 If there was *no relationship* between the two variables, this percentage would be the same for students living *with* or *not with* their parents.
 In other words, we would *expect* $85.79$% of the $54$ students who *do* live with their parents to eat most meals off-campus (which is $46.33$), and we would *expect* $85.79$% of the $129$ students who *do not* live with their parents to eat most meals off-campus (which is $110.67$).
+This statistical validity condition is explained further in Sect.\ \@ref(ExpectedValues).
 
 *Usually, you do not have to compute these expected values*, as software can be used to produce the *expected* counts (see Fig.\ \@ref(fig:UniMealsTestOutputExpectedOnlyjamovi)).
-This statistical validity condition is explained further in Sect.\ \@ref(ExpectedValues).
+However, a quick check for the statistical validity is to compute
+$$
+  \frac{(\text{Smallest row total})\times(\text{Smallest column total})}{\text{Overall total}};
+$$
+if this value is greater than five, the CIs are statistically valid.
 
 
 ::: {.example #StatisticalValidityMeals name="Statistical validity"}
 For the students-eating data, software can be used to compute the *expected* counts (Fig.\ \@ref(fig:UniMealsTestOutputExpectedOnlyjamovi))\index{Software output!expected counts}
 None are less than five, and so the conclusion is statistically valid.
 (One *observed count* is less than five, but this is not relevant to checking for statistical validity.)
+
+In Table\ \@ref(tab:MealsDataTable), the smallest row total is\ $54$ and the smallest column total is\ $26$.
+Then,
+$$
+  \frac{54\times 26}{183} = 7.67,
+$$
+which is larger than five, so the CIs are statistically valid.
+(The value of $7.67$ is also the smallest expected count in Fig.\ \@ref(fig:UniMealsTestOutputExpectedOnlyjamovi).)
 :::
 
 
@@ -504,7 +517,7 @@ Write:
 > The OR of a non-infected nest, comparing natural nests (odds: $2.90$; $n = 39$) to relocated nests (odds: $1.75$; $n = 22$), is $1.66$ with a $95$%\ CI from $0.537$ to $5.12$.
 
 The smallest *expected* count is $6.49$ (Fig.\ \@ref(fig:TurtleNestsOutputjamovi)), so the CIs are statistically valid.
-
+(Alternatively, since the smallest row and column counts are $22$ and $18$ respectively, we see that $22\times18/61 = 6.49$, which is greater than five.)
 
 ```{r}
 TNsummary <- array( dim = c(3, 3) )
@@ -984,7 +997,7 @@ colnames(ScarsData) <- c("Men",
 ```{r}
   kable(pad( t(ScarsData),
             surroundMaths = TRUE,
-            targetLength = c(2, 3),
+            targetLength = c(3, 3),
             digits = 0),
         format = "latex",
         booktabs = TRUE,
@@ -1035,37 +1048,16 @@ knitr::include_graphics( "jamovi/ScarHeight/ScarHeightORpDiff.png")
 
 
 
-
-
-
-
-
-
-
-
-
-
-::: {.exercise #TwoMeansCISamplingDistReaction}
-Sketch the sampling distribution for the difference between the mean reaction times for students using their phone while driving, and students not using their phone while driving.
+::: {.exercise #OddsRatioCISamplingDistA}
+Sketch the sampling distribution for the difference between the proportions of students eating most meals off-campus, for those living with parents minus those not living with parents.
+What is the sampling distribution for the equivalent odds ratio?
 :::
 
 
-::: {.exercise #TwoMeansCISamplingDistSignage}
-Sketch the sampling distribution for the difference between the mean speeds before and after adding extra signage, in Sect.\ \@ref(SpeedSignageCI).
+::: {.exercise #OddsRatioCISamplingDistB}
+Sketch the sampling distribution for the difference between the proportion of non-infected turtle nests, for natural nests minus relocated nests (in Sect.\ \@ref(TurtleNestsOR)).
+What is the sampling distribution for the equivalent odds ratio?
 :::
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 ::: {.exercise #OddsRatiosCIEarInf}
@@ -1076,9 +1068,11 @@ A study of ear infections in Sydney swimmers [@data:smyth:ozdasl] recorded wheth
 1. Compute an approximate $95$% CI for the difference between the proportions.
 1. Write down the $95$% CI for the difference between the proportions.
 1. Interpret the CI.
+1. Confirm that the odds ratio in the output is correct.
 1. Use the software output (Fig.\ \@ref(fig:EarInfPSSOutputCI)) to write down a $95$%\ CI for the odds ratio.
 1. Interpret the CI.
-1. Is the CI statistically valid (Fig.\ \@ref(fig:EarInfPSSOutputCI))?
+1. Are the CIs statistically valid (Fig.\ \@ref(fig:EarInfPSSOutputCI))?
+1. Construct the summary table for the data.
 :::
 
 
@@ -1087,38 +1081,6 @@ A study of ear infections in Sydney swimmers [@data:smyth:ozdasl] recorded wheth
 knitr::include_graphics( "jamovi/EarInfections/EarInfections-Data.png" )
 knitr::include_graphics( "jamovi/EarInfections/EarInfections-CI-Both.png" )
 ```
-
-
-
-
-::: {.exercise #OddsRatiosCITurbines}
-[*Dataset*: `Turbines`]
-A study of turbine failures [@MyersBook; @NelsonLifeData] ran $73$ turbines for around $1800$\ hrs, and found that seven developed fissures (small cracks).
-They also ran a different set of $42$ turbines for about $3000$\ hrs, and found that nine developed fissures.
-
-1. Construct the two-way table for the data.
-1. Compute the standard error for the difference between the proportions.
-1. Compute an approximate $95$% CI for the difference between the proportions.
-1. Write down the $95$% CI for the difference between the proportions.
-1. Interpret the CI.
-1. Use the software output (Fig.\ \@ref(fig:TurbinesOutputCI)) to write down a $95$%\ CI for the odds ratio.
-1. Interpret the CI.
-1. Is the CI statistically valid (Fig.\ \@ref(fig:TurbinesOutputCI))?
-:::
-
-
-```{r TurbinesOutputCI, fig.show="hold", fig.cap="Software output for the turbine data", fig.align="center", out.width=c("49%", "44%")}
-knitr::include_graphics( "jamovi/Turbines/TurbinesCI-Both-jamovi.png" )
-knitr::include_graphics( "jamovi/Turbines/TurbinesExpected-jamovi.png" )
-```
-
-
-
-<!-- ```{r TurbinesOutputExpected, echo=FALSE, fig.show="hold", fig.cap="jamovi output for the turbine data: expected counts", fig.align="center", out.width="44%"} -->
-<!-- knitr::include_graphics( "jamovi/Turbines/TurbinesExpected-jamovi.png" ) -->
-<!-- ``` -->
-
-
 
 
 
@@ -1135,10 +1097,11 @@ SOI.tab2 <- SOI.tab <- xtabs( ~ (SOIpos) + (Rain>0),
                               data = EmeraldAug)
 
 #jamovi places true then false; R false then true...!
-SOI.tab[1, 1] <- SOI.tab[2, 2]
-SOI.tab[2, 2] <- SOI.tab[1, 1]
-SOI.tab[1, 2] <- SOI.tab[2, 1]
-SOI.tab[2, 1] <- SOI.tab[1, 2]
+# So reorder to make sure jamovi output and what we show are aligned
+SOI.tab[1, 1] <- SOI.tab2[2, 2]
+SOI.tab[2, 2] <- SOI.tab2[1, 1]
+SOI.tab[1, 2] <- SOI.tab2[2, 1]
+SOI.tab[2, 1] <- SOI.tab2[1, 2]
 
 
 colnames(SOI.tab) <- c("Rain", 
@@ -1154,6 +1117,8 @@ rownames(SOI.tab) <- c("Positive SOI",
 ```
 
 
+
+
 ::: {.exercise #OddsRatiosCIAugustRainfall}
 [*Dataset*: `EmeraldAug`]
 The *Southern Oscillation Index* (SOI) is a standardised measure of the air pressure difference between Tahiti and Darwin, and is related to rainfall in some parts of the world [@climate:stone:1996], and especially Queensland [@climate:stone:1992].
@@ -1162,9 +1127,15 @@ The rainfall at Emerald (Queensland) was recorded for Augusts between 1889 to 20
 
 Using the software output in Fig.\ \@ref(fig:EmeraldRainOutputCIjamovi):
 
-1. Find a $95$%\ CI for the difference between the proportion of wet Augusts, comparing those with positive SOI to those with a non-positive SOI.
-1. Find a $95$%\ CI for the OR.
-1. Carefully explain what these CIs means.
+
+1. Compute the standard error for the difference between the proportions of wet August, comparing months with a positive SOI to months with a non-positive SOI.
+1. Compute an approximate $95$% CI for the difference between the proportions.
+1. Write down the $95$% CI for the difference between the proportions.
+1. Interpret the CI.
+1. Confirm that the odds ratio in the output is correct.
+1. Use the software output to write down a $95$%\ CI for the odds ratio.
+1. Interpret the CI.
+1. Are the CIs statistically valid?
 1. Construct the summary table for the data.
 :::
 
@@ -1239,6 +1210,38 @@ knitr::include_graphics( "jamovi/EmeraldRain/EmeraldRainORpDiff.png" )
 
 
 
+
+
+
+::: {.exercise #OddsRatiosCITurbines}
+[*Dataset*: `Turbines`]
+A study of turbine failures [@MyersBook; @NelsonLifeData] ran $73$ turbines for around $1800$\ hrs, and found that seven developed fissures (small cracks).
+They also ran a different set of $42$ turbines for about $3000$\ hrs, and found that nine developed fissures.
+
+1. Construct the two-way table for the data.
+1. Compute the standard error for the difference between the proportions.
+1. Compute an approximate $95$% CI for the difference between the proportions.
+1. Write down the $95$% CI for the difference between the proportions.
+1. Interpret the CI.
+1. Use the software output (Fig.\ \@ref(fig:TurbinesHatsOutputCI), left panel) to write down a $95$%\ CI for the odds ratio.
+1. Interpret the CI.
+1. Are the CIs statistically valid?
+:::
+
+
+```{r TurbinesHatsOutputCI, fig.show="hold", fig.cap="Software output for the turbine data (left) and the hats data (right)", fig.align="center", out.width=c("49%", "49%")}
+knitr::include_graphics( "jamovi/Turbines/TurbinesCI-Both-jamovi.png" )
+knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-CI-Both.png" )
+```
+
+
+
+<!-- ```{r TurbinesOutputExpected, echo=FALSE, fig.show="hold", fig.cap="jamovi output for the turbine data: expected counts", fig.align="center", out.width="44%"} -->
+<!-- knitr::include_graphics( "jamovi/Turbines/TurbinesExpected-jamovi.png" ) -->
+<!-- ``` -->
+
+
+
 ```{r}
 data(HatSunglasses) ### Exercise
 
@@ -1250,19 +1253,24 @@ SG.Table.GenderHat <- xtabs(Count ~ Hat + Gender,
 [*Dataset*: `HatSunglasses`]
 @data:Dexter2019:SunProtection recorded the number of people at the foot of the Goodwill Bridge, Brisbane, who wore hats between $11$:$30$am to $12$:$30$pm.
 Of the $386$ males observed, $79$ wore hats; of the $366$ females observed, $22$ wore hats.
-The software output is shown in Fig.\ \@ref(fig:SunglassesSPSSOutputCI). 
+The software output is shown in Fig.\ \@ref(fig:TurbinesHatsOutputCI) (right panel). 
 
-1. Find a $95$%\ CI for the difference between the proportion *not* wearing hats, comparing females to males.
-1. Find a $95$%\ CI for the OR.
-1. Carefully explain what these CIs means.
-1. Construct the summary table for the data.
+1. Construct the two-way table for the data.
+1. Compute the standard error for the difference between the proportions.
+1. Compute an approximate $95$% CI for the difference between the proportions.
+1. Write down the $95$% CI for the difference between the proportions.
+1. Interpret the CI.
+1. Use the software output to write down a $95$%\ CI for the odds ratio.
+1. Interpret the CI.
+1. Are the CIs statistically valid?
 :::
 
 
-```{r SunglassesSPSSOutputCI, fig.show="hold", fig.cap="Software output for the hats data", fig.align="center", out.width=c("40%", "56%"), fig.show='hold'}
-knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-Data.png" )
-knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-CI-Both.png" )
-```
+
+<!-- ```{r SunglassesSPSSOutputCI, fig.show="hold", fig.cap="Software output for the hats data", fig.align="center", out.width=c("40%", "56%"), fig.show='hold'} -->
+<!-- knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-Data.png" ) -->
+<!-- knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-CI-Both.png" ) -->
+<!-- ``` -->
 
 
 
@@ -1273,11 +1281,11 @@ One RQ of the study was:
 
 > What is the odds ratio of keeping a pet bird, comparing people *with* lung cancer (cases) compared to people *without* lung cancer (controls)?
 
-The data, compiled in a $2\times2$ *contingency table*, are given in Table \@ref(tab:BirdsData).
+The data, compiled in a $2\times2$ *contingency table*, are given in Table\ \@ref(tab:BirdsData).
 
 1. Construct a numerical summary table.
 1. Sketch a graphical summary.
-1. Use the software output to find a $95$%\ CI, making sure to describe the odds ratio carefully.
+1. Use the software output (Fig.\ \@ref(fig:PetBirdsB12CIjamovi), left panel) to find a $95$%\ CI, making sure to describe the odds ratio carefully.
 1. Use the software output to find a $95$%\ CI for the difference between the proportions.
 1. Are the CIs statistically valid?
 :::
@@ -1325,8 +1333,10 @@ if( knitr::is_html_output() ) {
 
 
 
-```{r PetBirdsCIjamovi, fig.show="hold", fig.cap="Software output for the pet-birds data", fig.align="center", out.width="50%"}
+```{r PetBirdsB12CIjamovi, fig.show="hold", fig.cap="Left: Software output for the pet-birds data. Right: Software output for the B12 data.", fig.align="center", out.width=c("49%", "49%")}
 knitr::include_graphics( "jamovi/PetBirds/PetsCI-Both.png")
+knitr::include_graphics( "jamovi/B12/B12CI-Both.png")
+
 ```
 
 
@@ -1343,7 +1353,7 @@ One RQ was:
 
 > What is the odds ratio of these women being B12 deficient, comparing vegetarians to non-vegetarians?
 
-The data appear in Table\ \@ref(tab:B12DataCI), and the software output in Fig.\ \@ref(fig:B12SPSSOutputCIjamovi).
+The data appear in Table\ \@ref(tab:B12DataCI), and the software output in Fig.\ \@ref(fig:PetBirdsB12CIjamovi) (right panel).
 
 1. Construct a numerical summary table.
 1. Sketch a graphical summary.
@@ -1391,11 +1401,11 @@ if( knitr::is_html_output() ) {
 ```
 
 
-```{r B12SPSSOutputCIjamovi, fig.show="hold", fig.cap="Software output for the B12 data. Left: the OR, difference between proportions, and confidence interval. Right: expected counts", fig.align="center", out.width=c("48%","51%"), fig.show='hold'}
-knitr::include_graphics( "jamovi/B12/B12CI-Both.png")
-knitr::include_graphics( "jamovi/B12/B12-Expected.png")
-#knitr::include_graphics( "SPSS/B12/B12OR.png")
-```
+<!-- ```{r B12SPSSOutputCIjamovi, fig.show="hold", fig.cap="Software output for the B12 data. Left: the OR, difference between proportions, and confidence interval. Right: expected counts", fig.align="center", out.width=c("48%","51%"), fig.show='hold'} -->
+<!-- knitr::include_graphics( "jamovi/B12/B12CI-Both.png") -->
+<!-- knitr::include_graphics( "jamovi/B12/B12-Expected.png") -->
+<!-- #knitr::include_graphics( "SPSS/B12/B12OR.png") -->
+<!-- ``` -->
 `r if( knitr::is_latex_output() ) "\\captionsetup{font=normalsize}"`
 
 
