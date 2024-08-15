@@ -83,7 +83,7 @@
             border = "grey",
             col = NA)
    
-   
+   # Arrows
    straightarrow(from = pos[1, ], 
                  to = pos[2, ], 
                  arr.pos = 0.53, # Then cover with box
@@ -162,7 +162,7 @@
              col = grey(0)) # CHECKMARK
    textrect( pos[3, ],
              radx = 0.08,
-             rady = 0.09,
+             rady = 0.1,
              shadow.size = 0,
              lcol = SampleColour,
              box.col = SampleColour,
