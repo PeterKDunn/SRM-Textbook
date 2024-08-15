@@ -129,7 +129,7 @@
                  lcol = ifelse( Decision == "Reject", 
                                 "grey", 
                                 "black"),
-                 lty = 1)
+                 lty = 2)
    straightarrow(from = pos[5, ],  
                  to = pos[7, ], ### CONTRADICTS
                  lcol = ifelse( Decision == "Accept", 
