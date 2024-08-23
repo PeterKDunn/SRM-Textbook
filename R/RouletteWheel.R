@@ -21,7 +21,7 @@ plotWheel <- function(wheelSize = c(10, 4), numberColours){
                      22, 18, 29, 7, 28, 12, 35, 3, 26)
   
   # Colours on the segments
-  par( mar = c(0.25, 0.25, 0.25, 0.25))
+  par( mar = c(0.25, 0.25, 1.25, 0.25))
   plot( x = cos( deg2rad(seq(0, 360, 
                              by = 1))) * DD,
         y = sin( deg2rad(seq(0, 360, 
