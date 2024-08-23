@@ -22,7 +22,7 @@
 </div>
 
 
-@lambie2021microbial compared the percentage nitrogen (%N) in soils from irrigated and non-irrigated intensively-grazed pastures.
+@lambie2021microbial compared the percentage nitrogen (%N) in soils from intensively-grazed irrigated and non-irrigated pastures.
 The researchers *paired* similar irrigated and non-irrigated sites (p. 338):
 
 > The irrigated and non-irrigated pairs within each site were within $100$\ m of each other and were on the same soil, landform and usually the same farm with the same farm management on both treatments.
@@ -38,7 +38,7 @@ The data are shown in
 } else {
     'the table below.'
 }`
-The parameter is $\mu_d$, the population mean *reduction* in %N when sites are irrigated, compared to non-irrigated.
+The parameter is $\mu_d$, the population mean *reduction* in %N from non-irrigated to irrigated sites; that is, non-irrigated %N minus irrigated %N.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
@@ -142,8 +142,8 @@ rownames(SoilSummary) <- c("Irrigated sites",
                            "Non-irrigated sites",
                            "Change")
 colnames(SoilSummary) <- c("Mean",
-                           "Std. dev.",
-                           "Std. error",
+                           "Standard deviation",
+                           "Standard error",
                            "Sample size")
 
 SoilSummary[, 1] <- colMeans(SoilN)
@@ -165,13 +165,13 @@ if( knitr::is_latex_output() ) {
   
   knitr::kable(pad(SoilSummary,
                    surroundMaths = TRUE,
-                   targetLength = c(5, 6, 6, 0),
-                   digits = c(4, 4, 4, 0)),
+                   targetLength = c(4, 6, 6, 0),
+                   digits = c(3, 4, 4, 0)),
                format = "latex",
                align = "c",
                linesep = "",
                caption = "The percentage total soil N in irrigated and non-irrigated sites",
-               col.names = c("Mean", "Std. dev.", "Std. error", "Sample size"),
+               col.names = c("Mean", "Standard deviation", "Standard error", "Sample size"),
                row.names = TRUE,
                escape = FALSE,
                booktabs = TRUE) %>%
@@ -184,13 +184,13 @@ if( knitr::is_latex_output() ) {
 if( knitr::is_html_output() ) {
   kable( pad(SoilSummary,
                    surroundMaths = TRUE,
-                   targetLength = c(5, 6, 6, 0),
-                   digits = c(4, 4, 4, 0)),
+                   targetLength = c(4, 6, 6, 0),
+                   digits = c(3, 4, 4, 0)),
          format = "html",
          align = "c",
          booktabs = TRUE,
          longtable = FALSE,
-         col.names = c("Mean", "Std. dev.", "Std. error", "Sample size"),
+         col.names = c("Mean", "Standard deviation", "Standard error", "Sample size"),
          caption = "The percentage total soil N in irrigated and non-irrigated sites") %>% 
     row_spec(0, bold = TRUE)
 }
@@ -199,7 +199,7 @@ if( knitr::is_html_output() ) {
 
 
 
-```{r, SoilNGraphs, fig.align="center", fig.cap="The reduction in \\%N when sites are irrigated, compared to non-irrigated. Left: A histogram of the differences (boundary values in the lower box). Right: a case-profile plot (solid lines, solid dots for lower percentage N in irrigated sites).", fig.show="hold", out.width='100%', fig.width = 9.25, fig.height = 3.5}
+```{r, SoilNGraphs, fig.align="center", fig.cap="The reduction in \\%N when sites are non-irrigated, compared to irrigated (i.e., non-irrigated minus irrigated). Left: a histogram of the differences (boundary values in the lower box). Right: a case-profile plot (solid lines, solid dots for lower percentage N in irrigated sites).", fig.show="hold", out.width='100%', fig.width = 9.25, fig.height = 3.5}
 par( mfrow = c(1, 2))
 
 hist(SoilN$Change,
@@ -242,9 +242,9 @@ box()
 ```
 
 
-```{r Nitrogenjamovi, fig.cap="jamovi output for the nitrogen data", fig.align="center", out.width=c("60%","100%"), fig.show='hold'}
-knitr::include_graphics("jamovi/SoilCN/SoilCN-Summary.png")
+```{r Nitrogenjamovi, fig.cap="Software output for the nitrogen data. In the top table, the difference is implied as non-irrigated minus irrigated.", fig.align="center", out.width=c("100%","60%"), fig.show='hold'}
 knitr::include_graphics("jamovi/SoilCN/SoilCN-Testing.png")
+knitr::include_graphics("jamovi/SoilCN/SoilCN-Summary.png")
 ```
 
 
@@ -288,7 +288,7 @@ The value of $\bar{d}$ has a sampling distribution.
 The *sampling distribution of the sample mean difference* is (when certain conditions are met; Sect.\ \@ref(ValiditySampleMeanDiffTest)) described by
 
 * an approximate normal distribution,
-* centred around the sampling mean difference, whose value is $\mu_d$ (from $H_0$),
+* centred around the sampling mean, whose value is $\mu_d$ (from $H_0$),
 * with a standard deviation (called the *standard error* of $\bar{d}$) of  
 \begin{equation}
    \text{s.e.}(\bar{d}) = \frac{s_d}{\sqrt{n}},
@@ -300,8 +300,9 @@ where $n$ is the number of differences, and $s_d$ is the standard deviation of t
 
 The value of the *standard error of the differences* here is
 $$
-  \text{s.e.}(\bar{d}) = \frac{s_d}{\sqrt{n}} = \frac{0.0618}{\sqrt{28}} = 0.0117.
+  \text{s.e.}(\bar{d}) = \frac{s_d}{\sqrt{n}} = \frac{0.0618}{\sqrt{28}} = 0.0117,
 $$
+as shown in Fig.\ \@ref(fig:Nitrogenjamovi) (top table).
 This sampling distribution of $\bar{d}$ is shown in Fig.\ \@ref(fig:PercentageNSamplingDist).
 
 
@@ -316,7 +317,8 @@ se <- stdd/sqrt(n)
 par( mar = c(4, 0.5, 0.5, 0.5) )
 out <- plotNormal(0,
                   se,
-                  xlab = "Sample mean reduction in %N", 
+                  las = 2,
+                  xlab = "Sample mean\nreduction in %N", 
                   cex.axis = 0.95,
                   ylim = c(0, 55),
                   showXlabels = c( 	
@@ -338,7 +340,7 @@ arrows(x0 = 0,
 text(x = 0,
      y = 45,
      pos = 3,
-     labels = expression(Sampling~mean~difference))
+     labels = expression(Sampling~mean))
 
 
 
@@ -365,17 +367,18 @@ arrows(x0 = mn,
 text(x = mn,
      y = 0.7 * max(out$y),
      pos = 3,
-     labels = expression(bar(italic(d)) == 0.0282) )
+     labels = expression( italic(z) == 2.41) )
 
 points(x = mn,
        y = 0,
        pch = 19,
        cex = 0.6)
-mtext(text = expression( italic(z) == 2.41),
+mtext(text =  expression(bar(italic(d)) == 0.0282),
       side = 1,
       at = mn,
       cex = 0.8,
-      line = 0
+      line = 0,
+      padj = 0.25
       )
 ```
 
@@ -387,13 +390,13 @@ $$
 	= \frac{0.0282 - 0}{0.0117} = 2.41,
 $$
 following the ideas in Eq.\ \@ref(eq:tscore).
-Software also displays the $t$-score (Fig.\ \@ref(fig:Nitrogenjamovi)).
+Software displays the same $t$-score (Fig.\ \@ref(fig:Nitrogenjamovi), top table).
 
 
 A $P$-value determines if the sample data are consistent with the assumption (Table\ \@ref(tab:PvaluesInterpretation)).
-Since $t = 2.41$, and since $t$-scores are like $z$-scores, the *one*-tailed $P$-value is smaller $0.025$ (based on the $68$--$95$--$99.7$ rule).\index{68@$68$--$95$--$99.7$ rule}
+Since $t = 2.41$, and since $t$-scores are like $z$-scores, the *one*-tailed $P$-value is smaller than $0.025$ (based on the $68$--$95$--$99.7$ rule).\index{68@$68$--$95$--$99.7$ rule}
 Software (Fig.\ \@ref(fig:Nitrogenjamovi)) reports that the *two*-tailed $P$-value is $0.02279$.
-Hence, the *one*-tailed $P$-value is $0.02279/2 = 0.0114$.
+Hence, the *one*-tailed $P$-value is $0.02279/2 = 0.0114$ (indeed smaller than $0.025$).
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -410,6 +413,7 @@ At the left of the output (Fig.\ \@ref(fig:Nitrogenjamovi)), the order implies t
 ## Writing conclusions
 
 The one-tailed $P$-value is $0.0114$, suggesting moderate evidence (Table\ \@ref(tab:PvaluesInterpretation)) to support $H_1$.
+(That is, there is compelling evidence to support the alternative hypothesis.)
 A conclusion requires an *answer to the RQ*, a summary of the *evidence* leading to that conclusion, and some *summary statistics*:
 
 > Moderate evidence exists in the sample (paired $t = 2.41$; one-tailed $P = 0.0114$) of a mean reduction in percentage soil N  from non-irrigated to irrigated sites (mean reduction: $0.0282$%; $n = 28$; $95$% CI from $0.0042$% to $0.0522$%).
@@ -433,7 +437,7 @@ For a hypothesis test for the mean of paired data, these conditions are the same
 Statistical validity can be assessed using these criteria:
 
 * When $n \ge 25$, the test is statistically valid.
-  (If the distribution of the data is highly skewed, the sample size may need to be larger.)
+  (If the distribution of the differences is highly skewed, the sample size may need to be larger.)
 * When $n < 25$, the test is statistically valid only if the data come from a *population* of differences with a normal distribution.
 
 The sample size of $25$ is a rough figure; some books give other values (such as $30$).
@@ -455,6 +459,7 @@ For the %N data, the sample size is $n = 28$, so the test is statistically valid
 
 ## Example: invasive plants {#PairedInvasivePlantsHT}
 
+[*Dataset*: `Flowering`]
 (This study was seen in Sect.\ \@ref(PairedInvasivePlantsCI).)
 Skypilot is a alpine wildflower native to the Colorado Rocky Mountains (USA).
 In recent years, a willow shrub (*Salix*) has been encroaching on skypilot territory and, because willow often flowers early, @kettenbach2017shrub studied whether the willow may 'negatively affect pollination regimes of resident alpine wildflower species' (p.\ 6\ 965).
@@ -493,7 +498,7 @@ The data are summarised graphically in Fig.\ \@ref(fig:FloweringPlots).
 The numerical summary (Table\ \@ref(tab:FloweringSummaryHT)) and software output (Fig.\ \@ref(fig:FloweringjamoviHT)) are repeated here.
 
 
-```{r FloweringjamoviHT, fig.cap="jamovi output for the flowering-day data", fig.align="center", out.width=c("100%"), fig.show='hold'}
+```{r FloweringjamoviHT, fig.cap="Software output for the flowering-day data", fig.align="center", out.width=c("100%"), fig.show='hold'}
 knitr::include_graphics("jamovi/Flowering/FloweringAll.png")
 ```
 
@@ -510,8 +515,8 @@ rownames(FloweringSummary) <- c("Willow (encroaching)",
                                 "Skypilot (native)",
                                 "Differences")
 colnames(FloweringSummary) <- c("Mean",
-                                "Std. dev.",
-                                "Std. error",
+                                "Standard deviation",
+                                "Standard error",
                                 "Sample size")
 
 FloweringSummary[, 1] <- colMeans(FloweringTab,
@@ -542,7 +547,7 @@ if( knitr::is_latex_output() ) {
                align = "c",
                linesep = "",
                caption = "The day of first flowering for encroaching willow and native skypilot",
-               col.names = c("Mean", "Std. dev.", "Std. error", "Sample size"),
+               col.names = c("Mean", "Standard deviation", "Standard error", "Sample size"),
                row.names = TRUE,
                escape = FALSE,
                booktabs = TRUE) %>%
@@ -561,7 +566,7 @@ if( knitr::is_html_output() ) {
          align = "c",
          booktabs = TRUE,
          longtable = FALSE,
-         col.names =  c("Mean", "Std. dev.", "Std. error", "Sample size"),
+         col.names =  c("Mean", "Standard deviation", "Standard error", "Sample size"),
          caption = "The day of first flowering for encroaching willow and native skypilot") %>% 
     row_spec(0, bold = TRUE)
 }
@@ -587,10 +592,7 @@ The test is statistically valid since $n = 25$.
 :::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 We *do not* say whether the evidence supports the null hypothesis.
 We assume the null hypothesis is true, so we state how strong the evidence is to support the alternative hypothesis.
-The current sample presents no evidence to contradict the assumption, but future evidence may emerge.
-That is:
-
-> No evidence of a difference *does not* mean evidence of no difference.
+The current sample presents no evidence to contradict the assumption (but future evidence may emerge).
 :::
 
 
@@ -615,11 +617,11 @@ The following descriptive RQs can be asked:
 > * For patients with T2DM, is there a mean *change* in TG after eight weeks drinking *chamomile tea*?
 > * For patients with T2DM, is there a mean *change* in TG after eight weeks drinking *hot water*?
 
-The hypotheses are (where $\mu$ represent the mean change in TG after eight weeks):
+The hypotheses are (where $\mu$ represent the mean change in TG (in mg.dl^$-1$^) after eight weeks):
 
 \begin{align*}
   \text{Chamomile tea group}: \qquad & \text{$H_0$: } \mu_d = 0\quad \text{vs}\quad\text{$H_1$: } \mu_d \ne 0;\\
-  \text{Hot water group:}.    \qquad & \text{$H_0$: } \mu_d = 0\quad \text{vs}\quad\text{$H_1$: } \mu_d \ne 0.
+  \text{Hot water group:}     \qquad & \text{$H_0$: } \mu_d = 0\quad \text{vs}\quad\text{$H_1$: } \mu_d \ne 0.
 \end{align*}
 
 For the two groups, the test statistics are (using the standard errors in Sect.\ \@ref(ChamomileTea-Paired-CI)):
@@ -665,6 +667,7 @@ $$
 $$
 where $\mu_d$ is the hypothesised value given in the null hypothesis.
 * The $t$-value is like a $z$-score, and so an approximate *$P$-value* can be estimated using the $68$--$95$--$99.7$ rule, or found using software.
+* Make a decision, and write a conclusion.
 
 
 
@@ -700,7 +703,7 @@ The mean *improvement* in joint pain after $13$ weeks was $1.27$ (with a standar
 `r if( knitr::is_html_output() ) { torf( answer=TRUE )}`
 1. What is the value of the test statistic (to two decimal places)?
 `r if( knitr::is_html_output() ) { fitb( answer = 2.23, num = TRUE, tol = 0.01 )}`
-1. What is the value of the two-tailed $P$-value?
+1. What is the approximate value of the two-tailed $P$-value?
 `r if( knitr::is_html_output() ) {mcq( 
 	c(answer = "Very small",
 		"Small",
@@ -754,10 +757,11 @@ Since the same farms are used in both years, the data are *paired*
 }`
 Data is missing for Farm\ 20 in the dry year (2014), so there are $n = 23$ differences.
 
-1. Construct a suitable graph for the differences.
+1. Construct a suitable graph to display the differences.
 1. What is the parameter?
    Carefully describe what it means.
 1. Write down the hypotheses.
+1. Sketch the sampling distribution.
 1. Compute the $t$-score.
 1. Determine the $P$-value.
 1. Write a conclusion.
@@ -770,14 +774,15 @@ Data is missing for Farm\ 20 in the dry year (2014), so there are $n = 23$ diffe
 In a study of hypertension [@data:hand:handbook; @data:macgregor:essential], patients were given a drug (Captopril) and their systolic blood pressure measured (in mm Hg) immediately before and two hours after being given the drug (data with Exercise\ \@ref(exr:PairedCIExercisesCaptopril)).
 
 The aim is to see if there is evidence of a *reduction* in blood pressure after taking Captopril.
-Using these data (Table\ \@ref(tab:CICaptoprilData)) and the software output (Fig.\ \@ref(fig:CaptoriljamoviHT)):
+Use the data (Table\ \@ref(tab:CICaptoprilData)) and the software output (Fig.\ \@ref(fig:CaptoriljamoviHT)) to answer these questions.
 
 1. Explain why it is probably more sensible to compute differences as the *Before* minus the *After* measurements. 
    What do the differences *mean* when computed this way?
 1. What is the parameter?
    Carefully describe what it means.
-1. Construct a suitable graph for the differences.
+1. Construct a suitable graph to display the differences.
 1. Write down the hypotheses.
+1. Sketch the sampling distribution.
 1. Write down the $t$-score.
 1. Write down the $P$-value.
 1. Write a conclusion.
@@ -786,7 +791,7 @@ Using these data (Table\ \@ref(tab:CICaptoprilData)) and the software output (Fi
 
     
 
-```{r CaptoriljamoviHT, fig.cap="jamovi output for the Captopril data", fig.align="center", out.width="80%", fig.show="hold"}
+```{r CaptoriljamoviHT, fig.cap="Software output for the Captopril data", fig.align="center", out.width="80%", fig.show="hold"}
 knitr::include_graphics("jamovi/CaptoprilAll/CaptoprilAll-PairedTOutput.png") 
 ```
 
@@ -809,7 +814,7 @@ Because the data are paired, the *differences* are the best way to describe the 
 The mean difference in the ratings was $5.2$, with standard error of $3.06$. 
 <!-- (working backwards from the $t$-score). Looks like $n = 101$. -->
 
-Perform a hypothesis test to see if the use of dip increases the mean taste rating.
+Perform a hypothesis test to see if the use of dip *increases* the mean taste rating.
 :::
 
 
@@ -820,14 +825,14 @@ Men and women were assessed on their 'intention to smoke', both before and after
 Smokers ('smoking at least five cigarettes per day') aged\ $18$ to\ $40$ were enrolled for the study.
 For the $23$ women in the study, the mean intention to smoke after exercise *reduced* by $0.66$ (with a standard error of $0.37$).
 
-Perform a hypothesis test to determine if there is evidence of a population mean reduction in intention-to-smoke for women after exercising.
+Perform a hypothesis test to determine if there is evidence of a population mean *reduction* in intention-to-smoke for women after exercising.
 :::
 
 
 ::: {.exercise #TestPairedMeansFerritin}
 In a study [@cressie1984use] conducted at the Adelaide Children's Hospital (p. 107; emphasis added):
 
-> ...a group of beta thalassemia patients [...] were treated by a continuous infusion of desferrioxamine, in order to *reduce* their ferritin content...
+> ... a group of beta thalassemia patients [...] were treated by a continuous infusion of desferrioxamine, in order to *reduce* their ferritin content...
 
 
 Using the data 
@@ -936,8 +941,8 @@ if( knitr::is_latex_output() ) {
                escape = FALSE,
                caption = "The surgery-stress data",
                col.names = c("Sample mean",
-                             "Std. dev.",
-                             "Std. error",
+                             "Standard deviation",
+                             "Standard error",
                              "$n$"),
                row.names = TRUE,
                digits = 2) %>%
