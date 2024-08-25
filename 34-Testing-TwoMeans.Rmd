@@ -37,7 +37,7 @@ SNF <- subset(Snakes,
               Sex == "female")
 
 SNF$Crayfish <- ordered(SNF$Crayfish, 
-                        levels = c("Y", "N"),
+                        levels = c("Cfish", "NoCfish"),
                         labels = c("Yes",
                                    "No"))
 
@@ -108,7 +108,7 @@ if( knitr::is_html_output() ) {
   DT::datatable( SNF,
                  colnames = c("Crayfish region", 
                               "Not-crayfish region"),
-         caption = "Snout--vent length (in cm) for female Mexican garter snakes living in crayfish ($n = 41$) and non-crayfish ($n = 35$) regions",
+         caption = "Snout--vent length (in cm) for female Mexican garter snakes living in crayfish ($n = 35$) and non-crayfish ($n = 41$) regions",
          fillContainer = FALSE, # Make more room, so we don't just have ten values
                  #filter="top", 
                  #selection="multiple", 
@@ -119,17 +119,16 @@ if( knitr::is_html_output() ) {
 ```
 
 
-
 A numerical summary *must* summarise the difference between the means, as the RQ is about this difference.
-Each group should be summarised too.
+Both groups should be summarised too.
 The information can be found using software (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)), and compiled into a table (Table\ \@ref(tab:SnakesNumericalTest)).
 The appropriate summary for graphically summarising the *data* is (for example) a boxplot (Fig.\ \@ref(fig:SnakesErrorbar), left panel).
-An error bar chart (Fig.\ \@ref(fig:SnakesErrorbar), right panel), which compares the *sample means*, should also be produced.
+An error bar chart (Fig.\ \@ref(fig:ErrorBarCharts)), which compares the *sample means*, should also be produced (Fig.\ \@ref(fig:SnakesErrorbar), right panel).
 
 
-```{r SnakesSummaryTestjamovi, fig.cap="Software output for the snakes data", fig.align="center", out.width=c("60%","100%"), fig.show='hold'}
-knitr::include_graphics("jamovi/Snakes/Snakes-Summary.png")
+```{r SnakesSummaryTestjamovi, fig.cap="Software output for the garter-snakes data", fig.align="center", out.width=c("100%","65%"), fig.show='hold'}
 knitr::include_graphics("jamovi/Snakes/Snakes-Test.png")
+knitr::include_graphics("jamovi/Snakes/Snakes-Summary.png")
 ```
 
 
@@ -172,7 +171,7 @@ if( knitr::is_latex_output() ) {
                       "Standard deviation", 
                       "Sample size", 
                       "Standard error"),
-        caption = "Numerical summaries of SVL (in cm) for female snakes in two regions") %>%
+        caption = "Numerical summaries of SVL (in cm) for female garter snakes in two regions") %>%
     row_spec(0, bold = TRUE) %>%
     row_spec(3, italic = TRUE) %>%
     row_spec(2, hline_after = TRUE) %>%
@@ -287,9 +286,9 @@ if( knitr::is_latex_output() ) {
          align = c("c", "c"),
          longtable = FALSE,
          escape = FALSE,
-         linesep = c("\\addlinespace", "", "", "", ""),
+         linesep = c("\\addlinespace", "", "\\addlinespace", "", ""),
          col.names = colnames(Diff2Notation),
-         caption = "Notation used to distinguish between the two independent groups") %>%
+         caption = "Notation used to distinguish the two independent groups") %>%
     row_spec(0, bold = TRUE) %>%
     kable_styling(font_size = 8)
 }
@@ -339,7 +338,7 @@ The *meaning* of the conclusions will be the same whichever direction is used.
 ## Tests for comparing two means: $t$-test
 
 As always, the null hypothesis is the default 'no difference, no change, no relationship' position; any difference between the parameter and statistic is due to sampling variation (Sect.\ \@ref(AboutHypotheses)).
-Hence, the null hypothesis is 'no difference' between the population means SVL of the two groups:
+Hence, the null hypothesis is 'no difference' between the population mean SVL of the two groups:
 
 * $H_0$: $\mu_N - \mu_C = 0$ (equivalent to $\mu_N = \mu_C$).
 
@@ -347,32 +346,32 @@ From the RQ, the alternative hypothesis is *two*-tailed:
 
 * $H_1$: $\mu_N - \mu_C\ne 0$ (equivalent to $\mu_N \ne \mu_C$).
 
-This hypothesis proposes that any difference between the *sample* means is because a difference really exists between the *population means*. 
+The alternative hypothesis proposes that any difference between the *sample* means is because a difference really exists between the *population means*. 
 
-The *sample* mean difference between the SVL in the two groups depends on which one of the many possible samples is randomly obtained, *even if* the difference between the means in the population is zero.
+The sample mean difference between the SVL in the two groups depends on which one of the many possible samples is randomly obtained, *even if* the difference between the means in the population is zero.
 The difference between the sample means is $8.394$\ cm, but this difference will vary from sample to sample; that is, *sampling variation* exists.
 
 
 ::: {.definition #DEFSamplingDistributionDiffMeansHT name="Sampling distribution for the difference between two sample means"}
-The *sampling distribution of the difference between two sample means* $\bar{x}_A$ and $\bar{x}_B$ is, when the appropriate conditions are met (Sect.\ \@ref(ValidityTwoMeansHT)), described by:\index{Sampling distribution!difference between two means}
+The *sampling distribution of the difference between two sample means* $\bar{x}_A$ and $\bar{x}_B$ is (when the appropriate conditions are met; Sect.\ \@ref(ValidityTwoMeansHT)), described by:\index{Sampling distribution!difference between two means}
 
 * an approximate normal distribution,
 * centred around the sampling mean whose value is ${\mu_{A}} - {\mu_{B}} = 0$, the difference between the *population* means (from $H_0$),
 * with a standard deviation of $\displaystyle\text{s.e.}(\bar{x}_A - \bar{x}_B)$.
 
-The standard error for the difference between the means is found using
+The value of the standard error for the difference between the means is
 $$
   \text{s.e.}(\bar{x}_A - \bar{x}_B) = \sqrt{ \text{s.e.}(\bar{x}_A)^2 + \text{s.e.}(\bar{x}_B)^2},
 $$
-though this value will often be *given* (e.g., on computer output).
+though this value will often be given (e.g., on computer output).
 :::
 
 
 For the SVL data, the sampling variation of $\bar{x}_N - \bar{x}_C$ can be described as having:
 
 * an approximate normal distribution,
-* centred around a sampling mean whose value is ${\mu_{N}} - {\mu_{C}} = 0$, the difference between the means (from $H_0$),
-* with a standard deviation, called the *standard error for the difference between the means*, of
+* centred around the sampling mean whose value is ${\mu_{N}} - {\mu_{C}} = 0$, the difference between the means (from $H_0$),
+* with a standard deviation, called the *standard error of the difference between the means*, of
 $$
    \text{s.e.}(\bar{x}_N - \bar{x}_C) = \sqrt{1.2160^2 + 2.1117^2 } = 2.4368.
 $$
@@ -382,17 +381,16 @@ $$
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-Some software (e.g., jamovi) gives results from *two* similar hypothesis tests.
-In this book, we will always use the second row of information: the 'Welch's $t$'\index{Welch's test} row in the output.
+Most software gives *two* confidence intervals: one assuming the standard deviations in the two groups are the same, and another *not* assuming the standard deviations in the two groups are the same.
 
-The *Welch's test*\index{Welch's test} row of information *does not* assume that the population standard deviation are equal.
-The first row of information *does* assume the population standard deviation are equal.
-In many cases, the information in both rows are similar anyway.
+We will use the information that does *not* assume the standard deviations in the two groups are the same.
+In the software output in Fig.\ \@ref(fig:SnakesSummaryTestjamovi), this is the second row of the bottom table (labelled 'Welch's $t$').
+(The information in both rows are often similar anyway.)
 :::
 
 
 The observed difference between sample means, relative to what was expected, is found by computing the test statistic; in this case, a $t$-score.
-The jamovi output (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)) gives the $t$-score, but the $t$-score can also be computed using the information in Table\ \@ref(tab:SnakesNumericalTest): \index{Hypothesis testing!difference between two means}\index{Test statistic!t@$t$-score} 
+The software output (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)) gives the $t$-score, but the $t$-score can also be computed using the information in Table\ \@ref(tab:SnakesNumericalTest): \index{Hypothesis testing!difference between two means}\index{Test statistic!t@$t$-score} 
 \begin{align*}
    t
   &= 
@@ -407,10 +405,10 @@ as in the software output.
 
 
 A $P$-value determines if the sample statistic is consistent with the assumption (i.e., $H_0$).
-Since the $t$-score is large, the $P$-value will be small using the $68$--$95$--$99.7$ rule (less than $0.003$).
+Since the $t$-score is large, the $P$-value will be small using the $68$--$95$--$99.7$ rule (and less than $0.003$).
 This is confirmed by the software (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)): the two-tailed $P$-value is $0.0011$.
 
-A small $P$-value suggests the observations are *inconsistent* with the assumption of no difference (Table\ \@ref(tab:PvaluesInterpretation)), and the difference between the sample means could *not* be reasonably explained by sampling variation.
+A small $P$-value suggests the observations are *inconsistent* with the assumption of no difference (Table\ \@ref(tab:PvaluesInterpretation)), and the difference between the sample means could *not* be reasonably explained by sampling variation, if $\mu_N - \mu_C = 0$.
 
 
 `r if (knitr::is_latex_output()) '<!--'`
@@ -449,7 +447,7 @@ If the statistical validity conditions are not met, other similar options includ
 
 
 ::: {.example #StatisticalValidityReactionHT name="Statistical validity"}
-For the snake data, the samples sizes exceed $25$ ($41$ and $35$), so the test is statistically valid.
+For the garter-snake data, the samples sizes exceed $25$ ($41$ and $35$), so the test is statistically valid.
 The data in each group do not need be normally distributed, since both sample sizes are larger than $25$, and the data are not severely skewed (Fig.\ \@ref(fig:SnakesErrorbar), left panel).
 :::
 
@@ -475,14 +473,18 @@ $$
 $$
 The alternative hypothesis is that the three means are not all equal. 
 This hypothesis encompasses many possibilities: for example, that the three means are *all* different from each other, or that the first is different than the other two (which are the same).
+Because the alternative hypothesis encompasses many possibilities, it is difficult to write using symbols, so we write:
+$$
+  \text{$H_1$:}\ \text{Not all means are equal.}
+$$
 
 Performing an ANOVA using software (Fig.\ \@ref(fig:BMIjamovi)) gives $P = 0.00007$.
 (The *test statistic* here is an $F$-score;\index{Test statistic!F@$F$-score} we don't discuss these further.)
-The $P$-value in this context means the same as usual (Sect.\ \@ref(AboutPvalues)): there is very strong evidence to support the alternative hypothesis (that the three means are not all equal).
+The $P$-value in this context means the same as usual (Sect.\ \@ref(AboutPvalues)): there is very strong evidence to support the alternative hypothesis (that the three means are *not* all equal).
 
 While we know the means are not all the same, we do not know *which* group means are different from which other group means.
-One option might seem to be to compare all possible *pairs* of groups (i.e., $\mu_D$ vs $\mu_O$; $\mu_D$ vs $\mu_N$; $\mu_O$ vs $\mu_N$) using three two-sample $t$-tests.
-However, this approach increases the probability of *incorrectly* declaring a difference between the means (increasing the chance of a Type\ I error;\index{Type\ I error} Sect.\ \@ref(TypeErrors))
+One option might be to compare all possible combinations of two groups (i.e., the means of groups\ $D$ and\ $O$; the means of groups\ $D$ and\ $N$; the means of groups\ $O$ and\ $N$) using three separate two-sample $t$-tests.
+However, this approach increases the probability of declaring a false positive (i.e., or making a Type\ I error; Sect.\ \@ref(TypeErrors)):\index{Type\ I error} *incorrectly* declaring a difference between two sets of means.
 The correct approach requires methods beyond this book.
 :::
 
@@ -519,8 +521,8 @@ if( knitr::is_latex_output() ) {
         longtable = FALSE,
         escape = FALSE,
         col.names = c("Mean",
-                      "Std dev.",
-                      "Std error",
+                      "Standard deviation",
+                      "Standard error",
                       "$n$"),
         align = "c",
         caption = "Number of days per week where patients do more than $30$ mins of exercise") %>%
@@ -542,7 +544,7 @@ if( knitr::is_html_output() ) {
 ```
 
 
-```{r BMIerrorbar, fig.align="center", fig.cap="The error bar chart for comparing the number of days per week on which people do more than $30$\ mins of exercise, for different smoking status", fig.width=5, out.width='60%', fig.height=3.25}
+```{r BMIerrorbar, fig.align="center", fig.cap="The error bar chart for comparing the number of days per week on which people do more than $30$\ mins of exercise, for different smoking groups", fig.width=5, out.width='60%', fig.height=3.25}
 mns <- BMItab[, 1]
 ses <- BMItab[, 3]
 ci.lo <- mns - ses*2
@@ -555,7 +557,7 @@ plot( range( c( ci.lo, ci.hi) ) ~ c(1,3),
       xlim = c(0.5, 3.5),
       pch = 19,
       axes = FALSE,
-      main = "Error bars chart:\ndays per week of 30 mins exercise",
+      main = "Error bars chart: average number of\ndays per week of 30 mins exercise",
       xlab = "Smoking status", 
       ylab = "Number of days\nper week",
       sub = "(Error bars are 95%\ CIs)",
@@ -580,7 +582,7 @@ arrows(1:3,
        code = 3)
 ```
 
-ANOVA is a general tool that can be extended, and used in many and varied context for analysis of data.
+ANOVA is a general tool that can be extended beyond just comparing more than two means, and used in many and varied context for the analysis of data.
 
 
 ```{r BMIjamovi, echo=FALSE, fig.cap="Software output for the BMI data", fig.align="center", out.width='55%'}
@@ -623,7 +625,7 @@ $$
   = \sqrt{ 2.140^2 + 2.051^2} = 2.964,
 $$
 as in the table.
-A graphical summary of the data is a boxplot (Fig.\ \@ref(fig:SignageErrorBar), left panel); an error bar chart compares the means, with a CI for each group (Fig.\ \@ref(fig:SignageErrorBar), right panel).
+A boxplot of the data is shown in Fig.\ \@ref(fig:SignageErrorBar) (left panel),and an error bar chart in Fig.\ \@ref(fig:SignageErrorBar) (right panel).
 
 
 ```{r SignageSummaryHT}
@@ -719,9 +721,9 @@ $$
   = \frac{(\bar{x}_B - \bar{x}_A) - (\mu_B - \mu_A)}{\text{s.e.}(\bar{x}_B - \bar{x}_{A})}
   = \frac{5.68 - 0}{2.964} = 1.92.
 $$
-(Recall that $\mu_B - \mu_A = 0$ from the null hypothesis.)
+(Recall that we initially assume that $\mu_B - \mu_A = 0$ from the null hypothesis.)
 
-Remembering that the alternative hypothesis is *one-tailed*, the $P$-value (using the $68$--$95$--$99.7$ rule) is larger than $0.025$, but smaller than $0.32$... so making a clear decision is difficult without using software.
+Remembering that the alternative hypothesis is *one-tailed*, the $P$-value (using the $68$--$95$--$99.7$ rule) is larger than $0.025$, but smaller than $0.32$, so making a clear decision is difficult without using software.
 However, since the $t$-score is *just* less than 2, we suspect that the $P$-value is likely to be closer to $0.025$ than $0.32$.
 
 From software, $P = 0.02968$ (you cannot be this precise just using the $68$--$95$--$99.7$ rule).
