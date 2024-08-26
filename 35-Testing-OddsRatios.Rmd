@@ -90,7 +90,7 @@ EatingNumericalSummary[2, ] <- c(round(UniS[1, 2] / UniS[2, 2], 4),
                                  round(UniS[1, 2] / UniS[3, 2] * 100, 1),
                                  UniS[3,2] )
 EatingNumericalSummary[3, ] <- c( round( (UniS[1, 1] / UniS[1, 2] ) / (UniS[2, 1] / UniS[2, 2]), 3) ,
-                                  round( (UniS[1, 1]/UniS[3, 1] - UniS[1, 2]/UniS[3, 2]) * 100, 1),
+                                  round( (UniS[1, 1]/UniS[3, 1] - UniS[1, 2]/UniS[3, 2]), 3),
                                   NA)
 rownames(EatingNumericalSummary) <- c("Living with parents",
                                       "Not living with parents",
@@ -113,13 +113,13 @@ if( knitr::is_latex_output() ) {
         col.names = c("meals off-campus",
                       "most meals off-campus", 
                       "size"),
-       caption = "The odds and percentage of university students eating most meals off-campus" 
+       caption = "The odds and proportion of university students eating most meals off-campus" 
   ) %>%
      row_spec(0, bold = TRUE) %>%
      row_spec(3, italic = TRUE) %>%
      row_spec(2, hline_after = TRUE) %>%
    add_header_above( c(" ", "Odds having most" = 1, 
-                       "Percentage having" = 1,
+                       "Proportion having" = 1,
                        "Sample" = 1),
                      line = FALSE,
                      bold = TRUE) %>%
@@ -135,21 +135,25 @@ if( knitr::is_html_output() ) {
                booktabs = TRUE,
                align = "c",
                col.names = c("Odds of having most\n meals off-campus", 
-                             "Percentage having most\n meals off-campus", 
+                             "Proportion having most\n meals off-campus", 
                              "Sample size"),
-               caption = "The odds and percentage of university students eating most meals off-campus")
+               caption = "The odds and proportion of university students eating most meals off-campus")
 }
 ```
 
 
+Since two groups are being compared, subscripts are used to distinguish between the statistics for the two groups; say, Groups\ $A$ and\ $B$ in general (Table\ \@ref(tab:ORHT)).
+For this example, we use $N$ to refer to students *not* living with their parents, and $L$ for students living with their parents.
+
 The parameter can be either a difference between two population proportions, or a population odds ratio.
-For example, the parameter could be difference between population proportion of students eating most meals *off*-campus, comparing students living with their parents, to students *not* living with their parents.
+For example, the parameter could be difference between population proportion of students eating most meals *off*-campus, comparing students living with their parents, to students *not* living with their parents; that is, $p_L - p_N$.
+(Of course, the parameter could be defined as $p_N - p_L$ also.)
 Alternatively (and equivalently), the parameter could be the population OR of eating most meals *off*-campus, comparing students living with their parents, to students *not* living with their parents.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 The table can be constructed with either variable as the rows or the columns.
-However, software commonly compares *rows*, so it makes sense to place the groups to be compared (i.e., the explanatory variable) in the rows of the table.
+However, software commonly compares *rows* (for example, see the text under the bottom table in Fig.\ \@ref(fig:UniMealsTestOutputHTjamovi)), so it makes sense to place the groups to be compared (i.e., the explanatory variable) in the rows of the table.
 
 Then, the difference between the two proportions are usually calculated as the Row\ 1 proportion minus the Row\ 2 proportion.
 Similarly, the odds then can be interpreted as\index{Odds ratio!interpreting}\index{Software output!odds ratios} comparing Column\ 1 counts to Column\ 2 counts, and the *odds ratio* as comparing the Row\ 1 odds to the Row\ 2 odds.
@@ -158,8 +162,6 @@ Similarly, the odds then can be interpreted as\index{Odds ratio!interpreting}\in
 
 The RQ and the hypotheses can be written as comparing *proportions* (Sect.\ \@ref(CompareTwoProportions)), comparing *odds* (Sect.\ \@ref(CompareTwoOdds)), or about *odds ratios*.
 Means are *not* appropriate (the data contain two *qualitative* variables).
-
-Since two groups are being compared, subscripts are used to distinguish between the statistics for the two groups; say, Groups\ $A$ and\ $B$ in general (Table\ \@ref(tab:ORHT)).
 
 
 ```{r ORHT}
@@ -237,25 +239,39 @@ To compare the two proportions, the two-tailed RQ is:
 
 > Is the *population* proportion of students eating most meals off-campus the same for students *living with* their parents and for students *not living with* their parents?
 
-We use $N$ to refer to students *not* living with their parents, and $L$ for students living with their parents.
-Then, following Table\ \@ref(tab:ORHT), the *parameter* in the RQ is the difference between the population proportions: $p_L - p_N$.
 As usual, the population values are unknown, so this is estimated using the statistic $\hat{p}_L - \hat{p}_N$.
 
 Hypothesis testing always begins by assuming that the null hypothesis is true (Sect.\ \@ref(HypothesisNull)).
-In this context, that means assuming that the population proportion of eating most meals off-campus is the same in both groups.
-As a result, the data from the two groups can be combined to determine an overall (or common) proportion of students eating most meals off-campus:
-$$
+In this context, that means assuming that the population proportion of eating most meals off-campus is the same in both groups:
+
+* $H_0$: $p_L - p_N = 0$ (equivalent to $p_L = p_N$).
+
+From the RQ, the alternative hypothesis is *two*-tailed:
+
+* $H_1$: $p_L - p_N \ne 0$ (equivalent to $p_L \ne p_N$).
+
+Because we assume the null hypothesis to be true, we assume the proportions are the same for both groups.
+Hence, the data from the two groups can be combined to determine an overall (or common) proportion of students eating most meals off-campus:
+\begin{equation}
   \hat{p} = \frac{52 + 105}{52 + 105 + 2 + 24} = \frac{157}{183} = 0.85792.
-$$
+   (\#eq:OverallP)
+\end{equation}
 This is the overall proportion of students eating most meals off-campus, assuming no difference between students living with and not with their parents.
 
-The two *sample* proportions will vary from sample to sample and so have a sampling distribution (as in Sect.\ \@ref(OnePropTestSamplingDist)).
-The standard error of $\hat{p}$ for each sample is computed using this common proportion, using the same idea as in Eq.\ \@ref(eq:StdErrorPknown):
+The *sample* proportions for the two groups ($L$ and $N$) will vary from sample to sample and so have a sampling distribution (as in Sect.\ \@ref(OnePropTestSamplingDist)).
+The standard error of the sample proportion $\hat{p}$ for each sample is computed using this common proportion, using the same idea as in Eq.\ \@ref(eq:StdErrorPknown):
 \begin{align*}
   \text{s.e.}(p_L) &= \sqrt{ \frac{\hat{p}\times(1 - \hat{p})}{n_L}} = \sqrt{ \frac{0.85792\times(1 - 0.85792)}{54}} = 0.047511; \text{and}\\
   \text{s.e.}(p_N) &= \sqrt{ \frac{\hat{p}\times(1 - \hat{p})}{n_N}} = \sqrt{ \frac{0.85792\times(1 - 0.85792)}{129}} = 0.030739.
 \end{align*}
-The difference between the proportions will vary from sample to sample too, and hence have a sampling distribution.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+When computing the standard errors as part of a *hypothesis test*, the common or overall proportion is used to compute the standard errors.
+:::
+
+
+The difference between the two proportions will vary from sample to sample too, and hence have a sampling distribution; under certain conditions (Sect.\ \@ref(Validity-Test-ChiSq)), this sampling distributiomn will have a normal distribution.
 The standard error of this sampling distribution for the *difference* between the proportions is
 $$
   \text{s.e.}(\hat{p}_A - \hat{p}_B) = \sqrt{ \text{s.e.}(\hat{p}_L)^2 +  \text{s.e.}(\hat{p}_N)^2 }
@@ -280,7 +296,7 @@ where
 $$
   \text{s.e.}(p_A) = \sqrt{ \frac{p\times(1 - p)}{n_A}}
   \quad\text{and}\quad
-  \text{s.e.}(p_B) = \sqrt{ \frac{p\times(1 - p)}{n_B}}
+  \text{s.e.}(p_B) = \sqrt{ \frac{p\times(1 - p)}{n_B}},
 $$
 where $p$ is the common (overall) proportion.
 :::
@@ -292,16 +308,15 @@ $$
     = \frac{ 0.14901 - 0}{0.056588} 
     = 2.633.
 $$
-Since the test-statistic is a $z$-score, the approximate $P$-value can be computed from normal distributions (Sect.\ \@ref(ExactAreasUsingTables)) or from software output (Fig.\ \@ref(fig:UniMealsTestOutputHTjamovi)).
-The two-tailed $P$-value reported by software (Fig.\ \@ref(fig:UniMealsTestOutputHTjamovi), under the column `p`) is indeed small: $0.008$ to three decimals.
+Since the sampling distribution has an approximate normal distribution, the approximate $P$-value can be computed from normal distributions (Sect.\ \@ref(ExactAreasUsingTables)), approximated using the $68$--$95$--$99.7$ rule, or from software output (Fig.\ \@ref(fig:UniMealsTestOutputHTjamovi)).
+The two-tailed $P$-value reported by software (Fig.\ \@ref(fig:UniMealsTestOutputHTjamovi), under the column `p`) is indeed small: $0.008$ to three decimal places.
 
-A very small $P$-value ($0.008$ to three decimals) means strong evidence exists to supporting $H_1$: the evidence suggests a difference between the *population* proportions.
+A very small $P$-value means strong evidence exists to supporting $H_1$: the evidence suggests a difference between the *population* proportions.
 We write:
 
-> The *sample* provides strong evidence ($z = 2.63$; two-tailed $P = 0.008$) that the proportion of students in the *population* of having most meals off-campus is different for students living with their parents (proportion: $0.963$) and students *not* living with their parents (proportion: $0.814$; difference: $0.149$; $95$%\ CI from $0.0633$ and $0.235$, higher for students living with their parents).
+> The *sample* provides strong evidence ($z = 2.63$; two-tailed $P = 0.008$) that the proportion of students in the *population* of having most meals off-campus is different for students living with their parents (proportion: $0.963$, $n = 54$) and students *not* living with their parents (proportion: $0.814$, $n = 129$; difference: $0.149$; $95$%\ CI from $0.0633$ and $0.235$, higher for students living with their parents).
 
-The conclusion includes three components (Sect.\ \@ref(WordingConclusion)): the *answer to the RQ*; the *evidence* used to reach that conclusion ('$z = 2.63$; two-tailed $P = 0.008$'); and some *sample summary statistics* (including the $95$%\ CI for the difference between proportions).
-
+The conclusion includes three components (Sect.\ \@ref(WordingConclusion)): the *answer to the RQ*; the *evidence* used to reach that conclusion ('$z = 2.63$; two-tailed $P = 0.008$'); and some *sample summary statistics* (including the $95$%\ CI for the difference between proportions; Sect.\ \@ref(CIDiffBetweenProportions)).
 The conclusion also makes clear which proportion is higher.
 
 
@@ -336,8 +351,8 @@ For comparing odds, the alternative hypotheses *is always two-tailed*.
 
 In our example then:
 
-* $H_0$: The *population* odds of eating most meals off-campus are the *same* for students living *with* their parents and for students *not living* with their parents.
-* $H_1$: The *population* odds of eating most meals off-campus are *different* for students living *with* their parents and for students *not living* with their parents.
+* $H_0$: The *population* odds of eating most meals off-campus are the *same* for students living with their parents and for students not living with their parents.
+* $H_1$: The *population* odds of eating most meals off-campus are *different* for students living with their parents and for students not living with their parents.
 
 As usual, the decision-making process starts by *assuming* the null hypothesis is true: that the *population* odds ratio is one (i.e., the population odds in each group are equal).
 
@@ -350,18 +365,18 @@ If the null hypothesis is true, the odds are the same in both groups (and the pr
 That is, the proportions of students eating most meals off-campus is the same for students *living with* and *not living with* their parents.
 
 Let's consider the implication.
-From Table\ \@ref(tab:MealsDataTableHT), $157$ students out of $183$ ate most meals off-campus, so that $157\div 183 = 0.8579$ of students in the entire sample ate most of their meals off-campus.
+From Table\ \@ref(tab:MealsDataTableHT), $157$ students out of $183$ ate most meals off-campus, so that $157\div 183 = 0.8579$ of students in the entire sample ate most of their meals off-campus (the same value found in Eq.\ \@ref(eq:OverallP).)
 
 If the proportions of students who eat most of their meals off-campus is the *same* for those who live with their parents and those who don't, then we'd *expect* $0.8579$ of students in *both* groups to be eating most meals off-campus.
 (These values were also found in Sect.\ \@ref(ValidityConditionsORCI).)
 In other words, the two *conditional* probabilities\index{Probability!conditional} would be the same.
 In that case, we would *expect*:
 
-* A proportion of $0.8579$ of the  $54$ students who *live with their parents* (i.e., $46.33$ students) to eat most meals off-campus; and
-* A proportion of $0.8579$ of the $129$ students who *don't live with their parents* (i.e., $110.67$ students) to eat most meals off-campus.
+* A proportion of $0.8579$ of the  $54$ students who *live with their parents* (i.e., $0.8579\times 54 = 46.33$ students) to eat most meals off-campus; and
+* A proportion of $0.8579$ of the $129$ students who *don't live with their parents* (i.e., $0.8579\times 129 = 110.67$ students) to eat most meals off-campus.
 
 In other words, the proportions (and hence the odds) of eating most meals off-campus is the same in each group.
-Those are the *expected* counts if the proportions (or odds) was exactly the same in each group (Table\ \@ref(tab:MealsDataTableHTExpected)), if the null hypothesis (the assumption) was true.
+Those are the *expected* counts if the proportions (or odds) was exactly the same in each group (Table\ \@ref(tab:MealsDataTableHTExpected)), as stated by $H_0$.
 
 How close are the *observed* counts (Table\ \@ref(tab:MealsDataTableHT)) to the *expected counts* (Table\ \@ref(tab:MealsDataTableHTExpected))?
 
@@ -370,6 +385,8 @@ How close are the *observed* counts (Table\ \@ref(tab:MealsDataTableHT)) to the 
 
 The observed and expected counts are similar, but not the exactly same.
 The difference between the observed and expected counts *may* be explained by sampling variation (that is, the null hypothesis explanation).
+
+The hypothesis test effectively compares the observed counts to the expected counts (assuming no relationship between the variables) over the whole $2\times 2$ table.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -435,9 +452,9 @@ if( knitr::is_html_output() ) {
 
 The decision-making process compares what is *expected* if the null hypothesis about the parameter is true (Table\ \@ref(tab:MealsDataTableHTExpected)) to what is *observed* in the sample (Table\ \@ref(tab:MealsDataTableHT)).
 Previously, when the summary statistics were means and the sampling distribution was a normal distribution, the test statistic was a $t$-score.
-However, the data here are not summarised by means, the sampling distribution is *not* a normal distribution (but is *related* to a normal distribution), and so a different test statistic is needed.
+However, the data here are not summarised by means, the sampling distribution is *not* a normal distribution, and so a different test statistic is needed.
 
-Here, the test-statistic is a 'chi-squared' statistic,  written $\chi^2$.\index{Test statistic!$\chi^2$-score}\index{chi@$\chi^2$-score}
+Here, the test-statistic is a 'chi-squared' statistic, written $\chi^2$.\index{Test statistic!$\chi^2$-score}\index{chi@$\chi^2$-score}
 The $\chi^2$-score measures the overall size of the differences between the expected counts and observed counts, over the entire $2\times 2$ table.
 
 
@@ -470,7 +487,7 @@ Is it 'large' or 'small'?
 The $\chi^2$-value can be understood by finding the equivalent $z$-score, which means a $P$-value can be estimated using the $68$--$95$--$99.7$ rule.
 The $\chi^2$-value is equivalent to
 $$
-  z = \sqrt{\chi^2}\qquad\text{for a $2\times 2$ table only}.
+  z = \sqrt{\chi^2}\qquad\text{for a $2\times 2$ table of counts only}.
 $$
 Here then, the $\chi^2$ value is equivalent to a $z$-score of $\sqrt{6.934} = 2.633$.
 This is the *same* $z$-score produced when comparing two proportions (Sec.\ \@ref(CompareTwoProportions); Fig.\ \@ref(fig:UniMealsTestOutputHTjamovi)), and hence the $P$-value will be the same also.
@@ -479,7 +496,7 @@ The two-tailed $P$-value reported by software (Fig.\ \@ref(fig:UniMealsTestOutpu
 
    
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Recall that, for two-way tables of counts, the alternative hypotheses *are always two-tailed*, so a two-tailed $P$-value is always reported.
+Recall that $\chi^2$ tests always have *two-tailed* alternative hypotheses, so two-tailed $P$-values are always reported.
 :::
 
 
@@ -501,7 +518,7 @@ Recall that, for two-way tables of counts, the alternative hypotheses *are alway
 A very small $P$-value ($0.008$ to three decimals) means strong evidence exists to supporting $H_1$: the evidence suggests a difference in the *population* odds in the two groups.
 We write:
 
-> The *sample* provides strong evidence ($\chi^2 = 6.934$; two-tailed $P = 0.008$) that the odds in the *population* of having most meals off-campus is different for students living with their parents (odds: $26$) and students *not* living with their parents (odds: $4.375$; OR: $5.94$; $95$%\ CI from $1.35$ to $26.1$).
+> The *sample* provides strong evidence ($\chi^2 = 6.934$, $n = 54$; two-tailed $P = 0.008$) that the odds in the *population* of having most meals off-campus is different for students living with their parents (odds: $26$) and students *not* living with their parents (odds: $4.375$, $n = 129$; OR: $5.94$; $95$%\ CI from $1.35$ to $26.1$).
 
 The conclusion includes three components (Sect.\ \@ref(WordingConclusion)): the *answer to the RQ*; the *evidence* used to reach that conclusion ('$\chi^2 = 6.934$; two-tailed $P = 0.008$'); and some *sample summary statistics* (including the $95$%\ CI for the odds ratio).
 
@@ -509,18 +526,11 @@ The conclusion also makes clear what the odds and the odds ratio *mean*.
 The odds are describing as the 'odds of having most meals off-campus', and the OR as then comparing these odds between 'students living with their parents and students *not* living with their parents'.
 
 
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-For two-way tables, RQs can be framed in terms of ORs, comparing odds, comparing proportions, or using associations (or relationships).
-
-For consistency: if the RQ is about the odds ratio, the hypotheses and conclusion should be about the odds ratio; if the RQ is about odds, the hypotheses and conclusion should be about the odds; and so on.
-:::
-
-
 ## Statistical validity conditions {#Validity-Test-ChiSq}
 \index{Statistical validity!odds ratio}
 
 As usual, these results hold under certain conditions.
-The test above is statistically valid if: 
+The tests above are statistically valid if: 
 
 * All *expected* counts are at least five.
 
@@ -539,19 +549,11 @@ knitr::include_graphics("jamovi/UniStudents/UniStudents-Expected.png")
 ```
 
 
-For the student-eating data, the smallest *observed* count is $2$ (living with parents; most meals off-campus), but the smallest *expected* count is $7.67$, which is greater than five.
+::: {.example #StatisticalValidity name="Statistical validity"}
+For the student-eating data, the smallest *observed* count is $2$ (living with parents; most meals off-campus), but the smallest *expected* count (see Table\ \@ref(tab:MealsDataTableHTExpected) or Fig.\ \@ref(fig:UniMealsTestExpectedjamovi)) is $7.67$, which is greater than five.
+This means the two tests (comparing proportions; comparing odds) are both statistically valid.
 The size of the *expected* counts is important for the statistical validity condition.
-
-
-```{r}
-data(PetBirds)
-
-PB2 <- xtabs( Counts ~ Pets + LC, 
-              data = PetBirds)
-
-PB2.exp <- chisq.test(PB2)$expected 
-```
-
+:::
 
 
 ## Tests of independence more generally: $\chi^2$-tests {#CompareManyProportions}
@@ -562,9 +564,9 @@ In these situations, the RQ is worded in terms of *independence*, *relationships
 > Is there a relationship (or association) between one qualitative variable and another qualitative variable?
 
 The RQ is answered using a $\chi^2$-test, by extending the ideas in Sect.\ \@ref(CompareTwoOdds), as demonstrated in the following example.
-If one of the qualitative variable has two levels,\index{Levels} the RQ may be worded in terms of odds.
+If one of the qualitative variable has two levels,\index{Levels} the RQ may be worded in terms of odds or proportions.
 
-:::{.example #ChiSqLarger name="Larger two-way tables"}
+:::{.example #ChiSqLarger name="Two-way tables larger than $2\times 2$"}
 [*Dataset*: `RipsID`]
 @diez2023rip studied Spanish people's knowledge of ocean rips
 `r if (knitr::is_latex_output()) {
@@ -580,7 +582,11 @@ The RQ is
 
 Since one variable (whether the person can identify a rip) has two levels, the RQ may be worded as:
 
-> Are the odds of correctly identifying a rip the same for each age group?
+> Are the odds of Spaniards correctly identifying a rip the same for each age group?
+
+or 
+
+> Is the proportion of Spaniards correctly identifying a rip the same for each age group?
 :::
 
 
@@ -656,7 +662,7 @@ T2 <- kable( pad(RipSummary,
   out <- knitr::kables(list(T1, T2),
                        format = "latex",
                        label = "RipTableSummary",
-                       caption = "Identifying rips. Left: the data by age group. Right: a summary table. The odds ratio is relative to the $51$ to $65$ age group.") %>% 
+                       caption = "Identifying rips. Left: the data by age group. Right: a summary table. The odds ratios are relative to the $51$ to $65$ age group.") %>% 
     kable_styling(font_size = 8)
 
   out2 <- prepareSideBySideTable(out) 
@@ -687,7 +693,7 @@ knitr::kable( pad(RipSummary,
        escape = FALSE,
        align = "c",
        format = "html",
-       caption = "Identifying rips: a summary table. The odds ratio is relative to the $51$ to $65$ age group.",
+       caption = "Identifying rips: a summary table. The odds ratios are relative to the $51$ to $65$ age group.",
        booktabs = TRUE) %>%
      row_spec(0, bold = TRUE) %>%
     add_header_above( c(" " = 1, 
@@ -705,7 +711,7 @@ The odds and percentage of people in each age group that can correctly identify 
    '(Table\\ \\@ref(tab:RipTableSummaryHTML),'
 }`
 but this is not always possible (e.g., for a $3\times 4$ table).
-Odds ratios compare *pairs* of odds, so the odds ratios in 
+Odds ratios compare *pairs* of odds, and the odds ratios in 
 `r if (knitr::is_latex_output()) {
    'Table\\ \\@ref(tab:RipTableSummary) (right table)'
 } else {
@@ -714,36 +720,42 @@ Odds ratios compare *pairs* of odds, so the odds ratios in
 are all relative to those $51$ to $65$ (hence, no odds ratio is given for the $51$ to $65$ age group, which is the *reference level*).\index{Reference level}
 For example, the odds of someone aged $18$ to $24$ correctly identifying a rip is $1.104$ times the odds of someone aged $51$ to $65$ correctly identifying a rip.
 
-Because one variable has two levels, the hypotheses can be worded in terms of comparing odds:
+Because one of the variables has two levels, the hypotheses can be worded in terms of comparing odds or comparing proportions; for example:
 
 * $H_0$: The *population* odds of correctly identifying a rip is the same for all age groups.
 * $H_1$: The *population* odds of correctly identifying a rip is *not* the same for all age groups.
 
-This hypothesis encompasses many possibilities: for example, that the three odds are *all* different from each other, or that the odds for the first age group is different than the other two (which are the same).
+The alternative hypothesis encompasses many possibilities: for example, that the three odds are *all* different from each other, or that the odds for the first age group is different than the other two (which are the same).
 
-For tables larger than $2\times 2$ more generally, the hypothesis are usually worded in terms of associations (but *not* correlations):
+For tables larger than $2\times 2$ more generally, the hypothesis are usually worded in terms of associations or relationships between the variables (but *not* correlations):
 
 * $H_0$: In the *population*, there *is no association* between correctly identifying a rip and age group;
 * $H_1$: In the *population*, there *is an association* between correctly identifying a rip and age group.
 
-For a $2\times 2$ table, the *parameter* is the odds ratio, and the test proceeds using a $\chi^2$ value.
-The value of $\chi^2$ compares the observed counts to the expected counts (Sect.\ \@ref(CompareTwoOdds)); the expected counts are found in the same way as in Sect.\ \@ref(ExpectedValues).
 
-For two-way tables larger than $2\times 2$, the parameter describing the association between the variables is the $\chi^2$ value itself.
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+For two-way tables, RQs can be framed in terms of ORs, comparing odds, comparing proportions, or using associations (or relationships).
+
+For consistency: if the RQ is about the odds ratio, the hypotheses and conclusion should be about the odds ratio; if the RQ is about odds, the hypotheses and conclusion should be about the odds; and so on.
+:::
+
+
+The test statistic is again a $\chi^2$ value, which compares the observed and expected counts; the expected counts are found in the same way as in Sect.\ \@ref(ExpectedValues).
+For two-way tables larger than $2\times 2$ (see Sect.\ \@ref(HTCompareOddsBurros)), the parameter describing the association between the variables is the $\chi^2$ value itself.
 When no relationship exists in the sample, the observed and expected values are the same, and $\chi^2 = 0$.
 The larger the difference between the observed and expected values, the larger the value of $\chi^2$.
 Sampling variation means that the observed values will vary from sample to sample, so that $\chi^2$ may not be exactly zero, even if there is no association between the variables.
 
-Software computes $\chi^2 = 2.406$ (Fig. \@ref(fig:Ripsjamovi)).
-The two-tailed $P$-value is (Fig. \@ref(fig:Ripsjamovi), left panel) $P = 0.492$.
+Software computes $\chi^2 = 2.406$ (Fig.\ \@ref(fig:Ripsjamovi)).
+The two-tailed $P$-value is (Fig.\ \@ref(fig:Ripsjamovi), left panel) $P = 0.492$.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Recall that, for two-way tables of counts, the alternative hypotheses *are always two-tailed*, so a two-tailed $P$-value is always reported.
+For comparing more than two odds or proportions, the alternative hypothesis *is always two-tailed*.
 :::
 
 
-```{r Ripsjamovi, fig.show="hold", fig.cap="Software output for the hypothesis test about knowledge of ocean rips", fig.align="center", out.width=c("45%", "50%"), }
+```{r Ripsjamovi, fig.show="hold", fig.cap="Software output for the hypothesis test about knowledge of ocean rips", fig.align="center", out.width=c("43%", "52%"), }
 knitr::include_graphics( "jamovi/RipsID/RipsID-chisq.png")
 knitr::include_graphics( "jamovi/RipsID/RipsID-Expected.png")
 ```
@@ -814,7 +826,7 @@ The test is statistically valid (Fig.\ \@ref(fig:Ripsjamovi), right panel).
 <!-- standardized residuals may not be needed here to reach these conclusions, -->
 <!-- but they can be used in larger two-way tables -->
 <!-- (for example,  -->
-<!-- see Sect. \@ref(ORTestDumping)). -->
+<!-- see Sect.\ \@ref(ORTestDumping)). -->
 
 
 
@@ -822,7 +834,7 @@ The test is statistically valid (Fig.\ \@ref(fig:Ripsjamovi), right panel).
 
 (This study was seen in Sect.\ \@ref(TurtleNestsOR).)
 The hatching success of loggerhead turtles on Mediterranean beaches is often compromised by fungi and bacteria.
-@candan2021first compared the odds of a nest being infected, between nest relocated due to the risk of tidal inundation, and non-relocated nests
+@candan2021first compared the odds of a nest being infected, between nests relocated due to the risk of tidal inundation, and non-relocated nests
 `r if (knitr::is_latex_output()) {
    '(Table\\ \\@ref(tab:TurtleNestDataTableHT), left table).'
 } else {
@@ -848,7 +860,7 @@ colnames(TurtleData) <- c("Non-infected",
 TNsummary <- array( dim = c(3, 3) )
 
 colnames(TNsummary) <- c( "Odds infected",
-                          "Percentage infected",
+                          "Proportion infected",
                           "Sample size")
 rownames(TNsummary) <- c("Natural",
                          "Relocated",
@@ -856,7 +868,7 @@ rownames(TNsummary) <- c("Natural",
 
 
 TNsummary[1:2, 1] <- TurtleData[, 1] / TurtleData[, 2]
-TNsummary[1:2, 2] <- TurtleData[, 1] / rowSums(TurtleData) * 100
+TNsummary[1:2, 2] <- TurtleData[, 1] / rowSums(TurtleData)
 TNsummary[1:2, 3] <- apply(TurtleData, 1, "sum")
 TNsummary[3, 1] <- TNsummary[1, 1] / TNsummary[2, 1]
 
@@ -883,7 +895,7 @@ if( knitr::is_latex_output() ) {
   T2 <- kable( pad(TNsummary,
                    surroundMaths = TRUE,
                    targetLength = c(5, 5, 2),
-                   digits = c(3, 2, 0)),
+                   digits = c(3, 3, 0)),
                format = "latex",
                booktabs = TRUE,
                valign = 't',
@@ -898,7 +910,7 @@ if( knitr::is_latex_output() ) {
     row_spec(3, italic = TRUE) %>%
     add_header_above( c( " " = 1,
                          "Odds" = 1,
-                         "Percentage" = 1,
+                         "Proportion" = 1,
                          "Sample" = 1),
                       bold = TRUE,
                       line = FALSE)
@@ -931,9 +943,11 @@ if( knitr::is_html_output() ) {
 The parameter is the odds ratio of infection, comparing natural to relocated nests.
 A graphical summary is shown in Fig.\ \@ref(fig:TurtleNestsGraphs).
 A numerical summary table (Table\ \@ref(tab:TurtleNestDataTable), right table) shows that the odds of natural nest being infected is $1.657$ times the odds of a relocated nest being infected.
-From the software output (Fig.\ \@ref(fig:TurtleNestsOutputjamoviHT)), the $\chi^2$-value is $0.777$.
+From the software output (Fig.\ \@ref(fig:TurtleNestsOutputjamoviHT), left panel), the $\chi^2$-value is $0.777$.
 This is like a $z$-score of $z = \sqrt{0.777/1} = 0.88$, which is very small, so expect a large $P$-value.
+Notice that this the value of the $z$-score shown in Fig.\ \@ref(TurtleNestsOutputjamoviHT) (left panel).
 Indeed, the $P$-value is $0.378$ on the output.
+
 The smallest *expected* count is $6.49$ (Fig.\ \@ref(fig:TurtleNestsOutputjamoviHT)), so this test is statistically valid.
 We write:
 
@@ -944,20 +958,20 @@ That is, there no evidence that relocating the nest (to protect them from tidal 
 
 :::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 We *do not* say whether the evidence supports the null hypothesis.
-We assume the null hypothesis is true, so we state how strong the evidence is to support the alternative hypothesis.
+We assume the null hypothesis is true, so we state how strong the evidence is to change outr mind (and hence support the alternative hypothesis).
 The current sample presents no evidence to contradict the assumption, but future evidence may emerge.
 :::
 
 <!-- and Table 5 (BTW, Table 6 is  not $2\times 2$): -->
 
 
-```{r TurtleNestsOutputjamoviHT, fig.show="hold", fig.cap="The software output for the turtle-nesting data", fig.align="center", out.width=c("46%", "51%")}
-knitr::include_graphics("jamovi/TurtleNests/TurtleNests-Chisq.png")
+```{r TurtleNestsOutputjamoviHT, fig.show="hold", fig.cap="The software output for the turtle-nesting data", fig.align="center", out.width=c("50%", "49%")}
+knitr::include_graphics("jamovi/TurtleNests/TurtleNests-Chisq-pDiff.png")
 knitr::include_graphics("jamovi/TurtleNests/TurtleNests-Expected.png")
 ```
 
 
-## Example: health of female burros {#asxhaiuhpiauhapxhpxuihpaxhsap}
+## Example: health of female burros {#HTCompareOddsBurros}
 
 @johnson1987demography studied $631$ introduced donkeys (burros) in the Mojave Desert (California) to understand management processes. 
 One RQ was:
@@ -1052,7 +1066,7 @@ if( knitr::is_latex_output() ) {
     out <- knitr::kables(list(T1, T2),
                        format = "latex",
                        label = "BurrosData",
-                       caption = "Left: the health and reproductive status of female burros. Right: summary of the burro data. The odds ratios are relative to burros lactating. (Burros pregnant and lactating were counted in the lactating data only.)") %>% 
+                       caption = "Left: the health and reproductive status of female burros. Right: summary of the burro data. The odds ratios are relative to burros lactating. (Burros pregnant and lactating were counted with the lactating burros only.)") %>% 
     kable_styling(font_size = 8)
 
   out2 <- prepareSideBySideTable(out) 
@@ -1071,7 +1085,7 @@ if( knitr::is_html_output() ) {
         format = "html",
         align = "c",
         longtable = FALSE,
-        caption = "The health and reproductive status of female burros. (Burros pregnant and lactating were counted in the lactating data only.)",
+        caption = "The health and reproductive status of female burros. (Burros pregnant and lactating were counted with the lactating burros only.)",
         booktabs = TRUE)
 }
 ```
@@ -1787,6 +1801,13 @@ Consider this RQ:
 
 
 ```{r BirdsData2}
+data(PetBirds)
+
+PB2 <- xtabs( Counts ~ Pets + LC, 
+              data = PetBirds)
+
+PB2.exp <- chisq.test(PB2)$expected 
+
 PB2T <- cbind( PB2, 
                "Total" = rowSums(PB2))
 PB2T <- rbind( PB2T, 
