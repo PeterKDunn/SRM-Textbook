@@ -110,7 +110,7 @@ Using the OR, the RQ could be written as:
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 Take care defining the odds ratios! 
-Recall (Sect. \@ref(QualOdds)): software usually compares Row\ 1 to Row\ 2, and Column\ 1 to Column\ 2 (that is, the last row is usually the reference level)\index{Reference level}.
+Recall (Sect.\ \@ref(QualOdds)): software usually compares Row\ 1 to Row\ 2, and Column\ 1 to Column\ 2 (that is, the last row is usually the reference level)\index{Reference level}.
 For this reason, defining your OR in the same way makes sense.
 :::
 
@@ -502,7 +502,6 @@ if( knitr::is_html_output() ) {
 ```
 
 
-
 The data are summarised graphically (Fig.\ \@ref(fig:TurtleNestsGraphs)) and numerically (Table\ \@ref(tab:TurtleNestsNumericalSummary)).
 From the software output (Fig.\ \@ref(fig:TurtleNestsOutputjamovi)), the $95$% CI for the difference between the proportions is from $-0.1361$ to $0.3505$.
 *The negative value is not a negative proportion*; it is a negative *difference* between two proportions.
@@ -523,7 +522,7 @@ The smallest *expected* count is $6.49$ (Fig.\ \@ref(fig:TurtleNestsOutputjamovi
 TNsummary <- array( dim = c(3, 3) )
 
 colnames(TNsummary) <- c( "Odds non-infected",
-                          "Percentage non-infected",
+                          "Proportion non-infected",
                           "Sample size")
 rownames(TNsummary) <- c("Natural",
                          "Relocated",
@@ -531,7 +530,7 @@ rownames(TNsummary) <- c("Natural",
   
   
 TNsummary[1:2, 1] <- TurtleData[, 1] / TurtleData[, 2]
-TNsummary[1:2, 2] <- TurtleData[, 1] / rowSums(TurtleData) * 100
+TNsummary[1:2, 2] <- TurtleData[, 1] / rowSums(TurtleData)
 TNsummary[1:2, 3] <- apply(TurtleData, 1, "sum")
 TNsummary[3, 1] <- TNsummary[1, 1] / TNsummary[2, 1]
 TNsummary[3, 2] <- TNsummary[1, 2] - TNsummary[2, 2] 
@@ -541,7 +540,7 @@ TNsummary[3, ] <- c( paste0("\\llap{OR: }$",
                             "$"),
 
                       paste0("\\llap{Diff.: }$", 
-                             round( TNsummary[3, 2], 2),
+                             round( TNsummary[3, 2], 3),
                              "$"),
                       NA)
 ```
@@ -550,13 +549,13 @@ TNsummary[3, ] <- c( paste0("\\llap{OR: }$",
 
 \begin{figure}
 \begin{minipage}{0.52\textwidth}
-\captionof{table}{The odds and percentage of non-infected turtle nests\label{tab:TurtleNestsNumericalSummary}}
+\captionof{table}{The odds and proportion of non-infected turtle nests\label{tab:TurtleNestsNumericalSummary}}
 \fontsize{8}{12}\selectfont
 ```{r}
   kable( pad(TNsummary,
              surroundMaths = TRUE,
              targetLength = c(5, 5, 2),
-             digits = c(3, 2, 0)),
+             digits = c(3, 3, 0)),
         format = "latex",
         booktabs = TRUE,
         longtable = FALSE,
@@ -571,7 +570,7 @@ TNsummary[3, ] <- c( paste0("\\llap{OR: }$",
     row_spec(2, hline_after = TRUE) %>%
     add_header_above( c( " " = 1,
                          "Odds" = 1,
-                         "Percentage" = 1,
+                         "Proportion" = 1,
                          "Sample" = 1),
                       bold = TRUE,
                       line = FALSE)
@@ -619,13 +618,13 @@ if( knitr::is_html_output() ) {
   kable(pad(TNsummary,
              surroundMaths = TRUE,
              targetLength = c(5, 5, 2),
-             digits = c(3, 2, 0)),
+             digits = c(3, 3, 0)),
         format = "html",
         booktabs = TRUE,
         longtable = FALSE,
         align = "c",
         digits = c(3, 2, 0),
-        caption = "The odds and percentage of non-infected nests")
+        caption = "The odds and proportion of non-infected nests")
 }
 ```
 
