@@ -973,7 +973,7 @@ knitr::include_graphics("jamovi/TurtleNests/TurtleNests-Expected.png")
 
 ## Example: health of female burros {#HTCompareOddsBurros}
 
-@johnson1987demography studied $631$ introduced donkeys (burros) in the Mojave Desert (California) to understand management processes. 
+@johnson1987demography studied $315$ introduced female burros (donkeys) in the Mojave Desert (California) to understand management processes. 
 One RQ was:
 
 > For these female burros, is the reproductive status of the burros related to their health?
@@ -985,7 +985,16 @@ The data
    '(Table\\ \\@ref(tab:BurrosDataHTML))'
 }`
 are given in a $3\times 3$ table of counts.
-The software output is shown in Fig.\ \@ref(fig:BurrosChisqjamovi), and a graphical summary in Fig.\ \@ref(fig:BurrosSidebysideBar).
+The data are summarised using row proportions in
+`r if (knitr::is_latex_output()) {
+   'Table\\ \\@ref(tab:BurrosData) (right table),'
+} else {
+   'Table\\ \\@ref(tab:BurrosSummaryHTML)),'
+}`
+and in a graph in Fig.\ \@ref(fig:BurrosChisqjamoviPlot) (left panel).
+Software output is shown in Fig.\ \@ref(fig:BurrosChisqjamoviPlot) (right panel).
+(Odds could be produced in the numerical summary also, but odds ratios are trickier since they require comparing pairs of odds.)
+
 
 
 ```{r Burros}
@@ -1024,34 +1033,57 @@ BurroSummary[3, 3] <- BurroTab[3, 1] / sum( BurroTab[3, ]) * 100
 
 BurroSummary[, 4] <- rowSums(BurroTab)
 
-             
+###
+
+BurroRowProps <- proportions(BurroTab, 
+                             margin = 1)
+
 ```
 
 ```{r}
 if( knitr::is_latex_output() ) {
-  T1 <- kable(pad(BurroTab,
+  BurroTab2 <- cbind( BurroTab,
+                      Total = rowSums(BurroTab) )
+  
+  T1 <- kable(pad(BurroTab2,
             surroundMaths = TRUE,
             targetLength = 3,
             digits = 0),
         format = "latex",
-        align = c("c", "c", "c"),
+        align = c("c", "c", "c", "c"),
         longtable = FALSE,
         escape = FALSE,
         booktabs = TRUE) %>%
     #kable_styling(font_size = 8) %>%
     row_spec(0, bold = TRUE) %>%
     add_header_above( c(" " = 1,
-                        "Health" = 3),
+                        "Health" = 3,
+                        " " = 1),
                       bold = TRUE,
                       line = TRUE)
   
   
 ###
 
- T2 <- kable(pad(BurroSummary,
+ # T2 <- kable(pad(BurroSummary,
+ #            surroundMaths = TRUE,
+ #            targetLength = c(5, 4, 5, 3),
+ #            digits = c(3, 2, 1, 0)),
+ #        format = "latex",
+ #        booktabs = TRUE,
+ #        longtable = FALSE,
+ #        escape = FALSE,
+ #        align = "c") %>%
+ #    row_spec(0, bold = TRUE) %>%
+ #    add_header_above( c(" " = 1,
+ #                        "Excellent health" = 4),
+ #                      bold = TRUE,
+ #                      line = TRUE)
+  
+ T2 <- kable(pad(BurroRowProps,
             surroundMaths = TRUE,
-            targetLength = c(5, 4, 5, 3),
-            digits = c(3, 2, 1, 0)),
+            targetLength = c(5, 5, 5),
+            digits = c(3, 3, 3)),
         format = "latex",
         booktabs = TRUE,
         longtable = FALSE,
@@ -1059,14 +1091,14 @@ if( knitr::is_latex_output() ) {
         align = "c") %>%
     row_spec(0, bold = TRUE) %>%
     add_header_above( c(" " = 1,
-                        "Excellent health" = 4),
+                        "Health" = 3),
                       bold = TRUE,
-                      line = TRUE)
+                      line = TRUE)  
   
     out <- knitr::kables(list(T1, T2),
                        format = "latex",
                        label = "BurrosData",
-                       caption = "Left: the health and reproductive status of female burros. Right: summary of the burro data. The odds ratios are relative to burros lactating. (Burros pregnant and lactating were counted with the lactating burros only.)") %>% 
+                       caption = "Left: the health and reproductive status of female burros. Right: row proportions for the burro data. (Pregnant and lactating burros were counted with the lactating burros only.)") %>% 
     kable_styling(font_size = 8)
 
   out2 <- prepareSideBySideTable(out) 
@@ -1085,7 +1117,7 @@ if( knitr::is_html_output() ) {
         format = "html",
         align = "c",
         longtable = FALSE,
-        caption = "The health and reproductive status of female burros. (Burros pregnant and lactating were counted with the lactating burros only.)",
+        caption = "The health and reproductive status of female burros. (Pregnant and lactating burros were counted with the lactating burros only.)",
         booktabs = TRUE)
 }
 ```
@@ -1094,59 +1126,81 @@ if( knitr::is_html_output() ) {
 if( knitr::is_html_output() ) {
   kable(pad(BurroSummary,
             surroundMaths = TRUE,
-            targetLength = 3,
-            digits = 0),
+            targetLength = 5,
+            digits = 3),
         format = "html",
         align = "c",
         longtable = FALSE,
-        caption = "Summary of the burro data. The odds ratios are relative to burros lactating.",
+        caption = "Row proportions for the burros data.",
         booktabs = TRUE)
 }
 ```
 
 
 
-```{r BurrosChisqjamovi, fig.show="hold", fig.cap="Software output for the burro-health data", fig.align="center", out.width=c("43%", "56%")}
-knitr::include_graphics( "jamovi/Burros/BurrosChisquareTest.png")
-knitr::include_graphics( "jamovi/Burros/BurrosExpected.png")
-```
-
-
-```{r BurrosSidebysideBar, fig.cap="A side-by-side bar chart for the burro-health data", fig.align="center", out.width="70%", fig.height=3.25, fig.width=7}
-barplot(t(BurroTab), 
-        beside = TRUE,
+```{r BurrosChisqjamoviPlot, fig.show="hold", fig.cap="Left: a stacked bar chart for the burro-health data. Right: software output for the burro-health data", fig.align="center", out.width=c("49%", "50%")}
+barplot(t(BurroRowProps), 
+        beside = FALSE,
         las = 1,
-        ylim = c(0, 80),
-        ylab = "Counts",
+        ylim = c(0, 1.35),
+        ylab = "Proportion",
         xlab = "Age group",
-        main = "Side-by-side bar chart\n for burro-health data",
-        legend.text = TRUE, 
+        axes = FALSE,
+        main = "Stacked bar chart\n for the burro-health data",
+        legend.text = c("Poor", "Fair", "Excellent"),
         args.legend = list( bty = "n", 
-                            ncol = 1,
-                            x = "topleft"))
+                            ncol = 3,
+                            title = "Health of the burro",
+                            x = "top"))
+axis(side = 2,
+     las = 1,
+     at = seq(0, 1, by = 0.2) )
 
+###
+
+knitr::include_graphics( "jamovi/Burros/BurrosChisquareTest.png")
+
+
+#knitr::include_graphics( "jamovi/Burros/BurrosExpected.png")
 ```
 
 
-For the numerical summary table
-`r if (knitr::is_latex_output()) {
-   '(Table\\ \\@ref(tab:BurrosData), right table):'
-} else {
-   '(Table\\ \\@ref(tab:BurrosSummaryHTML)):'
-}`
+<!-- ```{r BurrosSidebysideBar, fig.cap="A side-by-side bar chart for the burro-health data", fig.align="center", out.width="70%", fig.height=3.25, fig.width=7} -->
+<!-- barplot(t(BurroTab),  -->
+<!--         beside = TRUE, -->
+<!--         las = 1, -->
+<!--         ylim = c(0, 80), -->
+<!--         ylab = "Counts", -->
+<!--         xlab = "Age group", -->
+<!--         main = "Side-by-side bar chart\n for burro-health data", -->
+<!--         legend.text = TRUE,  -->
+<!--         args.legend = list( bty = "n",  -->
+<!--                             ncol = 1, -->
+<!--                             x = "topleft")) -->
 
-* For barren burros: the odds of excellent health is $16/(21 + 38) = 0.271$.
-* For pregnant (non-lactating) burros: the odds of excellent health is $14/(53 + 62) = 0.122$.
-* For lactating burros: the odds of excellent health is $4/(29 + 78) = 0.0374$.
+<!-- ``` -->
 
-(We could have chosen to compute the odds of Fair or Poor health, rather than Excellent health.)
-For computing the odds ratios, Row\ 3 is on the bottom of the fraction (as the reference level):\index{Reference level}
 
-* The OR of excellent health, comparing barren burros to lactating burros, is: $0.271/0.037 = 7.25$.
-* The OR of excellent health, comparing pregnant burros to lactating burros, is: $0.122/0.037 = 3.30$.
 
-That is, the odds of excellent health for barren burros is $7.25$ times the odds of excellent health compared to lactating burros.
-Similarly, the odds of excellent health for pregnant burros is $3.26$ times the odds of excellent health compared to lactating burros.
+<!-- ```{r BurrosStackedBar, fig.cap="A stacked bar chart for the burro-health data", fig.align="center", out.width="40%", fig.height=4.25, fig.width=4} -->
+<!-- barplot(t(BurroRowProps),  -->
+<!--         beside = FALSE, -->
+<!--         las = 1, -->
+<!--         ylim = c(0, 1.35), -->
+<!--         ylab = "Proportion", -->
+<!--         xlab = "Age group", -->
+<!--         axes = FALSE, -->
+<!--         main = "Stacked bar chart\n for the burro-health data", -->
+<!--         legend.text = c("Poor", "Fair", "Excellent"), -->
+<!--         args.legend = list( bty = "n",  -->
+<!--                             ncol = 3, -->
+<!--                             title = "Health of the burro", -->
+<!--                             x = "top")) -->
+<!-- axis(side = 2, -->
+<!--      las = 1, -->
+<!--      at = seq(0, 1, by = 0.2) ) -->
+<!-- ``` -->
+
 
 The hypothesis are usually worded in terms of associations (but *not* correlations):
 
@@ -1173,7 +1227,7 @@ While we know there is an association between the variables, we can only specula
 Comparing all possible *pairs* of groups increases the probability of *incorrectly* declaring a difference between the odds (increasing the chance of a Type\ I error;\index{Type\ I error} Sect.\ \@ref(TypeErrors))
 The correct approach requires methods beyond this book.
 
-All *expected* values exceed $5$ (Fig.\ \@ref(fig:BurrosChisqjamovi)), so the results are statistically valid.
+The smallest *expected* value is $75\times 34/315 = 8.1$, which exceeds $5$, so the results are statistically valid.
 
 
 
