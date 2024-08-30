@@ -872,13 +872,19 @@ colnames(TNsummary) <- c( "Odds infected",
                           "Sample size")
 rownames(TNsummary) <- c("Natural",
                          "Relocated",
-                         "Odds ratio:")
+                         "")
 
 
 TNsummary[1:2, 1] <- TurtleData[, 1] / TurtleData[, 2]
 TNsummary[1:2, 2] <- TurtleData[, 1] / rowSums(TurtleData)
 TNsummary[1:2, 3] <- apply(TurtleData, 1, "sum")
-TNsummary[3, 1] <- TNsummary[1, 1] / TNsummary[2, 1]
+TNsummary[3, 1]   <- paste0("\\llap{OR:\ }$", 
+                             round( TNsummary[1, 1] / TNsummary[2, 1], 2),
+                            "$")
+TNsummary[3, 2]   <- paste0("\\llap{Diff.:\ }$", 
+                             round(as.numeric(TNsummary[1, 2]) - as.numeric(TNsummary[2, 2]), 3),
+                            "$")
+
 
 
 if( knitr::is_latex_output() ) {
@@ -902,8 +908,8 @@ if( knitr::is_latex_output() ) {
   
   T2 <- kable( pad(TNsummary,
                    surroundMaths = TRUE,
-                   targetLength = c(5, 5, 2),
-                   digits = c(3, 3, 0)),
+                   targetLength = c(4, 5, 2),
+                   digits = c(2, 3, 0)),
                format = "latex",
                booktabs = TRUE,
                valign = 't',
@@ -1329,8 +1335,8 @@ knitr::kable( pad(Farmers,
 \hspace{0.05\textwidth}
 \begin{minipage}{0.54\textwidth}%
 \centering
-```{r, out.width='95%'}
-knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2-Expected.png")
+```{r, out.width='80%'}
+knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2-Test.png")
 ```
 \caption{Software output for the farming study}\label{fig:farmersjamoviHT}
 \end{minipage}
@@ -1356,7 +1362,7 @@ if( knitr::is_html_output() ) {
 <!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
 `r if (knitr::is_latex_output()) '<!--'`
 ```{r farmersjamoviHT, fig.show="hold", fig.cap="Software output for the farming study", fig.align="center", out.width="50%"}
-knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2-Expected.png")
+knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2-Test.png")
 ```
 
 
@@ -1683,7 +1689,7 @@ Of the $386$ males observed, $79$ wore hats; of the $366$ females observed, $22$
 
 
 
-```{r SunglassesOutput, fig.show="hold", fig.cap="Software output for the hats data", fig.align="center", out.width=c("52%", "47%"), fig.show='hold'}
+```{r SunglassesOutput, fig.show="hold", fig.cap="Software output for the hats data", fig.align="center", out.width=c("49%", "50%"), fig.show='hold'}
 knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-CI-Both.png" )
 knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-Test-Both.png" )
 ```
