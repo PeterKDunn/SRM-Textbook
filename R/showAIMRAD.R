@@ -1,6 +1,6 @@
 showAIMRAD <- function(debug = FALSE){
 
-  openplotmat( )
+  openplotmat( ylim = c(0.2, 0.85) )
   
   par( mar = c(0.1, 0.2, 0.1, 0.2) )
   
@@ -44,6 +44,8 @@ showAIMRAD <- function(debug = FALSE){
   pos[12, ] <- c(0.70, 0.95) ### TITLE: PAPER
   pos[13, ] <- c(0.20, 0.95) ### TITLE: PROCESS
   
+  if (debug) print(pos)
+  if (debug) print(par()$mar)
 
   # TITLES
   diagram::textrect( pos[12, ], 
@@ -259,6 +261,8 @@ showAIMRAD <- function(debug = FALSE){
     axis(side = 1)
     axis(side = 2)
     box()
+    print( par()$mar )
+    print( par()$usr )
   }
   
 }
