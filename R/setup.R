@@ -82,3 +82,5 @@ makeTransparent <- function(someColor, alpha = 100) {
     )
   })
 }
+
+
