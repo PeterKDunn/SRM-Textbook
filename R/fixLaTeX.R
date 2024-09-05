@@ -2,9 +2,12 @@
 
 # Read the current file name from the file where this is stored (see  R/setup.R)
 
-# Read the latest file from 
-recentFile <- readLines("current_file_name.txt")
-cat("File read:", recentFile, "\n")
+# Read the latest file from
+message("Hereisthefolder:", getwd())
+print(system("ls", intern=TRUE))
+#if (FALSE) {
+recentFile <- readLines("./_main.md")
+#message("File read:", recentFile, "\n")
 ### THE FIXES
 #
 # There seems to be no cases left of these:
@@ -31,8 +34,9 @@ cat("File read:", recentFile, "\n")
 # - Replace "et al." with "et\ al.\@ "
 
 out <- gsub(pattern = 'RQ.',
-            replacement = 'POOPRQ\\\\\\@. ',
-            x = readLines(recentFile),
+          replacement = "PORRIDGE",
+#            replacement = 'RQ\\\\\\@. ',
+            x = recentFile,
             fixed = TRUE,
             ignore.case = FALSE)
 gsub(pattern = 'AIS.',
@@ -74,7 +78,7 @@ gsub(pattern = 'et al. ',
      ignore.case = TRUE)
 
 write(out,
-       file = recentFile)
+       file = "./_main.md")
 
 ### THEN spell check:
 #textidote --output html _main.tex > mainSpell.html
@@ -86,3 +90,4 @@ write(out,
 #tinytex::pdflatex(file="_book/_main.tex")
 #
 #bookdown::render_book("index.Rmd", "bookdown::pdf_book")
+#}
