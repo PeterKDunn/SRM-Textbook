@@ -1,3 +1,12 @@
+# Define a simple log function to write output to a log file
+log_message <- function(message) {
+  log_file <- file("post_process_log.txt", open = "a")
+  writeLines(message, log_file)
+  close(log_file)
+}
+
+
+
 post_processor <- function(metadata, input_file, output_file, clean, verbose) {
   
   gsub(pattern = "RQ",
