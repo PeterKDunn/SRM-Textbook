@@ -1,4 +1,9 @@
 post_processor <- function(metadata, input_file, output_file, clean, verbose) {
+  
+  gsub(pattern = "RQ",
+       replacement = "XXXXXXXX",
+       x = readLines("_main.tex") )
+
   log_file <- "post_processor_log.txt"
   
   # Function to log messages by appending them to the log file
