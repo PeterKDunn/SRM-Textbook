@@ -1,46 +1,45 @@
-# Define a simple log function to write output to a log file
-log_message <- function(message) {
-  log_file <- file("post_process_log.txt", open = "a")
-  writeLines(message, log_file)
-  close(log_file)
-}
-
-
+cat("YYYYYYYYYYYYYYYYYYYYYYYYYYYY\n")
 
 post_processor <- function(metadata, input_file, output_file, clean, verbose) {
   
-  gsub(pattern = "RQ",
-       replacement = "XXXXXXXX",
-       x = readLines("_main.tex") )
+  cat("PPPPPPPPPPPPP", input_file, "\n" )
+  cat(deparse(substitute(input_file)),"\n")
+  
+  new_tex_file <- gsub(pattern = "RQ",
+                       replacement = "XXXXXXXX",
+                       x = readLines(input_file))
 
-  log_file <- "post_processor_log.txt"
-  
-  # Function to log messages by appending them to the log file
-  log_message <- function(message) {
-    log_conn <- file(log_file, open = "a")  # Open the log file in append mode
-    writeLines(message, log_conn)           # Write the message to the log
-    close(log_conn)                         # Close the connection
-  }
-  
-  # Start logging
-  log_message(">>>>>>>>>>>>>>>>>>>> Log started and so it should have\n")
-  
-  # Check if the input .tex file exists
-  if (file.exists(input_file)) {
-    log_message(paste("Input file exists:", input_file, "\n"))
-    
-    # Read the .tex file
-    tex <- readLines(input_file)
-    
-    # Write the modified .tex content back to the input file
-    writeLines(tex, input_file)
-  } else {
-    log_message("Input file does not exist!\n")
-  }
-  
-  # Final log message
-  log_message("Post-processing complete.\n")
-  
+  # log_file <- "post_processor_log.txt"
+  # 
+  # # Function to log messages by appending them to the log file
+  # log_message <- function(message) {
+  #   log_conn <- file(log_file, open = "a")  # Open the log file in append mode
+  #   writeLines(message, log_conn)           # Write the message to the log
+  #   close(log_conn)                         # Close the connection
+  # }
+  # 
+  # # Start logging
+  # log_message(">>>>>>>>>>>>>>>>>>>> Log started and so it should have\n")
+  # 
+  # # Check if the input .tex file exists
+  # if (file.exists(input_file)) {
+  #   log_message(paste("Input file exists:", input_file, "\n"))
+  #   
+  #   # Read the .tex file
+  #   tex <- readLines(input_file)
+  #   
+  #   # Write the modified .tex content back to the input file
+  #   writeLines(tex, input_file)
+  # } else {
+  #   log_message("Input file does not exist!\n")
+  # }
+  # 
+  # # Final log message
+  # log_message("Post-processing complete.\n")
+  # 
   # Return the output file
-  return(output_file)
+  writeLines( new_tex_file, "BOB.TEX")
+  writeLines( new_tex_file, input_file)
+  return(new_tex_file)
 }
+
