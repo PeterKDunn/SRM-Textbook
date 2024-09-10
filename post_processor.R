@@ -1,13 +1,15 @@
 cat("YYYYYYYYYYYYYYYYYYYYYYYYYYYY\n")
 
-post_processor <- function(metadata, input_file, output_file, clean, verbose) {
+post_processor <- function(input, output) {
+  
+  latex_code <- readLines(input)
   
   cat("PPPPPPPPPPPPP", input_file, "\n" )
   cat(deparse(substitute(input_file)),"\n")
   
-  new_tex_file <- gsub(pattern = "RQ",
+  new_tex_file <- gsub(pattern = "a",
                        replacement = "XXXXXXXX",
-                       x = readLines(input_file))
+                       x = readLines(latex_code))
 
   # log_file <- "post_processor_log.txt"
   # 
@@ -39,7 +41,7 @@ post_processor <- function(metadata, input_file, output_file, clean, verbose) {
   # 
   # Return the output file
   writeLines( new_tex_file, "BOB.TEX")
-  writeLines( new_tex_file, input_file)
-  return(new_tex_file)
+  writeLines( new_tex_file, output)
+  return(output)
 }
 
