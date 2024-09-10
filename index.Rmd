@@ -27,36 +27,41 @@ graphics: yes
 ---
 
 
-```{r editLaTeX, include = FALSE}
-# Custom function to modify the LaTeX file
-cat("BBBBBBBBBB \n" )
-
-
-#knitr::opts_chunk$set(echo = FALSE)
-
-modify_latex <- function(latex_code) {
-  # Your modification logic here
-  # For example, to add a custom preamble:
-  
-  
-  latex_code <- readLines(latex_code)
-  
-  cat("PPPPPPPPPPPPP \n" )
-  
-  latex_code <- gsub(pattern = "RQ", 
-                     replacement = "XXXXXXXX",
-                     x = latex_code)
-  return(latex_code)
-}
-
+```{r editLaTeX, include = TRUE}
 # Use the `before_output` hook to apply the modification
+cat("KKKKK\n") # Prints OK
+print(knitr::is_latex_output() ) # Prints as TRUE
+cat("JJJJJ\n") # Prints OK
+
 knitr::opts_hooks$set(before_output = function(x, options) {
-  print(options$output_format)
-  if (options$output_format == "latex") {
-    x <- modify_latex(x)
-  }
-  x
+     cat("TTTTTTTT\n") # Does not print
+
+  tryCatch({
+    if (knitr::is_latex_output()) {
+      # ... your modification logic
+    }
+  }, error = function(e) {
+    print(paste("Error in before_output hook:", e$message))
+  })
 })
+
+# 
+#     cat("TTTTTTTT\n") # Does not print
+# 
+# #  if (knitr::is_latex_output() ) {
+#    # Read the LaTeX code
+#     latex_code <- x
+#     
+#     cat("RRRRRRRRR\n") # Does not print
+# 
+#     # Modify the LaTeX code
+#     latex_code <- gsub("RQ", "XXXXXXX", latex_code)
+# 
+#     # Return the modified LaTeX code
+#     return(latex_code)
+# #  }
+#   x
+# })
 ```
 
 
@@ -85,8 +90,7 @@ style_widgets(correct = "green")
 ```
 
 ```{r echo=FALSE}
-cat("LLLLLL\n")
-source("./post_processor.R")
+cat("LLLLLL\n") # Prints OK
 ```
 
 
