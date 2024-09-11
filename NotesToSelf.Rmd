@@ -1,55 +1,59 @@
 # General
 
-- For caption scaled appropriately for smaller font size (e.g., Exercises), use: -->
-    \captionsetup{font={Large,it}}
-  in appropriate table or figure environment (from the  caption  package)
+- For caption scaled appropriately for smaller font size (e.g., Exercises), use:  
+    \captionsetup{font={Large,it}}  
+  in appropriate table or figure environment (from the  `caption`  package)
 
-- To render in R, where `clean = TRUE` keeps the md files (for converting to epub?)
+- To render in R (where `clean = FALSE` keeps the md files (for converting to epub?))
 
-bookdown::render_book("index.Rmd", clean = FALSE)
-
-bookdown::render_book("index.Rmd", "bookdown::pdf_book")
-bookdown::render_book("index.Rmd"); render_book("index.Rmd", "bookdown::pdf_book")
+  - bookdown::render_book("index.Rmd", clean = FALSE)
+  - bookdown::render_book("index.Rmd", "bookdown::pdf_book")
+  - bookdown::render_book("index.Rmd"); render_book("index.Rmd", "bookdown::pdf_book")
 
 - To publish on bookdown:
 
-library(rsconnect)
-bookdown::publish_book()
-(WAS: publish_book(name="Book"); publish_book() )
-
+  - library(rsconnect)
+  - bookdown::publish_book()
+  - (WAS: publish_book(name="Book"); publish_book() )
 
 - It seems that figures default to:
   - fig.width = 7 (inches) 
   - fig.height = 5 (inches)
 
+- Now, I can just run `make` which
+  - creates the PDF file,
+  - includes using correct LaTeX spacing (at least mostly), such as "RQ.\@ ".
+
+
+
+
+# Spell check
+
+Run from terminal (from the `_book` directory):
+  
+- cd _book  
+  textidote --output html _main.tex > mainSpell.html
+- Installed by following: https://formulae.brew.sh/formula/textidote
+
+I used to do this:
+
+- library(spelling)
+- spell_check_files("01-Introduction.Rmd", lang="en_GB")
 
 
 # Thoughts:
 
 - To stash files: git stash -- <filenames>
-# - To check spelling:
-# library(spelling)
-# spell_check_files("01-Introduction.Rmd", lang="en_GB")
+- To change content of files in a directory:  
+  sed -i '' 's/fig.width=3/fig.width=5/g' *.Rmd
 
-- Spell check: Run from terminal:
-  textidote --output html _main.tex > mainSpell.html
-- Installed by following: https://formulae.brew.sh/formula/textidote
+- To locate non-Unicode characters... this seems to (mostly) work...  
+  awk '/[^\x00-\x7F]/ && !(/[\\*$@{.}>",?:\x271=#`]/){print FILENAME":"NR":"$0}' 40-Read.Rmd 
 
+- To find a specific character:  
+  awk '/\u0302/' /path/to/your/file.txt
 
-- To change content of files in a directory:
-sed -i '' 's/fig.width=3/fig.width=5/g' *.Rmd
-
-- To locate non-Unicode characters... this seems to (mostly) work...
-
-awk '/[^\x00-\x7F]/ && !(/[\\*$@{.}>",?:\x271=#`]/){print FILENAME":"NR":"$0}' 40-Read.Rmd 
-
-- To find a specific character:
-
-awk '/\u0302/' /path/to/your/file.txt
-
-
-- Thin spaced (e.g., between numbers and units of measurement): This may work:
-
+- Thin spaced (e.g., between numbers and units of measurement): This may work:  
   - TRYING out the weight of `r knitr::asis_output("40\u2009")`m^2^.
 
 
