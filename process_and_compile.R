@@ -90,8 +90,7 @@ modify_tex_file <- function(tex_file) {
 
     # Write the modified content back to the .tex file
     writeLines(tex_lines, tex_file )
-    writeLines(tex_lines, paste0(tex_file, "HIDEME") )
-    
+
     message("* Modified the .tex file: ", tex_file)
   } else {
     message("* The .tex file does not exist: ", tex_file)
