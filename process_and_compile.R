@@ -113,7 +113,7 @@ system(paste("xelatex", shQuote(tex_file)))  # Run xelatex twice for proper refe
 system("mv _main.pdf _book/_main.pdf")
 
 ### REMOVE THE COPIED FILES
-message("* Deleting image files")
+message("* Deleting image files >>>>>>>>>>>>>>")
 system("rm -R ./01-Introduction_files")
 system("rm -R ./02-RQs_files")
 system("rm -R ./03-ResearchDesign-Overview_files")
@@ -155,5 +155,6 @@ system("rm -R ./39-Write_files")
 system("rm -R ./40-Read_files")
 system("rm -R ./51-App-Tables_files")
 system("rm -R ./53-App-Answers_files")
+message("* Deleting image files: ALMOST DONE <<<<<<<<<<<<<<<<")
 system("rm -R ./56-App-Glossary_files")
-message("* Deleting image files: DONE")
+message("* Deleting image files: DONE <<<<<<<<<<<<<<<<")
