@@ -14,10 +14,10 @@
 
 ### SET UP 
 
-splitFiles <- c(17, 
-                42, # End of page 1
-                77, 
-                110,# End of page 2
+splitFiles <- c(20, 
+                45, # End of page 1
+                80, 
+                112,# End of page 2
                 150, 
                 1540)
 # Where to split the data file, for page 1, to create two columns. 
