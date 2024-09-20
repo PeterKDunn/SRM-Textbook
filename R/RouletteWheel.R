@@ -25,23 +25,22 @@ plotWheel <- function(wheelSize = c(10, 4), numberColours){
                      22, 18, 29, 7, 28, 12, 35, 3, 26)
   
   # Colours on the segments
-  par( mar = c(0.1, 0.1, 4.1, 0.1))
+  par( mar = c(0.1, 0.1, 3.1, 0.1))
   xPlot <- cos( deg2rad(seq(0, 360, 
                 by = 1))) * DD
   yPlot <- sin( deg2rad(seq(0, 360, 
                 by = 1))) * DD
   plot( x = xPlot,
         y = yPlot,
-        #axes = FALSE,
+        axes = FALSE,
         xlab = "", 
         ylab = "",
         xlim = range(xPlot),
         ylim = range(yPlot),
         type = "n", # DO the outer lines later to define them properly
         asp = 1)
-  box()
-  abline(h = c(-10, -5, 0, 5, 10))
-  
+
+    
   for (i in (1:37)){ # For each wheel segment...
     
     colAngle <- sectorAngle*(i - 1)
