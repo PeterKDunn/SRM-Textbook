@@ -542,6 +542,81 @@ knitr::include_graphics("jamovi/Gorillas/GorillasCorrelation-jamovi.png")
 
 
 
+::: {.exercise #JeansCor}
+[*Dataset*: `Jeans`]
+@PuddingJeans recorded data on the size of pockets in men's and women's jeans.
+This exercise considers the correlation between the maximum widths and maximum heights of front pockets. 
+
+1. The correlation in all jeans is $r = 0.38$; the $P$-value for a hypothesis test is $P = 0.00051$.
+   What does this mean?
+2. If only men's jeans are studied, the correlation is $r = -0.09$ (note: negative value), with $P = 0.59$.
+   What does this mean?
+3. If only women's jeans are studied, the correlation is $r = 0.14$, with $P = 0.38$.
+   What does this mean?
+4. From the last three questions, how would you describe the relationship between the maximum widths and maximum heights of the front pockets of jeans?
+   (Figure\ \@ref(fig:JeansPocketCorrelations) may help.)
+:::
+
+```{r JeansPocketCorrelations, out.width='100%', fig.width=6, fig.height=3, fig.align="center", fig.cap="The relationships between minimum and maximum heights of front pockets for all jeans (left), men's jeans (centre) and women's jeans (right)."}
+data(Jeans)
+
+par(mfrow = c(1, 3))
+
+plot(MaxHeightFront ~ jitter(MaxWidthFront), 
+     data = Jeans,
+     las = 1,
+     pch = ifelse(Sex == "men", 19, 1),
+     ylim = c(10, 32),
+     xlab = "Max. width (front)",
+     ylab = "Max. height (front)",
+     main = "All jeans"
+     )
+legend( "top",
+        pch = c(19, 1),
+        legend = c("Men", "Women"),
+#        bty = "n",
+        ncol = 2)
+abline( lm(MaxHeightFront ~ MaxWidthFront,
+           data = Jeans),
+        lwd = 2,
+        col = "grey")
+# cor(Jeans$MaxHeightFront, 
+#     Jeans$MaxWidthFront) 
+
+plot(MaxHeightFront ~ jitter(MaxWidthFront), 
+     data = subset(Jeans, Sex == "men"),
+     las = 1,
+     ylim = c(10, 32),
+     pch = 19,
+#     ylim = c(20, 28),
+     xlab = "Max. width (front)",
+     ylab = "Max. height (front)",
+     main = "Men's jeans"
+     )
+abline( lm(MaxHeightFront ~ MaxWidthFront,
+           data = subset(Jeans, Sex == "men") ),
+        lwd = 2,
+        col = "grey")
+# cor(Jeans$MaxHeightFront[Jeans$Sex == "men"], 
+#     Jeans$MaxWidthFront[ Jeans$Sex == "men"]) 
+
+plot(MaxHeightFront ~ jitter(MaxWidthFront), 
+     data = subset(Jeans, Sex == "women"),
+     las = 1,
+     ylim = c(10, 32),
+#     ylim = c(11, 22),
+     xlab = "Max. width (front)",
+     ylab = "Max. height (front)",
+     main = "Women's jeans"
+     )
+abline( lm(MaxHeightFront ~ MaxWidthFront,
+           data = subset(Jeans, Sex == "women") ),
+        lwd = 2,
+        col = "grey")
+# cor(Jeans$MaxHeightFront[Jeans$Sex == "women"], 
+#     Jeans$MaxWidthFront[ Jeans$Sex == "women"]) 
+```
+
 ::: {.exercise #GraphsTypingCor}
 [*Dataset*: `Typing`]
 The `Typing` dataset contains four variables: typing speed (`mTS`), typing accuracy (`mAcc`), age (`Age`). and sex (`Sex`) for $1301$ students [@pinet2022typing].

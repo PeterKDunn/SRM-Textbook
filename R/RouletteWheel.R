@@ -74,7 +74,7 @@ plotWheel <- function(wheelSize = c(10, 4), numberColours){
          y = sin( deg2rad( textAngle[i])) * radiusForNumbers * DD,
          labels = numberLabels[i],
          srt = textAngle[i] - 90,
-         cex = 0.75,
+         cex = 0.7,
          col = "black")
   }  
   # Redo outside wheel outline
