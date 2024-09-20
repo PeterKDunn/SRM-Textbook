@@ -4,10 +4,14 @@ deg2rad <- function(x) {
   x * pi / 180
 }
 
+
+#####################################################################################
 rad2deg <- function(x) {
   x * 180 / pi
 }
 
+
+#####################################################################################
 # Plot wheel function
 plotWheel <- function(wheelSize = c(10, 4), numberColours){
 
@@ -21,17 +25,22 @@ plotWheel <- function(wheelSize = c(10, 4), numberColours){
                      22, 18, 29, 7, 28, 12, 35, 3, 26)
   
   # Colours on the segments
-  par( mar = c(0.25, 0.25, 1.25, 0.25))
-  plot( x = cos( deg2rad(seq(0, 360, 
-                             by = 1))) * DD,
-        y = sin( deg2rad(seq(0, 360, 
-                             by = 1))) * DD,
-        axes = FALSE,
+  par( mar = c(0.1, 0.1, 4.1, 0.1))
+  xPlot <- cos( deg2rad(seq(0, 360, 
+                by = 1))) * DD
+  yPlot <- sin( deg2rad(seq(0, 360, 
+                by = 1))) * DD
+  plot( x = xPlot,
+        y = yPlot,
+        #axes = FALSE,
         xlab = "", 
         ylab = "",
+        xlim = range(xPlot),
+        ylim = range(yPlot),
         type = "n", # DO the outer lines later to define them properly
-        mar = c(0.1, 0.1, 0.1, 0.1),
         asp = 1)
+  box()
+  abline(h = c(-10, -5, 0, 5, 10))
   
   for (i in (1:37)){ # For each wheel segment...
     
@@ -74,7 +83,7 @@ plotWheel <- function(wheelSize = c(10, 4), numberColours){
          y = sin( deg2rad( textAngle[i])) * radiusForNumbers * DD,
          labels = numberLabels[i],
          srt = textAngle[i] - 90,
-         cex = 0.7,
+         cex = 0.65,
          col = "black")
   }  
   # Redo outside wheel outline
@@ -84,6 +93,7 @@ plotWheel <- function(wheelSize = c(10, 4), numberColours){
 }       
 
 
+#####################################################################################
 # Plotting ball function
 plotBall <- function(angle, radius, wheelSize = c(10, 4), colour = "black"){
   
@@ -94,7 +104,7 @@ plotBall <- function(angle, radius, wheelSize = c(10, 4), colour = "black"){
   points( x = cos(angle) * radius,
           y = sin(angle) * radius,
           pch = 19,
-          cex = 2,
+          cex = 1.6,
           col = colour)  
   
 }
@@ -113,7 +123,7 @@ plotBallShadow <- function(angle,
   points( x = cos(angle) * radius,
           y = sin(angle) * radius,
           pch = 19,
-          cex = 2,
+          cex = 1.6,
           col = colour)
   
 }
@@ -177,7 +187,8 @@ plotSpinningWheel <- function(angle,
   
   
   # Plot wheel
-  plotWheel(wheelSize = wheelSize, numberColours)
+  plotWheel(wheelSize = wheelSize, 
+            numberColours)
   title( main = main )    
   
   
