@@ -69,28 +69,29 @@ showCorrelationalStudyDesign <- function(intervention = FALSE,
   
   ### ARROWS Variables to 'individuals'
   if (intervention) {
-    diagram::straightarrow(from = c(0.25, 0.3), # From X to IND
-                           to = c(0.5, 0.7), 
-                           #segment = c(0.4, 0.6),
-                           lty = ifelse(intervention, 1, 2), 
-                           lwd = 2)
+
     text(x = 0.35,
          y = 0.5,
          labels = "By researchers",
          col = "grey",
          srt = 0,
          cex = 1.65)
-
+    
+    diagram::straightarrow(from = c(0.25, 0.3), # From X to IND
+                           to = c(0.5, 0.7), 
+                           segment = c(0, 0.8),
+                           lty = ifelse(intervention, 1, 2), 
+                           lwd = 2)
   } else {
     diagram::straightarrow(from = c(0.5, 0.7), # From X to IND
                            to = c(0.25, 0.3), 
-                           #segment = c(0.4, 0.6),
+                           segment = c(0.2, 1),
                            lty = ifelse(intervention, 1, 2), 
                            lwd = 2)
   }
   diagram::straightarrow(from = c(0.5, 0.7), # From X to IND
                          to = c(0.75, 0.3), 
-                         #segment = c(0.4, 0.6),
+                         segment = c(0.2, 1),
                          lty = 2, 
                          lwd = 2)
   
@@ -116,7 +117,7 @@ showCorrelationalStudyDesign <- function(intervention = FALSE,
   if ( tolower(explanatoryName) != tolower("Explanatory variable") ) {
     text( x = 0.2, 
           y = 0.1,
-          cex = 0.9,
+          cex = 0.92,
           labels = "(Explanatory variable)")
   }
   
@@ -130,7 +131,7 @@ showCorrelationalStudyDesign <- function(intervention = FALSE,
   if ( tolower(responseName) != tolower("Response variable") ) {
     text( x = 0.8, 
           y = 0.1,
-          cex = 0.9,
+          cex = 0.92,
           labels = "(Response variable)")
   }
   

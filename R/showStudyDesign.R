@@ -326,7 +326,7 @@ showStudyDesign <- function(studyType, # One of "TrueExp", "QuasiExp", "Obs"
                        rady = 0.07,
                        shadow.size = 0,
                        lcol = IndividualColour,
-                       box.col = IndividualColour)
+                       box.col = "white")
     
   }
   
