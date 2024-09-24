@@ -87,7 +87,7 @@ showSampleSystematic <- function(sizeHorizontal = 21,
 #    if (jump == 2) ordinal <- "nd"
 #    if (jump == 3) ordinal <- "rd"
 #    
-    mtext(paste("Select every ", jump,"th person, but start at random", sep = ""),   
+    mtext(paste("Select every ", jump,"th person, but start at random  place", sep = ""),   
           side = 1, 
           cex = 0.9,
           at = sizeHorizontal / 2)
@@ -102,7 +102,8 @@ showSampleSystematic <- function(sizeHorizontal = 21,
     # Indicate the initial, randomly-chosen starting selection
     points(x = start,
            y = 1,
-           cex = 2,
+           lwd = 2,
+           cex = 2.2,
            pch = 0)
   }
   
