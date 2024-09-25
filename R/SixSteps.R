@@ -82,7 +82,7 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   boxHeight <- 2.5 # Ht and Width of the boxes (i.e., the six IMAGES)
   boxWidth <- 2.5  # Make square!
                    # This is the ENLARGED size.
-  shrinkBoxFactor <- 0.8
+  shrinkBoxFactor <- 0.75
   
   gapHorizontal <- boxWidth  # Total gap between the edges of adjacent boxes
   gapVertical <- boxHeight * 1.4
@@ -127,7 +127,7 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   # SETTINGS
   
   # How much to enlarge each image
-  boxShrinkage <- rep(shrinkBoxFactor, 6) # i.e. by default, all boxes are shrunk
+  boxShrinkage <- rep(shrinkBoxFactor, .6) # i.e. by default, all boxes are shrunk
   if (Flag > 0 ) boxShrinkage[Flag] <- 1  # Selected box is unshrunk size
   
   
@@ -202,7 +202,9 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
                              to   = c( arrowEndX[i],
                                        arrowEndY[i] ),
                              # Draw box 6 to box 1 is lighter shade, and dashed
-                             lcol = ifelse(i == 6, "grey", "black"),
+                             lcol = ifelse(i == 6, 
+                                           "grey", 
+                                           "black"),
                              lty = ifelse(i == 6, 3, 1),
                              lwd = 2,
                              arr.pos = 0.5 ) # Where to place the arrow head
@@ -227,16 +229,25 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   # DRAW IMAGES
   for (i in 1 : 6 ) { #SIX steps}
 
-    imageLocationX <-  c( boxX[i] - boxWidth/2 * aspectRatio * ifelse(Flag==i, 1, shrinkBoxFactor),
-                      boxX[i] + boxWidth/2 * aspectRatio * ifelse(Flag==i, 1, shrinkBoxFactor))
-    imageLocationY <- c( boxY[i] - boxHeight/2 * ifelse(Flag==i, 1, shrinkBoxFactor),
-                     boxY[i] + boxHeight/2 * ifelse(Flag==i, 1, shrinkBoxFactor))
+    imageLocationX <-  c( boxX[i] - boxWidth/2 * aspectRatio * ifelse(Flag == i, 
+                                                                      1, 
+                                                                      shrinkBoxFactor),
+                          boxX[i] + boxWidth/2 * aspectRatio * ifelse(Flag == i, 
+                                                                      1, 
+                                                                      shrinkBoxFactor))
+    imageLocationY <- c( boxY[i] - boxHeight/2 * ifelse(Flag == i, 
+                                                        1, 
+                                                        shrinkBoxFactor),
+                         boxY[i] + boxHeight/2 * ifelse(Flag == i, 
+                                                        1, 
+                                                        shrinkBoxFactor))
                  
     plotfunctions::plot_image(img =  imageList[i],
                               type = "png",
                               #keep.ratio = TRUE,
                               xrange = imageLocationX,
                               yrange = imageLocationY,
+                              lwd = 2,
                               bty = ifelse(i == Flag, 
                                            "o",  # Keep box
                                            "n"), # Removes box
