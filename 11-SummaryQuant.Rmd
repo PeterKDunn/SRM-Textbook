@@ -41,7 +41,7 @@ Quantitative data can be collated in a *frequency table*\index{Frequency table!q
 The intervals should be *exhaustive* (cover all values) and *exclusive* (observations belong to one and only one category).
 While not essential, usually the categories are of equal width.
 
-For *discrete* quantitative data, bins are defined to contain single discrete values, or a small number of discrete values (Example\ \@ref(exm:CyclonesTable)).
+For *discrete* quantitative data, bins are defined to contain single discrete values, or a small number of discrete values.
 
 
 :::{.example #CyclonesTable}
@@ -241,8 +241,8 @@ if( knitr::is_html_output() ) {
 ```
 
 
-For *continuous* data, care is needed when creating frequency tables, since the data are rounded.
-The bins should be defined to ensure no values lie on the border between bins (Example\ \@ref(exm:BabyBoomTable)).
+For *continuous* data, care is needed when creating frequency tables, since all continuous data are rounded.
+The bins should be defined to ensure no values lie on the border between bins, and hence creating ambiguity.
 
 
 :::{.example #BabyBoomTable}
@@ -252,14 +252,13 @@ The data in
 }  else {
   'Table\\ \\@ref(tab:BabyBoomDataLATEX)'
 }`
-give the weights of $44$\ babies born in a hospital on one day [@mypapers:Dunn:dataset:1999; @data:Steele:BabyBoom], plus the gender of each baby, and the number of minutes after midnight of the birth.
-The data are given in the order in which the births occurred.
+give the weights of $44$\ babies born in a hospital on one day [@mypapers:Dunn:dataset:1999; @data:Steele:BabyBoom], plus the gender of each baby, and the number of minutes after midnight of the birth (shown in the order in which the births occurred).
 
 To display the distribution of birth weights, the weights can be grouped into clearly-defined weight intervals (Table\ \@ref(tab:BabyBoomTable), left column).
 Alternatively, the breaks between the bins can be given to one more decimal place than the data to avoid observations landing exactly on the bin divisions (final column).
 
 The table also gives percentages in each bin; for example, the percentage of babies over\ $4.0$\kgs is $1/44 \times 100 = 2.27$%, or about\ $2$%. 
-Most babies in the sample are between\ $3$ and\ $4$\kgs at birth.
+Most babies in the sam2ple are between\ $3$ and\ $4$\kgs at birth.
 :::
 
 
@@ -411,7 +410,7 @@ Graphs used to display the distribution of one quantitative variable include:
 * *Histograms* (Sect.\ \@ref(Histograms)):
   best for moderate to large amounts of data.
 * *Stemplots* (Sect.\ \@ref(StemAndLeafPlots)):
-  best for small amounts of data; sometimes useful.
+  best for small amounts of data; only sometimes useful.
 * *Dot charts* (Sect.\ \@ref(DotChartsOneVar)):
   used for small to moderate amounts of data.
 
@@ -424,17 +423,11 @@ The purpose of a graph is to display the information in the clearest, simplest p
 ### Histograms {#Histograms}
 \index{Histogram}\index{Graphs!histogram}
 
-Histograms are a series of boxes, where the width of the box represents an interval of *values* of the variable being graphed, and the height of the box represents the *number* (or *percentage*) of observations within that range of values^[Technically, the *area* of the box is proportional to the number of observations.
+Histograms are a series of boxes, where the width of the box represents an interval of *values* of the variable being graphed, and the height of the box represents the *number* (or *percentage*) of observations within that range of values^[Actually, the *area* of the box is proportional to the number of observations.
 We only consider histograms where the boxes have the same width, so the statements are equivalent.].
 The height of the histogram bars indicate the number (or percentage) in each category (often called 'bins').
 A histograms is essentially a picture of a frequency table.
 The vertical axis can be counts (labelled as 'Counts', 'Frequency', or similar) or percentages.
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The axis displaying the counts (or percentages) should *start from zero*, since the height of the bars visually implies the frequency of those observations (see Example\ \@ref(exm:VerticalTruncation)).
-:::
-
 
 When the quantitative variable is *discrete*, the labels usually are placed on the axis aligned with the centre of the bar (see Example\ \@ref(exm:HistogramsDiscrete)).
 
@@ -497,6 +490,14 @@ axis(side = 1,
      las = 1,
      at = seq(3.5, 11.5, by = 2))
 ```
+
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+The axis displaying the counts (or percentages) should *start from zero*, since the height of the bars visually implies the frequency of those observations (see Example\ \@ref(exm:VerticalTruncation)).
+:::
+
+
 
 
 When the quantitative variable is *continuous*, care is needed when constructing the histogram.
@@ -631,7 +632,7 @@ if (knitr::is_html_output()) {
 ```
 
 
-```{r BBHist1, fig.align="center", fig.width=8.5, fig.height=3, out.width='100%', fig.cap="Starting to make the histogram for the baby-birth data: the first six observations added." }
+```{r BBHist1, fig.align="center", fig.width=8.5, fig.height=3, out.width='100%', fig.cap="Making the histogram for the baby-birth data: the first six observations added." }
 if (knitr::is_latex_output()){
   Wts <- sort(BB$Weight)
   
@@ -646,7 +647,7 @@ if (knitr::is_latex_output()){
   plot( expand.grid(1:datagrid.x, 
                     1:datagrid.y),
         type = "n",
-        ylim = c(-0.5, 4.6),
+        ylim = c(-0.5, 4.7),
         xlim = c(1, 11),
         main = "The birthweights (in order)",
         xlab = "",
@@ -670,13 +671,22 @@ if (knitr::is_latex_output()){
   
   # Now highlight the observation being used
   if (i <= 11) {
-    points(  i, 4, 
-             pch = 1, 
-             col = plotDark, 
-             lwd = 3, 
-             cex = 4 )
+    text( x = 1:i, 
+          y = rep(4, length = length(1 : i) ), 
+          labels = "/",
+          col = "grey", 
+          lwd = 2, 
+          srt = -20,
+          cex = 2.5)
+#    points(  x = 1:i, 
+#             y = rep(4, length = length(1 : i) ), 
+#             pch = "/", # cross 
+#             col = "grey", 
+#             lwd = 3, 
+#             srt = -20,
+#             cex = 2)
   }
-  
+
   ###################
   par(mar = c(5, 4, 4, 0.5) + 0.1)
 
@@ -700,7 +710,7 @@ if (knitr::is_latex_output()){
          y1 = 3,
          length = 0.15,
          angle = 15)
-  text(1.75, 19,
+  text(1.68, 19,
        pos = 4,
        labels = "One observation: 1.7")
   
@@ -710,7 +720,7 @@ if (knitr::is_latex_output()){
          y1 = 5,
          length = 0.15,
          angle = 15)
-  text(2.25, 14,
+  text(2.18, 14,
        pos = 4,
        labels = "Four obs.: 2.1, 2.1, 2.2, 2.4")  
   
@@ -720,14 +730,11 @@ if (knitr::is_latex_output()){
          y1 = 2,
          length = 0.15,
          angle = 15)
-  text(2.75, 9,
+  text(2.68, 9,
        pos = 4,
        labels = "One obs. so far: 2.6")  
 }
 ```
-
-
-
 
 
 
@@ -791,12 +798,12 @@ par( mfrow = c(1, 3))
 
 ::: {.example #Histograms2 name="Histograms"}
 @data:Mages2017:BrainFreeze recorded the length of 'brain freezes' after consuming cold food or drink.
-A histogram of the data (Fig.\ \@ref(fig:HistBrainFreeze)), shows $11$\ people experience symptoms less than\ $5$\ s in length; nine people experienced symptoms for at least\ $5$ but less than\ $10$\ s; and $1$\ person experienced symptoms for at least\ $35$\ s but under\ $40$\ s.
+A histogram of the data (Fig.\ \@ref(fig:HistBrainFreeze)), shows $11$\ people experience symptoms less than\ $5$\secs in length; nine people experienced symptoms for at least\ $5$ but less than\ $10$\secs; and $1$\ person experienced symptoms for at least\ $35$\secs but under\ $40$\secs.
 :::
 
 
-```{r HistBrainFreeze, fig.align="center", fig.width=4.5, fig.height=2.75, out.width='45%', fig.cap="Histogram of the duration of brain-freeze symptoms after drinking ice water. Boundary observations are counted in the lower box." }
-#par( mfrow = c(1, 2))
+```{r HistBrainFreeze, fig.align="center", fig.width=4.5, fig.height=2.65, out.width='45%', fig.cap="Histogram of the duration of brain-freeze symptoms after drinking ice water. Boundary observations are counted in the lower box." }
+par( mar = c(4.5, 4.1, 4.1, 2.1) )
 
 
 Hts <- c(11, 9, 4, 4, 2, 5, 0, 1)
@@ -1154,7 +1161,7 @@ if (knitr::is_latex_output()){
     # Now highlight the observation being used
     if (i <= 11) {
       points(  i, 4, 
-               pch = 1, 
+               pch = 0, 
                col = plotDark, 
                lwd = 3,  
                cex = 4 )
@@ -1897,12 +1904,6 @@ Sometimes, observations are identical, or nearly so, and to avoid points being p
 the points are *jittered*\index{Overplotting!jittering} (placed with some added randomness in the vertical direction)\index{Overplotting!stacking} or *stacked* (placed above each other).
 
 
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-The axis displaying the counts (or percentages) should *start from zero*, since the distance of the dots from the axis visually implies the frequency of those observations (see Example\ \@ref(exm:VerticalTruncation)).
-:::
-
-
-
    
 <div style="float:right; width: 222x; border: 1px; padding:10px">
 <img src="Illustrations/pexels-dzenina-lukac-1583884.jpg" width="200px"/>
@@ -1979,6 +1980,7 @@ if (knitr::is_latex_output()){
 }
   
 ```
+
 
 
 ```{r FriesHTML, fig.height=5.0, fig.width=8, fig.cap="Large orders of French fries: Mass measurements (top panel) and percentage of target mass (below panel).", fig.align="center", out.width='95%'}
