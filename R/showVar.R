@@ -1,5 +1,5 @@
 
-showVar <- function(){
+showVar <- function(format){
   
   # Data
   beat <- c(0.7, 0.9, 1.3, 1.5, 1.5, 1.5, 1.7, 1.7, 1.8, 2.6, 3, 4.1, 4.4, 4.4)
@@ -56,13 +56,20 @@ showVar <- function(){
             y1 = jump,
             length = ifelse(abs(locate.x - sort(beat)[i]) > 0.2, 0.2, 0),
             lwd = 2,
-            col = ifelse( locate.x - sort(beat)[i] > 0, "red", "green4"),
+            lty = ifelse(format == "HTML", 
+                         1, 
+                         ifelse(locate.x - sort(beat)[i] > 0, 1, 5)),
+            col = ifelse( locate.x - sort(beat)[i] > 0, 
+                          ifelse( format == "HTML", "red", "black"), 
+                          ifelse( format == "HTML", "green4", grey(0.2)) ),
             angle = 15)
     
     # The distances
     text( 6.5, jump, 
           sprintf("%.4f", (sort(beat)[i] - locate.x)),
-          col = ifelse( locate.x - sort(beat)[i] > 0, "red", "green4"),
+          col = ifelse( locate.x - sort(beat)[i] > 0, 
+                        ifelse( format == "HTML", "red", "black"), 
+                        ifelse( format == "HTML", "green4", grey(0.2) ) ),
           adj = 1,
           font = ifelse( (sort(beat)[i] - locate.x) < 0, 2, 3), # ITALIC for positive; BOLD for negative (so - signs more visible)
           cex = 0.95)
@@ -88,9 +95,9 @@ showVar <- function(){
   
   
   # The sum  
-  segments(  x0 = 6.0, 
-             y0 = 0, 
-             x1 = 7.7)
+  segments(  x0 = 5.7, 
+             x1 = 7.7, 
+             y0 = 0)
   
   text( 6.5, -0.15, 
         sprintf("%.4f", abs(sum( (sort(beat)- locate.x)))),
@@ -121,11 +128,20 @@ showVar <- function(){
   }
   
   # Shade dist area on right
-  polygon( x = c(5.8, 5.8, 7.7, 7.7),
-           y = c(-0.3, 2.7, 2.7, -0.3),
-           border = NA,
-           col = mycol <- rgb(240, 240, 240, max = 255, alpha = 100))
-  
+  if (format =="HTML") {
+    polygon ( x = c(5.8, 5.8, 7.7, 7.7),
+              y = c(-0.3, 2.7, 2.7, -0.3),
+              border = NA,
+              col = mycol <- rgb(240, 240, 240, max = 255, alpha = 100))
+  } else { # PDF
+    polygon ( x = c(5.8, 5.8, 5.8, 5.8),
+              y = c(-0.3, 2.7, 2.7, -0.3),
+              border = "grey",
+              lty = 2
+              #col = mycol <- rgb(240, 240, 240, max = 255, alpha = 100)
+    )
+  }
+
   
   # Draw "number line"
   xLineLabs <- seq( min(beat), max(beat), by = 0.5)
