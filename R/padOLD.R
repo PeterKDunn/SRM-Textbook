@@ -19,19 +19,15 @@ pad <- function(x,
   
   
   
-  ### SET UP AND PRELIMINARIES
   numRows <- 1
   numCols <- 1
   xHasRowNames <- FALSE
   xHasColNames <- FALSE
   
-  
-  ### ENSURE AN ARRAY (e.g., not data frame); CONVERT IF NEEDED
-  
   if (is.data.frame(x)) { # CONVERT to an array for our purposes
     if ( verbose) cat("* Data frame given\n")
     if ( verbose) cat("* Converting data.frame to array\n")
-    
+
     # Store row and col names if present
     
     if (!is.null(rownames(x))) {
@@ -48,11 +44,11 @@ pad <- function(x,
       colNamesToRestore <- colnames(x)
     }
     
-    
+
     numCols <- dim(x)[2]
     numRows <- dim(x)[1]
     
-    
+
     xTemp <- array( dim = c(numRows, numCols) )
     for (i in 1:numCols){
       xTemp[, i] <- x[[i]]
@@ -69,14 +65,11 @@ pad <- function(x,
       if ( verbose) cat("  * Restoring col names:", colNamesToRestore, "\n")
       colnames(x) <- colNamesToRestore
     }
-    
+
   } else {
     if ( verbose) cat("* Data frame NOT given\n")
   }
   
-  
-  
-  # ARRAY DETAILS
   if ( is.array(x) ) {
     if ( verbose ) cat("* NOW working with an array\n ")
     if ( verbose ) cat("* Computing array size: ")
@@ -98,7 +91,7 @@ pad <- function(x,
       xHasRowNames <- TRUE
       rowNamesToRestore <- rownames(x)
     }
-    
+
     # Determine if col names exists, and save to be able to restore them
     xHasColNames <- FALSE
     if (!is.null(colnames(x))) {
@@ -106,7 +99,7 @@ pad <- function(x,
       xHasColNames <- TRUE
       colNamesToRestore <- colnames(x)
     }
-    
+  
   } else {
     # Probably a single number... or a vector
     if (is.vector(x)) {
@@ -124,22 +117,17 @@ pad <- function(x,
       xAnArray <- FALSE
     }
   }  
-  
-  locateNA <- which( is.na(x) )
-  
-  
-  ### SORT OUT INPUTS: maybe entered as one-per-matrix-element entry, or by col, or once only
-  
+
   # digits  and targetLength  may be entered as
   #   * one digits: Fill out an array with this digit.
   #   * one digits for each column: Fill out an array with this digit.
   #   * an array, same size as input, giving the vaklue for each cell.
   
-  
+
   # If  targetLength  given once, make length appropriate for use by columns
   if ( verbose) cat("* numRows and numCols:", currentRows, currentCols, "\n")
   
-  
+
   if ( verbose) cat("* Lengthening targetLength if necessary\n")
   if ( verbose) cat("  * Current length:", length(targetLength), "\n")
   if ( length(targetLength) != currentRows * currentCols) {
@@ -161,7 +149,7 @@ pad <- function(x,
   if ( verbose) cat("  * Finished length:", length(targetLength), "\n")
   
   
-  
+
   # If digits given once, make length appropriate for use by columns
   if ( verbose) cat("* Lengthening digits if necessary\n")
   if ( verbose) cat("  * Current length:", length(digits), "\n")
@@ -193,48 +181,7 @@ pad <- function(x,
   
   
   
-  ### EXTRACT NUMBERS, PRE-TEXT AND POST-TEXT
-  if ( verbose) cat("    * Splitting input into numbers, pre-text and post-text\n")
-  
-  # Define function to do so:
-  extractParts <- function(arr) { # arr  is a one-dimensional array
-    numbers <- gsub("[^0-9.-]", "", 
-                    arr)
-    numbers[numbers == ""] <- NA  # Replace empty strings with NA
-    numbers <- as.numeric(numbers) # Convert to numeric
-    
-    
-    # Text before the numbers: Capture everything before the first number
-    textBefore <- gsub("([^-0-9]*)[0-9.-].*", 
-                       "\\1", 
-                       arr)
-    textBefore[ is.na(textBefore) ] <- " "  # Replace NA with empty strings
-    
-    # Text after the numbers: Capture everything after the last number
-    textAfter <- gsub(".*[0-9.-]+([^0-9]*)$", 
-                      "\\1", 
-                      arr)
-    textAfter[ is.na(textAfter) ] <- " "  # Replace NA with empty strings
-    
-    
-    # Return a list with the three components
-    list(numbers = numbers,
-         textBefore = textBefore,
-         textAfter  = textAfter, 
-         isNumberNA = sapply(numbers, 
-                             "is.na")) # Returns  TRUE  if the cell is empty (i.e., don't add phantoms and co, as there are no numbers)
-  }
-  
-  # Use it to extract  
-  out <- extractParts(x)
-  numbersArray <- out$numbers
-  numbersArrayAdjusted <- as.character(out$numbers)
-  preNumberText <- out$textBefore
-  postNumberText <- out$textAfter
-  isNumberNA <- out$isNumberNA
-  
-  
-  ### NOW TO THE PADDING AND ROUNDING ETC (i.e., the guts)
+  ### NOW TO THE PADDING AND ROUNDING ETC
   
   xLen <- length(x) # The number of elements to work with 
   out <- array( dim = xLen)
@@ -244,8 +191,8 @@ pad <- function(x,
   thisCol <- 1 # Cols move slowest
   
   # Take each element one at a time
-  if ( verbose) cat("* Dealing element-by-element *down* the columns:\n")
-  for (i in 1:xLen){ # For each element, ging down the columns
+  if ( verbose) cat("* Dealing element-by-element:\n")
+  for (i in 1:xLen){
     if ( verbose) cat("\n ---------------- \n  * Element:", i, "\n")
     if ( verbose) cat("    * targetLength:", targetLength[i], "\n")
     if ( verbose) cat("    * digits:", digits[i], "\n")
@@ -257,32 +204,49 @@ pad <- function(x,
       thisRow <- 1
     }
     if ( verbose) cat("  * row/col:", thisRow, thisCol, "\n")
-    
+
     # Determine if a negative sign needs to be \phantomed-ed in this COLUMN
     addNegativeSignForThisCol <- FALSE
-    
-    thisColTmp <- numbersArray[((thisCol - 1) * currentRows + 1) : (thisCol * currentRows)]
-    
-    # - Now check: Any negative numbers in here?
-    anyNegNumbers <- any( thisColTmp < 0, 
-                          na.rm = TRUE) 
-    if ( verbose) cat("  * Determining if negative sign needed for this COLUMN:", anyNegNumbers, "\n")
-    
-    if ( anyNegNumbers ) {
-      if ( verbose) cat("  * YES; negative numbers in this column\n")
+
+    # - First, strip any text before checking
+    cleanNumbers <- function(arr) {
+      # Remove all non-numeric characters, including periods and negative signs
+      result <- gsub("[^0-9.-]", "", arr)
       
-      # Then add a phantom{-} where positive numbers are present (neg numbers don't need it)
-      if( !is.na(numbersArray[i])){
-        if ( numbersArray[i] > 0 ) {
-          if ( !isNumberNA[i] ){ # Only if numbers appear in this cell
-            numbersArrayAdjusted[i] <- paste0("\\phantom{-}",
-                                              numbersArrayAdjusted[i])
-          }
-        }
-      }
+      # Convert empty strings to NA
+      result[result == ""] <- NA
+      
+      # Convert to numeric, with NA for non-numeric elements
+      as.numeric(result)
     }
     
-    if ( !isNumberNA[i]) { 
+    
+    thisColTmp <- cleanNumbers( x[((thisCol - 1) * currentRows + 1) : (thisCol * currentRows)] )
+
+    # - Now check: Any negative numbers in here?
+    anyNegNumbers <- any( thisColTmp < 0, na.rm = TRUE) 
+
+if ( anyNegNumbers ) {
+      addNegativeSignForThisCol <- TRUE
+    }
+    if ( verbose) cat("  * Determining if negative sign needed for this COLUMN:", addNegativeSignForThisCol, "\n")
+    if ( verbose) cat("  * Checking elements", 
+                      (thisCol - 1) * currentRows + 1, 
+                      "to", 
+                      thisCol * currentRows, 
+                      "\n")
+    
+
+    # Check if element can be converted to numeric, or not; if not, leave it be.
+    elementIsNumeric <- varhandle::check.numeric( x[i])
+    # This return  TRUE  if the cell is NA. So check this separately
+    if ( is.na(x[i]) ) elementIsNumeric <- FALSE
+    if ( verbose) cat("  * Determining if element numeric:", elementIsNumeric, "\n")
+    
+    if (elementIsNumeric) { 
+      x[i] <- as.numeric( x[i] )
+      
+      
       # Now, may have this situation: 2.1, 13.4 and 2.334.
       # So [1] needs one dp showing, but *space* for 3 dp:
       #   2.1 
@@ -290,89 +254,84 @@ pad <- function(x,
       #   2.334
       #
       # The padding needed at the right we call backPadding
-      # The padding needed at the left  we call frontPadding
       
       maxColumnDigits <- max( digits[((thisCol - 1) * currentRows + 1) : (thisCol * currentRows)] )
       backPadding <-  maxColumnDigits - digits[i]
-      if (verbose) cat("* backPadding calculation done:", backPadding, "\n")
-      
-      #message( round(numbersArray[i]) )
-      numExistingDigitsBeforeDecimal <- nchar(as.character(round( as.numeric(numbersArray[i]))))
-      frontPadding <- (targetLength[i] - maxColumnDigits ) - numExistingDigitsBeforeDecimal 
-      # NOW:  -1 for the decimal point IF THE NUMBERS HAVE A DECIMAL POINT!
-      hasDecimalPoint <- grepl("\\.", as.numeric(numbersArray[i]))
-      if (hasDecimalPoint) frontPadding <- frontPadding - 1
-      
-      
-      
-      if (verbose) cat("* frontPadding calculation done: ", frontPadding, "\n")
-      
       if ( verbose ) cat("  * Numeric value to align:", x[i], "\n")
       if ( verbose ) cat("    * digits:", digits[i], "\n")
       if ( verbose ) cat("    * targetLength:", targetLength[i], "\n")
       if ( verbose ) cat(" backPadding: ", backPadding, "\n")
+cat(">>> ", maxColumnDigits , digits[i], backPadding,"<<<\n")      
+      
+      #cat("digits = ", digits[thisCol], "width = ", targetLength[thisCol], "\n")
       if (verbose ) cat("     targetLength - backPadding:", targetLength[i] - backPadding, "\n")
+      xi <- format( round( as.numeric(x[i]), 
+                           digits[i]),
+                    #digits = digits,
+                    nsmall = digits[i],
+                    justify = "right",
+                    big.mark = big.mark,
+                    width = targetLength[i] - backPadding)
+      if ( verbose) cat("  * First update: '", xi, "'\n",
+                        sep = "")
+      
+      xi <- gsub(pattern = " ", 
+                 replacement = "\\\\phantom{0}", 
+                 xi)
+      if ( verbose) cat("  * Second update: '", xi, "'\n",
+                        sep = "")
+      
+      
+      if ( backPadding > 0 ) xi <- paste0( xi, 
+                                        strrep("\\phantom{0}", backPadding) )
+      if ( verbose) cat("  * Third update: '", xi, "'\n",
+                        sep = "")
+      
+      # # if ( currentLength < targetLength) {
+     #    if (where == "front"){
+     #      out[i] <- paste0( paste(rep("\\phantom{0}", targetLength - length(digits)), collapse = ""),
+     #                        xi,
+     #                        collapse = "")
+     #    } else {
+     #      out <- paste0(xi,
+     #                    paste(rep("\\phantom{0}", targetLength - length(digits)), collapse=""),
+     #                    collapse = "")
+     #    }
+     #  #} else {
+     #  #  out[i] <- xi
+     #  #}
 
-      numbersArray[i] <- format( round( as.numeric(numbersArray[i]), 
-                                        digits[i]),
-                                 nsmall = digits[i],
-                                 justify = "right",
-                                 big.mark = big.mark,
-                                 width = targetLength[i] - backPadding)
-      if ( verbose) cat("  * First update: '", numbersArray[i], "'\n",
+      if (surroundMaths) xi <- paste0( "$", xi, "$", 
+                                           collapse = "") 
+      
+      if ( verbose) cat("  * Fourth update: '", xi, "'\n",
                         sep = "")
-      
-      # Now add phantom{0} to front as needed
-      if ( frontPadding > 0 ) preNumberText[i] <- paste0( preNumberText[i], 
-                                                          strrep("\\phantom{0}", frontPadding) )
-      if ( verbose) cat("  * Second update: '", preNumberText[i], "'\n",
-                        sep = "")
-      
-      
-      if ( backPadding > 0 ) postNumberText[i] <- paste0( postNumberText[i], 
-                                                          strrep("\\phantom{0}", backPadding) )
-      if ( verbose) cat("  * Third update: '", postNumberText[i], "'\n",
-                        sep = "")
-      
-      
-      # Now check if we need to add $ in the pre- and post-text
-      if ( surroundMaths){
-        # See if "$" appears in the pre-string
-        containsDollarPre  <- grepl("\\$", preNumberText[i])
-        # See if "$" appears in the post-string
-        containsDollarPost <- grepl("\\$", postNumberText[i])
-
-        # Now:
-        # 1. If in both, we're fine.
-        # 2. If in neither, add $ to both.
-        # 3. If is ONLY the pre... assume it is something like $1.50... amd leave it be.
-        # So Case 2 is the only one that needs attention
-        
-        if ( (!containsDollarPre) & (!containsDollarPre) ){
-          # Add "$", but where? 
-          # Will that work with phantoms?
-          if (verbose) cat("Adding $...$\n")
-          preNumberText[i]  <- paste0( preNumberText[i], "$")
-          postNumberText[i] <- paste0( "$", postNumberText[i])
-        }
-        
-        
-        # Extract the first character of post- string
-        charAfterNumber <- ifelse(!is.na(postNumberText[i]),
-                                  substr(postNumberText[i], 1, 1), 
-                                  NA)
-        if ( !is.na(charAfterNumber)){
-          if ( charAfterNumber != "$"){
-            postNumberText[i] <- paste0( postNumberText[i], "$")
-          }
-        }
-      }
-      
-     # if ( verbose) cat("  * Fourth update: '", xi, "'\n",
-    #                    sep = "")
       
       currentLength <- nchar( as.character(x[i]))
-     # out[i] <- xi
+      # Replace first phantom with \phantom{-} if needed
+      if (addNegativeSignForThisCol) {
+        if ( verbose) cat("  * Dealing with negatives:", xi, "\n")
+        #cat("xi (a):", xi, ":\n")
+        #cat("   Need to add - sign\n")
+        if (x[i] >= 0 ) { # If the number is -ive, we do not need a \phantom{-},  
+          #cat("   Adding phantom{-}\n")
+          xi <- sub(pattern = "\\\\phantom\\{0\\}", # 'sub' replace only first instance
+                    replacement = "\\\\phantom\\{-\\}",
+                    xi)
+        } else {
+          # Need a fix, or we have \phantom{0} - 1.23, and the - is interpreted as a minus sign and spacing is screwed up
+          #cat("   NOT adding phantom{-}\n\n")
+          xi <- sub(pattern  = "\\$\\\\phantom\\{0\\}", # 'sub' replace only first instance
+                    replacement = "\\\\phantom\\{0\\}\\$",
+                    xi)
+          #cat("xi (b):", xi, ":\n")
+          
+        }
+        if ( verbose) cat("  * Fourth update:", xi, "\n")
+        
+      }
+      
+      out[i] <- xi
       
     } else { # So these cannot be converted to numeric; likely are text
       #cat("Non numeric\n")
@@ -406,28 +365,22 @@ pad <- function(x,
             
           }
         } else {
-          out[i] <- x[i]
+           out[i] <- x[i]
         }
         
       }
     }
   } 
   
-  ### NOW REJOIN PRE, NUMBERS, POST
-  out <- paste0( array( preNumberText,  dim = currentDim ),
-                 array( numbersArray,   dim = currentDim ),
-                 array( postNumberText, dim = currentDim ))
-  
   ### NOW RESTORE TO ORIGINAL SHAPE, WITH NAMES
   if ( xAnArray ) {
     if ( verbose) cat("* Restoring shape:\n")
     if ( verbose) cat("  * Current shape:", dim(out), "\n")
     
-    out[locateNA] <- NA
     dim(out) <- currentDim
-    
+
     if ( verbose) cat("  * Final shape:", dim(out), "\n")
-    
+
     if ( verbose) cat("* Restoring col, row names if necessary:\n")
     if ( verbose) cat("  * xHasRowNames:", xHasRowNames, "\n")
     if ( verbose) cat("  * xHasColNames:", xHasColNames, "\n")
@@ -445,5 +398,4 @@ pad <- function(x,
   }
   
   out
-  
 }
