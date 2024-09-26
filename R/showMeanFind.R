@@ -1,4 +1,4 @@
-FindMean <- function(locate.x = .22214, numberImages, iteration){
+FindMean <- function(locate.x = .22214, numberImages, iteration, format){
   
   # Data
   beat <- c(0.7, 0.9, 1.3, 1.5, 1.5, 1.5, 1.7, 1.7, 1.8, 2.6, 3, 4.1, 4.4, 4.4)
@@ -52,9 +52,12 @@ FindMean <- function(locate.x = .22214, numberImages, iteration){
             x1 = sort(beat)[i], 
             y1 = jump,
             length = ifelse( abs(locate.x - sort(beat)[i]) > 0.2, 0.15, 0.0), # Arrows when there is enough space
+            lty = ifelse(format == "HTML", 
+                         1, 
+                         ifelse(locate.x - sort(beat)[i] > 0, 1, 5)),
             col = ifelse( locate.x - sort(beat)[i] > 0, 
-                          "red", 
-                          "green4"),
+                          ifelse( format == "HTML", "red", "black"), 
+                          ifelse( format == "HTML", "green4", grey(0.2)) ),
             lwd = 2,
             angle = 15)
     
@@ -63,8 +66,8 @@ FindMean <- function(locate.x = .22214, numberImages, iteration){
           y = jump, 
           sprintf("%.3f", round(sort(beat)[i] - locate.x, 3)),
           col = ifelse( locate.x - sort(beat)[i] > 0, 
-                        "red", 
-                        "green4"),
+                        ifelse( format == "HTML", "red", "black"), 
+                        ifelse( format == "HTML", "green4", grey(0.2) ) ),
           adj = 1,
           font = ifelse( (sort(beat)[i] - locate.x) < 0, 2, 3), # ITALIC for positive; BOLD for negative (so - signs more visible)
           cex = 1)
@@ -85,9 +88,10 @@ FindMean <- function(locate.x = .22214, numberImages, iteration){
   
   ################
   # The summing
-  segments( x0 = 5.2, # The line under the distance, to sum
-            y0 = 0,
-            x1 = 6.6)
+  segments( x0 = 5.2,  # The line under the distance, to sum
+            x1 = 6.8,
+            y0 = 0)
+  
   meanText <- round( sum(sort(beat) - locate.x), 5 )
   if ( abs(meanText) < 0.001) meanText <- 0
                    
@@ -108,12 +112,20 @@ FindMean <- function(locate.x = .22214, numberImages, iteration){
         adj = 1,
         cex = 1.1)
   
-  # Shade summing area on right side
-  polygon ( x = c(5.1, 5.1, 7, 7),
-            y = c(-0.7, 3.2, 3.2, -0.75),
-            border = NA,
-            col = mycol <- rgb(240, 240, 240, max = 255, alpha = 100))
-  
+  # Shade summing area on right side (HTML) or box it (PDF)
+  if (format =="HTML") {
+    polygon ( x = c(5.1, 5.1, 7, 7),
+              y = c(-0.7, 3.2, 3.2, -0.75),
+              border = NA,
+              col = mycol <- rgb(240, 240, 240, max = 255, alpha = 100))
+  } else { # PDF
+    polygon ( x = c(5.1, 5.1, 5.1, 5.1),
+              y = c(-0.7, 3.2, 3.2, -0.75),
+              border = "grey",
+              lty = 2
+              #col = mycol <- rgb(240, 240, 240, max = 255, alpha = 100)
+              )
+  }
   # base <- 1
   # for (i in 1:length(data.table)){
   #   polygon( x = Pos[(1:5) + base, 1], 

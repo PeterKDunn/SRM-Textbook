@@ -199,8 +199,8 @@ BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
     
       points(x = locateX,
              y = locateY,
-       pch = 19,
-       cex = 1.6)    
+             pch = 19,
+             cex = 1.6)    
 
     base <- base + 5 # Because 5 elements of Pos[*, ] are used to define the box, so this moves to the *next* point that starts defining the next box
   }
@@ -223,9 +223,10 @@ BalanceMean <- function(locate.fulcrum, # Where to place fulcrum
   # Labels bars of data
   plotDataPlaces <- seq(6, dim(Pos)[1], 
                         by = 5)
-  text( x = Pos[plotDataPlaces, 1] + data.width,
+  text( x = Pos[plotDataPlaces, 1] + data.width + 
+          c(0, 0, 0, 0, 0, 0.052, 0, 0, 0, 0), # Move "1.8" right a tiny bit
         y = Pos[plotDataPlaces, 2] + 2 * data.ht,
-        labels = names(data.table),
+        labels =  as.character(format(as.numeric(names(data.table)))),
         srt = (-180 * theta / pi) + 90,
         cex = 0.75,
         col = grey(0.2))
