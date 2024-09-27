@@ -246,7 +246,8 @@ pad <- function(x,
   # Take each element one at a time
   if ( verbose) cat("* Dealing element-by-element *down* the columns:\n")
   for (i in 1:xLen){ # For each element, ging down the columns
-    if ( verbose) cat("\n ---------------- \n  * Element:", i, "\n")
+    if ( verbose) cat("\n ------------------------------------------ \n")
+    if ( verbose) cat(" * Element:", i, " which is ", numbersArray[i] , "\n")
     if ( verbose) cat("    * targetLength:", targetLength[i], "\n")
     if ( verbose) cat("    * decDigits:", decDigits[i], "\n")
     
@@ -256,52 +257,101 @@ pad <- function(x,
       thisCol <- thisCol + 1
       thisRow <- 1
     }
-    if ( verbose) cat("  * row/col:", thisRow, thisCol, "\n")
+    if ( verbose) cat(" * Matrix entry: row/col:", thisRow, thisCol, "\n")
     
+        
+    # FIRST check if we need to add $ in the pre- and post-text
+    if ( surroundMaths){
+      # See if "$" appears in the pre-string
+      containsDollarPre  <- grepl("\\$", preNumberText[i])
+      # See if "$" appears in the post-string
+      containsDollarPost <- grepl("\\$", postNumberText[i])
+      
+      # Now:
+      # 1. If in both, we're fine.
+      # 2. If in neither, add $ to both.
+      # 3. If is ONLY the pre... assume it is something like $1.50... amd leave it be.
+      # So Case 2 is the only one that needs attention
+      
+      if ( (!containsDollarPre) & (!containsDollarPre) ){
+        # Add "$"
+        if (verbose) cat("  * Adding $...$\n")
+        preNumberText[i]  <- paste0( preNumberText[i], "$")
+        postNumberText[i] <- paste0( "$", postNumberText[i])
+      }
+      
+      
+      # Extract the first character of post- string
+      charAfterNumber <- ifelse(!is.na(postNumberText[i]),
+                                substr(postNumberText[i], 1, 1), 
+                                NA)
+      if ( !is.na(charAfterNumber)){
+        if ( charAfterNumber != "$"){
+          postNumberText[i] <- paste0( postNumberText[i], "$")
+        }
+      }
+    }
+    
+    
+    # PHANTOM{-}
     # Determine if a negative sign needs to be \phantomed-ed in this COLUMN
     addNegativeSignForThisCol <- FALSE
     
     thisColTmp <- numbersArray[((thisCol - 1) * currentRows + 1) : (thisCol * currentRows)]
     
     # - Now check: Any negative numbers in here?
-    anyNegNumbers <- any( thisColTmp < 0, 
+    anyNegNumbers <- any( as.numeric(thisColTmp) < 0, 
                           na.rm = TRUE) 
-    if ( verbose) cat("  * Determining if negative sign needed for this COLUMN:", anyNegNumbers, "\n")
-    
+    if ( verbose) cat("* Determining if negative sign needed for this COLUMN:", anyNegNumbers, "\n")
+ 
+
+    countNegativeSignAdded <- 0
     if ( anyNegNumbers ) {
       if ( verbose) cat("  * YES; negative numbers in this column\n")
-      
+      if ( verbose) message("  * Work with ", numbersArray[i])
       # Then add a phantom{-} where positive numbers are present (neg numbers don't need it)
       if( !is.na(numbersArray[i])){
+        if ( verbose)  message("  * Not NA")
         if ( numbersArray[i] > 0 ) {
+          if ( verbose) message("  * Minus number")
           if ( !isNumberNA[i] ){ # Only if numbers appear in this cell
-            numbersArrayAdjusted[i] <- paste0("\\phantom{-}",
-                                              numbersArrayAdjusted[i])
+            if ( verbose)  message("  * Adjusting")
+            preNumberText[i] <- paste0(preNumberText[i],
+                                       "\\phantom{-}")
+           countNegativeSignAdded <- 1
           }
         }
       }
     }
     
+
+    # FRONTPADDING AND BACKPADDING
+    # Now, may have this situation: 2.1, 13.4 and 2.334.
+    # So [1] needs one dp showing, but *space* for 3 dp:
+    #   2.1 
+    #  13.4
+    #   2.334
+    #
+    # The padding needed at the right we call backPadding
+    # The padding needed at the left  we call frontPadding
+    
     if ( !isNumberNA[i]) { 
-      # Now, may have this situation: 2.1, 13.4 and 2.334.
-      # So [1] needs one dp showing, but *space* for 3 dp:
-      #   2.1 
-      #  13.4
-      #   2.334
-      #
-      # The padding needed at the right we call backPadding
-      # The padding needed at the left  we call frontPadding
       
-      maxColumndecDigits <- max( decDigits[((thisCol - 1) * currentRows + 1) : (thisCol * currentRows)] )
-      backPadding <-  maxColumndecDigits - decDigits[i]
+      maxColumnDecDigits <- max( decDigits[((thisCol - 1) * currentRows + 1) : (thisCol * currentRows)] )
+      backPadding <- maxColumnDecDigits - decDigits[i]
       if (verbose) cat("* backPadding calculation done:", backPadding, "\n")
       
       #message( round(numbersArray[i]) )
       numExistingdecDigitsBeforeDecimal <- nchar(as.character(round( as.numeric(numbersArray[i]))))
-      frontPadding <- (targetLength[i] - maxColumndecDigits ) - numExistingdecDigitsBeforeDecimal 
+      frontPadding <- (targetLength[i] - maxColumnDecDigits ) - numExistingdecDigitsBeforeDecimal - countNegativeSignAdded
+      #frontPadding <- targetLength - backPadding 
+      if (verbose) message("targetLength: ", targetLength[i])
+      if (verbose) message("maxColumnDecDigits: ", maxColumnDecDigits)
+      if (verbose) message("numExistingdecDigitsBeforeDecimal: ", numExistingdecDigitsBeforeDecimal)
+      if (verbose) message("frontPadding: ", frontPadding)
+
       # NOW:  -1 for the decimal point IF THE NUMBERS HAVE A DECIMAL POINT!
-      hasDecimalPoint <- grepl("\\.", as.numeric(numbersArray[i]))
-      if (hasDecimalPoint) frontPadding <- frontPadding - 1
+      if ( decDigits[i] > 0 ) frontPadding <- frontPadding - 1
       
       
       
@@ -335,42 +385,7 @@ pad <- function(x,
                         sep = "")
       
       
-      # Now check if we need to add $ in the pre- and post-text
-      if ( surroundMaths){
-        # See if "$" appears in the pre-string
-        containsDollarPre  <- grepl("\\$", preNumberText[i])
-        # See if "$" appears in the post-string
-        containsDollarPost <- grepl("\\$", postNumberText[i])
 
-        # Now:
-        # 1. If in both, we're fine.
-        # 2. If in neither, add $ to both.
-        # 3. If is ONLY the pre... assume it is something like $1.50... amd leave it be.
-        # So Case 2 is the only one that needs attention
-        
-        if ( (!containsDollarPre) & (!containsDollarPre) ){
-          # Add "$", but where? 
-          # Will that work with phantoms?
-          if (verbose) cat("Adding $...$\n")
-          preNumberText[i]  <- paste0( preNumberText[i], "$")
-          postNumberText[i] <- paste0( "$", postNumberText[i])
-        }
-        
-        
-        # Extract the first character of post- string
-        charAfterNumber <- ifelse(!is.na(postNumberText[i]),
-                                  substr(postNumberText[i], 1, 1), 
-                                  NA)
-        if ( !is.na(charAfterNumber)){
-          if ( charAfterNumber != "$"){
-            postNumberText[i] <- paste0( postNumberText[i], "$")
-          }
-        }
-      }
-      
-     # if ( verbose) cat("  * Fourth update: '", xi, "'\n",
-    #                    sep = "")
-      
       currentLength <- nchar( as.character(x[i]))
      # out[i] <- xi
       
