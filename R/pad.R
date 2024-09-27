@@ -203,7 +203,15 @@ pad <- function(x,
     textBefore <- gsub("([^-0-9]*)[0-9.-].*", 
                        "\\1", 
                        arr)
-    textBefore[ is.na(textBefore) ] <- " "  # Replace NA with empty strings
+    # Replace NA with empty strings
+    textBefore[ is.na(textBefore) ] <- " "
+    # If the text contains numbers (e.g., "More than $5^\\circ$C"), this will screw things up. 
+    # Not sure how to even flag that case, so perhaps we ENFORE A RULE that it should be contained in \text: "\\text{More than $5^\\circ$C"}
+    # So find these cases
+    if (verbose) message("*** REMEMBER: If cells contain $...$ as pary of text, wrap the element with  \text{...}!! ***")
+    textInBefore <- grepl("\\\\text", 
+                         textBefore) # TRUE or FALSE for each element
+
     
     # Text after the numbers: Capture everything after the last number
     textAfter <- gsub(".*[0-9.-]+([^0-9]*)$", 
@@ -213,11 +221,10 @@ pad <- function(x,
     
     # If the entry is *just* text, the same text appears in both pre- and -post... so fix this by removing from POST
     # This is where  numbers  is NA (i.e., no numbers)
-    if (verbose) print(textBefore)
-    if (verbose) print(textBefore)
+    if (verbose) cat("Before:", textBefore, "\n")
     whichNA <- which(is.na(numbers))
     if( length( whichNA > 0) ){
-      if (verbose) cat(".  * whichNA:", whichNA, "\n")
+      if (verbose) cat("   * whichNA:", whichNA, "\n")
       for (j in 1:length(whichNA)){
         if ( verbose ) cat("  * Adjusting for repeated pre/post due to text only entry:", j, "\n")
         if (textBefore[ whichNA[j] ] == textAfter[ whichNA[j] ] ) textAfter[ whichNA[j] ] <- ""
@@ -226,10 +233,13 @@ pad <- function(x,
     # Return a list with the three components
     list(numbers = numbers,
          textBefore = textBefore,
+         textInBefore = textInBefore,
          textAfter  = textAfter, 
          isNumberNA = sapply(numbers, 
                              "is.na")) # Returns  TRUE  if the cell is empty (i.e., don't add phantoms and co, as there are no numbers)
   }
+  
+
   
   # Use it to extract  
   out <- extractParts(x)
@@ -238,6 +248,7 @@ pad <- function(x,
   preNumberText <- out$textBefore
   postNumberText <- out$textAfter
   isNumberNA <- out$isNumberNA
+  textInBefore <- out$textInBefore
   
 #  print(array( preNumberText,  dim = currentDim ))
 #  print(array( numbersArray,  dim = currentDim ))
@@ -287,22 +298,26 @@ pad <- function(x,
         # 2. If in neither, add $ to both.
         # 3. If is ONLY the pre... assume it is something like $1.50... amd leave it be.
         # So Case 2 is the only one that needs attention
+        #
+        # If  textInBefore  is TRUE, leave it alone!
         
-        if ( (!containsDollarPre) & (!containsDollarPre) ){
-          # Add "$"
-          if (verbose) cat("  * Adding $...$\n")
-          preNumberText[i]  <- paste0( preNumberText[i], "$")
-          postNumberText[i] <- paste0( "$", postNumberText[i])
-        }
-        
-        
-        # Extract the first character of post- string
-        charAfterNumber <- ifelse(!is.na(postNumberText[i]),
-                                  substr(postNumberText[i], 1, 1), 
-                                  NA)
-        if ( !is.na(charAfterNumber)){
-          if ( charAfterNumber != "$"){
-            postNumberText[i] <- paste0( postNumberText[i], "$")
+        if( !textInBefore[i] ){
+          if ( (!containsDollarPre) & (!containsDollarPre) ){
+            # Add "$"
+            if (verbose) cat("  * Adding $...$\n")
+            preNumberText[i]  <- paste0( preNumberText[i], "$")
+            postNumberText[i] <- paste0( "$", postNumberText[i])
+          }
+          
+          
+          # Extract the first character of post- string
+          charAfterNumber <- ifelse(!is.na(postNumberText[i]),
+                                    substr(postNumberText[i], 1, 1), 
+                                    NA)
+          if ( !is.na(charAfterNumber)){
+            if ( charAfterNumber != "$"){
+              postNumberText[i] <- paste0( postNumberText[i], "$")
+            }
           }
         }
       }
