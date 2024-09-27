@@ -1,5 +1,5 @@
 pad <- function(x, 
-                digits = 2, 
+                decDigits = 2, 
                 targetLength = 4, 
                 #where = "front", 
                 surroundMaths = FALSE,
@@ -7,12 +7,12 @@ pad <- function(x,
                 big.mark = "",
                 verbose = FALSE){
   
-  # digits is the number of DECIMAL digits
+  # decDigits is the number of DECIMAL digits
   # targetLength  is the total length of the field (including negative signs and decimal points)
   # where  is how the numbers are aligned
   # big.mark is the format() input of same name. To call it, need to backslash *four* times: pad(..., big.mark = "\\\\,") 
   
-  # digits  and targetLength  may be entered as
+  # decDigits  and targetLength  may be entered as
   #   * one digits: Fill out a vector with this digit.
   #   * one digits for each column: Fill out a vector with this digit.
   #   * one digit for each element, given across rows, same size as input, giving the value for each cell.
@@ -130,7 +130,7 @@ pad <- function(x,
   
   ### SORT OUT INPUTS: maybe entered as one-per-matrix-element entry, or by col, or once only
   
-  # digits  and targetLength  may be entered as
+  # decDigits  and targetLength  may be entered as
   #   * one digits: Fill out an array with this digit.
   #   * one digits for each column: Fill out an array with this digit.
   #   * an array, same size as input, giving the vaklue for each cell.
@@ -162,30 +162,30 @@ pad <- function(x,
   
   
   
-  # If digits given once, make length appropriate for use by columns
-  if ( verbose) cat("* Lengthening digits if necessary\n")
-  if ( verbose) cat("  * Current length:", length(digits), "\n")
-  if ( length(digits) != currentRows * currentCols) {
-    if ( length(digits) == 1) {
-      digits <- rep( digits, 
+  # If decDigits given once, make length appropriate for use by columns
+  if ( verbose) cat("* Lengthening decDigits if necessary\n")
+  if ( verbose) cat("  * Current length:", length(decDigits), "\n")
+  if ( length(decDigits) != currentRows * currentCols) {
+    if ( length(decDigits) == 1) {
+      decDigits <- rep( decDigits, 
                      times = currentRows * currentCols)
     } else { # One digit per col
-      if (verbose) print(digits)
-      digits <- rep(digits, each = currentRows) 
-      if (verbose) print(digits)
+      if (verbose) print(decDigits)
+      decDigits <- rep(decDigits, each = currentRows) 
+      if (verbose) print(decDigits)
     }
   } else {
     tmp <- matrix( nrow = currentRows, 
                    ncol = currentCols, 
-                   data = digits,
+                   data = decDigits,
                    byrow = TRUE)
-    digits <- c( tmp ) # Since we operate BY COLS in what follows
+    decDigits <- c( tmp ) # Since we operate BY COLS in what follows
   }
-  digits <- c( digits)
-  if ( verbose) cat("  * Finished length:", length(digits), "\n")
-  if ( verbose) cat("  * digits:", digits, "\n")
+  decDigits <- c( decDigits)
+  if ( verbose) cat("  * Finished length:", length(decDigits), "\n")
+  if ( verbose) cat("  * decDigits:", decDigits, "\n")
   if ( verbose) cat("  * targetLengths:", targetLength, "\n")
-  if ( verbose) cat("  * (Their lengths:", length(digits), length(targetLength), ")\n")
+  if ( verbose) cat("  * (Their lengths:", length(decDigits), length(targetLength), ")\n")
   if (verbose) cat("----------------------------------------------------------------\n")
   
   
@@ -248,7 +248,7 @@ pad <- function(x,
   for (i in 1:xLen){ # For each element, ging down the columns
     if ( verbose) cat("\n ---------------- \n  * Element:", i, "\n")
     if ( verbose) cat("    * targetLength:", targetLength[i], "\n")
-    if ( verbose) cat("    * digits:", digits[i], "\n")
+    if ( verbose) cat("    * decDigits:", decDigits[i], "\n")
     
     # Update the row and column currently being worked on
     thisRow <- thisRow + 1
@@ -292,13 +292,13 @@ pad <- function(x,
       # The padding needed at the right we call backPadding
       # The padding needed at the left  we call frontPadding
       
-      maxColumnDigits <- max( digits[((thisCol - 1) * currentRows + 1) : (thisCol * currentRows)] )
-      backPadding <-  maxColumnDigits - digits[i]
+      maxColumndecDigits <- max( decDigits[((thisCol - 1) * currentRows + 1) : (thisCol * currentRows)] )
+      backPadding <-  maxColumndecDigits - decDigits[i]
       if (verbose) cat("* backPadding calculation done:", backPadding, "\n")
       
       #message( round(numbersArray[i]) )
-      numExistingDigitsBeforeDecimal <- nchar(as.character(round( as.numeric(numbersArray[i]))))
-      frontPadding <- (targetLength[i] - maxColumnDigits ) - numExistingDigitsBeforeDecimal 
+      numExistingdecDigitsBeforeDecimal <- nchar(as.character(round( as.numeric(numbersArray[i]))))
+      frontPadding <- (targetLength[i] - maxColumndecDigits ) - numExistingdecDigitsBeforeDecimal 
       # NOW:  -1 for the decimal point IF THE NUMBERS HAVE A DECIMAL POINT!
       hasDecimalPoint <- grepl("\\.", as.numeric(numbersArray[i]))
       if (hasDecimalPoint) frontPadding <- frontPadding - 1
@@ -308,14 +308,14 @@ pad <- function(x,
       if (verbose) cat("* frontPadding calculation done: ", frontPadding, "\n")
       
       if ( verbose ) cat("  * Numeric value to align:", x[i], "\n")
-      if ( verbose ) cat("    * digits:", digits[i], "\n")
+      if ( verbose ) cat("    * decDigits:", decDigits[i], "\n")
       if ( verbose ) cat("    * targetLength:", targetLength[i], "\n")
       if ( verbose ) cat(" backPadding: ", backPadding, "\n")
       if (verbose ) cat("     targetLength - backPadding:", targetLength[i] - backPadding, "\n")
 
       numbersArray[i] <- format( round( as.numeric(numbersArray[i]), 
-                                        digits[i]),
-                                 nsmall = digits[i],
+                                        decDigits[i]),
+                                 nsmall = decDigits[i],
                                  justify = "right",
                                  big.mark = big.mark,
                                  width = targetLength[i] - backPadding)
