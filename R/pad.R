@@ -35,7 +35,7 @@ pad <- function(x,
     # Store row and col names if present
     
     if (!is.null(rownames(x))) {
-      if ( verbose) cat("  * Restoring row names\n")
+      if ( verbose) cat("  * Storing row names\n")
       xHasRowNames <- TRUE
       rowNamesToRestore <- rownames(x)
     }
@@ -43,7 +43,7 @@ pad <- function(x,
     # Determine if col names exists, and save to be able to restore them
     xHasColNames <- FALSE
     if (!is.null(colnames(x))) {
-      if ( verbose) cat("  * Restoring column names\n")
+      if ( verbose) cat("  * Storing column names\n")
       xHasColNames <- TRUE
       colNamesToRestore <- colnames(x)
     }
@@ -60,13 +60,13 @@ pad <- function(x,
     x <- xTemp
     
     # Restore
-    if ( verbose) cat("  * Restoring row, col names\n")
+    if ( verbose) cat("  * Storing row, col names\n")
     if (xHasRowNames){
-      if ( verbose) cat("  * Restoring row names:", rowNamesToRestore, "\n")
+      if ( verbose) cat("  * Storing row names:", rowNamesToRestore, "\n")
       rownames(x) <- rowNamesToRestore 
     }
     if (xHasColNames) {
-      if ( verbose) cat("  * Restoring col names:", colNamesToRestore, "\n")
+      if ( verbose) cat("  * Storing col names:", colNamesToRestore, "\n")
       colnames(x) <- colNamesToRestore
     }
     
@@ -138,8 +138,6 @@ pad <- function(x,
   
   # If  targetLength  given once, make length appropriate for use by columns
   if ( verbose) cat("* numRows and numCols:", currentRows, currentCols, "\n")
-  
-  
   if ( verbose) cat("* Lengthening targetLength if necessary\n")
   if ( verbose) cat("  * Current length:", length(targetLength), "\n")
   if ( length(targetLength) != currentRows * currentCols) {
@@ -168,11 +166,9 @@ pad <- function(x,
   if ( length(decDigits) != currentRows * currentCols) {
     if ( length(decDigits) == 1) {
       decDigits <- rep( decDigits, 
-                     times = currentRows * currentCols)
+                        times = currentRows * currentCols)
     } else { # One digit per col
-      if (verbose) print(decDigits)
       decDigits <- rep(decDigits, each = currentRows) 
-      if (verbose) print(decDigits)
     }
   } else {
     tmp <- matrix( nrow = currentRows, 
@@ -182,19 +178,18 @@ pad <- function(x,
     decDigits <- c( tmp ) # Since we operate BY COLS in what follows
   }
   decDigits <- c( decDigits)
-  if ( verbose) cat("  * Finished length:", length(decDigits), "\n")
-  if ( verbose) cat("  * decDigits:", decDigits, "\n")
-  if ( verbose) cat("  * targetLengths:", targetLength, "\n")
-  if ( verbose) cat("  * (Their lengths:", length(decDigits), length(targetLength), ")\n")
-  if (verbose) cat("----------------------------------------------------------------\n")
-  
+  if ( verbose ) cat("  * Finished length:", length(decDigits), "\n")
+  if ( verbose ) cat("  * decDigits:", decDigits, "\n")
+  if ( verbose ) cat("  * targetLengths:", targetLength, "\n")
+  if ( verbose ) cat("  * (Their lengths:", length(decDigits), length(targetLength), ")\n")
+  if ( verbose ) cat("----------------------------------------------------------------\n")
   
   if ( !is.null(currentDim) ) x <- c(x)
   
   
   
   ### EXTRACT NUMBERS, PRE-TEXT AND POST-TEXT
-  if ( verbose) cat("    * Splitting input into numbers, pre-text and post-text\n")
+  if ( verbose ) cat("* Splitting input into numbers, pre-text and post-text\n")
   
   # Define function to do so:
   extractParts <- function(arr) { # arr  is a one-dimensional array
@@ -216,7 +211,18 @@ pad <- function(x,
                       arr)
     textAfter[ is.na(textAfter) ] <- " "  # Replace NA with empty strings
     
-    
+    # If the entry is *just* text, the same text appears in both pre- and -post... so fix this by removing from POST
+    # This is where  numbers  is NA (i.e., no numbers)
+    if (verbose) print(textBefore)
+    if (verbose) print(textBefore)
+    whichNA <- which(is.na(numbers))
+    if( length( whichNA > 0) ){
+      if (verbose) cat(".  * whichNA:", whichNA, "\n")
+      for (j in 1:length(whichNA)){
+        if ( verbose ) cat("  * Adjusting for repeated pre/post due to text only entry:", j, "\n")
+        if (textBefore[ whichNA[j] ] == textAfter[ whichNA[j] ] ) textAfter[ whichNA[j] ] <- ""
+      }
+    }
     # Return a list with the three components
     list(numbers = numbers,
          textBefore = textBefore,
@@ -233,6 +239,13 @@ pad <- function(x,
   postNumberText <- out$textAfter
   isNumberNA <- out$isNumberNA
   
+#  print(array( preNumberText,  dim = currentDim ))
+#  print(array( numbersArray,  dim = currentDim ))
+#  print(array( postNumberText,  dim = currentDim ))
+  
+  
+  if ( verbose ) cat("----------------------------------------------------------------\n")
+  
   
   ### NOW TO THE PADDING AND ROUNDING ETC (i.e., the guts)
   
@@ -245,193 +258,208 @@ pad <- function(x,
   
   # Take each element one at a time
   if ( verbose) cat("* Dealing element-by-element *down* the columns:\n")
-  for (i in 1:xLen){ # For each element, ging down the columns
-    if ( verbose) cat("\n ------------------------------------------ \n")
-    if ( verbose) cat(" * Element:", i, " which is ", numbersArray[i] , "\n")
+  for (i in 1:xLen){ # For each element, going down the columns
+    if ( verbose) cat("\n---------------------------------------------------------- \n")
+    if ( verbose) cat("  * Element:", i, " which is ", numbersArray[i] , "\n")
     if ( verbose) cat("    * targetLength:", targetLength[i], "\n")
     if ( verbose) cat("    * decDigits:", decDigits[i], "\n")
     
-    # Update the row and column currently being worked on
-    thisRow <- thisRow + 1
-    if( thisRow == (currentRows + 1)){ # Then move to next column, and start again at Row 1
-      thisCol <- thisCol + 1
-      thisRow <- 1
-    }
-    if ( verbose) cat(" * Matrix entry: row/col:", thisRow, thisCol, "\n")
-    
+    if( !is.na(as.numeric(numbersArray[i]) ) ) { # If NA, skip all this, and keep as NA: Prob means that array element is all text
+      
+      # Update the row and column currently being worked on
+      thisRow <- thisRow + 1
+      if( thisRow == (currentRows + 1)){ # Then move to next column, and start again at Row 1
+        thisCol <- thisCol + 1
+        thisRow <- 1
+      }
+      if ( verbose) cat("  * Matrix entry: row/col:", thisRow, thisCol, "\n")
+      
+      
+      # FIRST check if we need to add $ in the pre- and post-text
+      if ( surroundMaths){
+        # See if "$" appears in the pre-string
+        containsDollarPre  <- grepl("\\$", preNumberText[i])
+        # See if "$" appears in the post-string
+        containsDollarPost <- grepl("\\$", postNumberText[i])
         
-    # FIRST check if we need to add $ in the pre- and post-text
-    if ( surroundMaths){
-      # See if "$" appears in the pre-string
-      containsDollarPre  <- grepl("\\$", preNumberText[i])
-      # See if "$" appears in the post-string
-      containsDollarPost <- grepl("\\$", postNumberText[i])
-      
-      # Now:
-      # 1. If in both, we're fine.
-      # 2. If in neither, add $ to both.
-      # 3. If is ONLY the pre... assume it is something like $1.50... amd leave it be.
-      # So Case 2 is the only one that needs attention
-      
-      if ( (!containsDollarPre) & (!containsDollarPre) ){
-        # Add "$"
-        if (verbose) cat("  * Adding $...$\n")
-        preNumberText[i]  <- paste0( preNumberText[i], "$")
-        postNumberText[i] <- paste0( "$", postNumberText[i])
-      }
-      
-      
-      # Extract the first character of post- string
-      charAfterNumber <- ifelse(!is.na(postNumberText[i]),
-                                substr(postNumberText[i], 1, 1), 
-                                NA)
-      if ( !is.na(charAfterNumber)){
-        if ( charAfterNumber != "$"){
-          postNumberText[i] <- paste0( postNumberText[i], "$")
+        # Now:
+        # 1. If in both, we're fine.
+        # 2. If in neither, add $ to both.
+        # 3. If is ONLY the pre... assume it is something like $1.50... amd leave it be.
+        # So Case 2 is the only one that needs attention
+        
+        if ( (!containsDollarPre) & (!containsDollarPre) ){
+          # Add "$"
+          if (verbose) cat("  * Adding $...$\n")
+          preNumberText[i]  <- paste0( preNumberText[i], "$")
+          postNumberText[i] <- paste0( "$", postNumberText[i])
         }
-      }
-    }
-    
-    
-    # PHANTOM{-}
-    # Determine if a negative sign needs to be \phantomed-ed in this COLUMN
-    addNegativeSignForThisCol <- FALSE
-    
-    thisColTmp <- numbersArray[((thisCol - 1) * currentRows + 1) : (thisCol * currentRows)]
-    
-    # - Now check: Any negative numbers in here?
-    anyNegNumbers <- any( as.numeric(thisColTmp) < 0, 
-                          na.rm = TRUE) 
-    if ( verbose) cat("* Determining if negative sign needed for this COLUMN:", anyNegNumbers, "\n")
- 
-
-    countNegativeSignAdded <- 0
-    if ( anyNegNumbers ) {
-      if ( verbose) cat("  * YES; negative numbers in this column\n")
-      if ( verbose) message("  * Work with ", numbersArray[i])
-      # Then add a phantom{-} where positive numbers are present (neg numbers don't need it)
-      if( !is.na(numbersArray[i])){
-        if ( verbose)  message("  * Not NA")
-        if ( numbersArray[i] > 0 ) {
-          if ( verbose) message("  * Minus number")
-          if ( !isNumberNA[i] ){ # Only if numbers appear in this cell
-            if ( verbose)  message("  * Adjusting")
-            preNumberText[i] <- paste0(preNumberText[i],
-                                       "\\phantom{-}")
-           countNegativeSignAdded <- 1
+        
+        
+        # Extract the first character of post- string
+        charAfterNumber <- ifelse(!is.na(postNumberText[i]),
+                                  substr(postNumberText[i], 1, 1), 
+                                  NA)
+        if ( !is.na(charAfterNumber)){
+          if ( charAfterNumber != "$"){
+            postNumberText[i] <- paste0( postNumberText[i], "$")
           }
         }
       }
-    }
-    
-
-    # FRONTPADDING AND BACKPADDING
-    # Now, may have this situation: 2.1, 13.4 and 2.334.
-    # So [1] needs one dp showing, but *space* for 3 dp:
-    #   2.1 
-    #  13.4
-    #   2.334
-    #
-    # The padding needed at the right we call backPadding
-    # The padding needed at the left  we call frontPadding
-    
-    if ( !isNumberNA[i]) { 
-      
-      maxColumnDecDigits <- max( decDigits[((thisCol - 1) * currentRows + 1) : (thisCol * currentRows)] )
-      backPadding <- maxColumnDecDigits - decDigits[i]
-      if (verbose) cat("* backPadding calculation done:", backPadding, "\n")
-      
-      #message( round(numbersArray[i]) )
-      numExistingdecDigitsBeforeDecimal <- nchar(as.character(round( as.numeric(numbersArray[i]))))
-      frontPadding <- (targetLength[i] - maxColumnDecDigits ) - numExistingdecDigitsBeforeDecimal - countNegativeSignAdded
-      #frontPadding <- targetLength - backPadding 
-      if (verbose) message("targetLength: ", targetLength[i])
-      if (verbose) message("maxColumnDecDigits: ", maxColumnDecDigits)
-      if (verbose) message("numExistingdecDigitsBeforeDecimal: ", numExistingdecDigitsBeforeDecimal)
-      if (verbose) message("frontPadding: ", frontPadding)
-
-      # NOW:  -1 for the decimal point IF THE NUMBERS HAVE A DECIMAL POINT!
-      if ( decDigits[i] > 0 ) frontPadding <- frontPadding - 1
       
       
+      # PHANTOM{-}
+      # Determine if a negative sign needs to be \phantomed-ed in this COLUMN
+      addNegativeSignForThisCol <- FALSE
       
-      if (verbose) cat("* frontPadding calculation done: ", frontPadding, "\n")
+      thisColTmp <- numbersArray[((thisCol - 1) * currentRows + 1) : (thisCol * currentRows)]
       
-      if ( verbose ) cat("  * Numeric value to align:", x[i], "\n")
-      if ( verbose ) cat("    * decDigits:", decDigits[i], "\n")
-      if ( verbose ) cat("    * targetLength:", targetLength[i], "\n")
-      if ( verbose ) cat(" backPadding: ", backPadding, "\n")
-      if (verbose ) cat("     targetLength - backPadding:", targetLength[i] - backPadding, "\n")
-
-      numbersArray[i] <- format( round( as.numeric(numbersArray[i]), 
-                                        decDigits[i]),
-                                 nsmall = decDigits[i],
-                                 justify = "right",
-                                 big.mark = big.mark,
-                                 width = targetLength[i] - backPadding)
-      if ( verbose) cat("  * First update: '", numbersArray[i], "'\n",
-                        sep = "")
-      
-      # Now add phantom{0} to front as needed
-      if ( frontPadding > 0 ) preNumberText[i] <- paste0( preNumberText[i], 
-                                                          strrep("\\phantom{0}", frontPadding) )
-      if ( verbose) cat("  * Second update: '", preNumberText[i], "'\n",
-                        sep = "")
+      # - Now check: Any negative numbers in here?
+      anyNegNumbers <- any( as.numeric(thisColTmp) < 0, 
+                            na.rm = TRUE) 
+      if ( verbose) cat("  * Determining if negative sign needed for this COLUMN:", anyNegNumbers, "\n")
       
       
-      if ( backPadding > 0 ) postNumberText[i] <- paste0( postNumberText[i], 
-                                                          strrep("\\phantom{0}", backPadding) )
-      if ( verbose) cat("  * Third update: '", postNumberText[i], "'\n",
-                        sep = "")
+      countNegativeSignAdded <- 0
+      if ( anyNegNumbers ) {
+        if ( verbose) cat("  * YES; negative numbers in this column\n")
+        if ( verbose) message("  * Work with ", numbersArray[i])
+        # Then add a phantom{-} where positive numbers are present (neg numbers don't need it)
+        if( !is.na(numbersArray[i])){
+          if ( verbose)  message("  * Not NA")
+          if ( numbersArray[i] > 0 ) {
+            if ( verbose) message("  * Minus number")
+            if ( !isNumberNA[i] ){ # Only if numbers appear in this cell
+              if ( verbose)  message("  * Adjusting")
+              preNumberText[i] <- paste0(preNumberText[i],
+                                         "\\phantom{-}")
+              countNegativeSignAdded <- 1
+            }
+          }
+        }
+      }
       
       
-
-      currentLength <- nchar( as.character(x[i]))
-     # out[i] <- xi
+      # FRONTPADDING AND BACKPADDING
+      # Now, may have this situation: 2.1, 13.4 and 2.334.
+      # So [1] needs one dp showing, but *space* for 3 dp:
+      #   2.1 
+      #  13.4
+      #   2.334
+      #
+      # The padding needed at the right we call backPadding
+      # The padding needed at the left  we call frontPadding
       
-    } else { # So these cannot be converted to numeric; likely are text
-      #cat("Non numeric\n")
-      if (is.na(x[i]) ) {
-        out[i] <-  NA
-        if ( verbose) cat("  * Element is NA: no padding\n")
+      if ( !isNumberNA[i]) { 
         
-      } else { # TEXT
-        if ( verbose) cat("  * Element is text\n")
+        maxColumnDecDigits <- max( decDigits[((thisCol - 1) * currentRows + 1) : (thisCol * currentRows)] )
+        backPadding <- maxColumnDecDigits - decDigits[i]
+        if (verbose) cat("* backPadding calculation done:", backPadding, "\n")
         
-        xLength <- nchar( x[i] )
+        #message( round(numbersArray[i]) )
+        numExistingdecDigitsBeforeDecimal <- nchar(as.character(round( as.numeric(numbersArray[i]))))
+        frontPadding <- (targetLength[i] - maxColumnDecDigits ) - numExistingdecDigitsBeforeDecimal - countNegativeSignAdded
+        #frontPadding <- targetLength - backPadding 
+        if (verbose) message("targetLength: ", targetLength[i])
+        if (verbose) message("maxColumnDecDigits: ", maxColumnDecDigits)
+        if (verbose) message("numExistingdecDigitsBeforeDecimal: ", numExistingdecDigitsBeforeDecimal)
+        if (verbose) message("frontPadding: ", frontPadding)
         
-        if (xLength < targetLength[thisCol]){
+        # NOW:  -1 for the decimal point IF THE NUMBERS HAVE A DECIMAL POINT!
+        if ( decDigits[i] > 0 ) frontPadding <- frontPadding - 1
+        
+        if (verbose) cat("* frontPadding calculation done: ", frontPadding, "\n")
+        
+        if ( verbose ) cat("  * Numeric value to align:", x[i], "\n")
+        if ( verbose ) cat("    * decDigits:", decDigits[i], "\n")
+        if ( verbose ) cat("    * targetLength:", targetLength[i], "\n")
+        if ( verbose ) cat(" backPadding: ", backPadding, "\n")
+        if (verbose ) cat("     targetLength - backPadding:", targetLength[i] - backPadding, "\n")
+        
+        numbersArray[i] <- format( round( as.numeric(numbersArray[i]), 
+                                          decDigits[i]),
+                                   nsmall = decDigits[i],
+                                   justify = "right",
+                                   big.mark = big.mark,
+                                   width = targetLength[i] - backPadding)
+        if ( verbose) cat("  * First update: '", numbersArray[i], "'\n",
+                          sep = "")
+        
+        # Now add phantom{0} to front as needed
+        if ( frontPadding > 0 ) preNumberText[i] <- paste0( preNumberText[i], 
+                                                            strrep("\\phantom{0}", frontPadding) )
+        if ( verbose) cat("  * Second update: '", preNumberText[i], "'\n",
+                          sep = "")
+        
+        
+        if ( backPadding > 0 ) postNumberText[i] <- paste0( postNumberText[i], 
+                                                            strrep("\\phantom{0}", backPadding) )
+        if ( verbose) cat("  * Third update: '", postNumberText[i], "'\n",
+                          sep = "")
+        
+        
+        currentLength <- nchar( as.character(x[i]))
+        # out[i] <- xi
+        
+      } else { # So these cannot be converted to numeric; likely are text
+        #cat("Non numeric\n")
+        if (is.na(x[i]) ) {
+          out[i] <-  NA
+          if ( verbose) cat("  * Element is NA: no padding\n")
           
-          if (textAlign == "left"){ 
+        } else { # TEXT
+          if ( verbose) cat("  * Element is text\n")
+          
+          xLength <- nchar( x[i] )
+          
+          if (xLength < targetLength[thisCol]){
             
-            out[i] <- paste0( x[i], 
-                              "$",
-                              paste0( rep("\\phantom{0}",
-                                          times = targetLength[thisCol] - xLength),
-                                      collapse = ""),
-                              "$")
-          } else { # right align
-            out[i] <- paste0( "$",
-                              paste0( rep("\\phantom{0}",
-                                          times = targetLength[thisCol] - xLength),
-                                      collapse = ""),
-                              "$",
-                              x[i],
-                              collapse = "")
-            
+            if (textAlign == "left"){ 
+              
+              out[i] <- paste0( x[i], 
+                                "$",
+                                paste0( rep("\\phantom{0}",
+                                            times = targetLength[thisCol] - xLength),
+                                        collapse = ""),
+                                "$")
+            } else { # right align
+              out[i] <- paste0( "$",
+                                paste0( rep("\\phantom{0}",
+                                            times = targetLength[thisCol] - xLength),
+                                        collapse = ""),
+                                "$",
+                                x[i],
+                                collapse = "")
+              
+            }
+          } else {
+            out[i] <- x[i]
           }
-        } else {
-          out[i] <- x[i]
+          
         }
-        
+      }
+    } else {
+      if (verbose) cat("  * Element is NA, so SKIPPING any processing\n")
+      
+      # Update the row and column currently being worked on
+      thisRow <- thisRow + 1
+      if( thisRow == (currentRows + 1)){ # Then move to next column, and start again at Row 1
+        thisCol <- thisCol + 1
+        thisRow <- 1
       }
     }
   } 
   
   ### NOW REJOIN PRE, NUMBERS, POST
+  # To paste, any NA gets added as "NA".
+  # So first replace NA by a zero-length string
+  numbersArray[ is.na(numbersArray)] <- ""
   out <- paste0( array( preNumberText,  dim = currentDim ),
                  array( numbersArray,   dim = currentDim ),
                  array( postNumberText, dim = currentDim ))
+  if (verbose) print(array( preNumberText,  dim = currentDim ))
+  if (verbose) print(array( numbersArray,  dim = currentDim ))
+  if (verbose) print(array( postNumberText,  dim = currentDim ))
   
   ### NOW RESTORE TO ORIGINAL SHAPE, WITH NAMES
   if ( xAnArray ) {
