@@ -372,7 +372,7 @@ pad <- function(x,
         if (verbose) cat("* backPadding calculation done:", backPadding, "\n")
         
         #message( round(numbersArray[i]) )
-        numExistingdecDigitsBeforeDecimal <- nchar(as.character(round( as.numeric(numbersArray[i]))))
+        numExistingdecDigitsBeforeDecimal <- nchar(as.character(floor( as.numeric(numbersArray[i]))))
         frontPadding <- (targetLength[i] - maxColumnDecDigits ) - numExistingdecDigitsBeforeDecimal - countNegativeSignAdded
         #frontPadding <- targetLength - backPadding 
         if (verbose) message("targetLength: ", targetLength[i])
@@ -381,15 +381,14 @@ pad <- function(x,
         if (verbose) message("frontPadding: ", frontPadding)
         
         # NOW:  -1 for the decimal point IF THE NUMBERS HAVE A DECIMAL POINT!
-        if ( decDigits[i] > 0 ) frontPadding <- frontPadding - 1
+        if ( maxColumnDecDigits > 0 ) frontPadding <- frontPadding - 1
         
         if (verbose) cat("* frontPadding calculation done: ", frontPadding, "\n")
-        
         if ( verbose ) cat("  * Numeric value to align:", x[i], "\n")
         if ( verbose ) cat("    * decDigits:", decDigits[i], "\n")
         if ( verbose ) cat("    * targetLength:", targetLength[i], "\n")
         if ( verbose ) cat(" backPadding: ", backPadding, "\n")
-        if (verbose ) cat("     targetLength - backPadding:", targetLength[i] - backPadding, "\n")
+        if ( verbose ) cat("     targetLength - backPadding:", targetLength[i] - backPadding, "\n")
         
         numbersArray[i] <- format( round( as.numeric(numbersArray[i]), 
                                           decDigits[i]),
