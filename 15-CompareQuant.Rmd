@@ -17,15 +17,16 @@
 
 Relational RQs compare groups.
 This chapter considers how to compare *quantitative* variables in different groups.
-Graphs are useful this purpose, and a table of the numerical summaries usually are also produced.
+Graphs are useful this purpose, and a table of the numerical summaries usually is also produced.
 
 
 ## Summarising the comparison: difference between means {#CompareQuantTables}
 \index{Quantitative data!compare \textit{between} individuals!summary tables}
 
 
-The best way to compare the two groups is to summarise the *difference between the two means*.
-A numerical summary table can be constructed summarising both group, and reporting the difference between the two means.
+When comparing quantitative variables in different groups, the data should be summarised for each group.
+If two groups are being compared, the *difference between the two means* must also be computed.
+If more than two groups are being compared, the *differences* between one of the group means (the first, or the benchmark, or the initial situation) and the other group means are also usually compued.
 
 
 ::: {.example #GorillaSummarytable name="Numerical summary table"}
@@ -40,15 +41,19 @@ data(Gorillas)
 CBRyounger <- sort( Gorillas$ChestBeatRate[Gorillas$Age20 == "Younger"] )
 CBRolder <- sort( Gorillas$ChestBeatRate[Gorillas$Age20 == "Older"] )
 
-Gorilla2 <- cbind( CBRyounger[1:3], 
-                   CBRyounger[4:6],
-                   CBRyounger[7:9],
-                   CBRyounger[10:12],
-                   c(CBRyounger[13:14], NA),
-                   CBRolder[1:3],
-                   CBRolder[4:6],
-                   CBRolder[7:9],
-                   c(CBRolder[10:11], NA) )
+Gorilla2 <- cbind( CBRyounger[1:2], 
+                   CBRyounger[3:4],
+                   CBRyounger[5:6],
+                   CBRyounger[7:8],
+                   CBRyounger[9:10],
+                   CBRyounger[11:12],
+                   CBRyounger[13:14],
+                   CBRolder[1:2],
+                   CBRolder[3:4],
+                   CBRolder[5:6],
+                   CBRolder[7:8],
+                   CBRolder[9:10],
+                   c(CBRolder[11], NA) )
 ```
 
 ```{r GorillaDataTable}
@@ -65,8 +70,8 @@ if( knitr::is_latex_output() ) {
          linesep = c("", "", "", "\\addlinespace"),
          align = c("c","c")) %>%
     kable_styling(font_size = 8) %>%
-    add_header_above(header = c("Younger " = 5, 
-                                "Older" = 4), 
+    add_header_above(header = c("Younger " = 7, 
+                                "Older" = 6), 
                      bold = TRUE, 
                      align = "c")
 } else {
@@ -82,8 +87,8 @@ if( knitr::is_latex_output() ) {
          linesep = c("", "", "", "\\addlinespace"),
          align = c("c","c")) %>%
          #col.names = c("Treatment group", "Control group"),
-    add_header_above(header = c("Younger " = 5, 
-                                "Older" = 4), 
+    add_header_above(header = c("Younger " = 7, 
+                                "Older" = 6), 
                      bold = TRUE, 
                      align = "c")
 }
@@ -190,7 +195,7 @@ These situations have one quantitative variable being compared in different grou
 Back-to-back stemplots are two stemplots (Sect.\ \@ref(StemAndLeafPlots)) sharing the same stems; one group has the leaves emerging left-to-right from the stem, and the second group has the leaves emerging right-to-left from the stem.
 Back-to-back stemplots can only be used when *two* groups are being compared.
 Again, one advantage of using stemplots over other plots is that the original data are retained.
-Disadvantage are that only two groups can be compared, and not all data work well with stemplots.
+Disadvantages are that only two groups can be compared, and not all data work well with stemplots.
 
 
 
@@ -202,7 +207,7 @@ One older gorilla has a much faster rate that the other older gorillas (a potent
 :::
 
 
-```{r GorillasDoubleStem, fig.width=7.0, fig.height=3, out.width='75%', fig.cap="Stemplot for the chest-beating rate for gorillas.", fig.align="center"}
+```{r GorillasDoubleStem, fig.width=7.0, fig.height=2.75, out.width='80%', fig.cap="Stemplot for the chest-beating rate for gorillas.", fig.align="center"}
 
 stemgrid.x <- 1
 stemgrid.y <- 6
@@ -312,7 +317,7 @@ Rather, how the the dots *compare* in the groups is the main feature of interest
 
 :::{.example #Dotchart2DGorillas name="Boxplots"}
 For the chest-beating data seen in Example\ \@ref(exm:GorillaData), a dot chart is shown in Fig.\ \@ref(fig:TwoDDotchart).
-Many observations are the same, so some points would be *overplotted*\index{Overplotting} if points were not *stacked*\index{Overplotting!stacking} (left panel), or jittered\index{Overplotting!jittering} (right panel).
+Many observations are the same, so some points would be *overplotted*\index{Overplotting} if points were not *stacked*\index{Overplotting!stacking} (left panel), or *jittered*\index{Overplotting!jittering} (right panel).
 :::
 
 ```{r TwoDDotchart, fig.height=6, out.width='100%',fig.cap="Two variations of a 2-D dot chart for the chest-beating data to avoid overplotting: stacking (left) and jittering (right).", fig.align="center", fig.width=8.75, fig.height=2.5}
@@ -355,7 +360,7 @@ Any number of groups can be compared using a boxplot.
 
 The distribution for each group is summarised by five numbers: the minimum value; the first quartile ($Q_1$); the median ($Q_2$); the third quartile ($Q_3$); and the maximum value.
 Outliers, identified using the IQR rule (Sect.\ \@ref(OutliersIQRrule)), are usually shown too.
-The values of $Q_1$, the medians, and $Q_3$ can be used to compare the distributions.
+The values of $Q_1$, the median, and $Q_3$ for each group can be used to compare the distributions.
 Different software may use different rules for computing quartiles, and hence may produce slightly different boxplots.
 
 
@@ -365,9 +370,8 @@ Rather, the boxes display the values of these five numbers for each group *relat
 :::
 
 
-
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Boxplots summarise data with only five numbers, so detail of the distributions are lost.
+Boxplots summarise data with only five numbers (and are sometimes called the five-number summary)\index{Five-number summary}, so detail of the distributions are lost.
 For this reason, boxplots are excellent for *comparing* distributions, but histograms are better for displaying the distribution of a single quantitative variable.
 :::
 
@@ -379,10 +383,10 @@ The boxplot shows a distinct difference between the chest-beating rates of older
 :::
 
 
-```{r BoxplotGorillas, fig.cap="A boxplot for the chest-beating data.", fig.align="center",  fig.height=3, , fig.width=4.5, out.width='50%'}
+```{r BoxplotGorillas, fig.cap="A boxplot for the chest-beating data.", fig.align="center",  fig.height=2.85, fig.width=4.5, out.width='50%'}
 CBR.C2 <- CBRolder[ -which.max(CBRolder)]
 
-par( mar = c(4.5, 5, 4, 2) + 0.1 )
+par( mar = c(4.5, 5, 3, 2) + 0.1 )
 Gorillas$Age20 <- ordered(Gorillas$Age20,
                           levels = c("Younger", 
                                      "Older"))
@@ -391,30 +395,29 @@ out <- boxplot( ChestBeatRate ~ Age20,
          col = plot.colour,
          las = 1,
          pch = 19,
-         ylim = c(0, 4.5),
+         ylim = c(0, 5),
          xlab = "Age group",
-         ylab = "Chest-beating rate\n (per 110 h)",
+         ylab = "Chest-beating rate\n (per 10 h)",
          main = "Chest-beating rate\nof gorillas")
 
 CBRyounger.quantiles <- out$stats[, 1]
-
 ```
 
 
-The boxplots are explained in Fig.\ \@ref(fig:BoxplotGorillasExplain).
+The detail of the boxplots are explained in Fig.\ \@ref(fig:BoxplotGorillasExplain).
 Firstly, focus on just the boxplot for the *younger* gorillas (i.e., the left box).\index{Quartiles}
 Boxplots have five horizontal lines; from the top to the bottom of the plot:
 
 1. *Top line*:
    The *fastest* chest-beating rate (largest value) is\ $`r CBRyounger.quantiles[5]`$ per\ $10$\hs.
 2. *Second line from top*:
-   $75$% of observations are smaller than about\ $`r CBRyounger.quantiles[4]`$, represented by the line at the top of the central box. 
+   $75$% of observations are smaller than about\ $`r CBRyounger.quantiles[4]`$ per\ $10$\hs, represented by the line at the top of the central box. 
    This is the *third quartile* ($Q_3$).
 3. *Middle line*:
-   $50$% of observations are smaller than about\ $`r CBRyounger.quantiles[3]`$, represented by the line inside the central box. 
+   $50$% of observations are smaller than about\ $`r CBRyounger.quantiles[3]`$ per\ $10$\hs, represented by the line inside the central box. 
    This is an 'average' value, the *second quartile* ($Q_2$).
 4. *Second line from bottom*:
-   $25$% of observations are smaller than about\ $`r CBRyounger.quantiles[2]`$, represented by the line at the bottom of the central box. 
+   $25$% of observations are smaller than about\ $`r CBRyounger.quantiles[2]`$ per\ $10$\hs, represented by the line at the bottom of the central box. 
    This is the *first quartile* ($Q_1$).
 5. *Bottom line*:
    The *slowest* chest-beating rate (smallest value) is\ $`r CBRyounger.quantiles[1]`$ per\ $10$\hs. 
@@ -422,14 +425,14 @@ Boxplots have five horizontal lines; from the top to the bottom of the plot:
 
 
 
-```{r BoxplotGorillasExplain, fig.cap="Explaining the boxplots for the chest-beating data.", fig.align="center",  fig.height=4.25, fig.width=10, out.width='100%'}
+```{r BoxplotGorillasExplain, fig.cap="Explaining the boxplots for the chest-beating data.", fig.align="center",  fig.height=4.15, fig.width=10, out.width='100%'}
 
 source("R/showExplainBoxplots.R")
 ```
 
 
 The box for the *older* gorillas is slightly different (Fig.\ \@ref(fig:BoxplotGorillas), right box): one observation is identified with a point, *above* the top line.
-Computer software has identified this observation as a potential (large) *extreme outlier* using the IQR rule (Sect.\ \@ref(OutliersIQRrule)), and has plotted this point separately.
+Computer software identifies this observation as an *extreme outlier* using the IQR rule (Sect.\ \@ref(OutliersIQRrule)), and has plotted this point separately.
 
 
 ```{r}
@@ -447,7 +450,7 @@ In Fig.\ \@ref(fig:CementBuildBoxplot) (based on @data:Silva2016:rootcanal), the
 :::
 
 
-```{r CementBuildBoxplot, fig.cap="Comparing three push-out values for three dental cements.", fig.align="center", fig.height=2.75, fig.width=6.5, fig.show='hold', out.width='75%'}
+```{r CementBuildBoxplot, fig.cap="Comparing three push-out values for three dental cements.", fig.align="center", fig.height=2.85, fig.width=6.5, fig.show='hold', out.width='85%'}
 MTA    <- c(0.05, 0.1, 0.2, 0.25, 0.45)
 Endo   <- c(0.1, 0.2, 0.4,   1.0, 2.05)
 AHplus <- c(0.5, 1.1, 2.25, 2.9, 4.4)
@@ -831,10 +834,6 @@ if( knitr::is_latex_output() ) {
        y = 140,
        labels = "Histogram A",
        font = 2)
-  lines( x = c(0, 4),
-         y = c(160, 160), 
-         col = "grey",
-         xpd = TRUE)
   boxplot(dt2,
           at = 200,
           horizontal = TRUE,
@@ -846,6 +845,11 @@ if( knitr::is_latex_output() ) {
        y = 220,
        labels = "Boxplot I",
        font = 2)
+
+  lines(x = c(-100, 100), 
+        y = c(160, 160), 
+        col = "grey",
+        xpd = TRUE)  
   
   ########################
   
@@ -863,10 +867,6 @@ if( knitr::is_latex_output() ) {
        y = 140,
        labels = "Histogram B",
        font = 2)
-  lines( x = c(-1, 3),
-         y = c(235, 235), 
-         col = "grey",
-         xpd = TRUE)
   boxplot(dt1,
           at = 195,
           horizontal = TRUE,
@@ -878,7 +878,11 @@ if( knitr::is_latex_output() ) {
        y = 220,
        labels = "Boxplot II",
        font = 2)
-  
+
+  lines(x = c(-100, 100), 
+        y = c(160, 160), 
+        col = "grey",
+        xpd = TRUE)  
   ########################
   
   hist(dt3,
@@ -907,7 +911,10 @@ if( knitr::is_latex_output() ) {
        y = 220,
        labels = "Boxplot III",
        font = 2)
-  
+  lines(x = c(-100, 100), 
+        y = c(160, 160), 
+        col = "grey",
+        xpd = TRUE)  
   
 }
 ```
@@ -952,24 +959,22 @@ boxplot(Width ~ Location,
 
 
 1. Two students are arguing about the median breadth.
-   Who is correct?  
-   
-**Student\ 1** says:  
-
-> The bars in the histogram have heights of $10$,\ $2$,\ $4$,\ $2$ and\ $4$.
-> When these numbers are put in order, they are: $2$,\ $2$,\ $4$,\ $4$, and\ $10$.
-> The median breadth is the median of these numbers, so the median breadth is the middle one: $4$\mms is the median.  
-
-**Student\ 2** responds:  
-
-> You have the correct answer, but for the wrong reason!
-> There are five bars, and the middle bar is the third bar.
-> Since the third bar has a height of\ $4$, the median breadth is\ $4$\mms.  
-
+  Which student, if either, is correct?  
+  \ \   
+  Student\ 1 says:  
+  *The bars in the histogram have heights of $10$,\ $2$,\ $4$,\ $2$ and\ $4$.
+  When these numbers are put in order, they are: $2$,\ $2$,\ $4$,\ $4$, and\ $10$.
+  The median breadth is the median of these numbers, so the median breadth is the middle one: $4$\mms is the median.*  
+  \ \   
+  Student\ 2 responds:  
+  *You have the correct answer, but for the wrong reason!
+  There are five bars, and the middle bar is the third bar.
+  Since the third bar has a height of\ $4$, the median breadth is\ $4$\mms.*
 2. Describe the histogram.
 3. A boxplot comparing the breadths of jellyfish at Dangar Island and Salamander Bay is shown in Fig.\ \@ref(fig:JellyfishHist) (right panel).
    Describe and compare the breadths of the jellyfish.
-4. Which box in the boxplot represents the Dangar Island jellyfish (shown in Fig.\ \@ref(fig:JellyfishHist), left panel)?
+4. What is the median breadth for the jellyfish at each location?
+5. Which box in the boxplot represents the Dangar Island jellyfish (shown in Fig.\ \@ref(fig:JellyfishHist), left panel)?
 :::
 
 
@@ -1049,7 +1054,7 @@ if( knitr::is_html_output() ) {
 
 
 ::: {.exercise #GreenBuilding}
-In a study of the temperature in offices, @data:Paul2008:Comfort compared the temperature in three offices (during working hours) at Charles Sturt University (Australia); the data are summarised in Table\ \@ref(tab:OfficeTemps).
+In a study of the temperature in offices, @data:Paul2008:Comfort compared the temperature in three offices (during working hours) at Charles Sturt University (Australia; CSU); the data are summarised in Table\ \@ref(tab:OfficeTemps).
 
 1. Compute the IQR for each office.
 1. Construct the boxplot for comparing the three offices.
@@ -1119,7 +1124,7 @@ Consider this RQ:
 
 > Among Americans, is the mean direct HDL cholesterol different for current smokers and non-smokers?
 
-Data to answer this RQ is available from the American *National Health and Nutrition Examination Survey* (NHANES) [@data:NHANES:Rpackage].
+Data to answer this RQ are available from the American *National Health and Nutrition Examination Survey* (NHANES) [@data:NHANES:Rpackage].
 
 1. What would be an appropriate graph to display the comparison?
 2. Use the software output (Fig.\ \@ref(fig:NHANESTwoSample))\index{Software output!comparing two means} to construct an appropriate table showing the numerical summary relevant to the RQ.

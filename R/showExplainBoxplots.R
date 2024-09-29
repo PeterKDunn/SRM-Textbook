@@ -225,7 +225,7 @@ arrows( x0 = 5,
         lwd = 2)
 text(x = 5,
      y = 3.3,
-     labels = "Max, apart\n from outlier",
+     labels = "Max. (apart\n from outlier)",
      pos = 4)
 
 arrows( x0 = 5,
