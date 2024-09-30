@@ -1,6 +1,6 @@
  showDecisionMaking <- function(populationText = expression( atop(bold(POPULATION)~"with",
                                                                   bold(assumed)~parameter)),
-                                expectationText = expression(atop(bold(Expectated)~values~"of", 
+                                expectationText = expression(atop(bold(Expected)~values~"of", 
                                                                   all~possible~statistics) ),
                                 oneSampleText = expression( atop(One~possible,
                                                                  bold(SAMPLE)) ),
@@ -23,8 +23,9 @@
     PopulationColour <- ChanceColour
     SampleColour <- GroupColour
     CompareColour <- DesignColour
-    SupportColour <- BlockColour
-    ContradictColour <- ResponseColour
+    SupportColour <- ContradictColour <- BlockColour
+    
+    DecisionColour <- ResponseColour
    
    pos <- array( dim = c(7, 2) )
    
@@ -191,7 +192,9 @@
              rady = 0.1,
              shadow.size = 0,
              lcol = SupportColour,
-             box.col = SupportColour,
+             box.col = ifelse (Decision == "Accept",
+                               DecisionColour,
+                               ContradictColour),
              lab = expression( atop(bold(Yes):~Supports,
                                     assumption) ),
              col = ifelse( Decision == "Reject", 
@@ -202,7 +205,9 @@
              rady = 0.1,
              shadow.size = 0,
              lcol = ContradictColour,
-             box.col = ContradictColour,
+             box.col = ifelse (Decision == "Reject",
+                               DecisionColour,
+                               ContradictColour),
              lab = expression( atop(bold(No):~Contradicts,
                                     assumption) ),
              col = ifelse( Decision == "Accept", 
