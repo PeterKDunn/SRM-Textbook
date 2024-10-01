@@ -104,6 +104,9 @@ plotNormal <- function(mu,
       yVertLines <- dnorm( xVertLines, mean = mu, sd = sd )
       lines( x = c( xVertLines, xVertLines),
              y = c(0, yVertLines) + verticalOffset,
+             lwd = ifelse( z == 0, 
+                           2, 
+                           1),
              col = "grey")
     }
   }
