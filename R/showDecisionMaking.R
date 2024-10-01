@@ -130,7 +130,9 @@
                  lcol = ifelse( Decision == "Reject", 
                                 "grey", 
                                 "black"),
-                 lty = 2)
+                 lty = ifelse( Decision == "Reject",
+                               2,
+                               1) )
    straightarrow(from = pos[5, ],  
                  to = pos[7, ], ### CONTRADICTS
                  lcol = ifelse( Decision == "Accept", 
@@ -138,7 +140,9 @@
                                 "black"),
                  arr.pos = 0.5, # Then cover with box
                  lwd = 2,
-                 lty = 1) 
+                 lty = ifelse( Decision == "Accept",
+                               2, 
+                               1) ) 
    
    
    textrect( pos[1, ],
