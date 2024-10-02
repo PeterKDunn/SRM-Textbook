@@ -6,7 +6,8 @@
                                                                  bold(SAMPLE)) ),
                                 oneStatisticText =  expression( atop(One~possible,
                                                                      bold(observed)~statistic)),
-                                Decision = "Neither"){ # "Neither", "Reject" or "Accept"
+                                Decision = "Neither", # "Neither", "Reject" or "Accept"
+                                showQuestionMark = FALSE) {
    
    PopulationColour <- rgb(216, 204, 220, 
                          maxColorValue = 256)
@@ -235,6 +236,16 @@
         y = 0.02,
         cex = 1,
         labels = "4. Make decision")
+   
+   
+   ## Show question mark
+   if (showQuestionMark) {
+     text(x = 0.915, 
+          y = 0.5, 
+          label="?",
+          col = "grey",
+          cex = 8)
+   }
    
  }
  
