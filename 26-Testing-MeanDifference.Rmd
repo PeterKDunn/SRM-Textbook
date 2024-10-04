@@ -250,9 +250,60 @@ knitr::include_graphics("jamovi/SoilCN/SoilCN-Summary.png")
 ```
 
 
+## Paired data {#PairedData}
+\index{Data!paired}
+
+The data
+`r if( knitr::is_latex_output() ) {
+    'Table\\ \\@ref(tab:SoilCN).'
+} else {
+    'above'
+}`
+are *paired*.
+The RQ is a special case of a *repeated-measures RQs* (Sect.\ \@ref(RQsRepeatedMeasures)),\index{Research question!repeated-measures} where each unit of analysis has two observations.
+Computing the *differences* or *changes* between the pairs of observations makes sense, since the values for each pair belong to the same unit of analysis (the same site, in this case).
+
+Pairing data, when appropriate, is useful because individuals can vary substantially, and pairing means that extraneous variables (potentially, *confounding* variables) are held constant for those paired observations.
+For example, each pair of sites recorded in
+`r if (knitr::is_latex_output()) {
+   'Table\\ \\@ref(tab:SoilCN)'
+} else {
+   'the data above'
+}`
+experience similar climatic condition, have similar soil, and most have the same farm management.
+Pairing is a form of blocking\index{Blocking} (Sect.\ \@ref(ManagingConfounding)).
+
+Pairing does not require the *same* unit of analysis to be measured twice, as shown in this study.
+Pairing i a good design strategy when the individuals in the pair are very similar for many extraneous variables.
+(For example, the pair may comprise two different people, of the same sex, with similar age, height and weight.)
+
+
+::: {.definition #PairedData name="Paired data"}
+*Paired data* occurs when the outcome is compared for two different, distinct situations for each unit of analysis.
+:::
+
+
+Paired studies appear in many situations:
+
+* Height is measured for each twin in a pair (the twin-pair is the 'individual').
+  Pairing the heights for each twin is reasonable given the shared genetics (and probably environments also).
+  The *difference* between the height of the twins can be recorded for each pair.
+* The body temperature of dogs (the 'individuals') is measured using *both* rectal and ear thermometers.
+  The *difference* between the two recorded temperatures from the thermometers for each dog is recorded.
+* Blood pressure is recorded from some individuals (Group\ A) after receiving Drug\ A, and from another group of individuals (Group\ B) after receiving Drug\ B.
+  Each person in Group\ A is matched with someone in Group\ B of the same sex, similar age and similar weight (e.g., in one of the pairs, each individual is a male, about $30$\ years-of-age, and about $180$\cms\ tall).
+  The *difference* between the blood pressure for the individual in Group\ A and the matched person in Group\ B is recorded for each pair.
+* The number of campers is recorded at many national parks (the 'individuals') on the first weekend in summer, and on the first weekend on winter.
+  The *difference* in camper numbers for each national park between these time points is recorded.
+
+Many of these examples can be extended to beyond two measurements.
+For instance, temperatures can be compared on each dog using three different types of thermometers.
+We only study *pairs* of measurements, and only for quantitative variable.
+
+
 ## Statistical hypotheses and notation
 
-The RQ asks if the mean\ %N *reduces* in the *population* when sites are irrigated.
+The RQ for the soil nitrogen study asks if the mean\ %N *reduces* in the *population* when sites are irrigated.
 The *parameter* is the *population mean difference*, $\mu_d$. 
 
 If the differences are defined as the %N for *non-irrigated* sites minus *irrigated* sites, then positive values will occur when non-irrigated sites have a larger\ %N than irrigated sites. 
@@ -272,12 +323,87 @@ According to how the differences have been defined, the alternative hypothesis i
 This hypothesis says that the mean change in the population is *greater than* zero, because of the wording of the RQ, and because of how the differences were defined.
 (If the differences were defined in the opposite way (as '%N in *irrigated* sites minus *non-irrigated* sites') then the alternative hypothesis would be $\mu_d < 0$, which has the same *meaning*.)
 
-The notation used is:
+The differences (i.e., the **Reduction** columns in
+`r if (knitr::is_latex_output()) {
+   'Table\\ \\@ref(tab:SoilCN))'
+} else {
+   'the data table above)'
+}`
+can be treated like a single sample of data (Chap.\ \@ref(OneMeanConfInterval)).
+Hence, the sampling distribution for the differences has a similar sampling distribution to that of\ $\bar{x}$.
+In addition, the notation when working with paired data is similar to that used when working with the single-mean case too (Table\ \@ref(tab:PairedNotation)):
 
 * $\mu_d$: the mean *difference* in the *population* (in\ %N).
 * $\bar{d}$: the mean *difference* in the *sample* (in\ %N).
 * $s_d$: the *sample* standard deviation of the *differences* (in\ %N).
 * $n$: the number of *differences*.
+
+
+
+```{r PairedNotation}
+DiffNotation <- array(dim = c(6, 2))
+colnames(DiffNotation) <- c(	"One sample mean", 
+                             "Mean difference")
+rownames(DiffNotation) <- c(	"The observations:",
+                             "Sample mean:",
+                             "Standard deviation:",
+                             "Standard error of $\\bar{x}$:",
+                             "Sample size:",
+                             "Confidence interval:")
+
+
+if( knitr::is_latex_output() ) {
+  DiffNotation[1, ] <- c(	"Values: $x$", 
+                          "Differences: $d$")
+  DiffNotation[2, ] <- c(	"$\\bar{x}$",		
+                          "$\\bar{d}$")
+  DiffNotation[3, ] <- c(	"$s$", 			
+                          "$s_d$")
+  DiffNotation[4, ] <- c(	"$\\displaystyle\\text{s.e.}(\\bar{x}) = \\frac{s}{\\sqrt{n}}$",
+                          "$\\displaystyle\\text{s.e.}(\\bar{d}) = \\frac{s_d}{\\sqrt{n}}$")
+  DiffNotation[5, ] <- c(	"Number of \\emph{observations}: $n$",
+                          "Number of \\emph{differences}: $n$")
+  DiffNotation[6, ] <- c(	"$\\bar{x}\\pm\\big(\\text{multiplier}\\times \\text{s.e.}(\\bar{x})\\big)$",
+                          "$\\bar{d}\\pm\\big(\\text{multiplier}\\times \\text{s.e.}(\\bar{d})\\big)$")
+  
+  kable( DiffNotation,
+         format = "latex",
+         booktabs = TRUE,
+         align = c("c", "c"),
+         longtable = FALSE,
+         escape = FALSE,
+         col.names = colnames(DiffNotation),
+         caption = "The notation used for mean differences (paired data) compared to the notation used for one sample mean.") %>%
+    kable_styling(font_size = 8) %>%
+    row_spec(0, bold = TRUE) 
+}
+if( knitr::is_html_output() ) {
+  
+  DiffNotation[1, ] <- c(	"Values: $x$", 	
+                          "Differences: $d$")
+  DiffNotation[2, ] <- c(	"$\\bar{x}$",		
+                          "$\\bar{d}$")
+  DiffNotation[3, ] <- c(	"$s$", 			
+                          "$s_d$")
+  DiffNotation[4, ] <- c(	"$\\displaystyle\\text{s.e.}(\\bar{x}) = \\frac{s}{\\sqrt{n}}$",
+                          "$\\displaystyle\\text{s.e.}(\\bar{d}) = \\frac{s_d}{\\sqrt{n}}$")
+  DiffNotation[5, ] <- c(	"Number of *observations*: $n$",
+                          "Number of *differences*: $n$")
+  DiffNotation[6, ] <- c(	"$\\bar{x}\\pm\\big(\\text{multiplier}\\times \\text{s.e.}(\\bar{x})\\big)$",
+                          "$\\bar{d}\\pm\\big(\\text{multiplier}\\times \\text{s.e.}(\\bar{d})\\big)$")
+
+  kable( DiffNotation,
+                format = "html",
+                booktabs = TRUE,
+                longtable = FALSE,
+                align = c("c", "c"),
+                col.names = colnames(DiffNotation),
+                caption = "The notation used for mean differences (paired data) compared to the notation used for one sample mean.") %>%
+    row_spec(0, bold = TRUE) 
+}
+```
+
+
 
 
 ## Tests for the mean difference: $t$-test

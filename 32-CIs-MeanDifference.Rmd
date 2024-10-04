@@ -28,7 +28,7 @@ The recommended setting for the test is usually a walkway of at least\ $30$\ms.
 > For Thai patients with chronic obstructive pulmonary disease, what is the mean difference between the 6MWT distance when subjects use a\ $20$\ms walkway and a\ $30$\ms walkway?
 
 The comparison is *within* individuals (Sect.\ \@ref(RQsRepeatedMeasures));\index{Comparison!within individuals} this is a *repeated-measures* study.
-Each subject has a *pair* of 6MWT measurements, and the study produced *paired data*, the topic of this chapter.
+Each subject has a *pair* of 6MWT measurements, and the study produced *paired data*, the topic of this chapter.\index{Data!paired}\index{Study types!paired}
 The data collected to answer this RQ are shown
 `r if (knitr::is_latex_output()) {
    'in  Table\\ \\@ref(tab:Data6MWT).'
@@ -42,8 +42,7 @@ data(SixMWT)
 
 WTlen <- dim(SixMWT)[1]
 
-Labels <- paste("No.", 
-                1 : WTlen)
+Labels <- 1 : WTlen
 
 tb1 <- array( cbind( Labels[1:5 ],
                      SixMWT$Distance20[1:5 ],
@@ -52,15 +51,15 @@ tb1 <- array( cbind( Labels[1:5 ],
                      dim = c(5, 4) )
                      
 
-T1 <- knitr::kable(pad(tb1,
+T1 <- knitr::kable(y <- pad(tb1,
                        surroundMaths = TRUE,
                        targetLength = c(0, 5, 5, 5),
-                       decDigits = 1),
+                       decDigits = c(0, 1, 1, 1)),
                    format = "latex",
                    valign = 't',
                    align = "c",
                    linesep = "",
-                   col.names = c("Subject", 
+                   col.names = c("Person", 
                                  "20m w'way", 
                                  "30m w'way", 
                                  "Diff."),
@@ -74,6 +73,7 @@ T1 <- knitr::kable(pad(tb1,
   row_spec(0, bold = TRUE)
 
 
+
 tb2 <- array( cbind( Labels[(WTlen - 4):WTlen ],
                      SixMWT$Distance20[(WTlen - 4):WTlen ],
                      SixMWT$Distance20[(WTlen - 4):WTlen ],
@@ -84,12 +84,12 @@ tb2 <- array( cbind( Labels[(WTlen - 4):WTlen ],
 T2 <- knitr::kable(pad(tb2,
                        surroundMaths = TRUE,
                        targetLength = c(0, 5, 5, 4),
-                       decDigits = 1),
+                       decDigits = c(0, 1, 1, 1)),
                    format = "latex",
                    valign = 't',
                    align = "c",
                    linesep = "",
-                   col.names = c("Subject", 
+                   col.names = c("Person", 
                                  "20 m w'way", 
                                  "30 m w'way", 
                                  "Diff."),
@@ -105,7 +105,7 @@ T2 <- knitr::kable(pad(tb2,
 out <- knitr::kables(list(T1, T2),
                      format = "latex",
                      label = "Data6MWT",
-                     caption = "The six-minute walk test (6MWT) distance, for walkways of $20$\\ms and $30$\\ms length. These are the first five and the last five of the $50$ total observations. (A negative difference means the $20$\\ms distance is greater than the $30$\\ms distance.)") %>% 
+                     caption = "The six-minute walk test (6MWT) distance, for walkways of $20$\\ms\\ and $30$\\ms\\ length. These are the first five and the last five of the $50$ total observations. (A negative difference means the $20$\\ms\\ distance is greater than the $30$\\ms\\ distance.)") %>% 
   kable_styling(font_size = 8)
 out2 <- prepareSideBySideTable(out,
                                gap = "\\quad") 
@@ -136,57 +136,6 @@ Some differences are *negative*.
 This does *not* mean a negative distance.
 Since the differences are computed as the $30$\ms\ distance minus the $20$\ms\ distance, a negative difference means the $20$\ms\ distance is a larger value than the $30$\ms\ distance.
 :::
-
-
-## Paired data {#PairedData}
-\index{Data!paired}
-
-The data
-`r if (knitr::is_latex_output()) {
-   'in  Table\\ \\@ref(tab:Data6MWT)'
-} else {
-   'above'
-}`
-are *paired*.
-The RQ is a special case of a *repeated-measures RQs* (Sect.\ \@ref(RQsRepeatedMeasures)), where each unit of analysis has two observations.
-Computing the *differences* or *changes* between the pairs of observations makes sense, since the values for each pair belong to the same unit of analysis (the same person, in this case).
-
-Pairing data, when appropriate, is useful because individuals can vary substantially, and pairing means that extraneous variables (potentially, *confounding* variables) are held constant for those paired observations.
-For example, each pair of distances recorded in
-`r if (knitr::is_latex_output()) {
-   'Table\\ \\@ref(tab:Data6MWT)'
-} else {
-   'the data above'
-}`
-come from same person, so sex and age remains the same for both observations in the pair.
-Pairing is a form of blocking\index{Blocking} (Sect.\ \@ref(ManagingConfounding)).
-
-Pairing does not require the *same* person to be measured twice (as in this study); it is also a good design strategy when the individuals in the pair are very similar for many extraneous variables.
-(For example, the pair may comprise two different people, of the same sex, with similar age, height and weight.)
-
-
-::: {.definition #PairedData name="Paired data"}
-*Paired data* occurs when the outcome is compared for two different, distinct situations for each unit of analysis.
-:::
-
-
-Paired studies appear in many situations:
-
-* Height is measured for each twin in a pair (the twin-pair is the 'individual').
-  Pairing the heights for each twin is reasonable given the shared genetics (and probably environments also).
-  The *difference* between the height of the twins can be recorded for each pair.
-* The body temperature of dogs (the 'individuals') is measured using *both* rectal and ear thermometers.
-  The *difference* between the two recorded temperatures from the thermometers for each dog is recorded.
-* Blood pressure is recorded from some individuals (Group\ A) after receiving Drug\ A, and from another group of individuals (Group\ B) after receiving Drug\ B.
-  Each person in Group\ A is matched with someone in Group\ B of the same sex, similar age and similar weight (e.g., in one of the pairs, each individual is a male, about $30$\ years-of-age, and about $180$\cms\ tall).
-  The *difference* between the blood pressure for the individual in Group\ A and the matched person in Group\ B is recorded for each pair.
-* The number of campers is recorded at many national parks (the 'individuals') on the first weekend in summer, and on the first weekend on winter.
-  The *difference* in camper numbers for each national park between these time points is recorded.
-
-Many of these examples can be extended to beyond two measurements.
-For instance, temperatures can be compared on each dog using three different types of thermometers.
-We only study *pairs* of measurements, and only for quantitative variable.
-
 
 
 ## Summarising the data {#SummarisingPairedCI}
@@ -321,6 +270,8 @@ if( knitr::is_latex_output() ) {
         caption = "The mean, median, standard deviation and standard error for the 6MWT data.") %>%
     row_spec(0, bold = TRUE) %>%
     row_spec(3, italic = TRUE) %>%
+    row_spec(2,
+             hline_after = TRUE) %>%    
     kable_styling(font_size = 8)
 } else {
   kable(pad(SMWT.DataSummary,
@@ -359,12 +310,14 @@ The differences (i.e., the **Diff.** column in
 } else {
    'the data given in Sect.\\ \\@ref(PairedIntro))'
 }`
-can be treated like a single sample of data (Chap.\ \@ref(OneMeanConfInterval)).
-Hence, the sampling distribution for the differences has a similar sampling distribution to that of\ $\bar{x}$.
-In addition, the notation when working with paired data is similar to that used when working with the single-mean case too (Table\ \@ref(tab:PairedNotation)).
+can be treated like a single sample of data.
 
-(recapping Sect.\ \@ref(MeanDiffCI)) 
+Recapping Sect.\ \@ref(MeanDiffCI), the otation used is:
 
+* $\mu_d$: the mean *difference* in the *population* (in m).
+* $\bar{d}$: the mean *difference* in the *sample* (in m).
+* $s_d$: the *sample* standard deviation of the *differences* (in m).
+* $n$: the number of *differences*.
 
 
 
@@ -379,12 +332,6 @@ $\displaystyle\text{s.e.}(\bar{d}) = \frac{s_d}{\sqrt{n_d}}$,
 where\ $n$ is the number of differences, and\ $s_d$ is the standard deviation of the individual differences in the sample.
 :::
 
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-A mean or a median may be appropriate for describing the *differences*.
-However, the *sampling distribution* for the sample mean difference (under certain conditions) has a *normal distribution*.
-Hence, the mean is appropriate for describing the sampling distribution, even if not for describing the data.
-:::
 
 
 ```{r PairedNotation}
