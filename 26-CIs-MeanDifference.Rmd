@@ -363,6 +363,10 @@ can be treated like a single sample of data (Chap.\ \@ref(OneMeanConfInterval)).
 Hence, the sampling distribution for the differences has a similar sampling distribution to that of\ $\bar{x}$.
 In addition, the notation when working with paired data is similar to that used when working with the single-mean case too (Table\ \@ref(tab:PairedNotation)).
 
+(recapping Sect.\ \@ref(MeanDiffCI)) 
+
+
+
 
 ::: {.definition #DEFSamplingDistributionDbar name="Sampling distribution of a sample mean difference"}
 The *sampling distribution of a sample mean difference* is (when certain conditions are met; Sect.\ \@ref(ValidityPaired)) described by:
@@ -604,6 +608,8 @@ Neither the differences *in the population*, nor the distances *in the populatio
 
 ## Example: invasive plants {#PairedInvasivePlantsCI}
 
+[*Dataset*: `Flowering`]
+(This study was seen in Sect.\ \@ref(PairedInvasivePlantsCI).)
 Skypilot is a alpine wildflower native to the Colorado Rocky Mountains (USA).
 In recent years, a willow shrub has been encroaching on skypilot territory and, because willow often flowers early, @kettenbach2017shrub studied whether the willow may 'negatively affect pollination regimes of resident alpine wildflower species' (p.\ $6\,965$).
 One RQ was:
@@ -629,7 +635,8 @@ The differences here are skypilot minus willow first-flowering days.
 Positive values mean willow flowered first; negative values mean skypilot flowered first.
 :::
 
-The data are summarised graphically (Fig.\ \@ref(fig:FloweringPlots)) and numerically (Table\ \@ref(tab:FloweringSummary)), using software output (Fig.\ \@ref(fig:Floweringjamovi)).
+The data are summarised graphically (Fig.\ \@ref(fig:FloweringPlots)) and numerically (Table\ \@ref(tab:FloweringSummary)).
+and software output (Fig.\ \@ref(fig:Floweringjamovi)) are repeated here.
 
 The standard error of the mean difference is $\text{s.e.}(\bar{d}) = 0.940$ (Fig.\ \@ref(fig:Floweringjamovi); Table\ \@ref(tab:FloweringSummary)).
 The approximate $95$%\ CI is $1.36 \pm (2\times 0.940)$, or from\ $-0.52$ to\ $3.24$ days.
@@ -651,12 +658,10 @@ Make sure to interpret the CI consistent with how the differences are defined.
 
 ## Example: chamomile tea {#ChamomileTea-Paired-CI}
 
+(This study was seen in Sects.\ \@ref(ChamomileTea-Paired-HT) and\ \@ref(ChamomileTea-TwoMeans-HT).)
 @rafraf2015effectiveness studied patients with Type\ 2 diabetes mellitus (T2DM).
-They randomly allocated $32$\ patients into a control group (who drank hot water), and another $32$\ patients to receive chamomile tea (p.\ 164):
-
-> The study was blinded so that the allocation of the intervention or control group was concealed from the researchers and statistician [...]
-> The intervention group ($n = 32$) consumed one cup of chamomile tea [...] three times a day immediately after meals (breakfast, lunch, and dinner) for $8$\ weeks. 
-> The control group ($n = 32$) consumed an equivalent volume of warm water during the $8$-week period...
+They randomly allocated $32$\ patients into a control group (who drank hot water), and another $32$\ patients to receive chamomile tea.
+Summary data are shown in Table\ \@ref(tab:TGsummaryTable).
 
 The total glucose (TG) was measured for each individual both *before* the intervention and *after* eight weeks on the intervention, in both the control and treatment groups.
 The data are not available, so no graphical summary of the data can be produced; however, the article gives a data summary (motivating Table\ \@ref(tab:TGsummaryTable)).
@@ -665,9 +670,7 @@ The following RQs can be asked:
 > * For patients with T2DM, what is the mean reduction in TG after eight weeks drinking *chamomile tea*?
 > * For patients with T2DM, what is the mean reduction in TG after eight weeks drinking *hot water*?
 
-For the *tea group*, the standard error of the *reduction* in TG is $\text{s.e.}(\bar{d}) = 30.37/\sqrt{32} = 5.37$.
-For the *control group*, the standard error of the *reduction* in TG is $\text{s.e.}(\bar{d}) = 36.66/\sqrt{32} = 6.48$.
-Thus, the approximate $95$%\ CI for the *reduction* in TG is:
+For the two groups, approximate $95$%\ CI for the *reduction* in TG are (using the standard errors in Sect.\ \@ref(ChamomileTea-Paired-HT)):
 
 * \makebox[31mm][l]{Tea-drinking group:} $38.62\pm (2\times 5.37)$, or from\ $27.88$ to\ $49.36$ mg.dl$^{-1}$.
 * \makebox[31mm][l]{Control group:} $-7.12\pm (2\times 6.48)$, or from\ $-20.08$ to\ $5.84$ mg.dl$^{-1}$.
@@ -677,85 +680,6 @@ The chamomile tea appears to reduce TG, but not the hot water.
 Is the difference between the two treatments due to sampling variation?
 This question is studied further in Sect.\ \@ref(ChamomileTea-Paired-HT).
 
-
-```{r TGsummaryTable}
-TGsummary <- array(dim = c(3, 8) )
-
-rownames(TGsummary) <- c("Chamomile tea",
-                          "Control",
-                          "Difference")
-colnames(TGsummary) <- c("n",
-                          "BaselineMean",
-                          "BaselinesSD",
-                          "PostMean",
-                          "PostSD",
-                          "ChangeMean",
-                          "ChangeSD",
-                          "ChangesSE")
-
-TGsummary[1, ] <- c(32, 
-                     203.00, 54.96,
-                     164.37, 50.70,
-                     38.62, 30.37, 30.37/sqrt(32) )
-TGsummary[2, ] <- c(32,
-                     178.25, 53.06,
-                     185.37, 52.59,
-                     -7.12, 36.66, 36.66/sqrt(32) )
-TGsummary[3, ] <- c(NA,
-                     24.75, NA,
-                     21.00, NA,
-                     45.74, NA, NA)
-
-if( knitr::is_latex_output() ) {
-  
-  knitr::kable(pad(TGsummary,
-                   surroundMaths = TRUE,
-                   targetLength = c(2, 6, 5, 6, 5, 5, 5, 5),
-                   decDigits = c(0, 2, 2, 2, 2, 2, 2, 2, 2)),
-               format = "latex",
-               align = "c",
-               linesep = "",
-               caption = "The total glucose (TG; in mg.dl$^{-1}$) for two groups: those who drank chamomile tea, and those who drank hot water (the control group). The Reduction columns summarise the reduction in TG for each group.",
-               col.names = c("$n$",
-                             "Mean", "Std. dev.", 
-                             "Mean", "Std. dev.",
-                             "Mean", "Std. dev.", "Std. error"),
-               row.names = TRUE,
-               escape = FALSE,
-               booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-    row_spec(3, italic = TRUE) %>%
-    kable_styling(font_size = 8) %>%
-    add_header_above( c(" " = 2,
-                        "Baseline" = 2,
-                        "After 8 weeks" = 2,
-                        "Reduction" = 3),
-                      bold = TRUE)
-}
-
-if( knitr::is_html_output() ) {
-  kable( pad(TGsummary,
-                   surroundMaths = TRUE,
-                   targetLength = c(2, 6, 5, 6, 5, 5, 5, 5),
-                   decDigits = c(0, 2, 2, 2, 2, 2, 2, 2)),
-         format = "html",
-         align = "c",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names =  c("$n$",
-                        "Mean", "Std. dev.", 
-                        "Mean", "Std. dev.",
-                        "Mean", "Std. dev.", "Std. error"),
-         caption = "The total glucose (TG; in mg.dl$^{-1}$) for two groups: those who drank chamomile tea, and those who drank hot water (the control group). The Reduction columns summarise the reduction in TG for each group.") %>% 
-    row_spec(0, bold = TRUE) %>%
-    add_header_above( c(" " = 2,
-                        "Baseline" = 2,
-                        "After 8 weeks" = 2,
-                        "Reduction" = 3),
-                      bold = TRUE)
-}
-
-```
 
 We write:
 
@@ -828,6 +752,7 @@ Which (if any) of these scenarios are *paired*?
 
 ::: {.exercise #MeanDiffGrowingSquashCI}
 [*Dataset*: `Fruit`]
+(These data were also seen in Exercise\ \@ref(exr:MeanDiffGrowingSquashHT).)
 @mukherjee2019diversity studied the effect of rainfall on growing Chayote squash (*Sechium edule*).
 They compared the size of the fruit in a year with normal rainfall (2015) compared to a dry year (2014) on the same $24$\ farms:
 
@@ -841,88 +766,6 @@ Since the same farms are used in both years, the data are *paired*
   '(see above).'
 }`
 Data is missing for Farm\ 20 in the dry year (2014), so there are $n = 23$ differences.
-
-
-```{r FruitsData, echo=FALSE}
-data(Fruit) ### Exercise
-
-Fruit$Farm <- 1 : length(Fruit$FWeight2014)
-
-FruitTab <- dplyr::select(Fruit,
-                          Farm,
-                          FWeight2014,
-                          FWeight2015)
-FruitTab$Change <- FruitTab$FWeight2015 - FruitTab$FWeight2014
-
-if( knitr::is_latex_output() ) {
-  
- T1 <- knitr::kable(pad(FruitTab[1:5, ],
-                        decDigits = c(0, 2, 2, 2),
-                        surroundMaths = TRUE,
-                        targetLength = c(2, 6, 6, 6)),
-                     format = "latex",
-                     valign = 't',
-                     align = "c",
-                     linesep = "",
-                     col.names = c("Farm", 
-                                   "Dry", 
-                                   "Normal",
-                                   "Change"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
-   add_header_above(c( " " = 1,
-                       "Average fruit weight (kg)" = 3),
-                    bold = TRUE) %>%
-    row_spec(0, bold = TRUE) 
-  
-  
-  T2 <- knitr::kable(pad(FruitTab[20:24, ],
-                        decDigits = c(0, 2, 2, 2),
-                        surroundMaths = TRUE,
-                        targetLength = c(2, 6, 6, 7)),
-                     format = "latex",
-                     valign = 't',
-                     align = "c",
-                     linesep = "",
-                     col.names = c("Farm", 
-                                   "Dry", 
-                                   "Normal",
-                                   "Change"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE)  %>%
-   add_header_above(c( " " = 1,
-                       "Average fruit weight (kg)" = 3),
-                    bold = TRUE) %>%
-    row_spec(0, bold = TRUE) 
-  
-  out <- knitr::kables(list(T1, T2),
-                       format = "latex",
-                       label = "FruitsData",
-                       caption = "The average weight of fruits (in g) in two different years, from $24$ farms. One observation is missing for Farm\ 20. The change is computed as the normal year minus dry year.") %>% 
-    kable_styling(font_size = 8)
-  out2 <- prepareSideBySideTable(out) 
-  out2 
-}
-
-if( knitr::is_html_output() ) {
-  kable( pad(FruitTab,
-             decDigits = c(0, 2, 2, 2),
-                        surroundMaths = TRUE,
-                        targetLength = c(2, 6, 6, 7)),
-         format = "html",
-         align = "c",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names = c("Farm", 
-                       "Dry", 
-                       "Normal",
-                       "Change (in g)"),
-         caption = "The average weight of fruits (in g) in two different years, from $24$ farms. One observation is missing for Farm\ 20. The change is computed as the normal year minus dry year.") %>% 
-    row_spec(0, bold = TRUE)
-}
-```
 
 1. What is the *unit of analysis*?\index{Units of analysis}
    What is the *units of observation*?\index{Units of observation}
@@ -960,6 +803,7 @@ bloodS2 <- cbind( "Before" = bloodS$Before[1:8],
 
 ::: {.exercise #PairedCIExercisesCaptopril}
 [*Dataset*: `Captopril`]
+(This study was also seen in Exercise\ \@ref(exr:TestPairedMeansCaptopril).)
 @data:macgregor:essential studied of hypertension for $15$\ patients.
 Patients were given a drug (Captopril) and their systolic blood pressure measured (in mm Hg) immediately *before* and two hours *after* being given the drug (Table\ \@ref(tab:CICaptoprilData);  @data:hand:handbook).
 
@@ -983,6 +827,7 @@ knitr::include_graphics("jamovi/CaptoprilAll/CaptoprilAll-PairedTOutput.png")
 
 
 ::: {.exercise #PairedCIExercisesBroccoli}
+(This study was also seen in Exercise\ \@ref(exr:TestPairedMeansTasteOfBroccoli).)
 People often struggle to eat the recommended intake of vegetables.
 @data:Fritts2018:Vegetables explored ways to increase vegetable intake in teens.
 Teens rated the taste of raw broccoli, and raw broccoli served with a specially-made dip.
@@ -1009,6 +854,7 @@ From this information:
 
 
 ::: {.exercise #PairedCIExercisesSmokeExercise}
+(This study was also seen in Exercise\ \@ref(exr:PairedCIExercisesSmokeExercise).)
 @data:Allen2018:Smoking examined the effect of exercise on smoking.
 Men and women were assessed on their 'intention to smoke', both before and after exercise for each subject (using two quantitative questionnaires).
 Smokers ('smoking at least five cigarettes per day') aged\ $18$ to\ $40$ were enrolled for the study.
@@ -1044,6 +890,7 @@ Do you think the treatment had any meaningful impact on the mean weight gain of 
 
 ::: {.exercise #StressSurgeryCI}
 [*Dataset*: `Stress`]
+(This study was also seen in Exercise\ \@ref(exr:StressSurgeryHT).)
 The concentration of beta-endorphins in the blood is a sign of stress.
 @hoaglin2011exploring measured the beta-endorphin concentration for $19$ patients about to undergo surgery [@data:hand:handbook].
 Each patient had their beta-endorphin concentrations (in\ fmol.mol^$-1$^) measured $12$--$14$ hours before surgery, and also $10$ minutes before surgery.
