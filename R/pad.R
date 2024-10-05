@@ -193,8 +193,10 @@ pad <- function(x,
   
   # Define function to do so:
   extractParts <- function(arr) { # arr  is a one-dimensional array
-    numbers <- gsub("[^0-9.-]", "", 
+    numbers <- gsub("[^0-9.-]", 
+                    "", 
                     arr)
+    ###THIS IS NOT FOOLPROOF!   No.1 7 returs the period and number: numbers => ".1"
     numbers[numbers == ""] <- NA  # Replace empty strings with NA
     numbers <- as.numeric(numbers) # Convert to numeric
     
@@ -208,7 +210,7 @@ pad <- function(x,
     # If the text contains numbers (e.g., "More than $5^\\circ$C"), this will screw things up. 
     # Not sure how to even flag that case, so perhaps we ENFORE A RULE that it should be contained in \text: "\\text{More than $5^\\circ$C"}
     # So find these cases
-    if (verbose) message("*** REMEMBER: If cells contain $...$ as pary of text, wrap the element with  \text{...}!! ***")
+    if (verbose) message("*** REMEMBER: If cells contain $...$ as part of text, wrap the element with  \text{...}!! ***")
     textInBefore <- grepl("\\\\text", 
                          textBefore) # TRUE or FALSE for each element
 

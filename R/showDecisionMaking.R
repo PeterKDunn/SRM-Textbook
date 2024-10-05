@@ -6,7 +6,8 @@
                                                                  bold(SAMPLE)) ),
                                 oneStatisticText =  expression( atop(One~possible,
                                                                      bold(observed)~statistic)),
-                                Decision = "Neither"){ # "Neither", "Reject" or "Accept"
+                                Decision = "Neither", # "Neither", "Reject" or "Accept"
+                                showQuestionMark = FALSE) {
    
    PopulationColour <- rgb(216, 204, 220, 
                          maxColorValue = 256)
@@ -130,7 +131,9 @@
                  lcol = ifelse( Decision == "Reject", 
                                 "grey", 
                                 "black"),
-                 lty = 2)
+                 lty = ifelse( Decision == "Reject",
+                               2,
+                               1) )
    straightarrow(from = pos[5, ],  
                  to = pos[7, ], ### CONTRADICTS
                  lcol = ifelse( Decision == "Accept", 
@@ -138,7 +141,9 @@
                                 "black"),
                  arr.pos = 0.5, # Then cover with box
                  lwd = 2,
-                 lty = 1) 
+                 lty = ifelse( Decision == "Accept",
+                               2, 
+                               1) ) 
    
    
    textrect( pos[1, ],
@@ -231,6 +236,16 @@
         y = 0.02,
         cex = 1,
         labels = "4. Make decision")
+   
+   
+   ## Show question mark
+   if (showQuestionMark) {
+     text(x = 0.915, 
+          y = 0.5, 
+          label="?",
+          col = "grey",
+          cex = 8)
+   }
    
  }
  
