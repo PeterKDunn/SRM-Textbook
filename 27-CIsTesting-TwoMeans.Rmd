@@ -1,9 +1,9 @@
 
-# Tests: comparing two independent means {#TestTwoMeans}
+# CIs and tests: comparing two independent means {#TestTwoMeans}
 
 
 <!-- Introductions; easier to separate by format -->
-```{r, child = if (knitr::is_html_output()) {'./introductions/27-Testing-TwoMeans-HTML.Rmd'} else {'./introductions/27-Testing-TwoMeans-LaTeX.Rmd'}}
+```{r, child = if (knitr::is_html_output()) {'./introductions/27-CIsTesting-TwoMeans-HTML.Rmd'} else {'./introductions/27-CIsTesting-TwoMeans-LaTeX.Rmd'}}
 ```
 
 
@@ -37,9 +37,9 @@ SNF <- subset(Snakes,
               Sex == "female")
 
 SNF$Crayfish <- ordered(SNF$Crayfish, 
-                        levels = c("Cfish", "NoCfish"),
-                        labels = c("Yes",
-                                   "No"))
+                        levels = c("NoCfish", "Cfish"),
+                        labels = c("No",
+                                   "Yes"))
 
 if( knitr::is_latex_output() ) {
 
@@ -96,7 +96,7 @@ tb2 <- cbind (tb2[1:5],
     add_header_above( c("Crayfish region" = 7),
                       bold = TRUE)
   
-  out <- knitr::kables(list(T2, T1), # Notice order swapped!
+  out <- knitr::kables(list(T1, T2), 
                        format = "latex",
                        label = "SnakesDataTableTest",
                        caption = "Snout--vent length (in cm) for female Mexican garter snakes living in  crayfish ($n = 35$) and non-crayfish ($n = 41$) regions.") %>% 
@@ -149,12 +149,12 @@ SN.summary[1:2, 4] <- aggregate(SVL ~ Crayfish,
                                 data = SNF, 
                                 FUN = "findStdError")[, 2]
 
-SN.summary[3, 1] <- SN.summary[2, 1] - SN.summary[1, 1]
+SN.summary[3, 1] <- SN.summary[1, 1] - SN.summary[2, 1]
 SN.summary[3, 4] <- sqrt( SN.summary[1, 2]^2/SN.summary[1, 3] +
                             SN.summary[2, 2]^2/SN.summary[2, 3]  )
 
-rownames(SN.summary) <- c("Crayfish region", 
-                          "Not-crayfish region", 
+rownames(SN.summary) <- c("Non-crayfish region", 
+                          "Crayfish region", 
                           "Difference")
 
 if( knitr::is_latex_output() ) {
@@ -321,7 +321,7 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-For the garter-snake data, define the differences as the mean for females snakes living in non-crayfish regions\ ($N$), *minus* the mean for female snakes in crayfish regions\ ($C$): $\mu_N - \mu_C$.
+For the garter-snakes data, define the differences as the mean for females snakes living in non-crayfish regions\ ($N$), *minus* the mean for female snakes in crayfish regions\ ($C$): $\mu_N - \mu_C$.
 This is the *parameter*.
 By this definition, the differences refer to how much larger (on average) the SVL is for snakes living in non-crayfish regions.
 
@@ -335,7 +335,221 @@ The *meaning* of the conclusions will be the same whichever direction is used.
 :::
 
 
-## Tests for comparing two means: $t$-test
+## Error bar charts {#ErrorBarCharts}
+\index{Graphs!error bar charts}\index{Error bar charts}
+
+A useful way to compare the means of two (or more) groups is to display the CIs for the means of the groups being compared in an *error bar chart*.
+Error bars charts display the expected variation *in the sample means* from sample to sample, while boxplots display the variation *in the individual observations*.
+For the garter-snakes data, the error bar chart (Fig.\ \@ref(fig:SnakesErrorbar), right panel) shows the $95$%\ CI for each group; the mean has been added as a dot.
+
+
+::: {.example #ErrorBarCharts2 name="Error bar charts"}
+@data:ForestBiomass2017 studied the foliage biomass of small-leaved lime trees from three sources: coppices; natural; planted.
+Three graphical summaries are shown in Fig.\ \@ref(fig:LimeTreesBoxErrorbar): a boxplot (showing the variation in *individual* trees; left), an error bar chart (showing the variation in the *sample means*; centre) on the same vertical scale as the boxplot, and the same error bar chart using a more appropriate scale for the error bar plot  (right).
+:::
+
+
+```{r LimeTreesBoxErrorbar, fig.cap="Boxplot (left) and error bar charts (centre; right) comparing the mean foliage biomass for small-leaved lime trees from three sources (C:\\ Coppice; N:\\ Natural; P:\\ Planted). The centre panel shows an error bar chart using the same vertical scale as the boxplot; the dashed horizontal lines are the limits of the error bar chart on the right. The right error bar chart uses a more appropriate scale on the vertical axis. The solid dots show the mean of the distributions.", fig.align="center", fig.width=7, fig.height=3.0, out.width='100%'}
+par( mfrow = c(1, 3))
+
+data(Lime)
+
+lime.mns <- tapply(Lime$Foliage, 
+                   Lime$Origin, 
+                   "mean")
+
+###
+
+boxplot(Foliage ~ Origin, 
+        data = Lime,
+	      xlab = "Origin",
+	      ylab = "Foliage biomass (kg)",
+	      las = 1,
+      	ylim = c(0, 14),
+	      main = "Boxplot: Foliage biomass\nof individual trees",
+        names = c("C", "N", "P"),
+	      col = "white")
+points(1:3, 
+       lime.mns, 
+	     pch = 19)
+
+mns <- with(Lime, 
+            tapply(Foliage, 
+                   Origin, 
+                   "mean") )
+ses <- with(Lime, 
+            tapply(Foliage, 
+                   Origin, 
+                   function(x){sd(x) / sqrt(length(x))}) )
+ci.lo <- mns - ses*2
+ci.hi <- mns + ses*2
+
+###
+
+plot( range( c( ci.lo, ci.hi) ) ~ c(1, 3), 
+      type = "n",
+      ylim = c(0, 14),
+      xlim = c(0.5, 3.5),
+      pch = 19,
+      axes = FALSE,
+      main = "Error bars chart:\n mean foliage biomass",
+      xlab = "Origin", 
+      ylab = "Foliage biomass (kg)",
+      sub = "(Error bars are 95%\ CIs)",
+      las = 1)
+axis(side = 1, 
+     at = 1:3, 
+     labels = c("C", "N", "P"), 
+     las = 1) 
+axis(side = 2, 
+     las = 1)
+box()
+
+points( mns ~ c(1:3), 
+        pch = 19)
+
+arrows(1:3, 
+       mns - 2 * ses, 
+       1:3, 
+       mns + 2 * ses, 
+       length = 0.05, 
+       angle = 90, 
+       code = 3)
+# Show the limits of the right-most graph
+abline(h = 3.5,
+       col = "grey",
+       lty = 2)
+abline(h = 1.0,
+       col = "grey",
+       lty = 2)
+
+###
+
+plot( range( c( ci.lo, ci.hi) ) ~ c(1, 3), 
+      type = "n",
+      ylim = c(1, 3.5),
+      xlim = c(0.5, 3.5),
+      pch = 19,
+      axes = FALSE,
+      main = "Error bars chart:\n mean foliage biomass",
+      xlab = "Origin", 
+      ylab = "Foliage biomass (kg)",
+      sub = "(Error bars are 95%\ CIs)",
+      las = 1)
+axis(side = 1, 
+     at = 1:3, 
+     labels = c("C", "N", "P"), 
+     las = 1) 
+axis(side = 2, 
+     las = 1)
+box()
+
+points( mns ~ c(1:3), 
+        pch = 19,
+        cex = 1.5)
+
+arrows(1:3, mns - 2 * ses, 
+       1:3, mns + 2 * ses, 
+       length = 0.05, 
+       angle = 90, 
+       code = 3)
+```
+
+
+## Confidence intervals for  $\mu_1 - \mu_2$ {#CIDiffBetweenMeans}
+\index{Sampling distribution!comparing two means}
+
+Each sample will comprise different snakes, and give different SVLs. 
+The sample means for each group will differ from sample to sample, and the *difference* between the sample means will be different for each sample.
+The *difference* between the sample means varies from sample to sample, and so has a sampling distribution and *standard error*.
+
+
+::: {.definition #DEFSamplingDistributionDiffMeans name="Sampling distribution for the difference between two sample means"}
+The *sampling distribution of the difference between two sample means*\ $\bar{x}_A$ and\ $\bar{x}_B$ is (when the appropriate conditions are met; Sect.\ \@ref(ValidityTwoMeans)) described by:
+
+* an approximate normal distribution,
+* centred around a sampling mean whose value is\ ${\mu_{A}} - {\mu_{B}}$, the difference between the *population* means,
+* with a standard deviation, called the standard error of the difference between the means, of $\displaystyle\text{s.e.}(\bar{x}_A - \bar{x}_B)$.
+
+The standard error for the difference between the means is found using
+$$
+  \text{s.e.}(\bar{x}_A - \bar{x}_B) = \sqrt{ \text{s.e.}(\bar{x}_A)^2 + \text{s.e.}(\bar{x}_B)^2},
+$$
+though this value will often be *given* (e.g., on computer output).
+:::
+
+
+For the garter-snakes data, the differences between the sample means will have:
+
+* an approximate normal distribution,
+* centred around the sampling mean whose value is $\mu_N - \mu_C$,
+* with a standard deviation, called the *standard error* of the difference, of $\text{s.e.}(\bar{x}_P - \bar{x}_C) = 2.437$.
+
+The standard error of the difference between the means was computed using
+$$
+  \text{s.e.}(\bar{x}_N - \bar{x}_C)
+  = \sqrt{ \text{s.e.}(\bar{x}_N)^2 + \text{s.e.}(\bar{x}_C)^2}
+  = \sqrt{ 1.216^2 + 2.1112^2 } = 2.437,
+$$
+the same value shown in the software output (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)).
+
+The sampling distribution describes how the values of $\bar{x}_N - \bar{x}_C$ vary from sample to sample. 
+Then, finding a $95$%\ CI for the difference between the mean SVLs is similar to the process used in Chap.\ \@ref(OneMeanConfInterval), since the sampling distribution has an approximate normal distribution:\index{Confidence intervals!comparing two means}
+$$
+  \text{statistic} \pm \big(\text{multiplier} \times\text{s.e.}(\text{statistic})\big).
+$$
+When the statistic is $\bar{x}_P - \bar{x}_C$, the approximate $95$%\ CI is
+$$
+	(\bar{x}_N - \bar{x}_C) \pm \big(2 \times \text{s.e.}(\bar{x}_N - \bar{x}_C)\big).
+$$
+So, in this case, the approximate $95$%\ CI is
+$$
+	8.394 \pm (2 \times 2.437)
+$$
+or $8.394\pm 4.874$, after rounding appropriately.
+We write:
+
+> The difference between mean SVLs is\ $3.52$\cms, shorter for those living in a crayfish region (mean: $34.17$\cms; s.e.: $2.112$; $n = 35$) compared to those *not* living in a crayfish region (mean: $42.57$\cms; s.e.: $1.216$; $n = 41$), with an *approximate* $95$%\ CI for the difference between mean reaction times from $3.52$ to $13.27$\cms.
+
+The plausible values for the difference between the two population means SVLs are between\ $3.52$ to $13.27$\cms (shorter for those living in crayfish regions).
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Giving the CI alone is insufficient; the *direction* in which the differences were calculated must be given, so readers know which group had the higher mean.
+:::
+
+
+Output from software often shows *two* CIs (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)).
+*We will use the results from Welch's test (the second row)*,\index{Welch's test} as this row of output is more general, and makes fewer assumptions.
+Specifically, the information in the first row (`Student's t`) is appropriate when the *population* standard deviations in the two groups *are* the same; the second row (`Welch's t`) is appropriate when the *population* standard deviations in the two groups *are not* necessarily the same.
+The information in the second row assumes less, and is more widely applicable.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Most software gives *two* confidence intervals: one assuming the standard deviations in the two groups are the same (Student's), and another *not* assuming the standard deviations in the two groups are the same (Welch's).
+
+We will use the information that does *not* assume the standard deviations in the two groups are the same.
+In the software output in Fig.\ \@ref(fig:SnakesSummaryTestjamovi), this is the second row of the top table (labelled 'Welch's\ $t$').
+(The information in both rows are often similar anyway.)
+:::
+
+
+<!-- ```{r ReactionPhoneTestOutputjamovi, echo=FALSE, fig.cap="The software output for the phone-reaction data", fig.align="center", out.width='95%'} -->
+<!-- knitr::include_graphics( "jamovi/ReactionPhone/ReactionPhone-Test.png") -->
+<!-- ``` -->
+
+
+<!-- ```{r ReactionPhoneTestOutputSPSS, echo=FALSE, fig.cap="The SPSS output for the phone-reaction data", fig.align="center", out.width='90%'} -->
+<!-- knitr::include_graphics("SPSS/ReactionPhone/ReactionPhone-Test.png") -->
+<!-- ``` -->
+
+
+From the output, the $95$%\ CI is from\ $3.511$ to\ $13.28$\cms
+The *approximate* CI and the *exact* (from software) CIs are only slightly different, as the samples sizes are not too small.
+(Recall: the $t$-multiplier of\ $2$ is an approximation, based on the $68$--$95$--$99.7$ rule).
+
+
+## Hypothesis tests for $\mu_1 - \mu_2$: $t$-test
 
 As always, the null hypothesis is the default 'no difference, no change, no relationship' position; any difference between the parameter and statistic is due to sampling variation (Sect.\ \@ref(AboutHypotheses)).
 Hence, the null hypothesis is 'no difference' between the population mean\ SVL of the two groups:
@@ -447,7 +661,7 @@ If the statistical validity conditions are not met, other similar options includ
 
 
 ::: {.example #StatisticalValidityReactionHT name="Statistical validity"}
-For the garter-snake data, the samples sizes exceed\ $25$ ($41$ and\ $35$), so the test is statistically valid.
+For the garter-snakes data, the samples sizes exceed\ $25$ ($41$ and\ $35$), so the test is statistically valid.
 The data in each group do not need be normally distributed, since both sample sizes are larger than\ $25$, and the data are not severely skewed (Fig.\ \@ref(fig:SnakesErrorbar), left panel).
 :::
 
@@ -599,50 +813,147 @@ knitr::include_graphics( "jamovi/BMI/ANOVA.png")
 ## Example: speed signage {#SpeedSignageHT}
 
 
+
 <div style="float:right; width: 222x; border: 1px; padding:10px">
 <img src="Illustrations/pexels-pixabay-315939.jpg" width="200px"/>
 </div>
 
 
-(This study was seen in Sect.\ \@ref(SpeedSignageCI).)
+[*Dataset*: `Speed`]
 To reduce vehicle speeds on freeway exit ramps, @ma2019impacts studied adding additional signage.
-At one site (Ningxuan Freeway), speeds were recorded for $38$\ vehicles *before* the extra signage was added (denoted\ $B$), and then for $41$\ different vehicles *after* the extra signage was added (denoted\ $A$); the data are shown in Sect.\ \@ref(SpeedSignageCI).
-The researchers are hoping the addition of extra signage will *reduce* the mean speed of the vehicles.
+At one site (Ningxuan Freeway), speeds were recorded for $38$\ vehicles *before* the extra signage was added, and then for $41$ different vehicles *after* the extra signage was added.
+
+The researchers are hoping that the addition of extra signage will *reduce* the mean speed of the vehicles.
 The RQ is:
 
 > At this freeway exit, does the mean vehicle speed *reduce* after extra signage is added?
 
+The data are *not* paired: different vehicles are measured before\ ($B$) and after\ ($A$) the extra signage is added.
+The data can be summarised (Table\ \@ref(tab:SignageSummary)) using the software output (Fig.\ \@ref(fig:SpeedjamoviCI2)).
+Define $\mu$ as the mean speed (in km.h^$-1$^) on the exit ramp, and the parameter as $\mu_B - \mu_A$, the *reduction* in the mean speed.
 
-```{r}
+
+```{r SpeedjamoviCI2, fig.cap="Software output for the speed data.", fig.align="center", out.width="100%"}
+knitr::include_graphics("jamovi/Speed/Speed-ALL.png")
+```
+
+
+```{r SignageSummary}
 data(Speed)
 
 Speed$When <- factor(Speed$When,
                      levels = c("Before", "After"),
                      ordered = TRUE)
+
 Speed2 <- data.frame( Before = Speed$Speed[ Speed$When == "Before" ][1:10],
                       After = Speed$Speed[ Speed$When == "After" ][1:10])
+
+
+SignageSummary <- array(dim = c(3, 5))
+rownames(SignageSummary) <- c("Before",
+                              "After",
+                              "Speed reduction")
+colnames(SignageSummary) <- c("Mean",
+                              "Median",
+                              "Standard deviation",
+                              "Standard error",
+                              "Sample size")
+
+Speed.n <- tapply(Speed$Speed,
+                  list(Speed$When),
+                  "length")
+Speed.sd <- tapply(Speed$Speed,
+                   list(Speed$When),
+                   "sd")
+
+SignageSummary[1:2, 1] <- round( tapply(Speed$Speed,
+                                        list(Speed$When),
+                                        "mean"),
+                                 2)
+SignageSummary[1:2, 2] <- tapply(Speed$Speed,
+                                 list(Speed$When),
+                                 "median")
+
+SignageSummary[1:2, 3] <- round( Speed.sd, 2)
+SignageSummary[1:2, 4] <- tapply(Speed$Speed,
+                                 list(Speed$When),
+                                 "findStdError")
+SignageSummary[1:2, 5] <- Speed.n
+
+SignageSummary[3, 1] <- SignageSummary[1, 1] - SignageSummary[2, 1]
+
+sdB <- round( Speed.sd[1], 2)
+sdA <- round( Speed.sd[2], 2)
+
+SignageSummary[3, 4] <- round( sqrt(SignageSummary[1, 4]^2 + SignageSummary[2, 4]^2 ), 3)
+
+
+
+if( knitr::is_latex_output() ) {
+  kable(pad(SignageSummary,
+            surroundMaths = TRUE,
+            targetLength = c(5, 4, 5, 4, 2),
+            decDigits = c(2, 1, 2, 3, 0)),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        align = "c",
+        col.names = c("Mean",
+                      "Median",
+                      "Standard deviation",
+                      "Standard error",
+                      "Sample size"),
+        caption = "The signage data summary (in km.h$^{-1}$)."
+  ) %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, italic = TRUE) %>%
+    row_spec(2, hline_after = TRUE) %>%
+    kable_styling(font_size = 8)
+}
+if( knitr::is_html_output() ) {
+  kable(pad(SignageSummary,
+            surroundMaths = TRUE,
+            targetLength = c(5, 4, 5, 4, 2),
+            decDigits = c(2, 1, 2, 1, 0)),
+        format = "html",
+        longtable = FALSE,
+        booktabs = TRUE,
+        align = "c",
+        col.names = c("Mean",
+                      "Median",
+                      "Standard deviation",
+                      "Standard error",
+                      "Sample size"),
+        caption = "The signage data summary (in km.h$^{-1}$).") %>%
+    kable_styling(full_width = FALSE)
+}
 ```
 
 
-The data are summarised in Table\ \@ref(tab:SignageSummaryHT), where
+The data are summarised in Table\ \@ref(tab:SignageSummary), where
 $$
   \text{s.e.}(\bar{x}_B - \bar{x}_A) 
   = \sqrt{ \text{s.e.}(\bar{x}_B)^2 + \text{s.e.}(\bar{x}_A)^2} 
-  = \sqrt{ 2.140^2 + 2.051^2} = 2.964,
+  = \sqrt{ 2.140^2 + 2.051^2} = 2.965,
 $$
 as in the table.
 A boxplot of the data is shown in Fig.\ \@ref(fig:SignageErrorBar) (left panel), and an error bar chart in Fig.\ \@ref(fig:SignageErrorBar) (right panel).
 
 
-```{r SignageSummaryHT}
-SignageSummary <- array(dim = c(3, 4))
+
+```{r SignageErrorBar, fig.cap="Boxplot (left) and error bar chart (right) showing the mean speed before and after the addition of extra signage, and the $95$\\%\ CIs. The vertical scales on the two graphs are different.", fig.align="center", out.width='90%',fig.width=8.0, fig.height=3.25}
+data(Speed)
+
+SignageSummary <- array(dim = c(3, 5))
 rownames(SignageSummary) <- c("Before", 
-                            "After",
-                            "Speed reduction")
+                              "After",
+                              "Speed reduction")
 colnames(SignageSummary) <- c("Mean",
+                              "Median",
                               "Standard deviation",
-                            "Sample size",
-                            "Standard error")
+                              "IQR",
+                              "Sample size")
 
 Speed.n <- tapply(Speed$Speed, 
                   list(Speed$When), 
@@ -655,61 +966,87 @@ SignageSummary[1:2, 1] <- round( tapply(Speed$Speed,
                                         list(Speed$When), 
                                         "mean"),
                                  2)
-SignageSummary[1:2, 2] <- round( Speed.sd, 2)
-SignageSummary[1:2, 3] <- round( Speed.sd / sqrt(Speed.n), 3)
-SignageSummary[1:2, 4] <- Speed.n 
+SignageSummary[1:2, 2] <- tapply(Speed$Speed,
+                                 list(Speed$When), 
+                                 "median") 
+
+SignageSummary[1:2, 3] <- round( Speed.sd, 2)
+SignageSummary[1:2, 4] <- tapply(Speed$Speed,
+                                 list(Speed$When), 
+                                 "IQR") 
+SignageSummary[1:2, 5] <- Speed.n 
 
 SignageSummary[3, 1] <- SignageSummary[1, 1] -  
                         SignageSummary[2, 1] 
 
 sdB <- round( Speed.sd[1], 2)
 sdA <- round( Speed.sd[2], 2)
-SignageSummary[3, 3] <- round( sqrt( sdB^2/Speed.n[1] + 
-                                     sdA^2/Speed.n[2] ), 
-                               3)
 
 SignageSummary[3, 4] <- NA 
 SignageSummary[3, 2] <- NA
                           
+###
+
+par( mfrow = c(1, 2),
+     mar = c(5.1, 5.1, 4.1, 2.1) )
+
+boxplot( Speed ~ When,
+         data = Speed,
+#         ylab = "Vehicle speed (km/h)",
+         ylab = expression(Speeds~"("*km*"."*h^{-1}*")"),
+         xlab = "When measured",
+         main = "Speed before and after\nextra signage added",
+         ylim = c(60, 130),
+         las = 1,
+         col = plot.colour)
 
 
-if( knitr::is_latex_output() ) {
-  kable(pad(SignageSummary,
-            surroundMaths = TRUE,
-            targetLength = c(6, 5, 5, 0),
-            decDigits = c(2, 2, 3, 0)),
-        format = "latex",
-        longtable = FALSE,
-        booktabs = TRUE,
-        escape = FALSE,
-        align = c("c"),
-        col.names = c("Mean", 
-                      "Standard deviation",
-                      "Standard error",
-                      "Sample size"),
-        caption = "The signage data summary (in km.h$^{-1}$), before and after extra signage added."
-  ) %>%
-  row_spec(0, bold = TRUE) %>%
-  row_spec(3, italic = TRUE) %>%
-  kable_styling(font_size = 8)
-}
-if( knitr::is_html_output() ) {
-  kable(pad(SignageSummary,
-            surroundMaths = TRUE,
-            targetLength = c(6, 5, 5, 0),
-            decDigits = c(2, 2, 3, 0)),
-               format = "html",
-               longtable = FALSE,
-               booktabs = TRUE,
-               align = "c",
-               col.names = c("Mean", 
-                            "Standard deviation", 
-                            "Standard error",
-                            "Sample size"),
-    caption = "The signage data summary (in km.h$^{-1}$), before and after extra signage added.") %>%
-  kable_styling(full_width = FALSE)
-}
+bit <- 0.05
+
+mns <- SignageSummary[1:2, 1]
+se <- SignageSummary[1:2, 3] / SignageSummary[1:2, 5]
+
+ci.lo <- mns - 2 * se
+ci.hi <- mns + 2 * se
+
+plot( 1:2, 
+      mns,
+      pch = 19,
+      ylim = c(90, 100 ),
+      xlim = c(0.4, 2.6),
+      axes = FALSE,
+      xlab = "",
+#      ylab = "Vehicle speed (km/h)",
+      ylab = expression(Speeds~"("*km*"."*h^{-1}*")"),
+      main = "Mean speed before and after\nextra signage added",
+      sub = "(Error bars are the 95%\ CI)",
+      type = "p")
+axis(side = 1, 
+     at = 1:2,
+     las = 1,
+     labels = c("Before", 
+                "After"))
+axis(side = 2, 
+     las = 1)
+box()
+
+lines( c(1, 1),
+       c(ci.lo[1], ci.hi[1]))
+lines( c(2, 2),
+       c(ci.lo[2], ci.hi[2]))
+
+
+lines( c(1 - bit, 1 + bit), 
+       c( ci.hi[1], ci.hi[1]) )
+lines( c(1 - bit, 1 + bit), 
+       c( ci.lo[1], ci.lo[1]) )
+
+lines( c(2 - bit, 2 + bit), 
+       c( ci.hi[2], ci.hi[2]) )
+lines( c(2 - bit, 2 + bit), 
+       c( ci.lo[2], ci.lo[2]) )
 ```
+
 
 
 Define\ $\mu$ as the mean speed (in\ km.h^$-1$^) on the exit ramp.
@@ -720,14 +1057,14 @@ The hypotheses are:
 * $H_1$: $\mu_B - \mu_A > 0$: the population mean speed has *reduced*.
 
 The best estimate of the difference in *population* means is the difference between the *sample* means: $(\bar{x}_B - \bar{x}_A) = 5.68$.
-Table\ \@ref(tab:SignageSummaryHT) gives the standard error for estimating this *difference* as $\text{s.e.}(\bar{x}_B - \bar{x}_A) = 2.964$.
-Using the summary information in Table\ \@ref(tab:SignageSummaryHT), the $t$-score (using Eq.\ \@ref(eq:tscore)) is
+Table\ \@ref(tab:SignageSummary) gives the standard error for estimating this *difference* as $\text{s.e.}(\bar{x}_B - \bar{x}_A) = 2.964$.
+Using the summary information in Table\ \@ref(tab:SignageSummary), the $t$-score (using Eq.\ \@ref(eq:tscore)) is
 $$
   t
   = \frac{(\bar{x}_B - \bar{x}_A) - (\mu_B - \mu_A)}{\text{s.e.}(\bar{x}_B - \bar{x}_{A})}
   = \frac{5.68 - 0}{2.964} = 1.92.
 $$
-(Recall that we initially assume that $\mu_B - \mu_A = 0$ from the null hypothesis.)
+(Recall that $\mu_B - \mu_A = 0$ is initially assumed, from the null hypothesis.)
 
 Remembering that the alternative hypothesis is *one-tailed*, the $P$-value (using the $68$--$95$--$99.7$ rule) is larger than\ $0.025$, but smaller than\ $0.32$, so making a clear decision is difficult without using software.
 However, since the $t$-score is *just* less than 2, we suspect that the $P$-value is likely to be closer to\ $0.025$ than to\ $0.32$.
@@ -738,8 +1075,8 @@ We conclude:
 
 > Moderate evidence exists in the sample ($t = 1.92$; one-tailed $P = 0.030$) that mean speeds have reduced after the addition of extra signage (before: mean speed: $98.02$\kms.h^$-1$^; $n = 38$; standard deviation: $13.19$\kms.h^$-1$^; after:  mean speed: $92.34$\kms.h^$-1$^; $n = 41$; standard deviation: $13.13$\kms.h^$-1$^; 95%\ CI for the difference: $-0.24$ to\ $11.6$\kms.h^$-1$^).
 
-Whether the mean speed reduction of $5.68$\kms.h^$-1$^ has *practical importance* is a different issue.
-Using the validity conditions, the CI is statistically valid.
+Whether the mean speed reduction of $5.68$\kms.h^$-1$^ has *practical importance* is a different issue.\index{Practical importance}
+Using the validity conditions, the CI and the test are statistically valid.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
@@ -749,7 +1086,7 @@ Remember: the conclusion must make clear *which* mean is larger!
 
 ## Example: chamomile tea {#ChamomileTea-TwoMeans-HT}
 
-(This study was seen in Sects.\ \@ref(ChamomileTea-Paired-CI), \@ref(ChamomileTea-TwoMeans-CI) and\ \@ref(ChamomileTea-Paired-HT).)
+(This study was seen in Sect.\ \@ref(ChamomileTea-Paired).)
 @rafraf2015effectiveness studied patients with Type\ 2 diabetes mellitus (T2DM).
 They randomly allocated $32$\ patients into a control group (who drank hot water), and $32$ to receive chamomile tea (@rafraf2015effectiveness).
 
@@ -801,6 +1138,24 @@ Again, the sample sizes are larger than\ $25$, so the results are statistically 
 
 ## Chapter summary {#Chap30-Summary}
 
+To compute a confidence interval (CI) for the difference between two means, compute the difference between the two sample mean, $\bar{x}_A - \bar{x}_B$, and identify the sample sizes\ $n_A$ and\ $n_B$.
+Then compute the standard error, which quantifies how much the value of $\bar{x}_A - \bar{x}_B$ varies across all possible samples:
+$$
+  \text{s.e.}(\bar{x}_A - \bar{x}_B)
+  =
+  \sqrt{ \text{s.e}(\bar{x}_A) + \text{s.e.}(\bar{x}_B)},
+$$
+where $\text{s.e.}(\bar{x}_A)$ and $\text{s.e.}(\bar{x}_B)$ are the standard errors of Groups\ $A$ and\ $B$.
+The *margin of error* is (multiplier${}\times{}$standard error), where the multiplier is\ $2$ for an approximate $95$%\ CI (using the $68$--$95$--$99.7$ rule).
+Then the CI is:
+$$
+   (\bar{x}_A - \bar{x}_B) \pm \left( \text{multiplier}\times\text{standard error} \right).
+$$
+The statistical validity conditions should also be checked.
+
+
+
+
 To test a hypothesis about a difference between two population means $\mu_A - \mu_B$:
 
 * Write the null hypothesis\ ($H_0$) and the alternative hypothesis\ ($H_1$).
@@ -838,9 +1193,65 @@ htmltools::tags$video(src = "./videos/TwoMeans.mp4",
 
 ## Quick review questions {#Chap35-QuickReview}
 
+
+
+
+
 ::: {.webex-check .webex-box}
 @lee2016effect studied iron levels in Koreans with Type\ II diabetes, comparing people on a vegan ($n = 46$) and a conventional ($n = 47$) diet for $12$\ weeks.
 A summary of the data for iron levels are shown in Table\ \@ref(tab:VeganDiet).
+
+
+1. What is an appropriate graph for displaying quantitative *data* for two separate groups? \tightlist  
+`r if( knitr::is_html_output() ) { longmcq( c( 
+  answer = "boxplot",
+  "histogram",
+  "side-by-side bar chart",
+  "error bar chart") )}`
+1. True or false: The difference in population means could be denoted by $\mu_V - \mu_C$, where\ $V$ represent the vegan diet, and\ $C$ represents the conventional diet.  
+`r if( knitr::is_html_output() ) { torf( answer = TRUE )}`
+1. True or false: The standard error of the difference between the sample means is denoted by $\text{s.e.}(\bar{x}_V) - \text{s.e.}(\bar{x}_C)$.  
+`r if( knitr::is_html_output() ) { torf( answer = FALSE )}`
+1. True or false: An error bar chart displays the variation in the *data*.  
+`r if( knitr::is_html_output() ) { torf( answer = FALSE )}`
+1. The sample size is missing from the *Difference* row. \tightlist
+   What should the sample size be in this row?
+`r if( knitr::is_html_output() ) {longmcq( c(
+  "46 + 47 = 93",
+  "46 - 47 = -1",
+  "47 - 46 = 1",
+  answer = "A sample size makes no sense",
+  "There is not enough information"
+)  )}`
+
+1. The standard deviation is missing from the *Difference* row. 
+   What is the *standard deviation* for the difference?
+`r if( knitr::is_html_output() ) {mcq( c(
+  "0.3391",
+  "0.3928",
+  answer = "A standard deviation makes no sense",
+  "There is not enough information"
+)  )}`
+
+1. The standard error is missing from the *Difference* row. 
+   Compute the *standard error* for the difference.
+`r if( knitr::is_html_output() ) {mcq( c(
+  "0.3391",
+  "0.3928",
+  "A standard error makes no sense",
+  answer = "There is not enough information"
+)  )}`
+
+1. The two-tailed $P$-value for the comparison is given as $P = 0.046$.
+   What does this mean?
+`r if( knitr::is_html_output() ) {longmcq( c(
+  "There is no evidence that the sample means are different",
+  "There is some evidence that the sample means are different",
+  "There is no evidence that the population means are different",
+  answer = "There is some evidence that the population means are different",
+  "There is not enough information"
+)  )}`
+:::
 
 
 ```{r VeganDiet}
@@ -871,6 +1282,7 @@ if( knitr::is_latex_output() ) {
         caption = "Comparing the iron levels (mg) for subjects using a vegan or conventional diet for $12$ weeks.") %>%
    kable_styling(font_size = 8) %>%
    row_spec(0, bold = TRUE) %>%
+   row_spec(2, hline_after = TRUE) %>%
    row_spec(3, italic = TRUE)
 }
 
@@ -887,42 +1299,6 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-1. The sample size is missing from the *Difference* row. \tightlist
-   What should the sample size in this row be?
-`r if( knitr::is_html_output() ) {longmcq( c(
-  "46 + 47 = 93",
-  "46 - 47 = -1",
-  "47 - 46 = 1",
-  answer = "A sample size makes no sense",
-  "There is not enough information"
-)  )}`
-
-1. What is the *standard deviation* for the difference?
-`r if( knitr::is_html_output() ) {mcq( c(
-  "0.3391",
-  "0.3928",
-  answer = "A standard deviation makes no sense",
-  "There is not enough information"
-)  )}`
-
-1. Compute the *standard error* for the difference.
-`r if( knitr::is_html_output() ) {mcq( c(
-  "0.3391",
-  "0.3928",
-  "A standard error makes no sense",
-  answer = "There is not enough information"
-)  )}`
-
-1. The two-tailed $P$-value for the comparison is given as $P = 0.046$.
-   What does this mean?
-`r if( knitr::is_html_output() ) {longmcq( c(
-  "There is no evidence that the sample means are different",
-  "There is some evidence that the sample means are different",
-  "There is no evidence that the population means are different",
-  answer = "There is some evidence that the population means are different",
-  "There is not enough information"
-)  )}`
-:::
 
 
 
@@ -950,8 +1326,16 @@ If the difference between the means were defined as $\mu_B - \mu_A$, what does t
 
 
 
+::: {.exercise #TwoMeansCISamplingDistReaction}
+Sketch the sampling distribution for the difference between the mean reaction times for students using their phone while driving, and students not using their phone while driving.
+:::
+
+
+::: {.exercise #TwoMeansCISamplingDistSignage}
+Sketch the sampling distribution for the difference between the mean speeds before and after adding extra signage, in Sect.\ \@ref(SpeedSignageCI).
+:::
+
 ::: {.exercise #TwoSampleHTWhalesHT}
-(This study was also seen in Exercise\ \@ref(exr:MeansIndSamplesExercisesWhalesCI).)
 @agbayani2020growth measured (among other things) the length of gray whales (*Eschrichtius robustus*) at birth.
 Are female gray whales longer than males, on average, in the population at birth?
 Summary information is shown in Table\ \@ref(tab:WhaleInfoHT).
@@ -1005,61 +1389,121 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-1. What is the parameter?
+1. Define the parameter, and write down its estimate.
    Carefully describe what it means.
+1. Sketch an error bar chart.
+1. Compute the standard error of the difference between the two means.
+1. Compile a numerical summary table.
+1. Compute the approximate $95$%\ CI, and write a conclusion.
 1. Write the hypotheses to answer the RQ.
-1. Compute the standard error of the difference.
 1. Compute the $t$-score, and approximate the $P$-value using the $68$--$95$--$99.7$ rule.
 1. Write a conclusion.
-1. Is the test statistically valid?
+1. Are the CI and test statistically valid?
 :::
 
 
 ::: {.exercise #TestTwoMeansNHANES}
 [*Dataset*: `NHANES`]
-(This study was also seen in Exercise\ \@ref(exr:MeansIndSamplesExercisesNHANES).)
 Earlier, the NHANES study (Exercise\ \@ref(exr:CompareQuantExercisesNHANES)) was used to answer this RQ:
 
 > Among Americans, is the mean direct HDL cholesterol different for current smokers and non-smokers?
 
 Use the software output in Fig.\ \@ref(fig:NHANESTest) to answer these questions.
 
-1. What is the parameter?
+1. Define the parameter of interest, and write down its estimate.
    Carefully describe what it means.
+1. Sketch an error bar chart.
+1. Compile a numerical summary table.
+1. Compute the approximate $95$%\ CI, and write a conclusion.
+1. Write down the exact $95$%\ CI, and write a conclusion.
 1. Write the hypotheses to answer the RQ.
 1. Write down the standard error of the difference.
 1. Write down the $t$-score and the $P$-value.
 1. Write a conclusion.
-1. Is the test statistically valid?
-
-
+1. Are the CI and test statistically valid?
 :::
 
-   
+
 ```{r NHANESTest, fig.cap="Software output for the NHANES data.", fig.align="center", out.width="90%"}
 knitr::include_graphics("jamovi/NHANES/NHANES-DirectHDL-Smoke-ALL.png")
 ```
 
 
 ::: {.exercise #MeansIndSamplesExercisesEchinaceaHT}
-(This study was also seen in Exercise\ \@ref(exr:MeansIndSamplesExercisesEchinaceaCI).)
-@data:barrett:echinacea studied the effectiveness of echinacea to treat the common cold, and compared the mean duration of the cold for participants treated with echinacea or a placebo.
+@data:barrett:echinacea studied the effectiveness of echinacea to treat the common cold, and compared the mean duration of the cold for participants treated with echinacea or a placebo.\index{Placebo}
 Participants were blinded to the treatment, and allocated to the groups randomly.
 A summary of the data is given in Table\ \@ref(tab:Echinacea).
 
 1. What is the parameter?
    Carefully describe what it means.
+1. Compute the standard error for the mean duration of symptoms for each group.
+1. Compute the standard error for the difference between the means.
+1. Sketch an error bar chart.
+1. Compute an approximate $95$%\ CI for the *difference* between the mean durations for the two groups.
+1. In which direction is the difference computed? 
+   What does it *mean* when the difference is calculated in this way?
+1. Compute an approximate $95$%\ CI for the population mean duration of symptoms for those treated with echinacea.
 1. Write the hypotheses to answer the RQ.
 1. Compute the standard error of the difference.
 1. Compute the $t$-score, and approximate the $P$-value using the $68$--$95$--$99.7$ rule.
 1. Write a conclusion.
-1. Is the test statistically valid?
+1. Are the CI and test statistically valid?
 :::
 
 
 
+```{r Echinacea}
+EchinaceaInfo <- array( dim = c(3, 4))
+colnames(EchinaceaInfo) <- c("Mean",
+                             "Standard deviation",
+                             "Standard error",
+                             "Sample size")
+rownames(EchinaceaInfo) <- c("Placebo",
+                             "Echinacea",
+                             "Difference")
+
+EchinaceaInfo[1, ] <- c(6.87, 3.62, NA, 176)
+EchinaceaInfo[2, ] <- c(6.34, 3.31, NA, 183)
+EchinaceaInfo[3, ] <- c(0.53, NA, NA, NA)
+
+if( knitr::is_latex_output() ) {
+  kable( pad(EchinaceaInfo,
+             surroundMaths = TRUE,
+             targetLength = c(4, 4, 4, 3),
+             decDigits = c(2, 2, 3, 0)),
+         format = "latex",
+         longtable = FALSE,
+         booktabs = TRUE,
+         escape = FALSE,
+         align = "c",
+         col.names = colnames(EchinaceaInfo),
+         caption = "Numerical summary of duration (in days) of common cold symptoms, for blinded patients taking echinacea or a placebo.") %>%
+    row_spec(3, 
+             italic = TRUE) %>%
+    row_spec(0, 
+             bold = TRUE) %>%
+    row_spec(2, hline_after = TRUE) %>%
+    kable_styling(font_size = 8)
+    
+}
+if( knitr::is_html_output() ) {
+  kable( pad(EchinaceaInfo,
+             surroundMaths = TRUE,
+             targetLength = c(4, 4, 4, 3),
+             decDigits = c(2, 2, 3, 0)),
+                format = "html",
+                longtable = FALSE,
+                booktabs = TRUE,
+                align = c("c", "c", "c", "c"),
+                col.names = colnames(EchinaceaInfo),
+                caption = "Numerical summary of duration (in days) of common cold symptoms, for blinded patients taking echinacea or a placebo.") %>%
+    kable_styling(full_width = FALSE)
+}
+```
+
+
+
 ::: {.exercise #MeansIndSamplesExercisesCarpalTunnelSyndromeHT}
-(This study was also seen in Exercise\ \@ref(exr:MeansIndSamplesExercisesCarpalTunnelSyndrome).)
 Carpal tunnel syndrome (CTS) is pain experienced in the wrists.
 @data:Schmid2012:splinting compared two different treatments: night splinting, or gliding exercises.
 
@@ -1069,39 +1513,91 @@ The data are summarised in Table\ \@ref(tab:CarpalTunnel).
 
 1. What is the parameter?
    Carefully describe what it means.
+1. In which direction is the difference computed? 
+   What does it *mean* when the difference is calculated in this way?
+1. Compute the standard error for the mean pain intensity for each group.
+1. Compute the standard error for the difference between the mean of the two groups.
+1. Sketch an error bar chart.
+1. Compute an approximate $95$%\ CI for the *difference* in the mean pain intensity for the treatments.
+1. Compute an approximate $95$%\ CI for the population mean pain intensity for those treated with splinting.
+1. Is the difference likely to be of practical importance?
 1. Write the hypotheses to answer the RQ.
 1. Compute the $t$-score, and approximate the $P$-value using the $68$--$95$--$99.7$ rule.
 1. Write a conclusion.
-1. Is the test statistically valid?
+1. Are the CI and test statistically valid?
 :::
+
+
+```{r CarpalTunnel}
+CTInfo <- array( dim = c(3, 4))
+colnames(CTInfo) <- c("Mean",
+                      "Standard deviation",
+                      "Standard error",
+                      "Sample size")
+rownames(CTInfo) <- c("Exercise",
+                      "Splinting",
+                      "Difference")
+
+CTInfo[1, ] <- c(0.8, 1.4, NA, 10)
+CTInfo[2, ] <- c(1.1, 1.1, NA, 10)
+CTInfo[3, ] <- c(0.3, NA, NA, NA)
+
+if( knitr::is_latex_output() ) {
+  kable( pad(CTInfo,
+             surroundMaths = TRUE,
+             targetLength = c(3, 3, 4, 2),
+             decDigits = c(1, 1, 3, 0)),
+         format = "latex",
+         longtable = FALSE,
+         booktabs = TRUE,
+         escape = FALSE,
+         align = c("c", "c", "c", "c"),
+         col.names = colnames(CTInfo),
+         caption = "Numerical summary of pain intensity for two different treatments of carpal tunnel syndrome.") %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, italic = TRUE) %>%
+    row_spec(2, hline_after = TRUE) %>%
+    kable_styling(font_size = 8)
+    
+}
+if( knitr::is_html_output() ) {
+  kable( pad(CTInfo,
+             surroundMaths = TRUE,
+             targetLength = c(3, 3, 4, 2),
+             decDigits = c(1, 1, 3, 0)),
+                format = "html",
+                longtable = FALSE,
+                booktabs = TRUE,
+                align = c("c", "c", "c", "c"),
+                col.names = colnames(CTInfo),
+                caption = "Numerical summary of pain intensity for two different treatments of carpal tunnel syndrome.") %>%
+    kable_styling(full_width = FALSE)
+}
+```
 
 
 
 ::: {.exercise #TestTwoMeansDental}
 [*Dataset*: `Dental`]
-(These data were also seen in Exercise\ \@ref(exr:TestTwoMeansDentalCI).)
 @data:woodward:dental recorded the sugar consumption in industrialised (mean: $41.8$\kgs/person/year) and non-industrialised (mean: $24.6$\kgs/person/year) countries.
 The software output is shown in Fig.\ \@ref(fig:Dentaljamovi).
 
 1. What is the parameter?
    Carefully describe what it means.
 1. Write the hypotheses.
-1. Write down and interpret the CI.
+1. Using the software output (Fig.\ \@ref(fig:DentaljamoviCI)), write down and interpret the CI.
 1. Write a conclusion for the hypothesis test.
 1. Is the test statistically valid?
 :::
 
-
-```{r Dentaljamovi, fig.cap="Software output for the sugar-consumption data.", fig.align="center", out.width="90%"}
+```{r Dentaljamovi, fig.cap="Software output for the sugar-consumption data; the Groups refer to whether or not the country is industrialised.", fig.align="center", out.width="95%"}
 knitr::include_graphics("jamovi/Dental/WoodwardWalker1994-ttest.png")
 ```
 
 
 
-
 ::: {.exercise #DecelerationHT}
 [*Dataset*: `Deceleration`]
-(These data were also seen in Exercise\ \@ref(exr:DecelerationCI).)
 To reduce vehicle speeds on freeway exit ramps, @ma2019impacts studied using additional signage.
 At one site studied (Ningxuan Freeway), speeds were recorded at various points on the freeway exit for vehicles *before* the extra signage was added, and then for different vehicles *after* the extra signage was added.
 
@@ -1115,6 +1611,9 @@ as the vehicle left the $120$\kms.h^$-1$^ speed zone and approached the $80$\kms
 Use the data, and the summary in Table\ \@ref(tab:SignageSummaryDecHT), to test the RQ:
 
 > At this freeway exit, is the mean vehicle deceleration the same before extra signage is added and after extra signage is added?
+
+Identify clearly the parameter of interest to understand how much the deceleration *increased* after adding the extra signage.
+Remember to compute and interpret the CI for this parameter.
 :::
 
 
@@ -1190,6 +1689,7 @@ if( knitr::is_latex_output() ) {
   ) %>%
   row_spec(0, bold = TRUE) %>%
   row_spec(3, italic = TRUE) %>%
+  row_spec(2, hline_after = TRUE) %>%
   kable_styling(font_size = 8)
 }
 if( knitr::is_html_output() ) {
@@ -1213,7 +1713,6 @@ if( knitr::is_html_output() ) {
 
 ::: {.exercise #FacePlantHT}
 [*Dataset*: `ForwardFall`]
-(This study was seen in Exercise\ \@ref(exr:FacePlantCI).)
 A study [@data:Wojcik:ForwardFall] compared the lean-forward angle in younger and older women (Table\ \@ref(tab:FacePlant)).
 An elaborate set-up was constructed to measure this lean-forward angle, using harnesses.
 Consider this RQ:
@@ -1224,14 +1723,17 @@ Use the software output (Fig.\ \@ref(fig:FallFowardTTestTestjamovi)) to answer t
 
 1. What is the parameter?
    Carefully describe what it means.
+1. What is an appropriate graph to display the *data*?
+1. Construct an appropriate numerical summary from the software output (Fig.\ \@ref(fig:FallFowardTTestjamovi2)).
+1. Construct *approximate* and *exact* $95$%\ CIs.
+   Explain any differences.
 1. Is the test one- or two-tailed?
 1. Write the statistical hypothesis.
 1. Use the software output to conduct the hypothesis test.
 1. Write a conclusion.
-1. Is the test statistically valid?
+1. Are the  CI and test statistically valid?
 :::
 
-  
 ```{r FallFowardTTestTestjamovi, fig.cap="Software output for the face-plant data.", fig.align="center", out.width="95%"}
 knitr::include_graphics("jamovi/FallForward/FallForwardTTestOutput-All.png")
 ```
@@ -1239,7 +1741,6 @@ knitr::include_graphics("jamovi/FallForward/FallForwardTTestOutput-All.png")
 
 
 ::: {.exercise #BHADPHT}
-(This study was seen in Exercise\ \@ref(exr:BHADPCI).)
 @data:Becker1991:BHADP compared the access to health promotion (HP) services for people with and without a disability in southwestern of the USA.\spacex
 'Access' was measured using the quantitative
 `r if (knitr::is_latex_output()) {
@@ -1254,24 +1755,79 @@ The RQ is:
 
 1. What is the parameter?
    Carefully describe what it means.
+1. Sketch an error bar chart.
+1. Compute the standard error of the difference.
+1. Compile a numerical summary table.
+1. Compute the approximate $95$%\ CI, and write a conclusion.
 1. Write down the hypotheses.
 1. Compute the $t$-score.
 1. Determine the $P$-value.
 1. Write a conclusion.
-1. Is the test statistically valid?
+1. Are teh CI and  test statistically valid?
 :::
+
+
+```{r BHADPSummary}
+BHADPSummary <- array(dim = c(3, 4))
+rownames(BHADPSummary) <- c("Disability", 
+                            "No disability",
+                            "Difference")
+
+BHADPSummary[1, ] <- c(31.83, 7.73, 132, 0.6728)
+BHADPSummary[2, ] <- c(25.07, 4.80, 137, 0.4101)
+BHADPSummary[3, ] <- c(6.76, NA, NA, NA) # 0.78794)
+  
+
+if( knitr::is_latex_output() ) {
+  kable( pad(BHADPSummary,
+             surroundMaths = TRUE,
+             targetLength = c(5, 4, 3, 7),
+             decDigits = c(2, 2, 0, 5) ),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+        #linesep = c("", "", "", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), # Otherwise addes a space after five lines... 
+        align = "c",
+        col.names = c("Sample mean", 
+                      "Standard deviation", 
+                      "Sample size", 
+                      "Standard error"),
+        caption = "The data summary for BHADP scores (no measurement units)."
+  ) %>%
+  row_spec(0, bold = TRUE) %>%
+  row_spec(3, italic = TRUE) %>%
+  row_spec(2, hline_after = TRUE) %>%
+  kable_styling(font_size = 8)
+}
+if( knitr::is_html_output() ) {
+  kable( pad(BHADPSummary,
+             surroundMaths = TRUE,
+             targetLength = c(5, 4, 3, 7),
+             decDigits = c(2, 2, 0, 5) ),
+               format = "html",
+               longtable = FALSE,
+               booktabs = TRUE,
+               align = "c",
+        col.names = c("Sample mean", 
+                      "Standard deviation", 
+                      "Sample size", 
+                      "Standard error"),
+    caption = "The data summary for BHADP scores (no measurement units).") %>%
+    kable_styling(full_width = FALSE)
+}
+```
 
 
 
 
 ::: {.exercise #TestTwoMeansBodyTemperature}
 [*Dataset*: `BodyTemp`]
-(This study was seen in Exercise\ \@ref(exr:TestTwoMeansBodyTemperatureCI).)
 Consider again the body temperature data from Sect.\ \@ref(BodyTemperature).
 The researchers also recorded the gender of the patients, as they also wanted to compare the mean internal body temperatures for females and males.
 
-Use the software output in Fig.\ \@ref(fig:BodyTempGenderjamoviHT) to perform this test and make a conclusion.
-Also comment on the practical significance of your results.
+Use the software output in Fig.\ \@ref(fig:BodyTempGenderjamoviHT) to perform this test and to construct an approximate $95$%\ CI appropriate for answering the RQ.
+Comment on the practical significance of your results.
 :::
 
 ```{r BodyTempGenderjamoviHT, fig.cap="Software output for the body-temperature data.", fig.align="center", out.width="90%"}
@@ -1280,30 +1836,32 @@ knitr::include_graphics("jamovi/BodyTemp/BodyTempTestGender.png")
 
 
 ::: {.exercise #TestTwoMeansFitnessOfParamedics}
-(This study was seen in Exercise\ \@ref(exr:TestTwoMeansFitnessOfParamedicsCI).)
 @data:chapman2007:MaleParamedics compared 'conventional' male paramedics in Western Australia with male 'special-operations' paramedics.
-Some information comparing their physical profiles is shown in Table\ \@ref(tab:ParamedicsTestHT).
+Some information comparing their physical profiles is shown in Table\ \@ref(tab:ParamedicsTest).
 
+1. Compute the missing standard errors.
 1. Consider comparing the mean grip strength for the two groups of paramedics.
    a. Carefully write down the hypotheses.
-   b. Compute the $t$-score for testing if a difference exists between the two types of paramedics.
-   c. Approximate the $P$-value using the $68$--$95$--$99.7$ rule.
-   d. Discuss the conditions required for statistical validity in this context.
-   e. Make a conclusion.
+   b. Compute an approximate $95$%\ CI for the difference in the mean grip strength for the two groups of paramedics.
+   c. Compute the $t$-score for testing if a difference exists between the two types of paramedics.
+   d. Approximate the $P$-value using the $68$--$95$--$99.7$ rule.
+   e. Discuss the conditions required for statistical validity in this context.
+   f. Make a conclusion.
 1. Consider comparing the mean number of push-ups completed in one minute. 
    The *standard error for the difference between the means* is $4.0689$. 
    a. Carefully write down the hypotheses.
-   b. Compute the $t$-score for testing if a difference exists between the two types of paramedics.
-   c. Approximate the $P$-value using the $68$--$95$--$99.7$ rule.
-   d. Discuss the conditions required for statistical validity in this context.
-   e. Make a conclusion.
+   b. Compute an approximate $95$%\ CI for the difference between the number of push-ups for the two groups of paramedics.
+   c. Compute the $t$-score for testing if a difference exists between the two types of paramedics.
+   d. Approximate the $P$-value using the $68$--$95$--$99.7$ rule.
+   e. Discuss the conditions required for statistical validity in this context.
+   f. Make a conclusion.
 :::
 
 
-```{r ParamedicsTestHT}
+```{r ParamedicsTest}
 ParaSummary <- array(dim = c(6, 2))
 rownames(ParaSummary) <- c("Mean", 
-                            "Standard deviation",
+                         "Standard deviation",
                             "Standard error",
                             "Mean", 
                             "Standard deviation",
@@ -1329,7 +1887,7 @@ if( knitr::is_latex_output() ) {
         escape = FALSE,
 	 #linesep = c("", "", "", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), # Otherwise addes a space after five lines... 
         align = "c",
-        caption = "The physical profile of conventional ($n=18$) and special-operations ($n = 11$) paramedics in Western Australia."
+        caption = "The physical profile of conventional ($n = 18$) and special operation ($n = 11$) paramedics in Western Australia."
   ) %>%
     row_spec(0, bold = TRUE) %>%
   kable_styling("striped", 
@@ -1347,10 +1905,89 @@ if( knitr::is_html_output() ) {
         longtable = FALSE,
         booktabs = TRUE,  
         align = "c",
-        caption = "The physical profile of conventional ($n=18$) and special operation ($n = 11$) paramedics in Western Australia.") %>%
+        caption = "The physical profile of conventional ($n = 18$) and special operation ($n = 11$) paramedics in Western Australia.") %>%
     kable_styling(full_width = FALSE) %>%
     pack_rows("Grip strength (in kg)", 1, 3) %>%
     pack_rows("Push-ups (per minutes)", 4, 6)
+}
+```
+
+
+::: {.exercise #TwoMeansCIExercisesAnorexia}
+[*Dataset*: `Anorexia`]
+Young girls ($n = 29$) with anorexia received cognitive behavioural treatment (@data:hand:handbook), while another $n = 26$ young girls received a control treatment (the 'standard' treatment).
+All girls had their weight recorded before and after treatment.
+
+1. Determine the mean *gain* in each individuals girls weight using software.
+1. Compute a CI for the mean weight gain for the girls in each group.
+1. Compute a CI for the difference between the mean weight gains for the two treatment groups.
+1. Conduct a test to determine if there is a difference between the mean weight gains for the two treatment groups.
+:::
+
+
+::: {.exercise #Coeliac}
+Researchers studied the impact of a gluten-free diet on dental cavities [@khalaf2020caries].
+Some of the summary information regarding the number decayed, missing and filled teeth (DMFT) is shown in Table\ \@ref(tab:CoeliacDMFTCI).
+An *exact* $95$%\ CI is given as for the difference is\ $-2.32$ to\ $2.76$.
+
+1. Using the $68$--$95$--$99.7$ rule gives a slightly different CI.\spacex
+  Why?
+1. True or false: the difference is computed as the number of DMFT for coeliacs minus non-coeliacs. \tightlist 
+1. True or false: one of the values for the CI is a negative value, which must be an error (as a negative number of DMFT is impossible).
+1. We are $95$%\ confident that the difference between the population means is:
+
+   * Smaller for coeliacs;
+   * Between\ $2.32$ higher for non-coeliacs to\ $2.76$ higher for coeliacs.
+   * Between\ $2.76$ higher for non-coeliacs to\ $2.32$ higher for coeliacs.
+:::
+
+
+```{r CoeliacDMFTCI}
+CoeliacSummary <- array(dim = c(3, 4))
+colnames(CoeliacSummary) <- c("Sample size", 
+                              "Mean", 
+                              "Standard deviation",
+                              "Standard error")
+rownames(CoeliacSummary) <- c("Coeliacs", 
+                              "Non-coeliacs",
+                              "Difference")
+CoeliacSummary[1, ] <- c(23, 8.39, 4.4, 0.92)
+CoeliacSummary[2, ] <- c(23, 8.17, 4.1, 0.86)
+CoeliacSummary[3, ] <- c(NA, 0.22, NA, 1.3)
+
+
+if( knitr::is_latex_output() ) {
+  kable(pad(CoeliacSummary,
+            surroundMaths = TRUE,
+            targetLength = c( 2, 4, 3, 4),
+            decDigits = c(0, 2, 1, 2) ),
+        format = "latex",
+        longtable = FALSE,
+        booktabs = TRUE,
+        escape = FALSE,
+	 #linesep = c("", "", "", "\\addlinespace", "", "", "", "\\addlinespace", "", "", "", ""), # Otherwise addes a space after five lines... 
+        align = "c",
+        caption = "The summary of the number of DMFT for coeliacs and non-coeliacs."
+  ) %>%
+    row_spec(0, bold = TRUE) %>%
+    row_spec(3, italic = TRUE) %>%
+    row_spec(2, hline_after = TRUE) %>%
+  kable_styling("striped", 
+                full_width = F, 
+                font_size = 8)
+}
+if( knitr::is_html_output() ) {
+  kable(pad(CoeliacSummary,
+            surroundMaths = TRUE,
+            targetLength = c(2, 4, 3, 4),
+            decDigits = c(0, 2, 1, 2) ),
+        format = "html",
+        longtable = FALSE,
+        booktabs = TRUE,  
+        align = "c",
+        caption = "The summary of the number of DMFT for coeliacs and non-coeliacs.") %>%
+    row_spec(3, italic = TRUE) %>%
+    kable_styling(full_width = FALSE)
 }
 ```
 
