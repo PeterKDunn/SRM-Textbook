@@ -187,10 +187,17 @@ pad <- function(x,
   if ( !is.null(currentDim) ) x <- c(x)
   
   
+  # FINDING WHICH ENTRIES TO RETURN UNTOUCHED
+  whichLeaveAlone <- is.na(as.numeric(x))
+  leaveAlone <- x[ whichLeaveAlone]
   
-  ### EXTRACT NUMBERS, PRE-TEXT AND POST-TEXT
+  if (verbose) cat("whichLeaveAline:", whichLeaveAlone, "\n")
+  if (verbose) cat("leaveAlone", leaveAlone, "\n")
+
+  
+    ### EXTRACT NUMBERS, PRE-TEXT AND POST-TEXT
   if ( verbose ) cat("* Splitting input into numbers, pre-text and post-text\n")
-  
+
   # Define function to do so:
   extractParts <- function(arr) { # arr  is a one-dimensional array
     numbers <- gsub("[^0-9.-]", 
@@ -477,6 +484,10 @@ pad <- function(x,
   if (verbose) print(array( numbersArray,  dim = currentDim ))
   if (verbose) print(array( postNumberText,  dim = currentDim ))
   
+  ## RESTORE THOSE ELEMENST TOP BE LEFT UNTOUCHED
+  out[whichLeaveAlone] <-  leaveAlone
+  
+  
   ### NOW RESTORE TO ORIGINAL SHAPE, WITH NAMES
   if ( xAnArray ) {
     if ( verbose) cat("* Restoring shape:\n")
@@ -502,6 +513,8 @@ pad <- function(x,
       if ( verbose) cat("  * Col names length: ", length(currentRows), "\n")
     }
   }
+  
+  
   
   out
   
