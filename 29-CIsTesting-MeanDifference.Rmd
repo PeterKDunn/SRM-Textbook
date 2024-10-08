@@ -1,5 +1,5 @@
 
-# CIs and tests: mean differences (paired data) {#PairedCI}
+# CIs and tests: mean differences (paired data) {#AnalysisPaired}
 \index{Research question!relational}
 
 
@@ -864,403 +864,6 @@ Neither the differences *in the population*, nor the distances *in the populatio
 :::
 
 
-## Example: soil nitrogen {#PairedTTest-SoilN}
-\index{Research question!relational}
-
-
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/meal-3236971_1280.jpg" width="200px"/>
-</div>
-
-
-```{r}
-data(SoilCN)
-
-SoilN <- subset(SoilCN, 
-                select = c(IrrigatedN, NonirrigatedN))
-SoilN$Change <- SoilN$NonirrigatedN - SoilN$IrrigatedN
-
-Nlen <- length(SoilN$TotalCI) 
-
-if( knitr::is_latex_output() ) {
-  
- T1 <- knitr::kable(pad(SoilN[1:14, ],
-                        surroundMaths = TRUE,
-                        targetLength = 5,
-                        decDigits = 2),
-                     format = "latex",
-                     valign = 't',
-                     align = "c",
-                     linesep = "",
-                     col.names = c("irrigated", 
-                                   "irrigated", 
-                                   "when irrigated"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
-   add_header_above( c("%N:" = 1, 
-                       "%N: Not" = 1, 
-                       "%N: reduction" = 1),
-                    line = FALSE,
-                    bold = TRUE) %>%
-   row_spec(0, bold = TRUE) 
-  
-  
-  T2 <- knitr::kable(pad(SoilN[15:28, ],
-                        surroundMaths = TRUE,
-                        targetLength = 5,
-                        decDigits = 2),
-                     format = "latex",
-                     valign = 't',
-                     align = "c",
-                     linesep = "",
-                     col.names = c("irrigated", 
-                                   "irrigated", 
-                                   "when irrigated"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
-   add_header_above( c("%N:" = 1, 
-                       "%N: Not" = 1, 
-                       "%N: reduction" = 1),
-                    line = FALSE,
-                    bold = TRUE) %>%
-    row_spec(0, bold = TRUE)
-  
-  out <- knitr::kables(list(T1, T2),
-                       format = "latex",
-                       label = "SoilCN",
-                       caption = "The percentage total soil nitrogen (\\%N) in irrigated and non-irrigated soils in $n = 28$ sites.") %>% 
-    kable_styling(font_size = 8)
-  out2 <- prepareSideBySideTable(out,
-                                 gap = "\\enskip") 
-  out2 
-}
-
-if( knitr::is_html_output() ) {
-  kable( pad(SoilN,
-                        surroundMaths = TRUE,
-                        targetLength = 5,
-                        decDigits = 2),
-         format = "html",
-         align = "c",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names = c("Irrigated", "Not irrigated", "Reduction"),
-         caption = "The percentage total nitrogen in irrigated and non-irrigated soils in $n = 28$ sites.") %>% 
-    row_spec(0, bold = TRUE)
-}
-```
-
-
-
-```{r PercentageNSamplingDist, fig.cap="The sampling distribution for $\\bar{d}$ is a normal distribution; it describes how the sample mean reduction in percentage N varies in samples of size $n = 28$ when the population mean reduction is $0$.", fig.align="center", fig.width=9.25, fig.height=2.5, out.width='100%'}
-data(SoilN)
-mn <- mean(SoilN$Change)
-n <- length(SoilN$Change)
-stdd <- sd(SoilN$Change)
-
-se <- stdd/sqrt(n)
-
-par( mar = c(4, 0.25, 0.5, 0.25) )
-out <- plotNormal(0,
-                  se,
-                  las = 2,
-                  xlab = "Sample mean\nreduction in %N", 
-                  cex.axis = 0.95,
-                  ylim = c(0, 55),
-                  xlim.hi = 0 + 3.25*se,
-                  xlim.lo = 0 - 3.25*se,
-                  showXlabels = c( 	
-                    expression( -0.0352),
-                    expression( -0.0234), 
-                    expression( -0.0117), 
-                    expression( 0 ),
-                    expression( 0.0117), 
-                    expression( 0.0234), 
-                    expression( 0.0352) ) )
-
-arrows(x0 = 0,
-       x1 = 0,
-       y0 = 45,
-       y1 = max(out$y),
-       angle = 15,
-       length = 0.1)
-
-text(x = 0,
-     y = 45,
-     pos = 3,
-     labels = expression(Sampling~mean))
-
-
-
-arrows(x0 = 0,
-       x1 = 0 + se,
-       y0 = 0.30 * max(out$y),
-       y1 = 0.30 * max(out$y),
-       code = 3, # Arrows both ends
-       angle = 15,
-       length = 0.1)
-
-text(x = 0 + (se / 2),
-     y = 0.30 * max(out$y),
-     labels = expression( atop(Std.~error,
-                               s.e.(bar(italic(d)))==0.0117)) )
-
-
-arrows(x0 = mn,
-       x1 = mn,
-       y0 = 0.7 * max(out$y),
-       y1 = 0,
-       angle = 15,
-       length = 0.18)
-text(x = mn,
-     y = 0.7 * max(out$y),
-     pos = 3,
-     labels = expression( italic(z) == 2.41) )
-
-points(x = mn,
-       y = 0,
-       pch = 19,
-       cex = 0.6)
-mtext(text =  expression(bar(italic(d)) == 0.0282),
-      side = 1,
-      at = mn,
-      cex = 0.8,
-      line = 0,
-      padj = 0.25
-      )
-```
-
-
-
-
-@lambie2021microbial compared the percentage nitrogen (%N) in soils from intensively-grazed irrigated and non-irrigated pastures.
-The researchers *paired*\index{Comparison!within individuals} similar irrigated and non-irrigated sites (p.\ 338):
-
-> The irrigated and non-irrigated pairs within each site were within\ $100$\ms of each other and were on the same soil, landform and usually the same farm with the same farm management on both treatments.
-
-Pairing (Sect.\ \@ref(PairedIntro)) is a form of blocking\index{Blocking} (Sect.\ \@ref(ManagingConfounding)) and is used to manage confounding.\index{Confounding!blocking}
-The comparison is *within individuals*.
-One RQ in the study was:
-
-> For intensively grazed pastures sites, is there a mean reduction in percentage soil nitrogen (%N) when sites are irrigated, compared to non-irrigated?
-
-The data are shown in
-`r if( knitr::is_latex_output() ) {
-    'Table\\ \\@ref(tab:SoilCN).'
-} else {
-    'the table below.'
-}`
-The parameter is\ $\mu_d$, the population mean *reduction* in %N from non-irrigated to irrigated sites; that is, the difference is computed as non-irrigated\ %N minus irrigated\ %N.
-
-
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-Explaining *how* the differences are computed is important.
-The differences here are the\ %N in *non-irrigated* sites minus\ %N in *irrigated* sites.
-
-The differences could be computed as the %N in *irrigated* sites minus\ %N in *non-irrigated* sites.
-*Either is fine*, as long as you remain consistent throughout.
-The meaning of any conclusions will be the same.  
-:::
-
-
-```{r}
-data(SoilCN)
-
-SoilN <- subset(SoilCN, 
-                select = c(IrrigatedN, NonirrigatedN))
-SoilN$Change <- SoilN$NonirrigatedN - SoilN$IrrigatedN
-
-Nlen <- length(SoilN$TotalCI) 
-
-if( knitr::is_latex_output() ) {
-  
- T1 <- knitr::kable(pad(SoilN[1:14, ],
-                        surroundMaths = TRUE,
-                        targetLength = 5,
-                        decDigits = 2),
-                     format = "latex",
-                     valign = 't',
-                     align = "c",
-                     linesep = "",
-                     col.names = c("irrigated", 
-                                   "irrigated", 
-                                   "when irrigated"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
-   add_header_above( c("%N:" = 1, 
-                       "%N: Not" = 1, 
-                       "%N: reduction" = 1),
-                    line = FALSE,
-                    bold = TRUE) %>%
-   row_spec(0, bold = TRUE) 
-  
-  
-  T2 <- knitr::kable(pad(SoilN[15:28, ],
-                        surroundMaths = TRUE,
-                        targetLength = 5,
-                        decDigits = 2),
-                     format = "latex",
-                     valign = 't',
-                     align = "c",
-                     linesep = "",
-                     col.names = c("irrigated", 
-                                   "irrigated", 
-                                   "when irrigated"),
-                     row.names = FALSE,
-                     escape = FALSE,
-                     booktabs = TRUE) %>%
-   add_header_above( c("%N:" = 1, 
-                       "%N: Not" = 1, 
-                       "%N: reduction" = 1),
-                    line = FALSE,
-                    bold = TRUE) %>%
-    row_spec(0, bold = TRUE)
-  
-  out <- knitr::kables(list(T1, T2),
-                       format = "latex",
-                       label = "SoilCN",
-                       caption = "The percentage total soil nitrogen (\\%N) in irrigated and non-irrigated soils in $n = 28$ sites.") %>% 
-    kable_styling(font_size = 8)
-  out2 <- prepareSideBySideTable(out,
-                                 gap = "\\enskip") 
-  out2 
-}
-
-if( knitr::is_html_output() ) {
-  kable( pad(SoilN,
-                        surroundMaths = TRUE,
-                        targetLength = 5,
-                        decDigits = 2),
-         format = "html",
-         align = "c",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names = c("Irrigated", "Not irrigated", "Reduction"),
-         caption = "The percentage total nitrogen in irrigated and non-irrigated soils in $n = 28$ sites.") %>% 
-    row_spec(0, bold = TRUE)
-}
-```
-
-
-The data are summarised graphically (Fig.\ \@ref(fig:SoilNGraphs)) and numerically (Table\ \@ref(tab:SoilNSummary)), using information provided by software (Fig.\ \@ref(fig:Nitrogenjamovi)).
-
-
-
-```{r SoilNSummary}
-SoilSummary <- array( dim = c(3, 4))
-
-rownames(SoilSummary) <- c("Irrigated sites",
-                           "Non-irrigated sites",
-                           "Change")
-colnames(SoilSummary) <- c("Mean",
-                           "Standard deviation",
-                           "Standard error",
-                           "Sample size")
-
-SoilSummary[, 1] <- colMeans(SoilN)
-SoilSummary[, 2] <- apply(SoilN,
-                          2,
-                          "sd")
-SoilSummary[, 3] <- apply(SoilN,
-                          2,
-                          "findStdError")
-SoilSummary[, 4] <- apply(SoilN,
-                          2,
-                          "length")
-
-# Do some appropriate rounding
-SoilSummary <- round(SoilSummary, 6)
-SoilSummary[1:2, 1] <- round(SoilSummary[1:2, 1], 6)
-
-if( knitr::is_latex_output() ) {
-  
-  knitr::kable(pad(SoilSummary,
-                   surroundMaths = TRUE,
-                   targetLength = c(4, 6, 6, 0),
-                   decDigits = c(3, 4, 4, 0)),
-               format = "latex",
-               align = "c",
-               linesep = "",
-               caption = "The percentage total soil N in irrigated and non-irrigated sites.",
-               col.names = c("Mean", "Standard deviation", "Standard error", "Sample size"),
-               row.names = TRUE,
-               escape = FALSE,
-               booktabs = TRUE) %>%
-    row_spec(0, bold = TRUE) %>%
-    row_spec(3, italic = TRUE) %>%
-    row_spec(2, hline_after = TRUE) %>%
-    kable_styling(font_size = 8)
-  
-}
-
-if( knitr::is_html_output() ) {
-  kable( pad(SoilSummary,
-                   surroundMaths = TRUE,
-                   targetLength = c(4, 6, 6, 0),
-                   decDigits = c(3, 4, 4, 0)),
-         format = "html",
-         align = "c",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names = c("Mean", "Standard deviation", "Standard error", "Sample size"),
-         caption = "The percentage total soil N in irrigated and non-irrigated sites.") %>% 
-    row_spec(0, bold = TRUE)
-}
-```
-
-
-
-
-```{r, SoilNGraphs, fig.align="center", fig.cap="The reduction in \\%N when sites are non-irrigated, compared to irrigated (i.e., non-irrigated minus irrigated). Left: a histogram of the differences (boundary values in the lower box). Right: a case-profile plot (solid lines, solid dots for lower percentage N in irrigated sites).", fig.show="hold", out.width='100%', fig.width = 9.25, fig.height = 3.5}
-par( mfrow = c(1, 2))
-
-hist(SoilN$Change,
-     right = FALSE,
-     breaks = seq(-0.15, 0.20, by = 0.05),
-     main = "Histogram of percentage\nsoil nitrogen reduction",
-     xlab = "Reduction in %N",
-     ylab = "No. of sites",
-     las = 1)
-
-box()
-
-plot( x = c(0.75, 2.25),
-      y = c(0.15, 0.7),
-      axes = FALSE,
-      type = "n",
-      main = "Case-profile plot of percentage\nsoil nitrogen changes",
-      xlab = "",
-      ylab = "Soil %\ N")
-axis(side = 1,
-     at = 1:2,
-     labels = c("Non-Irrigated",
-                "Irrigated") )
-axis(side = 2,
-     las = 1)
-box()
-
-delta <- 0.02
-for (i in 1:length(SoilN$Change)){
-  lines( x = c(1 + ifelse(SoilN$Change[i] > 0, delta, -delta), 
-               2 + ifelse(SoilN$Change[i] > 0, delta, -delta)),
-         y = c( SoilN$NonirrigatedN[i], 
-                SoilN$IrrigatedN[i]),
-         lty = ifelse(SoilN$Change[i] > 0, 1, 2),
-         type = "b",
-         pch = ifelse(SoilN$Change[i] > 0, 19, 1))
-}
-box()
-
-```
-
-
-```{r Nitrogenjamovi, fig.cap="Software output for the nitrogen data. In the top table, the difference is implied as non-irrigated minus irrigated.", fig.align="center", out.width=c("100%","60%"), fig.show='hold'}
-knitr::include_graphics("jamovi/SoilCN/SoilCN-Testing.png")
-knitr::include_graphics("jamovi/SoilCN/SoilCN-Summary.png")
-```
 
 
 ## Example: invasive plants {#PairedInvasivePlantsHT}
@@ -2054,11 +1657,6 @@ if( knitr::is_html_output() ) {
 ```
 
 
-
-
-
-
-
 ```{r StressDescriptivesjamovi, fig.cap="Software output for the surgery-stress data.", fig.align="center", out.width='70%'}
 knitr::include_graphics("jamovi/Stress/StressDescriptives.png")
 ```
@@ -2271,6 +1869,110 @@ Do you think the treatment had any meaningful impact on the mean weight gain of 
 :::
 
 
+::: {.exercise #PairedCIExercisesSoilN}
+@lambie2021microbial compared the percentage nitrogen (%N) in soils from intensively-grazed irrigated and non-irrigated pastures.
+The researchers *paired*\index{Comparison!within individuals} similar irrigated and non-irrigated sites (p.\ 338):
+
+> The irrigated and non-irrigated pairs within each site were within\ $100$\ms of each other and were on the same soil, landform and usually the same farm with the same farm management on both treatments.
+
+One RQ in the study was:
+
+> For intensively grazed pastures sites, is there a mean reduction in percentage soil nitrogen (%N) when sites are irrigated, compared to non-irrigated?
+
+The data are shown in
+`r if( knitr::is_latex_output() ) {
+    'Table\\ \\@ref(tab:SoilCN).'
+} else {
+    'the table below.'
+}`
+Use the data to answer te RQ.
+
+
+```{r}
+data(SoilCN)
+
+SoilN <- subset(SoilCN, 
+                select = c(IrrigatedN, NonirrigatedN))
+SoilN$Change <- SoilN$NonirrigatedN - SoilN$IrrigatedN
+
+Nlen <- length(SoilN$TotalCI) 
+
+if( knitr::is_latex_output() ) {
+  
+ T1 <- knitr::kable(pad(SoilN[1:14, ],
+                        surroundMaths = TRUE,
+                        targetLength = 5,
+                        decDigits = 2),
+                     format = "latex",
+                     valign = 't',
+                     align = "c",
+                     linesep = "",
+                     col.names = c("irrigated", 
+                                   "irrigated", 
+                                   "when irrigated"),
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+   add_header_above( c("%N:" = 1, 
+                       "%N: Not" = 1, 
+                       "%N: reduction" = 1),
+                    line = FALSE,
+                    bold = TRUE) %>%
+   row_spec(0, bold = TRUE) 
+  
+  
+  T2 <- knitr::kable(pad(SoilN[15:28, ],
+                        surroundMaths = TRUE,
+                        targetLength = 5,
+                        decDigits = 2),
+                     format = "latex",
+                     valign = 't',
+                     align = "c",
+                     linesep = "",
+                     col.names = c("irrigated", 
+                                   "irrigated", 
+                                   "when irrigated"),
+                     row.names = FALSE,
+                     escape = FALSE,
+                     booktabs = TRUE) %>%
+   add_header_above( c("%N:" = 1, 
+                       "%N: Not" = 1, 
+                       "%N: reduction" = 1),
+                    line = FALSE,
+                    bold = TRUE) %>%
+    row_spec(0, bold = TRUE)
+  
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "SoilCN",
+                       caption = "The percentage total soil nitrogen (\\%N) in irrigated and non-irrigated soils in $n = 28$ sites.") %>% 
+    kable_styling(font_size = 8)
+  out2 <- prepareSideBySideTable(out,
+                                 gap = "\\enskip") 
+  out2 
+}
+
+if( knitr::is_html_output() ) {
+  kable( pad(SoilN,
+                        surroundMaths = TRUE,
+                        targetLength = 5,
+                        decDigits = 2),
+         format = "html",
+         align = "c",
+         booktabs = TRUE,
+         longtable = FALSE,
+         col.names = c("Irrigated", "Not irrigated", "Reduction"),
+         caption = "The percentage total nitrogen in irrigated and non-irrigated soils in $n = 28$ sites.") %>% 
+    row_spec(0, bold = TRUE)
+}
+```
+
+
+```{r Nitrogenjamovi, fig.cap="Software output for the nitrogen data. In the top table, the difference is implied as non-irrigated minus irrigated.", fig.align="center", out.width=c("100%","60%"), fig.show='hold'}
+knitr::include_graphics("jamovi/SoilCN/SoilCN-Testing.png")
+knitr::include_graphics("jamovi/SoilCN/SoilCN-Summary.png")
+```
+:::
 `r if( knitr::is_latex_output() ) "\\captionsetup{font=normalsize}"`
 
 
