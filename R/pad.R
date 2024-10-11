@@ -132,32 +132,41 @@ pad <- function(x,
   # FINDING WHICH ENTRIES ARE NEGATIVE NUMBERS
   whichNegative <- xNumeric < 0
   if (verbose) print(whichNegative)
-
+  xNumeric <- abs(xNumeric) # Restore negative signs later
 
   # Now start changing xNew
   xNew <- xNumeric
   if ( verbose ) print(xNew) 
   
   
-  # Round numbers as indicated
+  ### Round numbers as indicated
   xNew <- formatMatrix( round( xNumeric, 
                                decDigits),
                         nsmall = decDigits,
                         justify = "right",
                         big.mark = big.mark,
                         width = targetLength)
+  if ( verbose ) cat("////////////////////////////////////////////////////////////////\n")
+  if (verbose) print(xNew)
+  
+  ### Fix up when negative signs appear
+  # Need to do this *before* the  \phantom-s  are added, so that the  -   is attached to the number as a negative sign
+  if (verbose) cat("Need to fix negative signs?", any(xNew < 0, na.rm=TRUE), "\n")
+  xNew <- padForNegative(xNew,
+                         whichNegative,
+                         verbose = verbose)
+  if ( verbose ) cat("****************************************************************\n")
+  if (verbose) print(xNew)
 
-  # Pad with phantoms as necessary
+  
+  ### Pad with phantoms as necessary
   xNew <- addPhantoms(xNew)
 
-  # Fix up when negative signs appear
-  xNew <- padForNegative(xNew)
-  if (verbose) print(xNew)
   
   if ( verbose ) cat("----------------------------------------------------------------\n")
   if ( verbose ) print(xNew)
   
-  # Add the $...$ signs to the start and end
+  ### Add the $...$ signs to the start and end
   xNew <- paste0("$", 
                  xNew, 
                  "$")
@@ -248,7 +257,16 @@ addPhantoms <- function(mat){
  
 }
 
-padForNegative <- function(mat) {
+padForNegative <- function(mat, whichNegative, verbose) {
+  # mat currently contains all non-negative info; the negative signs were removed.
+  # Now, add them back as \lap{-} so they do not impact alignment.
+  
+  # We need care. 
+  # After rounding, an entry like  -7.12  may end up like " 7.12" after being rounded and made the correct length.
+  # So we cannot just add  \phantom{-} to the front using paste0; we'd get  "\\phantom{-} 7.12", and the negative signs is not treated as such.
+  
+  # Thus, we need to *insert* it after any spaces.
+
   # Check if the input is a character matrix
   if (!is.matrix(mat) || !is.character(mat)) {
     stop("Input must be a character matrix.")
@@ -256,30 +274,25 @@ padForNegative <- function(mat) {
   
   # Create a copy of the matrix to store modified values
   modifiedMat <- mat
+
   
-  # Loop through each column of the matrix
-  for (j in 1:ncol(mat)) {
-    # Check if there is any negative number in the **column**
-    has_negative <- any(!is.na(as.numeric(mat[, j])) & as.numeric(mat[, j]) < 0) # SKIP NAs!
-    
-    # If there is a negative number, modify the values in that column
-    if (has_negative) {
-      for (i in 1:nrow(mat)) {
-        # Convert the current entry to numeric
-        current_value <- as.numeric(mat[i, j])
-        
-        # If it's a positive number, add "\phantom{-}" in front
-        if (!is.na(current_value) && current_value > 0) {
-          modifiedMat[i, j] <- paste0("\\phantom{-}", mat[i, j])
-        }
-        
-        # If it's a negative number, add "\phantom{0}" in front of the negative sign
-        if (!is.na(current_value) && current_value < 0) {
-          modifiedMat[i, j] <- gsub("^-", "\\\\phantom{0}-", mat[i, j])
-        }
-      }
-    }
-  }
+  # Capture leading spaces using a regex
+  leading_spaces <- sub("^(\\s*).*", 
+                        "\\1", 
+                        mat)
+  
+  # Remove leading spaces for further processing
+  no_space_text <- trimws(mat)
+  
+  # Use ifelse to insert "\llap{-}" where logical_matrix is TRUE
+  modifiedMat <- ifelse(whichNegative, 
+                         paste0(leading_spaces, 
+                                "\\llap{$-{}$}", 
+                                no_space_text),  # If TRUE, insert negative with leading spaces
+                         mat)                    # If FALSE, keep the original
+  
+  if (verbose) cat("has_negative is:\n")
+
   
   return(modifiedMat)
 }
