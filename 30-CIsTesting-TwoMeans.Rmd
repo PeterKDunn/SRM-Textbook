@@ -119,11 +119,10 @@ if( knitr::is_html_output() ) {
 ```
 
 
-A numerical summary *must* summarise the difference between the means, as the RQ is about this difference.
+A numerical summary *must* summarise the difference between the means, because the RQ is about this difference.
 Both groups should be summarised too.
 The information can be found using software (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)), and compiled into a table (Table\ \@ref(tab:SnakesNumericalTest)).
 The appropriate summary for graphically summarising the *data* is (for example) a boxplot (Fig.\ \@ref(fig:SnakesErrorbar), left panel).
-An error bar chart Sect.\ \@ref(ErrorBarCharts)), which compares the *sample means*, should also be produced (Fig.\ \@ref(fig:SnakesErrorbar), right panel).
 
 
 ```{r SnakesSummaryTestjamovi, fig.cap="Software output for the garter-snakes data.", fig.align="center", out.width=c("100%","65%"), fig.show='hold'}
@@ -225,8 +224,8 @@ plot( range( c( ci.lo, ci.hi) ) ~ c(0.9, 2.1),
       las = 1)
 axis(side = 1, 
      at = 1:2, 
-     labels = c("Yes", 
-                "No"),
+     labels = c("No", 
+                "Yes"),
      las = 1) 
 axis(side = 2, 
      las = 1)
@@ -342,6 +341,13 @@ A useful way to compare the means of two (or more) groups is to display the CIs 
 Error bars charts display the expected variation *in the sample means* from sample to sample, while boxplots display the variation *in the individual observations*.
 For the garter-snakes data, the error bar chart (Fig.\ \@ref(fig:SnakesErrorbar), right panel) shows the $95$%\ CI for each group; the mean has been added as a dot.
 
+The two CIs for the SVL are (using information from the bottom table in Fig.\ \@ref(fig:SnakesSummaryTestjamovi)):
+
+* \makebox[34mm][l]{Crayfish regions:} $34.171 \pm (2 \times 2.112)$, or from\ $29.94$ to\ $38.40$\cms.
+* \makebox[34mm][l]{Non-crayfish regions:} $42.566 \pm (2\times 1.216)$, or from\ $40.13$ to\ $45.00$\cms.
+
+However, the error bar chart, and these CIs, do not give a CI for the *difference* between the two means, as is relevant to the RQ.
+
 
 ::: {.example #ErrorBarCharts2 name="Error bar charts"}
 @data:ForestBiomass2017 studied the foliage biomass of small-leaved lime trees from three sources: coppices; natural; planted.
@@ -416,10 +422,10 @@ arrows(1:3,
        angle = 90, 
        code = 3)
 # Show the limits of the right-most graph
-abline(h = 3.5,
+abline(h = 3.5 + 0.05,
        col = "grey",
        lty = 2)
-abline(h = 1.0,
+abline(h = 1.0 - 0.05,
        col = "grey",
        lty = 2)
 
@@ -461,7 +467,7 @@ arrows(1:3, mns - 2 * ses,
 
 Each sample will comprise different snakes, and give different SVLs. 
 The sample means for each group will differ from sample to sample, and the *difference* between the sample means will be different for each sample.
-The *difference* between the sample means varies from sample to sample, and so has a sampling distribution and *standard error*.
+The *difference* between the sample means varies from sample to sample, and so has a sampling distribution and a standard error.
 
 
 ::: {.definition #DEFSamplingDistributionDiffMeans name="Sampling distribution for the difference between two sample means"}
@@ -475,7 +481,7 @@ The standard error for the difference between the means is found using
 $$
   \text{s.e.}(\bar{x}_A - \bar{x}_B) = \sqrt{ \text{s.e.}(\bar{x}_A)^2 + \text{s.e.}(\bar{x}_B)^2},
 $$
-though this value will often be *given* (e.g., on computer output).
+though this value will often be *given* (e.g., on computer output) rather than needed to be computed.
 :::
 
 
@@ -519,10 +525,10 @@ Giving the CI alone is insufficient; the *direction* in which the differences we
 :::
 
 
-Output from software often shows *two* CIs (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)).
+Output from software often shows *two* CIs for the difference between the two means (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)).
 *We will use the results from Welch's test (the second row)*,\index{Welch's test} as this row of output is more general, and makes fewer assumptions.
 Specifically, the information in the first row (`Student's t`) is appropriate when the *population* standard deviations in the two groups *are* the same; the second row (`Welch's t`) is appropriate when the *population* standard deviations in the two groups *are not* necessarily the same.
-The information in the second row assumes less, and is more widely applicable.
+The information in the second row makes fewer assumptions, and is more widely applicable.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -534,17 +540,7 @@ In the software output in Fig.\ \@ref(fig:SnakesSummaryTestjamovi), this is the 
 :::
 
 
-<!-- ```{r ReactionPhoneTestOutputjamovi, echo=FALSE, fig.cap="The software output for the phone-reaction data", fig.align="center", out.width='95%'} -->
-<!-- knitr::include_graphics( "jamovi/ReactionPhone/ReactionPhone-Test.png") -->
-<!-- ``` -->
-
-
-<!-- ```{r ReactionPhoneTestOutputSPSS, echo=FALSE, fig.cap="The SPSS output for the phone-reaction data", fig.align="center", out.width='90%'} -->
-<!-- knitr::include_graphics("SPSS/ReactionPhone/ReactionPhone-Test.png") -->
-<!-- ``` -->
-
-
-From the output, the $95$%\ CI is from\ $3.511$ to\ $13.28$\cms
+From the output, the $95$%\ CI for teh difference is from\ $3.51$ to\ $13.28$\cms
 The *approximate* CI and the *exact* (from software) CIs are only slightly different, as the samples sizes are not too small.
 (Recall: the $t$-multiplier of\ $2$ is an approximation, based on the $68$--$95$--$99.7$ rule).
 
@@ -561,41 +557,20 @@ From the RQ, the alternative hypothesis is *two*-tailed:
 * $H_1$: $\mu_N - \mu_C\ne 0$ (equivalent to $\mu_N \ne \mu_C$).
 
 The alternative hypothesis proposes that any difference between the *sample* means is because a difference really exists between the *population means*. 
+The alternative hypothesis is two-tailed, based on the RQ.
 
 The sample mean difference between the SVL in the two groups depends on which one of the many possible samples is randomly obtained, *even if* the difference between the means in the population is zero.
 The difference between the sample means is $8.394$\cms, but this difference will vary from sample to sample; that is, *sampling variation* exists.
 
-
-::: {.definition #DEFSamplingDistributionDiffMeansHT name="Sampling distribution for the difference between two sample means"}
-The *sampling distribution of the difference between two sample means*\ $\bar{x}_A$ and\ $\bar{x}_B$ is (when the appropriate conditions are met; Sect.\ \@ref(ValidityTwoMeans)), described by:\index{Sampling distribution!difference between two means}
+For the SVL\ data, the sampling distribution of $\bar{x}_N - \bar{x}_C$ can be described as (see Def.\ \@ref(def:DEFSamplingDistributionDiffMeans)):
 
 * an approximate normal distribution,
-* centred around the sampling mean whose value is ${\mu_{A}} - {\mu_{B}} = 0$, the difference between the *population* means (from\ $H_0$),
-* with a standard deviation of $\displaystyle\text{s.e.}(\bar{x}_A - \bar{x}_B)$.
-
-The value of the standard error for the difference between the means is
-$$
-  \text{s.e.}(\bar{x}_A - \bar{x}_B) = \sqrt{ \text{s.e.}(\bar{x}_A)^2 + \text{s.e.}(\bar{x}_B)^2},
-$$
-though this value will often be given (e.g., on computer output).
-:::
-
-
-For the SVL\ data, the sampling variation of $\bar{x}_N - \bar{x}_C$ can be described as having:
-
-* an approximate normal distribution,
-* centred around the sampling mean whose value is ${\mu_{N}} - {\mu_{C}} = 0$, the difference between the means (from $H_0$),
-* with a standard deviation, called the *standard error of the difference between the means*, of
-$$
-   \text{s.e.}(\bar{x}_N - \bar{x}_C) = \sqrt{1.2160^2 + 2.1117^2 } = 2.4368.
-$$
-   The calculation uses the standard errors from Table\ \@ref(tab:SnakesNumericalTest).
-   The answer agrees with the *second row* of the software output (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)).
-
+* centred around the sampling mean whose value is ${\mu_{N}} - {\mu_{C}} = 0$, the difference between the population means (from $H_0$),
+* with a standard deviation of $\text{s.e.}(\bar{x}_N - \bar{x}_C) = 2.4368$.
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-Most software gives *two* confidence intervals: one assuming the standard deviations in the two groups are the same, and another *not* assuming the standard deviations in the two groups are the same.
+Most software gives *two* hypothesis test results: one assuming the standard deviations in the two groups are the same, and another *not* assuming the standard deviations in the two groups are the same.
 
 We will use the information that does *not* assume the standard deviations in the two groups are the same.
 In the software output in Fig.\ \@ref(fig:SnakesSummaryTestjamovi), this is the second row of the bottom table (labelled 'Welch's\ $t$').
@@ -643,7 +618,7 @@ The conclusion contains an *answer to the RQ*, the *evidence* leading to this co
 
 ## Statistical validity conditions{#ValidityTwoMeans}
 
-As usual, these results apply under certain conditions, which are the same as those for forming a CI for the *difference* between two means.
+As usual, these results apply under certain conditions.
 Statistical validity can be assessed using these criteria:\index{Statistical validity!difference between two means}
 
 * When *both* samples have $n \ge 25$, the test is statistically valid.
@@ -654,14 +629,13 @@ The sample size of\ $25$ is a rough figure; some books give other values (such a
 
 This condition ensures that the *distribution of the difference between sample means has an approximate normal distribution* (so that, for example, the $68$--$95$--$99.7$ rule can be used).
 The histograms of the *sample data* can be used to determine if normality of the *populations* seems reasonable.
-
 The units of analysis are also assumed to be *independent* (e.g., from a simple random sample).
 
 If the statistical validity conditions are not met, other similar options include using a Mann-Whitney test\index{Mann-Whitney test} [@conover2003practical] or using resampling methods [@efron2021computer].
 
 
 ::: {.example #StatisticalValidityReactionHT name="Statistical validity"}
-For the garter-snakes data, the samples sizes exceed\ $25$ ($41$ and\ $35$), so the test is statistically valid.
+For the garter-snakes data, both samples sizes exceed\ $25$ ($41$ and\ $35$), so the test is statistically valid.
 The data in each group do not need be normally distributed, since both sample sizes are larger than\ $25$, and the data are not severely skewed (Fig.\ \@ref(fig:SnakesErrorbar), left panel).
 :::
 
@@ -703,7 +677,7 @@ The $P$-value in this context means the same as usual (Sect.\ \@ref(AboutPvalues
 
 While we know the means are not all the same, we do not know *which* group means are different from which other group means.
 One option might be to compare all possible combinations of two groups (i.e., the means of groups\ $D$ and\ $O$; the means of groups\ $D$ and\ $N$; the means of groups\ $O$ and\ $N$) using three separate two-sample $t$-tests.
-However, this approach increases the probability of declaring a false positive (i.e., or making a Type\ I error; Sect.\ \@ref(TypeErrors)):\index{Type\ I error} *incorrectly* declaring a difference between two sets of means.
+However, this approach increases the probability of declaring a false positive (i.e., of making a Type\ I error; Sect.\ \@ref(TypeErrors)):\index{Type\ I error} *incorrectly* declaring a difference between two sets of means.
 The correct approach requires methods beyond this book.
 :::
 
@@ -763,7 +737,7 @@ if( knitr::is_html_output() ) {
 ```
 
 
-```{r BMIerrorbar, fig.align="center", fig.cap="The error bar chart for comparing the number of days per week on which people do more than $30$\\mins of exercise, for different smoking groups.", fig.width=5, out.width='60%', fig.height=3.25}
+```{r BMIerrorbar, fig.align="center", fig.cap="The error bar chart for comparing the number of days per week on which people do more than $30$\\mins\\ of exercise, for different smoking groups.", fig.width=5, out.width='60%', fig.height=3.25}
 mns <- BMItab[, 1]
 ses <- BMItab[, 3]
 ci.lo <- mns - ses*2
@@ -805,7 +779,7 @@ arrows(1:3,
 ANOVA is a general tool that can be extended beyond just comparing more than two means, and used in many and varied context for the analysis of data.
 
 
-```{r BMIjamovi, echo=FALSE, fig.cap="Software output for the BMI data.", fig.align="center", out.width='55%'}
+```{r BMIjamovi, echo=FALSE, fig.cap="Software output for testing hypotheses for the BMI data.", fig.align="center", out.width='55%'}
 knitr::include_graphics( "jamovi/BMI/ANOVA.png")
 ```
 
@@ -829,9 +803,16 @@ The RQ is:
 > At this freeway exit, does the mean vehicle speed *reduce* after extra signage is added?
 
 The data are *not* paired: different vehicles are measured before\ ($B$) and after\ ($A$) the extra signage is added.
-The data can be summarised (Table\ \@ref(tab:SignageSummary)) using the software output (Fig.\ \@ref(fig:SpeedjamoviCI2)).
 Define $\mu$ as the mean speed (in km.h^$-1$^) on the exit ramp, and the parameter as $\mu_B - \mu_A$, the *reduction* in the mean speed.
 
+The data can be summarised (Table\ \@ref(tab:SignageSummary)) using the software output (Fig.\ \@ref(fig:SpeedjamoviCI2)), where
+$$
+  \text{s.e.}(\bar{x}_B - \bar{x}_A) 
+  = \sqrt{ \text{s.e.}(\bar{x}_B)^2 + \text{s.e.}(\bar{x}_A)^2} 
+  = \sqrt{ 2.140^2 + 2.051^2} = 2.9642,
+$$
+as in the table.
+A boxplot of the data is shown in Fig.\ \@ref(fig:SignageErrorBar) (left panel), and an error bar chart in Fig.\ \@ref(fig:SignageErrorBar) (right panel).
 
 ```{r SpeedjamoviCI2, fig.cap="Software output for the speed data.", fig.align="center", out.width="100%"}
 knitr::include_graphics("jamovi/Speed/Speed-ALL.png")
@@ -929,17 +910,6 @@ if( knitr::is_html_output() ) {
     kable_styling(full_width = FALSE)
 }
 ```
-
-
-The data are summarised in Table\ \@ref(tab:SignageSummary), where
-$$
-  \text{s.e.}(\bar{x}_B - \bar{x}_A) 
-  = \sqrt{ \text{s.e.}(\bar{x}_B)^2 + \text{s.e.}(\bar{x}_A)^2} 
-  = \sqrt{ 2.140^2 + 2.051^2} = 2.965,
-$$
-as in the table.
-A boxplot of the data is shown in Fig.\ \@ref(fig:SignageErrorBar) (left panel), and an error bar chart in Fig.\ \@ref(fig:SignageErrorBar) (right panel).
-
 
 
 ```{r SignageErrorBar, fig.cap="Boxplot (left) and error bar chart (right) showing the mean speed before and after the addition of extra signage, and the $95$\\%\ CIs. The vertical scales on the two graphs are different.", fig.align="center", out.width='90%',fig.width=8.0, fig.height=3.25}
@@ -1051,19 +1021,29 @@ lines( c(2 - bit, 2 + bit),
 
 Define\ $\mu$ as the mean speed (in\ km.h^$-1$^) on the exit ramp.
 Then, the parameter is $\mu_B - \mu_A$, the *reduction* in the population mean speed after signage is added.
+An approximate $95$% CI for the difference between the mean speeds is
+$$
+  5.674 \pm (2 \times 2.9642),
+$$
+or from\ $-0.25$ to\ $11.60$\kms.h^$-1$^.
+(This is very similar to the $95$% CI shown in Fig.\ \@ref(fig:SpeedjamoviCI20).)
+The negative value is not a negative speed.
+Since the difference between the means is defined as a *reduction*, this CI means that the *reduction* in the populations mean speed is likely between $-0.25$ to\ $11.64$\kms.h^$-1$^.
+Since a negative reduction is an increase, this is more easily understood as the difference being located between a $0.25$\kms.h^$-1$^ *increase* before the signage was added to a\ $11.64$\kms.h^$-1$^ *reduction* after the signage was added.
+
 The hypotheses are:
 
-* $H_0$: $\mu_B - \mu_A = 0$: there is no change in the population mean speeds.
-* $H_1$: $\mu_B - \mu_A > 0$: the population mean speed has *reduced*.
+* $H_0$: $\mu_B - \mu_A = 0$: there is no difference in the population mean speeds.
+* $H_1$: $\mu_B - \mu_A > 0$: the population mean speed has *reduced* after the addition of signage.
 
 The best estimate of the difference in *population* means is the difference between the *sample* means: $(\bar{x}_B - \bar{x}_A) = 5.68$.
-Table\ \@ref(tab:SignageSummary) gives the standard error for estimating this *difference* as $\text{s.e.}(\bar{x}_B - \bar{x}_A) = 2.964$.
-Using the summary information in Table\ \@ref(tab:SignageSummary), the $t$-score (using Eq.\ \@ref(eq:tscore)) is
+Since $\text{s.e.}(\bar{x}_B - \bar{x}_A) = 2.965$, the $t$-score is
 $$
   t
   = \frac{(\bar{x}_B - \bar{x}_A) - (\mu_B - \mu_A)}{\text{s.e.}(\bar{x}_B - \bar{x}_{A})}
-  = \frac{5.68 - 0}{2.964} = 1.92.
+  = \frac{5.674 - 0}{2.9642} = 1.91.
 $$
+using Eq.\ \@ref(eq:tscore).
 (Recall that $\mu_B - \mu_A = 0$ is initially assumed, from the null hypothesis.)
 
 Remembering that the alternative hypothesis is *one-tailed*, the $P$-value (using the $68$--$95$--$99.7$ rule) is larger than\ $0.025$, but smaller than\ $0.32$, so making a clear decision is difficult without using software.
@@ -1073,9 +1053,10 @@ From software, $P = 0.0297$ (you cannot be this precise just using the $68$--$95
 Using Table\ \@ref(tab:PvaluesInterpretation), this $P$-value provides moderate evidence of a reduction in mean speeds.
 We conclude:
 
-> Moderate evidence exists in the sample ($t = 1.92$; one-tailed $P = 0.030$) that mean speeds have reduced after the addition of extra signage (before: mean speed: $98.02$\kms.h^$-1$^; $n = 38$; standard deviation: $13.19$\kms.h^$-1$^; after:  mean speed: $92.34$\kms.h^$-1$^; $n = 41$; standard deviation: $13.13$\kms.h^$-1$^; 95%\ CI for the difference: $-0.24$ to\ $11.6$\kms.h^$-1$^).
+> Moderate evidence exists in the sample ($t = 1.91$; one-tailed $P = 0.030$) that mean speeds have reduced after the addition of extra signage (mean reduction: $5.67$\kms.h^$-1$^; $95$%\ CI for the difference: $-0.23$ to\ $11.6$\kms.h^$-1$^; s.e.: 2.96\kms.h^$-1$^).
+The before mean speed was $98.02$\kms.h^$-1$^ ($n = 38$; standard deviation: $13.19$\kms.h^$-1$^); the after mean speed was $92.34$\kms.h^$-1$^ ($n = 41$; standard deviation: $13.13$\kms.h^$-1$^).
 
-Whether the mean speed reduction of $5.68$\kms.h^$-1$^ has *practical importance* is a different issue.\index{Practical importance}
+Whether the mean speed reduction of $5.67$\kms.h^$-1$^ has *practical importance* is a separate issue.\index{Practical importance}
 Using the validity conditions, the CI and the test are statistically valid.
 
 
@@ -1090,7 +1071,7 @@ Remember: the conclusion must make clear *which* mean is larger!
 @rafraf2015effectiveness studied patients with Type\ 2 diabetes mellitus (T2DM).
 They randomly allocated $32$\ patients into a control group (who drank hot water), and $32$ to receive chamomile tea (@rafraf2015effectiveness).
 
-The total glucose (TG) was measured for each individual, in both groups, both before the intervention and after eight weeks on the intervention.
+The total glucose (TG) was measured for each individuals in both groups, both before the intervention and after eight weeks on the intervention.
 Summary data are given in Table\ \@ref(tab:TGsummaryTable).
 Evidence suggests that the chamomile tea group shows a mean reduction in TG (Sect.\ \@ref(ChamomileTea-Paired)), while the hot-water group shows no evidence of a reduction.
 That is, there appears to be a difference between the two groups regarding the change in TG.\spacex
@@ -1104,11 +1085,12 @@ Notice the RQ is one-tailed; the aim of the study is to determine if the chamomi
 
 This RQ is comparing two separate groups; specifically, comparing the *differences* between the two groups.
 This study contains both *within*-individuals comparisons (see Sect.\ \@ref(ChamomileTea-Paired)) and a *between*-individuals comparison (this section); see Fig.\ \@ref(fig:TeaSummaryAnnotated).
-This is equivalent to treating the differences for both groups like two separate sets of data in the two-sample test.
+This is equivalent to treating the differences for both groups as the two separate sets of data in the two-sample test.
 
 
 ```{r TeaSummaryAnnotated, fig.cap="The chamomile-tea study has two within-individuals comparisons, and a between-individuals comparison.", fig.align="center", out.width="100%"}
 knitr::include_graphics("OtherImages/ChamomileTea/ChamomileSummary-BetweenWithinGroups.png")
+# Editted with Krita
 ```
 
 
@@ -1116,10 +1098,10 @@ The corresponding hypotheses are:
 $$
   \text{$H_0$: $\mu_T - \mu_W = 0$ \qquad and\qquad $H_1$: $\mu_T - \mu_W > 0$}
 $$
-where\ $\mu$ refers to the mean reduction in TG, $T$ refers to the tea-drinking group, and $W$ to the hot-water drinking group.
+where\ $\mu$ refers to the mean *reduction* in TG, $T$ refers to the tea-drinking group, and $W$ to the hot-water drinking group.
 
 The parameter $\mu_T - \mu_W$ is estimated by the statistic $\bar{x}_T - \bar{x}_W = 45.74$\mgs.dl^$-1$^.
-The standard error for the statistic was found is $\text{s.e.}(\bar{x}_T - \bar{x}_W) = 8.42$.
+The standard error for the statistic was found as $\text{s.e.}(\bar{x}_T - \bar{x}_W) = 8.42$ (using the information in Table\ \@ref(tab:TGsummaryTable)).
 Hence, the test statistic is:
 $$
    t 
@@ -1208,14 +1190,14 @@ A summary of the data for iron levels are shown in Table\ \@ref(tab:VeganDiet).
   "histogram",
   "side-by-side bar chart",
   "error bar chart") )}`
-1. True or false: The difference in population means could be denoted by $\mu_V - \mu_C$, where\ $V$ represent the vegan diet, and\ $C$ represents the conventional diet.  
+1. True or false: The difference in population is denoted by $\mu_V - \mu_C$, where\ $V$ represent the vegan diet, and\ $C$ represents the conventional diet.  
 `r if( knitr::is_html_output() ) { torf( answer = TRUE )}`
 1. True or false: The standard error of the difference between the sample means is denoted by $\text{s.e.}(\bar{x}_V) - \text{s.e.}(\bar{x}_C)$.  
 `r if( knitr::is_html_output() ) { torf( answer = FALSE )}`
 1. True or false: An error bar chart displays the variation in the *data*.  
 `r if( knitr::is_html_output() ) { torf( answer = FALSE )}`
 1. The sample size is missing from the *Difference* row. \tightlist
-   What should the sample size be in this row?
+   What is teh sample size for the difference?
 `r if( knitr::is_html_output() ) {longmcq( c(
   "46 + 47 = 93",
   "46 - 47 = -1",
@@ -1325,14 +1307,15 @@ If the difference between the means were defined as $\mu_B - \mu_A$, what does t
 :::
 
 
-::: {.exercise #TwoMeansCISamplingDistReaction}
-Sketch the sampling distribution for the difference between the mean reaction times for students using their phone while driving, and students not using their phone while driving.
-:::
-
-
 ::: {.exercise #TwoMeansCISamplingDistSignage}
-Sketch the sampling distribution for the difference between the mean speeds before and after adding extra signage, in Sect.\ \@ref(SpeedSignage).
+Sketch the sampling distribution for the difference between the mean speeds before and after adding extra signage (Sect.\ \@ref(SpeedSignage)).
 :::
+
+
+::: {.exercise #TwoMeansCISamplingDistTea}
+Sketch the sampling distribution for the difference between reduction in mean TG for the tea-drinking and the hot-water drinking group (Sect.\ \@ref(ChamomileTea-TwoMeans)).
+:::
+
 
 ::: {.exercise #TwoMeansWhales}
 @agbayani2020growth measured (among other things) the length of gray whales (*Eschrichtius robustus*) at birth.
@@ -1403,7 +1386,7 @@ if( knitr::is_html_output() ) {
 
 ::: {.exercise #TwoMeansNHANES}
 [*Dataset*: `NHANES`]
-Earlier, the NHANES study (Exercise\ \@ref(exr:CompareQuantExercisesNHANES)) was used to answer this RQ:
+Earlier, the NHANES study (Exercise\ \@ref(exr:CompareQuantExercisesNHANES)) was used to summarise the data used to answer this RQ:
 
 > Among Americans, is the mean direct HDL cholesterol (in mmol.L^$-1$^) different for current smokers and non-smokers?
 
@@ -1424,7 +1407,7 @@ Use the software output in Fig.\ \@ref(fig:NHANESTest) to answer these questions
 :::
 
 
-```{r NHANESTest, fig.cap="Software output for the NHANES data.", fig.align="center", out.width="90%"}
+```{r NHANESTest, fig.cap="Software output for the NHANES data.", fig.align="center", out.width="95%"}
 knitr::include_graphics("jamovi/NHANES/NHANES-DirectHDL-Smoke-ALL.png")
 ```
 
@@ -2112,10 +2095,14 @@ rownames(Phone.DataSummary) <- c("Using phone",
 `r if (knitr::is_html_output()) '<!--'`
 ::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
 **Answers to *Quick Revision* questions**:
-**1.** A sample size makes no sense.
-**2.** A standard deviation makes no sense
-**3.** $0.5197$.
-**4.** Some evidence population means are different.
+**1.** Boxplot.
+**2.** True.
+**3.** False.
+**4.* False.
+**5.** A sample size makes no sense.
+**6.** A standard deviation makes no sense
+**7.** $0.5197$.
+**8.** Some evidence population means are different.
 :::
 `r if (knitr::is_html_output()) '-->'`
 
