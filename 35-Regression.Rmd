@@ -30,7 +30,7 @@ The relationship is described mathematically, using an *equation*, which allows 
 <!-- In other words, for any given value of $x$, many possible values of $y$ could be observed. -->
 <!-- This means that the prediction is actually a prediction of the *mean* of all the possible values of $y$ that could be observed for that given value of $x$. -->
 
-An example of a linear regression equation, that describes the relationship between the observed values of an explanatory variable\ $x$ and the observed values of a response variable\ $y$, is
+An example of a linear regression equation, describing the relationship between the observed values of an explanatory variable\ $x$ and the observed values of a response variable\ $y$, is
 \begin{equation}
   \hat{y} = -4  + (2\times x), \qquad\text{usually written}\qquad \hat{y} = -4  + 2x.
   (\#eq:ExampleRegressionEqn)
@@ -44,6 +44,12 @@ $y$\ refers to the values of the response variable observed from individuals.
 $\hat{y}$ refers to *mean predicted* value of\ $y$ for given values of\ $x$.
 :::
 
+Equation\ \@ref(eq:ExampleRegressionEqn) can be used to make predictions.
+For instance, suppose $x = 7$; then the equation gives
+$$
+  \hat{y} = -4 + (2\times 7) = -4 + 14 = 10.
+$$
+This means that, when the value of\ $x$ is\ $7$, the observed values of\ $y$ will vary around a predicted mean of $y = 10$.
 
 :::: {.pronounceBox .pronounce data-latex="{iconmonstr-microphone-7-240.png}"}
 $\hat{y}$ is pronounced as 'why-hat'; the 'caret' above the\ $y$ is called a 'hat'.
@@ -65,14 +71,18 @@ The regression equation was approximately
 $$
    \hat{y} = 73 + 7x.
 $$
-In this equation, $b_0 = 73$ and $b_1 = 7$.
-The regression equation *predicts* the *mean* height for any given age\ $x$.
-Some individual girls aged\ $7$ will be taller than predicted, and some will be shorter.
-
 The regression equation is the same when written as
 $$
    \hat{y} = 7x + 73.
 $$
+In this equation, $b_0 = 73$ and $b_1 = 7$.
+
+The regression equation *predicts* the *mean* height for any given age\ $x$.
+For example, girls aged five years-of-age (i.e., $x = 5$) are predicted to have a mean height of 
+$$
+   \hat{y} = 73 + (7\times 5) = 73 + 35 = 108.
+$$
+This means that the heights of girls will vary around a mean height of\ $108$\cms; some individual girls aged five will be taller than\ $108$\cms, and some will be shorter than\ $108$\cms.
 :::
 
 
@@ -87,15 +97,16 @@ To introduce, or revise, the idea of a linear equation, consider the (artificial
    'Fig.\\ \\@ref(fig:ExampleScatterHTML),'
 }`
 with an explanatory variable\ $x$ and a response variable\ $y$.\index{Variables!response}\index{Variables!explanatory}
-In the graph, I have drawn a sensible line on the graph that seems to capture the relationship between\ $x$ and\ $y$.
+In the graph, a sensible line is drawn on the graph that seems to capture the relationship between\ $x$ and\ $y$.
 The line describes the predicted mean values of\ $y$ for various values of\ $x$.
+
 A *regression equation* is used to describe the line.\index{Regression!equation}
 In the regression equation $\hat{y} = b_0 + b_1 x$, the numbers\ $b_0$ and\ $b_1$ are called *regression coefficients*,\index{Regression!coefficients} where
 
-* $b_0$ is the *intercept* or the *$y$-intercept*.\index{Regression!equation!intercept}\index{Linear equations!intercept}
-  Its value corresponds to the *predicted* mean value of\ $y$ when $x = 0$.
-* $b_1$ is the *slope*.\index{Regression!equation!slope}\index{Linear equations!slope}
-  It measures how much the value of\ $y$ changes, on average, when the value of\ $x$ *increases* by\ $1$.
+* $b_0$ is the *intercept* or the *$y$-intercept*,\index{Regression!equation!intercept}\index{Linear equations!intercept}
+  whose value corresponds to the *predicted* mean value of\ $y$ when $x = 0$.
+* $b_1$ is the *slope*,\index{Regression!equation!slope}\index{Linear equations!slope}
+  whose value measures how much the value of\ $y$ changes, on average, when the value of\ $x$ *increases* by\ $1$.
 
 We will use software to find the values of\ $b_0$ and\ $b_1$ (the formulas are tedious to use).
 However, a rough approximation of the value of\ $b_0$ and\ $b_1$ can be obtained by first drawing a sensible-looking straight line through the scatterplot of the data
@@ -105,7 +116,7 @@ However, a rough approximation of the value of\ $b_0$ and\ $b_1$ can be obtained
    '(Fig.\\ \\@ref(fig:ExampleScatterHTML)).'
 }`
 
-A rough approximation of the value of the *intercept*\ $b_0$ is the value of\ $\hat{y}$ from the drawn line when $x = 0$.
+A rough approximation of the value of the *intercept*\ $b_0$ is the value of\ $\hat{y}$ when $x = 0$, from the drawn line.
 When $x = 0$, the regression line suggests the value of\ $\hat{y}$ is about\ $2$; that is, the value of\ $b_0$ is approximately\ $2$.
 
 A rough approximation of the *slope*\ $b_1$ is\index{Regression!equation!rise over run}
@@ -411,6 +422,7 @@ if (knitr::is_latex_output()){
            x2, 2,
            lwd = 2,
            length = 0.15,
+           angle = 15,
            col = "darkgrey",
            code = 2)
     text( mean( c(x1, x2)), 
@@ -424,6 +436,7 @@ if (knitr::is_latex_output()){
            0.5, y2,
            lwd = 2,
            length = 0.15,
+           angle = 15,
            col = "darkgrey",
            code = 2)
     rise <- y2 - y1
@@ -453,7 +466,8 @@ $$
    = 3.
 $$
 The value of\ $b_1$ is about\ $3$.
-The regression line is approximately $\hat{y} = 2 + (3\times x)$, usually written
+
+Combing the rough guesses for $b_0$ and $b_1$, the regression line is approximately $\hat{y} = 2 + (3\times x)$, usually written
 $$
   \hat{y} = 2 + 3x.
 $$
@@ -509,7 +523,7 @@ mDeer <- lm( Weight ~ Age,
        xlim = c(-1, 15), 
        ylim = c(0, 6), 
        las = 1, 
-       main = expression(Red~deer:~approximating~italic(b)[0]),
+       main = expression(Red~deer*":"~approximating~italic(b)[0]),
        xlab = expression(Age~italic(x) ), 
        ylab = expression(Molar~weight~italic(y) ), 
        pch = 19)
@@ -570,7 +584,7 @@ mDeer <- lm( Weight ~ Age,
        type = "n",
        las = 1, 
        axes = FALSE,
-       main = expression(Red~deer:~approximating~italic(b)[1]),
+       main = expression(Red~deer*":"~approximating~italic(b)[1]),
        xlab = expression(Age~italic(x) ), 
        ylab = expression(Molar~weight~italic(y) ), 
        pch = 19)
@@ -699,7 +713,7 @@ data(Cyclones)
 
 plot(Total ~ OND, 
      data = Cyclones,
-     xlim = c(-2, 3),
+     xlim = c(-2.5, 3),
      ylim = c(0, 20),
      pch = 19,
      ylab = "Total number of cyclones",
@@ -712,11 +726,44 @@ abline( coef(clm),
         lwd = 2, 
         col = "grey")
 grid(lty = 2)
+
+
+
+arrows(x0 = -2, 
+       x1 =  2, 
+       y0 = 1,
+       y1 = 1,
+       angle = 15,
+       length = 0.10)
+points(x = -2,
+       y = 1,
+       pch = 19,
+       cex = 0.75)
+
+rise1 <- predict( clm,
+                  newdata = data.frame(OND = -2))
+lines(x = c(-2, -2),
+      y = c(1, rise1),
+      lty = 5,
+      lwd = 2)
+
+rise2 <- predict( clm,
+                  newdata = data.frame(OND = 2))
+lines(x = c(2, 2),
+      y = c(1, rise2),
+      lty = 5,
+      lwd = 2)
+
+text(x = 0,
+     y = 1,
+     pos = 3,
+     labels = "'Run'")
+
 ```
 
 
 The above method gives a crude approximation to the values of the intercept\ $b_0$ and the slope\ $b_1$.
-In practice, *many* reasonable lines could be drawn through a scatterplot of data.
+In practice, *many* reasonable lines could be drawn through a scatterplot of data, each giving slightly different rough guesses for\ $b_0$ and\ $b_1$.
 However, one of those lines is the 'best' line in some sense^[For those interested: The 'line of best fit' is the line for which the sum of the *squared* vertical distances between the observations\ $y$ and the predicted values\ $\hat{y}$ (i.e, the regression line) is as small as possible.].
 Software calculates this 'line of best fit'.\index{Regression!equation!line of best fit}
 
@@ -736,15 +783,18 @@ RD.b1 <- round( coef(RD.lm)[2], 3)
 ```
 
 
+Software is almost always used to find the 'best' estimates for the intercept\ $b_0$ and slope\ $b_1$, as the formulas are complicated and tedious to use.
 For the red-deer data again (Fig.\ \@ref(fig:RedDeerScatter2)), part of the relevant software output is shown in Fig.\ \@ref(fig:RedDeerRegressionjamoviSPSSraw).
-The values of\ $b_0$ and\ $b_1$ are in the column labelled `Estimate` in the output; the value of the sample *slope* is $b_1 = `r RD.b1`$, and the value of the sample $y$-intercept is $b_0 = `r RD.b0`$: 
+
+In the output, the values of\ $b_0$ and\ $b_1$ are in the column labelled `Estimate`; the value of the sample *slope* is $b_1 = `r RD.b1`$, and the value of the sample $y$-intercept is $b_0 = `r RD.b0`$.
 These are the values of the two *regression coefficients*.\index{Regression!regression coefficients}
 The regression equation is
-$$
+\begin{equation}
 	\hat{y} = `r RD.b0` + (`r RD.b1`\times x),
 	\qquad\text{usually written as}\qquad  
 	\hat{y} = `r RD.b0` - `r abs(RD.b1)` x.
-$$
+  (\#eq:RedDeerRegressionEqn)
+\end{equation}
 These are close to the values obtained using the rough method in Sect.\ \@ref(RegressionEquationsReview) (where $b_0 = 4.4$ and $b_1 = -0.2$ approximately).
 
 
@@ -799,7 +849,8 @@ knitr::include_graphics( "jamovi/Cyclones/Cyclones-Regression.png")
 </div>
 
 
-The regression equation for the red-deer data, estimated from one of the many possible samples, is $\hat{y} = `r RD.b0` - `r abs(RD.b1)` x$, and can be used to make *predictions* of the mean value of\ $y$ for a given value of\ $x$.
+The regression equation for the red-deer data in Eq.\ \@ref(eq:RedDeerRegressionEqn) is estimated from one of the many possible samples.
+This regression equation can be used to make *predictions* of the mean value of\ $y$ for a given value of\ $x$.
 For example, the equation can be used to predict the *average* molar weight for $10$-year-old male red deer.
 Since\ $x$ represents the age, use $x = 10$ in the regression equation:
 \begin{align*}
@@ -843,7 +894,7 @@ Extrapolation beyond the data may lead to nonsense predictions.\index{Extrapolat
 \index{Regression!equation!for understanding}
 
 The regression equation can be used to *understand* the relationship between the two variables.
-Consider again the red-deer regression equation (from Sect.\ \@ref(Regression-Software)):  
+Consider again the red-deer regression equation in Eq.\ \@ref(eq:RedDeerRegressionEqn):
 \begin{equation}
    \hat{y}
    = 
@@ -878,6 +929,7 @@ The value of the slope\ $b_1$ is usually of greater interest, as it explains the
 
 The slope\ $b_1$ tells us how much the value of $y$ changes (on average) when the value of\ $x$ *increases* by one (Sect.\ \@ref(Regression-Software)).
 For the red-deer data, $b_1$ tells us how much the molar weight changes (on average) when age increases by one year.
+
 Specifically, each extra year older is associated with an average change of $`r RD.b1`$\gs in molar weight (see Eq.\ \@ref(eq:RedDeerEquation)); that is, a *decrease* in molar weight by a mean of $`r abs(RD.b1)`$\gs.
 The molars of some individual deer will lose more weight than this in some years, and some will lose less; the value is a *mean* weight loss per year.
 
@@ -898,7 +950,8 @@ Recall that the units of measurement of the slope here are 'grams per year'.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-In general, we cannot say that the change in the value of\ $x$ *causes* the change in the value of\ $y$ unless the study is experimental (Sect.\ \@ref(ExperimentalStudies)).
+In general, we say that a change in the value of\ $x$ is *associated* with a change in the value of\ $y$.
+Unless the study is experimental (Sect.\ \@ref(ExperimentalStudies)), we cannot say that the change in the value of\ $x$ *causes* the change in the value of\ $y$. 
 :::
 
 
@@ -914,11 +967,14 @@ In this case, the correlation coefficient is also zero.
 ### Introduction {#RegressionTests-Intro}
 \index{Confidence intervals!regression parameters}
 
-The regression line is computed from the observed *sample* data.
-A regression equation exists in the *population* that is estimated using the sample information.
-That is, the regression line that is estimated from one of the countless possible samples is an estimate of the regression line in the population.
-In the population, the intercept is denoted by\ $\beta_0$ and the slope by\ $\beta_1$ (so the regression line is $\hat{y} = \beta_0 + \beta_x$ in the population).
-These population values are unknown, and are estimated by the statistics\ $b_0$ and\ $b_1$ respectively.
+A regression equation exists in the *population*, and is estimated using the sample information.
+The regression line is estimated using the observed *sample* data.
+That is, the regression line is estimated from one of the countless possible samples, and is an estimate of the regression line in the population.
+In the *population*, the intercept is denoted by\ $\beta_0$ and the slope by\ $\beta_1$; in the population, the regression line is
+$$
+  \hat{y} = \beta_0 + \beta_x.
+$$
+The values of the paremeters\ $\beta_0$ and\ $\beta_1$ are unknown, and are estimated by the statistics\ $b_0$ and\ $b_1$ respectively.
 
 
 :::: {.pronounceBox .pronounce data-latex="{iconmonstr-microphone-7-240.png}"}
@@ -951,10 +1007,10 @@ The formulas for computing the values of\ $b_0$ and\ $b_1$ (and their standard e
 \index{Sampling distribution!regression parameters}
 
 As usual, the sample estimates can vary across all possible samples (and so have a *sampling distribution*).\index{Sampling distribution}
-Under certain conditions (Sect.\ \@ref(RegressionStatValidity)), the sampling distributions for\ $b_0$ and\ $b_1$ both have a normal distribution. 
+Under certain conditions (Sect.\ \@ref(RegressionStatValidity)), the sampling distributions for\ $b_0$ and\ $b_1$ both have normal distributions.
 
 Usually the slope is of greater interest than the intercept, because the slope explains the *relationship* between the two variables (Sect.\ \@ref(RegressionForUnderstanding)).
-Because of this, forming confidence intervals for\ $\beta_1$ is more common than for\ $\beta_0$, though the same ideas apply.
+Because of this, forming confidence intervals for\ $\beta_1$ is more common than for\ $\beta_0$, though the ideas below apply similarly to $\beta_0$.
 For this reason, we give the sampling distribution for the slope only, but the sampling distribution for the intercept is analogous.
 
 
@@ -1027,7 +1083,12 @@ $$
   \text{statistic} \pm ( \text{multiplier} \times \text{standard error}),
 $$
 where the multiplier is\ $2$ for an *approximate* $95$%\ CI (from the $68$--$95$--$99.7$ rule).
-Using the standard error reported by software, an approximate $95$%\ CI is $-0.181 \pm (2\times 0.029)$, or $-0.181 \pm 0.058$: from\ $-0.239$ to\ $-0.123$\gs/year.
+In this context, a CI for the slope is
+$$
+  b_1 \pm \big( \text{multiplier} \times \text{s.e.}(b _1)\big).
+$$
+
+Using the standard error reported by software (Fig.\ \@ref(fig;RedDeerRegressionjamoviSPSSCI)), an approximate $95$%\ CI is $-0.181 \pm (2\times 0.029)$, or $-0.181 \pm 0.058$: from\ $-0.239$ to\ $-0.123$\gs/year.
 
 Software can be used to produce *exact* CIs too (Fig.\ \@ref(fig:RedDeerRegressionjamoviSPSSCI)): $-0.239$ to\ $-0.124$\gs/year.
 The *approximate* and *exact* $95$%\ CIs are very similar.
@@ -1059,7 +1120,11 @@ The interval from\ $-3.04$ to\ $-1.42$ is likely to straddle the population slop
 
 ## Hypothesis testing for the regression parameters: $t$-tests {#RegressionHT}
 
-Since the regression line is computed from one of countless possible samples, any relationship between\ $x$ and\ $y$ observed in the sample may be due to sampling variation. 
+For the red-deer data, the RQ posed in Sect.\ \@ref(CorrelationTesting) is
+
+> In male red deer, does the molar weight *decrease* linearly as age increase?
+
+Since the regression line describing this relationship is computed from one of countless possible samples, any relationship between\ $x$ and\ $y$ observed in the sample may be due to sampling variation. 
 Possibly, no relationship exists in the population (i.e., $\beta_1 = 0$); the only reason why a relationship appears in the *sample* is due to sampling variation.
 That is, a hypothesis test can be conducted for the slope.
 (Similar hypothesis tests can be conducted for the intercept, but are usually of less interest.)
@@ -1068,17 +1133,12 @@ The null hypothesis for tests about the slope is the usual 'no relationship' hyp
 In this context, 'no relationship' means that the slope is zero (Sect.\ \@ref(SlopeMeaning)), so the null hypotheses (about the *population*) is $H_0$: $\beta_1 = 0$.
 A slope of *zero* is equivalent to *no relationship* between the variables.
 (We would also find $\rho = 0$.)
-
-For the red-deer data, the RQ posed in Sect.\ \@ref(CorrelationTesting) is
-
-> In male red deer, does the molar weight *decrease* linearly as age increase?
-
-This RQ implies these hypotheses about the slope:
+The RQ implies these hypotheses about the slope:
 $$
    \text{$H_0$: } \beta_1 = 0\quad\text{and}\quad\text{$H_1$: } \beta_1 < 0.
 $$
 The parameter is\ $\beta_1$, the population slope for the regression equation predicting molar weight from age.
-The alternative hypothesis is one-tailed, based on the RQ (see Sect.\ \@ref(CorrelationTesting)).
+The alternative hypothesis is one-tailed, based on the RQ.
 
 
 ```{r}
@@ -1088,12 +1148,12 @@ RD.P <- RD.fitinfo[, "Pr(>|t|)"]
 ```
 
 
-Assuming the null hypothesis (that $\beta_1 = 0$) is true, the possible values of the sample slope $b_1$ can be described.
+Assuming the null hypothesis (that $\beta_1 = 0$) is true, the possible values of the sample slope $b_1$ can be described (Def.\ \@ref(def:Beta1SamplingDistn)).
 The variation in the sample slope across all possible samples when $\beta_1 = 0$ is described (Fig.\ \@ref(fig:RedDeerSlopeSampDist)) using:
 
 * an approximate normal distribution,
 * with a sampling mean whose value is $\beta_1 = 0$ (from $H_0$), and 
-* a standard deviation, called the *standard error of the slope* and denoted $\text{s.e.}(b_1)$, with a value of\ $0.0289$ (from software; Fig.\ \@ref(fig:RedDeerRegressionjamoviSPSSCI)).
+* a standard deviation of $\text{s.e.}(b_1) = 0.0289$ (from software; Fig.\ \@ref(fig:RedDeerRegressionjamoviSPSSCI)).
 
 
 ```{r RedDeerSlopeSampDist, fig.cap="The distribution of sample slopes for the red-deer data, if the population slope is $\\beta_1 = 0$.", fig.align="center", fig.height=3.25, fig.width=8.25, out.width='85%'}
@@ -1165,7 +1225,7 @@ an *answer to the RQ*; evidence to support the conclusion ($t = -6.27$; one-tail
 
 
 ::: {.example #ONIRegression name="Hypothesis testing"}
-For the cyclone data (Example\ \@ref(exm:RegressionCoefficients)), the RQ of interest is 
+For the cyclone data (Example\ \@ref(exm:RegressionCoefficients)), the RQ is 
 
 > In the Australian region, is there a relationship between ONI and the number of cyclones?
 
@@ -1189,7 +1249,7 @@ We write:
 The results for the CI and the hypothesis test hold when certain conditions are met.
 The conditions for which the test is statistically valid are the same as for correlation (Sect.\ \@ref(ValidityCorrelation)):
 
-1. The relationship is approximately linear (this is necessary for the regression equation to be appropriate).
+1. The relationship is approximately linear (necessary for the regression equation to be appropriate).
 1. The variation in the response variable is approximately constant for all values of the explanatory variable.
 1. The sample size is at least\ $25$.
 
@@ -1215,6 +1275,7 @@ The CI (Example\ \@ref(exm:CyclonesCI)) and the test (Example\ \@ref(exm:ONIRegr
 
 ## Example: removal efficiency {#RegressionRemovalEfficiency}
 
+[*Dataset*: `Removal`]
 (This study was seen in Sect.\ \@ref(Removal-Efficiency).)
 In wastewater treatment facilities, air from biofiltration is passed through a membrane and dissolved in water, and is transformed into harmless by-products.
 The removal efficiency\ $y$ (in percent) may depend on the inlet temperature (in\ ^o^C; $x$).
@@ -1362,31 +1423,57 @@ plot( Wt ~ Ht,
 ```
 
 
-1. What is the $y$-variable? \tightlist
-`r if( knitr::is_html_output() ) {mcq( c(
-  answer="Weight",
-  "Height") )}`
-1. Using the 'rise-over-run' idea, what is the approximate value of the slope? 
+1. What \tightlist is the $y$-variable, according to how the scatterplot is constructed?  
+`r if( knitr::is_html_output() ) {
+   longmcq( c(
+     answer = "The weight of the rower",
+     "The height of the rower"
+) )
+} else {
+  '**a.**\\ The weight of the rower; **b.**\\ The height of the rower'
+}`
+1. Using the 'rise-over-run' idea, what is the approximate value of the slope?  
 `r if( knitr::is_html_output() ) {mcq( c(
   -140,
   answer = 1.2,
   -1,
-  50 ))}`
+  50 ))
+} else {
+  '**a.**\\ $-140$; **b.**\\ $1.2$; **c.**\\ $-1$; **d.**\\ $50$'
+}`
 1. The regression equation is $\hat{y} = -138 + 1.2 x$.
-   What does $x$ represent?
-`r if( knitr::is_html_output() ) {longmcq( c(
-  "The weight of the rowers",
-  answer = "The height of the rowers") )}`
+   What does $x$ represent?  
+`r if( knitr::is_html_output() ) {
+   longmcq( c(
+     answer = "The weight of the rower",
+     "The height of the rower"
+) )
+} else {
+  '**a.**\\ The weight of the rower; **b.**\\ The height of the rower'
+}`
 1. What does the 'hat' above the $y$ mean?
 `r if( knitr::is_html_output() ) {longmcq( c(
-  "That the weights are not measured accurately",
-  "That the weights are population values",
-  "That the regression model gives poor estimates",
-  "That the regression model gives good estimates", 
-  "That the regression model estimates the weight",
-  answer = "That the regression model estimates the mean weight") )}`
-1. What weight is predicted for a rower who is $180$\cms tall?
-`r if( knitr::is_html_output() ) {fitb( answer = 78, num=TRUE, tol=0.1 )}`
+  "That the weights are not measured accurately.",
+  "That the weights are population values.",
+  "That the regression model gives poor estimates.",
+  "That the regression model gives good estimates.", 
+  "That the regression model estimates the weight.",
+  answer = "That the regression model estimates the mean weight.") )
+} else {
+  " 
+    a. That the weights are not measured accurately.
+    b. That the weights are population values.
+    c. That the regression model gives poor estimates.
+    d. That the regression model gives good estimates.
+    e. That the regression model estimates the weight.
+    f. That the regression model estimates the mean weight." 
+}`
+1. What weight is predicted for a rower who is $180$\cms tall?  
+`r if( knitr::is_html_output() ) {
+  fitb( answer = 78, num = TRUE, tol = 0.1 )
+} else {
+  '**a.**\\ $-24\\,624$\\kgs; **b.**\\ $78$\\kgs; **c.** $138$\\kgs'
+}`
 1. The standard error of the slope is $0.112$. 
    What is the value of the *test statistic* (to two decimal places) to test if the population slope is zero?
 `r if( knitr::is_html_output() ) {fitb( answer = 10.7, num=TRUE, tol=0.05 )}`
@@ -1559,17 +1646,18 @@ One research question is:
 
 Here,\ $x$ is the neck size (in cm), and\ $y$ is the REI value.
 `r if( knitr::is_html_output() ) {
-  'The data are shown in Fig.\\ \\@ref(fig:OSADT).'
+  'The data are shown in Fig.\\ \\@ref(fig:OSADT),'
 } else
 {
-  'Part of the data are shown in Table\\ \\@ref(tab:OSAKable).'
+  'Part of the data are shown in Table\\ \\@ref(tab:OSAKable),'
 }
 `
+and plotted in Fig.\ \@ref(fig:OSAscatter) (left panel).
 
-1. Using the software output (Fig.\ \@ref(fig:OSAscatter), right panel), determine the value of the correlation coefficient.
+1. Using the software output (Fig.\ \@ref(fig:OSAscatter), right panel), determine the value of $r$.
 1. Compute the value of\ $R^2$, and interpret what this means.
 1. Using the software output, write down the values of the intercept and the slope, and hence the regression equation.
-1. Interpret what the slope in the regression equation means.
+1. Explain what the slope in the regression equation means.
 1. Find a CI for the slope.
 1. Perform a hypothesis to test if a relationship exists between the variables.
 1. Are the test and CI statistically valid?
@@ -1675,7 +1763,7 @@ plot( ED ~ Days,
       ylab = "Mean number of ED patients",
       main = "Mean number of ED patients\nvs days after welfare",
       pch = 19,
-      las = 1,
+      las = 2,
       xlim = c(0, 30),
       ylim = c(135, 155) )
 knitr::include_graphics( "jamovi/ED/EDRegression-crop.png")
@@ -1684,12 +1772,12 @@ knitr::include_graphics( "jamovi/ED/EDRegression-crop.png")
 
 ::: {.exercise #RegressionExercisePunting}
 [*Dataset*: `Punting`]
-(These data were also seen in Exercise\ \@ref(exr:CorrelationExercisePunting).)
+(This study was seen in Exercise\ \@ref(exr:CorrelationExercisePunting).)
 @MyersRegression (p.\ 75) measured the right-leg strengths\ $x$ of $13$\ American footballer players (using a weight lifting test), and the distance\ $y$ they punt a football (with their right leg).
 
 1. Use the scatterplot (Fig.\ \@ref(fig:PuntPlot)) to approximate of the values of the intercept and slope.
 1. Using the software output (Fig.\ \@ref(fig:PuntPlot)), write down the value of the slope\ ($b_1$) and $y$-intercept\ ($b_0$).
-1. Hence write down the regression equation.
+1. Using these values, write down the regression equation.
 1. Interpret the slope\ ($b_1$).
 1. Write the hypotheses for testing for a relationship in the population
 1. Write down the $t$-score and $P$-value from the output.
@@ -1721,7 +1809,7 @@ knitr::include_graphics("jamovi/Punting/Punting-Regression.png")
 
 ::: {.exercise #RegressionExercisesGorillas}
 [*Dataset*: `Gorillas`]
-(These data were also seen in Exercise\ \@ref(exr:TwoQuantExercisesGorillas).)
+(This study was seen in Exercise\ \@ref(exr:TwoQuantExercisesGorillas).)
 @wright2021chest examined $25$\ gorillas and recorded information about their chest beating and their size (measured by the breadth of the gorillas' backs).
 The relationship is shown in a scatterplot in Fig.\ \@ref(fig:GorillaWindmillPlot) (left panel).
 
@@ -1742,7 +1830,7 @@ data(Bitumen) ### Exercise
 
 ::: {.exercise #RegressionExerciseBitumen}
 [*Dataset*: `Bitumen`]
-(These data were also seen in Exercise\ \@ref(exr:CorrelationExerciseBitumen).)
+(This study was seen in Exercise\ \@ref(exr:CorrelationExerciseBitumen).)
 @data:Panda2018:Bitumen made $n = 42$ observations of studied hot mix asphalt, and measured the volume of air voids and the bitumen content by weight (Fig.\ \@ref(fig:BitumenPlotReg)).
 Use the software output (Fig.\ \@ref(fig:BitumenPlotReg)) to answer these questions.
 
@@ -1798,7 +1886,7 @@ knitr::include_graphics("jamovi/Possums/Possums-Regression-jamovi.png")
 
 ::: {.exercise #RegressionExerciseSoil}
 [*Dataset*: `Soils`]
-(These data were also seen in Exercise\ \@ref(exr:CorrelationExerciseSoil).)
+(This study was seen in Exercise\ \@ref(exr:CorrelationExerciseSoil).)
 The *California Bearing Ratio* (CBR) value is used to describe soil sub-grade for flexible pavements (such as in the design of air field runways).
 @talukdar2014study examined the relationship between\ CBR and other properties of soil, including the plasticity index (PI, a measure of the plasticity of the soil).
 The scatterplot from $16$\ different soil samples from Assam, India, is shown in  Fig.\ \@ref(fig:SoilPlotCor).
@@ -2121,10 +2209,10 @@ knitr::include_graphics("jamovi/Corollas/Corollas-Regression-jamovi.png")
 `r if (knitr::is_html_output()) '<!--'`
 ::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
 **Answers to *Quick Revision* questions:**
-**1.** Weight of rower.
-**2.** $1.2$ *very* roughly.
-**3.** The height of the rowers.
-**4.** The predicted mean weight.
+**1.** a. 
+**2.** b. (*very* roughly).
+**3.** b.
+**4.** f.
 **5.** $78$.
 **6.** $10.71$.
 **7.** True.
