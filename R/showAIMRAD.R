@@ -49,7 +49,7 @@ showAIMRAD <- function(debug = FALSE){
 
   # TITLES
   diagram::textrect( pos[12, ], 
-                     lab = "PAPER", 
+                     lab = "ARTICLE", 
                      radx = 0.11, 
                      rady = 0.035, 
                      shadow.size = 0
