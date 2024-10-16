@@ -1786,21 +1786,6 @@ Answers to odd-numbered exercises are available in App.\ \@ref(Answers).
 
 
 
-::: {.exercise #OddsPropsDiffs}
-Suppose the sample odds ratio has a value of one.
-What will be value of the difference between the sample proportions?
-Explain.
-:::
-
-
-::: {.exercise #OddsPropsDiffs2}
-Suppose the sample odds ratio has a value *smaller* than one.
-Will the difference between the sample proportions be a positive or a negative value?
-Explain.
-:::
-
-
-
 ::: {.exercise #OddsSame}
 Consider the expected counts in Table\ \@ref(tab:MealsDataTableExpected).
 Confirm that the *odds* of having most meals off-campus is the same for students living with their parents, and for students not living with their parents.
@@ -1809,8 +1794,8 @@ Confirm that the *odds* of having most meals off-campus is the same for students
 
 
 ::: {.exercise #OddsSame2}
-Consider the expected counts in Fig.\ \@ref(fig:farmersjamoviHT).
-Confirm that the *odds* of being an adopter of improved soil and water conservation structures is the same for smaller and larger farms.
+Compute all four expected counts in Table\ \@ref(tab:HAttackData).
+Confirm that the corresponding test is not statistically valid.
 :::
 
 
@@ -1842,6 +1827,201 @@ Suppose an analysis of a $2\times 2$ table of counts produces a value of $\chi^2
 :::
 
 
+::: {.exercise #EVAdoption}
+@egbue2017mass studied the adoption of electric vehicles (EVs) by a certain group of professional Americans (Table\ \@ref(tab:EV10years)).
+Software output is shown in Fig.\ \@ref(fig:EVjamovi).
+
+1. Based on the output, how is the difference between the two proportions defined?
+1. Write the hypothesis for comparing the *proportions*, for those with and without post-graduate study.
+1. Use the software output to conduct the test.
+1. Use the software output to write down the corresponding CI.
+1. Based on the output, how is the odds ratio defined?
+1. Write the hypothesis for comparing the *odds*, for those with and without post-graduate study.
+1. Use the software output to conduct the test.
+1. Use the software output to write down the corresponding CI.
+1. Are the CIs and tests statistically valid?
+:::
+
+
+```{r}
+data(EVpurchase)
+
+EV10 <- xtabs(Counts ~ Education + PurchaseEV, 
+              data = EVpurchase)
+colnames(EV10) <- c("Yes", 
+                    "No")
+rownames(EV10) <- c("No post-grad", 
+                    "Post-grad study")
+
+```
+
+\begin{figure}
+\begin{minipage}{0.32\textwidth}
+\captionof{table}{Responses to `Would you purchase an electric vehicle in the next $10$ years?' by education\label{tab:EV10years}.}
+\fontsize{8}{12}\selectfont\centering
+```{r}
+knitr::kable( pad(EV10,
+                  surroundMaths = TRUE,
+                  targetLength = 2,
+                  decDigits = 0),
+         format = "latex",
+         booktabs = TRUE,
+         longtable = FALSE,
+         align = "c",
+         escape = FALSE,
+         table.env = "@empty") %>%
+   row_spec(0, bold = TRUE)
+   #kable_styling(font_size = 8) %>% # CANNOT USE THIS IS THE MINIPAGE
+   #column_spec(1, width = "13mm") %>%
+   #column_spec(2, width = "22mm")
+```
+\end{minipage}
+\hspace{0.05\textwidth}
+\begin{minipage}{0.60\textwidth}%
+\centering
+```{r, out.width='98%'}
+knitr::include_graphics( "jamovi/EVs/EVs-Tests-CI-both.png")
+```
+\caption{Software output for the EV study.}\label{fig:EVjamovi}
+\end{minipage}
+\end{figure}
+
+
+
+
+```{r EV10years}
+EV10 <- array(dim = c(2, 2))
+
+colnames(EV10) <- c("Yes", 
+                    "No")
+rownames(EV10) <- c("No post-grad", 
+                    "Post-grad study")
+
+EV10[1, ] <- c(24, 8)
+EV10[2, ] <- c(51, 29)
+
+
+#if( knitr::is_latex_output() ) {
+#   kable(EV10,
+#         format = "latex",
+#         longtable = FALSE,
+#         booktabs = TRUE,
+#         caption = "Responses to 'Would you purchase an electric vehicle in the next 10 years?' by education") %>%
+# 	kable_styling(font_size = 8) %>%
+# 	row_spec(0, bold = TRUE)
+#}
+
+if( knitr::is_html_output() ) {
+  kable(pad(EV10,
+                  surroundMaths = TRUE,
+                  targetLength = 2,
+                  decDigits = 0),
+        format = "html",
+        align = "c",
+        longtable = FALSE,
+        booktabs = TRUE,
+        caption = "Responses to 'Would you purchase an electric vehicle in the next $10$ years?' by education.")
+}
+```
+
+<!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r EVjamovi, fig.show="hold", fig.cap="Software output for the EV study.", fig.align="center", out.width="50%"}
+knitr::include_graphics( "jamovi/EVs/EVs-CI-both.png")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+
+
+
+::: {.exercise #EthiopianFarmers}
+@meresa2023effect investigated Ethiopian farmers' adoption of improved soil and water conservation structures on their farms (Table\ \@ref(tab:FarmersData)).
+Software output is shown in Fig.\ \@ref(fig:farmersjamoviHT).
+
+```{r}
+Farmers <- array(dim = c(2, 2))
+
+colnames(Farmers) <- c("Non-adopter", 
+                       "Adopter")
+
+rownames(Farmers) <- c("$< 0.5$ ha", 
+                       "$\\ge 0.5$ ha")
+
+
+Farmers[1, ] <- c(86, 61)
+Farmers[2, ] <- c(43, 71)
+```
+
+\begin{figure}
+\begin{minipage}{0.32\textwidth}
+\captionof{table}{Adoption of conservation practices by Ethiopian farmers, by farm size\label{tab:FarmersData}.}
+\fontsize{8}{12}\selectfont\centering
+```{r}
+knitr::kable( pad(Farmers,
+                  surroundMaths = TRUE,
+                  targetLength = 2,
+                  decDigits = 0),
+         format = "latex",
+         col.names = c("No", 
+                       "Yes"),
+         align = "c",
+         booktabs = TRUE,
+         longtable = FALSE,
+         escape = FALSE,
+         table.env = "@empty") %>%
+  add_header_above( c (" " = 1,
+                       "Adopter?" = 2),
+                    bold = TRUE,
+                    line = TRUE) %>%
+  row_spec(0, bold = TRUE)
+```
+\end{minipage}
+\hspace{0.05\textwidth}
+\begin{minipage}{0.60\textwidth}%
+\centering
+```{r, out.width='98%'}
+knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2-pDiff-CITest.png")
+```
+\caption{Software output for the farming study.}\label{fig:farmersjamoviHT}
+\end{minipage}
+\end{figure}
+
+
+
+
+```{r FarmersData}
+if( knitr::is_html_output() ) { 
+  kable(pad(Farmers,
+                  surroundMaths = TRUE,
+                  targetLength = 2,
+                  decDigits = 0),
+        format = "html",
+        align = "c",
+        longtable = FALSE,
+        booktabs = TRUE,
+        caption = "Adoption of conservation practices by Ethiopian farmers, by farm size.")
+}
+```
+
+<!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
+`r if (knitr::is_latex_output()) '<!--'`
+```{r farmersjamoviHT, fig.show="hold", fig.cap="Software output for the farming study.", fig.align="center", out.width="50%"}
+knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2-pDiff-CITest.png")
+```
+`r if (knitr::is_latex_output()) '-->'`
+
+1. Based on the output, how is the difference between the two proportions defined?
+1. Write the hypothesis for comparing the proportions, for farmers with small and large farms.
+1. Use the software output to conduct the test.
+1. Use the software output to write down the corresponding CI.
+1. Based on the output, how is the OR defined?
+1. Write the hypothesis for comparing the odds, for farmers with small and large farms.
+1. Use the software output to conduct the test.
+1. Use the software output to write down the corresponding CI.
+1. Are the CIs and tests statistically valid?
+:::
+
+
 ::: {.exercise #ORcrashes}
 [*Dataset*: `CarCrashes`]
 @wang2020driver recorded information about car crashes in a rural, mountainous county in western China
@@ -1852,21 +2032,22 @@ Suppose an analysis of a $2\times 2$ table of counts produces a value of $\chi^2
 }`
 
 1. Sketch a suitable graph to display the data.
-1. Compute the *proportion* of crashes involving a pedestrian in\ 2011, and also in\ 2015.
-1. Compute the *difference between the proportion* of crashes involving a pedestrian, comparing\ 2011 to\ 2015.
+1. Compute the *proportion* of crashes involving a pedestrian in\ 2011 ($\hat{p}_{2011}$), and in\ 2015 ($\hat{p}_{2015}$).
+1. Compute the *difference between the proportion* of crashes involving a pedestrian from\ 2011 to\ 2015.
+1. Compute the value of $\text{s.e.}(\hat{p}_{2011} - \hat{p}_{2015})$, needed for constructing the CI.
+1. Construct the *approximate* $95$% CI for the difference between the proportions.
 1. Use the output (Fig.\ \@ref(fig:CarCrashjamovi)) to write down a $95$%\ CI for the difference between the proportions.
 1. Interpret what this CI means.
 1. Compute the *odds* of crashes involving a pedestrian in\ 2011, and also in \ 2015.
 1. Compute the *odds ratio* of crashes involving a pedestrian, comparing\ 2011 to\ 2015.
 1. Write down the CI for the odds ratio.
-1. Use the output to determine if there is evidence of a difference between the proportions.
-1. Use the output to determine if there is evidence of a difference between the odds.
 1. Construct an appropriate numerical summary table for the data.
-1. Conduct a hypothesis test to determine if there is a difference between the proportions for\ 2011 and\ 2015.
-1. Conduct a hypothesis test to determine if there is a difference between the odds for\ 2011 and\ 2015.
-1. Compile a numerical summary table.
-1. Are the CIs and tests are statistically valid?
+1. Compute the value of $\text{s.e.}(\hat{p}_{2011} - \hat{p}_{2015})$, needed for conducting a hypothesis test.
+1. Conduct a hypothesis test to determine if there is a difference between $p_{2011}$ and $p_{2015}$.
+1. Conduct a hypothesis test to determine if there is a difference between the odds of a crash involving a pedestrian for\ 2011 and\ 2015.
+1. Are the CIs and tests statistically valid?
 :::
+
 
 ```{r}
 data(CarCrashes) ### Exercise
@@ -1907,8 +2088,8 @@ kable(pad( t(Crash.tab),
 \hspace{0.05\textwidth}
 \begin{minipage}{0.60\textwidth}%
 \centering
-```{r, out.width='92%', fig.align="center"}
-knitr::include_graphics( "jamovi/CarCrashes/CarCrashes-ORpDiffCI.png")
+```{r, out.width='99%', fig.align="center"}
+knitr::include_graphics( "jamovi/CarCrashes/CarCrashes-ALL.png")
 ```
 \caption{Software output for the car-crash study.}\label{fig:CarCrashjamovi}
 \end{minipage}
@@ -1943,34 +2124,33 @@ kable(pad( t(Crash.tab),
 <!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
 `r if (knitr::is_latex_output()) '<!--'`
 ```{r CarCrashjamovi, fig.show="hold", fig.cap="Software output for the car-crash data.", fig.align="center", out.width="50%"}
-knitr::include_graphics( "jamovi/CarCrashes/CarCrashes-ORpDiffCI.png")
+knitr::include_graphics( "jamovi/CarCrashes/CarCrashes-ALL.png")
 ```
 `r if (knitr::is_latex_output()) '-->'`
 
 
 
 
-
-
-
 ::: {.exercise #TestsOddsRatioScars}
 [*Dataset*: `ScarHeight`] 
-@data:Wallace2017:Sunburn compared the heights of scars from burns received in Western Australia (Table\ \@ref(tab:ScarsData)).
+@data:Wallace2017:Sunburn compared the heights of scars from burns received by people in Western Australia (Table\ \@ref(tab:ScarsData)).
 Software was used to analyse the data (Fig.\ \@ref(fig:ScarHeightRiskjamovi)).
 
 1. Sketch an appropriate graph to summarise the data.
-1. Compute the *proportion* of men having a smooth scar (that is, height is\ $0$\mms), and also the *proportion* of women.
+1. Compute the *proportion* of men having a smooth scar, and the *proportion* of women.
 1. Compute the *difference between the proportions* of men and women having a smooth scar.
-1. Compute the standard error for the difference between the proportions.
-1. Compute the approximate $95$%\ CI for the difference between the proportions.
+1. Compute the standard error for the difference between the proportions, needed for constructing a CI.
+1. Compute the *approximate* $95$%\ CI for the difference between the proportions.
 1. Write down the $95$%\ CI for the difference between the proportions, using the software output.
 1. Interpret what this CI means.
-1. Compute the *odds* of having a smooth scar (that is, height is\ $0$\mms) for men, and also for women.
+1. Compute the *odds* of having a smooth scar for men, and for women.
+1. Compute the *odds ratio* of having a smooth scar, comparing men to women.
 1. Write down the CI for the odds ratio of having a smooth scar, comparing men to women.
+1. Compile a numerical summary table.
+1. Compute the value of standard error of the difference between the proportions, needed for conducting a hypothesis test.
 1. Conduct a hypothesis test to determine if there is a difference between the proportions for women and men.
 1. Conduct a hypothesis test to determine if there is a difference between the odds for women and men.
-1. Compile a numerical summary table.
-1. Are the CIs and tests are statistically valid?
+1. Are the CIs and tests statistically valid?
 :::
 
 
@@ -1996,10 +2176,18 @@ colnames(ScarsData) <- c("Men",
             targetLength = c(3, 3),
             decDigits = 0),
         format = "latex",
+        col.names = c("(0\\,mm)",
+                      "up to 1\\,mm"),
         booktabs = TRUE,
         longtable = FALSE,
         escape = FALSE,
         align = "c") %>%
+  add_header_above( c(" " = 1,
+                      "Smooth" = 1,
+                      "Over 0\\\\,mm,"),
+                    escape = FALSE,
+                    bold = TRUE,
+                    line = FALSE) %>%
     row_spec(0, bold = TRUE)
 #   kable_styling(font_size = 8) # CANNOT USE THIS IS THE MINIPAGE
 ```
@@ -2007,7 +2195,7 @@ colnames(ScarsData) <- c("Men",
 \hspace{0.05\textwidth}
 \begin{minipage}{0.60\textwidth}%
 \centering
-```{r, out.width='92%', fig.align="center"}
+```{r, out.width='98%', fig.align="center"}
 knitr::include_graphics( "jamovi/ScarHeight/ScarHeight-No-Expected.png")
 ```
 \caption{Software output for the scar-height data.}\label{fig:ScarHeightRiskjamovi}
@@ -2045,240 +2233,6 @@ knitr::include_graphics( "jamovi/ScarHeight/ScarHeight-No-Expected.png")
 
 
 
-::: {.exercise #OddsRatiosCIEarInf}
-[*Dataset*: `EarInfection`]
-A study of ear infections in Sydney swimmers [@data:smyth:ozdasl] recorded whether people reported an ear infection or not, and where they usually swam.
-Use Fig.\ \@ref(fig:EarInfPSSOutputCI) to answers these questions.
-
-1. Compute the standard error for the difference between the proportions of people *not* reporting ear infections, comparing non-beach to beach swimmers.
-1. Compute an approximate $95$%\ CI for the difference between the proportions.
-1. Write down the $95$%\ CI for the difference between the proportions.
-1. Interpret the CI.
-1. Confirm that the odds ratio in the output is correct.
-1. Use the software output to write down a $95$%\ CI for the odds ratio.
-1. Interpret the CI.
-1. Are the CIs statistically valid?
-1. Construct the summary table for the data.
-:::
-
-
-
-```{r EarInfPSSOutputCI, fig.show="hold", fig.cap="Software output for the ear-infection data.", fig.align="center", out.width=c("42%", "53%"), fig.show='hold'}
-knitr::include_graphics( "jamovi/EarInfections/EarInfections-Data.png" )
-knitr::include_graphics( "jamovi/EarInfections/EarInfections-CI-Both.png" )
-```
-
-
-
-
-
-::: {.exercise #OddsRatiosCITurbinesHT}
-[*Dataset*: `Turbines`]
-A study of turbine failures [@MyersBook; @NelsonLifeData] ran $73$\ turbines for around $1800$\hs, and found that seven developed fissures (small cracks).
-They also ran a different set of\ $42$ turbines for about\ $3000$\hs, and found that nine developed fissures.
-
-1. Construct the two-way table for the data.
-1. Compute the standard error for the difference between the proportions.
-1. Compute an approximate $95$%\ CI for the difference between the proportions.
-1. Write down the $95$%\ CI for the difference between the proportions.
-1. Interpret the CI.
-1. Use the software output (Fig.\ \@ref(fig:TurbinesOutput), left panel) to write down a $95$%\ CI for the odds ratio.
-1. Interpret the CI.
-1. Use the software output (Fig.\ \@ref(fig:TurbinesOutput), left panel) to test for a relationship.
-1. Compute, then carefully interpret, the OR.
-1. Are the CIs and tests statistically valid (Fig.\ \@ref(fig:TurbinesOutput), right panel)?
-:::
-
-
-```{r TurbinesOutput, fig.show="hold", fig.cap="Software output for the turbine data.", fig.align="center", out.width=c("60%")}
-knitr::include_graphics( "jamovi/Turbines/Turbines-Both-CITest.png" )
-```
-
-
-
-
-```{r}
-data(EmeraldAug) ### Exercise
-
-EmeraldAug$SOIpos <- factor( EmeraldAug$SOI > 0 )
-
-SOI.tab2 <- xtabs( ~ (SOIpos) + (Rain > 0), 
-                  data = EmeraldAug)
-
-
-SOI.tab <- SOI.tab2
-
-SOI.tab[, 1] <- c(SOI.tab2[2, 2],
-                  SOI.tab2[1, 2] )
-SOI.tab[, 2] <- c(SOI.tab2[2, 1],
-                  SOI.tab2[1, 1] )
-colnames(SOI.tab) <- c("Rainfall recorded", 
-                       "No rainfall recorded")
-rownames(SOI.tab) <- c("Positive SOI", 
-                       "Non-positive SOI")
-
-#prop.table(SOI.tab, margin=1 )
-
-#chisq.test(SOI.tab)
-#chisq.test(SOI.tab, correct=FALSE)
-#chisq.test(SOI.tab, correct=FALSE)$expected
-```
-
-
-::: {.exercise #TestsOddsRatioAugustRainfallInEmerald}
-[*Daatset*: `EmeraldAug`]
-The *Southern Oscillation Index*\ (SOI) is a standardised measure of the air pressure difference between Tahiti and Darwin, and is related to rainfall in some parts of the world [@climate:stone:1996], and especially Queensland [@climate:stone:1992].
-
-The rainfall at Emerald (Queensland) was recorded for Augusts between\ 1889 to\ 2002 inclusive [@mypapers:dunnsmyth:glms], where the monthly average\ SOI was positive, and when the SOI was non-positive (zero or negative), shown in Table\ \@ref(tab:SOItableAnalysis).
-
-1. Compute the standard error for the difference between the proportions of wet August, comparing months with a positive SOI to months with a non-positive SOI.
-1. Compute an approximate $95$%\ CI for the difference between the proportions.
-1. Write down the $95$%\ CI for the difference between the proportions.
-1. Interpret the CI.
-1. Confirm that the odds ratio in the output is correct.
-1. Use the software output to write down a $95$%\ CI for the odds ratio.
-1. Interpret the CI.
-1. Construct the summary table for the data.
-1. Using the software output in Fig.\ \@ref(fig:EmeraldRainjamoviOutput), perform a hypothesis test to determine if the odds of having no rain is the same Augusts with non-positive and negative SOI.
-1. Are the CIs and tests statistically valid?
-:::
-
-
-```{r SOItableAnalysis}
-if( knitr::is_latex_output() ) {
-  kable( pad((SOI.tab),
-             surroundMaths = TRUE,
-             targetLength = 2,
-             decDigits = 0),
-         format = "latex",
-         align = "c",
-         longtable = FALSE,
-         booktabs = TRUE,
-         escape = FALSE,
-         caption = "The SOI, and whether rainfall was recorded in Augusts between 1889 and 2002 inclusive.") %>%
-    kable_styling(font_size = 8) %>%
-    row_spec(0, bold = TRUE) %>%
-    column_spec(0, bold = TRUE)
-}
-if( knitr::is_html_output() ) {
-  kable( pad((SOI.tab),
-             surroundMaths = TRUE,
-             targetLength = 2,
-             decDigits = 0),
-         align = "c",
-                format = "html",
-                longtable = FALSE,
-                booktabs = TRUE,
-                caption = "The SOI, and whether rainfall was recorded in Augusts between 1889 and 2002 inclusive.") %>%
-     kable_styling(full_width = FALSE)
-}
-```
-
-
-```{r EmeraldRainjamoviOutput, fig.show="hold", fig.cap="Software output for the Emerald-rain data.", fig.align="center", out.width="65%"}
-knitr::include_graphics( "jamovi/EmeraldRain/EmeraldRain-NoE-Both.png")
-```
-
-
-
-```{r}
-data(HatSunglasses) ### Exercise
-
-SG.Table.GenderHat <- xtabs(Count ~ Hat + Gender, 
-                            data = HatSunglasses)
-```
-
-::: {.exercise #TestOddsRatioSunglasses}
-[*Dataset*: `HatSunglasses`]
-@data:Dexter2019:SunProtection recorded the number of people at the foot of the Goodwill Bridge, Brisbane, who wore hats between $11$:$30$am to $12$:$30$pm.
-Of the $386$\ males observed, $79$ wore hats; of the $366$\ females observed, $22$ wore hats.
-
-1. Construct the two-way table for the data.
-1. Compute the percentages of females wearing a hat.
-1. Compute the percentages of males wearing a hat.
-1. Compute the odds of a female wearing a hat.
-1. Compute the odds of a male wearing a hat.
-1. Compute the odds ratio of wearing a hat, comparing females to males.
-1. Compute the odds ratio of wearing a hat, comparing males to females.
-1. Compute the standard error for the difference between the proportions.
-1. Compute an approximate $95$%\ CI for the difference between the proportions.
-1. Write down the $95$%\ CI for the difference between the proportions.
-1. Interpret the CI.
-1. Use the software output to write down a $95$%\ CI for the odds ratio.
-1. Interpret the CI.
-1. Find the $95$%\ CI for the appropriate OR.
-1. Using the software output in Fig.\ \@ref(fig:SunglassesOutput), perform a hypothesis test to determine if the odds of wearing a hat is the same for females and males.
-1. Write down the conclusion.
-1. Are the CIs and tests statistically valid?
-:::
-
-
-```{r SunglassesOutput, fig.show="hold", fig.cap="Software output for the hats data.", fig.align="center", out.width=c("49%", "50%"), fig.show='hold'}
-knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-CI-Both.png" )
-knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-Test-Both.png" )
-```
-
-
-
-
-::: {.exercise #TestOddsRatioBearTree}
-@witmer2020preliminary compared various types of repellents to stop bears damaging trees in an Idaho forest.
-Part of the data are summarised in Table\ \@ref(tab:BearTreeData).
-
-1. Compute the column percentages.
-1. Compute the odds of new damage for both repellents.
-1. Compute the proportion of trees with new damage.
-1. Compute the odds ratio, and the difference between the proportions.
-1. Write the hypothesis for conducting a hypothesis test.
-1. Compute the *expected counts*.
-1. Software gives $\chi^2$ is\ $4.4850$. 
-   What is the equivalent $z$-score? 
-   Would you expect a large or small $P$-value?
-1. The $P$-value is given as $P = 0.0342$. 
-   Write a conclusion.
-:::
-
-
-```{r BearTreeData}
-BearTable <- array( dim = c(2, 2))
-BearTable[1, ] <- c(6, 69)
-BearTable[2, ] <- c(15, 60)
-colnames(BearTable) <- c("New damage",
-                         "No new damage")
-rownames(BearTable) <- c("Bear faeces",
-                         "Control (water)")
-
-if( knitr::is_latex_output() ) {
-  kable(pad(BearTable,
-            surroundMaths = TRUE,
-            targetLength = 2,
-            decDigits = 0),
-        format = "latex",
-        align = "c",
-        escape = FALSE,
-        longtable = FALSE,
-        caption = "The number of trees with new damage by bears, according to different repellents.",
-      booktabs = TRUE) %>%
-    kable_styling(font_size = 8) %>%
-    row_spec(0, bold = TRUE) %>%
-    column_spec(0, bold = TRUE)
-}
-
-
-if( knitr::is_html_output() ) {
-  kable(pad(BearTable,
-            surroundMaths = TRUE,
-            targetLength = 2,
-            decDigits = 0),
-        format = "html",
-        align = "c",
-        longtable = FALSE,
-        caption = "The number of trees with new damage by bears, according to different repellents.",
-      booktabs = TRUE)
-}
-```
-
-
 ::: {.exercise #PetBirdsTest}
 [*Dataset*: `PetBirds`]
 @data:Kohlmeier1992:BirdsCancer examined people with lung cancer, and a matched set of controls who did not have lung cancer, and recorded the number in each group that kept pet birds. 
@@ -2288,18 +2242,20 @@ Consider this RQ:
 
 > Are the odds of having a pet bird the same for people *with* lung cancer (cases) and for people *without* lung cancer (controls)?
 
-1. Construct a numerical summary table.
-1. Sketch a graphical summary.
-1. Use the software output (Fig.\ \@ref(fig:PetBirdsjamovi), left panel) to find a $95$%\ CI for the odds ratio, making sure to describe the odds ratio carefully.
-1. Use the software output to find a $95$%\ CI for the difference between the proportions.
-1. Carefully describe the parameter.
-1. Write the hypotheses in terms of odds.
-1. Conduct the hypothesis test.
-1. Determine the value of\ $z$ that is approximately the same as this $\chi^2$-value.
-   Hence, find an approximate $P$-value.
+1. Compute the difference between the proportions of people with pet birds, for those with and without lung cancer.
+1. Compute the standard error needed to compute the CI for the difference in proportions.
+1. Compute the standard error needed to conduct the hypothesis to compare the proportions.
+1. Explain *why* the two standard errors have slightly different values.
+1. Compute an approximate $95$%\ CI for the difference between the two proportions.
+1. Write down the $95$%\ CI for the difference between the proportions using the output.
+1. Interpret the CIs.
+1. Conduct a hypothesis tests to compare the two proportions.
+1. Confirm that the odds ratio in the output is correct.
+1. Use the software output to write down a $95$%\ CI for the odds ratio, and interpret what it means.
+1. Using the software output in Fig.\ \@ref(fig:PetBirdsjamovi), perform a hypothesis test to determine if the odds of having a pet bird is the same for people with and without lung cancer.
 1. Are the CIs and tests statistically valid?
+1. Explain why no cause-and-effect can be reached.
 :::
-
 
 
 ```{r BirdsData}
@@ -2361,24 +2317,225 @@ knitr::include_graphics("jamovi/PetBirds/PetsCI-Both.png")
 ```
 
 
+
+
+
+
+```{r}
+data(EmeraldAug) ### Exercise
+
+EmeraldAug$SOIpos <- factor( EmeraldAug$SOI > 0 )
+
+SOI.tab2 <- xtabs( ~ (SOIpos) + (Rain > 0), 
+                  data = EmeraldAug)
+
+
+SOI.tab <- SOI.tab2
+
+SOI.tab[, 1] <- c(SOI.tab2[2, 2],
+                  SOI.tab2[1, 2] )
+SOI.tab[, 2] <- c(SOI.tab2[2, 1],
+                  SOI.tab2[1, 1] )
+colnames(SOI.tab) <- c("Rainfall recorded", 
+                       "No rainfall recorded")
+rownames(SOI.tab) <- c("Positive SOI", 
+                       "Non-positive SOI")
+
+#prop.table(SOI.tab, margin=1 )
+
+#chisq.test(SOI.tab)
+#chisq.test(SOI.tab, correct=FALSE)
+#chisq.test(SOI.tab, correct=FALSE)$expected
+```
+
+
+::: {.exercise #TestsOddsRatioAugustRainfallInEmerald}
+[*Daatset*: `EmeraldAug`]
+The *Southern Oscillation Index*\ (SOI) is a standardised measure of the air pressure difference between Tahiti and Darwin, and is related to rainfall in some parts of the world [@climate:stone:1996], and especially Queensland [@climate:stone:1992].
+
+The rainfall at Emerald (Queensland) was recorded for Augusts between\ 1889 to\ 2002 inclusive [@mypapers:dunnsmyth:glms], where the monthly average\ SOI was positive, and when the SOI was non-positive (zero or negative), shown in Table\ \@ref(tab:SOItableAnalysis).
+
+1. Compute the difference between the proportions of wet Augusts, for months with a positive SOI compared to months with a non-positive SOI.
+1. Compute the standard error needed to compute the CI for the difference in proportions.
+1. Compute the standard error needed to conduct the hypothesis to compare the proportions.
+1. Explain *why* the two standard errors have slightly different values.
+1. Compute an approximate $95$%\ CI for the difference between the two proportions.
+1. Write down the $95$%\ CI for the difference between the proportions using the output.
+1. Interpret the CIs.
+1. Conduct a hypothesis tests to compare the two proportions.
+1. Confirm that the odds ratio in the output is correct.
+1. Use the software output to write down a $95$%\ CI for the odds ratio, and interpret what it means.
+1. Using the software output in Fig.\ \@ref(fig:EmeraldRainjamoviOutput), perform a hypothesis test to determine if the odds of having no rain is the same Augusts with non-positive and negative SOI.
+1. Are the CIs and tests statistically valid?
+:::
+
+
+```{r SOItableAnalysis}
+if( knitr::is_latex_output() ) {
+  kable( pad((SOI.tab),
+             surroundMaths = TRUE,
+             targetLength = 2,
+             decDigits = 0),
+         format = "latex",
+         align = "c",
+         longtable = FALSE,
+         booktabs = TRUE,
+         escape = FALSE,
+         caption = "The SOI, and whether rainfall was recorded in Augusts between 1889 and 2002 inclusive.") %>%
+    kable_styling(font_size = 8) %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(0, bold = TRUE)
+}
+if( knitr::is_html_output() ) {
+  kable( pad((SOI.tab),
+             surroundMaths = TRUE,
+             targetLength = 2,
+             decDigits = 0),
+         align = "c",
+                format = "html",
+                longtable = FALSE,
+                booktabs = TRUE,
+                caption = "The SOI, and whether rainfall was recorded in Augusts between 1889 and 2002 inclusive.") %>%
+     kable_styling(full_width = FALSE)
+}
+```
+
+
+```{r EmeraldRainjamoviOutput, fig.show="hold", fig.cap="Software output for the Emerald-rain data.", fig.align="center", out.width="65%"}
+knitr::include_graphics( "jamovi/EmeraldRain/EmeraldRain-NoE-Both.png")
+```
+
+
+
+```{r}
+data(HatSunglasses) ### Exercise
+
+SG.Table.GenderHat <- xtabs(Count ~ Hat + Gender, 
+                            data = HatSunglasses)
+```
+
+::: {.exercise #TestOddsRatioSunglasses}
+[*Dataset*: `HatSunglasses`]
+@data:Dexter2019:SunProtection recorded the number of people at the foot of the Goodwill Bridge, Brisbane, who wore hats between $11$:$30$am to $12$:$30$pm.
+Of the $366$\ females observed, $22$ wore hats; of the $386$\ males observed, $79$ wore hats.
+
+1. Construct the two-way table for the data.
+1. Compute the proportions of females and males wearing a hat, and hence the difference between the proportions.
+1. Compute the odds of a female and the odds of a male wearing a hat, and hence the odds ratio.
+1. Compute an approximate $95$%\ CI for the difference between the proportions.
+1. Write down the $95$%\ CI for the difference between the proportions.
+1. Interpret the CIs.
+1. Use the software output to write down, then interpret, a $95$%\ CI for the odds ratio.
+1. Using the software output in Fig.\ \@ref(fig:SunglassesOutput), perform a hypothesis test to determine if the odds of wearing a hat is the same for females and males.
+1. Write down the conclusion.
+1. Are the CIs and tests statistically valid?
+:::
+
+
+```{r SunglassesOutput, fig.show="hold", fig.cap="Software output for the hats data.", fig.align="center", out.width=c("49%", "50%"), fig.show='hold'}
+knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-CI-Both.png" )
+knitr::include_graphics( "jamovi/HatSunglasses/HatSunglasses-Test-Both.png" )
+```
+
+
+
+
+::: {.exercise #OddsRatiosCITurbinesHT}
+[*Dataset*: `Turbines`]
+A study of turbine failures [@MyersBook; @NelsonLifeData] ran $73$\ turbines for around $1\,800$\hs, and found that seven developed fissures (small cracks).
+They also ran a different set of\ $42$ turbines for about\ $3\,000$\hs, and found that nine developed fissures.
+
+1. Construct the two-way table for the data.
+1. Compute the difference between the proportions of fissures at $1\,800$\hs and $3\,000$\hs, and hence the difference between the proportions.
+1. Compute the odds of a fissure $1\,800$\hs and $3\,000$\hs, and hence the odds ratio.
+1. Compute an approximate $95$%\ CI for the difference between the proportions.
+1. Write down the $95$%\ CI for the difference between the proportions.
+1. Interpret the CIs.
+1. Use the software output (Fig.\ \@ref(fig:TurbinesOutput)) to write down, then interpret, a $95$%\ CI for the odds ratio.
+1. Use the software output to test for a relationship.
+1. Are the CIs and tests statistically valid?
+:::
+
+
+```{r TurbinesOutput, fig.show="hold", fig.cap="Software output for the turbine data.", fig.align="center", out.width=c("60%")}
+knitr::include_graphics( "jamovi/Turbines/Turbines-Both-CITest.png" )
+```
+
+
+
+::: {.exercise #TestOddsRatioBearTree}
+@witmer2020preliminary compared various types of repellents (including bear faeces) to stop bears damaging trees in an Idaho forest.
+Part of the data are summarised in Table\ \@ref(tab:BearTreeData).
+
+1. Compute the odds of new damage for both repellents, and hence the OR.
+1. Compute the proportion of trees with new damage for both repellents, and hence the difference between the proportions.
+1. Write the hypothesis for conducting a hypothesis test involving proportions.
+1. Write the hypothesis for conducting a hypothesis test involving odds.
+1. Software gives $\chi^2$ as\ $4.4850$. 
+   What is the equivalent $z$-score (e.g., for the test of proportions)? 
+   Would you expect a large or small $P$-value?
+1. The $P$-value is given by software as $P = 0.0342$. 
+   Write a conclusion, either using odds or proportions.
+1. Is the analysis statistically valid?
+:::
+
+
+```{r BearTreeData}
+BearTable <- array( dim = c(2, 2))
+BearTable[1, ] <- c(6, 69)
+BearTable[2, ] <- c(15, 60)
+colnames(BearTable) <- c("New damage",
+                         "No new damage")
+rownames(BearTable) <- c("Bear faeces",
+                         "Control (water)")
+
+if( knitr::is_latex_output() ) {
+  kable(pad(BearTable,
+            surroundMaths = TRUE,
+            targetLength = 2,
+            decDigits = 0),
+        format = "latex",
+        align = "c",
+        escape = FALSE,
+        longtable = FALSE,
+        caption = "The number of trees with new damage by bears, according to different repellents.",
+      booktabs = TRUE) %>%
+    kable_styling(font_size = 8) %>%
+    row_spec(0, bold = TRUE) %>%
+    column_spec(0, bold = TRUE)
+}
+
+
+if( knitr::is_html_output() ) {
+  kable(pad(BearTable,
+            surroundMaths = TRUE,
+            targetLength = 2,
+            decDigits = 0),
+        format = "html",
+        align = "c",
+        longtable = FALSE,
+        caption = "The number of trees with new damage by bears, according to different repellents.",
+      booktabs = TRUE)
+}
+```
+
 ::: {.exercise #B12Deficiency}
 [*Dataset*: `B12Diet`]
-@data:Gammon2012:B12 examined B12\ deficiencies in 'predominantly overweight/obese women of South Asian origin living in Auckland', some of whom were on a vegetarian diet and some of whom were on a non-vegetarian diet.
+@data:Gammon2012:B12 examined B12\ deficiencies in 'predominantly overweight/obese women of South Asian origin living in Auckland', some of whom were on a vegetarian diet and some of whom were on a non-vegetarian diet (Table\ \@ref(tab:B12Data)).
 One RQ was:
 
 > Among a certain group of women, are the odds of being vitamin\ B12 deficient different for women on a vegetarian diet compared to women on a non-vegetarian diet?
 
-The data are shown in Table\ \@ref(tab:B12Data).
-
-1. Construct a numerical summary table.
-1. Sketch a graphical summary.
-1. Use the software output to find a $95$%\ CI, making to describe the odds ratio carefully.
-1. Write down the hypotheses in terms of odds.
-1. Write down the parameter.
-1. Determine the $\chi^2$-value and perform a hypothesis to answer the RQ, using the output in Fig.\ \@ref(fig:B12jamoviOutput).
-1. Compute the equivalent $z$-score for this $\chi^2$-value.
-1. Write down the conclusion.
-1. Are the CI and test statistically valid?
+1. Compute the odds of B12 deficiency for both diets, and hence the OR.
+1. Compute the proportion of women with B12 deficiency for both diets, and hence the difference between the proportions.
+1. Write the hypothesis for conducting a hypothesis test involving proportions.
+1. Write the hypothesis for conducting a hypothesis test involving odds.
+1. Software gives $\chi^2$ as\ $4.7067$. 
+   What is the equivalent $z$-score (e.g., for the test of proportions)? 
+   Would you expect a large or small $P$-value?
+1. The $P$-value is given by software as $P = 0.0305$. 
+   Write a conclusion, either using odds or proportions.
+1. Is the analysis statistically valid?
 :::
 
 
@@ -2423,10 +2580,10 @@ if( knitr::is_html_output() ) {
 
 
 
-```{r B12jamoviOutput, fig.show="hold", fig.cap="Software output for the B12 data.", fig.align="center", out.width=c("49%", "49%")}
-knitr::include_graphics( "jamovi/B12/B12CI-Both.png")
-knitr::include_graphics( "jamovi/B12/B12Test-Both.png")
-```
+<!-- ```{r B12jamoviOutput, fig.show="hold", fig.cap="Software output for the B12 data.", fig.align="center", out.width=c("49%", "49%")} -->
+<!-- knitr::include_graphics( "jamovi/B12/B12CI-Both.png") -->
+<!-- knitr::include_graphics( "jamovi/B12/B12Test-Both.png") -->
+<!-- ``` -->
 
 `r if( knitr::is_latex_output() ) "\\captionsetup{font=normalsize}"`
 
@@ -2434,16 +2591,15 @@ knitr::include_graphics( "jamovi/B12/B12Test-Both.png")
 
 ::: {.exercise #DogsHT}
 [*Dataset*: `DogWalks`]
-@naughton2024association studied the difference between dogs kept in the city and on farms.
+@naughton2024association studied the difference between the activities of dogs kept in the city and on farms (Table\ \@ref(tab:DogWalkTable)).
 One RQ was:
 
 > For Northern Ireland dogs, is there an association between length of dog walks, and their location?
 
-The data are shown in Table\ \@ref(tab:DogWalkTable).
-
-1. Write down the hypotheses.
+1. Write down the hypotheses to answer this RQ.
 1. Determine the $\chi^2$-value and perform a hypothesis to answer the RQ, using the output in Fig.\ \@ref(fig:DogWalksjamovi).
-1. Write down the conclusion.
+1. Write down the conclusion, in terms of odds, including a CI.
+1. Write down the conclusion, in terms of proportions, including a CI.
 1. Is the test statistically valid?
 :::
 
@@ -2506,76 +2662,6 @@ knitr::include_graphics("jamovi/DogWalks/DogWalks-Test.png")
 
 
 
-
-
-::: {.exercise #TestsOddsSandflies}
-@data:Christensen:sandflies studied the number of sandflies caught in light traps set at\ $3$ and\ $35$ feet above ground in eastern Panama (Table\ \@ref(tab:SandfliesHT)).
-They asked:
-
-> In eastern Panama, are the odds of finding a sandfly that is male the same at\ $3$ feet above ground as at\ $35$ feet above ground?
-
-
-1. Compile a numerical summary table.
-2. Sketch an appropriate graph to summarise the data.
-3. Use the software output (Fig.\ \@ref(fig:Sandfliesjamovi)) to evaluate the evidence and write a conclusion.
-4. Is the test statistically valid?
-:::
-
-
-```{r SandfliesHT}
-FliesData <- array( dim = c(2, 2))
-
-FliesData[1, ] <- c(173, 125)
-FliesData[2, ] <- c(150, 73)
-colnames(FliesData) <- c("3 feet above ground", 
-                         "35 feet above ground")
-rownames(FliesData) <- c("Males", 
-                         "Females")
-
-if( knitr::is_latex_output() ) {
-
-  knitr::kable( pad( t(FliesData),
-                  surroundMaths = TRUE,
-                  targetLength = 3, 
-                  textAlign = "right",
-                  decDigits = 0),
-         format = "latex",
-         caption = "The sandflies data.",
-         align = "c",
-         col.names = c("Males",
-                       "Females"),
-         booktabs = TRUE,
-         longtable = FALSE,
-         escape = FALSE) %>%
-   row_spec(0, bold = TRUE) %>%
-   kable_styling(font_size = 8) 
-}
-if( knitr::is_html_output() ) {
-
-  knitr::kable( pad( t(FliesData),
-                  surroundMaths = TRUE,
-                  targetLength = 3, 
-                  textAlign = "right",
-                  decDigits = 0),
-         format = "html",
-         caption = "The sandflies data.",
-         align = "c",
-         col.names = c("Males",
-                       "Females"),
-         booktabs = TRUE,
-         longtable = FALSE,
-         escape = FALSE) %>%
-   row_spec(0, bold = TRUE)
-}
-```
-
-
-```{r Sandfliesjamovi, fig.show="hold", fig.cap="Software output for the sandflies data.", fig.align="center", out.width="60%"}
-knitr::include_graphics( "jamovi/Sandflies/Sandflies-NoExp.png")
-```
-
-
-
 ::: {.exercise #ComplianceHT}
 [*Dataset*: `Mumps`]
 @soud2009isolation studied the compliance of students with an isolation request following a large mumps outbreak in Kansas in 2006.
@@ -2599,9 +2685,8 @@ and the software output in
 1. Write down the hypotheses.
 1. Compute the proportion of each age group that complied with the isolation request.
 1. Compute the odds of each age group that complied with the isolation request.
-1. Compute the relevant odds ratios, and interpret what these mean.
+1. Compute the relevant ORs, and interpret what these mean.
 1. Determine the $\chi^2$-value and perform a hypothesis to answer the RQ, using the software output.
-1. Write down the conclusion.
 1. Is the test statistically valid?
 :::
 
@@ -2620,8 +2705,6 @@ colnames(MumpsTable) <- c("Complied",
 
 
 
-
-###########################################################
 `r if (knitr::is_html_output()) '<!--'`
 \begin{figure}
 \begin{minipage}{0.48\textwidth}
@@ -2679,7 +2762,6 @@ knitr::include_graphics("jamovi/Mumps/Mumps-Test.png")
 ```
 `r if (knitr::is_latex_output()) '-->'`
 
-#########################################################################
 
 
 
@@ -2722,8 +2804,6 @@ rownames(BagsTab) <- c("$30$ and under",
 
 
 
-
-###########################################################
 `r if (knitr::is_html_output()) '<!--'`
 \begin{figure}
 \begin{minipage}{0.48\textwidth}
@@ -2744,7 +2824,7 @@ rownames(BagsTab) <- c("$30$ and under",
     row_spec(0, bold = TRUE) %>%
     column_spec(0, bold = TRUE)  %>%
     add_header_above( c(" " = 1,
-                        "Brings own bags" = 2),
+                        "Brings bags?" = 2),
                       bold = TRUE,
                       line = TRUE)
 ```
@@ -2785,8 +2865,6 @@ add_header_above( c(" " = 1,
 knitr::include_graphics( "jamovi/ShoppingBags/ShoppingBags-Test.png")
 ```
 `r if (knitr::is_latex_output()) '-->'`
-
-#########################################################################
 
 
 1. Compute the odds of someone bringing a shopping bag, for each age group.
@@ -2931,254 +3009,6 @@ knitr::include_graphics( "jamovi/CrabShells/CrabShellsChisquareTest.png")
 `r if (knitr::is_latex_output()) '-->'`
 
 
-::: {.exercise #EVAdoption}
-@egbue2017mass studied the adoption of electric vehicles (EVs) by a certain group of professional Americans (Table\ \@ref(tab:EV10years)).
-Software output is shown in Fig.\ \@ref(fig:EVjamovi).
-
-1. What *percentage* of people without post-graduate study would buy an EV in the next $10$\ years? \tightlist 
-`r if (knitr::is_html_output()) '(**do not** add the percentage symbol)'`
-`r if( knitr::is_html_output() ) {fitb(num = TRUE, tol = 0.001, answer = 75)}`
-1. What are the *odds* that a person without post-graduate study would buy an EV in the next $10$\ years?  
-`r if( knitr::is_html_output() ) {fitb(num = TRUE, tol = 0.001, answer = 3)}`
-1. Using the output, what is the OR of buying an electric vehicle in the next $10$\ years, comparing those *without* post-grad study to those *with* post-grad study?  
-`r if( knitr::is_html_output() ) {mcq(
-  c(answer = 1.71,
-    0.68,
-    4.28)  )}`
-1. True or false: The CI means that the sample OR is likely to be between\ $0.68$ and\ $4.28$.  
-`r if( knitr::is_html_output() ) {torf(answer = FALSE)}`
-1. The negative proportion in output suggests the statistical validity conditions are not met.
-`r if( knitr::is_html_output() ) {torf(answer = FALSE)}`
-:::
-
-
-```{r}
-data(EVpurchase)
-
-EV10 <- xtabs(Counts ~ Education + PurchaseEV, 
-              data = EVpurchase)
-colnames(EV10) <- c("Yes", 
-                    "No")
-rownames(EV10) <- c("No post-grad", 
-                    "Post-grad study")
-
-```
-
-\begin{figure}
-\begin{minipage}{0.32\textwidth}
-\captionof{table}{Responses to `Would you purchase an electric vehicle in the next $10$ years?' by education\label{tab:EV10years}.}
-\fontsize{8}{12}\selectfont
-```{r}
-knitr::kable( pad(EV10,
-                  surroundMaths = TRUE,
-                  targetLength = 2,
-                  decDigits = 0),
-         format = "latex",
-         booktabs = TRUE,
-         longtable = FALSE,
-         align = "c",
-         escape = FALSE,
-         table.env = "@empty") %>%
-   row_spec(0, bold = TRUE)
-   #kable_styling(font_size = 8) %>% # CANNOT USE THIS IS THE MINIPAGE
-   #column_spec(1, width = "13mm") %>%
-   #column_spec(2, width = "22mm")
-```
-\end{minipage}
-\hspace{0.05\textwidth}
-\begin{minipage}{0.60\textwidth}%
-\centering
-```{r, out.width='92%'}
-knitr::include_graphics( "jamovi/EVs/EVs-CI-both.png")
-```
-\caption{Software output for the EV study.}\label{fig:EVjamovi}
-\end{minipage}
-\end{figure}
-
-
-
-
-```{r EV10years}
-EV10 <- array(dim = c(2, 2))
-
-colnames(EV10) <- c("Yes", 
-                    "No")
-rownames(EV10) <- c("No post-grad", 
-                    "Post-grad study")
-
-EV10[1, ] <- c(24, 8)
-EV10[2, ] <- c(51, 29)
-
-
-#if( knitr::is_latex_output() ) {
-#   kable(EV10,
-#         format = "latex",
-#         longtable = FALSE,
-#         booktabs = TRUE,
-#         caption = "Responses to 'Would you purchase an electric vehicle in the next 10 years?' by education") %>%
-# 	kable_styling(font_size = 8) %>%
-# 	row_spec(0, bold = TRUE)
-#}
-
-if( knitr::is_html_output() ) {
-  kable(pad(EV10,
-                  surroundMaths = TRUE,
-                  targetLength = 2,
-                  decDigits = 0),
-        format = "html",
-        align = "c",
-        longtable = FALSE,
-        booktabs = TRUE,
-        caption = "Responses to 'Would you purchase an electric vehicle in the next $10$ years?' by education.")
-}
-```
-
-<!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r EVjamovi, fig.show="hold", fig.cap="Software output for the EV study.", fig.align="center", out.width="50%"}
-knitr::include_graphics( "jamovi/EVs/EVs-CI-both.png")
-```
-`r if (knitr::is_latex_output()) '-->'`
-
-
-
-`r if (!knitr::is_html_output()) '<!--'`
-`r webexercises::hide()`
-1. The number *without* post-grad study: $24 + 8 = 32$.
-   The *percentage* of people without post-grad study who would buy an EV in the next $10$\ years is $24/32 = 0.75$, or\ $75$%. 
-1. The people with post-grad study are in the *bottom* row.
-   The *odds* of people without post-grad study who would buy an EV in the next $10$\ years is $24/8 = 3$. 
-1. The odds of people *without* post-grad study who would buy an electric vehicle is $24/8 = 3$.  
-   The odds of people *with* post-grad study who would buy an electric vehicle is $51/29 = 1.7586$.  
-   So the OR is $3/1.7586 = 1.706$.
-1. Not at all. 
-   We know *exactly* what the sample OR is (in this sample, it is $1.706$ exactly).
-   CIs always give an interval in which the *population parameter* is likely to be within.
-1. The CI is statistically valid if all the *expected* counts exceed\ $5$.
-   So we don't really know for sure from the given information.
-   But the *observed* counts are all reasonably large, so it is *very probably* statistically valid. 
-`r webexercises::unhide()`
-`r if (!knitr::is_html_output()) '-->'`
-
-
-
-
-
-::: {.exercise #EthiopianFarmers}
-@meresa2023effect investigated Ethiopian farmers' adoption of improved soil and water conservation structures on their farms (Table\ \@ref(tab:FarmersData)).
-Software output is shown in Fig.\ \@ref(fig:farmersjamoviHT).
-
-```{r}
-Farmers <- array(dim = c(2, 2))
-
-colnames(Farmers) <- c("Non-adopter", 
-                       "Adopter")
-
-rownames(Farmers) <- c("$< 0.5$ ha", 
-                       "$\\ge 0.5$ ha")
-
-
-Farmers[1, ] <- c(86, 61)
-Farmers[2, ] <- c(43, 71)
-```
-
-\begin{figure}
-\begin{minipage}{0.38\textwidth}
-\captionof{table}{Adoption of conservation practices by Ethiopian farmers, by farm size\label{tab:FarmersData}.}
-\fontsize{8}{12}\selectfont
-```{r}
-knitr::kable( pad(Farmers,
-                  surroundMaths = TRUE,
-                  targetLength = 2,
-                  decDigits = 0),
-         format = "latex",
-         align = "c",
-         booktabs = TRUE,
-         longtable = FALSE,
-         escape = FALSE,
-         table.env = "@empty") %>%
-   row_spec(0, bold = TRUE)
-```
-\end{minipage}
-\hspace{0.05\textwidth}
-\begin{minipage}{0.54\textwidth}%
-\centering
-```{r, out.width='95%'}
-knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2-pDiff-CITest.png")
-```
-\caption{Software output for the farming study.}\label{fig:farmersjamoviHT}
-\end{minipage}
-\end{figure}
-
-
-
-
-```{r FarmersData}
-if( knitr::is_html_output() ) { 
-  kable(pad(Farmers,
-                  surroundMaths = TRUE,
-                  targetLength = 2,
-                  decDigits = 0),
-        format = "html",
-        align = "c",
-        longtable = FALSE,
-        booktabs = TRUE,
-        caption = "Adoption of conservation practices by Ethiopian farmers, by farm size.")
-}
-```
-
-<!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
-`r if (knitr::is_latex_output()) '<!--'`
-```{r farmersjamoviHT, fig.show="hold", fig.cap="Software output for the farming study.", fig.align="center", out.width="50%"}
-knitr::include_graphics( "jamovi/Farmers/Farmers-Chi2-pDiff-CITest.png")
-```
-`r if (knitr::is_latex_output()) '-->'`
-
-
-1. What *percentage* of small farms are adopters of the environmental practices???? \tightlist
-`r if (knitr::is_html_output()) '(**do not** add the percentage symbol)'`
-`r if( knitr::is_html_output() ) {fitb(num = TRUE, tol = 0.001, answer = 75)}`
-1. What are the *odds* that a small farm adopts the environmental practices?????
-`r if( knitr::is_html_output() ) {fitb(num = TRUE, tol = 0.001, answer = 3)}`
-1. FIX THIS ONE: The OR in the output is given as $2.233$.
-   What does this OR *mean*????????  
-`r if( knitr::is_html_output() ) {mcq(
-  c(answer = 1.71,
-    0.68,
-    4.28)  )}`
-1. True or false: The CI means that the sample OR is likely to be between\ $1.41$ and\ $3.84$.  
-`r if( knitr::is_html_output() ) {torf(answer = FALSE)}`
-1. What is the $\chi^2$-value? \tightlist
-`r if( knitr::is_html_output() ) {mcq(
-  c(answer = 10.7105, 2.2903, 1.3891, 262)  )}`
-1. What is the equivalent $z$-score (to two decimal places)?
-`r if( knitr::is_html_output() ) {fitb(answer = 3.28, tol = 0.01, num = TRUE)}`
-1. Using the $68$--$95$--$99.7$ rule, what is the approximate $P$-value?
-`r if( knitr::is_html_output() ) {longmcq(
-  c(answer = "Smaller than 0.003",
-    "Smaller than 0.05",
-    "Larger than 0.05",
-    "There is not enough information") )}`
-1. From the software output, what is the $P$-value?
-`r if( knitr::is_html_output() ) {mcq(
-  c("10.7105",
-    answer = "0.00107",
-    "2.2903",
-    "There is not enough information")  )}`
-1. Is the alternative hypothesis one- or two-tailed?
-`r if( knitr::is_html_output() ) {longmcq(
-  c("One-tailed",
-    answer = "Two-tailed",
-    "There is not enough information")  )}`
-1. True or false:
-There is *no* evidence of a difference in odds of adopting of conservation practices, for the two far size categories.
-`r if( knitr::is_html_output() ) {torf(answer=FALSE)}`
-1. True or false:
-The test will be statistically valid.
-`r if( knitr::is_html_output() ) {torf(answer=TRUE)}`
-
-:::
-
 `r if( knitr::is_latex_output() ) "\\captionsetup{font=normalsize}"`
 
 
@@ -3199,3 +3029,34 @@ The test will be statistically valid.
 **9.** False.
 :::
 `r if (knitr::is_html_output()) '-->'`
+
+
+
+
+
+
+<!-- ::: {.exercise #OddsRatiosCIEarInf} -->
+<!-- [*Dataset*: `EarInfection`] -->
+<!-- A study of ear infections in Sydney swimmers [@data:smyth:ozdasl] recorded whether people reported an ear infection or not, and where they usually swam. -->
+<!-- Use Fig.\ \@ref(fig:EarInfPSSOutputCI) to answers these questions. -->
+
+<!-- 1. Compute the standard error for the difference between the proportions of people *not* reporting ear infections, comparing non-beach to beach swimmers. -->
+<!-- 1. Compute an approximate $95$%\ CI for the difference between the proportions. -->
+<!-- 1. Write down the $95$%\ CI for the difference between the proportions. -->
+<!-- 1. Interpret the CI. -->
+<!-- 1. Confirm that the odds ratio in the output is correct. -->
+<!-- 1. Use the software output to write down a $95$%\ CI for the odds ratio. -->
+<!-- 1. Interpret the CI. -->
+<!-- 1. Are the CIs statistically valid? -->
+<!-- 1. Construct the summary table for the data. -->
+<!-- ::: -->
+
+<!-- ```{r EarInfPSSOutputCI, fig.show="hold", fig.cap="Software output for the ear-infection data.", fig.align="center", out.width=c("42%", "53%"), fig.show='hold'} -->
+<!-- knitr::include_graphics( "jamovi/EarInfections/EarInfections-Data.png" ) -->
+<!-- knitr::include_graphics( "jamovi/EarInfections/EarInfections-CI-Both.png" ) -->
+<!-- ``` -->
+
+
+
+
+
