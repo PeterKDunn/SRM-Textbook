@@ -2471,7 +2471,6 @@ Part of the data are summarised in
 } else {
    'Table\\ \\@ref(tab:BearTreeData).'
 }`
-.
 
 1. Compute the odds of new damage for both repellents, and hence the OR.
 1. Compute the proportion of trees with new damage for both repellents, and hence the difference between the proportions.
@@ -2504,6 +2503,7 @@ if( knitr::is_latex_output() ) {
         col.names = c("damage",
                       "damage"),
         valign = "t",
+        align = "c",
         escape = FALSE,
         longtable = FALSE,
       booktabs = TRUE) %>%
@@ -2512,7 +2512,10 @@ if( knitr::is_latex_output() ) {
                         "No new" = 1),
                       escape = FALSE,
                       bold = TRUE,
-                      line = FALSE)
+                      line = FALSE) %>% 
+    row_spec(0, bold = TRUE) %>% 
+    row_spec(1, bold = TRUE) %>% # Needed, as usual columns-spec to get bold fails, and this does not bold the numbers in maths mode
+    row_spec(2, bold = TRUE)
 }
 
 
@@ -2576,13 +2579,18 @@ if( knitr::is_latex_output() ) {
         booktabs = TRUE,
         longtable=FALSE,
         escape = FALSE,
+        align = "c",
         valign = "t") %>%
     add_header_above( c("\\ \\\\null \\ " = 1,
                         "B12" = 1,
                         "Not B12" = 1),
                       bold = TRUE,
                       escape = FALSE,
-                      line = FALSE)
+                      line = FALSE) %>% # Causes an error if placed with each table...
+    row_spec(0, bold = TRUE) %>%
+    row_spec(1, bold = TRUE) %>% # Needed, as usual columns-spec to get bold fails, and this does not bold the numbers in maths mode
+    row_spec(2, bold = TRUE)
+
   
 }
 if( knitr::is_html_output() ) {
@@ -2606,12 +2614,12 @@ if( knitr::is_latex_output() ) {
                        format = "latex",
                        label = "BearsB12Data",
                        caption = "Left: the number of trees with new damage by bears, according to different repellents. Right: the number of vegetarian and non-vegetarian women who are (and are not) B12 deficient.") %>% 
-    kable_styling(font_size = 8) %>%
-    column_spec(1, bold = TRUE) %>% # Causes an error if placed with each table...
-    row_spec(1, bold = TRUE)  # Causes an error if placed with each table...
+    kable_styling(font_size = 8) # %>%
+#    column_spec(1, bold = TRUE) %>% # Causes an error if placed with each table...
+#    row_spec(1, bold = TRUE)  # Causes an error if placed with each table...
   
   out2 <- prepareSideBySideTable(out, 
-                                 gap = "\\qquad") 
+                                 gap = "\\qquad\\qquad") 
   out2
 }
 ```
