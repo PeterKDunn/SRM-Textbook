@@ -93,7 +93,7 @@ text(x = mean( c(meanPerm,
      y = 1.75,
      pos = 3,
      cex = 0.95,
-     labels = "Three std. devs")
+     labels = "Three std devs")
 text(x = mean( c(meanPerm,
                  locationOfOutliers)),
      y = 1.75,
@@ -151,7 +151,7 @@ text(x = mean( c(meanPerm,
      y = 1.75,
      pos = 3,
      cex = 0.95,
-     labels = "Three std. devs")
+     labels = "Three std devs")
 text(x = mean( c(meanPerm,
                  locationOfOutliersSMALL)),
      y = 1.75,
