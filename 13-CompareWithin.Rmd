@@ -1334,7 +1334,7 @@ Create a summary table for the data in Example\ \@ref(exm:CaseProfileRunning).
 
 :::{.exercise #CompareWithinWCTennis}
 [*Dataset*: `WCTennis`]
-@alberca2022sprint record the push-time for French wheelchair tennis players, while holding a racquet and not holding a racquet (Table\ \@ref(tab:WCTennis); @alberca2022sprintDATA).
+@alberca2022sprint recorded the push-time for French wheelchair tennis players, while holding a racquet and not holding a racquet (Table\ \@ref(tab:WCTennis); @alberca2022sprintDATA).
 
 1. What do the differences mean (as given in the table)?
 2. Create a plot of the data.
@@ -1361,7 +1361,7 @@ if( knitr::is_latex_output() ) {
         longtable = FALSE,
         escape = FALSE,
         align = "c",
-        caption = "The wheelchair-tennis data.") %>%
+        caption = "The wheelchair-tennis data. One observation is missing.") %>%
     row_spec(0, bold = TRUE) %>%
     add_header_above( c(" " = 1,
                         "Push time (in s)" = 2,
@@ -1378,7 +1378,7 @@ if( knitr::is_html_output() ) {
         align = "c",
         booktabs = TRUE,
         longtable = FALSE,
-        caption = "The wheelchair-tennis data.") %>%
+        caption = "The wheelchair-tennis data. One observation is missing.") %>%
       row_spec(0, bold = TRUE) %>%
       add_header_above( c(" " = 1,
                           "Push time (in s)" = 2,
@@ -1388,6 +1388,95 @@ if( knitr::is_html_output() ) {
 }
 
 ```
+
+
+
+:::{.exercise #CompareWithinJumping}
+[*Dataset*: `Jumping`]
+@hebert2023effect recorded double-legged jumping distance for $80$ healthy people, when they wore both shoes and were barefoot (Table\ \@ref(tab:Jumping)).
+
+1. What do the differences mean (as given in the table)?
+2. Create a plot of the data.
+3. Create a numerical summary table for the data.
+:::
+
+
+```{r Jumping}
+data(Jumping) ### Exercise
+
+Jumping$Diff <- Jumping$Shoes - Jumping$Barefoot
+
+colnames(WCTennis) <- c("With shoes (in cm)",
+                        "Barefoot (in cm)",
+                        "Difference (in cm)")
+rownames(Jumping) <- 1:80
+
+if( knitr::is_latex_output() ) {
+  T1 <- kable(pad(Jumping[1:5, ],
+            targetLength = c(5, 5, 5),
+            decDigits = c(2, 2, 2) ),
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        row.names = TRUE,
+        col.names = c("Shoes",
+                      "Barefoot",
+                      "Difference (in cm)"),
+        escape = FALSE,
+        align = "c") %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c(" " = 1,
+                        "Distance (in cm)" = 2,
+                        " " = 1),
+                      bold = TRUE,
+                      line = TRUE)
+  
+  T2 <- kable(pad(Jumping[76:80, ],
+            targetLength = c(5, 5, 5),
+            decDigits = c(2, 2, 2) ),
+        format = "latex",
+        booktabs = TRUE,
+        row.names = TRUE,
+        col.names = c("Shoes",
+                      "Barefoot",
+                      "Difference (in cm)"),
+        longtable = FALSE,
+        escape = FALSE,
+        align = "c") %>%
+    row_spec(0, bold = TRUE) %>%
+    add_header_above( c(" " = 1,
+                        "Distance (in cm)" = 2,
+                        " " = 1),
+                      bold = TRUE,
+                      line = TRUE)
+  
+
+
+  out <- knitr::kables(list(T1, T2),
+                       format = "latex",
+                       label = "Jumping",
+                       caption = "Jumping distances for athletes, with and without shoes (the first five and the last five observations).") %>% 
+    kable_styling(font_size = 8)
+  
+  out2 <- prepareSideBySideTable(out) 
+  out2
+}
+if( knitr::is_html_output() ) {
+  kable(pad(Jumping,
+            targetLength = c(5, 5, 5),
+            decDigits = c(2, 2, 2) ),
+        format = "latex",
+        booktabs = TRUE,
+        longtable = FALSE,
+        escape = FALSE,
+        align = "c",
+        caption = "Jumping distances for athletes, with and without shoes.") %>%
+    row_spec(0, bold = TRUE) %>%
+    kable_styling(font = 8)
+}
+
+```
+
 
 
 
