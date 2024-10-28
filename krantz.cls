@@ -1119,80 +1119,136 @@
     \if@restonecol\twocolumn\fi
     }
     
+
+
+\newcommand*\l@part[2]{%
+  \ifnum \c@tocdepth >-2\relax
+    \addpenalty{-\@highpenalty}%
+    \addvspace{2.25em \@plus\p@}%
+    \setlength\@tempdima{3em}%
+    \begingroup
+      \parindent \z@ \rightskip \@pnumwidth
+      \parfillskip -\@pnumwidth
+      {\leavevmode
+       \large \bfseries #1\hfil
+       \hb@xt@\@pnumwidth{\hss #2%
+                          \kern-\p@\kern\p@}}\par
+       \nobreak
+         \global\@nobreaktrue
+         \everypar{\global\@nobreakfalse\everypar{}}%
+    \endgroup
+  \fi}
+
   
-\def\draw@part#1#2{%
-  \addpenalty{-\@highpenalty}%
-  \vskip1em plus\p@
-  \@tempdima1.5em
-  \begingroup
-    \parindent\z@\rightskip\@pnumwidth
-    \parfillskip-\rightskip
-    \bfseries
-    \leavevmode
-    \advance\leftskip\@tempdima
-    \hskip-\leftskip
-    {#1\hfil}\nobreak
-      \if@pdf
-      \else
-        \hfil\nobreak\hb@xt@\@pnumwidth{\hss #2}%
-\fi
-    \par
-    \penalty\@highpenalty\endgroup}
+%%\def\draw@part#1#2{%
+%%  \addpenalty{-\@highpenalty}%
+%%  \vskip1em plus\p@
+%%  \@tempdima1.5em
+%%  \begingroup
+%%    \parindent\z@\rightskip\@pnumwidth
+%%    \parfillskip-\rightskip
+%%    \bfseries
+%%    \leavevmode
+%%    \advance\leftskip\@tempdima
+%%    \hskip-\leftskip
+%%    {#1\hfil}\nobreak
+%%      \if@pdf
+%%      \else
+%%        \hfil\nobreak\hb@xt@\@pnumwidth{\hss #2}%
+%%\fi
+%%    \par
+%%    \penalty\@highpenalty\endgroup}
+%%
+%%\let\toc@draw\relax
+%%%
+%%\def\l@part#1#2{% 
+%%\toc@draw
+%% \gdef\toc@draw{\draw@part{\large #1}{\large #2}}}
 
-\let\toc@draw\relax
-%
-\def\l@part#1#2{% 
-\toc@draw
- \gdef\toc@draw{\draw@part{\large #1}{\large #2}}}
+%%\def\l@fm#1#2{%
+%%  \toc@draw
+%%  \gdef\toc@draw{\draw@fm{#1}{#2}}}
+%%\def\@pnumwidth{1.8em}
+%%\def\draw@fm#1#2{%
+%%  \addpenalty{-\@highpenalty}%
+%%  \vskip1em plus\p@
+%%  \@tempdima1.5em
+%%  \begingroup
+%%    \parindent\z@\rightskip\@pnumwidth
+%%    \parfillskip-\rightskip
+%%    \bfseries
+%%    \leavevmode
+%%    \advance\leftskip\@tempdima
+%%    \hskip-\leftskip
+%%    {#1\hfil}\nobreak
+%%      \if@pdf
+%%      \else
+%%        \hfil\nobreak\hb@xt@\@pnumwidth{\hss #2}%
+%%\fi
+%%    \par
+%%    \penalty\@highpenalty\endgroup}
 
-\def\l@fm#1#2{%
-  \toc@draw
-  \gdef\toc@draw{\draw@fm{#1}{#2}}}
-\def\@pnumwidth{1.8em}
-\def\draw@fm#1#2{%
-  \addpenalty{-\@highpenalty}%
-  \vskip1em plus\p@
-  \@tempdima1.5em
-  \begingroup
-    \parindent\z@\rightskip\@pnumwidth
-    \parfillskip-\rightskip
-    \bfseries
-    \leavevmode
-    \advance\leftskip\@tempdima
-    \hskip-\leftskip
-    {#1\hfil}\nobreak
-      \if@pdf
-      \else
-        \hfil\nobreak\hb@xt@\@pnumwidth{\hss #2}%
-\fi
-    \par
-    \penalty\@highpenalty\endgroup}
-    
+\newcommand*\l@fm[2]{%
+  \ifnum \c@tocdepth >\m@ne
+    \addpenalty{-\@highpenalty}%
+    \vskip 1.0em \@plus\p@
+    \setlength\@tempdima{1.5em}%
+    \begingroup
+      \parindent \z@ \rightskip \@pnumwidth
+      \parfillskip -\@pnumwidth
+      \leavevmode \bfseries
+      \advance\leftskip\@tempdima
+      \hskip -\leftskip
+      #1\nobreak\hfil
+      \nobreak\hb@xt@\@pnumwidth{\hss #2%
+                                 \kern-\p@\kern\p@}\par
+      \penalty\@highpenalty
+    \endgroup
+  \fi}    
+
+\newcommand*\l@chapter[2]{%
+  \ifnum \c@tocdepth >\m@ne
+    \addpenalty{-\@highpenalty}%
+    \vskip 1.0em \@plus\p@
+    \setlength\@tempdima{1.5em}%
+    \begingroup
+      \parindent \z@ \rightskip \@pnumwidth
+      \parfillskip -\@pnumwidth
+      \leavevmode \bfseries
+      \advance\leftskip\@tempdima
+      \hskip -\leftskip
+      #1\nobreak\hfil
+      \nobreak\hb@xt@\@pnumwidth{\hss #2%
+                                 \kern-\p@\kern\p@}\par
+\if@ChapterTOCs {\it\draw@authors}\fi%
+      \penalty\@highpenalty
+    \endgroup
+  \fi}
 
 
-  \def\l@chapter#1#2{%
-  \toc@draw
-  \gdef\toc@draw{\draw@chapter{#1}{#2}}}
-\def\@pnumwidth{1.8em}
-\def\draw@chapter#1#2{%
-  \addpenalty{-\@highpenalty}%
-  \vskip1em plus\p@
-  \@tempdima1.5em
-  \begingroup
-    \parindent\z@\rightskip\@pnumwidth
-    \parfillskip-\rightskip
-    \bfseries
-    \leavevmode
-    \advance\leftskip\@tempdima
-    \hskip-\leftskip
-    {#1\hfil}\nobreak
-      \if@pdf
-      \else
-        \hfil\nobreak\hb@xt@\@pnumwidth{\hss #2}%
-\fi
-    \par
-    {\it\draw@authors}%
-    \penalty\@highpenalty\endgroup}
+%%  \def\l@chapter#1#2{%
+%%  \toc@draw
+%%  \gdef\toc@draw{\draw@chapter{#1}{#2}}}
+%%\def\@pnumwidth{1.8em}
+%%\def\draw@chapter#1#2{%
+%%  \addpenalty{-\@highpenalty}%
+%%  \vskip1em plus\p@
+%%  \@tempdima1.5em
+%%  \begingroup
+%%    \parindent\z@\rightskip\@pnumwidth
+%%    \parfillskip-\rightskip
+%%    \bfseries
+%%    \leavevmode
+%%    \advance\leftskip\@tempdima
+%%    \hskip-\leftskip
+%%    {#1\hfil}\nobreak
+%%      \if@pdf
+%%      \else
+%%        \hfil\nobreak\hb@xt@\@pnumwidth{\hss #2}%
+%%\fi
+%%    \par
+%%    {\it\draw@authors}%
+%%    \penalty\@highpenalty\endgroup}
 \def\toc@author#1#2{%
   \if@firstauthor
     \@firstauthorfalse
@@ -1225,58 +1281,64 @@
   \gdef\last@author{}%
   \@firstauthortrue
   \setcounter{numauthors}{0}}
-\newlength\section@toc@skip
-\section@toc@skip1.5em
-\newlength\SectionTOCWidth
-\SectionTOCWidth2.3em
-\def\l@section#1#2{%
-  \toc@draw
-  \gdef\toc@draw{\draw@section{#1}{#2}}}
-\def\draw@section#1#2{%
-  \@dottedtocline{1}{\section@toc@skip}{\SectionTOCWidth}{#1 }{{
-\tocfont #2}}}
-\newlength\subsection@toc@skip
-\subsection@toc@skip\section@toc@skip
-\advance\subsection@toc@skip\SectionTOCWidth
-\newlength\SubSectionTOCWidth
-\SubSectionTOCWidth3.2em
-\def\l@subsection#1#2{%
-  \toc@draw
-  \gdef\toc@draw{\draw@subsection{#1}{#2}}}
-\def\draw@subsection#1#2{%
-  \@dottedtocline{2}{\subsection@toc@skip}{\SubSectionTOCWidth}{#1}{{
-\tocfont #2}}}
-\newlength\subsubsection@toc@skip
-\subsubsection@toc@skip\subsection@toc@skip
-\advance\subsubsection@toc@skip\SubSectionTOCWidth
-\newlength\SubSubSectionTOCWidth
-\SubSubSectionTOCWidth4.1em
-\def\l@subsubsection#1#2{%
-  \toc@draw
-  \gdef\toc@draw{\draw@subsubsection{#1}{#2}}}
-\def\draw@subsubsection#1#2{%
-  \@dottedtocline{3}{\subsubsection@toc@skip}{\SubSubSectionTOCWidth}{#1}{{
-\tocfont #2}}}
-\newlength\paragraph@toc@skip
-\paragraph@toc@skip\subsubsection@toc@skip
-\advance\paragraph@toc@skip\SubSubSectionTOCWidth
-\newlength\ParagraphTOCWidth
-\ParagraphTOCWidth4.1em
-\def\l@paragraph#1#2{%
-  \toc@draw
-  \gdef\toc@draw{\draw@paragraph{#1}{#2}}}
-\def\draw@paragraph#1#2{%
-  \@dottedtocline{4}{\paragraph@toc@skip}{\ParagraphTOCWidth}{#1}{{
-\tocfont #2}}}
-\newlength\subparagraph@toc@skip
-\subparagraph@toc@skip\paragraph@toc@skip
-\advance\subparagraph@toc@skip\ParagraphTOCWidth
-\def\l@subparagraph#1#2{%
-  \toc@draw
-  \gdef\toc@draw{\draw@subparagraph{#1}{#2}}}
-\def\draw@subparagraph#1#2{%
-  \@dottedtocline{5}{\subparagraph@toc@skip}{6em}{#1}{{
-\tocfont #2}}}
+%%\newlength\section@toc@skip
+%%\section@toc@skip1.5em
+%%\newlength\SectionTOCWidth
+%%\SectionTOCWidth2.3em
+%%\def\l@section#1#2{%
+%%  \toc@draw
+%%  \gdef\toc@draw{\draw@section{#1}{#2}}}
+%%\def\draw@section#1#2{%
+%%  \@dottedtocline{1}{\section@toc@skip}{\SectionTOCWidth}{#1 }{{
+%%\tocfont #2}}}
+%%\newlength\subsection@toc@skip
+%%\subsection@toc@skip\section@toc@skip
+%%\advance\subsection@toc@skip\SectionTOCWidth
+%%\newlength\SubSectionTOCWidth
+%%\SubSectionTOCWidth3.2em
+%%\def\l@subsection#1#2{%
+%%  \toc@draw
+%%  \gdef\toc@draw{\draw@subsection{#1}{#2}}}
+%%\def\draw@subsection#1#2{%
+%%  \@dottedtocline{2}{\subsection@toc@skip}{\SubSectionTOCWidth}{#1}{{
+%%\tocfont #2}}}
+%%\newlength\subsubsection@toc@skip
+%%\subsubsection@toc@skip\subsection@toc@skip
+%%\advance\subsubsection@toc@skip\SubSectionTOCWidth
+%%\newlength\SubSubSectionTOCWidth
+%%\SubSubSectionTOCWidth4.1em
+%%\def\l@subsubsection#1#2{%
+%%  \toc@draw
+%%  \gdef\toc@draw{\draw@subsubsection{#1}{#2}}}
+%%\def\draw@subsubsection#1#2{%
+%%  \@dottedtocline{3}{\subsubsection@toc@skip}{\SubSubSectionTOCWidth}{#1}{{
+%%\tocfont #2}}}
+%%\newlength\paragraph@toc@skip
+%%\paragraph@toc@skip\subsubsection@toc@skip
+%%\advance\paragraph@toc@skip\SubSubSectionTOCWidth
+%%\newlength\ParagraphTOCWidth
+%%\ParagraphTOCWidth4.1em
+%%\def\l@paragraph#1#2{%
+%%  \toc@draw
+%%  \gdef\toc@draw{\draw@paragraph{#1}{#2}}}
+%%\def\draw@paragraph#1#2{%
+%%  \@dottedtocline{4}{\paragraph@toc@skip}{\ParagraphTOCWidth}{#1}{{
+%%\tocfont #2}}}
+%%\newlength\subparagraph@toc@skip
+%%\subparagraph@toc@skip\paragraph@toc@skip
+%%\advance\subparagraph@toc@skip\ParagraphTOCWidth
+%%\def\l@subparagraph#1#2{%
+%%  \toc@draw
+%%  \gdef\toc@draw{\draw@subparagraph{#1}{#2}}}
+%%\def\draw@subparagraph#1#2{%
+%%  \@dottedtocline{5}{\subparagraph@toc@skip}{6em}{#1}{{
+%%\tocfont #2}}}
+
+\newcommand*\l@section{\@dottedtocline{1}{1.5em}{2.3em}}
+\newcommand*\l@subsection{\@dottedtocline{2}{3.8em}{3.2em}}
+\newcommand*\l@subsubsection{\@dottedtocline{3}{7.0em}{4.1em}}
+\newcommand*\l@paragraph{\@dottedtocline{4}{10em}{5em}}
+\newcommand*\l@subparagraph{\@dottedtocline{5}{12em}{6em}}
 
 \def\@dottedtocline#1#2#3#4#5{%
   \ifnum #1>\c@tocdepth
@@ -1505,7 +1567,7 @@
     \@starttoc{lof}%
     \if@restonecol\twocolumn\fi
     }
-\newcommand*\l@figure{\@dottedtocline{1}{1.5em}{2.3em}}
+\newcommand*\l@figure{\@dottedtocline{1}{1.5em}{2.8em}}
 \newcommand\listoftables{%
     \if@twocolumn
       \@restonecoltrue\onecolumn
