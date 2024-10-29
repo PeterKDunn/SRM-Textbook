@@ -14,11 +14,17 @@
 
 ### SET UP 
 
+# splitFiles <- c(20, 
+#                 45, # End of page 1
+#                 80, 
+#                 124,# End of page 2
+#                 143, 
+#                 1540)
 splitFiles <- c(20, 
-                45, # End of page 1
-                80, 
-                124,# End of page 2
-                150, 
+                46, # End of page 1
+                76, 
+                108,# End of page 2
+                143, 
                 1540)
 # Where to split the data file, for page 1, to create two columns. 
 # So if e.g., split = 20, we will have 20 files listed, then move to col 2, then another 20 files listed.
@@ -57,6 +63,10 @@ findDataFileMentions <- function(){
   ### Consolidate
   dataFiles <- sort(c(dataFilesPerChapter, dataFilesPerChapterExercises))
   
+  ### Now remove all mentioned of datafiles in the Answers:
+  dataFilesInAnswersChapter <- grepl("App-Answers", dataFiles)
+  dataFiles <- dataFiles[ !dataFilesInAnswersChapter ]
+
   return(dataFiles)
 }
 
@@ -248,88 +258,21 @@ classifyDataMentionsTypes <- function(dataFiles){
 ######################################################
 sortDataFilesByChapter <- function(dataFiles, chapterNumbers){
   # Create a  list()  with an entry for each chapter, giving a vector of data file names 
-  filesPerChapter <- table(chapterNumbers)
-  startNewChapter <- cumsum( c(1, filesPerChapter) )
-  numberChapters <- length(filesPerChapter)
-
-  # Initialise the list
-  listDataFilesByChapter <- list()
   
-#cat(">>> numberChapters:", numberChapters, "\n")
-
-    # Now order, with Exercises at end (and rest alpha?)
-  for (j in 1 : numberChapters ) { # For each chapter j with data used
-#    cat("--------\nj:", j)
-    startSort <- startNewChapter[j]
-    stopSort <-  startNewChapter[j + 1] - 1 
-
-    if ( j == length(filesPerChapter)) {
-      stopSort <- as.numeric(chapterNumbers[ length(chapterNumbers)] )
-    }
-    
-    # Sort the files within this chapter j
-    
-    filesUsedThisChapter    <- dataFiles[startSort : stopSort]    <- sort(dataFiles[startSort : stopSort])
-    #    filesUsedThisChapterRaw <- fileUsedRaw[startSort : stopSort] <- sort(fileUsedRaw[startSort : stopSort])
-    
-    # Remove duplicates WITHIN CHAPTERS
-    # Often we have [Dataset: Fred] when an exercise is declared, but we also use the data to (e.g.) create a table,
-    # so we *also* have data(Fred).
-    # So, we often have Fred (Exercise) and Fred listed in teh one CHAPTER.
-    #
-    # For these purposes, we can probably assume that if *both* appear, it is a 'duplicate'. 
-    # 
-    # THIS IS NOT FOOLPROOF THOUGH!
-    #
-    # So we need to strip the (Exercise) when looking for duplicates, but KEEP the (Exercise) version 
-    # of the usage: filesUsedThisChapterStripped
-    filesUsedThisChapter <- filesUsedThisChapter[ !duplicated(filesUsedThisChapter) ]
-    
-    # If data, and exercise
-    for (k in (1:length(filesUsedThisChapter)) ){
-      repeatedFileInExercise <- paste0(filesUsedThisChapter[k],"  (Exercise)") %in% filesUsedThisChapter
-      if (repeatedFileInExercise) {
-        # Then the data file is listed as data(fred) and data(fred)  (Exercise)
-#cat(filesUsedThisChapter[k], "YES!\n")
-        filesUsedThisChapter[k] <- NA # Replace with NA
-#cat(filesUsedThisChapter[k], "YES!\n")
-      }
-    } 
-#cat("vvvvvvvvvvvv\n")
-#print( filesUsedThisChapter)
-#cat("==========\n")
-#print(-which(is.na(filesUsedThisChapter)))
-#cat("^^^^^^^^^^^\n")
-  if ( any(is.na(filesUsedThisChapter)) ){
-filesUsedThisChapter <- filesUsedThisChapter[ -which(is.na(filesUsedThisChapter))] # Now, remove the NAs
-}
-    
-#print(filesUsedThisChapter)
-    if (length(filesUsedThisChapter) > 2) {
-      fileList <- paste( paste0("\"", 
-                                filesUsedThisChapter,
-                                "\""),
-                         collapse = ", ") 
-      fileList <- paste0("c(",
-                         fileList,
-                         ")" )
-    } else {
-      fileList <- paste0("c(\"",
-                         filesUsedThisChapter,
-                         "\")")
-    }
-    listName <- unique(chapterNumbers)[j]
-    parseText <- paste0("listDataFilesByChapter$Chap", 
-                        listName,
-                        " <- ",
-                        fileList)
-    
-    # DO NOT include the solutions chapter (currently, chapter 53):
-    if (listName != 53 ){
-      eval(parse(text = parseText))
-    }
-  }
-#cat("---\n")
+  # Group data files by chapter, in a list
+  listDataFilesByChapter <- lapply(unique(chapterNumbers), 
+                                   function(chap) {
+                                     unique(dataFiles[chapterNumbers == chap] ) # unique to remove repeats
+                                   })
+  names(listDataFilesByChapter) <- paste("Chapter ", 
+                                         unique(chapterNumbers), sep = " ")
+  
+  # Alphabetical order
+  listDataFilesByChapter <- lapply(listDataFilesByChapter, sort)
+  #cat("--------------------------------------------------------------------- RESULT\n")
+  #print(listDataFilesByChapter)
+  
+  
   return(listDataFilesByChapter)
 }
 
@@ -337,7 +280,7 @@ filesUsedThisChapter <- filesUsedThisChapter[ -which(is.na(filesUsedThisChapter)
 
 
 
-###
+######################################################
 addHyperLinks <- function(fileNames){
   
   # fileNames is a *list*, with entries like "fileNames$Chap07" containing all the data fies for that chapter.
@@ -371,10 +314,10 @@ addHyperLinks <- function(fileNames){
 }
 
 
-###
+######################################################
 writeDataFileList <- function(fileNames, 
                               splitFiles, # Where to break columns
-                              addLinks = FALSE){ # In TML, add links 
+                              addLinks = FALSE){ # In HTML only, add links 
   
   # Prep: define useful bits
   numberOfDataFiles <- sum(unlist(lapply(fileNames, length)))
@@ -388,7 +331,8 @@ writeDataFileList <- function(fileNames,
   startRightColumns <- splitLineNumbers[ 1 + seq(1, lengthSplitLineNumbers, by = 2)]
   
   endLeftColumns <- startRightColumns - 1
-  endRightColumns <- c(startLeftColumns - 1, numberOfDataFiles)
+  endRightColumns <- c(startLeftColumns - 1, 
+                       numberOfDataFiles)
   startRightColumns <- startRightColumns[1 : (length(startRightColumns) - 1)]
   
   startPage <- startLeftColumns 
@@ -397,16 +341,24 @@ writeDataFileList <- function(fileNames,
   numberOfPages <- length(splitFiles) / 2
   numberOfChapters <- length(fileNames)
   
-  numberFilesPerChapter <- unlist(lapply(fileNames, length))
+  numberFilesPerChapter <- unlist(lapply(fileNames, 
+                                         length))
   startChapter <- cumsum( c(1, numberFilesPerChapter) )
   startChapter <- startChapter[1 : (length(startChapter) - 1 )]
   names(startChapter) <- names(numberFilesPerChapter)
 
-  chapterNumbers <- names(unlist(lapply(fileNames, length)))
-  chapterNumbersForEachDataFile <- rep(chapterNumbers, unlist(lapply(fileNames, length)))
-  chapterNumbersForEachDataFile <- substr(chapterNumbersForEachDataFile,
-                                          start = 5,
-                                          stop = 6)
+  # Get chapter numbers for each data file
+  chapterNumbers <- names(unlist(lapply(fileNames, 
+                                        length)))
+  #cat("chapterNumbers =", chapterNumbers, "\n")
+  chapterNumbersForEachDataFile <- rep(chapterNumbers, 
+                                       unlist(lapply(fileNames, length)))
+  #cat("A: chapterNumbersForEachDataFile = ", chapterNumbersForEachDataFile, "\n")
+  #chapterNumbersForEachDataFile <- substr(chapterNumbersForEachDataFile,
+  #                                        start = 5,
+  #                                        stop = 6)
+  #cat("B: chapterNumbersForEachDataFile = ", chapterNumbersForEachDataFile, "\n")
+
   # Remove leading zeros
   leadingZeros <- substr(chapterNumbersForEachDataFile, 1, 1) == "0"
   for (i in 1:length(leadingZeros)){
@@ -417,11 +369,11 @@ writeDataFileList <- function(fileNames,
     }
   }
   
-  
+#  cat("Number of data files", numberOfDataFiles, "\n")
   for (i in 1:numberOfDataFiles){
 
-    # Only need the two columns for LateX; it looks silly in HTML
-    if ( is_latex_output()) {
+    # Only need the two columns for LaTeX; it looks silly in HTML
+    if ( !addLinks ) {
       if ( i %in% startPage){
         # START PAGE with column set-up info for the whole PAGE
         cat(':::::: {.cols data-latex=\"[T]\"}\n')
@@ -430,9 +382,10 @@ writeDataFileList <- function(fileNames,
     }    
 
     if (i %in% startChapter){
-      cat("\n\\medskip\n**Chapter ",
+      cat("\n\\medskip\\goodbreak\n**",
           sub("^0+", "", chapterNumbersForEachDataFile[i]), # Remove any leading zeros
-          "**\n\n")
+          "**\n\n",
+          sep = "")
     }
     
     # PRINT DATA FILE INFO
@@ -472,8 +425,8 @@ writeDataFileList <- function(fileNames,
            "\n") 
     }
     
-    # Only need the two columns for LateX; it looks silly in HTML
-    if ( is_latex_output()) {
+    # Only need the two columns for LaTeX; it looks silly in HTML
+    if ( !addLinks ) {
       if ( i %in% startRightColumns){
         cat('::: \n')
         cat('::: {.col data-latex=\"{0.03\\textwidth}\"} \n')
@@ -486,7 +439,7 @@ writeDataFileList <- function(fileNames,
     }
     
     # Only need the two columns for LateX; it looks silly in HTML
-    if ( is_latex_output()) {
+    if ( !addLinks ) {
       if (i %in% endRightColumns ){ 
         cat(':::\n')
         cat('::::::\n')
@@ -499,7 +452,7 @@ writeDataFileList <- function(fileNames,
 
 ######################################################
 ### DO THE EXTRACTION ###
-dFiles <- findDataFileMentions() # A list of the *lines* that contains mentions of data files
+dFiles <- findDataFileMentions() # A list text of the *lines* that contains mentions of data files
 dFiles1 <- cleanDataFileCalls(dFiles) # Remove trailing text and comments
 out <- classifyDataMentionsTypes(dFiles1) # Find whether mentioned in the chapter, or in an exercise
 chapNum <- out$chapNumbers
