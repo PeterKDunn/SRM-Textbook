@@ -1334,7 +1334,7 @@
 %%  \@dottedtocline{5}{\subparagraph@toc@skip}{6em}{#1}{{
 %%\tocfont #2}}}
 
-\newcommand*\l@section{\@dottedtocline{1}{1.5em}{2.3em}}
+\newcommand*\l@section{\@dottedtocline{1}{1.5em}{2.8em}}
 \newcommand*\l@subsection{\@dottedtocline{2}{3.8em}{3.2em}}
 \newcommand*\l@subsubsection{\@dottedtocline{3}{7.0em}{4.1em}}
 \newcommand*\l@paragraph{\@dottedtocline{4}{10em}{5em}}
