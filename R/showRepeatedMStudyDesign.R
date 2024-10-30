@@ -91,25 +91,25 @@ showRepeatedMStudyDesign <- function(intervention = FALSE,
          lwd = 2)
   
   ### INDIVIDUALS boxes
-  polygon( x = c(0.1, 0.375, 0.375, 0.1),
+  polygon( x = c(0.1, 0.35, 0.35, 0.1), # LEFT
            y = c(0.45, 0.45, 0.25, 0.25),
            lwd = 4,
            col = IndividualColour,
            border = IndividualColour)
   
-  polygon( x = c(0.425, 0.7, 0.7, 0.425),
+  polygon( x = c(0.45, 0.7, 0.7, 0.45), # RIGHT
            y = c(0.45, 0.45, 0.25, 0.25),
            lwd = 4,
            col = IndividualColour,
            border = IndividualColour)
   
-  polygon( x = c(0.375, 0.425, 0.425, 0.375),
+  polygon( x = c(0.35, 0.45, 0.45, 0.35), # MIDDLE GAP
            y = c(0.45, 0.45, 0.25, 0.25),
            lwd = 4,
            col = makeTransparent(IndividualColour),
            border = IndividualColour)
 
-  ### STATES
+  ### STATES: Add the two comparison names, and the boxes
   diagram::textrect( mid = c(0.25, 0.7),
                      radx = 0.10,
                      rady = 0.07,
@@ -124,6 +124,7 @@ showRepeatedMStudyDesign <- function(intervention = FALSE,
                      lcol = ExplanatoryColour,
                      shadow.size = 0,
                      lab = stateNames[2])
+
   
   ### ADD intervention
   if (intervention) {
@@ -143,23 +144,6 @@ showRepeatedMStudyDesign <- function(intervention = FALSE,
     text(x = 0.4,
          y = 0.05,
          labels = interventionName)
-    
-   # segments(x0 = 0.4,
-  #         x1 = 0.4,
-   #        y0 = 0.15,
-  #         y1 = 0.5,
-   #        angle = 15,
-    #       lty = 2, 
-     #      col = "grey",
-    #       length = 0.1,
-    #       lwd = 2)
-    # segments(x0 = 0.4,
-    #          x1 = 0.4,
-    #          y0 = 0.07, 
-    #          y1 = 0.2,
-    #          col = "grey",
-    #          lty = 2,
-    #          lwd = 2)
   }
   if ( !is.na(interventionName)) {
     text(x = 0.4,
