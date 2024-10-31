@@ -45,31 +45,38 @@ polygon( x = c(2, 2, 4, 4),
 
 # y-"Ticks"
 segments( x0 = 2,
-          x1 = 1.95,
+          x1 = 1.97,
+          y0 = seq(0, 4.8, by = 0.2),
+          y1 = seq(0, 4.8, by = 0.2) )
+
+segments( x0 = 2,
+          x1 = 1.94,
           y0 = 0, 
           y1 = 0,
           col = greyCol)
 segments( x0 = 2,
-          x1 = 1.95,
+          x1 = 1.94,
           y0 = 1, 
           y1 = 1,
           col = greyCol)
 segments( x0 = 2,
-          x1 = 1.95,
+          x1 = 1.94,
           y0 = 2, 
           y1 = 2,
           col = greyCol)
 segments( x0 = 2,
-          x1 = 1.95,
+          x1 = 1.94,
           y0 = 3, 
           y1 = 3,
           col = greyCol)
 segments( x0 = 2,
-          x1 = 1.95,
+          x1 = 1.94,
           y0 = 4, 
           y1 = 4,
           col = greyCol)
-text( x = 2,
+
+
+text( x = 1.95,
       y = 0:4,
       pos = 2,
       labels = 0:4,
