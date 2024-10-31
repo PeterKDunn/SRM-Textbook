@@ -13,7 +13,7 @@ rad2deg <- function(x) {
 
 #####################################################################################
 # Plot wheel function
-plotWheel <- function(wheelSize = c(10, 4), numberColours){
+plotWheel <- function(wheelSize = c(10, 4), isLaTeX = is_latex_output(), numberColours){
 
   DD <- wheelSize[1]
   dd <- wheelSize[2]
@@ -140,6 +140,7 @@ plotSpinningWheel <- function(angle,
                               shadowColour =  rgb(255, 255, 255, 
                                                   max = 255, 
                                                   alpha = 55),
+                              isLaTeX = is_latex_output(),
                               main = "Rolling...") {
   
   # angle is the *middle* of each segment, where the ball lies
@@ -147,38 +148,60 @@ plotSpinningWheel <- function(angle,
 
   sectorAngle <- 360/37 # Angle of each of the 37 segments, IN DEGREES
 
-  # Colour info
+  # Colour info: Which sectors to make 'red'
   colRed <- c(
     seq( 1, 10, by = 2),
     seq(19, 28, by = 2),
     seq(12, 18, by = 2),
     seq(30, 36, by = 2)
   )
+  # By default, set up every sector to be black (and later change those that need to be red)
   numberColours <- rep(NA, 38)
-  numberColours <- rep( rgb(0.25, 0.25, 0.25, 
-                            max = 255, 
-                            alpha = 125, 
-                            names = "blackWheel"), 
-                        37)
   
-  # Number info
+  if (isLaTeX) { # LaTeX
+    numberColours <- rep( rgb(0.25, 0.25, 0.25, 
+                              max = 255, 
+                              alpha = 125, 
+                              names = "blackWheel"), 
+                          37)
+  } else { # HTML
+    numberColours <- rep( rgb(25, 25, 25,   # BLACK
+                              max = 255, 
+                              alpha = 125, 
+                              names = "blackWheel"), 
+                          37)
+  }
+  # Number info for each sector
   numberLabels <-  c(0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 
                      11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 
                      22, 18, 29, 7, 28, 12, 35, 3, 26)
-  
-  numberColours[numberLabels%in%colRed] <-  rgb(255, 0, 0,     
-                                                max = 255, 
-                                                alpha = 125, 
-                                                names = "redWheel")
-  numberColours[numberLabels%in%0] <-  rgb(0, 255, 0,     
-                                           max = 255, 
-                                           alpha = 125, 
-                                           names = "greenWheel")
-  numberColours[38] <-  rgb(0, 255, 0,     
-                            max = 255, 
-                            alpha = 125, 
-                            names = "greenWheel")
-  
+  if (isLaTeX) { # LaTeX
+    numberColours[numberLabels%in%colRed] <-  rgb(250, 250, 250,     # LIGHT GREY
+                                                  max = 255, 
+                                                  alpha = 125, 
+                                                  names = "redWheel")
+    numberColours[numberLabels%in%0] <-  rgb(120, 120, 120,     # GREEN
+                                             max = 255, 
+                                             alpha = 125, 
+                                             names = "greenWheel")
+    numberColours[38] <-  rgb(120, 120, 120,     
+                              max = 255, 
+                              alpha = 125, 
+                              names = "greenWheel")
+  } else { #HTML
+    numberColours[numberLabels%in%colRed] <-  rgb(255, 0, 0,     # RED
+                                                  max = 255, 
+                                                  alpha = 125, 
+                                                  names = "redWheel")
+    numberColours[numberLabels%in%0] <-  rgb(0, 255, 0,     # GREEN
+                                             max = 255, 
+                                             alpha = 125, 
+                                             names = "greenWheel")
+    numberColours[38] <-  rgb(0, 255, 0,     
+                              max = 255, 
+                              alpha = 125, 
+                              names = "greenWheel")
+  }
   
   ## Parameters
   DD <- wheelSize[1]
@@ -187,6 +210,7 @@ plotSpinningWheel <- function(angle,
   
   # Plot wheel
   plotWheel(wheelSize = wheelSize, 
+            isLaTeX = isLateX,
             numberColours)
   title( main = main )    
   
@@ -212,10 +236,6 @@ plotSpinningWheel <- function(angle,
   angle.mod <- rad2deg(angle) %% 360
   location <- (angle.mod / sectorAngle)
 
-  numberLabels <-  c(0, 32, 15, 19, 4, 21, 2, 25, 17, 34, 6, 27, 13, 36, 
-                     11, 30, 8, 23, 10, 5, 24, 16, 33, 1, 20, 14, 31, 9, 
-                     22, 18, 29, 7, 28, 12, 35, 3, 26)
-  
   coloursInWords <- rep("black", 38)
   coloursInWords[numberLabels%in%colRed] <- "red"
   coloursInWords[numberLabels%in%0] <- "green"
