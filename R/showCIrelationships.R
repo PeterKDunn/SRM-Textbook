@@ -54,12 +54,12 @@ text(x = 0,
 
 
 ## ADD SAMPLES and ARROWS
-points( x = c(-2, -0.5, 0.9, 1.2, 1.6),
+points( x = c(-1.9, -0.5, 0.9, 1.2, 1.6),
         y = rep(0, 5),
         pch = 19,
         cex = 0.7)
 arrows(x0 = 0,
-       x1 = -2,
+       x1 = -1.9,
        y0 = -0.40,
        y1 = 0,
        angle = 15,
