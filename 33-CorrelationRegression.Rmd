@@ -14,21 +14,25 @@
 ```
 
 
-## Introduction: lifespan of dog breeds {#Chap33-Intro}
+## Introduction: lifespan of dog breeds {#CorReg-Intro}
 \index{Correlation}
 
 So far, RQs about single variables (descriptive\ RQs) and RQs for comparisons (relational and repeated-measures\ RQs) have been studied.
 In this chapter, the relationship between two quantitative variables is studied (correlational\ RQs) *when that relationship is approximately linear*.
+The strength of the relationship (correlation) and the nature of that relationship (regression) are discussed.
 
-Consider the average lifespan and average weight of numerous dog breeds.
-@da2023dog recorded the average lifespan and average weight of at least\ $50$ dogs of numerous dog breeds [@da2023dogDATA].
-The dog breed is the unit of analysis,\index{Unit of analysis} and the individual dog is the unit of observation\index{Unit of observation}
+For this chapter, consider this RQ:
+
+> In dogs, do larger breeds live longer or shorter, in general?
+
+@da2023dog recorded the lifespan and weight of at least\ $50$ dogs of numerous dog breeds [@da2023dogDATA]
 `r if( knitr::is_latex_output() ) {
   '(Table\\ \\@ref(tab:DogsLifeData)).'
 } else {
   '(Fig.\\ \\@ref(fig:dogslifeDataDT).'
 }`
-The data comprises two quantitative variables; the scatterplot is shown in Fig.\ \@ref(fig:DogsLifeScatter2).\index{Graphs!scatterplot}
+The dog breed is the unit of analysis;\index{Unit of analysis} the individual dog is the unit of observation.\index{Unit of observation}
+The data comprises two quantitative variables (Fig.\ \@ref(fig:DogsLifeScatterjamovi2), left panel).\index{Graphs!scatterplot}
 
 
 ```{r DogsLifeData}
@@ -36,32 +40,22 @@ data(DogsLife)
 row.names(DogsLife) <- NULL
 
 if( knitr::is_latex_output()){
-  knitr::kable( pad( head(DogsLife),
+  knitr::kable( pad( head(DogsLife[, c(1, 2, 5)]),
                   surroundMaths = TRUE,
-                  targetLength = c(0, 5, 3, 5, 5),
-                  decDigits = c(0, 3, 1, 3, 2)),
+                  targetLength = c(0, 5, 5),
+                  decDigits = c(0, 3, 2)),
          format = "latex",
          booktabs = TRUE,
          longtable = FALSE,
          escape = FALSE,
-         align = c("r", "c", "c", "c", "c"),
+         align = c("r", "c", "c"),
          linesep = "",
-         caption = "Information about various dog breeds (at least $50$\ individuals from each breed were used). The first five breeds only are shown; some data are missing.",
+         caption = "Information about various dog breeds (using at least $50$\ individuals from each breed were used). The first five breeds only are shown.",
          col.names = c( "Breed", 
-	                      "weight (in kg)",
-                        "size",
-                        "weight (in kg)",
-                        "span (in years)") ) %>%
+	                      "Breed weight (in kg)",
+                        "Breed  lifespan (in years)") ) %>%
    kable_styling(font_size = 8) %>%
-   row_spec(0, bold = TRUE) %>%
-   add_header_above( c(" " = 1,
-                       "Breed" = 1,
-                       "Litter" = 1,
-                       "Breed birth" = 1,
-                       "Breed life" = 1),
-                    bold = TRUE,
-                    line = FALSE)
-
+   row_spec(0, bold = TRUE)
 }
 ```
 
@@ -79,7 +73,7 @@ if( knitr::is_html_output() ) {
 ```
 
 
-```{r DogsLifeScatter2, fig.width=5.25, out.width='60%', fig.align='center', fig.height=3.75, fig.cap="Average lifespan of dog breeds against average weight."}
+```{r DogsLifeScatterjamovi2, fig.width=5.25, out.width=c('54%', '45%'), fig.align='center', fig.height=3.75, fig.cap="Lifespan of dog breeds against breed weight. Left: scatterplot. Right: correlation output.", fig.show='hold'}
 data(DogsLife)
 
 plot(Lifespan ~ Weight, 
@@ -94,11 +88,15 @@ plot(Lifespan ~ Weight,
      ylab = "Lifespan (in years)")
 # with(DogsLife,
 #      cor(Lifespan , Weight) )
+
+knitr::include_graphics("jamovi/DogsLife/DogsLifeCorrelationCI.png")
+
 ```
 
 
 Knowing the breed-weight seems to provide some information about the lifespan; that is, a relationship between the variables seems evident.
-Furthermore, the relationship seems somewhat *linear*, and the *correlation coefficient* (shown in Fig.\ \@ref(fig:DogsLifeCorrelationjamovi))\index{Correlation coefficient (Pearson)} is $r = -0.712$.
+Furthermore, the relationship seems somewhat *linear*.
+The *correlation coefficient* (from Fig.\ \@ref(fig:DogsLifeScatterjamovi2), right panel)\index{Correlation coefficient (Pearson)} is $r = -0.712$, and $R^2 = (-0.712) ^2 = 50.7$%.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -106,60 +104,54 @@ Recall that the *sample* correlation coefficient is denoted by\ $r$, and the *po
 :::
 
 
+## Correlation: CIs and tests for $\rho$ {#CorrelationTesting}
 
-```{r DogsLifeCorrelationjamovi, fig.cap="Software output for the correlation in the dog-breed data.", fig.align="center", out.width='45%'}
-knitr::include_graphics("jamovi/DogsLife/DogsLifeCorrelation.png")
-```
+### Correlation: CIs for $\rho$ {#CorrelationTesting}
+\index{Hypothesis testing!correlation coefficient}
 
 
 Only one of the countless possible samples of dogs have been studied, and the value of\ $r$ (an estimate of $\rho$, the *parameter*) will vary from sample to sample.
 That is, the value of\ $r$ has a sampling distribution, and sampling variation exists.\index{Sampling variation}
-The sampling distribution of\ $r$, however, does *not* have a normal distribution, so CIs for $\rho$ will not be discussed (indeed, software does not always provide a CI for $\rho$).
+The sampling distribution of\ $r$, however, does *not* have a normal distribution, so CIs for $\rho$ will be taken directly from software output (Fig.\ \@ref(fig:DogsLifeScatterjamovi2), right panel).
+For the dog-breed data, the $95$% CI for\ $\rho$ is from $-0.576$ to $-0.809$.
+Note that this CI is not symmetrical: the value of\ $r$ is not halfway between these limits.
+We write:
+
+> For dog breeds, the correlation coefficient between breed lifespan and breed weight is $-0.712$, with a $95$% CI from $-0.576$ to $-0.809$ ($n = 73$).
 
 
-<div style="float:right; width: 222x; border: 1px; padding:10px">
-<img src="Illustrations/diana-parkhouse-Qf4eZXC3t2Y-unsplash.jpg" width="200px"/>
-</div>
 
-
-
-## Correlation: hypothesis test for $\rho$ {#CorrelationTesting}
+### Correlation: hypothesis test for $\rho$ {#CorrelationTesting}
 \index{Hypothesis testing!correlation coefficient}
 
-A correlational RQ can be asked about the relationship between the variables in the *population*, as measured by the unknown *population* (Pearson) correlation coefficient:\index{Correlation}
 
-> In the population, is there a linear relationship between the value of\ $y$ and the value of\ $x$?
-
-In the context of the dog-breed data, the RQ is:
-
-> In dog breeds, is there a linear relationship between weight and lifespan?
-
-This is a two-tailed RQ.\spacex
+A hypothesis tests can also be conducted regarding the correlation coefficient in the *population*, as measured by the unknown *population* (Pearson) correlation coefficient.\index{Correlation}
 Clearly, the *sample* correlation coefficient $r$ for the data is not zero, and the RQ is effectively asking if sampling variation is the reason for this discrepancy.
 The null hypothesis is:
 
 * $H_0$: $\rho = 0$.
 
 The parameter is $\rho$, the *population* correlation coefficient.
-This null hypothesis is the 'no relationship' position, which proposes that the population correlation coefficient is zero, and the sample correlation coefficient is not zero due to sampling variation.
-The alternative hypothesis is:
+This null hypothesis is the 'no relationship' position, which proposes that the population correlation coefficient is zero.
+
+The RQ is (as given in Sect.\ \@ref(CorReg-Intro)) is a two-tailed RQ, so the alternative hypothesis is:
 
 * $H_1$:  $\rho \ne 0$ \quad (*two-tailed* test, based on the RQ).
 
 As usual, initially *assume* that $\rho = 0$ (from\ $H_0$), then describe what values of\ $r$ could be *expected* using the *sampling distribution*, under that assumption, across all possible samples (sampling variation).
 Then the *observed* value of\ $r$ is compared to the expected values to determine if the value of\ $r$ supports or contradicts the assumption.
 
-For a correlation coefficient, the sampling distribution of\ $r$ does not have a normal distribution^[For those interested: the value of\ $r$ only varies between $-1$ and $1$, so cannot have a normal distribution. A transformation of\ $r$ *does* exist that has an approximate normal distribution and *standard error*.], and software output usually does not provide a standard error, so we will not discuss CIs for the correlation coefficient.
+For a correlation coefficient, the sampling distribution of\ $r$ does not have a normal distribution^[For those interested: the value of\ $r$ only varies between $-1$ and $1$, so cannot have a normal distribution. A transformation of\ $r$ *does* exist that has an approximate normal distribution and *standard error*.], and software output usually does not provide a standard error.
 
-However, the output (Fig.\ \@ref(fig:DogsLifeCorrelationjamovi))\index{Software output!correlation} contains the relevant $P$-value for the $t$-test.
+However, the output (Fig.\ \@ref(fig:DogsLifeScatterjamovi2), right panel)\index{Software output!correlation} contains the relevant $P$-value for the test.
 The *two*-tailed $P$-value for the test is less than\ $0.0001$.
-*Very strong evidence* exists to support\ $H_1$ (that the correlation in the population is less than zero).
+*Very strong evidence* exists to support\ $H_1$ (that the correlation in the population is not zero).
 We write:
 
-> The sample presents very strong evidence (two-tailed $P < 0.0001$) that the average lifespan decreases as the breed-weight increases ($r = -0.712$; $n = 73$) in the population.
+> The sample presents very strong evidence (two-tailed $P < 0.0001$) that the average lifespan is associated with the breed-weight ($r = -0.712$ with $95$% CI from $-0.576$ to $-0.809$; $n = 73$) in the population.
 
 Notice the three features of writing conclusions again:
-An *answer to the RQ*; evidence to support the conclusion ('two-tailed $P < 0.0001$'; here no value for the test statistic is given in the output); and some *sample summary information* ('$r = -0.712$; $n = 73$').
+an *answer to the RQ*; evidence to support the conclusion ('two-tailed $P < 0.0001$'; here no value for the test statistic is given in the output); and some *sample summary information* ('$r = -0.712$; $n = 73$').
 
 
 
@@ -171,6 +163,32 @@ The correlation may be weak in the population (as estimated by the value of\ $r$
 
 That is, the test is about statistical significance, not practical importance.\index{Practical importance}
 :::
+
+
+  
+::: {.example #CycloneCorrelation name="Correlation"}
+The relationship between the number of cyclones\ $y$ in the Australian region each year from\ 1969 to\ 2005, and a unitless climatological index called the *Ocean `r readr::parse_character( c("Niño"), locale=locale(encoding="UTF-8"))` Index* (ONI,\ $x$), is shown in Fig.\ \@ref(fig:ONIcyclonesCorrelation) (left panel) [@mypapers:dunnsmyth:glms].
+
+The relationship has a *negative* direction, so the relationship is *negative*.
+For the software output, $r = -0.683$ with a $95$% CI from $-0.461$ to\ $-0.824$.
+:::
+
+```{r ONIcyclonesCorrelation, fig.width=5.25, fig.align="center", fig.cap="The number of cyclones in the Australian region each year from 1969 to 2005, and the ONI averaged over October, November, December. Left: scatterplot. Right: software output.",  fig.height=3.75, out.width=c('54%', '45%'), fig.show='hold'}
+data(Cyclones)
+
+plot(Total ~ OND, 
+     data = Cyclones,
+     xlim = c(-2.5, 3),
+     ylim = c(0, 20),
+     pch = 19,
+     ylab = "Total number of cyclones",
+     xlab = "ONI averaged over Oct., Nov., Dec.",
+     main = "Cyclone numbers vs ONI",
+     las = 1)
+
+knitr::include_graphics("jamovi/Cyclones/Cyclones-CorrelationCI.png")
+
+```
 
 
 
@@ -260,7 +278,7 @@ To introduce, or revise, the idea of a linear equation, consider the (artificial
 }`
 with an explanatory variable\ $x$ and a response variable\ $y$.\index{Response variable}\index{Explanatory variable}\index{Graphs!scatterplot}
 In the graph, a sensible line is drawn on the graph that seems to capture the relationship between\ $x$ and\ $y$.
-(You may have drawn a slightly different line.)
+(You may have drawn a slightly different, but similar, line.)
 The line describes the predicted mean values of\ $y$ for various values of\ $x$.
 
 A *regression equation* specifies the line.\index{Regression!equation}
@@ -286,7 +304,7 @@ When $x = 0$, the regression line suggests the value of\ $\hat{y}$ is about\ $2$
 }`; 
 that is, the value of\ $b_0$ is approximately\ $2$.
 
-A rough approximation of the *slope*\ $b_1$ is\index{Regression!equation!rise over run}
+A rough approximation of the *slope*\ $b_1$ is found using\index{Regression!equation!rise over run}
 \begin{equation}
      \frac{\text{Change in $y$}}{\text{Corresponding \emph{increase} in $x$}}
    = \frac{\text{rise}}{\text{run}}
@@ -645,7 +663,7 @@ $$
    = 3.
 $$
 The value of\ $b_1$ is about\ $3$.
-When using 'rise-over-run', better guesses for\ $b_1$ are found when using one value of\ $x$ near the left-side of the scatterplot, and another value of\ $x$ near the right-side of the scatterplot.
+When using 'rise-over-run', better guesses for\ $b_1$ are found when using one value of\ $x$ near the left-side of the scatterplot, and another value of\ $x$ near the right-side of the scatterplot, but any two values can be used.
 
 Combing the rough guesses for $b_0$ and $b_1$, the regression line is approximately $\hat{y} = 2 + (3\times x)$, usually written
 $$
@@ -667,27 +685,27 @@ The measurement unit for the *slope*\ $b_1$ is the 'measurement units of the res
 :::{.example name="Measurement units of regression parameters"}
 In Example\ \@ref(exm:RegressionGirlsHt), the regression line for the relationship between the age of Australian girls in years\ $x$ and their height (in\ cm)\ $y$ was $\hat{y} = 73 + 7x$ (for girls between four and seven years).
 
-In this equation, the intercept is $b_0 = 73$\cms and the slope is $b_1 = 73$\cms/year.
+In the equation, the intercept is $b_0 = 73$\cms and the slope is $b_1 = 73$\cms/y (the growth *rate*).
 :::
 
 
 :::{.example name="A rough approximation of the regression equation"}
 For the dog-breed data (Fig.\ \@ref(fig:DogsLifeScatter2)), a rough estimate of the regression line can be drawn on a scatterplot to estimate\ $b_0$ and\ $b_1$ (Fig.\ \@ref(fig:DogBreedRiseRun)).
-The estimate of\ $b_0$ (the value of\ $y$ when $x = 0$) is roughly\ $13.5$.
+The estimate of\ $b_0$ (the value of\ $y$ when $x = 0$) is roughly\ $13.5$\ys.
 
 The estimate of\ $b_1$ can be found using the 'rise-over-run' idea.
 When $x = 0$, the value of\ $\hat{y}$ (according to the drawn line) is about\ $13.5$.
-At the other extreme of the plot, where $x = 80$, the value of\ $y$ is\ $5.5$.
+At the other extreme of the plot, where $x = 80$, the value of\ $y$ is about\ $5.5$.
 (Any two points on the line can be used, but using two points at each end gives better guesses of the slope.)
-So, as\ $x$ increases from\ $0$ to about\ $80$, the value of\ $\hat{y}$ *reduces* from about\ $13.5$ to about\ $5.5$, a drop of about\ $-8$.
-That is, for a 'run' of $80 - 0 = 80$, the 'rise' is $5.5 - 13.5 = -8$ (i.e., a drop of\ $8$), and so a rough estimate of the slope is $-8/80 = -0.1$.\index{Regression!equation!rise over run}
-(The relationship is *negative*, so the slope is *negative*.)
+So, as\ $x$ increases from\ $0$ to about\ $80$, the value of\ $\hat{y}$ *reduces* from about\ $13.5$ to about\ $5.5$, a change of about\ $-8$.
+That is, for a 'run' of $80 - 0 = 80$, the 'rise' is $5.5 - 13.5 = -8$ (i.e., a drop of\ $8$), and so a rough estimate of the slope is $-8/80 = -0.1$\ys/kg.\index{Regression!equation!rise over run}
+(The relationship is *negative*, as the slope is *negative*.)
 
 The rough guess of the regression line is therefore
 $$
   \hat{y} = 13.5 - 0.1x,
 $$
-where\ $x$ is the weight (in\ kgs), and\ $y$ is lifespan (in\ years).
+where\ $x$ is the breed weight (in\ kgs), and\ $y$ is lifespan (in\ years).
 The rough guess of the intercept\ $b_0$ is\ $13.5$\ys, while the rough guess of the slope\ $b_1$ is\ $-0.1$\ys/\kgs.
 :::
 
@@ -894,22 +912,23 @@ mLifespan <- lm( Lifespan ~ Weight,
 
   
 ::: {.example #CycloneRegressionGuesses name="Estimating regression parameters"}
-The relationship between the number of cyclones\ $y$ in the Australian region each year from\ 1969 to\ 2005, and a climatological index called the *Ocean `r readr::parse_character( c("Niño"), locale=locale(encoding="UTF-8"))` Index* (ONI,\ $x$), is shown in Fig.\ \@ref(fig:ONIcyclones) [@mypapers:dunnsmyth:glms].
+The relationship between the number of cyclones\ $y$ in the Australian region each year from\ 1969 to\ 2005, and a climatological index called the *Ocean `r readr::parse_character( c("Niño"), locale=locale(encoding="UTF-8"))` Index* (ONI,\ $x$), is shown in Fig.\ \@ref(fig:ONIcyclonesCorrelation) (left panel) [@mypapers:dunnsmyth:glms].
 
-When the value of\ $x$ is zero, the predicted value of\ $y$ is about\ $12$, so\ $b_0$ is about\ $12$.
-Notice that the intercept is the *predicted* value of\ $y$ when $x = 0$, which is *not* at the left of the graph in Fig.\ \@ref(fig:ONIcyclones).
+To make a guess of the regression coefficient, a sensible line can be drawn through the data (Fig.\ \@ref(fig:ONIcyclones)).
+Then, when the value of\ $x$ is zero, the predicted value of\ $y$ is about\ $12$, so\ $b_0$ is about\ $12$\ cyclones.
+Recall: the intercept is the *predicted* value of\ $y$ when $x = 0$\ cyclones, which is *not* at the left of the graph in Fig.\ \@ref(fig:ONIcyclones).
 
 To approximate the value of\ $b_1$, use the 'rise-over-run' idea.\index{Regression!equation!rise over run}
 When\ $x$ is about\ $-2$, the predicted mean value of\ $y$ is about\ $17$; when\ $x$ is about\ $2$, the predicted mean value of\ $y$ is about\ $8$.
 The value of\ $x$ increases by $2 - (-2) = 4$,  while the value of\ $y$ changes by $8 - 17 = -9$ (a *decrease* of about $9$).
-Hence,\ $b_1$ is approximately $-9/4 = -2.25$.
+Hence,\ $b_1$ is approximately $-9/4 = -2.25$ cyclones per unit change in ONI.
 (You may get something slightly different.)
 
 The relationship has a *negative* direction, so the slope must be *negative*.
 The regression line is approximately $\hat{y} = 12 - 2.25x$.
 :::
 
-```{r ONIcyclones, fig.width=4, fig.align="center", fig.cap="The number of cyclones in the Australian region each year from 1969 to 2005, and the ONI averaged over October, November, December. The grey diamond is located on the line where $x = 0$.", fig.width=5, fig.height=4}
+```{r ONIcyclones, out.width="70%", fig.align="center", fig.cap="The number of cyclones in the Australian region each year from 1969 to 2005, and the ONI averaged over October, November, December. The cross is located on the line where $x = 0$.", fig.width=6, fig.height=4}
 data(Cyclones)
 
 plot(Total ~ OND, 
@@ -931,10 +950,8 @@ grid(lty = 2)
 
 points(x = 0,
        y = coef(clm)[1],
-       pch = 23,
-       cex = 1.35,
-       bg = "darkgrey",
-       col = "darkgrey")
+       pch = 3,
+       cex = 1.5)
 
 arrows(x0 = -2, 
        x1 =  2, 
@@ -971,7 +988,7 @@ text(x = 0,
 
 The above method gives a crude approximation to the values of the intercept\ $b_0$ and the slope\ $b_1$.
 In practice, *many* reasonable lines could be drawn through a scatterplot of data, each giving slightly different rough guesses for\ $b_0$ and\ $b_1$.
-However, one of those lines is the 'best' line in some sense^[For those interested: The 'line of best fit' is the line for which the sum of the *squared* vertical distances between the observations\ $y$ and the predicted values\ $\hat{y}$ (i.e, the regression line) is as small as possible.].
+However, one of those lines is the 'best' line in some sense^[For those interested: the 'line of best fit' is the line for which the sum of the *squared* vertical distances between the observations\ $y$ and the predicted values\ $\hat{y}$ (i.e, the regression line) is as small as possible.].
 Software calculates this 'line of best fit'.\index{Regression!equation!line of best fit}
 
 
@@ -979,7 +996,7 @@ Software calculates this 'line of best fit'.\index{Regression!equation!line of b
 
 
 
-## Regression: finding equations using software {#Regression-Software}
+### Regression: finding equations using software {#Regression-Software}
 \index{Regression!equation!using software}\index{Software output!regression}
 
 ```{r}
@@ -1047,7 +1064,7 @@ knitr::include_graphics( "jamovi/Cyclones/Cyclones-Regression.png")
 
 
 
-## Regression: for making predictions {#RegressionForPrediction}
+### Regression: for making predictions {#RegressionForPrediction}
 \index{Regression!equation!making predictions}
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
@@ -1095,7 +1112,7 @@ Extrapolation beyond the data may lead to nonsense predictions.\index{Extrapolat
 :::
 
 
-## Regression: understanding relationships {#RegressionForUnderstanding}
+### Regression: understanding relationships {#RegressionForUnderstanding}
 \index{Regression!equation!for understanding}
 
 The regression equation can be used to *understand* the relationship between the two variables.
@@ -1110,9 +1127,6 @@ Consider again the dog-breed regression equation:
 \end{equation}
 What does this equation reveal about the relationship between\ $x$ and\ $y$?
 
-
-### The meaning of $b_0$
-
 $b_0$ is the *predicted* value of\ $y$ when $x = 0$ (Sect.\ \@ref(Regression-Software)).
 Using $x = 0$ in Eq.\ \@ref(eq:DogsLifeEquation) predicts a mean molar weight of
 $$
@@ -1126,9 +1140,6 @@ Using $x = 0$ is *extrapolating*\index{Extrapolation} (the smallest breed-weight
 The value of the intercept\ $b_0$ is sometimes (but not always) meaningless.
 The value of the slope\ $b_1$ is usually of greater interest, as it explains the *relationship* between the two variables.
 :::
-
-
-### The meaning of $b_1$ {#SlopeMeaning}
 
 The slope\ $b_1$ tells us how much the value of $y$ changes (on average) when the value of\ $x$ *increases* by one (Sect.\ \@ref(Regression-Software)).
 For the dog-breed data, $b_1$ is the average change in mean lifetime for each\ $1$\kgs increase in breed-weight.
@@ -1164,7 +1175,7 @@ In this case, the correlation coefficient is also zero.
 :::
 
 
-## Regression: confidence intervals for regression parameters {#RegressionCI}
+## Regression: CIs and $t$-test for regression parameters {#RegressionCI}
 
 ### Introduction {#RegressionTests-Intro}
 \index{Confidence intervals!regression parameters}
@@ -1207,7 +1218,7 @@ Every sample is likely to produce a slightly different value for both\ $b_0$ and
 The formulas for computing the values of\ $b_0$ and\ $b_1$ (and their standard errors) are intimidating, so we will use software to perform the calculations.
 
 
-### Describing the sampling distribution {#SamplingDistributionSlopeCI}
+### CIs for the regression parameters {#SamplingDistributionSlopeCI}
 \index{Sampling distribution!regression parameters}
 
 The sample estimates\ $b_0$ and\ $b_1$ can vary across all possible samples, and so have *sampling distributions*.\index{Sampling distribution}
@@ -1323,7 +1334,7 @@ The interval from\ $-3.04$ to\ $-1.42$ is likely to straddle the population slop
 
 
 
-## Regression: $t$-tests for regression parameters {#RegressionHT}
+### Regression: $t$-tests for regression parameters {#RegressionHT}
 \index{Hypothesis testing!regression parameters}
 
 For the dog-breed data, the RQ posed in Sect.\ \@ref(CorrelationTesting) is
@@ -1336,7 +1347,7 @@ That is, a hypothesis test can be conducted for the slope.
 (Similar hypothesis tests can be conducted for the intercept, but are usually of less interest.)
 
 The null hypothesis for tests about the slope is the usual 'no relationship' hypothesis.
-In this context, 'no relationship' means that the slope is zero (Sect.\ \@ref(SlopeMeaning)), so the null hypotheses (about the *population*) is $H_0$: $\beta_1 = 0$.
+In this context, 'no relationship' means that the slope is zero (Sect.\ \@ref(RegressionForUnderstanding)), so the null hypotheses (about the *population*) is $H_0$: $\beta_1 = 0$.
 A slope of *zero* is equivalent to *no relationship* between the variables.
 (We would also find $\rho = 0$.)
 The RQ implies these hypotheses about the slope:
