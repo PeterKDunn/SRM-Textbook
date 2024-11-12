@@ -9,29 +9,8 @@
 ### Col 1 is the data file name.
 ### Col 2 is the library it comes from
 
-
-
-
 ### SET UP 
 
-# splitFiles <- c(20, 
-#                 45, # End of page 1
-#                 80, 
-#                 124,# End of page 2
-#                 143, 
-#                 1540)
-splitFiles <- c(21, 
-                46, # End of page 1
-                78, 
-                111,# End of page 2
-                132, 
-                1540)
-# Where to split the data file, for page 1, to create two columns. 
-# So if e.g., split = 20, we will have 20 files listed, then move to col 2, then another 20 files listed.
-#
-# them move on to a new column environment
-# 
-# OR: give HOW MANY are in each col
 
 
 
@@ -66,7 +45,7 @@ findDataFileMentions <- function(){
   ### Now remove all mentioned of datafiles in the Answers:
   dataFilesInAnswersChapter <- grepl("App-Answers", dataFiles)
   dataFiles <- dataFiles[ !dataFilesInAnswersChapter ]
-
+  
   return(dataFiles)
 }
 
@@ -89,18 +68,18 @@ cleanDataFileCalls  <- function(dataFiles){
   # DO NOT remove  ### Exercise  however!
   
   for (i in 1:numDataCalls){
-
+    
     removeAfterComments <- grepl("#", 
                                  dataFiles[i])
-
+    
     keepInThisCase <- grepl('### Exercise',
                             dataFiles[i])
-
+    
     if (removeAfterComments & !keepInThisCase){
       dataFiles[i] <- strsplit(dataFiles[i], "#")[[1]][1] 
     }
   }
-
+  
   
   for (i in 1:numDataCalls){ # For each line in the data-call files...
     # First, remove all blank space
@@ -186,7 +165,7 @@ classifyDataMentionsTypes <- function(dataFiles){
     # Maybe also: If we have a  data(Dataset)###Exercise  call, but no associated [*Dataset*: `Dataset`]  we can flag and/or suggest adding it
     
     if (grepl('###Exercise', dataCall)) { # If we see the string  ###Exercise...
-
+      
       dFileStem <- unlist( strsplit( dataCall, 
                                      "###")) # Split where ### is found: Returns somethiungs like  data(fred); we just want the  fred, so split again
       dFileStem <- unlist( strsplit( dFileStem, 
@@ -199,9 +178,9 @@ classifyDataMentionsTypes <- function(dataFiles){
       dataCall <- paste0("[*Dataset*:`",
                          dFileStem[1],
                          "`]")
-
+      
     }
-
+    
     
     # Now, onto the real action after dealing with that
     if ( substr( dataCall, 1, 1) == "[") { # Then probably an exercises (OR SOME EXAMPLES???)
@@ -316,8 +295,23 @@ addHyperLinks <- function(fileNames){
 
 ######################################################
 writeDataFileList <- function(fileNames, 
-                              splitFiles, # Where to break columns
+                              splitFiles = NULL, # Where to break columns
                               addLinks = FALSE){ # In HTML only, add links 
+  
+  if (is.null(splitFiles)) {  
+    splitFiles <- c(21, 
+                    46, # End of page 1
+                    78, 
+                    111,# End of page 2
+                    132, 
+                    1540)
+  }
+  # Where to split the data file, for page 1, to create two columns. 
+  # So if e.g., split = 20, we will have 20 files listed, then move to col 2, then another 20 files listed.
+  #
+  # them move on to a new column environment
+  # 
+  # OR: give HOW MANY are in each col
   
   # Prep: define useful bits
   numberOfDataFiles <- sum(unlist(lapply(fileNames, length)))
@@ -346,7 +340,7 @@ writeDataFileList <- function(fileNames,
   startChapter <- cumsum( c(1, numberFilesPerChapter) )
   startChapter <- startChapter[1 : (length(startChapter) - 1 )]
   names(startChapter) <- names(numberFilesPerChapter)
-
+  
   # Get chapter numbers for each data file
   chapterNumbers <- names(unlist(lapply(fileNames, 
                                         length)))
@@ -358,20 +352,20 @@ writeDataFileList <- function(fileNames,
   #                                        start = 5,
   #                                        stop = 6)
   #cat("B: chapterNumbersForEachDataFile = ", chapterNumbersForEachDataFile, "\n")
-
+  
   # Remove leading zeros
   leadingZeros <- substr(chapterNumbersForEachDataFile, 1, 1) == "0"
   for (i in 1:length(leadingZeros)){
     if (leadingZeros[i]){
-       substr(chapterNumbersForEachDataFile[i],
-              start = 1,
-              stop = 1) <- " " # Replace with a space
+      substr(chapterNumbersForEachDataFile[i],
+             start = 1,
+             stop = 1) <- " " # Replace with a space
     }
   }
   
-#  cat("Number of data files", numberOfDataFiles, "\n")
+  #  cat("Number of data files", numberOfDataFiles, "\n")
   for (i in 1:numberOfDataFiles){
-
+    
     # Only need the two columns for LaTeX; it looks silly in HTML
     if ( !addLinks ) {
       if ( i %in% startPage){
@@ -380,7 +374,7 @@ writeDataFileList <- function(fileNames,
         cat("::: {.col data-latex=\"{0.48\\textwidth}\"}\n")
       }
     }    
-
+    
     if (i %in% startChapter){
       cat("\n\\medskip\\goodbreak\n**",
           sub("^0+", "", chapterNumbersForEachDataFile[i]), # Remove any leading zeros
@@ -392,7 +386,7 @@ writeDataFileList <- function(fileNames,
     # ADD HYPERLINKS if requested (i.e., HTML)
     if (addLinks) { 
       fileNameWithLinks <- unlist(fileNames)[i]
-
+      
       # Add hyperlink to data: `file` (Exercise) ->  [`file`](Data/file.csv) (Exercise)
       backTickLocation <- unlist(gregexpr('`', 
                                           fileNameWithLinks))
@@ -446,7 +440,7 @@ writeDataFileList <- function(fileNames,
       }
     }
     
-
+    
   }
 }
 
