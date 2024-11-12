@@ -20,11 +20,11 @@
 #                 124,# End of page 2
 #                 143, 
 #                 1540)
-splitFiles <- c(20, 
+splitFiles <- c(21, 
                 46, # End of page 1
-                76, 
-                108,# End of page 2
-                143, 
+                78, 
+                111,# End of page 2
+                132, 
                 1540)
 # Where to split the data file, for page 1, to create two columns. 
 # So if e.g., split = 20, we will have 20 files listed, then move to col 2, then another 20 files listed.
