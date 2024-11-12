@@ -14,6 +14,10 @@ showAIMRAD <- function(debug = FALSE){
   pos <- array(NA, 
                dim = c(13, 2))
   
+  ArrowIndentLeft  <- c(0.15, 0)
+  ArrowIndentRight <- c(0.1, 0)
+    
+  
   pos[6:11, 1] <- 0.20
   pos[6:11, 2] <- rev( seq(0.05, 0.70,
                            length = 6) )
@@ -68,43 +72,43 @@ showAIMRAD <- function(debug = FALSE){
   
   # Link.
   arrowPosition <- 0.55
-  diagram::curvedarrow(from = pos[6, ], 
-                       to = pos[1, ], 
+  diagram::curvedarrow(from = pos[6, ] + ArrowIndentLeft, 
+                       to = pos[1, ] - ArrowIndentRight, 
                        curve = 0, 
                        #            code=3,
                        arr.pos = arrowPosition,
                        lty = 1, 
                        lwd = 2)
-  diagram::curvedarrow(from = pos[7, ], 
-                       to = pos[2, ], 
+  diagram::curvedarrow(from = pos[7, ] + ArrowIndentLeft, 
+                       to = pos[2, ] - ArrowIndentRight, 
                        curve = 0, 
                        #            code=3,
                        arr.pos = arrowPosition,
                        lty = 1, 
                        lwd = 2)
-  diagram::curvedarrow(from = pos[8, ], 
-                       to = pos[2, ], 
+  diagram::curvedarrow(from = pos[8, ] + ArrowIndentLeft, 
+                       to = pos[2, ] - ArrowIndentRight, 
                        curve = 0, 
                        #            code=3,
                        arr.pos = arrowPosition,
                        lty = 1, 
                        lwd = 2)
-  diagram::curvedarrow(from = pos[9, ], 
-                       to = pos[3, ], 
+  diagram::curvedarrow(from = pos[9, ] + ArrowIndentLeft, 
+                       to = pos[3, ] - ArrowIndentRight, 
                        curve = 0, 
                        #            code=3,
                        arr.pos = arrowPosition,
                        lty = 1, 
                        lwd = 2)
-  diagram::curvedarrow(from = pos[10, ], 
-                       to = pos[3, ], 
+  diagram::curvedarrow(from = pos[10, ] + ArrowIndentLeft, 
+                       to = pos[3, ] - ArrowIndentRight, 
                        curve = 0, 
                        #            code=3,
                        arr.pos = arrowPosition,
                        lty = 1, 
                        lwd = 2)
-  diagram::curvedarrow(from = pos[11, ], 
-                       to = pos[3, ], 
+  diagram::curvedarrow(from = pos[11, ] + ArrowIndentLeft, 
+                       to = pos[3, ] - ArrowIndentRight, 
                        curve = 0, 
                        #            code=3,
                        arr.pos = arrowPosition,
@@ -118,7 +122,7 @@ showAIMRAD <- function(debug = FALSE){
   
   polygon( x = c(0.60, 0.90, 0.90, 0.60) - 0.05,
            y = c(yHi, yHi, yLow, yLow), 
-           lwd = 1)
+           lwd = 2)
   
   
   ### TEXT
@@ -157,39 +161,40 @@ showAIMRAD <- function(debug = FALSE){
   #            shadow.size = 0,
   #            box.col = plot.colour,
   #            lcol = plot.colour)
+
   
-  
-  
+    
+  ### SIX STEPS
   diagram::textrect( pos[6, ], 
-                     lab = "RQ", 
+                     lab = "Ask the RQ", 
                      radx = 0.20, 
                      rady = 0.035, 
                      shadow.size = 0,
                      box.col = stepsColour,
                      lcol = stepsColour)
   diagram::textrect( pos[7, ], 
-                     lab = "Study design", 
+                     lab = "Design the study", 
                      radx = 0.20, 
                      rady = 0.035, 
                      shadow.size = 0,
                      box.col = stepsColour,
                      lcol = stepsColour)
   diagram::textrect( pos[8, ], 
-                     lab = "Data collection", 
+                     lab = "Collect data", 
                      radx = 0.20, 
                      rady = 0.035, 
                      shadow.size = 0,
                      box.col = stepsColour,
                      lcol = stepsColour)
   diagram::textrect( pos[9, ], 
-                     lab = "Description, summary", 
+                     lab = "Classify, summarise", 
                      radx = 0.20, 
                      rady = 0.035, 
                      shadow.size = 0,
                      box.col = stepsColour,
                      lcol = stepsColour)
   diagram::textrect( pos[10, ], 
-                     lab = "Data analysis", 
+                     lab = "Analyse", 
                      radx = 0.20, 
                      rady = 0.035, 
                      shadow.size = 0,
@@ -221,6 +226,7 @@ showAIMRAD <- function(debug = FALSE){
          col = "black",
          code = 2,
          angle = 15,
+         lwd = 2,
          length = 0.1)
   
   
@@ -233,6 +239,7 @@ showAIMRAD <- function(debug = FALSE){
          col = "black",
          code = 2,
          angle = 15,
+         lwd = 2,
          length = 0.1)
   
   # ABSTRACT
