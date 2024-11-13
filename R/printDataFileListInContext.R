@@ -1,21 +1,4 @@
-###
-###  Automate where data() files are, and hence where data is used
-###
-
-
-
-### DO NOT SEARCH FOR THEM in answers chapter!!!
-
-### Col 1 is the data file name.
-### Col 2 is the library it comes from
-
-### SET UP 
-
-
-
-
-
-
+### DO NOT SEARCH FOR DATA FILES in answers chapter!!!
 
 ######################################################
 findDataFileMentions <- function(){
@@ -262,17 +245,17 @@ sortDataFilesByChapter <- function(dataFiles, chapterNumbers){
     #cat("----\n CHAPTER", i, "\n")
     thisChaptersList <- listDataFilesByChapter[[i]]
     #cat("* The file", thisChaptersList, "\n")
-
+    
     sortByExercise <- grepl("\\(Exercise", 
                             thisChaptersList) # Find which elements have "(Exercise" in them)
     out <- sort( sortByExercise,
                  index.return = TRUE)$ix
     listDataFilesByChapter[[i]] <- listDataFilesByChapter[[i]][ out ]
     
-  # Each list element of  listDataFilesByChapter  now organised by non-Exercise data sets first, 
-  # then all the exercise data set
-  # So we separate the two (Exercise; non-Exercise) and sort separately, then rejoin
-
+    # Each list element of  listDataFilesByChapter  now organised by non-Exercise data sets first, 
+    # then all the exercise data set
+    # So we separate the two (Exercise; non-Exercise) and sort separately, then rejoin
+    
     thisChaptersList <- listDataFilesByChapter[[i]]
     #cat("+ The file", thisChaptersList, "\n")
     isExercise <- grepl("Exercise", 
@@ -296,7 +279,7 @@ sortDataFilesByChapter <- function(dataFiles, chapterNumbers){
     #cat("\n- The file", listDataFilesByChapter[[i]] , "\n")
   }
   
-   return(listDataFilesByChapter)
+  return(listDataFilesByChapter)
 }
 
 
@@ -305,10 +288,10 @@ sortDataFilesByChapter <- function(dataFiles, chapterNumbers){
 
 ######################################################
 prepareFileName <- function(fileName, inLaTeX){
-  
+
   # fileNames is a single file name, with entries like "`NMiner` (Exercise)" (note the back-ticks!)
   # Only the fiule bame shoud be in tt font, not the stuff after it!
-
+  
   backTickLocation <- unlist(gregexpr('`', 
                                       fileName))
   bt1 <- backTickLocation[1]
@@ -317,13 +300,13 @@ prepareFileName <- function(fileName, inLaTeX){
   if (inLaTeX) {
     fileNameTmp <- fileName
     # Locate back-ticks
-
+    
     fileNameTmp <- paste0("\\texttt{", 
                           substr(fileNameTmp, 
                                  start = bt1 + 1,
                                  stop = bt2 - 1),
                           "}")
-  # Now add anything that followed the last back tick
+    # Now add back anything that followed the last back tick
     fileName <- paste0( fileNameTmp,
                         substr(fileName,
                                start = bt2 + 1,
@@ -332,20 +315,21 @@ prepareFileName <- function(fileName, inLaTeX){
   } else {
     
     # Locate first back tick: Add  [  before
-    fileUsed[i] <- paste0("[", fileName)
-    
+    fileName <- paste0("[", 
+                       fileName)
     # Locate second back tick: Insert  ](Data/file.csv)
-    fileUsed[i] <- paste0(substr(fileName, 
-                                 start = 1,
-                                 stop = (bt2 + 1)), # Plus 1 as we have already added leading
-                          "](Data/",
-                          substr(fileName,
-                                 start = 3,
-                                 stop = bt2), 
-                          ".csv)",
-                          substr(fileName,
-                                 start = bt2 + 2,
-                                 stop = nchar(fileName)) )
+    fileUsed <- paste0(substr(fileName, 
+                              start = 1,
+                              stop = (bt2 + 1)), # Plus 1 as we have already added leading
+                       "](Data/",
+                       substr(fileName,
+                              start = 3,
+                              stop = bt2), 
+                       ".csv)",
+                       substr(fileName,
+                              start = bt2 + 2,
+                              stop = nchar(fileName)) )
+    fileName <- fileUsed
     
   }
   
@@ -375,45 +359,57 @@ writeDataFileList <- function(fileNames,
                                         length)))
   chapterNumbersForEachDataFile <- rep(chapterNumbers, 
                                        unlist(lapply(fileNames, length)))
-
+  
   # Start two-column mode in LaTeX only:
   # Only need the two columns for LaTeX; it looks silly in HTML
   if ( inLaTeX ) {
     # START PAGE with column set-up info for the whole PAGE
     cat("\\begin{multicols}{2}\\raggedcolumns\n")
-  }    
+  } else {
+    cat("\n")
+  }
   
   for (i in 1:length(numberFilesPerChapter) ) { # For each chapter:
     
     if ( i > 1 ){ # No need to close if we haven't had a minipage start yet
       # After all the files are listed, close the  minipage  in LaTeX before starting on the next chapter's list
-      cat("\\end{itemize}",
-          "\\end{minipage}\n",
-          "\\medskip")
+      if ( inLaTeX) {
+        cat("\\end{itemize}",
+            "\n\\end{minipage}\n\n",
+            "\\medskip")
+      }
     }
     
-    cat("\n\n\\begin{minipage}{\\textwidth}\n")
+    # Start minipage, to keep chapters files together
+    if ( inLaTeX ) cat("\\begin{minipage}{\\textwidth}\n")
     
     # Start bold
     if( inLaTeX ){
       cat("\\textbf{")
     } else {
-      cat("**")
+      cat("\n\n**")
     }
     # Print chapter number in this bolding environment, after removing any leading zeros on the chapter number
-    cat( sub("^0+",  # Remove any leading zeros
-             "", 
-             chapterNumbers[i]) 
-         )
+    lenCN <- nchar( chapterNumbers[i] )
+    tmpCN <- substr(chapterNumbers[i], # ChapterNumbers contains entries like "Chapter 07", so limit to after the "Chapter " text)
+                    start = lenCN - 1, 
+                    stop = lenCN)
+    
+    tmpCN <- sub(pattern = "^0+",  # Remove any *leading* zeros
+                 replacement = "", 
+                 x = tmpCN )
+    chapterNumbers[i] <- paste0("Chapter ", tmpCN)
+    cat(chapterNumbers[i])
+
     # End bold
     if (inLaTeX) {
       cat("}\n")
     } else {
-      cat("**\n")
+      cat("**\n\n")
     }
     
     # Begin the itemize environment
-    if (inLaTeX) cat("\\begin{itemize}\\tightlist\n")
+    if (inLaTeX) cat("\n\\begin{itemize}\\tightlist\n")
     
     # PRINT DATA FILE INFO
     # ADD HYPERLINKS if requested (i.e., HTML)
@@ -424,12 +420,12 @@ writeDataFileList <- function(fileNames,
       startHere <- 1
       endHere <- numberFilesPerChapter[1]
     }
-
-    isPreviousExercise <- TRUE
+    
+    isPreviousExercise <- FALSE
     isCurrentExercise <- FALSE
     # Now print each file name
     for (j in startHere : endHere) { # For each data file in the current chapter:
-
+      
       # detect if it contains an "Exercise" or not
       isPreviousExercise <- isCurrentExercise
       isCurrentExercise <- grepl("Exercise",
@@ -437,19 +433,20 @@ writeDataFileList <- function(fileNames,
       isStartOfExercises <- isCurrentExercise & (!isPreviousExercise)
       
       if (inLaTeX) {  
-          # Just print 
-          if (isStartOfExercises) cat("\n\\medskip\n") # Little space before exercises start
-          
-          cat( "\\item\n ",
-               prepareFileName( unlist(fileNames)[j],
-                                inLaTeX = TRUE),
-               "\n") 
-        } else { # HTML needs hyperlinks added, so complicated
-          cat( "* \n",
-               prepareFileName( unlist(fileNames)[j],
-                                inLaTeS = FALSE),
-               "\n") 
-          
+        # Just print 
+        if (isStartOfExercises) cat("\n\\medskip\n") # Little space before exercises start
+        
+        cat( "\\item\n ",
+             prepareFileName( fileName = unlist(fileNames)[j],
+                              inLaTeX = TRUE),
+             "\n") 
+      } else { # HTML needs hyperlinks added, so complicated
+        
+          cat( "* ",
+             prepareFileName( fileName = unlist(fileNames)[j],
+                              inLaTeX = FALSE),
+             "\n") 
+        
         #   
         #   
         # fileNameWithLinks <- unlist(fileNames)[i]
@@ -483,10 +480,12 @@ writeDataFileList <- function(fileNames,
     }
   }
   # Close two-column mode in LaTeX only
+
+  # Need a special one for the last case, to cose everything off  
   if ( inLaTeX ) {
-    cat("\\end{itemize}\n",
-        "\\end{minipage}\n",
-        "\\end{multicols}\n")
+     cat("\\end{itemize}\n",
+         "\n\\end{minipage}\n\n",
+         "\\end{multicols}\n")
   } 
   
 }
@@ -496,16 +495,19 @@ writeDataFileList <- function(fileNames,
 ######################################################
 ### DO THE EXTRACTION ###
 dFiles <- findDataFileMentions() # A list text of the *lines* that contains mentions of data files
+
 dFiles1 <- cleanDataFileCalls(dFiles) # Remove trailing text and comments
+
 out <- classifyDataMentionsTypes(dFiles1,
-                                 inLaTeX = TRUE ) # is_latex_output() # Find whether mentioned in the chapter, or in an exercise
+                                 inLaTeX = is_latex_output() ) # Find whether mentioned in the chapter, or in an exercise
 chapNum <- out$chapNumbers
 dFiles2 <- out$fileNames
+
 dFiles3 <- sortDataFilesByChapter(dFiles2, 
                                   chapNum) # Create a  list()  with an entry for each chapter, giving a vector of data file names 
 
 writeDataFileList(dFiles3, # WRITE
-                  inLaTeX  = TRUE, #is_latex_output(),
-                  addLinks = FALSE) # is_html_output() )
+                  inLaTeX  = is_latex_output(),
+                  addLinks = is_html_output() )
 ######################################################
 
