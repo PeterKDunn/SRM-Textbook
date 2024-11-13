@@ -191,7 +191,7 @@ classifyDataMentionsTypes <- function(dataFiles,
     if (substr(fileUsed[i], 2, 6) == "faith") { #faithful data set
       if (inLaTeX) {
         fileUsed[i] <- paste(fileUsed[i],
-                             "(in \textbf{R})" )        
+                             "(in \\textbf{R})" )        
       } else {
         fileUsed[i] <- paste(fileUsed[i],
                              "(in **R**)" )
@@ -200,16 +200,16 @@ classifyDataMentionsTypes <- function(dataFiles,
     if (substr(fileUsed[i], 2, 6) == "NHANE") { # NHANES data set
       if (inLaTeX) {
         fileUsed[i] <- paste(fileUsed[i],
-                             "(in \\textbf{NHANES} package)" )
+                             "(in\\\\ \\textbf{NHANES} package)" )
       } else {
         fileUsed[i] <- paste(fileUsed[i],
-                             "(in **NHANES** package)" )
+                             "(in\\\\ **NHANES** package)" )
       }
     }
     
     
     
-    # Now, sometimes two brackets may occur: NHANES (Exercise) (package NHANES); replace with semicolon
+    # Now, sometimes two brackets may occur: NHANES (Exercise) (in package NHANES); replace with semicolon
     # To find, and fix
     fileUsed[i] <- gsub("\\) \\(", 
                         "; ",
@@ -364,7 +364,7 @@ writeDataFileList <- function(fileNames,
   # Only need the two columns for LaTeX; it looks silly in HTML
   if ( inLaTeX ) {
     # START PAGE with column set-up info for the whole PAGE
-    cat("\\begin{multicols}{2}\\raggedcolumns\n")
+    cat("\\begin{multicols}{3}\\raggedcolumns\n")
   } else {
     cat("\n")
   }
