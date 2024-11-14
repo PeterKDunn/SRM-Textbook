@@ -430,7 +430,12 @@ writeDataFileList <- function(fileNames,
       isPreviousExercise <- isCurrentExercise
       isCurrentExercise <- grepl("Exercise",
                                  unlist(fileNames)[j])
-      isStartOfExercises <- isCurrentExercise & (!isPreviousExercise)
+      if (j == startHere ) {
+        # For the first data file to list, whether an Exercise or not, no extra gap is needed
+        isStartOfExercises <- FALSE 
+      } else {
+        isStartOfExercises <- isCurrentExercise & (!isPreviousExercise)
+      }
       
       if (inLaTeX) {  
         # Just print 
