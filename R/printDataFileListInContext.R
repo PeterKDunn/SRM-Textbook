@@ -189,6 +189,7 @@ classifyDataMentionsTypes <- function(dataFiles,
     
     # Flag special cases
     if (substr(fileUsed[i], 2, 6) == "faith") { #faithful data set
+      
       if (inLaTeX) {
         fileUsed[i] <- paste(fileUsed[i],
                              "(in \\textbf{R})" )        
@@ -198,15 +199,15 @@ classifyDataMentionsTypes <- function(dataFiles,
       }
     }
     if (substr(fileUsed[i], 2, 6) == "NHANE") { # NHANES data set
+      
       if (inLaTeX) {
         fileUsed[i] <- paste(fileUsed[i],
                              "(in\\\\ \\textbf{NHANES} package)" )
       } else {
         fileUsed[i] <- paste(fileUsed[i],
-                             "(in\\\\ **NHANES** package)" )
+                             "(in **NHANES** package)" )
       }
     }
-    
     
     
     # Now, sometimes two brackets may occur: NHANES (Exercise) (in package NHANES); replace with semicolon
@@ -220,10 +221,6 @@ classifyDataMentionsTypes <- function(dataFiles,
   return( list(chapNumbers = chapNumbersList, 
                fileNames = fileUsed))
 }
-
-
-
-### REMOVE THE `  ` 
 
 
 
@@ -288,7 +285,7 @@ sortDataFilesByChapter <- function(dataFiles, chapterNumbers){
 
 ######################################################
 prepareFileName <- function(fileName, inLaTeX){
-
+  
   # fileNames is a single file name, with entries like "`NMiner` (Exercise)" (note the back-ticks!)
   # Only the fiule bame shoud be in tt font, not the stuff after it!
   
@@ -313,24 +310,27 @@ prepareFileName <- function(fileName, inLaTeX){
                                stop = nchar(fileName))
     )
   } else {
-    
-    # Locate first back tick: Add  [  before
-    fileName <- paste0("[", 
-                       fileName)
-    # Locate second back tick: Insert  ](Data/file.csv)
-    fileUsed <- paste0(substr(fileName, 
-                              start = 1,
-                              stop = (bt2 + 1)), # Plus 1 as we have already added leading
-                       "](Data/",
-                       substr(fileName,
-                              start = 3,
-                              stop = bt2), 
-                       ".csv)",
-                       substr(fileName,
-                              start = bt2 + 2,
-                              stop = nchar(fileName)) )
-    fileName <- fileUsed
-    
+    # Flag special cases: NHANES and faithful do not link to  csv  files
+    specialCase <- grepl("faithful", fileName) | grepl("NHANES", fileName)
+
+    if (!specialCase){    
+
+      # Insert  [ ... ]](Data/file.csv)
+      fileName <- paste0("[",
+                         substr(fileName, 
+                                start = 1,
+                                stop = (bt2 + 1)), # Plus 1 as we have already added leading
+                         "](Data/",
+                         substr(fileName,
+                                start = 3,
+                                stop = bt2), 
+                         ".csv)",
+                         substr(fileName,
+                                start = bt2 + 2,
+                                stop = nchar(fileName)) )
+    } else { # Special cases: No need to link to csv file
+      fileName <- fileName
+    }
   }
   
   return(fileName)
@@ -400,7 +400,7 @@ writeDataFileList <- function(fileNames,
                  x = tmpCN )
     chapterNumbers[i] <- paste0("Chapter ", tmpCN)
     cat(chapterNumbers[i])
-
+    
     # End bold
     if (inLaTeX) {
       cat("}\n")
@@ -442,7 +442,7 @@ writeDataFileList <- function(fileNames,
              "\n") 
       } else { # HTML needs hyperlinks added, so complicated
         
-          cat( "* ",
+        cat( "* ",
              prepareFileName( fileName = unlist(fileNames)[j],
                               inLaTeX = FALSE),
              "\n") 
@@ -480,12 +480,12 @@ writeDataFileList <- function(fileNames,
     }
   }
   # Close two-column mode in LaTeX only
-
+  
   # Need a special one for the last case, to cose everything off  
   if ( inLaTeX ) {
-     cat("\\end{itemize}\n",
-         "\n\\end{minipage}\n\n",
-         "\\end{multicols}\n")
+    cat("\\end{itemize}\n",
+        "\n\\end{minipage}\n\n",
+        "\\end{multicols}\n")
   } 
   
 }
