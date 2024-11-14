@@ -30,29 +30,29 @@ showDesignConsiderations <- function(studyType="Experiment", addIcons = FALSE){
   
   
   # Confounding, to...
-  extendArrowStart <- c(0.07, 0) # Move the arrow start out a bit, closer to edge of the box
+  extendArrowStartx <- c(0.07, 0) # Move the arrow start out a bit, closer to edge of the box
   if (addIcons){
-    extendArrowStartTopRow <- c(0.07, 0) # Move the arrow start out a bit, closer to edge of the box
+    extendArrowStartxTopRow <- c(0.07, 0) # Move the arrow start out a bit, closer to edge of the box
   } else {
-    extendArrowStartTopRow <- c(0, 0) # Move the arrow start out a bit, closer to edge of the box
+    extendArrowStartxTopRow <- c(0, 0) # Move the arrow start out a bit, closer to edge of the box
   }
-  curvedarrow(from = pos[1, ] + extendArrowStartTopRow, # Confounding
+  curvedarrow(from = pos[1, ] + extendArrowStartxTopRow, # Confounding
               to = pos[13, ],  # Blocking 
               curve = 0,
               arr.pos = 0.55,
               lty = 1, 
               lwd = 2)
-  curvedarrow(from = pos[1, ] + extendArrowStart, # Confounding
+  curvedarrow(from = pos[1, ] + extendArrowStartx, # Confounding
               to = pos[14, ],   # Restriction 
               curve = 0, 
               lty = 1, 
               lwd = 2)
-  curvedarrow(from = pos[1, ] + extendArrowStartTopRow, # Confounding 
+  curvedarrow(from = pos[1, ] + extendArrowStartxTopRow, # Confounding 
               to = pos[7, ],   # Analysis
               curve = 0, 
               lty = 1, 
               lwd = 2)
-  curvedarrow(from = pos[5, ] + extendArrowStart, # Carryover
+  curvedarrow(from = pos[5, ] + extendArrowStartx, # Carryover
               to = pos[12, ],   # Washout
               curve = 0, 
               arr.pos = 0.525,
@@ -61,7 +61,7 @@ showDesignConsiderations <- function(studyType="Experiment", addIcons = FALSE){
   
   ### ONLY FOR EXPERIMENTAL
   delta <- 0.015
-  curvedarrow(from = pos[1, ] + extendArrowStart, # Confounding
+  curvedarrow(from = pos[1, ] + extendArrowStartx, # Confounding
               to = pos[8, ],   # Random allocation
               curve = 0,
               arr.pos = 0.525,
@@ -80,32 +80,32 @@ showDesignConsiderations <- function(studyType="Experiment", addIcons = FALSE){
   
   
   
-  curvedarrow(from = pos[2, ] + extendArrowStart, # Hawthorne 
-              to = pos[9, ],   # Blind individuals
+  curvedarrow(from = pos[2, ] + extendArrowStartx, # Hawthorne 
+              to = pos[9, ] - extendArrowStartx,   # Blind individuals
               curve = 0, 
               lty = 1, 
               lwd = 2)
-  curvedarrow(from = pos[3, ] + extendArrowStart, # Placebo
-              to = pos[9, ] - extendArrowStart/2,  # Blind individuals
+  curvedarrow(from = pos[3, ] + extendArrowStartx, # Placebo
+              to = pos[9, ] - extendArrowStartx,  # Blind individuals
               curve = 0, 
               lty = 1, 
               lwd = 2)
-  curvedarrow(from = pos[3, ] + extendArrowStart, # Placebo
-              to = pos[11, ] - extendArrowStart/2,  # Blind researchers
+  curvedarrow(from = pos[3, ] + extendArrowStartx, # Placebo
+              to = pos[11, ] - extendArrowStartx,  # Blind researchers
               curve = 0, 
               lty = 1, 
               lwd = 2)
-  curvedarrow(from = pos[3, ] + extendArrowStart, # Placebo
+  curvedarrow(from = pos[3, ] + extendArrowStartx, # Placebo
               to = pos[10, ],  # Controls
               curve = 0, 
               lty = 1, 
               lwd = 2)
-  curvedarrow(from = pos[3, ] + extendArrowStart, # Placebo
-              to = pos[15, ] - extendArrowStart/2,  # Controls
+  curvedarrow(from = pos[3, ] + extendArrowStartx, # Placebo
+              to = pos[15, ] - extendArrowStartx,  # Controls
               curve = 0, 
               lty = 1, 
               lwd = 2)
-  curvedarrow(from = pos[4, ] + extendArrowStart, # Observer effect
+  curvedarrow(from = pos[4, ] + extendArrowStartx, # Observer effect
               to = pos[11, ],  # Blind researchers
               curve = 0, 
               lty = 1, 
@@ -164,9 +164,9 @@ showDesignConsiderations <- function(studyType="Experiment", addIcons = FALSE){
             box.col = GroupColour,
             lcol = GroupColour)
   textrect( pos[8, ], 
-            lab = "Random\nallocation to\ncomparison\ngroups", 
-            radx = 0.08, 
-            rady = 0.12, 
+            lab = "Random\nallocation of\nindividuals to\ncomparison\ngroups", 
+            radx = 0.09, 
+            rady = 0.15, 
             shadow.size = 0,
             col = ifelse( studyType =="Experiment", "black", "grey"), # TEXT COLOUR
             box.col = ifelse(studyType == "Experiment", GroupColour, "white"), # BOX FILL COLOUR
