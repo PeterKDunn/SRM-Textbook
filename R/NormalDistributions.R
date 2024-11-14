@@ -53,6 +53,8 @@ plotNormal <- function(mu,
            main = main)
     
   } else {
+    par( mar = c(5.1, 1.5, 4.1, 1.5) )
+    
     plot( nc ~ hor, 
           axes = FALSE,
           bg = bg,
