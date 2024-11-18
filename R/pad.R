@@ -170,9 +170,11 @@ pad <- function(x,
   if ( verbose ) print(xNew)
   
   ### Add the $...$ signs to the start and end
-  xNew <- paste0("$", 
-                 xNew, 
-                 "$")
+  if ( surroundMaths ){
+    xNew <- paste0("$", 
+                   xNew, 
+                   "$")
+  }
   xNew <- matrix(xNew, # Need to reset as matrix 
                  nrow = numRows,
                  ncol = numCols)
