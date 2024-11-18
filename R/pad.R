@@ -4,6 +4,7 @@ pad <- function(x,
                 surroundMaths = TRUE,
                 textAlign = "left", 
                 big.mark = "",
+                poorMansNegative = FALSE,
                 verbose = FALSE){
   
   # decDigits is the number of DECIMAL digits
@@ -16,7 +17,8 @@ pad <- function(x,
   #   * one digits: Fill out an array of the same size as  x  with this digit.
   #   * one digits for each column: Fill out an array the same size as  x  with this digit in each column.
   #   * one digit for each element, same size as input, giving the value for each cell.
-  
+  #
+  # The idea of using \llap to add neative signs fails in HTML, so I use 'poor man's negative'
   
   ### SET UP AND PRELIMINARIES
 
@@ -154,6 +156,7 @@ pad <- function(x,
   if (verbose) cat("Need to fix negative signs?", any(xNew < 0, na.rm=TRUE), "\n")
   xNew <- padForNegative(xNew,
                          whichNegative,
+                         poorMansNegative = poorMansNegative,
                          verbose = verbose)
   if ( verbose ) cat("****************************************************************\n")
   if (verbose) print(xNew)
@@ -257,7 +260,7 @@ addPhantoms <- function(mat){
  
 }
 
-padForNegative <- function(mat, whichNegative, verbose) {
+padForNegative <- function(mat, whichNegative, verbose, poorMansNegative = FALSE) {
   # mat currently contains all non-negative info; the negative signs were removed.
   # Now, add them back as \lap{-} so they do not impact alignment.
   
@@ -277,20 +280,31 @@ padForNegative <- function(mat, whichNegative, verbose) {
 
   
   # Capture leading spaces using a regex
-  leading_spaces <- sub("^(\\s*).*", 
+  leadingSpaces <- sub("^(\\s*).*", 
                         "\\1", 
                         mat)
   
   # Remove leading spaces for further processing
-  no_space_text <- trimws(mat)
+  noSpaceText <- trimws(mat)
   
   # Use ifelse to insert "\llap{-}" where logical_matrix is TRUE
-  modifiedMat <- ifelse(whichNegative, 
-                         paste0(leading_spaces, 
-                                "\\llap{$-{}$}", 
-                                no_space_text),  # If TRUE, insert negative with leading spaces
-                         mat)                    # If FALSE, keep the original
-  
+  if ( poorMansNegative ) {
+    if (verbose) cat(" -> Using poor man's negative\n")
+    # Rather than using \llap, add the negative, and a phantom space to all others... a hack.
+    modifiedMat <- ifelse(whichNegative, 
+                          paste0(leadingSpaces, 
+                                 "{-", 
+                                 noSpaceText,
+                                 "}"),          # If TRUE, insert negative 
+                          paste0("\\phantom{0}", mat) )  # If FALSE, add space to keep alignment
+    
+  } else {
+    modifiedMat <- ifelse(whichNegative, 
+                           paste0(leadingSpaces, 
+                                  "\\llap{$-{}$}", 
+                                  noSpaceText),  # If TRUE, insert negative with leading spaces
+                           mat)                    # If FALSE, keep the original
+  }
   if (verbose) cat("has_negative is:\n")
 
   
