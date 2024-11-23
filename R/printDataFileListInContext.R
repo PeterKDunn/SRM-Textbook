@@ -319,14 +319,14 @@ prepareFileName <- function(fileName, inLaTeX){
       fileName <- paste0("[",
                          substr(fileName, 
                                 start = 1,
-                                stop = (bt2 + 1)), # Plus 1 as we have already added leading
+                                stop = (bt2)), # Plus 1 as we have already added leading
                          "](Data/",
                          substr(fileName,
-                                start = 3,
-                                stop = bt2), 
+                                start = 2,
+                                stop = bt2 - 1), # -1 , so the link does not include the backtick
                          ".csv)",
                          substr(fileName,
-                                start = bt2 + 2,
+                                start = bt2 + 1,
                                 stop = nchar(fileName)) )
     } else { # Special cases: No need to link to csv file
       fileName <- fileName
@@ -445,42 +445,12 @@ writeDataFileList <- function(fileNames,
              prepareFileName( fileName = unlist(fileNames)[j],
                               inLaTeX = TRUE),
              "\n") 
-      } else { # HTML needs hyperlinks added, so complicated
-        
+      } else { # HTML needs hyperlinks added, so more complicated
+
         cat( "* ",
              prepareFileName( fileName = unlist(fileNames)[j],
                               inLaTeX = FALSE),
              "\n") 
-        
-        #   
-        #   
-        # fileNameWithLinks <- unlist(fileNames)[i]
-        # 
-        # # Add hyperlink to data: `file` (Exercise) ->  [`file`](Data/file.csv) (Exercise)
-        # backTickLocation <- unlist(gregexpr('`', 
-        #                                     fileNameWithLinks))
-        # bt2 <- backTickLocation[2]
-        # 
-        # # Locate first back tick: Add  [  before
-        # fileNameWithLinks <- paste0("[", fileNameWithLinks)
-        # 
-        # # Locate second back tick: Insert  ](Data/file.csv)
-        # fileNameWithLinks <- paste0(substr(fileNameWithLinks,
-        #                                    start = 1,
-        #                                    stop = (bt2 + 1)), # Plus 1 as we have already added leading
-        #                             "](Data/",
-        #                             substr(fileNameWithLinks,
-        #                                    start = 3,
-        #                                    stop = bt2), 
-        #                             ".csv)",
-        #                             substr(fileNameWithLinks,
-        #                                    start = bt2 + 2,
-        #                                    stop = nchar(fileNameWithLinks)) )
-        # # Print 
-        # cat( "* ",
-        #      fileNameWithLinks,
-        #      "\n") 
-        
       } 
     }
   }
