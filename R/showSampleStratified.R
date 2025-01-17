@@ -55,7 +55,8 @@ showSampleStratified <- function(sizeHorizontal = 21,
   plotPopulation <- function(){
     
     plot( x = c(1, sizeHorizontal + 1), # The + 1 is to allow for the separation line 
-          y = c(1, sizeVertical), 
+          y = c( ifelse( static, 1, 0), # Makes room for progress bar at the bottom
+                 sizeVertical),
           type = "n",
           main = main,
           axes = FALSE,
@@ -179,8 +180,10 @@ showSampleStratified <- function(sizeHorizontal = 21,
     
     
     plotPopulation()
+    count <- 0
     
     for (i in selectedA){  
+      count <- count + 1
       locatei <- which(selectedA == i)
       plotThese <- selectedA[1 : locatei]
       
@@ -210,11 +213,21 @@ showSampleStratified <- function(sizeHorizontal = 21,
     
       sampleSizeYounger <- sum( sample.pchF == 25)
       
+      # Add progress bar for HTML animation
+      if (!static){
+        showProgressBar(count/(sampleSize) * 100, 
+                        barColour = plotSolid,
+                        boxColour = NA, # No box outline
+                        lwd = 1, 
+                        xPlacement = c(1, sizeHorizontal), 
+                        yPlacement = c(-0.5, 0.5) )
+      }
     }
     
     ### Plot the selected **Older/older**
     
     for ( j in selectedB ) {
+      count <- count + 1
       ### Need to plot *all* the younger first, before looping through the older
       plotPopulation()
       points( expand.grid(1:numA, 
@@ -253,6 +266,16 @@ showSampleStratified <- function(sizeHorizontal = 21,
               cex = sample.cex)
      
       sampleSizeOlder <- sum( sample.pch == 19)
+      
+      # Add progress bar for HTML animation
+      if (!static){
+        showProgressBar(count/(sampleSize) * 100, 
+                        barColour = plotSolid, #black", 
+                        boxColour = NA, # No box outline
+                        lwd = 1, 
+                        xPlacement = c(1, sizeHorizontal), 
+                        yPlacement = c(-0.5, 0.5) )
+      }
       
     }
     

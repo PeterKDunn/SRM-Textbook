@@ -49,7 +49,8 @@ showSampleSystematic <- function(sizeHorizontal = 21,
     sampleSizeYounger <- 0
     
     plot( x = c(1, sizeHorizontal), 
-          y = c(1, sizeVertical),
+          y = c( ifelse( static, 1, 0), # Makes room for progress bar at the bottom
+                 sizeVertical),
           type = "n",
           main = "Systematic sampling",
           axes = FALSE,
@@ -105,6 +106,15 @@ showSampleSystematic <- function(sizeHorizontal = 21,
            lwd = 2,
            cex = 2.2,
            pch = 0)
+    # Add progress bar for HTML animation
+    if (!static){
+      showProgressBar(i/sampleSize * 100, 
+                      barColour = plotSolid, #black", 
+                      boxColour = NA, # No box outline
+                      lwd = 1, 
+                      xPlacement = c(1, sizeHorizontal), 
+                      yPlacement = c(-0.5, 0.5) )
+    }
   }
   
   invisible( list( sampleSizeOlder = sampleSizeOlder,

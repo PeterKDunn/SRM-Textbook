@@ -38,11 +38,13 @@ showSampleSRS <- function(sizeHorizontal = 21,
   }
 
   for (i in startLoop : sampleSize){
-    plot( c(1, sizeHorizontal), 
-          c(1, sizeVertical),
+    plot( x = c( 1, sizeHorizontal), 
+          y = c( ifelse( static, 1, 0), # Makes room for progress bar at the bottom
+                 sizeVertical),
           type = "n",
           main = "Simple random sampling",
           axes = FALSE,
+          xpd = NA,
           ylab = "",
           xlab = "")
     
@@ -69,7 +71,7 @@ showSampleSRS <- function(sizeHorizontal = 21,
     sampleSizeOlder   <-  sum( sample.pch == 19)
     sampleSizeYounger <- sum( sample.pch == 25)
     
-    sample.cex[ selected[1:i]] <- 1.2
+    sample.cex[ selected[1:i]] <- ifelse(static, 1.25, 1.5) # Does not impact size in printed text
     sample.bg[  selected[1:i]] <- plotDark
     sample.col[ selected[1:i]] <- plotDark
     
@@ -78,6 +80,16 @@ showSampleSRS <- function(sizeHorizontal = 21,
             bg  = sample.bg,
             col = sample.col,
             cex = sample.cex)
+    
+    # Add progress bar for HTML animation
+    if (!static){
+      showProgressBar(i/sampleSize * 100, 
+                      barColour = plotSolid, #black", 
+                      boxColour = NA, # No box outline
+                      lwd = 1, 
+                      xPlacement = c(1, sizeHorizontal), 
+                      yPlacement = c(-0.5, 0.5) )
+    }
   }
   
   invisible( list( sampleSizeOlder = sampleSizeOlder,
