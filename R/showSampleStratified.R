@@ -202,7 +202,7 @@ showSampleStratified <- function(sizeHorizontal = 21,
       sample.pchF[ plotThese ] <- 25
       sample.colF[ plotThese ] <- plotDark
       sample.bgF[  plotThese ] <- plotDark
-      sample.cexF[ plotThese ] <- 1.3
+      sample.cexF[ plotThese ] <- 1.75
       
       points( expand.grid(1:numA, 
                           1:sizeVertical), 
@@ -253,7 +253,7 @@ showSampleStratified <- function(sizeHorizontal = 21,
       sample.pch[ plotThese] <- 19
       sample.col[ plotThese] <- plotDark
       sample.bg[  plotThese] <- plotDark
-      sample.cex[ plotThese] <- 1.3
+      sample.cex[ plotThese] <- 1.75
       
       EGmale <- expand.grid(1:numB, 
                             1:sizeVertical)

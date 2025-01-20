@@ -170,7 +170,7 @@ showSampleCluster <- function(populationSize = 21 * 21,
       this.col[this.col == "black"] <- plotDark
       
       this.cex <- sample.cex[selection]
-      this.cex[this.cex == 1] <- 1.2
+      this.cex[this.cex == 1] <- 1.75
       
       this.bg <- sample.bg[selection]
       this.bg[this.bg == "white"] <- plotDark
@@ -210,7 +210,7 @@ showSampleCluster <- function(populationSize = 21 * 21,
       this.col[this.col == "black"] <- plotDark
       
       this.cex <- sample.cex[selection]
-      this.cex[this.cex == 1] <- 1.2
+      this.cex[this.cex == 1] <- 1.75
       
       this.bg <- sample.bg[selection]
       this.bg[this.bg == "white"] <- plotDark
@@ -228,7 +228,6 @@ showSampleCluster <- function(populationSize = 21 * 21,
           cex = 0.9,
           at = (1 + maxTutorial) / 2 )
     
-  
 }
 
 

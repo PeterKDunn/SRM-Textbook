@@ -121,7 +121,7 @@ showSampleMultistage <- function(populationSize = 21 * 21,
       this.pch[ linearSelect[ sample.pch[ linearSelect ] == 6] ] <- 25
       
       this.col[ linearSelect[ sample.col[ linearSelect ] == "black"] ] <- plotDark
-      this.cex[ linearSelect[ sample.cex[ linearSelect ] == 1] ]    <- 1.2
+      this.cex[ linearSelect[ sample.cex[ linearSelect ] == 1] ]    <- ifelse(static, 1.2, 1.75)
       this.bg[  linearSelect[ sample.bg[  linearSelect ] == "white"] ] <- plotDark
     }
   }

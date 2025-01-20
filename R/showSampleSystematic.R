@@ -33,7 +33,8 @@ showSampleSystematic <- function(sizeHorizontal = 21,
   jump <- floor(sizeHorizontal * sizeVertical / sampleSize)
   
   # Start value may be given (`start`), but start somewhere at random, unless given
-  if ( is.na(start)) start <- sample(1:jump, size = 1) # Select a starting place
+  if ( is.na(start)) start <- sample(1:jump, 
+                                     size = 1) # Select a starting place
 
   selected <- seq(start, sizeHorizontal * sizeVertical, # Start at the value `start`
                   by = jump)
@@ -77,7 +78,7 @@ showSampleSystematic <- function(sizeHorizontal = 21,
     sample.bg[selected[1:i]] <- plotDark
 
     sample.cex <- rep(1, length = populationSize)
-    sample.cex[selected[1:i]] <- 1.3
+    sample.cex[selected[1:i]] <- 1.75
     
     # Some labels    
     mtext( paste("Total number of students: ", populationSize, sep = ""), 
