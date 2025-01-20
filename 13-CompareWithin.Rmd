@@ -480,9 +480,9 @@ One RQ was:
 
 Data for both species was collected at\ $25$ different sites
 `r if( knitr::is_latex_output() ) {
-'(Table\\ \\@ref(tab:FloweringData)).'
+  '(Table\\ \\@ref(tab:FloweringData)).'
 } else {
-'(see below).'
+  '(Fig\\ \\@ref(fig:FloweringDataHTML)).'
 }`
 The site is the *individual*; the data are *paired* (Sect.\ \@ref(PairedIntro)), a form of blocking\index{Blocking} (Sect.\ \@ref(ManagingConfounding)).
 The 'first-flowering day' is the number of days since the start of the year (e.g., January\ 12 is 'day\ 12') when flowers were first observed.
@@ -540,21 +540,23 @@ if( knitr::is_latex_output() ) {
   out2 <- prepareSideBySideTable(out) 
   out2 
 }
+```
 
+```{r FloweringDataHTML, fig.cap="The cyclone data."}
 if( knitr::is_html_output() ) {
-  kable( pad(Flowering[, c(5, 1, 2)],
-             surroundMaths = TRUE,
-             targetLength = c(2, 3, 3),
-             decDigits = 0),
-         format = "html",
-         align = "c",
-         booktabs = TRUE,
-         longtable = FALSE,
-         col.names = c("Site", "Willow", "Skypilot"),
-         caption = "The day of the year of first flowering by encroaching willow and native skypilot.") %>% 
-    row_spec(0, bold = TRUE)
+  DT::datatable( cbind(Flowering$Site,
+                       Flowering$Willow,
+                       Flowering$Skypilot),
+                 fillContainer = FALSE, # Make more room, so we don't just have ten values
+                 options = list(searching = FALSE), # Remove searching: See: https://stackoverflow.com/questions/35624413/remove-search-option-but-leave-search-columns-option
+                 colnames = c("Site",
+                              "Willow",
+                              "Skypilot"),
+                 caption = "The day of the year of first flowering by encroaching willow and native skypilot."
+  )
 }
 ```
+
 
 
 Since the data are available, the data should be summarised graphically (Fig.\ \@ref(fig:FloweringPlots)) and numerically (Table\ \@ref(tab:FloweringSummary)), using software output (Fig.\ \@ref(fig:Floweringjamovi)).\index{Software output!mean differences}
@@ -775,9 +777,9 @@ points( x = 1:3,
 ```{r TapeTable}
 TapeTable <- array( dim = c(3, 5))
 
-rownames(TapeTable) <-c( "Pre: $5\\mins$",
-                         "Post: $5\\mins$",
-                         "Post: $15--20\\mins$" )
+rownames(TapeTable) <- c( "Pre: $5\\mins$",
+                          "Post: $5\\mins$",
+                          "Post: $15--20\\mins$" )
 colnames(TapeTable) <- c("Mean (in kPa)",
                          "Std dev. (in kPa)",
                          "Sample size",
@@ -826,6 +828,10 @@ if( knitr::is_latex_output() ) {
                       line = FALSE)
 }
 if( knitr::is_html_output() ) {
+  rownames(TapeTable) <- c( "Pre: $5\\mins$",
+                            "Post: $5\\mins$",
+                            "Post: $15-20\\mins$" )
+
   knitr::kable( pad(TapeTable,
                     surroundMaths = TRUE,
                     targetLength = c(5, 6, 2, 4, 6),

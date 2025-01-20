@@ -18,7 +18,7 @@ pad <- function(x,
   #   * one digits for each column: Fill out an array the same size as  x  with this digit in each column.
   #   * one digit for each element, same size as input, giving the value for each cell.
   #
-  # The idea of using \llap to add neative signs fails in HTML, so I use 'poor man's negative'
+  # The idea of using \llap to add negative signs fails in HTML, so I use 'poor man's negative'
   
   ### SET UP AND PRELIMINARIES
 

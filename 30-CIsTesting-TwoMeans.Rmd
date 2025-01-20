@@ -105,10 +105,11 @@ if( knitr::is_latex_output() ) {
   out2
 }
 if( knitr::is_html_output() ) {
-  DT::datatable( SNF,
-                 colnames = c("Crayfish region", 
-                              "Not-crayfish region"),
-                 caption = "Snout--vent length (in cm) for female Mexican garter snakes living in crayfish ($n = 35$) and non-crayfish ($n = 41$) regions.",
+  DT::datatable( data.frame(SNF$Crayfish,
+                            SNF$SVL),
+                 colnames = c("Crayfish?",
+                              "SVL"),
+                 caption = "Snout--vent length (in cm) for female Mexican garter snakes living in crayfish (n = 35) and non-crayfish (n = 41) regions.",
                  fillContainer = FALSE, # Make more room, so we don't just have ten values
                  #filter="top", 
                  #selection="multiple", 
@@ -1093,9 +1094,16 @@ knitr::include_graphics("OtherImages/ChamomileTea/ChamomileSummary-BetweenWithin
 
 
 The corresponding hypotheses are:
+`r if (knitr::is_html_output()) '<!--'`
 $$
   \text{$H_0$: $\mu_T - \mu_W = 0$ \qquad and\qquad $H_1$: $\mu_T - \mu_W > 0$}
 $$
+`r if (knitr::is_html_output()) '-->'`
+`r if (knitr::is_latex_output()) '<!--'`
+$$
+  \text{$H_0$: $\mu_T - \mu_W = 0$ and $H_1$: $\mu_T - \mu_W > 0$}
+$$
+`r if (knitr::is_latex_output()) '-->'`
 where\ $\mu$ refers to the mean *reduction* in TG, $T$ refers to the tea-drinking group, and $W$ to the hot-water drinking group.
 
 The parameter $\mu_T - \mu_W$ is estimated by the statistic $\bar{x}_T - \bar{x}_W = 45.74\mgs$.dl^$-1$^.
@@ -1642,6 +1650,7 @@ if( knitr::is_latex_output() ) {
 if( knitr::is_html_output() ) {
   kable(pad(SignageSummaryDec,
             surroundMaths = TRUE,
+            poorMansNegative = TRUE,
             targetLength = c(7, 6, 7, 2),
             decDigits = c(4, 4, 5, 0)),
         format = "html",
