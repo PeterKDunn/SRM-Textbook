@@ -146,7 +146,7 @@ showDesignConsiderations <- function(studyType="Experiment", addIcons = FALSE){
             box.col = DesignColour,
             lcol = DesignColour)
   textrect( pos[5, ], 
-            lab = "Carry-over\neffect", 
+            lab = "Carryover\neffect", 
             radx = 0.10, 
             rady = 0.055, 
             adj = ifelse(addIcons, 0.6, 0.5),
