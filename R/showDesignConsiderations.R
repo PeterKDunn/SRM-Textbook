@@ -13,7 +13,7 @@ showDesignConsiderations <- function(studyType="Experiment", addIcons = FALSE){
   pos[2, ] <- c(0.45, 0.45) # Hawthorne
   pos[3, ] <- c(0.45, 0.30) # Placebo
   pos[4, ] <- c(0.45, 0.15) # Observer
-  pos[5, ] <- c(0.45, 0.00) # Carry-over
+  pos[5, ] <- c(0.45, 0.00) # Carryover
   
   # Solutions
   pos[7, ]  <- c(0.57, 0.85) # Analysis
