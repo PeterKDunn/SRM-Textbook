@@ -199,11 +199,11 @@
              lcol = SupportColour,
              box.col = ifelse (Decision == "Accept",
                                DecisionColour,
-                               ContradictColour),
+                               "white"), 
              lab = expression( atop(bold(Yes):~Supports,
                                     assumption) ),
              col = ifelse( Decision == "Reject", 
-                           grey(1), 
+                           grey(0.3), 
                            "black")) # CHECKMARK
    textrect( pos[7, ],
              radx = 0.11,
