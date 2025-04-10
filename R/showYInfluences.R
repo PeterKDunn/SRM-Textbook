@@ -4,36 +4,43 @@ showYInfluences <- function (showY = TRUE,
                              showChance = TRUE,
                              showExtraneous = TRUE,
                              showConfounding = FALSE,
-                             partition = NA,  # PARTITION something like c(3, 5, 2); i.e., *relative* widths: Chance, Extraneous, Explanatory
-                             showLurking = FALSE){
+                             partition = NA,  # PARTITION the response variable into Chance, Extraneous, Explanatory; something like c(3, 5, 2); i.e., *relative* widths
+                             showLurking = FALSE,
+                             explanatoryBoxWidth = 1, # As a fraction of responseWidth
+                             extraneousBoxWidth = 1, # As a fraction of responseWidth
+                             ResponseName = NA, # By default: "Response" or "Response variable"
+                             ExplanatoryName = "Explanatory", # By default: "Explanatory"
+                             ExtraneousName = NA){ # By default: "Extraneous"
+  
   
   leftEdge <- 0
   lowerEdge <- 0.15
   
   boxHeight <- 0.16
-  boxWidth <- 0.215
   responseWidth <- 0.25
   
   if (showConfounding | showLurking ){
     # Make some changes in these cases, as these are placed two beside each other
-    leftEdge <- 0.35
-    lowerEdge <- 0.30
+    leftEdge <- 0.35 # This is where the plot actually starts at; i.e., xlim = c(leftEdge, 1)
+    lowerEdge <- 0.30 # This is where the plot actually starts at; i.e., ylim = c(lowerEdge, 1)
     responseWidth <- 0.15
-    boxWidth <- 0.20
   }
-
-  par( mar = c(0.1, 0.1, 0.1, 0.1))
+  
+  explanatoryBoxWidth <- responseWidth * explanatoryBoxWidth # Default  extraneousBoxWidth  factor is 1
+  extraneousBoxWidth <- responseWidth * extraneousBoxWidth # Default  extraneousBoxWidth  factor is 1
+  
+  par( mar = c(0.1, 0.01, 0.1, 0.01))
   #diagram::openplotmat()
   shape::emptyplot( xlim = c(leftEdge, 1),
                     ylim = c(lowerEdge, 1),
                     asp = NA)
-
+  
   if (showBasic){
     showChance <- FALSE
     showExtraneous <- FALSE
     showLurking <- FALSE
     showConfounding <- FALSE
-    partition <- NA
+    #partition <- NA
     showX <- TRUE
     showY <- TRUE
   }
@@ -42,7 +49,7 @@ showYInfluences <- function (showY = TRUE,
     showExtraneous <- TRUE
     showLurking <- FALSE
     showConfounding <- TRUE
-    partition <- NA
+    #partition <- NA
     showX <- TRUE
     showY <- TRUE
   }
@@ -51,14 +58,14 @@ showYInfluences <- function (showY = TRUE,
     showExtraneous <- FALSE
     showLurking <- TRUE
     showConfounding <- FALSE
-    partition <- NA
+    #partition <- NA
     showX <- TRUE
     showY <- TRUE
   }
   
-  # Turn  partition  into actual plotting widths
-  if ( !all(is.na( partition) ) ){
-
+  # Turn  partition  into actual plotting widths inside the Response variable box
+  if ( !all(is.na( partition ) ) ){
+    
     partition <- responseWidth * c(0, cumsum(partition) / sum(partition) )
     partition <- (1 - responseWidth)/2 + partition 
     # This is the location of partition: 
@@ -70,7 +77,6 @@ showYInfluences <- function (showY = TRUE,
   ChanceWidth <- diff(partition)[1]
   ExtraneousWidth <- diff(partition)[2]
   ExplanatoryWidth <- diff(partition)[3]
-
   
   # Set up locations
   pos <- array(NA, 
@@ -141,10 +147,10 @@ showYInfluences <- function (showY = TRUE,
   
   if (showConfounding | showLurking ) {
     bentarrow(from = pos[3, ], # Extraneous
-                  to = pos[4, ],   # Explanatory
-                  lwd = 2,
-                  lcol = ifelse( showConfounding, "black", "grey" ),
-                  lty = ifelse( showLurking, 2, 1) )
+              to = pos[4, ],   # Explanatory
+              lwd = 2,
+              lcol = ifelse( showConfounding, "black", "grey" ),
+              lty = ifelse( showLurking, 2, 1) )
     textrect( pos[3, ], 
               lab = "", 
               radx = responseWidth/2 * 1.2, # Extra space for longer words, so arrow lines don't get too close
@@ -154,15 +160,16 @@ showYInfluences <- function (showY = TRUE,
               box.col = "white",
               col = ifelse(showLurking, grey(0.4), "black"))
   }
-
+  
   # Show Explanatory
-  textrect( pos[4, ], , 
+  textrect( pos[4, ],  # The entire box
             lab = "", 
-            radx = responseWidth/2, 
+            radx = explanatoryBoxWidth/2, 
             rady = boxHeight/2, 
             shadow.size = 0,
             box.col = "white",
             lcol = "grey")
+  # Now partition if necessary
   textrect( pos[4, ] + c(responseWidth/2 - ExplanatoryWidth/2, 0), 
             lab = "", 
             radx = ExplanatoryWidth/2, 
@@ -172,22 +179,24 @@ showYInfluences <- function (showY = TRUE,
             lcol = ExplanatoryColour)
   text(x = pos[4, 1],
        y = pos[4, 2],
-       "Explanatory")
-
-  # Show Response  
+       ifelse( is.na(ExplanatoryName), 
+               "Explanatory",
+               ExplanatoryName) )
+  
+  # Show Response, which may or may not be partitioned into its component bits
   if ( !all(is.na( partition) ) ) {
     # Partition the response
     if (showChance) {
-    polygon( x = c( partition[1] ,
-                    partition[1] ,
-                    partition[2] ,
-                    partition[2] ),
-             y = c( pos[1, 2] - boxHeight/2,
-                    pos[1, 2] + boxHeight/2,
-                    pos[1, 2] + boxHeight/2,
-                    pos[1, 2] - boxHeight/2),
-             border = "grey",
-             col = ChanceColour )
+      polygon( x = c( partition[1] ,
+                      partition[1] ,
+                      partition[2] ,
+                      partition[2] ),
+               y = c( pos[1, 2] - boxHeight/2,
+                      pos[1, 2] + boxHeight/2,
+                      pos[1, 2] + boxHeight/2,
+                      pos[1, 2] - boxHeight/2),
+               border = "grey",
+               col = ChanceColour )
     }
     polygon( x = c( partition[2],
                     partition[2],
@@ -198,7 +207,7 @@ showYInfluences <- function (showY = TRUE,
                     pos[1, 2] + boxHeight/2,
                     pos[1, 2] - boxHeight/2),
              border = "grey",
-             col = ExtraneousColour )
+             col = ExtraneousColour)
     polygon( x = c( partition[3],
                     partition[3],
                     partition[4],
@@ -222,7 +231,9 @@ showYInfluences <- function (showY = TRUE,
             col = NA) # Unfilled
     text(x = 0.5,
          y = pos[1, 2],
-         "Response  variable")
+         labels = ifelse( is.na(ResponseName), 
+                          "Response variable",
+                          ResponseName) )
     text(x = pos[1, 1],
          y = pos[1, 2] - 0.25,
          "Total amount of variation in the reponse variable\ncomes from different sources")
@@ -243,14 +254,16 @@ showYInfluences <- function (showY = TRUE,
            angle = 90)
   }  else {
     textrect( pos[1,], 
-              lab = "Response", 
+              lab = ifelse( is.na(ResponseName),
+                            "Response",
+                            ResponseName),
               radx = responseWidth/2, 
               rady = boxHeight/2, 
               shadow.size = 0,
               box.col = ResponseColour,
               lcol = ResponseColour)
   }
-         
+  
   # Show Chance
   if (!showBasic) {
     if (showChance) {
@@ -272,14 +285,16 @@ showYInfluences <- function (showY = TRUE,
            y = pos[2, 2],
            "Chance")    }
     
-    # Show Extraneous: Might be off-center, so as to align with "Extraneous" partition in the Response
-    ExtraneousText <- "Extraneous"
-
-    if (showConfounding ) ExtraneousText <- "Confounding"
-    if (showLurking ) ExtraneousText <- "Lurking"
-    
-    if ( !all(is.na( partition) ) ) {
+    # Show Extraneous: Might be off-centre, so as to align with "Extraneous" partition in the Response
+    if ( !is.na(ExtraneousName) ) ExtraneousText <- ExtraneousName
+    if ( is.na(ExtraneousName) ){
+      ExtraneousText <- "Extraneous"
+      if (showConfounding ) ExtraneousText <- "Confounding"
+      if (showLurking )  ExtraneousText <- "Lurking"
+    }
+    if ( !all(is.na( partition) ) ) { # Show partitioning of the total variation
       # Off-center 
+      # The WHOLE box
       textrect( pos[3, ], 
                 lab = "", 
                 radx = responseWidth/2,
@@ -290,7 +305,7 @@ showYInfluences <- function (showY = TRUE,
                 col = ifelse(showLurking, grey(0.4), "black"))
       textrect( c( mean( partition[2:3] ),
                    pos[3, 2]),
-                lab = , 
+                lab = "", 
                 radx = ExtraneousWidth/2,
                 rady = boxHeight/2,
                 shadow.size = 0,
@@ -300,16 +315,16 @@ showYInfluences <- function (showY = TRUE,
       text(x = pos[3, 1],
            y = pos[3, 2],
            ExtraneousText)
-    } else {
+    } else { # DO NOT show partitioning of the total variation
       # Centre
-    textrect( pos[3, ], 
-              lab = ExtraneousText, 
-              radx = ExtraneousWidth/2,
-              rady = boxHeight/2,
-              shadow.size = 0,
-              lcol = ExtraneousColour,
-              box.col = ExtraneousColour,
-              col = ifelse(showLurking, grey(0.4), "black"))
+      textrect( pos[3, ], 
+                lab = ExtraneousText, 
+                radx = (ExtraneousWidth)/2,
+                rady = boxHeight/2,
+                shadow.size = 0,
+                lcol = "red",
+                box.col = "red",
+                col = ifelse(showLurking, grey(0.4), "black"))
     }
   }
   
