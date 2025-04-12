@@ -38,7 +38,8 @@ source("R/SixSteps.R")
 options(formatR.arrow = TRUE, width = 90)
 
 # Environment defaults
-knitr::opts_chunk$set(fig.pos = "hbtp")   # Place tables HERE and so on
+knitr::opts_chunk$set(fig.pos = "hbtp",     # Place tables HERE and so on
+                      tidy = TRUE)          # Tidy R code
 
 
 # Chunk options: Options must all be on one line
