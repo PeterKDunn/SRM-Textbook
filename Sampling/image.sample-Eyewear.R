@@ -732,7 +732,7 @@ test <- image( 1:Width,
                t(img.50.str), 
                add = TRUE, 
                col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: large number of pixels: Greenery", col.main=blueTransparent, cex.main=4)
+title("Stratified random sample. Large number of pixels: greenery", col.main=blueTransparent, cex.main=4)
 dev.copy(png, 
          file = "crazy-emotion-eyewear-2015-SMALLEST-R50-stratified-GREENERY.png", 
          width = Width, 
@@ -747,7 +747,7 @@ test <- image( 1:Width,
                t(img.50.str), 
                add = TRUE, 
                col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: large number of pixels: Person", 
+title("Stratified random sample. Large number of pixels: person", 
       col.main = blueTransparent, 
       cex.main = 4)
 dev.copy(png, 
@@ -769,7 +769,7 @@ test <- image( 1:Width,
                t(img.50.str), 
                add = TRUE, 
                col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: large number of pixels: Combined", 
+title("Stratified random sample. Large number of pixels: combined", 
       col.main = blueTransparent, 
       cex.main = 4)
 dev.copy(png, 
@@ -790,7 +790,7 @@ test <- image( 1:Width,
                t(img.25.str), 
                add = TRUE, 
                col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: medium-large number of pixels: Greenery", 
+title("Stratified random sample. Medium-large number of pixels: greenery", 
       col.main = blueTransparent, 
       cex.main = 4)
 dev.copy(png, 
@@ -807,7 +807,7 @@ test <- image( 1:Width,
                t(img.25.str), 
                add = TRUE, 
                col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: medium-large number of pixels: Person", col.main=blueTransparent, cex.main=4)
+title("Stratified random sample. Medium-large number of pixels: person", col.main=blueTransparent, cex.main=4)
 dev.copy(png, 
          file = "crazy-emotion-eyewear-2015-SMALLEST-R25-stratified-NONGREENERY.png", 
          width = Width, 
@@ -827,7 +827,7 @@ test <- image( 1:Width,
                t(img.25.str), 
                add = TRUE, 
                col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: medium-large number of pixels: Combined",
+title("Stratified random sample. Medium-large number of pixels: combined",
       col.main = blueTransparent, 
       cex.main = 4)
 dev.copy(png, 
@@ -847,7 +847,7 @@ test <- image( 1:Width,
                t(img.10.str), 
                add = TRUE, 
                col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: medium-small number of pixels: Greenery",
+title("Stratified random sample. Medium-small number of pixels: greenery",
       col.main = blueTransparent, 
       cex.main = 4)
 dev.copy(png, 
@@ -864,7 +864,7 @@ test <- image( 1:Width,
                t(img.10.str), 
                add = TRUE, 
                col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: medium-small number of pixels: Person", 
+title("Stratified random sample. Medium-small number of pixels: person", 
       col.main = blueTransparent, 
       cex.main = 4)
 dev.copy(png, 
@@ -886,7 +886,7 @@ test <- image( 1:Width,
                t(img.10.str), 
                add = TRUE, 
                col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: medium-small number of pixels: Combined", 
+title("Stratified random sample. Medium-small number of pixels: combined", 
       col.main = blueTransparent, 
       cex.main = 4)
 dev.copy(png, 
@@ -908,7 +908,7 @@ test <- image( 1:Width,
                t(img.05.str), 
                add = TRUE, 
                col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: small number of pixels: Greenery", 
+title("Stratified random sample. Small number of pixels: greenery", 
       col.main = blueTransparent, 
       cex.main = 4)
 dev.copy(png, 
@@ -925,7 +925,7 @@ test <- image( 1:Width,
                t(img.05.str), 
                add = TRUE, 
                col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: small number of pixels: Person", 
+title("Stratified random sample. Small number of pixels: person", 
       col.main = blueTransparent, 
       cex.main = 4)
 dev.copy(png, 
@@ -947,7 +947,7 @@ test <- image( 1:Width,
                t(img.05.str), 
                add = TRUE, 
                col = c(NA,"#FFFFFF"))  # NA causes transparent pixels; overlay the Overlay!
-title("Stratified random sample: small number of pixels: Combined", 
+title("Stratified random sample. Small number of pixels: combined", 
       col.main = blueTransparent, 
       cex.main = 4)
 dev.copy(png, 

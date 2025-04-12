@@ -52,7 +52,7 @@ showMakeDecisions <- function(arrowYes = TRUE, # Full arrow to YES: SUPPORTS ASS
             shadow.size = 0,
             lcol = "darkseagreen2",
             box.col = "darkseagreen2",
-            lab = "Yes: Supports\nassumption", 
+            lab = "Yes: supports\nassumption", 
             col = ifelse(arrowYes, "black", grey(0.7)) ) 
   textrect( pos[6, ], 
             radx = 0.11,
@@ -60,7 +60,7 @@ showMakeDecisions <- function(arrowYes = TRUE, # Full arrow to YES: SUPPORTS ASS
             shadow.size = 0,
             lcol = "darksalmon",
             box.col = "darksalmon",
-            lab = "No: Contradicts\nassumption", 
+            lab = "No: contradicts\nassumption", 
             col = ifelse(arrowNo, "black", grey(0.7)) )
   
   textrect( pos[1, ], 
