@@ -1,9 +1,9 @@
 showCorrelationalStudyDesign <- function(intervention = FALSE,
-                                     explanatoryName = NA,
-                                     responseName = NA,
-                                     individualNames = NA,
-                                     interventionName = NA,
-                                     outcomeName = NA) {
+                                         explanatoryName = NA,
+                                         responseName = NA,
+                                         individualNames = NA,
+                                         interventionName = NA,
+                                         outcomeName = NA) {
   
   ### Makes a study design diagram for a repeated measures design  
   ### Works for two groups/treatments; most things should work with three
@@ -69,7 +69,7 @@ showCorrelationalStudyDesign <- function(intervention = FALSE,
   
   ### ARROWS Variables to 'individuals'
   if (intervention) {
-
+    
     text(x = 0.35,
          y = 0.5,
          labels = "By researchers",
@@ -77,23 +77,31 @@ showCorrelationalStudyDesign <- function(intervention = FALSE,
          srt = 0,
          cex = 1.65)
     
-    diagram::straightarrow(from = c(0.25, 0.3), # From X to IND
+    diagram::straightarrow(from = c(0.25, 0.3), # From Y to IND
                            to = c(0.5, 0.7), 
                            segment = c(0, 0.8),
-                           lty = ifelse(intervention, 1, 2), 
+                           lty = 1, 
+                           lwd = 2)
+    diagram::straightarrow(from = c(0.5, 0.7), # From X to IND
+                           to = c(0.75, 0.3), 
+                           segment = c(0.2, 1),
+                           lcol = "grey",
+                           lty = 2, 
                            lwd = 2)
   } else {
-    diagram::straightarrow(from = c(0.5, 0.7), # From X to IND
+    diagram::straightarrow(from = c(0.5, 0.7), # From Y to IND
                            to = c(0.25, 0.3), 
                            segment = c(0.2, 1),
-                           lty = ifelse(intervention, 1, 2), 
+                           lty = 2, 
+                           lcol = "grey",
+                           lwd = 2)
+    diagram::straightarrow(from = c(0.5, 0.7), # From X to IND
+                           to = c(0.75, 0.3), 
+                           segment = c(0.2, 1),
+                           lcol = "grey",
+                           lty = 2, 
                            lwd = 2)
   }
-  diagram::straightarrow(from = c(0.5, 0.7), # From X to IND
-                         to = c(0.75, 0.3), 
-                         segment = c(0.2, 1),
-                         lty = 2, 
-                         lwd = 2)
   
   
   ### INDIVIDUALS boxes
@@ -105,7 +113,7 @@ showCorrelationalStudyDesign <- function(intervention = FALSE,
                      shadow.size = 0,
                      lab = individualNames)
   
-
+  
   ### VARS
   diagram::textrect( mid = c(0.2, 0.3),
                      radx = 0.15,
@@ -137,4 +145,3 @@ showCorrelationalStudyDesign <- function(intervention = FALSE,
   
   
 }
-
