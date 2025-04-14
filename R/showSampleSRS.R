@@ -55,7 +55,7 @@ showSampleSRS <- function(sizeHorizontal = 21,
            cex = 0.9,
            at = sizeHorizontal / 2)
 
-    mtext(paste("Select", sampleSize, "students"),   
+    mtext(paste("Select", sampleSize, "students at random"),   
           side = 1, 
           cex = 0.9,
           at = sizeHorizontal / 2)
