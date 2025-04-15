@@ -49,6 +49,8 @@ Not all of these strategies will be relevant to every study.
 <img src="Illustrations/pexels-gil-goldman-4268507.jpg" width="200px"/>
 </div>
 
+For this chapter, the following RQ will be used to demonstrate ideas.
+
 
 :::{.example #HimalayaStudy name="Himalaya study"}
 Consider this relational RQ (based on @data:Bird2008:wholegrain):
@@ -65,7 +67,7 @@ Suppose that the researchers created two groups of individuals for this experime
 The researchers gave *Himalaya\ 292* to Group\ A, and the refined cereal to Group\ B.\spacex 
 If a difference in faecal weight was detected between the two groups, many reasons may explain the difference:
 
-* the different *diets* (the explanatory variable) for each group.
+* the different *diets* (the explanatory variable in the RQ) for each group.
 * the different *sexes* in each group (Group\ A was all women; Group\ B was all men).
 * the different *ages* in each group (Group\ A is likely to be younger on average than those in Group\ B).
 * the different *overall health* in each group (Group\ A would generally be healthier than those in Group\ B).
@@ -149,80 +151,12 @@ kable(ConfoundTable[, c(2, 1, 3)],
 \hspace{0.08\textwidth}
 %%%
 \begin{minipage}{0.55\textwidth}%
-```{r, fig.width=4.5, fig.height=2.5, out.width='99%'}
-par( mar = c(0.1, 0.1, 0.1, 0.1))
-openplotmat()
-
-pos <- array(NA, 
-             dim = c(3, 2)) 
-pos[1, ] <- c(0.17, 0.25) # Faecal wt
-pos[2, ] <- c(0.83, 0.25) # Diet
-pos[3, ] <- c(0.50, 0.75) # Age
-
-
-straightarrow(from = pos[2,], 
-              to = pos[1,], 
-              lty = 2, 
-              lwd = 2,
-              lcol = "grey")
-straightarrow(from = pos[3,], 
-              to = pos[1,], 
-              lty = 1, 
-              lwd = 2,
-              lcol = "black")
-straightarrow(from = pos[3,], 
-              to = pos[2,], 
-              lty = 1, 
-              lwd = 2,
-              lcol = "black")
-
-
-textrect(mid= c(0.5, 0.48),
-         radx = 0.2,
-         rady = 0.08,
-         cex = 0.85,
-         lcol = makeTransparent("white"),
-         box.col = makeTransparent("white"),
-         shadow.size = 0,
-         lab = "Actual associations")
-#text(x = 0.5,
-#     y = 0.46,
-#     cex = 0.85,
-#     pos = 3,
-#     labels = "Actual associations")
-text(x = 0.5,
-     y = 0.25,
-     cex = 0.85,
-     pos = 3,
-     labels = "Apparent")
-text(x = 0.5,
-     y = 0.25,
-     cex = 0.85,
-     pos = 1,
-     labels = "assocation")
-
-textrect( pos[1,], 
-          lab = "Faecal wt",
-          radx = 0.14,
-          rady = 0.075,
-          shadow.size = 0,
-          lcol = ResponseColour,
-          box.col = ResponseColour)
-textrect( pos[2,], 
-          lab = "Diet", 
-          radx = 0.14,
-          rady = 0.075,
-          shadow.size = 0,
-          lcol = ExplanatoryColour,
-          box.col = ExplanatoryColour)
-textrect( pos[3,], 
-          box.col = "white",
-          lcol = grey(0.75),
-          shadow.size = 0,
-          radx = 0.20,
-          rady = 0.075,
-          col = grey(0.3),
-          lab = "Age")
+```{r, fig.width=4.5, fig.height=2.25, out.width='99%'}
+source("R/showYInfluences.R")      
+showYInfluences(showConfounding = TRUE,           
+                ExtraneousName = "Age",    
+                ResponseName = "Faecal wt", 
+                ExplanatoryName = "Diet")
 ```
 \captionof{figure}{An extreme example of confounding\label{fig:ConfoundingDiagram}.}
 \end{minipage}
@@ -247,74 +181,12 @@ if ( knitr::is_html_output()) {
 <!-- The figure for LaTeX is in the minipage (combined with data table), so only need show it for the HTML -->
 `r if (knitr::is_latex_output()) '<!--'`
 ```{r ConfoundingDiagram, fig.width=5, fig.height=4, out.width='55%', fig.align="center", fig.cap="An extreme example of confounding."}
-par( mar = c(0.5, 0.5, 0.5, 0.5))
-openplotmat()
+source("R/showYInfluences.R")      
+showYInfluences(showLurking = TRUE,          
+                ExtraneousName = "Age",    
+                ResponseName = "Faecal wt", 
+                ExplanatoryName = "Diet")
 
-pos <- array(NA, 
-             dim = c(3, 2)) 
-pos[1, ] <- c(0.17, 0.25) # Faecal wt
-pos[2, ] <- c(0.83, 0.25) # Diet
-pos[3, ] <- c(0.50, 0.75) # Age
-
-
-straightarrow(from = pos[3,], # Age to...
-              to = pos[1,],   # ... Faceal wt
-              lty = 2, 
-              lwd = 2,
-              lcol = "grey")
-straightarrow(from = pos[3,], # Age to...
-              to = pos[2,],   # ... Diet
-              lty = 2, 
-              lwd = 2,
-              lcol = "grey")
-
-
-straightarrow(from = pos[2,], 
-              to = pos[1,], 
-              lty = 1, 
-              lwd = 2,
-              lcol = "grey")
-textrect(mid= c(0.5, 0.48),
-         radx = 0.2,
-         rady = 0.08,
-         cex = 0.85,
-         lcol = makeTransparent("white"),
-         box.col = makeTransparent("white"),
-         shadow.size = 0,
-         lab = "Actual associations")
-text(x = 0.5,
-     y = 0.25,
-     cex = 0.85,
-     pos = 3,
-     labels = "Apparent")
-text(x = 0.5,
-     y = 0.25,
-     cex = 0.85,
-     pos = 1,
-     labels = "associations")
-
-textrect( pos[1,], 
-          lab = "Faecel wt",
-          radx = 0.15,
-          rady = 0.075,
-          shadow.size = 0,
-          lcol = ResponseColour,
-          box.col = ResponseColour)
-textrect( pos[2,], 
-          lab = "Diet", 
-          radx = 0.15,
-          rady = 0.075,
-          shadow.size = 0,
-          lcol = ExplanatoryColour,
-          box.col = ExplanatoryColour)
-textrect( pos[3,], 
-          box.col = "white",
-          lcol = grey(0.75),
-          shadow.size = 0,
-          radx = 0.20,
-          rady = 0.075,
-          col = grey(0.3),
-          lab = "Age")
 ```
 
 `r if (knitr::is_latex_output()) '-->'`
@@ -332,12 +204,13 @@ In *experimental* studies, an excellent way to manage confounding is:
 1. *Randomly allocating* individuals to the comparison groups.\index{Confounding!analysis}
 
 Random allocation should ensure that the values of potential confounding variables are approximately evenly distributed between the comparison groups.\index{Confounding!random allocation}
-This is true for identified potential confounders (such as age), and also for variables *not* even considered as confounders, or variables that are hard to measure or observe (such as genetic conditions).
+This is true for identified potential confounders (such as age), but also for unidentified potential confounders, or variables that are hard to measure or observe (e.g., genetic conditions).
 One of the comparison groups is often a control group (Def.\ \@ref(def:Control)).
 
 
 :::{.example #RandomAllocationThirst}
-@lian2024effect studied alleviating post-operative thirst experienced by patients admitted to the intensive care unit, by comparing standard procedures with the use of ice-water spray.
+@lian2024effect studied alleviating post-operative thirst experienced by patients admitted to the intensive care unit.
+They compared standard procedures with the use of ice-water spray.
 To use random allocation of patients to the two groups, the researchers:
 
 > ... assigned unique numbers from\ $1$ to\ $56$ according to [students'] admission order 
@@ -373,10 +246,10 @@ Fortunately, other (though less effective) means for managing confounding also e
 
 Sometimes, specifically excluding or including members of the population is helpful for reducing confounding.
 For the *Himalaya\ 292* study, for example, age is a potential confounder: older people have different dietary needs, general health and gut health when compared to younger people.
-Hence, the researchers may decide to use an *inclusion criteria*,\index{Inclusion criteria} restricting the study to people aged from\ $30$ to\ $50$.
+Hence, the researchers may decide to use an *inclusion criterion*,\index{Inclusion criteria} restricting the study to people aged from\ $30$ to\ $50$.
 
 In addition, some people may have specific conditions or diseases that mean participating in the study will be problematic.
-For instance, coeliacs have an autoimmune disorder which results in an intolerance to gluten (found in wheat, barley and rye).
+For instance, coeliacs have an autoimmune disorder which results in a severe intolerance to gluten (found in wheat, barley and rye).
 Hence, the researchers may decide to use *exclusion criteria*\index{Exclusion criteria}, excluding coeliacs from participating in the study.
 Those individuals that are excluded from the population are not less important than those individuals that are included.
 
@@ -396,9 +269,9 @@ Inclusion and exclusion criteria may be applied for other reasons too; for examp
 :::
 
 
-Exclusion and inclusion criteria clarify which individuals are explicitly included or excluded from the population for the purposes of the study, and should be explained when their purpose is not obvious.
-Exclusion and inclusion criteria are not *necessary*; none, one or both may be used.
-These variables are a type of *control variable* (Def.\ \@ref(def:ControlVariables)).\index{Confounding!control variables}
+Exclusion and inclusion criteria clarify which individuals are explicitly included or excluded from the population for the purposes of the study, and their use should be explained when their purpose is not obvious.
+Exclusion and inclusion criteria are not both necessary; none, one or both may be used.
+These are a type of *control variable* (Def.\ \@ref(def:ControlVariables)).\index{Confounding!control variables}
 
 
 <div style="float:right; width: 75px; padding:10px">
@@ -443,7 +316,8 @@ Exclusion criteria included (p.\ 27) people with:
   when units of analysis are arranged into different groups containing individuals that are similar to each another (see Sect.\ \@ref(PairedInvasivePlants) for an example).
   
 For the *Himalaya\ 292* study, for example, subjects may be *paired* (i.e., groups of two).\index{Study types!paired}
-That is, each person is paired with another person of the same sex and of a similar age; one of the pair is given the *Himalaya\ 292* diet, and the other is given the refined cereal diet. 
+That is, each person is paired with another person of the same sex and of a similar age; one of each pair is given the *Himalaya\ 292* diet, and the other is given the refined cereal diet. 
+Each pair is called a *block*.
 
 
 ::: {.definition #Blocking name="Blocking"}
@@ -464,11 +338,11 @@ Multiple approaches can be used, such as randomly allocating individuals to grou
 *Randomly allocating* is superior when possible, because confounding is reduced for variables not even suspected as being confounders.
 Hence, *experimental* studies should use random allocation whenever possible.
 
-For any study (but especially for observational and quasi-experimental studies), recording the values of any potential confounding variables is useful, so special analysis methods can be used to manage confounding.
+For any study (but especially for observational and quasi-experimental studies), recording the values of any potential confounding variables is useful, so that special analysis methods can be used to manage confounding.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-*Record* all the extraneous variables likely to be important for understanding the data (Sect.\ \@ref(RecordExtraneous)).
+*Record* all the extraneous variables likely to be important (Sect.\ \@ref(RecordExtraneous)).
 This may include information about the *individuals* in the study, and the *circumstances* of the individuals in the study (that is, the circumstances the individuals find themselves in; these may not be measured on the individuals themselves).
 :::
 
@@ -579,7 +453,7 @@ The study should have reasonable internal validity.
 ::: {.example #ConfoundingKiwi name="Managing confounding: observational study"}
 @data:froud2018:kiwifruit studied $2\,599$\ kiwifruit orchards using an observational study, exploring the relationship between the time since a bacterial canker was first detected (in weeks) as the explanatory variable, and the orchard productivity (in tray-equivalents per hectare) as the response variable.
 
-The researchers also recorded extraneous variables such as 'whether the farm was organic', 'elevation of the orchard' and 'whether general fungicides were used'.
+The researchers also recorded potential extraneous variables such as 'whether the farm was organic', 'elevation of the orchard' and 'whether general fungicides were used'.
 These variables were used in their analysis to manage the potential effects of confounding.
 :::
 
@@ -672,7 +546,7 @@ In other words, the difference between hospitals and the staff may have been a c
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 Observational studies *can* (and often do) have control groups.
 Indeed, one specific type of observational study is called a *case-control study*\index{Study types!case-control studies} (Sect.\ \@ref(Backward)).
-However, individuals are *not allocated to the control group* by the researchers in observational studies, so the control and study groups may be very different, which may explain any differences in the outcome.
+However, individuals are *not allocated to the control group* by the researchers in observational studies, so initially the control and study groups may be very different, which may explain any differences in the outcome.
 :::
 
 
@@ -694,11 +568,11 @@ However, individuals are *not allocated to the control group* by the researchers
 
 
 
-Random *sampling* and random *allocation*\index{Confounding!random allocation}\index{Sampling} are different concepts (Fig.\ \@ref(fig:RandomAllocationSampling)), with different purposes, but are often confused:
+Random *sampling* and random *allocation*\index{Confounding!random allocation}\index{Sampling} are different concepts (Fig.\ \@ref(fig:RandomAllocationSampling)) with different purposes, but are often confused:
 
 * *Random sampling* impacts *external* validity.
   Its purpose is *finding individuals* to study, and is possible in both observational and experimental studies.
-* *Random allocation* helps eliminate confounding issues, by distributing possible confounders across treatment groups, and is only possible in *experimental* studies.
+* *Random allocation* helps eliminate confounding, by distributing possible confounders across treatment groups, and is only possible in *experimental* studies.
   *Random allocation* impacts *internal* validity.
   Its purpose is *allocating treatments to individuals*, which does not occur in observational studies.
 
@@ -741,12 +615,12 @@ The *Hawthorne effect* is the tendency of individuals to change their behaviour 
 
 
 ::: {.example #HawthorneHH  name="Hawthorne effect: observational study"}
-@wu2018identifying examined hand hygiene (HH) of staff in a tertiary teaching hospital, using *covert* observers (observers not obviously watching the HH practices) and *overt* observers (observers obviously about watching the HH practices).
+@wu2018identifying examined hand hygiene (HH) of staff in a tertiary teaching hospital, using *covert* (secret) observers and *overt* (obvious) observers.
 HH compliance was higher with overt observation ($78$%) than with covert observation ($55$%).
 :::
 
 
-The impact of the Hawthorne effect can be minimised by blinding the individuals in the experiment, so that:
+The impact of the Hawthorne effect can be minimised by blinding the individuals, so that:
 
 * the individuals do not know that they are *participating* in a study.
 * the individuals do not know the *aims of the study*.
@@ -761,7 +635,7 @@ Blinding individuals in all three of these ways is not always possible.
 
 In *experimental* studies, *people* are often informed that they are in a study, due to ethics requirements (Sect.\ \@ref(Common-Ethical-Issues)); they may not, however, know *which* treatment they have received.
 In *observational* studies, individuals *may* or *may not* know they are being observed.
-For instance, in an observational study where subjects' blood pressure is measured, subjects clearly know they are being observed, which has the potential to alter the subjects' behaviour (for example, people become tense, called 'white-coat hypertension').
+For instance, in a study where subjects' blood pressure is measured, subjects clearly know they are being observed, which has the potential to alter the subjects' behaviour (e.g., people become tense, called 'white-coat hypertension').
 As far as possible, efforts should be made to ensure that individuals do not know that they are being observed (the participants are *blinded*).
 
 
@@ -787,13 +661,13 @@ They noticed that (p.\ 1)
 
 > Almost all subjects [$340/345$ ($99$%)] wore a personal protective face mask, but only\ $141$ ($41$%) made use of the hand sanitizer.
 
-Using masks and hand sanitiser were recommended by the Danish Health Authority, but the adherence to the safety measures were very different.
+Both masks and hand sanitiser were recommended by the Danish Health Authority, but the adherence to the safety measures were very different.
 The authors surmised (p.\ 1):
 
 > ... wearing a face mask corresponded to being observed continuously [...] 
 > hand hygiene takes moments to perform, and no one can see whether or not it has been done.
 
-In other words, wearing a face mask is obvious (that is, other could *observe* whether the subjects was adhering to this guideline) but hand hygiene is not (so other people *could not* observe whether the subject was adhering to this guideline).
+In other words, wearing a face mask is obvious (that is, others could *observe* whether the subjects was adhering to this guideline) but hand hygiene is not (so other people *could not* observe whether the subject was adhering to this guideline).
 The authors conclude that 'the Hawthorne effect may explain why almost all subjects wore a face mask'. 
 :::
 
@@ -819,7 +693,7 @@ This may then cause the *individuals* to change their behaviour or reporting als
 :::
 
 
-The impact of the observer effect can be minimised by blinding the researchers, so that they do not know which treatments the individuals are receiving.
+The impact of the observer effect can be minimised by blinding the *researchers*, so that they do not know which treatments the individuals are receiving.
 The researchers *giving* the treatment and the researchers *evaluating* the treatment can both be blinded, by using a third party.
 For example, the researchers may give an assistant two drugs, labelled\ A and\ B.\spacex
 The assistant administers the drug and evaluates the participants' response to the treatments.
@@ -864,9 +738,9 @@ The *observer effect* is when the researcher *unconsciously* influence the indiv
 
 
 
-The observer effect can impact observational as well as experimental studies.
+The observer effect can impact both observational and experimental studies.
 For example, consider a study measuring the blood pressure of smokers and non-smokers [@verdecchia1995cigarette].
-This study is observational (individuals cannot be allocated to be a smoker or non-smoker), but if the researchers *know* if an individual is a smoker when they measure blood pressure, then the observer effect could still impact the results (recalling that the observer effect is an *unconscious* effect).
+This study is observational (individuals cannot be allocated to be a smoker or non-smoker), but if the researchers *know* an individual is a smoker when they measure blood pressure, then the observer effect could impact the results (recalling that the observer effect is an *unconscious* effect).
 For example, the researchers may *expect* smokers to have a high blood pressure.
 
 The observer effect could be managed by *first* measuring the blood pressure, and *then* asking if the individual was a smoker or not.
@@ -916,7 +790,7 @@ The *placebo effect* occurs when individuals report perceived or actual effects,
 For example, people who attend therapy expect a positive outcome; this expectation may result in temporary or perceived (or sometimes even real) improvements in their condition.
 This is the placebo effect.
 
-To manage the placebo effect, researchers should record *objective*\index{Response variable}\index{Data!objective} data (Sect.\ \@ref(RecordObjectiveData) rather than patient-reported (subjective) outcomes when possible [@enck2013placebo].
+To manage the placebo effect, researchers should record *objective*\index{Response variable}\index{Data!objective} data (Sect.\ \@ref(RecordObjectiveData)) rather than patient-reported (subjective) outcomes when possible [@enck2013placebo].
 (The operational definitions (Sect.\ \@ref(OperationDefinitions))\index{Definitions!operational} for the variables should make clear whether subjective or objective data are recorded.)
 Using a *control* group (Def.\ \@ref(def:Control)), if possible, is also useful: it acts as a benchmark for detecting changes in the outcome due to the treatment of interest.
 In addition, *blinding* the individuals and the researchers may help manage the placebo effect, as then the individuals cannot know which group they are in.
@@ -1074,7 +948,7 @@ The carryover effect occurs when the influence of one treatment or condition on 
 The impact of the carryover effect may be minimised by using a *washout* or similar between treatments or conditions.
 For example, after tasting a food sample, participants may rinse their mouth with water before tasting another food sample.
 For the *Himalaya* study, the participants could spend two weeks on their usual (before-study) diet, before starting each of the diets in the study.
-This is called a *washout period*.\index{Washout}
+This is called a *washout period*.\index{Washout period}
 
 
 <div style="float:right; width: 222x; border: 1px; padding:10px">
@@ -1288,7 +1162,7 @@ The researchers also *objectively* recorded the BMI of the same subjects.
 
 ## Chapter summary {#Chap7-Summary}
 
-Designing effective studies (Fig.\ \@ref(fig:DesignConsiderations)) requires researchers to *manage or minimise confounding* where possible, by *restricting* the study to certain groups; *blocking* individuals into similar groups; through special *analysis* methods; and/or through *random allocation* of the units of analysis.
+Designing effective studies (Fig.\ \@ref(fig:DesignConsiderations)) requires researchers to *manage or minimise confounding* where possible, by: *restricting* the study to certain groups; *blocking* individuals into similar groups; through special *analysis* methods; and/or through *random allocation* of the units of analysis.
 Random allocation is only possible for experimental studies.
 
 Well-designed studies manage the *Hawthorne effect* (e.g., by blinding *participants*); the *observer effect* (e.g., by blinding the *researchers*); the *placebo effect* (experimental studies only; e.g., by using controls, objective outcomes and blinding subjects); and the *carryover effect* (e.g., by using a washout, or randomly allocating the treatment order).
