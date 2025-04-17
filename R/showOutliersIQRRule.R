@@ -9,6 +9,17 @@ par( mar = c(4.5, 1.0, 4, 1.0) + 0.1)
 
 data(Perm)
 Perm.quantiles <- quantile(Perm$Perm)
+#
+# > Perm.quantiles
+# 0%    25%    50%    75%   100% 
+# 11.67  24.66  34.67  50.58 177.01 
+#
+# This is, Perm.quantiles contains:
+# MIN
+# Q1
+# Q2/median
+# Q3
+# max
 
 
 ### Sort out the outliers
@@ -104,7 +115,7 @@ text(labels = "IQR",
      pos = 3)
 
 
-### MILD OUTLIERS
+### MILD OUTLIERS: UPPER
 arrows(x0 = Perm.quantiles[4],
        x1 = mild,
        y0 = 0.65,
@@ -113,6 +124,11 @@ arrows(x0 = Perm.quantiles[4],
        lwd = 2,
        angle = angle,
        length = 0.1)
+points(x = qx[4] + iqrx, # Add markers
+       y = 0.65,
+       pch = 4,
+       cex = 0.95)
+
 text( x = mean( c(Perm.quantiles[4], 
                   mild)),
       y = 0.65,
@@ -136,7 +152,8 @@ arrows(x0 = mild.obs,
        angle = 15,
        length = 0.1)
 
-### EXTREME OUTLIERS
+
+### EXTREME OUTLIERS: UPPER
 arrows(x0 = Perm.quantiles[4],
        x1 = extreme,
        y0 = 0,
@@ -145,6 +162,15 @@ arrows(x0 = Perm.quantiles[4],
        code = 3,
        angle = angle,
        length = 0.1)
+points(x = qx[4] + iqrx, # Add markers
+       y = 0,
+       pch = 4,
+       cex = 0.95)
+points(x = qx[4] + (2 * iqrx), # Add markers
+       y = 0,
+       pch = 4,
+       cex = 0.95)
+
 text( x = mean( c(Perm.quantiles[4], 
                   extreme)),
       y = 0,
@@ -171,6 +197,11 @@ arrows(x0 = Perm.quantiles[2],
        lwd = 2,
        angle = angle,
        length = 0.1)
+points(x = qx[2] - iqrx, # Add markers
+       y = 0.65,
+       pch = 4,
+       cex = 0.95)
+
 text( x = mean( c(Perm.quantiles[2], 
                   mildLO)),
       y = 0.65,
@@ -188,7 +219,7 @@ text(x = mean( c(mildLO, extremeLO) ),
      y = 1.75,
      labels = "No mild\noutliers")
 
-### EXTREME OUTLIERS
+### EXTREME OUTLIERS: Lower
 arrows(x0 = Perm.quantiles[2],
        x1 = extremeLO,
        y0 = 0,
@@ -197,6 +228,15 @@ arrows(x0 = Perm.quantiles[2],
        code = 3,
        angle = angle,
        length = 0.1)
+points(x = qx[2] - iqrx, # Add markers
+       y = 0,
+       pch = 4,
+       cex = 0.95)
+points(x = qx[2] - (2 * iqrx), # Add markers
+       y = 0,
+       pch = 4,
+       cex = 0.95)
+
 text( x = mean( c(Perm.quantiles[2], 
                   extremeLO)),
       y = 0,
