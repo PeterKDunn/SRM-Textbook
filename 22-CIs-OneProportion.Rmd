@@ -359,7 +359,7 @@ can be determined:
 
 * the *sampling mean* has the value of $p = 0.5$.
 * the standard deviation, called the *standard error* $\text{s.e.}(\hat{p})$, has the value\ $`r round(se.die, 3)`$.
-  (The source of this number will be revealed later, in Equation\ \@ref(eq:StdErrorExampleDieCI).)
+  (The source of this number will be revealed soon, in Equation\ \@ref(eq:StdErrorExampleDieCI).)
 
 This distribution is the *sampling distribution* (Sect.\ \@ref(SamplingVariationIntro)), whose standard deviation is called a *standard error*.
 A picture of this normal distribution can be drawn (Fig.\ \@ref(fig:NormalDieTheoryCI)).
@@ -372,7 +372,7 @@ pop.p <- 0.5
 n <- 25
 se.p <- sqrt( pop.p * (1 - pop.p) / n )
 
-par( mar = c(5, 0.5, 0.5, 0.5)) 
+par( mar = c(5, 0.05, 0.5, 0.05)) 
 out <- plotNormal(mu = pop.p, 
                   sd = se.p, 
                   xlab = expression( Values~of~hat(italic(p))*","~the~sample~proportion~of~even~rolls~out~of~25), 
@@ -408,19 +408,63 @@ text(x = 0.55,
      pos = 3,
      labels = expression(Std~error) )
 text(x = 0.55,
-     y = 0.27 * max(out$y),
+     y = 0.28 * max(out$y),
      pos = 1,
      labels = expression(plain(s.e.)(hat(italic(p)))))
 
 # Explanations at left and right
-text(x = 0.13,
-     y = 0.3 * max(out$y),
+text(x = 0.2,
+     y = 1.1 * max(out$y),
      pos = 3,
      labels = expression(Values~of~hat(italic(p))~smaller~than~italic(p)) )
-text(x = 0.87,
-     y = 0.3 * max(out$y),
+arrows(x0 = 0.45,
+       x1 = 0,
+       y0 = 1.15 * max(out$y),
+       y1 = 1.15 * max(out$y),
+       angle = 15,
+       length = 0.1,
+       col = "grey")
+text(x = 0.8,
+     y = 1.1 * max(out$y),
      pos = 3,
      labels = expression(Values~of~hat(italic(p))~larger~than~italic(p)) )
+arrows(x0 = 0.55,
+       x1 = 1,
+       y0 = 1.15 * max(out$y),
+       y1 = 1.15 * max(out$y),
+       angle = 15,
+       length = 0.1,
+       col = "grey")
+
+# Unlikely areas
+text(x = 0.08,
+     y = 0.09 * max(out$y),
+     pos = 3,
+     cex = 0.9,
+     labels = expression(atop(These~values~of~hat(italic(p)),
+                              unlikely~to~be~seen) ) )
+arrows(x0 = 0.15,
+       x1 = 0,
+       y0 = 0.09 * max(out$y),
+       y1 = 0.09 * max(out$y),
+       angle = 15,
+       length = 0.1,
+       col = "grey")
+
+text(x = 0.92,
+     y = 0.09 * max(out$y),
+     pos = 3,
+     cex = 0.9,
+     labels = expression(atop(These~values~of~hat(italic(p)),
+                              unlikely~to~be~seen) ) )
+arrows(x0 = 0.85,
+       x1 = 1,
+       y0 = 0.09 * max(out$y),
+       y1 = 0.09 * max(out$y),
+       angle = 15,
+       length = 0.1,
+       col = "grey")
+
 
 
 ```
@@ -455,7 +499,7 @@ The sampling mean of the sampling distribution is the 'average' value of all pos
 :::
 
 
-For the die example, where $n = 25$\ rolls and $p = 0.5$:
+For the die example, where $n = 25$\ rolls and $p = 0.5$, using Equation\ \@ref(eq:StdErrorPknownCI) gives:
 \begin{equation} 
 	\text{s.e.} (\hat{p}) = \sqrt{\frac{0.5 \times (1 - 0.5)}{25}} = 0.1.
    (\#eq:StdErrorExampleDieCI)
@@ -471,8 +515,8 @@ This situation is studied from Sect.\ \@ref(SamplingDistributionUnknownp) onward
 Since the possible values of the sample proportions\ $\hat{p}$ can be described by an approximate *normal distribution*, the $68$--$95$--$99.7$ rule (Def.\ \@ref(def:EmpiricalRule)) applies.\index{68@$68$--$95$--$99.7$ rule}
 
 For example, in Fig.\ \@ref(fig:NormalDieTheoryCI) (where the sampling mean is\ $0.5$ and the standard error is $0.1$), about\ $68$% of the time a sample of\ $25$ rolls will have a value of\ $\hat{p}$ between\ $0.5$ give-or-take *one* standard deviation (that is, give-or-take\ $`r round(se.die, 3)`$).
-So, about\ $68$% of the time, the proportion of even rolls in a sample of\ $25$ rolls will be between $0.5 - `r round(se.die, 3)` =  `r round(0.5 - se.die, 3)`$ and $0.5 + `r round(se.die, 3)` =  `r round(0.5 + se.die, 3)`$.
 
+So, about\ $68$% of the time, the proportion of even rolls in a sample of\ $25$ rolls will be between $0.5 - `r round(se.die, 3)` =  `r round(0.5 - se.die, 3)`$ and $0.5 + `r round(se.die, 3)` =  `r round(0.5 + se.die, 3)`$.
 Similarly, about\ $95$% of the time, the proportion of even rolls will be between\ $0.5$ give-or-take $(2\times`r round(se.die, 3)`$), or between\ $`r round(0.5 - 2 * se.die, 3)`$ and\ $`r round(0.5 + 2 * se.die, 3)`$.
 
 These intervals tell us what values of\ $\hat{p}$ are likely to be observed in samples of size\ $25$.
@@ -508,7 +552,7 @@ That is, the *approximate*\ $95$% sampling interval is:
    p \pm (2 \times \text{s.e.}(\hat{p}) ).
    (\#eq:CIpKnownp)
 \end{equation}
-*Any* level of confidence can be used (but different multipliers are needed).
+*Any* level of confidence can be used (but different multipliers are then needed).
 
 
 ## Sampling distribution for $\hat{p}$: for $p$ unknown {#SamplingDistributionUnknownp}
@@ -521,10 +565,6 @@ When the value of\ $p$ is unknown, the standard error is computed using the best
 
 `r if (knitr::is_html_output()) '<!--'`
 ::: {.definition #DEFSamplingDistributionPhat name="Sampling distribution of a sample proportion with $p$ unknown"}
-`r if (knitr::is_html_output()) '-->'`
-`r if (knitr::is_latex_output()) '<!--'`
-::: {.definition #DEFSamplingDistributionPhat name="Sampling distribution of a sample proportion with population proportion unknown"}
-`r if (knitr::is_latex_output()) '-->'`
 When the value of\ $p$ is *unknown*, the *sampling distribution of the sample proportion* is (when certain conditions are met; Sect.\ \@ref(ValidityProportions)) described by
 
 * an approximate normal distribution,
@@ -537,6 +577,23 @@ When the value of\ $p$ is *unknown*, the *sampling distribution of the sample pr
 where $n$ is the size of the sample used to compute\ $\hat{p}$, and\ $\hat{p}$ is the sample proportion.
 In general, the approximation gets better as the sample size gets larger.
 :::
+`r if (knitr::is_html_output()) '-->'`
+`r if (knitr::is_latex_output()) '<!--'`
+::: {.definition #DEFSamplingDistributionPhat name="Sampling distribution of a sample proportion with population proportion unknown"}
+When the value of\ $p$ is *unknown*, the *sampling distribution of the sample proportion* is (when certain conditions are met; Sect.\ \@ref(ValidityProportions)) described by
+
+* an approximate normal distribution,
+* centred around the sampling mean, whose value is\ $p$,
+* with a standard deviation (called the *standard error* of\ $\hat{p}$) whose value is
+\begin{equation}
+   \text{s.e.}(\hat{p}) = \sqrt{\frac{ \hat{p} \times (1 - \hat{p})}{n}},
+   (\#eq:stderrorphat)
+\end{equation}
+where $n$ is the size of the sample used to compute\ $\hat{p}$, and\ $\hat{p}$ is the sample proportion.
+In general, the approximation gets better as the sample size gets larger.
+:::
+`r if (knitr::is_latex_output()) '-->'`
+
 
 
 <!-- ```{r NotationOnePropCI} -->
@@ -611,12 +668,12 @@ Suppose\ $11$ of the $n = 25$ rolls produce an even number, so $\hat{p} = 11/25 
 The best estimate of\ $p$ is therefore $\hat{p} = 0.44$.
 We might expect the (unknown) value of\ $p$ to be a little smaller than this estimate\ $\hat{p}$, or a little larger.
 
-Then, using Def.\ \@ref(def:DEFSamplingDistributionPhat), the sample proportions will vary with an approximate normal distribution around\ $p$ (whose value is unknown), with a standard deviation (called the standard error) of 
+Using Def.\ \@ref(def:DEFSamplingDistributionPhat), the sample proportions vary with an approximate normal distribution around\ $p$ (whose value is unknown), with a standard deviation (the standard error) of 
 $$
   \text{s.e.}(\hat{p}) = \sqrt{\frac{ 0.44 \times (1 - 0.44)}{25}} = 0.09927739.
 $$
 Previously, the sampling distribution was used to construct a sampling interval that was likely to contain the value of\ $\hat{p}$.
-However, here the value of\ $\hat{p}$ is known, so instead an interval is created that is likely to contain the value of\ $p$ (Fig.\ \@ref(fig:CIrelationshipsCI)).
+However, here the value of\ $\hat{p}$ is known, so an interval is created that is likely to contain the value of\ $p$ that produced the observed value of $\hat{p}$ (Fig.\ \@ref(fig:CIrelationshipsCI)).
 
 
 ```{r CIrelationshipsCI, out.width='75%', fig.align="center", fig.cap="Many values of $p$ may have produced the observed value of $\\hat{p}$.", fig.width = 7, fig.height=3.75}
@@ -628,8 +685,8 @@ showCIrelationships(type = "confidence")
 ```
 
 
-The unknown value of\ $p$ could be a little smaller or a little larger than the value of\ $\hat{p}$; the interval is $\hat{p}$ give-or-take a little.
-More formnally:
+The unknown value of\ $p$ could be a little smaller or a little larger than the value of\ $\hat{p}$; the interval is the value of $\hat{p}$, give-or-take a little.
+More formally:
 $$
   \hat{p} \pm \big(\text{multiplier}\times\text{s.e.}(\hat{p})\big)
 $$
@@ -641,30 +698,25 @@ The give-or-take amount, called the *margin of error*, is $\left(\text{multiplie
  
 Using the approximate multiplier of\ $2$ (from the $68$--$95$--$99.7$ rule), the approximate\ $95$%\ CI is
 $$
-   0.44 \pm (2 \times 0.099277), \quad\text{or $0.44\pm 0.1986$}
+   0.44 \pm (2 \times 0.099277), \quad\text{or $0.44\pm 0.1986$};
 $$
-(i.e., the margin of error is\ $0.1986$).
-That is, the interval is from 
+that is, the margin of error is\ $0.1986$.
+Computing the two values, the interval is from 
 \begin{align*}
                  0.44 - 0.1986 &\qquad\text{(which is $0.241$)}\\
   \text{to}\quad 0.44 + 0.1986 &\qquad\text{(which is $0.639$)}.
 \end{align*}
 The interval, from\ $0.241$ to\ $0.639$, is an interval containing values of\ $p$ that could have reasonably produced the observed value of\ $\hat{p} = 0.44$
 `r if (knitr::is_latex_output()) {
-   '(Fig.\\ \\@ref(fig:pProducingpHatLATEX))'
+   '(Fig.\\ \\@ref(fig:pProducingpHatLATEX)).'
 } else {
-   '(Fig.\\ \\@ref(fig:pProducingpHatHTML))'
+   '(Fig.\\ \\@ref(fig:pProducingpHatHTML)).'
 }`
-via sampling variation.
-We can say the interval\ $0.241$ to\ $0.639$ has a\ $95$% chance of straddling the population proportion\ $p$.
+We can say the interval\ $0.241$ to\ $0.639$ has a\ $95$% chance of straddling the unknown value of the population proportion\ $p$.
 
 
 `r if (knitr::is_html_output()) '<!--'`
 ::: {.definition #ConfidenceIntervalp name="Confidence interval for $p$"}
-`r if (knitr::is_html_output()) '-->'`
-`r if (knitr::is_latex_output()) '<!--'`
-::: {.definition #ConfidenceIntervalp name="Confidence interval for the population proportion"}
-`r if (knitr::is_latex_output()) '-->'`
 A *confidence interval* (CI) for the unknown value of the population proportion\ $p$ is
 \begin{equation}
   \hat{p} \pm \big( \text{multiplier} \times \text{s.e.}(\hat{p})\big), 
@@ -674,6 +726,20 @@ where $\big( \text{multiplier} \times \text{s.e.}(\hat{p})\big)$ is the *margin 
 $\text{s.e.}(\hat{p})$ is the *standard error* of\ $\hat{p}$ (see Equation\ \@ref(eq:stderrorphat)), where\ $\hat{p}$ is the sample proportion.
 For an *approximate*\ $95$%\ CI, the multiplier is\ $2$.
 :::
+`r if (knitr::is_html_output()) '-->'`
+`r if (knitr::is_latex_output()) '<!--'`
+::: {.definition #ConfidenceIntervalp name="Confidence interval for the population proportion"}
+A *confidence interval* (CI) for the unknown value of the population proportion\ $p$ is
+\begin{equation}
+  \hat{p} \pm \big( \text{multiplier} \times \text{s.e.}(\hat{p})\big), 
+  (\#eq:CIp)
+\end{equation}
+where $\big( \text{multiplier} \times \text{s.e.}(\hat{p})\big)$ is the *margin of error*, and
+$\text{s.e.}(\hat{p})$ is the *standard error* of\ $\hat{p}$ (see Equation\ \@ref(eq:stderrorphat)), where\ $\hat{p}$ is the sample proportion.
+For an *approximate*\ $95$%\ CI, the multiplier is\ $2$.
+:::
+`r if (knitr::is_latex_output()) '-->'`
+
 
 
 ```{r}
@@ -792,14 +858,14 @@ if (knitr::is_latex_output()) {
 ```
 
 
-In general, we do not know if the computed CI the actual value of\ $p$, since the value of\ $p$ is usually unknown.
+In general, we do not know if the computed CI contains the actual value of\ $p$, since the value of\ $p$ is usually unknown.
 However, in this contrived example, the CI *does* happen to straddle the value of $p = 0.5$.
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 In this case, we know the value of the population parameter: $p = 0.5$.
 Usually we do *not* know the value of the parameter.
-After all, that's why we take a sample: to *estimate* the value of the unknown population proportion.
+After all, that's why we take a sample: to *estimate* the unknown value of the population proportion.
 :::
 
 
@@ -811,7 +877,7 @@ However, *about\ 95% of these thousands of CIs from those thousands of samples w
 
 Since we usually don't know the value of\ $p$, and since we usually only have one sample (and hence one CI), in general *we never know whether the CI computed from the single sample we have straddles the value of\ $p$ or not*.
 
-Again, consider letting the computer simulate the situation.
+Again, let's allow the computer to simulate the situation.
 Suppose the process of recording the sample proportion of even numbers in $n = 25$ rolls is repeated fifty times, and for each of those fifty sets of $25$\ rolls a CI is produced
 `r if (knitr::is_latex_output()) {
    '(Fig.\\ \\@ref(fig:RollDiceCIFig)).'
@@ -970,7 +1036,7 @@ if (knitr::is_latex_output()){
 ::: {.definition #ConfidenceInterval name="Confidence interval (CI)"}
 Informally: a *confidence interval* (CI) is an interval likely to contain the unknown value of the parameter.
 
-More formally, a CI is an interval which contains the unknown parameter a given percentage of the time (over repeated sampling).
+More formally, a CI is an interval which contains the unknown value of the parameter a given percentage of the time (over repeated sampling).
 :::
 
 
@@ -1071,7 +1137,7 @@ Both exceed\ $5$, so the CI is statistically valid.
 
 
 :::{.example #StatisticalValidityPHat name="Statistical validity conditions"}
-Consider a situation where $p = 0.1$ is the population proportion of some 'positive result'.
+Consider a situation where $p = 0.1$ is the population proportion of some result of interest.
 
 A sample of size $n = 10$ is taken, with one positive result: $\hat{p} = 0.1$.
 The statistical validity conditions *are not* satisfied, and the sampling distribution is not well modelled by a normal distribution (Fig.\ \@ref(fig:StatisticalValidityPHat), left panel).
@@ -1187,7 +1253,7 @@ lines( y ~ x,
 
 
 @data:Kelpin2018:AlcoholCoffee studied $360$\ female college students in the United States, and found that\ $61$ drank coffee daily. 
-The unknown parameter is\ $p$, the *population* proportion of female college students in the United States that drink coffee daily.
+The parameter is\ $p$, the unknown *population* proportion of female college students in the United States that drink coffee daily.
 
 The sample size is $n = 360$, and the *sample* proportion of daily coffee drinkers is $\hat{p} = 61/360 = 0.16944$. 
 Of course, the sample proportion varies from sample to sample, so the sample proportion has *sampling variation*, measured by the *standard error*:
@@ -1196,13 +1262,13 @@ $$
                = \sqrt{ \frac{ 0.16944 \times (1 - 0.16944)}{360}}
                = 0.01977.
 $$
-An *approximate*\ $95$%\ CI is $0.16944 \pm (2 \times 0.01977)$, or $0.16944 \pm 0.03954$ (i.e., the *margin of error* is $0.03954$).\index{Margin of error}
+An approximate\ $95$%\ CI is $0.16944 \pm (2 \times 0.01977)$, or $0.16944 \pm 0.03954$ (i.e., the *margin of error* is $0.03954$).\index{Margin of error}
 Equivalently, the approximate\ $95$%\ CI is from\ $0.130$ to\ $0.209$, after rounding appropriately.
 We write:
 
 > The sample proportion of female US college students who drink coffee daily is $\hat{p} = 0.169$ ($n = 360$), with an approximate\ $95$%\ CI from\ $0.130$ to\ $0.209$.
 
-That is, the plausible values for\ $p$ that may have led to this value of $\hat{p} = 0.1694$ are between\ $0.130$ and\ $0.209$.
+That is, the values for\ $p$ that may have led to this value of $\hat{p} = 0.1694$ are between\ $0.130$ and\ $0.209$ with $95$% confidence.
 (This CI may or may not contain the true proportion\ $p$.)
 This CI is *statistically* valid, since $61$\ in the sample drink coffee, and\ $299$ do not (and both exceed five).
 
@@ -1224,7 +1290,7 @@ $$
 The *margin of error* is (multiplier${}\times{}$standard error), where the multiplier is\ $2$ for an approximate\ $95$%\ CI (from the $68$--$95$--$99.7$ rule).
 Then the CI is:
 $$
-   \hat{p} \pm \left( \text{Multiplier}\times\text{standard error} \right).
+   \hat{p} \pm \left( \text{multiplier}\times\text{standard error} \right).
 $$
 The statistical validity conditions should also be checked.
 
@@ -1296,7 +1362,7 @@ They found that\ $8$ students out of\ $154$ met the recommendation for eating a 
 
 ::: {.exercise #KoalasCrossingRoads}
 @data:Dexter2018:Koalas found that\ $18$ of the $n = 51$ koalas studied in a certain area over\ $30$ months had crossed at least one road during that time.
-The unknown parameter is\ $p$, the *population* proportion of koalas that had crossed at least one road over the\ $30$ months.
+The parameter is\ $p$, the unknown *population* proportion of koalas that had crossed at least one road over the\ $30$ months.
 
 1. Find an approximate\ $95$%\ CI for the proportion of koalas that had crossed the road at least once in the\ $30$ months.
 1. Check if the statistical validity conditions are met or not.
