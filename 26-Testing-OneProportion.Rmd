@@ -58,7 +58,7 @@ The sample proportion of rolls that show a
    '<span class="larger-die">&#9856;</span>'
 }`
 is unlikely to be *exactly* $1/6$ (the population proportion).
-If the observed value of $\hat{p}$ was not exactly $1/6$, two possible reasons could explain this discrepancy:
+If the observed value of $\hat{p}$ was not exactly $1/6$, two possible reasons could explain this discrepancy between the value of the statistic and the assumed value of the parameter:
 
 * I was rolling the *fair* die (with $p = 1/6$), and the discrepancy between the *population* and *sample* proportions was simply due to sampling variation.
 * I was rolling the *loaded* die  (with $p \ne 1/6$), and the discrepancy between the *population* and *sample* proportion simply reflected this.
@@ -72,17 +72,17 @@ If I observed an unusually small or unusually large sample proportion of rolls t
 I would suspect that I had the loaded die: I was observing something unusual from a fair die.
 This is exactly the decision-making process seen in Chap.\ \@ref(MakingDecisions).
 
-More formally then, the decision-making process (Chap.\ \@ref(MakingDecisions)) could proceed as follows:
+More formally then, the decision-making process (Chap.\ \@ref(MakingDecisions)) could proceed as follows.
 
-* make an *assumption* about the parameter (Sect.\ \@ref(Assumption)): assume I have a fair die, so that $p = 1/6$, where $p$ is the population proportion of rolls that show a 
+* Make an *assumption* about the parameter (Sect.\ \@ref(Assumption)): assume I have a fair die, so that $p = 1/6$, where $p$ is the population proportion of rolls that show a 
 `r if (knitr::is_latex_output()) {
    '\\largedice{1}.'
 } else {
    '<span class="larger-die">&#9856;</span>.'
 }`
-* describe the *expectations* of the statistic (Sect.\ \@ref(ExpectationOf)): describe what value of the *sample* proportion $\hat{p}$ could reasonably be expected from a fair die.
-* take the sample *observations* (Sect.\ \@ref(Observation)): roll the die many times to find a value of $\hat{p}$.
-* make a *decision* (Sect.\ \@ref(MakeDecision)) based on what is observed in the sample.
+* Describe the *expectations* of the statistic (Sect.\ \@ref(ExpectationOf)): describe what value of the *sample* proportion $\hat{p}$ could reasonably be expected from a fair die in $50$\ rolls.
+* Take the sample *observations* (Sect.\ \@ref(Observation)): roll the die $50$\ times to find a value of $\hat{p}$.
+* Make a *decision* (Sect.\ \@ref(MakeDecision)) based on what is observed in the sample.
 
 Using this decision-making process (Fig.\ \@ref(fig:DecisionFlowDice)), I could decide if the die I had rolled seemed to be the fair die.
 For one specific die, I am asking the decision-making RQ:
@@ -100,12 +100,12 @@ equal to\ $1/6$?
 ```{r DecisionFlowDice, fig.cap = "A way to make decisions for the dice example.", fig.align="center", out.width='100%', fig.width = 9.5, fig.height = 4}
 source("R/showDecisionMaking.R")
 
-showDecisionMaking(populationText = expression( atop(bold(Assume)~the,
-                                                     die~is~fair)),
-                   expectationText = expression(atop(bold(Expect)~to~find,
-                                                     about~1/6~rolls~show~a~1)),
+showDecisionMaking(populationText = expression( atop(bold(Assume)~the~die,
+                                                     is~fair*":"~italic(p)=="1/6")),
+                   expectationText = expression(atop(bold(Expect)~to~find~the,
+                                                     value~of~hat(italic(p))~near~"1/6")),
                    oneSampleText = expression( atop(Roll~die,
-                                                    many~times) ),
+                                                    50~times) ),
                    oneStatisticText = expression( atop(One~observed,
                                                        value~of~hat(italic(p))) ),
                    showQuestionMark = TRUE
@@ -116,7 +116,7 @@ showDecisionMaking(populationText = expression( atop(bold(Assume)~the,
 
 
 Answering a decision-making RQ such as this requires a *hypothesis test*.
-The process requires being able to describe what value of the *sample* proportion $\hat{p}$ could reasonably be expected from a fair die, with $p = 1/6$ (that is, Step\ 3 of the decision-making process).
+The process requires being able to describe what value of the *sample* proportion $\hat{p}$ could reasonably be expected from a fair die, with $p = 1/6$ (i.e., Step\ 3 of the decision-making process).
 
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
@@ -144,9 +144,6 @@ That is, what will be the value of the *sample proportion* $\hat{p}$?
 Of course, no-one knows, because the sample proportion will not be the same for every sample of $50$\ rolls.
 The sample proportion *varies* from sample to sample: *sampling variation* exists and is described by the *sampling distribution*.
 
-As seen in Chap.\ \@ref(SamplingVariation), the sample statistic often varies with a normal distribution (whose standard deviation is called the *standard error*).
-However, being more specific about the details of this sampling distribution (i.e., the mean and standard deviation describing the normal model) is useful.
-
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 Remember: studying a sample leads to the following observations:
@@ -161,42 +158,26 @@ Remember: studying a sample leads to the following observations:
 Since many values for the sample proportion are possible, the values of the sample proportion vary (called *sampling variation*) and have a *distribution* (called a *sampling distribution*).
 :::
 
+```{r}
+num.rolls <- 50
+p.die <- 1/6
+se.die <- sqrt( p.die * (1 - p.die) / num.rolls)
+```
 
-To better understand the sampling distribution for the proportion of rolls that show a 
-`r if (knitr::is_latex_output()) {
-   '\\largedice{1}'
-} else {
-   '<span class="larger-die">&#9856;</span>'
-}`
-in $50$\ rolls of a die, statistical theory could be used, or thousands of repetitions of a sample of\ $50$ rolls could be performed, or a computer could *simulate* many samples of $50$\ rolls (as for a roulette wheel in Sect.\ \@ref(SamplingDistributionProportions)).
 
-Here, the *population proportion* of rolls showing a 
-`r if (knitr::is_latex_output()) {
-   '\\largedice{1}'
-} else {
-   '<span class="larger-die">&#9856;</span>'
-}`
-is $p = 1/6$ (using the classical approach to probability).\index{Probability!classical approach}
-Each sample of $n = 50$ rolls produces a *sample* proportion, denoted by\ $\hat{p}$, which varies from sample to sample.
-<!-- For these ten samples, the proportion of even rolls ranged from $\hat{p} = 0.32$ to $\hat{p} = 0.60$. -->
+The sampling distribution of\ $\hat{p}$ was described in Def.\ \@ref(def:SamplingDistPropCI) (and repeated in Def.\ \@ref(def:SamplingDistPropHT) below).
+The sample proportions are described by
 
-These sample proportions would be expected to vary around $p = 1/6$ (the *population proportion*): some values of $\hat{p}$ would be larger than\ $p$ and some smaller than\ $p$.
-The value of the sample proportion in\ $50$ rolls could be *very* small or *very* high by chance, but we wouldn't expect to see that very often.
-The sample proportions exhibit sampling variation, and the *amount* of sampling variation is quantified using a *standard error*.
-
-Suppose a fair die was rolled $50$\ times, and this random procedure \index{Random procedure} was repeated *thousands* of times, and the proportion of rolls that showed a
-`r if (knitr::is_latex_output()) {
-   '\\largedice{1}'
-} else {
-   '<span class="larger-die">&#9856;</span>'
-}`
-was recorded for every one of those thousands of sets of $50$\ rolls.
-These thousands of sample proportions $\hat{p}$ (one from every sample of $n = 50$\ rolls) could be shown using a
-`r if (knitr::is_latex_output()) {
-   'histogram (Fig.\\ \\@ref(fig:RollDiceHistFigHT)).'
-} else {
-   'histogram; see the animation below.'
-}`
+* an approximate normal distribution,
+* centred around the *sampling mean*, with a value of $p = 1/6$,
+* with a standard deviation, called the *standard error* $\text{s.e.}(\hat{p})$, of
+  \begin{equation}
+     \text{s.e.}(\hat{p}) 
+     = \sqrt{ \frac{p\times(1 - p)}{n} }
+     = \sqrt{\frac{ \frac{1}{6} \times \left(1 - \frac{1}{6}\right)}{50}}
+     = `r round(se.die, 5)`.
+    (\#eq:StdErrorExampleDieHT)
+  \end{equation}
 
 
 <center>
@@ -274,77 +255,6 @@ if (knitr::is_html_output()){
 }` varies, when a die is rolled $50$ times.
 
 
-```{r RollDiceHistFigHT, fig.align="center", fig.height=3, fig.width=7.5, out.width='85%', fig.cap="(ref:DieRollSamplingDist)" }
-if (knitr::is_latex_output()){
-  set.seed(99100991)
-  num.rolls <- 50
-  num.sims <- 1000
-  prop.even <- array(dim = num.sims)
-  
-  p.die <- 1/6
-  se.die <- sqrt( p.die * (1 - p.die) / num.rolls)
-    
-  for (i in 1:num.sims){
-    
-    roll <- sample(1:6, num.rolls,  
-                   replace = TRUE)
-    prop.even[i] <- sum(roll == 1) / num.rolls
-  }
-  
-  
-  par( mar = c(4, 1, 4, 1) )
-  out <- hist( prop.even,
-               breaks = seq(0.05, 0.95, by = 0.02) - 2/15,
-               las = 1,
-               ylim = c(0, 250),
-               xlim = c(0, 1),
-               col = plot.colour,
-               main = paste("Histogram of sample proportions\nfrom thousands of simulations of",
-                            num.rolls,
-                            "rolls"),
-               xlab = "Proportion of the 50 rolls showing a one",
-               ylab = "",
-               right = FALSE,
-               axes = FALSE)
-  axis(side = 1,
-       at = seq(0, 1, by = 0.1))
-  #axis(side = 2, 
-  #     las = 1)
-  
-  xx <- seq(0, 1, 
-            length = 500)
-  yy <- dnorm(xx, 
-              mean = p.die, 
-              sd = se.die )
-  yy <- yy/max(yy) * max(out$count)
-  
-  lines(yy ~ xx, 
-        col = grey(0.3), 
-        lwd = 2)  
-  
-  points(x = 1/6,
-         y = 0,
-         pch = 19)
-  
-}
-```
-
-
-In fact, the sampling distribution of\ $\hat{p}$ was described in Def.\ \@ref(def:SamplingDistPropCI) (and repeated in Def.\ \@ref(def:SamplingDistPropHT)).
-The sample proportions are described by
-
-* an approximate normal distribution,
-* centred around the *sampling mean*, with a value of $p = 1/6$,
-* with a standard deviation, called the *standard error* $\text{s.e.}(\hat{p})$, of
-  \begin{equation}
-     \text{s.e.}(\hat{p}) 
-     = \sqrt{ \frac{p\times(1 - p)}{n} }
-     = \sqrt{ \frac{1/6\times(1 - 1/6)}{50} }
-     = `r round(se.die, 5)`.
-    (\#eq:StdErrorExampleDieHT)
-  \end{equation}
-
-
 `r if (knitr::is_html_output()) '<!--'`
 ::: {.definition #SamplingDistPropHT name="Sampling distribution of a sample proportion with $p$ known"}
 `r if (knitr::is_html_output()) '-->'`
@@ -374,7 +284,7 @@ For instance, values of\ $\hat{p}$  greater than about\ $0.35$ are unlikely to b
    '\\largedice{1}'
 } else {
    '<span class="larger-die">&#9856;</span>'
-}` varies, when a die is rolled $50$ times. The cross represents the observed sample proportion.
+}` varies, when a die is rolled $50$ times. The cross represents the observed sample proportion, $\hat{p} = 0.38$.
 
 ```{r NormalDieTheoryHT, fig.cap="(ref:DieRollStdError)", fig.align="center", fig.width=8.25, fig.height=3.0, out.width='100%'}
 pop.p <- 1/6
@@ -386,7 +296,7 @@ out <- plotNormal(mu = pop.p,
                   sd = se.p, 
                   xlab = expression( Values~of~hat(italic(p))*","~the~sample~proportion~of~even~rolls~out~of~50), 
                   round.dec = 2,
-                  xlim.hi = 0.55,
+                  xlim.hi = 0.51,
                   xlim.lo = 0,
                   showX = c(0, 0.1, 1/6, 0.2, 0.3, 0.4, 0.5),
                   showXlabels = c("0",
@@ -431,17 +341,6 @@ text(x = locateText,
      pos = 1,
      labels = expression(plain(s.e.)(hat(italic(p)))))
 
-# Explanations at left and right
-text(x = 0.05,
-     y = 1.05 * max(out$y),
-     pos = 1,
-     labels = expression( atop(Values~of~hat(italic(p)),
-                               smaller~than~italic(p)) ) )
-text(x = 0.35,
-     y = 1.05 * max(out$y),
-     pos = 1,
-     labels = expression(Values~of~hat(italic(p))~larger~than~italic(p)) )
-
 
 ### Show the sample proportion
 phat <- 19/50
@@ -458,7 +357,8 @@ phat <- 19/50
 #      label = expression(hat(p) == 0.38))
 points(x = phat,
        y = 0,
-       cex = 1.25,
+       lwd = 2,
+       cex = 1.5,
        pch = 4)
 
 ```
@@ -496,7 +396,7 @@ But I *did* observe $\hat{p} = 0.38$, which suggests that the die I was rolling 
 
 I concluded that the die I was rolling was loaded (that is, $p \ne 1/6$).
 I may be incorrect (after all, it is not *impossible* to observe $\hat{p} = 0.38$), but the evidence is certainly convincing.
-Using the decision-making process, a decision has been made about the dice.
+Using the decision-making process, a decision has been made about the die.
 
 The process described above is called *hypothesis testing*.\index{Hypothesis testing}
 Hypothesis testing is used to make decisions about a population after observing just one of the countless possible samples.
@@ -519,9 +419,9 @@ $$
   \text{$H_0$: } p = 1/6.
 $$
 The null hypothesis states the value of\ $p$ is $1/6$; in other words, if the sample proportion\ $\hat{p}$ is not equal to $1/6$, the discrepancy is explained by sampling variation.
-The null hypothesis is always the 'sampling variation' explanation for the discrepancy between the values of the statistic and the parameter.
+The null hypothesis is always the 'sampling variation' explanation for the discrepancy between the values of the statistic and the parameter (Sect.\ \@ref(Assumption)).
 
-The other explanation for why the value of the sample proportion $\hat{p}$ is not equal to $1/6$ is called the *alternative hypothesis* (denoted $H_1$):\index{Hypotheses!alternative} that the population proportion is *not* $1/6$, and this is the cause of the discrepancy:
+The other explanation for why the value of the sample proportion $\hat{p}$ is not equal to $1/6$ is called the *alternative hypothesis* (denoted $H_1$),\index{Hypotheses!alternative} that the population proportion is *not* $1/6$, and this is the cause of the discrepancy:
 $$
   \text{$H_1$: } p \ne 1/6.
 $$
@@ -621,7 +521,7 @@ The two-tailed $P$-value would be the same if $z = 2$.
 The *one-tailed* $P$-value would be the area in one tail only (Fig.\ \@ref(fig:OnePropTestP), bottom right panel): about\ $2.5$%, based on the $68$--$95$--$99.7$ rule.
 
 
-```{r, OnePropTestP, fig.cap="The two-tailed $P$-value is the combined area in the two tails of the distribution. Top left panel: if $z = 1$ (or $z = -1$), the two-tailed $P$-value is approximately $0.16$. Top right panel: if $z = 2$ (or $z = -2$), the two-tailed $P$-value is approximately $0.05$. The corresponding one-tailed $P$-values are half the two-tailed $P$-values, and are shown in the bottom panels.", fig.width=9.5, fig.height=5.25, out.width='100%', fig.align="center"}
+```{r, OnePropTestP, fig.cap="The two-tailed $P$-value is the combined area in the two tails of the distribution. Top left panel: if $z = 1$ (or $z = -1$), the two-tailed $P$-value is approximately $0.16$. Top right panel: if $z = 2$ (or $z = -2$), the two-tailed $P$-value is approximately $0.05$. The corresponding one-tailed $P$-values are half the two-tailed $P$-values, and are shown in the bottom panels.", fig.width=9.25, fig.height=5.25, out.width='100%', fig.align="center"}
 par(mfrow = c(2, 2), 
     mar = c(4, 1, 4, 1) + 0.1)
 
