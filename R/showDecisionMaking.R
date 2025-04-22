@@ -1,5 +1,5 @@
  showDecisionMaking <- function(populationText = expression( atop(bold(POPULATION)~"with",
-                                                                  bold(assumed)~parameter)),
+                                                                  bold(assumed)~parameter~value) ),
                                 expectationText = expression(atop(bold(Expected)~values~"of", 
                                                                   all~possible~statistics) ),
                                 oneSampleText = expression( atop(One~possible,
@@ -30,8 +30,8 @@
    
    pos <- array( dim = c(7, 2) )
    
-   edgesX <- c(0.05, 0.35, 0.60, 0.75, 0.95)
-   edgesY <- c(0.05, 0.50, 0.95)
+   edgesX <- c(0.01, 0.325, 0.60, 0.75, 0.99)
+   edgesY <- c(0.06, 0.50, 0.94)
    deltaY <- 0.09
    deltaX <- 0.03
    
@@ -88,7 +88,7 @@
    # Arrows
    straightarrow(from = pos[1, ], 
                  to = pos[2, ], 
-                 arr.pos = 0.53, # Then cover with box
+                 arr.pos = 0.55, # Then cover with box
                  lwd = 2,
                  lty = 1)
    straightarrow(from = pos[1, ], 
@@ -147,17 +147,13 @@
    
    
    textrect( pos[1, ],
-             radx = 0.12,
+             radx = 0.13,
              rady = 0.15,
              shadow.size = 0,
              lcol = PopulationColour,
              box.col = PopulationColour,
              lab = populationText,
              col = grey(0)) # CHECKMARK
-   # text( x = pos[1, 1],
-   #       y = pos[1, 2] + 0.07,
-   #       pos = 3,
-   #       labels = "POPULATION")
    textrect( pos[2, ],
              radx = 0.11,
              rady = 0.1,
@@ -212,7 +208,7 @@
              lcol = ContradictColour,
              box.col = ifelse (Decision == "Reject",
                                DecisionColour,
-                               ContradictColour),
+                               "white"), #ContradictColour),
              lab = expression( atop(bold(No):~Contradicts,
                                     assumption) ),
              col = ifelse( Decision == "Accept", 
@@ -223,19 +219,19 @@
    text(x = pos[1, 1],
         y = 0.965,
         cex = 1,
-        labels = "1. Make an assumption")
+        labels = "Step 1: make an assumption")
    text(x = pos[2, 1],
         y = 0.965,
         cex = 1,
-        labels = "2. Describe what is expected")
+        labels = "Step 2: describe what is expected")
    text(x = mean( pos[1:2, 1]),
         y = 0.02,
         cex = 1,
-        labels = "3. Observe sample statistic")
+        labels = "Step 3: observe sample statistic")
    text(x = pos[5, 1],
         y = 0.02,
         cex = 1,
-        labels = "4. Make decision")
+        labels = "Step 4: make decision")
    
    
    ## Show question mark
