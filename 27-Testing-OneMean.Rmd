@@ -31,10 +31,10 @@ Since then, the methods for measuring internal body temperature have changed sub
 > Thermometers used by Wunderlich were cumbersome, had to be read in situ, and, when used for axillary measurements [i.e., under the armpit]... required $15$ to\ $20\mins$ to equilibrate.
 > Today's thermometers are smaller and more reliable and equilibrate more rapidly.
 > In addition, the mouth and rectum have replaced the axilla [armpit] as the preferred sites for monitoring body temperature.
->  
-> --- @data:mackowiak:bodytemp, p. 1579
+>
+> --- @data:mackowiak:bodytemp, p. 1\ 579
 
-For this reason, the internal body temperature (recorded by newer instruments, in different locations) may have changed since the 1860s.
+For this reason, the reported internal body temperature (recorded by newer instruments, in different locations) may have changed since the 1860s.
 Therefore, we could ask:
 
 > Is the *population* mean internal body temperature equal to $37.0$^o^C?
@@ -57,9 +57,9 @@ This assumption becomes the null hypothesis:
 $$
    \text{$H_0$: } \mu = 37.0.
 $$
-The RQ asks if the *population* mean internal body temperate $\mu$ is *equal* to $37.0$^o^C, or if it has changed.
 If the *sample* mean is not $37.0$^o^C, this hypothesis proposes that the discrepancy is due to sampling variation.
 
+The RQ asks if the *population* mean internal body temperate $\mu$ is *equal* to $37.0$^o^C, or if it has changed.
 The RQ does not specifically ask if $\mu$ is smaller than $37.0$^o^C, or larger than  $37.0$^o^C.
 This means the alternative hypothesis is two-tailed:
 $$
@@ -70,7 +70,7 @@ $$
 ## The process of hypothesis testing: sampling distribution for $\bar{x}$ {#SamplingDistSampleMeanHT}
 \index{Sampling distribution!one mean}
 
-**Step\ 2** of the decision-making process is to describe what values of the statistic (in this case, the sample mean $\bar{x}$) can be expected if the value of $\mu$ is assumed to $37.0$ (the value specified in $H_0$).
+**Step\ 2** of the decision-making process is to describe what values of the statistic (in this case, the sample mean $\bar{x}$) can be expected if the value of $\mu$ is assumed to be $37.0$ (the value specified in $H_0$).
 In other words, the *sampling distribution* of $\bar{x}$ needs to be described. 
 
 The sample mean *varies* from sample to sample, and varies with a normal distribution (whose standard deviation is called the *standard error*) under certain conditions (given in Sect.\ \@ref(ValiditySampleMeanTest)).
@@ -79,7 +79,7 @@ However, being more specific about the details of this sampling distribution (i.
 The sampling distribution of\ $\bar{x}$ was described in Sect.\ \@ref(SamplingDistSampleMean).
 From Def.\ \@ref(def:DEFSamplingDistributionXbarCI), the mean of this sampling distribution---the *sampling mean*---has the value $\mu$.
 The standard deviation of this sampling distribution is called the *standard error of the sample means*, denoted $\text{s.e.}(\bar{x})$.
-When the *population* standard deviation\ $\sigma$ is *known*, the value of the standard error happens to be (see Equation\ \@ref(eq:stderrorxbarCI))
+When the *population* standard deviation\ $\sigma$ is *unknown*, the value of the standard error happens to be (see Equation\ \@ref(eq:stderrorxbarCI))
 $$
   \text{s.e.}(\bar{x}) = \frac{s}{\sqrt{n}}.
 $$
@@ -91,11 +91,11 @@ Fortunately, @data:mackowiak:bodytemp gathered body-temperature data, collated b
 } else {
    '(Fig.\\ \\@ref(fig:DataBodyTemp); Fig.\\ \\@ref(fig:BodyTempHist)).'
 }`
-The numerical summary, using software (Fig.\ \@ref(fig:BodyTempjamovi)), gives:
+The numerical summary, from software (Fig.\ \@ref(fig:BodyTempjamovi)), gives
 
-* the *sample* mean is $\bar{x} = 36.8052$^o^C.\index{Mean!of a sample}
-* the *sample* standard deviation is $s = 0.4073$^o^C.
-* the sample size is $n = 130$.
+* the *sample* mean: $\bar{x} = 36.8052$ (in degrees C).\index{Mean!of a sample}
+* the *sample* standard deviation: $s = 0.4073$ (in degrees C).
+* the sample size: $n = 130$.
 
 Using this value of $s$, the sampling distribution of\ $\bar{x}$ can be described, if\ $\mu$ really was\ $37.0$, as having
 
@@ -106,17 +106,22 @@ Using this value of $s$, the sampling distribution of\ $\bar{x}$ can be describe
 
 \begin{figure}
 \begin{minipage}{0.42\textwidth}
-\captionof{table}{The body temperature data: the first twenty of the 130 ordered observations\label{tab:DataBodyTemp}.}
+\captionof{table}{The body temperature data: the first nine and last nine of the $130$ ordered observations\label{tab:DataBodyTemp}.}
 \fontsize{8}{12}\selectfont
 ```{r}
 if( knitr::is_latex_output() ) {
   
+  Tlen <- length(BodyTemp$BodyTempC)
+  
   BodyTdata <- array( dim = c(5, 4))
-  BodyTdata[, 1] <- round(BodyTemp$BodyTempC[1:5],  2)
-  BodyTdata[, 2] <- round(BodyTemp$BodyTempC[6:10],  2)
-  BodyTdata[, 3] <- round(BodyTemp$BodyTempC[11:15],  2)
-  BodyTdata[, 4] <- round(BodyTemp$BodyTempC[16:20],  2)
-    
+  BodyTdata[, 1] <- round(BodyTemp$BodyTempC[1:5], 2)
+  BodyTdata[, 2] <- round(BodyTemp$BodyTempC[6:10], 2)
+  BodyTdata[, 3] <- round(BodyTemp$BodyTempC[(Tlen - 9): (Tlen - 5)], 2)
+  BodyTdata[, 4] <- round(BodyTemp$BodyTempC[(Tlen - 4): Tlen], 2)
+  
+  BodyTdata[5, 2] <- "$\\vdots$"
+  BodyTdata[1, 3] <- "$\\vdots$"
+  
   kable( pad(BodyTdata,
              surroundMaths = TRUE,
              targetLength = c(5, 5, 5, 5),
@@ -126,7 +131,6 @@ if( knitr::is_latex_output() ) {
          longtable = FALSE,
          escape = FALSE,
          linesep = "",
-         #caption = "The body temperature data: the lowest five and the highest five of the 130 observations",
          align = "c",
          table.env = "@empty") %>%
     row_spec(0, bold = TRUE) %>%
@@ -141,11 +145,13 @@ if( knitr::is_latex_output() ) {
 \begin{minipage}{0.51\textwidth}%
 \centering
 ```{r, out.width='95%', fig.width=4.75, fig.height = 3}
+par(mar = c(4, 4,4, 1))
 hist( BodyTemp$BodyTempC,
 	xlab = "Body temperature, in degrees C",
 	ylab = "Frequency",
 	main = "Histogram of body temperatures",
 	las = 1,
+	ylim = c(0, 40),
 	breaks = seq(35, 39, by = 0.25),
 	col = plot.colour)
 box()
@@ -256,7 +262,7 @@ $$
   \frac{36.8052 - 37.0}{0.035724} = -5.453.
 $$
 This is like a $z$-score: it measures the number of standard deviations that the value is from the mean.
-It is not a $z$-score however; it is a $t$-score.
+However, it is not a $z$-score; it is a $t$-score.
 Both $t$- and $z$-scores measure *the number of standard deviations that a value is from the mean*.
 Here the value is a $t$-score, because the *population* standard deviation\ $\sigma$ is unknown, and the *sample* standard deviation is used to compute $\text{s.e.}(\bar{x})$.
 
@@ -375,10 +381,10 @@ For the body-temperature data then, where $P < 0.001$, the $P$-value is *very* s
 
 ## Writing conclusions
 
-Communicating the results of any hypothesis test requires an *answer to the RQ*, a summary of the *evidence* used to reach that conclusion (such as the $t$-score and $P$-value, stating if it is a one- or two-tailed $P$-value), and some *sample summary information* (including a CI).
+Communicating the results of any hypothesis test requires an *answer to the RQ*, a summary of the *evidence* used to reach that conclusion (such as the $t$-score and $P$-value, stating if the $P$-value is one- or two-tailed), and some *sample summary information* (including a CI).
 For the body-temperature example, write:
 
-> The sample provides very strong evidence ($t = -5.45$; two-tailed $P < 0.001$) that the population mean body temperature is *not*\ $37.0$^o^C ($\bar{x} = 36.81$; $95$% CI $36.73$ to\ $36.88$^o^C; $n = 130$).
+> The sample provides very strong evidence ($t = -5.45$; two-tailed $P < 0.001$) that the population mean body temperature is *not*\ $37.0$^o^C ($\bar{x} = 36.81$; $95$% CI: $36.73$ to\ $36.88$^o^C; $n = 130$).
 
 This statement contains the three components.
 
@@ -544,12 +550,12 @@ text(x = 104,
 
 We conclude:
 
-> Very strong evidence exists in the sample ($t = 11.78$; one-tailed $P < 0.001$) that the population mean IQ in students at Griffith University is greater than\ $100$ (mean $111.19$; $95$% CI $109.29$ to\ $113.09$; $n = 224$).
+> Very strong evidence exists in the sample ($t = 11.78$; one-tailed $P < 0.001$) that the population mean IQ in students at Griffith University is greater than\ $100$ (mean $111.19$; $95$% CI: $109.29$ to\ $113.09$; $n = 224$).
 
 The test is about the *mean* IQ; *individual* students may have IQs less than $100$.
 
 Since the sample size is much larger than\ $25$, this conclusion is *statistically valid*.
-The sample is not a true random sample from the population of all GU students (the students are mostly first-year students enrolled in undergraduate psychological science). 
+The sample is not a random sample from the population of all GU students (the students are mostly first-year, undergraduate psychological science students). 
 However, these students may be somewhat representative of all GU students.
 That is, the sample *may* be externally valid.
 
@@ -557,7 +563,7 @@ The difference between the general population IQ of\ $100$ and the sample mean I
 Possibly, this difference has very little practical importance,\index{Practical importance} even though the statistical evidence suggests that the difference cannot be explained by chance.
 
 IQ scores are designed to have a standard deviation of $\sigma = 15$ in the general population.
-If we accept that this applies for university students too (and we do not know if it does), the standard error is $\text{s.e.}(\bar{x}) = \sigma/\sqrt{n} = 15/\sqrt{130} = 1.0022$, and the test-statistic is then a $z$-score:
+If this applies for university students too (and we do not know if it does), the standard error is $\text{s.e.}(\bar{x}) = \sigma/\sqrt{n} = 15/\sqrt{130} = 1.0022$, and the test-statistic is then a $z$-score:
 $$
   z = \frac{\bar{x} - \mu}{\text{s.e.}(\bar{x})} = \frac{111.19 - 100}{1.0022} = 11.87.
 $$
@@ -570,7 +576,7 @@ To test a hypothesis about a population mean $\mu$:
 
 * write the null hypothesis ($H_0$) and the alternative hypothesis ($H_1$).
 * initially *assume* the value of $\mu$ in the null hypothesis to be true.
-* then, describe the *sampling distribution*, which describes what to *expect*  from the sample mean based on this assumption: under certain statistical validity conditions, the sample mean varies with:
+* describe the *sampling distribution*, which describes what to *expect*  from the sample mean based on this assumption: under certain statistical validity conditions, the sample mean varies with:
    *  an approximate normal distribution,
    *  with sampling mean whose value is the value of $\mu$ (from $H_0$), and
    *  having a standard deviation of $\displaystyle \text{s.e.}(\bar{x}) =\frac{s}{\sqrt{n}}$.
