@@ -4,8 +4,14 @@
                                                                   all~possible~statistics) ),
                                 oneSampleText = expression( atop(One~possible,
                                                                  bold(SAMPLE)) ),
-                                oneStatisticText =  expression( atop(One~possible,
+                                oneStatisticText = expression( atop(One~possible,
                                                                      bold(observed)~statistic)),
+                                compareText = expression(atop(bold(Compare)~expectation~with,
+                                                                 observation*":"~Consistency*"?") ),
+                                contradictText = expression(atop(bold(No)*":"~Contradicts,
+                                                                 assumption)),
+                                supportText = expression(atop(bold(Yes)*":"~Supports,
+                                                              assumption)), 
                                 Decision = "Neither", # "Neither", "Reject" or "Accept"
                                 showQuestionMark = FALSE) {
    
@@ -185,8 +191,7 @@
              shadow.size = 0,
              lcol = CompareColour,
              box.col = CompareColour,
-             lab = expression( atop(bold(Compare)~expectation~with,
-                                    observation*":"~Consistency*"?") ),
+             lab = compareText,
              col = grey(0)) # CHECKMARK
    textrect( pos[6, ],
              radx = 0.11,
@@ -196,8 +201,7 @@
              box.col = ifelse (Decision == "Accept",
                                DecisionColour,
                                "white"), 
-             lab = expression( atop(bold(Yes):~Supports,
-                                    assumption) ),
+             lab = supportText,
              col = ifelse( Decision == "Reject", 
                            grey(0.3), 
                            "black")) # CHECKMARK
@@ -209,8 +213,7 @@
              box.col = ifelse (Decision == "Reject",
                                DecisionColour,
                                "white"), #ContradictColour),
-             lab = expression( atop(bold(No):~Contradicts,
-                                    assumption) ),
+             lab = contradictText,
              col = ifelse( Decision == "Accept", 
                            grey(1), 
                            "black")) # CHECKMARK
