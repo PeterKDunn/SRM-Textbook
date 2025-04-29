@@ -37,9 +37,9 @@ WTlen <- dim(SixMWT)[1]
 Labels <- 1 : WTlen
 
 tb1 <- array( cbind( Labels[1:5 ],
-                     SixMWT$Distance20[1:5 ],
-                     SixMWT$Distance30[1:5 ],
-                     round( SixMWT$Distance30[1:5 ] - SixMWT$Distance20[1:5 ], 2)),
+                     SixMWT$Dist20[1:5 ],
+                     SixMWT$Dist30[1:5 ],
+                     round( SixMWT$Dist30[1:5 ] - SixMWT$Dist20[1:5 ], 2)),
               dim = c(5, 4) )
 
 
@@ -69,9 +69,9 @@ T1 <- knitr::kable(y <- pad(tb1head,
 
 
 tb2 <- array( cbind( Labels[(WTlen - 4):WTlen ],
-                     SixMWT$Distance20[(WTlen - 4):WTlen ],
-                     SixMWT$Distance20[(WTlen - 4):WTlen ],
-                     SixMWT$Distance30[(WTlen - 4):WTlen ] - SixMWT$Distance20[(WTlen - 4):WTlen ]),
+                     SixMWT$Dist20[(WTlen - 4):WTlen ],
+                     SixMWT$Dist20[(WTlen - 4):WTlen ],
+                     SixMWT$Dist30[(WTlen - 4):WTlen ] - SixMWT$Dist20[(WTlen - 4):WTlen ]),
               dim = c(5, 4) )
 
 tb2tail <- rbind( rep("$\\vdots$", 4),
@@ -111,7 +111,7 @@ out2
 
 ```{r}
 if( knitr::is_html_output() ) {
-  SixMWT$Diff <- round(SixMWT$Distance30 - SixMWT$Distance20, 2)
+  SixMWT$Diff <- round(SixMWT$Dist30 - SixMWT$Dist20, 2)
   
   DT::datatable(SixMWT,
                 fillContainer = FALSE, # Make more room, so we don't just have ten values
@@ -147,8 +147,7 @@ The data
 are *paired*.\index{Data!paired}
 Computing the *differences* or *changes* between the pairs of observations makes sense, since the values for each pair belong to the same unit of analysis (the same person, in this case).
 
-Pairing data, when appropriate, is useful because individuals can vary substantially.
-Pairing means that extraneous variables\index{Variables!extraneous} (potentially, *confounding* variables)\index{Variables!confounding} are held constant for those paired observations.
+Pairing data, when appropriate, is useful because individuals can vary substantially, and pairing means that extraneous variables\index{Variables!extraneous} (potentially, *confounding* variables)\index{Variables!confounding} are held constant for those paired observations.
 For example, each pair of measurements in
 `r if (knitr::is_latex_output()) {
 'Table\\ \\@ref(tab:SoilCN)'
@@ -181,14 +180,14 @@ The *difference* between the hearts rates of the twins can be recorded for each 
 * the body temperature of dogs (the 'individuals') is measured using *both* rectal and ear thermometers for each dog.
   The *difference* between the two recorded temperatures from the thermometers for each dog is recorded.
 * blood pressure is recorded from some individuals (Group\ A) after receiving Drug\ A, and from another group of individuals (Group\ B) after receiving Drug\ B.
-  Each person in Group\ A is matched with someone in Group\ B of the same sex, similar age and similar weight (e.g., in one of the pairs, both individuals are male, about $30$\ years-of-age, and about $180\cms$\ tall).
+  Each person in Group\ A is matched with someone in Group\ B of the same sex, similar age and similar weight (e.g., in one of the pairs, both individuals are male, about $30$\ years-of-age, and weighing about $95\kgs$).
   The *difference* between the blood pressure measurements for the individual in Group\ A and the matched person in Group\ B is recorded for each pair.
 * the number of campers is recorded at many national parks (the 'individuals') on the first weekend in summer, and on the first weekend in winter.
   The *difference* in camper numbers for each national park between these time points is recorded.
 
 Many of these examples can be extended to beyond two measurements.
 For instance, temperatures can be compared on each dog using three different types of thermometers.
-We only study *pairs* of measurements, and only for quantitative variables.
+In this chapter, only *pairs* of measurements are studied, and only for quantitative variables.
 
 
 ## Summarising the data {#SummarisingPairedCI}
@@ -214,17 +213,19 @@ A case-profile plot (Sect.\ \@ref(CaseProfilePlot)) is also appropriate, but is 
 
 par(mfrow = c(1, 2))
 
-boxplot( cbind(SixMWT$Distance20,
-               SixMWT$Distance30),
+boxplot( cbind(SixMWT$Dist20,
+               SixMWT$Dist30),
          names = c("20m", "30m"),
          las = 1,
          col = plot.colour,
          ylim = c(180, 600),
          ylab = "Walk distance (in m)",
          xlab = "Walkway distance",
-         main = "POOR: a boxplot of 6MWT\ndistance for two walkway lengths")
+         main = expression(atop(bold(Poor)*":"~a~boxplot~of~"6MWT",
+                                distance~"for"~two~walkway~lengths) ) )
+#         main = "POOR: a boxplot of 6MWT\ndistance for two walkway lengths")
 
-out <- hist( SixMWT$Distance30 - SixMWT$Distance20,
+out <- hist( SixMWT$Dist30 - SixMWT$Dist20,
              breaks = seq(-40, 80, by = 10),
              plot = FALSE)
 
@@ -236,7 +237,8 @@ plot(x = c(-40, 80),
      sub = "(30m distance minus 20m distance)",
      las = 2,
      type = "n",
-     main = "Histogram of 6MWT distance\nfor two walkway lengths")
+     main = expression( atop(Histogram~of~"6MWT"~distance,
+                             "for"~two~walkway~lengths)) )
 box()
 
 abline(v = 0, 
@@ -293,25 +295,25 @@ not by (for instance) finding the difference between the standard deviations in 
 ```{r SMWTSummary}
 SMWT.DataSummary <- array( dim = c(3, 5))
 
-SMWT.DataSummary[1, 1] <- mean(SixMWT$Distance20)
-SMWT.DataSummary[2, 1] <- mean(SixMWT$Distance30)
-SMWT.DataSummary[3, 1] <- mean(SixMWT$Distance30 - SixMWT$Distance20)
+SMWT.DataSummary[1, 1] <- mean(SixMWT$Dist20)
+SMWT.DataSummary[2, 1] <- mean(SixMWT$Dist30)
+SMWT.DataSummary[3, 1] <- mean(SixMWT$Dist30 - SixMWT$Dist20)
 
-SMWT.DataSummary[1, 2] <- median(SixMWT$Distance20)
-SMWT.DataSummary[2, 2] <- median(SixMWT$Distance30)
-SMWT.DataSummary[3, 2] <- median(SixMWT$Distance30 - SixMWT$Distance20)
+SMWT.DataSummary[1, 2] <- median(SixMWT$Dist20)
+SMWT.DataSummary[2, 2] <- median(SixMWT$Dist30)
+SMWT.DataSummary[3, 2] <- median(SixMWT$Dist30 - SixMWT$Dist20)
 
-SMWT.DataSummary[1, 3] <- sd(SixMWT$Distance20)
-SMWT.DataSummary[2, 3] <- sd(SixMWT$Distance30)
-SMWT.DataSummary[3, 3] <- sd(SixMWT$Distance30 - SixMWT$Distance20)
+SMWT.DataSummary[1, 3] <- sd(SixMWT$Dist20)
+SMWT.DataSummary[2, 3] <- sd(SixMWT$Dist30)
+SMWT.DataSummary[3, 3] <- sd(SixMWT$Dist30 - SixMWT$Dist20)
 
-SMWT.DataSummary[1, 4] <- findStdError(SixMWT$Distance20)
-SMWT.DataSummary[2, 4] <- findStdError(SixMWT$Distance30)
-SMWT.DataSummary[3, 4] <- findStdError(SixMWT$Distance30 - SixMWT$Distance20)
+SMWT.DataSummary[1, 4] <- findStdError(SixMWT$Dist20)
+SMWT.DataSummary[2, 4] <- findStdError(SixMWT$Dist30)
+SMWT.DataSummary[3, 4] <- findStdError(SixMWT$Dist30 - SixMWT$Dist20)
 
-SMWT.DataSummary[1, 5] <- realLength(SixMWT$Distance20)
-SMWT.DataSummary[2, 5] <- realLength(SixMWT$Distance30)
-SMWT.DataSummary[3, 5] <- realLength(SixMWT$Distance30 - SixMWT$Distance20)
+SMWT.DataSummary[1, 5] <- realLength(SixMWT$Dist20)
+SMWT.DataSummary[2, 5] <- realLength(SixMWT$Dist30)
+SMWT.DataSummary[3, 5] <- realLength(SixMWT$Dist30 - SixMWT$Dist20)
 
 rownames(SMWT.DataSummary) <- c("20m walkway distance (in m)", 
                                 "30m walkway distance (in m)", 
@@ -364,7 +366,7 @@ if( knitr::is_latex_output() ) {
 
 
 
-```{r SMWTNumericalOutput, fig.cap="The 6MWT data: numerical summary software output for each group (top), and the CI and test results (bottom).", fig.align="center", out.width=c("65%","101%"), fig.show="hold"}
+```{r SMWTNumericalOutput, fig.cap="The 6MWT data: numerical summary software output for each group (top), and the CI and test results (bottom).", fig.align="center", out.width=c("64%","100%"), fig.show="hold"}
 knitr::include_graphics("jamovi/SMWT/SMWT-NumericalSummary.png")
 knitr::include_graphics("jamovi/SMWT/SMWT-PairedT.png")
 ```
@@ -463,7 +465,7 @@ can be used to answer this repeated-measures, estimation RQ:
 
 Every possible sample of $n = 50$ subjects comprises different people, and hence produces different 6MWT distances for\ $20\ms$ and\ $30\ms$ walkways.
 For this reason, the 6MWT distance summaries in Table\ \@ref(tab:SMWTSummary) include standard errors.
-Since the 6MWT distance varies from sample to sample for each person, the *difference* between the distances for each person varies from sample to sample too, and also have a *sampling distribution*.
+Since the 6MWT distance varies from sample to sample for each person, the *differences* between the distances for each person varies from sample to sample too, and also have a *sampling distribution*.
 
 
 
@@ -556,9 +558,9 @@ For the 6MWT data, the sample mean differences\ $\bar{d}$ are described by (Fig.
 
 
 ```{r SMWTSamplingDist, fig.cap="The sampling distribution is a normal distribution; it describes how the sample mean difference between the 6MWT distances varies in samples of size $n = 50$.", fig.align="center", fig.width=9.25, fig.height=2.5, out.width='100%'}
-mn <- mean(SixMWT$Distance20 - SixMWT$Distance30)
-n <- length(SixMWT$Distance20)
-stdd <- sd(SixMWT$Distance20 - SixMWT$Distance30)
+mn <- mean(SixMWT$Dist20 - SixMWT$Dist30)
+n <- length(SixMWT$Dist20)
+stdd <- sd(SixMWT$Dist20 - SixMWT$Dist30)
 
 se <- stdd/sqrt(n)
 
@@ -628,9 +630,9 @@ $$
 As usual when the sampling distribution has an approximate normal distribution, an approximate $95$%\ CI uses the approximate multiplier of\ $2$ (from the $68$--$95$--$99.7$ rule).
 This is the same as the CI for\ $\bar{x}$ if the differences are treated as the data.
 
-For the 6MWT data:
+For the 6MWT data, the approximate $95$% CI is:
 $$
-22.03 \pm (2 \times 3.117),
+  22.03 \pm (2 \times 3.117),
 $$
 or $22.03\pm 6.234\ms$ (so the *margin of error* is\ $6.234\ms$).
 Equivalently, the CI is from $22.03 - 6.234 = 15.796\ms$, up to $22.03 + 6.234 = 28.264\ms$.
@@ -670,9 +672,9 @@ can be used to answer this repeated-measures, decision-making RQ:
 > For Thai patients with chronic obstructive pulmonary disease, is there a mean increase in 6MWT distance using a\ $30\ms$ walkway compared to a $20\ms$ walkway?
 
 In Sect.\ \@ref(PairedIntro), the differences were defined as the $30\ms$\ distance minus the $20\ms$\ distance, which is consistent with the wording in this RQ. 
-This RQ asks if the mean walking distance is, in general, a smaller value when subjects use a\ $20\ms$ walkway compared to a\ $30\ms$ walkway (that is how a *positive* difference will be found).
+This RQ asks if the mean walking distance is, in general, a smaller value when subjects use a\ $20\ms$ walkway compared to a\ $30\ms$ walkway (that is how *positive* differences eventuate).
 The *parameter* is the *population mean difference* in 6MWT, $\mu_d$. 
-The RQ is one-tailed, since the shorter walkway means more time spent changing direction, possibly negatively impacting the walking distance.
+Note that the RQ is worded as one-tailed.
 
 The *null* hypothesis is that 'there is *no mean change* in 6MWT, in the population' (Sect.\ \@ref(AboutHypotheses)):
 
@@ -706,9 +708,9 @@ This is a *huge* $t$-score.
 
 
 ```{r SMWTSamplingDistHT, fig.cap="The sampling distribution is a normal distribution; it describes how the sample mean difference between the 6MWT distances varies in samples of size $n = 50$.", fig.align="center", fig.width=9.25, fig.height=2.5, out.width='100%'}
-mn <- mean(SixMWT$Distance20 - SixMWT$Distance30)
-n <- length(SixMWT$Distance20)
-stdd <- sd(SixMWT$Distance20 - SixMWT$Distance30)
+mn <- mean(SixMWT$Dist20 - SixMWT$Dist30)
+n <- length(SixMWT$Dist20)
+stdd <- sd(SixMWT$Dist20 - SixMWT$Dist30)
 
 se <- stdd/sqrt(n)
 
@@ -779,7 +781,7 @@ Hence, the *one*-tailed $P$-value is less than $0.0001/2 = 0.00005$.
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 The software clarifies *how* the differences have been computed.
-At the left of the output (Fig.\ \@ref(fig:SMWTNumericalOutput)), the order implies the differences are found as `Distance30` (the $30\ms$ walk distance) minus `Distance20` (the $20\ms$ walk distance), the same as our definition.
+At the left of the output (Fig.\ \@ref(fig:SMWTNumericalOutput)), the order implies the differences are found as `Dist30` (the $30\ms$ walk distance) minus `Dist20` (the $20\ms$ walk distance), the same as our definition.
 :::
 
 
