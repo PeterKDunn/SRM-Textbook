@@ -25,13 +25,13 @@ For this chapter, consider this RQ:
 
 > In dog breeds, is there a relationship between breed-weight and lifespan, in general?
 
-@da2023dog recorded the lifespan and weight of dog breeds, for at least\ $50$ dogs from each breed [@da2023dogDATA];
+@da2023dog recorded the average lifespan and average weight of $73$\ dog breeds [@da2023dogDATA];
 `r if( knitr::is_latex_output() ) {
   'see Table\\ \\@ref(tab:DogsLifeData).'
 } else {
   'see Fig.\\ \\@ref(fig:dogslifeDataDT).'
 }`
-The dog breed is the unit of analysis;\index{Units of analysis} the individual dog is the unit of observation.\index{Units of observation}
+The dog breed is the unit of analysis (the 'individuals').\index{Units of analysis}
 The data comprises two quantitative variables (Fig.\ \@ref(fig:DogsLifeScatterjamovi2), left panel).\index{Graphs!scatterplot}
 
 
@@ -45,15 +45,16 @@ if( knitr::is_latex_output()){
                          tail(DogsLife[, c(1, 2, 5)], 5) )
   knitr::kable( pad( DogsLifeData,
                      surroundMaths = TRUE,
-                     targetLength = c(0, 6, 5),
-                     decDigits = c(0, 3, 2)),
+                     targetLength = c(0, 5, 5),
+                     decDigits = c(0, 2, 2)),
                 format = "latex",
                 booktabs = TRUE,
                 longtable = FALSE,
                 escape = FALSE,
+                row.names = FALSE,
                 align = c("r", "c", "c"),
                 linesep = "",
-                caption = "Information about various dog breeds (from at least $50$\ individuals from each breed were used). The first five and last five breeds only are shown.",
+                caption = "Information about various dog breeds. The first five and last five breeds only are shown.",
                 col.names = c( "Breed", 
                                "Breed weight (in kg)",
                                "Breed  lifespan (in years)") ) %>%
@@ -76,6 +77,17 @@ if( knitr::is_html_output() ) {
 ```
 
 
+Knowing the breed-weight provides some information about the lifespan: a moderate relationship between the variables seems evident.
+The relationship also seems somewhat *linear*.
+The *Pearson correlation coefficient* (Fig.\ \@ref(fig:DogsLifeScatterjamovi2), right panel)\index{Correlation coefficient (Pearson)} is $r = -0.712$, so $R^2 = (-0.712) ^2 = 50.7$%.
+This means that the unexplained variation in lifespan reduces by $50.7$% by knowing the breed-weight.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Recall that the *sample* correlation coefficient is denoted by\ $r$, and the *population* correlation coefficient is denoted by\ $\rho$.
+:::
+
+
 ```{r DogsLifeScatterjamovi2, fig.width=5.25, out.width=c('54%', '45%'), fig.align='center', fig.height=3.75, fig.cap="Lifespan of dog breeds against breed-weight. Left: scatterplot. Right: correlation output.", fig.show='hold'}
 
 plot(Lifespan ~ Weight, 
@@ -96,15 +108,6 @@ knitr::include_graphics("jamovi/DogsLife/DogsLifeCorrelationCI.png")
 ```
 
 
-Knowing the breed-weight provides some information about the lifespan: a moderate relationship between the variables seems evident.
-The relationship also seems somewhat *linear*.
-The *Pearson correlation coefficient* (Fig.\ \@ref(fig:DogsLifeScatterjamovi2), right panel)\index{Correlation coefficient (Pearson)} is $r = -0.712$, so $R^2 = (-0.712) ^2 = 50.7$%.
-This means that the unexplained variation in lifespan reduces by $50.7$% by knowing the breed-weight.
-
-
-::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
-Recall that the *sample* correlation coefficient is denoted by\ $r$, and the *population* correlation coefficient is denoted by\ $\rho$.
-:::
 
 
 ## Correlation: CIs and tests for $\rho$ {#CorrelationCITest}
@@ -112,11 +115,11 @@ Recall that the *sample* correlation coefficient is denoted by\ $r$, and the *po
 ### Correlation: CIs for $\rho$ {#CorrelationCI}
 \index{Confidence intervals!correlation coefficient|(}
 
-In the dog-breed study, only one of the countless possible samples of dogs has been studied, and the value of\ $r$ (an estimate of $\rho$, the *parameter*) will vary from sample to sample.
+In the dog-breed study, only one of the countless possible samples of dogs has been studied to determine the average breed-weights and lifespans, and the value of\ $r$ (an estimate of $\rho$, the *parameter*) will vary from sample to sample.
 That is, the value of\ $r$ has a sampling distribution, and sampling variation exists.\index{Sampling variation}
 The sampling distribution of\ $r$, however, does *not* have a normal distribution, so CIs for\ $\rho$ will be taken directly from software output (Fig.\ \@ref(fig:DogsLifeScatterjamovi2), right panel).
 For the dog-breed data, the $95$% CI for\ $\rho$ is from $-0.576$ to\ $-0.809$.
-Note that this CI is not symmetrical: the value of\ $r$ is not halfway between these limits.
+This CI is not symmetrical: the value of\ $r$ is not halfway between these limits.
 We write:
 
 > For dog breeds, the correlation coefficient between breed lifespan and breed-weight is\ $-0.712$, with a $95$% CI from $-0.576$ to\ $-0.809$ ($n = 73$).
@@ -163,7 +166,7 @@ The null hypothesis is, as always, the 'no difference, no change, no relationshi
 
 Clearly, the *sample* correlation coefficient $r$ for the data is not zero, and the RQ is effectively asking if sampling variation is the reason for this discrepancy between\ $r$ and the parameter\ $\rho$.
 
-The RQ is (as given in Sect.\ \@ref(CorReg-Intro)) is a two-tailed RQ, so the alternative hypothesis is:
+The RQ (as given in Sect.\ \@ref(CorReg-Intro)) is a two-tailed RQ, so the alternative hypothesis is:
 
 * $H_1$:  $\rho \ne 0$ \quad (*two-tailed* test, based on the RQ).
 
@@ -209,7 +212,7 @@ There is very strong evidence of a relationship between the number of cyclones i
 ### Introducting regression {#Chap35-Intro}
 
 *Correlation* measures the *strength* and *direction* of the *linear* relationship between two quantitative variables\ $x$ (an explanatory variable) and\ $y$ (a response variable).
-Sometimes, however, *describing* the relationship is also useful.
+Sometimes, however, *describing* the nature of the relationship is useful.
 This is called *regression*.
 
 The regression relationship is described mathematically using an *equation*, and allows us to:
@@ -258,7 +261,7 @@ In Equation\ \@ref(eq:ExampleRegressionEqn), $b_0 = -4$ and $b_1 = 2$.
 
 
 ::: {.example #RegressionGirlsHt name="Regression equations"}
-A report on the growth of Australian children [@data:AustralianGirls] found an approximate linear relationship between the age of girls in years $x$ and their height (in\ cm)\ $y$ aged between four and seven.
+A report on the growth of Australian children [@data:AustralianGirls] found an approximate linear relationship between the age of girls (in years) $x$ and their height (in\ cm)\ $y$ aged between four and seven.
 The regression equation was approximately
 $$
    \hat{y} = 73 + 7x.
@@ -317,7 +320,7 @@ When $x = 0$, the regression line suggests the value of\ $\hat{y}$ is about\ $2$
 }`; 
 that is, the value of\ $b_0$ is approximately\ $2$.
 
-A rough approximation of the *slope*\ $b_1$ is found using\index{Regression!equation!rise over run}
+A rough approximation of the *slope*\ $b_1$ is found using\index{Regression!equation!rise over run|(}
 `r if (knitr::is_html_output()) '<!--'`
 \begin{equation}
      \frac{\text{Change in $\hat{y}$}}{\text{Corresponding \emph{increase} in $x$}}
@@ -750,8 +753,8 @@ mLifespan <- lm( Lifespan ~ Weight,
        las = 1, 
        axes = FALSE,
        main = expression(Dog~breeds*":"~approximating~italic(b)[0]),
-       xlab = expression(Breed~weight~italic(x) ), 
-       ylab = expression(Breed~lifespan~italic(y) ), 
+       xlab = expression(Breed~weight~italic(x)~"(in kg)" ), 
+       ylab = expression(Breed~lifespan~italic(y)~"(in y)" ), 
        pch = 19)
   
   box()
@@ -812,8 +815,8 @@ mLifespan <- lm( Lifespan ~ Weight,
        las = 1, 
        axes = FALSE,
        main = expression(Dog~breeds*":"~approximating~italic(b)[1]),
-       xlab = expression(Breed~weight~italic(x) ), 
-       ylab = expression(Breed~lifespan~italic(y) ), 
+       xlab = expression(Breed~weight~italic(x)~"(in kg)" ), 
+       ylab = expression(Breed~lifespan~italic(y)~"(in y)" ), 
        pch = 19)
   box()
   grid()
@@ -1055,7 +1058,7 @@ points(2,
 ```
 
 
-The above method gives a crude approximation to the values of the intercept\ $b_0$ and the slope\ $b_1$.
+The\index{Regression!equation!rise over run|)} above method gives a crude approximation to the values of the intercept\ $b_0$ and the slope\ $b_1$.
 In practice, *many* reasonable lines could be drawn through a scatterplot of data, each giving slightly different rough guesses for\ $b_0$ and\ $b_1$.
 However, one of those lines is the 'best' line in some sense,^[For those interested: the 'line of best fit' is the line for which the sum of the *squared* vertical distances between the observations\ $y$ and the predicted values\ $\hat{y}$ (i.e, the regression line) is as small as possible.] sometimes called the 'line of best fit'.\index{Regression!equation!line of best fit}
 
