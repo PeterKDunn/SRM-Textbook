@@ -30,7 +30,7 @@ library("readr") # For "El Nino"
 ### Load other useful functions
 source("R/NormalDistributions.R")
 source("R/pad.R")
-source("R/SixSteps.R")
+source("R/SixSteps.R")  
 
 
 
