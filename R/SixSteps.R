@@ -75,13 +75,13 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
                                 start = 4, 
                                 stop = nchar(Labels.Short[i]))
     }
-
+    
   }
   
   ### CANVAS PARAMETERS
   boxHeight <- 2.5 # Ht and Width of the boxes (i.e., the six IMAGES)
   boxWidth <- 2.5  # Make square!
-                   # This is the ENLARGED size.
+  # This is the ENLARGED size.
   shrinkBoxFactor <- 0.75
   
   gapHorizontal <- boxWidth  # Total gap between the edges of adjacent boxes
@@ -99,11 +99,11 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   xHi <- gapEdgeX + (3 * boxWidth) + (2 * gapHorizontal) + gapEdgeX
   yLo <- 0
   yHi <- gapEdgeY + (2 * boxHeight) + (1 * gapVertical) + (2 * gapTextHeight) + gapEdgeY
-    
+  
   aspectRatio <- (yHi - yLo)/(xHi - xLo)
-#cat("AR = ", aspectRatio,"\n")
-#cat("X:", xLo, xHi, "\n")
-#cat("Y:", yLo, yHi, "\n")
+  #cat("AR = ", aspectRatio,"\n")
+  #cat("X:", xLo, xHi, "\n")
+  #cat("Y:", yLo, yHi, "\n")
   
   
   # DEFINE box *midpoints*
@@ -120,8 +120,8 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
              gapEdgeY +               (0.5 * boxHeight),
              gapEdgeY +               (0.5 * boxHeight),
              gapEdgeY +               (0.5 * boxHeight) )  ## STEP 6
-#  boxX <- boxX * aspectRatio
-    
+  #  boxX <- boxX * aspectRatio
+  
   #####################################################
   
   # SETTINGS
@@ -133,31 +133,23 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   
   ### CANVAS AND BOX (IMAGE) LOCATIONS PARAMETERS
   pos <- array(NA, dim = c(6, 2)) # One for each of the six steps
-
-
+  
+  
   # CANVAS
   ### SETUP
   par( mar = c(0, 0, 0, 0),
        yaxs = "i",
        oma = c(0, 0, 0, 0) ) 
-
-   plot(x = c(xLo, xHi), 
-        y = c(yLo, yHi),
-        xlim = c(xLo, xHi),
-        ylim = c(yLo, yHi),
-        #asp = aspectRatio,
-        xlab = "", 
-        ylab = "", 
-        type = "n",
-        axes = FALSE)
-
-#grid()
-#cat("x:", xLo, xHi, "\n")
-#cat("y:", yLo, yHi, "\n")
-#box(); axis(side=1); axis(side=2)
-#abline(h = 0:10, col="red")
-
-
+  
+  plot(x = c(xLo, xHi), 
+       y = c(yLo, yHi),
+       xlim = c(xLo, xHi),
+       ylim = c(yLo, yHi),
+       xlab = "", 
+       ylab = "", 
+       type = "n",
+       axes = FALSE)
+  
   # Plot each box/image
   for (i in 1:6){
     pos[i, ] <- c( boxX[i],
@@ -193,8 +185,8 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
                    boxY[6],                                # Box 5 to BOX 6
                    boxY[1] - (boxHeight/2) - gapArrowBoxY) # Box 6 to BOX 1
     
-
-
+    
+    
     for (i in 1:6){ # FIVE SOLID arrow needed between SIX boxes, for first circuit
       
       diagram::straightarrow(from = c( arrowStartX[i],
@@ -209,8 +201,8 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
                              lwd = 2,
                              arr.pos = 0.5 ) # Where to place the arrow head
     }
-    }
-
+  }
+  
   
   # COVER WITH WHITE BOXES
   for (i in (1:6)){
@@ -228,7 +220,7 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
   
   # DRAW IMAGES
   for (i in 1 : 6 ) { #SIX steps}
-
+    
     imageLocationX <-  c( boxX[i] - boxWidth/2 * aspectRatio * ifelse(Flag == i, 
                                                                       1, 
                                                                       shrinkBoxFactor),
@@ -241,7 +233,7 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
                          boxY[i] + boxHeight/2 * ifelse(Flag == i, 
                                                         1, 
                                                         shrinkBoxFactor))
-                 
+    
     plotfunctions::plot_image(img =  imageList[i],
                               type = "png",
                               #keep.ratio = TRUE,
@@ -269,7 +261,7 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
            col = ifelse(i == Flag, "black", grey(0.3)),
            cex = ifelse(i == Flag, 1.2, 1.0) )
     }
-    }
+  }
   
   
   # SHOW chosen image text
@@ -284,7 +276,7 @@ SixSteps <- function( Flag = 0, # 0 means to flag nothing
     diagram::textrect( mid = c( boxX[2], 
                                 mean( c(boxY[2],
                                         boxY[5]) ) ),
-                       radx = boxWidth/2 + gapHorizontal,
+                       radx = boxWidth/2 + gapHorizontal + 0.3,
                        rady = gapVertical/2 - (2 * gapTextHeight),
                        lab = Text,
                        box.col = gray(0.9),
