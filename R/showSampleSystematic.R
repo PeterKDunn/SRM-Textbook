@@ -89,7 +89,7 @@ showSampleSystematic <- function(sizeHorizontal = 21,
 #    if (jump == 2) ordinal <- "nd"
 #    if (jump == 3) ordinal <- "rd"
 #    
-    mtext(paste("Select every ", jump,"th person, but start at random  place", sep = ""),   
+    mtext(paste("Select every ", jump,"th person, but start at random place", sep = ""),   
           side = 1, 
           cex = 0.9,
           at = sizeHorizontal / 2)

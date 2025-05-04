@@ -153,7 +153,7 @@ showSampleMultistage <- function(populationSize = 21 * 21,
       }
       
     }
-    mtext(paste("Selected classes:", paste( sort(selectedTutorials), collapse = ", ")),
+    mtext(paste("Selected groups:", paste( sort(selectedTutorials), collapse = ", ")),
           side = 1,
           cex = 0.9,
           at = (1 + maxTutorial) / 2 )
