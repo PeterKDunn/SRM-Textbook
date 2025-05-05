@@ -1,4 +1,4 @@
-transparentGrey <- makeTransparent(grey(0.90))
+transparentGrey <- makeTransparent(grey(0.80))
 angle <- 15
 set.seed(77201)
 ######################################

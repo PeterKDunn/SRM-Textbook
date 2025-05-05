@@ -1,4 +1,4 @@
-transparentGrey <- makeTransparent(grey(0.90))
+transparentGrey <- makeTransparent(grey(0.80))
 
 
 ######################################
