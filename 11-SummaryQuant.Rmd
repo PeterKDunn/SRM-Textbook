@@ -2983,8 +2983,9 @@ $$
 The sample standard deviation of the chest-beating rate is $1.27$ per\ $10\hs$.
 :::
 
+(ref:StdDevDemo) The standard deviation is related to the sum of the squared-distances from the mean. The chest-beating data are used. The sum of the deviations is *always* zero.
 
-```{r ShowVar, fig.cap="The standard deviation is related to the sum of the squared-distances from the mean. The chest-beating data are used.", fig.align="center",fig.width=8, fig.height=4.25, out.width='90%'}
+```{r ShowVar, fig.cap="(ref:StdDevDemo)", fig.align="center",fig.width=8, fig.height=4.25, out.width='90%'}
 source("R/showVar.R") 
 showVar(format = ifelse( knitr::is_html_output(), 
                          "HTML", 
@@ -3337,7 +3338,7 @@ An engineering project [@data:hald:statistical] studied a new building material,
 Permeability time (the time for water to permeate the sheets) was measured from $81$\ pieces of material (in seconds).
 
 For these data, the mean is $\bar{x} = 43.162$ and the standard deviation is $s = 27.358$.
-Using the standard deviation rule, outliers are observations *smaller* than $43.162 - (3\times 27.358)$ or *larger* than $43.162 + (3\times 27.358)$; that is, *smaller* than\ $-38.9$ (which is clearly not appropriate here, as the data must be positive values), or *larger* than\ $125.2$.
+Using the standard deviation rule, outliers are observations *smaller* than $43.162 - (3\times 27.358)$ or *larger* than $43.162 + (3\times 27.358)$; that is, *smaller* than\ $-38.9\secs$ (which is clearly not appropriate here, as the data must be positive values), or *larger* than\ $125.2\secs$.
 This rule is shown in Fig.\ \@ref(fig:SDOutliers); two observations are identified as outliers using the standard deviation rule.
 :::
 
@@ -3345,7 +3346,7 @@ This rule is shown in Fig.\ \@ref(fig:SDOutliers); two observations are identifi
 
 ```{r SDOutliers, fig.align="center", fig.width=9, fig.height = 3.1, fig.cap="Outliers identified using the standard deviation rule for the permeability data.", out.width = '99%' }
 data(Perm)
-source("R/showOutliersStdDevRule.R")
+source("R/showOutliersStdDevRule.R") 
 ```
 
 
@@ -3387,7 +3388,7 @@ Three observations are identified as outliers using the IQR rule (Fig.\ \@ref(fi
 
 
 ```{r IQROutliers, fig.align="center", fig.width=9, fig.height = 3.5, fig.cap="Mild and extreme outliers, using the IQR rule, for the permeability data.", out.width = '100%' }
-source("R/showOutliersIQRRule.R")
+source("R/showOutliersIQRRule.R") 
 ```
 
 
@@ -3419,7 +3420,7 @@ Outliers are *unusual* observations; they are not necessarily *mistakes*.
 :::
 
 
-The strategymanaging outliers depends on *why* they occur (@mypapers:dunnsmyth:glms, p.\ 138):
+Managing outliers depends on *why* they occur (@mypapers:dunnsmyth:glms, p.\ 138):
 
 * *the outlier is clearly a mistake* (e.g., an age of\ $222$).
   If the mistake cannot be fixed (e.g., the completed questionnaire form is lost), the observation can be *deleted*.
@@ -3532,34 +3533,46 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-```{r WaterAcessQuant, fig.align="center", fig.cap="The age of the women, the number of people in the household, and the number of children in the household aged under $5$ years of age, for the water-access study.", out.width='100%', fig.width=6.5, fig.height=2.25}
+```{r WaterAcessQuant, fig.align="center", fig.cap="The age of the female household coordinator, the number of people in the household, and the number of children in the household aged under $5$ years, for the water-access study.", out.width='100%', fig.width=6.5, fig.height=2.25}
 
-par(mfrow = c(1, 3))
+par(mfrow = c(1, 3),
+    mar = c(5, 3.1, 4.1, 1.6))
 
 hist(WaterAccess$Age,
-     xlab = "Woman's age",
-     ylab = "Number",
-     main = "Age of women\nin sample",
+     xlab = "Woman's age (in y)",
+     ylab = "",
+     main = "Age of female\nhousehold coordinator",
      ylim = c(0, 40),
      xlim = c(15, 65),
-     las = 1)
+     las = 2)
+title(ylab = "Number of household",
+      line = 2)
+
 
 hist(WaterAccess$HouseholdPeople,
-     xlab = "Number people\n",
-     ylab = "Number",
-     main = "Number people\nin household",
+     xlab = "Number of people\nin household",
+     ylab = "",
+     main = "Number of people\nin household",
      ylim = c(0, 60),
-     xlim = c(0, 35),
-     las = 1)
+     xlim = c(-1, 35),
+     las = 2,
+     breaks = seq(-0.5, 34.5, 
+                  by = 5))
+title(ylab = "Number of households",
+      line = 2)
+
 
 hist(WaterAccess$HouseholdUnder5s,
-     xlab = "Number children",
-     ylab = "Number",
-     main = "Number children\nin household",
+     xlab = "Number of children",
+     ylab = "",
+     main = "Number of children under\n5 in household",
      ylim = c(0, 40),
      xlim = c(-1, 11),
-     las = 1,
-     breaks = seq(-0.5, 10.5, by = 1))
+     las = 2,
+     breaks = seq(-0.5, 10.5, 
+                  by = 1))
+title(ylab = "Number of households",
+      line = 2)
 ```
 
 
@@ -4309,7 +4322,7 @@ The corresponding histograms are shown in Fig.\ \@ref(fig:VariationHistograms).
 
 
 
-```{r VariationHistograms, echo=FALSE, fig.align="center", fig.cap="Histogram of marks for four classes.", out.width='55%', fig.width=5.5, fig.height=4.5, out.width="80%"}
+```{r VariationHistograms, echo=FALSE, fig.align="center", fig.cap="Histogram of marks for four classes.", out.width='55%', fig.width=5.5, fig.height=4.5, out.width="75%"}
 set.seed(2015)
 # The default: mar=c(5, 4, 4, 2) + 0.1)
 
@@ -4448,7 +4461,7 @@ Why?
 :::
 
 
-```{r FourHistograms, echo=FALSE, fig.cap="Four histograms: where would they be useful?", fig.align="center", out.width='55%', fig.width=5.5, fig.height=4.15, out.width="80%"}
+```{r FourHistograms, echo=FALSE, fig.cap="Four histograms: where would they be useful?", fig.align="center", out.width='55%', fig.width=5.5, fig.height=4.15, out.width="75%"}
 ### Makes a grid of four histograms, to assign meaning to
 set.seed(8765432)
 
