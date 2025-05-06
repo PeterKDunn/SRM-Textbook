@@ -63,7 +63,7 @@ showCorrelationalStudyDesign <- function(intervention = FALSE,
   text(x = 0.5,
        y = 0.2,
        font = 2, # BOLD
-       label = "Relationship")
+       label = "Explore\nrelationship")
   
   
   

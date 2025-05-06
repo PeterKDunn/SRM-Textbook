@@ -31,6 +31,7 @@ library("readr") # For "El Nino"
 source("R/NormalDistributions.R")
 source("R/pad.R")
 source("R/SixSteps.R")  
+source("R/prepareSideBySideTable.R")
 
 
 

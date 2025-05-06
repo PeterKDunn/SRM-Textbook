@@ -252,12 +252,12 @@ The bins should be defined to ensure no values lie on the border between bins, a
 }  else {
 'Table\\ \\@ref(tab:BabyBoomDataLATEX)'
 }`
-give the weights of babies born in a hospital on one day [@mypapers:Dunn:dataset:1999; @data:Steele:BabyBoom], plus the gender of each baby, and the number of minutes after midnight of the birth (shown in the order in which the births occurred).
+give the weights of babies born in a hospital on one day [@mypapers:Dunn:dataset:1999; @data:Steele:BabyBoom], plus the gender of each baby, and the number of minutes after midnight of the birth (shown in birth order).
 
 To display the distribution of birth weights, the weights can be grouped into clearly-defined weight intervals (Table\ \@ref(tab:BabyBoomTable), left column).
 Alternatively, the breaks between the bins can be given to one more decimal place than the data to avoid observations landing exactly on the bin divisions (final column).
 
-The table also gives percentage of birth in each bin; for example, the percentage of babies over\ $4.0\kgs$ is $1/44 \times 100 = 2.27$%, or about\ $2$%. 
+The table also gives percentage of births in each bin; for example, the percentage of babies over\ $4.0\kgs$ is $1/44 \times 100 = 2.27$%, or about\ $2$%. 
 Most babies in the sample are between\ $3$ and\ $4\kgs$ at birth.
 :::
 
@@ -402,7 +402,7 @@ Usually, but not universally, the intervals *include* values at the lower end of
 \index{Quantitative data!graphs|(}\index{Software output!graphs}
 
 The graphs in this section are appropriate for *continuous* quantitative data, and sometimes for *discrete* quantitative data if many values are possible.
-Sometimes, *discrete* data with very few recorded values are better displayed using the graphs designed for qualitative data (Sect.\ \@ref(QualitativeGraphs)).
+Sometimes, *discrete* data with very few recorded values are better displayed using graphs designed for qualitative data (Sect.\ \@ref(QualitativeGraphs)).
 
 Graphs used to display the distribution of one quantitative variable include:
 
@@ -508,7 +508,7 @@ For large datasets, these choices tend to matter less.
 
 
 ::: {.softwareBox .software data-latex="{iconmonstr-laptop-4-240.png}"}
-When observations lie on the boundary of the boxes, some software includes these observations in the lower box and some in the higher box.
+When observations lie on the boundary of the boxes, some software includes these observations in the lower box (which is common) and some in the higher box.
 :::
 
 
@@ -744,7 +744,7 @@ hist( Wts,
       main = "Birthweights of babies\nborn on one day in Brisbane",
       las = 2,
       xlim = c(1.5, 4.5),
-      ylim = c(0, 20),
+      ylim = c(0, 25),
       breaks = seq(1.5, 4.5, by = 0.5),
       col = plot.colour)
 title(sub = "Boundary val: in higher box",
@@ -773,7 +773,7 @@ hist( Wts,
       axes = FALSE,
       las = 2,
       xlim = c(1.5, 4.5),
-      ylim = c(0, 20),
+      ylim = c(0, 25),
       breaks = seq(1.45, 4.45, by = 0.5),
       col = plot.colour)
 axis(side = 2,
@@ -1439,7 +1439,7 @@ For stemplots:
 * the original data remain visible.
 * place the left-most digit(s) (e.g., kilograms) on the left (stems).
 * place the right-most digit (e.g., first decimal of a kilogram) on the right (leaves).
-* some data do not work well.
+* some data do not work well for a stemplot.
 * data may sometimes need suitable rounding before creating the stemplot (the baby weights were originally given to three decimal places).
 * the numbers in each row should be evenly spaced, with the numbers in the columns under each other, so the length of each stem is proportional to the number of observations.
 * the observations are *ordered* within each stem, so patterns in the data can be seen.
@@ -1469,7 +1469,6 @@ GYoung <- sort(GYoung)
 ```{r animation.hook="gifski", interval=0.85, dev=if (is_latex_output()){"pdf"}else{"png"}}
 if (knitr::is_html_output()){
   
-  
   par(mfrow = c(2, 1),
       mar = c(3.85, 3.1, 4, 1) + 0.1)
   for (i in (1:length(GYoung))){
@@ -1493,7 +1492,7 @@ if (knitr::is_html_output()){
            as.character(GYoung[6:10]) )
     text(  1:datagrid.x, 
            rep(1, 5), 
-           as.character(GYoung[11:15]) )
+           c(format(GYoung[11:14]), NA) )
     
     # Now highlight the observation being used
     if (i <= 5) {
@@ -1806,7 +1805,7 @@ if (knitr::is_latex_output()){
            as.character(GYoung[6:10]) )
     text(  1:datagrid.x, 
            rep(1, 5), 
-           as.character(GYoung[11:15]) )
+           c(format(GYoung[11:14]), NA) )
     
     #######################
     
@@ -1910,17 +1909,15 @@ the points are *jittered*\index{Overplotting!jittering} (placed with some added 
 ::: {.example #DotsChartsQuant2 name="Dot charts"}
 Consider the weights (in\ kg) of babies born in a Brisbane hospital
 `r if( knitr::is_html_output() ) {
-'(Fig.\\ \\@ref(fig:BabyBoomDataHTML)).'
-} else
-{
-'(Table\\ \\@ref(tab:BabyBoomDataLATEX)).'
+  '(Fig.\\ \\@ref(fig:BabyBoomDataHTML)).'
+} else {
+  '(Table\\ \\@ref(tab:BabyBoomDataLATEX)).'
 }`
 A dot chart
 `r if( knitr::is_html_output() ) {
-'(Fig.\\ \\@ref(fig:BabyBoomDotHTML))'
-} else
-{
-'(Fig\\ \\@ref(fig:FriesBabiesPDF), left panel)'
+  '(Fig.\\ \\@ref(fig:BabyBoomDotHTML))'
+} else {
+  '(Fig\\ \\@ref(fig:FriesBabiesPDF), left panel)'
 }`
 shows that most babies were born between\ $3$ and\ $4\kgs$.
 The points have been *jittered*.\index{Overplotting!jittering}
@@ -1949,7 +1946,7 @@ if (knitr::is_latex_output()){
              pch = 19,
              col = plotDark,
              ylim = c(0.75, 1.25),
-             xlim = c(1.5, 4.5),
+             xlim = c(1.1, 4.5),
              main = "Dot plot of newborn\nbabies' weights",
              axes = FALSE,
              xlab = "Baby weight (in kg)")
@@ -1968,7 +1965,7 @@ if (knitr::is_latex_output()){
              axes = FALSE,
              pch = 19,
              col = plotDark,
-             # ylim = c(0.98, 1.02),
+             # ylim = c(0.75, 1.02),
              xlim = c(0, 5) )
   axis(side = 1, 
        at = seq(0, 5, 
@@ -2396,7 +2393,7 @@ Consider a small dataset for answering this descriptive RQ: 'For gorillas aged u
 The population mean rate (denoted $\mu$) is to be estimated.
 
 Every gorilla cannot be studied, so a *sample* is studied.
-The unknown population mean $\mu$ is estimated using the sample mean ($\bar{x}$) of $14$\ young gorillas
+The unknown population mean $\mu$ is estimated using the sample mean ($\bar{x}$) of $n = 14$\ young gorillas
 `r if( knitr::is_html_output() ) {
   '(Example\\ \\@ref(exm:StemLeafPlots), top panel).'
 } else
@@ -2953,12 +2950,12 @@ The *standard deviation* is, approximately, the mean distance of the observation
 
 
 Even though *you do not have to use the formula* to calculate\ $s$ (use software), we will demonstrate to show exactly what\ $s$ calculates.\index{Standard deviation!of a sample}
-The formula is:
+The formula for computing the value of $s$ is
 $$
 s = \sqrt{ \frac{\sum(x - \bar{x})^2}{n - 1} },
 $$
 where\ $\bar{x}$ is the sample mean, $x$\ represents the individual data values, $n$\ is the sample size, and the symbol\ '$\sum$' means to *add* (Sect.\ \@ref(Mean)).
-Using the formula requires these steps:
+Using the formula requires these steps.
 
 1. Calculate the sample mean:\ $\overline{x}$.
 2. Calculate the *deviation* of each observation\ $x$ from the sample mean: $x - \bar{x}$.
@@ -2970,7 +2967,7 @@ Using the formula requires these steps:
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
 *You do not need to use the formula!*
-You should know: how to use software or a calculator to find the value of the standard deviation; what the standard deviation measures; and how and when to use it.
+You should know how to use software or a calculator to find the value of the standard deviation, what the standard deviation measures, and how and when to use it.
 :::
 
 
@@ -2986,8 +2983,9 @@ $$
 The sample standard deviation of the chest-beating rate is $1.27$ per\ $10\hs$.
 :::
 
+(ref:StdDevDemo) The standard deviation is related to the sum of the squared-distances from the mean. The chest-beating data are used. The sum of the deviations is *always* zero.
 
-```{r ShowVar, fig.cap="The standard deviation is related to the sum of the squared-distances from the mean. The chest-beating data are used.", fig.align="center",fig.width=8, fig.height=4.25, out.width='90%'}
+```{r ShowVar, fig.cap="(ref:StdDevDemo)", fig.align="center",fig.width=8, fig.height=4.25, out.width='90%'}
 source("R/showVar.R") 
 showVar(format = ifelse( knitr::is_html_output(), 
                          "HTML", 
@@ -2997,7 +2995,7 @@ showVar(format = ifelse( knitr::is_html_output(),
 
 The sample standard deviation\ $s$ is:
 
-* positive (unless all observations are the same, when $s = 0$; that is, *no* variation).
+* positive (unless all observations are the same, when $s = 0$; that is, *zero* variation).
 * best used for (approximately) symmetric data.
 * usually quoted with the mean.
 * the most commonly-used measure of variation.
@@ -3008,21 +3006,21 @@ The sample standard deviation\ $s$ is:
 ### Variation: the interquartile range (IQR) {#VariationIQR}
 \index{Interquartile range (IQR)}
 
-The standard deviation uses the value of $\bar{x}$, so is impacted by skewness just like the sample mean.
-A measure of variation *not* affected by skewness\index{Skewness} is the interquartile range, or\ IQR.\spacex
+The standard deviation uses the value of $\bar{x}$, so is impacted by skewness and outliers just like the sample mean.
+A measure of variation *not* affected by skewness\index{Skewness} and outliers is the interquartile range, or\ IQR.\spacex
 To understand the IQR, understanding *quartiles* is necessary first.
 
 
 ::: {.definition #Quartiles name="Quartiles"}
 \index{Quartiles}
-*Quartiles* describe the shape of the data:
+*Quartiles* describe the shape of the data.
 
-* the first quartile $Q_1$ is a value separating the smallest\ $25$% of observations from the largest\ $75$%.
-The $Q_1$ is like the median of the *smaller* half of the data, halfway between the minimum value and the median.
-* the second quartile $Q_2$ is a value separating the smallest\ $50$% of observations from the largest\ $50$%.
+* The first quartile $Q_1$ is a value separating the smallest\ $25$% of observations from the largest\ $75$%.
+  The $Q_1$ is like the median of the *smaller* half of the data, halfway between the minimum value and the median.
+* The second quartile $Q_2$ is a value separating the smallest\ $50$% of observations from the largest\ $50$%.
 (This is also the *median*.)\index{Median}
-* the third quartile $Q_3$ is a value separating the smallest\ $75$% of observations from the largest\ $25$%.
-The $Q_3$ is like the median of the *larger* half of the data, halfway between the median and the maximum value.
+* The third quartile $Q_3$ is a value separating the smallest\ $75$% of observations from the largest\ $25$%.
+  The $Q_3$ is like the median of the *larger* half of the data, halfway between the median and the maximum value.
 :::
 
 
@@ -3049,10 +3047,10 @@ The data then can be split into *smaller* and *larger* halves, each with seven v
 Since each half has seven observations (an *odd* number), the median of each half is the $(7 + 1)/2 = 4$th ordered value.
 Hence:\index{Quartiles}
 
-*  $Q_1$, the *first quartile*, is the median of the smaller half: $Q_1 = 1.5$.
+* $Q_1$, the *first quartile*, is the median of the smaller half; $Q_1 = 1.5$.
 About\ $25$% of observations are smaller than\ $1.5$.
-*  $Q_2$, the *second quartile* or *median*, is\ $1.7$, so $50$% of observations are smaller than\ $1.7$.
-*  $Q_3$, the *third quartile*, is the median of the larger half: $Q_3 = 3.0$.
+* $Q_2$, the *second quartile* or *median*, is\ $1.7$, so $50$% of observations are smaller than\ $1.7$.
+* $Q_3$, the *third quartile*, is the median of the larger half; $Q_3 = 3.0$.
 About\ $75$% of observations are smaller than\ $3.0$.
 
 To divide the data into four parts of equal numbers of observations, each part would need $14/4 = 3.5$ observations, which is not possible.
@@ -3226,6 +3224,7 @@ The smaller and larger halves of the data, *without* the median of\ $45$, are:
 * \makebox[23mm][l]{Larger half:}\ \ $52$\ \ $56$\ \ $62$\ \ $68$\ \ $83$: the median is $Q_3 = 62$.
 
 Hence, the IQR is $62 - 34 = 28\cms$.
+(If the median *is* included in each half, the IQR is $59 - 37 = 22\cms$.)
 :::
 
 
@@ -3283,7 +3282,7 @@ As with measures of location, the answer depends on the data.
 
 Since the standard deviation formula uses the mean, it is impacted in the same way as the mean by outliers\index{Outliers} and skewness.\index{Skewness}
 Hence, the standard deviation is best used with approximately symmetric data.
-The IQR is best used when data are skewed or asymmetric.
+The IQR is best used when data are skewed or outlier are present.
 Sometimes, both the standard deviation and the IQR can be quoted.
 
 
@@ -3314,7 +3313,7 @@ Rules for identifying outliers are arbitrary.
 Two rules for identifying outliers are:
 
 * the *standard deviation rule*, which is only useful when the data have an approximately symmetric distribution (Sect.\ \@ref(OutliersStdDevRule)).
-* the *IQR rule*, which is most useful in other situations (Sect.\ \@ref(OutliersIQRrule)).
+* the *IQR rule*, which is useful in most situations (Sect.\ \@ref(OutliersIQRrule)).
 
 
 ### The standard deviation rule {#OutliersStdDevRule}
@@ -3339,7 +3338,7 @@ An engineering project [@data:hald:statistical] studied a new building material,
 Permeability time (the time for water to permeate the sheets) was measured from $81$\ pieces of material (in seconds).
 
 For these data, the mean is $\bar{x} = 43.162$ and the standard deviation is $s = 27.358$.
-Using the standard deviation rule, outliers are observations *smaller* than $43.162 - (3\times 27.358)$ or *larger* than $43.162 + (3\times 27.358)$; that is, *smaller* than\ $-38.9$ (which is clearly not appropriate here, as the data must be positive values), or *larger* than\ $125.2$.
+Using the standard deviation rule, outliers are observations *smaller* than $43.162 - (3\times 27.358)$ or *larger* than $43.162 + (3\times 27.358)$; that is, *smaller* than\ $-38.9\secs$ (which is clearly not appropriate here, as the data must be positive values), or *larger* than\ $125.2\secs$.
 This rule is shown in Fig.\ \@ref(fig:SDOutliers); two observations are identified as outliers using the standard deviation rule.
 :::
 
@@ -3347,7 +3346,7 @@ This rule is shown in Fig.\ \@ref(fig:SDOutliers); two observations are identifi
 
 ```{r SDOutliers, fig.align="center", fig.width=9, fig.height = 3.1, fig.cap="Outliers identified using the standard deviation rule for the permeability data.", out.width = '99%' }
 data(Perm)
-source("R/showOutliersStdDevRule.R")
+source("R/showOutliersStdDevRule.R") 
 ```
 
 
@@ -3360,10 +3359,10 @@ Another rule is needed for identifying outliers in these situations: the IQR rul
 
 
 ::: {.definition #IQRRuleForIdentifyingOutliers name="IQR rule for identifying outliers"}
-The IQR rule identifies mild and extreme outliers:
+The IQR rule identifies mild and extreme outliers.
 
-* *extreme outliers*: observations $3\times \text{IQR}$ more unusual than $Q_1$ or $Q_3$.\index{Outliers!IQR rule!extreme outliers}
-* *mild outliers*: observations $1.5\times \text{IQR}$ more unusual than $Q_1$ or $Q_3$ (that are not extreme outliers).\index{Outliers!IQR rule!mild outliers}
+* *Extreme outliers*: observations $3\times \text{IQR}$ more unusual than $Q_1$ or $Q_3$.\index{Outliers!IQR rule!extreme outliers}
+* *Mild outliers*: observations $1.5\times \text{IQR}$ more unusual than $Q_1$ or $Q_3$ (that are not extreme outliers).\index{Outliers!IQR rule!mild outliers}
 :::
 
 
@@ -3373,243 +3372,23 @@ This definition is easier to understand using an example.
 ::: {.example #IQROutliersEG name="IQR rule for identifying outliers"}
 Using the permeability data seen in Example\ \@ref(exm:SDOutliersEG), a computer shows that $Q_1 = 24.7$ and $Q_3 = 50.6$, so $\text{IQR} = {50.6 - 24.7 = 25.9}$.
 Then, *extreme* outliers are observations $3\times 25.9 = 77.7$ more unusual than\ $Q_1$ or\ $Q_3$.
-That is, *extreme* outliers are observations are either:
+That is, *extreme* outliers are observations are:
 
-* more unusual than $24.7 - 77.7 = -53.0$ (that is, *less* than $-53.0$).
+* more unusual than $24.7 - 77.7 = -53.0$ (that is, *less* than $-53.0$); or
 * more unusual than $50.6 + 77.7 = 128.3$ (that is, *greater* than $128.3$).
 
 *Mild* outliers are observations $1.5\times 25.9 = 38.9$ more unusual than\ $Q_1$ or\ $Q_3$ (that are not extreme outliers).
-That is, *mild* outliers are either
+That is, *mild* outliers are
 
-* more unusual than $24.7 - 38.9 = -14.2$ (that is, *less* than\ $-14.2$).
+* more unusual than $24.7 - 38.9 = -14.2$ (that is, *less* than\ $-14.2$); or
 * more unusual than $50.6 + 38.9 = 89.5$ (that is, *greater* than\ $89.5$).
 
 Three observations are identified as outliers using the IQR rule (Fig.\ \@ref(fig:IQROutliers)): two extreme outliers, and one mild outlier.
 :::
 
 
-<!-- ```{r IQROutlier, animation.hook="gifski", interval=1.75, dev=if (is_latex_output()){"pdf"}else{"png"}} -->
-<!-- data(Perm) -->
-<!-- x <- Perm$Perm -->
-
-<!-- plotIQROutliersAnimation <- function(x, i){ -->
-<!--   grey.pch <- grey(0.75) -->
-
-<!--   xsort <- sort( x , decreasing = TRUE)   -->
-<!--   b.out <- boxplot(x, plot = FALSE) -->
-
-<!--   b.out.noextreme <- b.out -->
-<!--   b.out.noextreme$n <- b.out.noextreme$n - 2 -->
-<!--   b.out.noextreme$out <- numeric(0) -->
-<!--   b.out.noextreme$group <- numeric(0) -->
-<!--   b.out.noextreme$stats[5, 1] <- xsort[3] -->
-
-<!--   b.out.nomild <- b.out -->
-<!--   b.out.nomild$n <- b.out.nomild$n - 3 -->
-<!--   b.out.nomild$out <- numeric(0) -->
-<!--   b.out.nomild$group <- numeric(0) -->
-
-<!--   qx <- quantile(x) -->
-<!--   iqrx <- qx[4] - qx[2] -->
-<!--   mild <- qx[4] + 1.5 * iqrx -->
-<!--   extreme <- qx[4] + 3 * iqrx -->
-
-<!--   # FIND extreme obs -->
-<!--   extreme.obs <-  b.out$out[2:3] -->
-<!--   extreme.which <- which(x > extreme ) -->
-<!--   extreme.num <- length( x[extreme.obs] ) -->
-
-<!--   # FIND mild obs -->
-<!--   mild.obs <- b.out$out[1] -->
-<!--   mild.which <- which(x > mild ) -->
-<!--   mild.num <- length( x[mild.obs] ) -->
-
-<!--   x.nooutliers <- xsort[ -(1:3)] -->
-
-<!--   if ( (i >= 2) & (i <= 6) ){ -->
-<!--     set.seed(937300) -->
-<!--     stripchart(x, #.nooutliers,  -->
-<!--                vertical = TRUE,  -->
-<!--                las = 1,  -->
-<!--                pch = 1,  -->
-<!--                ylim = c(0, 180),  -->
-<!--                xlim = c(0.5, 1.5), -->
-<!--                method = "jitter",  -->
-<!--                jitter = 0.05, -->
-<!--                ylab = "Permeability (in seconds)",  -->
-<!--                col = grey.pch) -->
-<!--     if (i == 2) title(main = "The boxplot, plus the data") -->
-<!--     if (i == 3) title(main = "The IQR for the data") -->
-<!--     if (i == 4) title(main = "Extreme outliers are more than 3 IQRs\n more than Q3 (or less than Q1)...")      -->
-<!--     if ( i == 5 ) title( main = "...and are shown using a star") -->
-<!--     if ( i == 6 ) title(main = "Mild outliers are more than 1.5 IQRs\n more than Q3 (or less than Q1)...")  -->
-<!--     if ( i == 7 ) title( main = "...and are shown using a dot") -->
-<!--   } -->
-<!--   if ( i == 1) { -->
-<!--     out <- boxplot(x,  -->
-<!--                    col = rgb(0, 0, 0, maxColorValue = 256, alpha = 0.5),  -->
-<!--                    pch = 1,  -->
-<!--                    ylim = c(0, 180),  -->
-<!--                    xlim = c(0.5, 1.5), -->
-<!--                    ylab = "Permeability (in seconds)",  -->
-<!--                    main = "The boxplot", -->
-<!--                    range = 0,  -->
-<!--                    las = 1) -->
-<!--   } -->
-<!--   if ( (i >= 2) & (i <= 4 ) ){ -->
-<!--     out <- boxplot(x,  -->
-<!--                    add = TRUE,  -->
-<!--                    col = rgb(0, 0, 0, maxColorValue = 256, alpha = 0.5),  -->
-<!--                    boxwex = 0.2, -->
-<!--                    range = 0,  -->
-<!--                    las = 1) -->
-<!--   } -->
-<!--   if ( (i >= 5 ) & (i <= 7)) { -->
-<!--     out <- bxp(b.out.noextreme,  -->
-<!--                add = TRUE,  -->
-<!--                boxfill = rgb(0, 0, 0,  -->
-<!--                              maxColorValue = 256,  -->
-<!--                              alpha = 0.5),  -->
-<!--                pars = list(boxwex = 0.2), -->
-<!--                width = 0.25, -->
-<!--                las = 1) -->
-<!--   } -->
-
-<!--   if ( i > 2 ){ -->
-<!--     abline( h = qx[2],  -->
-<!--             col = "grey",  -->
-<!--             lty = 2) -->
-<!--     text(x = 1.4,  -->
-<!--          y = qx[2],  -->
-<!--          expression(Q[1] == 24.66),  -->
-<!--          pos = 1, -->
-<!--          cex = 0.9) -->
-<!--     abline( h = qx[4],  -->
-<!--             col = "grey",  -->
-<!--             lty = 2) -->
-<!--     text(x = 1.4,  -->
-<!--          y = qx[4],  -->
-<!--          expression(Q[3] == 50.58),  -->
-<!--          pos = 3, -->
-<!--          cex = 0.9) -->
-
-<!--     arrows(x0 = 0.75,  -->
-<!--            y0 = qx[2],  -->
-<!--            x1 = 0.75,  -->
-<!--            y1 = qx[4],  -->
-<!--            angle = 15, -->
-<!--            length = 0.125,  -->
-<!--            code = 3) -->
-<!--     text(x = 0.83,  -->
-<!--          y = mean(qx[ c(3, 4)]),  -->
-<!--          label = expression(IQR),  -->
-<!--          cex = 0.9) -->
-<!--   } -->
-
-<!--   if ( (i > 3) & (i < 8) ){ -->
-<!--     abline( lwd = 2,  -->
-<!--             col = "gray", -->
-
-<!-- 	    h = extreme ) -->
-<!--     text(1.0, mean( c(extreme, qx[5])),  -->
-<!--          "All observations here are extreme outliers",  -->
-<!--          col = "grey") -->
-<!--   } -->
-<!--   if ( (i == 4) | (i == 5) ) { -->
-<!--     arrows(x0 = 0.75,  -->
-<!--            y0 = qx[4],  -->
-<!--            x1 = 0.75,  -->
-<!--            y1 = extreme,  -->
-<!--            angle = 15, -->
-<!--            length = 0.125,  -->
-<!--            code = 3) -->
-<!--     text(x = 0.83,  -->
-<!--          y = mean( c(qx[4], extreme)),  -->
-<!--          labels = "Three IQRs") -->
-<!--   } -->
-
-<!--   if ( (i > 5) & (i < 8) ){ -->
-<!--     abline( lwd = 2,  -->
-<!--             col = "gray",  -->
-<!--             h = mild ) -->
-<!--     text(x = 1.0,  -->
-<!--          y = extreme, -->
-<!--          pos = 1, -->
-<!--          labels = "All observations here are mild outliers",  -->
-<!--          col = "grey") -->
-<!--   } -->
-<!--   if ( (i == 6) | (i == 7) ) { -->
-<!--     arrows(x0 = 0.75,  -->
-<!--            y0 = qx[4],  -->
-<!--            x1 = 0.75,  -->
-<!--            y1 = mild,  -->
-<!--            angle = 15,  -->
-<!--            length = 0.125,  -->
-<!--            code = 3) -->
-<!--     text(x = 0.6,  -->
-<!--          y = mean( c(qx[4], mild)),  -->
-<!--          labels = "1.5 IQRs") -->
-<!--   } -->
-
-
-<!--   if ( i == 7 ) { -->
-<!--     out <- boxplot(x,   -->
-<!--                    add = TRUE,  -->
-<!--                    col = rgb(0, 0, 0, maxColorValue = 256, alpha = 0.5),  -->
-<!--                    las=1) -->
-
-<!--     set.seed(937300) -->
-<!--     stripchart(x, -->
-<!--                vertical = TRUE,  -->
-<!--                las = 1,  -->
-<!--                pch = 1,  -->
-<!--                ylim = c(0, 180),  -->
-<!--                xlim = c(0.5, 1.5), -->
-<!--                method = "jitter",  -->
-<!--                jitter = 0.05, -->
-<!--                ylab = "Permeability (in seconds)",  -->
-<!--                col = grey.pch) -->
-<!--     title( main = "...and are shown using a dot") -->
-<!--     points( rep(1, 2),  -->
-<!--             xsort[1:2],  -->
-<!--             pch = 8,  -->
-<!--             cex = 1.5) -->
-<!--     points( 1, xsort[3],  -->
-<!--             pch = 1,  -->
-<!-- 	    cex = 1.5) -->
-<!--   } -->
-<!--   if ( i == 8 ) { -->
-<!--     out <- boxplot(x,  -->
-<!--                    col = rgb(0, 0, 0, maxColorValue = 256, alpha = 0.5),  -->
-<!--                    pch = 1,  -->
-<!--                    main = "The final boxplot", -->
-<!--                    ylim = c(0, 180),  -->
-<!--                    xlim = c(0.5, 1.5), -->
-<!--                    ylab = "Permeability (in seconds)",  -->
-<!--                    las = 1) -->
-<!--     points( 1, xsort[3],  -->
-<!--             pch = 1,  -->
-<!--             cex = 1.5) -->
-<!--     points( rep(1, 2),  -->
-<!--             xsort[1:2],  -->
-<!--             pch = 8,  -->
-<!--             cex = 1.5) -->
-<!--   } -->
-
-<!-- } -->
-
-<!-- ### HTML ONLY -->
-
-<!-- if (knitr::is_html_output()){ -->
-<!--     for (i in 1:8){ -->
-<!--       plotIQROutliersAnimation(x, i ) -->
-<!--     } -->
-
-<!--   } -->
-<!-- ``` -->
-
 ```{r IQROutliers, fig.align="center", fig.width=9, fig.height = 3.5, fig.cap="Mild and extreme outliers, using the IQR rule, for the permeability data.", out.width = '100%' }
-source("R/showOutliersIQRRule.R")
+source("R/showOutliersIQRRule.R") 
 ```
 
 
@@ -3618,7 +3397,6 @@ source("R/showOutliersIQRRule.R")
 \index{Outliers!rules compared}
 
 The standard deviation rule is most appropriate for *approximately symmetric distributions*; the IQR rule can be used for *any distribution*, but primarily for those skewed or with outliers.
-
 
 
 :::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -3642,7 +3420,7 @@ Outliers are *unusual* observations; they are not necessarily *mistakes*.
 :::
 
 
-The strategy for managing outliers depends on *why* they occur (@mypapers:dunnsmyth:glms, p.\ 138):
+Managing outliers depends on *why* they occur (@mypapers:dunnsmyth:glms, p.\ 138):
 
 * *the outlier is clearly a mistake* (e.g., an age of\ $222$).
   If the mistake cannot be fixed (e.g., the completed questionnaire form is lost), the observation can be *deleted*.
@@ -3755,34 +3533,46 @@ if( knitr::is_html_output() ) {
 }
 ```
 
-```{r WaterAcessQuant, fig.align="center", fig.cap="The age of the women, the number of people in the household, and the number of children in the household aged under $5$ years of age, for the water-access study.", out.width='100%', fig.width=6.5, fig.height=2.25}
+```{r WaterAcessQuant, fig.align="center", fig.cap="The age of the female household coordinator, the number of people in the household, and the number of children in the household aged under $5$ years, for the water-access study.", out.width='100%', fig.width=6.5, fig.height=2.25}
 
-par(mfrow = c(1, 3))
+par(mfrow = c(1, 3),
+    mar = c(5, 3.1, 4.1, 1.6))
 
 hist(WaterAccess$Age,
-     xlab = "Woman's age",
-     ylab = "Number",
-     main = "Age of women\nin sample",
+     xlab = "Woman's age (in y)",
+     ylab = "",
+     main = "Age of female\nhousehold coordinator",
      ylim = c(0, 40),
      xlim = c(15, 65),
-     las = 1)
+     las = 2)
+title(ylab = "Number of household",
+      line = 2)
+
 
 hist(WaterAccess$HouseholdPeople,
-     xlab = "Number people\n",
-     ylab = "Number",
-     main = "Number people\nin household",
+     xlab = "Number of people\nin household",
+     ylab = "",
+     main = "Number of people\nin household",
      ylim = c(0, 60),
-     xlim = c(0, 35),
-     las = 1)
+     xlim = c(-1, 35),
+     las = 2,
+     breaks = seq(-0.5, 34.5, 
+                  by = 5))
+title(ylab = "Number of households",
+      line = 2)
+
 
 hist(WaterAccess$HouseholdUnder5s,
-     xlab = "Number children",
-     ylab = "Number",
-     main = "Number children\nin household",
+     xlab = "Number of children",
+     ylab = "",
+     main = "Number of children under\n5 in household",
      ylim = c(0, 40),
      xlim = c(-1, 11),
-     las = 1,
-     breaks = seq(-0.5, 10.5, by = 1))
+     las = 2,
+     breaks = seq(-0.5, 10.5, 
+                  by = 1))
+title(ylab = "Number of households",
+      line = 2)
 ```
 
 
@@ -4532,7 +4322,7 @@ The corresponding histograms are shown in Fig.\ \@ref(fig:VariationHistograms).
 
 
 
-```{r VariationHistograms, echo=FALSE, fig.align="center", fig.cap="Histogram of marks for four classes.", out.width='55%', fig.width=5.5, fig.height=4.5, out.width="80%"}
+```{r VariationHistograms, echo=FALSE, fig.align="center", fig.cap="Histogram of marks for four classes.", out.width='55%', fig.width=5.5, fig.height=4.5, out.width="75%"}
 set.seed(2015)
 # The default: mar=c(5, 4, 4, 2) + 0.1)
 
@@ -4671,7 +4461,7 @@ Why?
 :::
 
 
-```{r FourHistograms, echo=FALSE, fig.cap="Four histograms: where would they be useful?", fig.align="center", out.width='55%', fig.width=5.5, fig.height=4.15, out.width="80%"}
+```{r FourHistograms, echo=FALSE, fig.cap="Four histograms: where would they be useful?", fig.align="center", out.width='55%', fig.width=5.5, fig.height=4.15, out.width="75%"}
 ### Makes a grid of four histograms, to assign meaning to
 set.seed(8765432)
 
