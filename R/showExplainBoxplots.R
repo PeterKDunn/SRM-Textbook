@@ -110,14 +110,14 @@ text(x = 3.5,
 CBR.quantiles <- out$stats[, 1]
 arrows( x0 = 1,
         x1 = 2.2,
-        y0 = CBR.quantiles[1],
+        y0 = CBR.quantiles[1] - 0.2,
         y1 = CBR.quantiles[1],
         angle = angle,
         length = 0.1,
         lwd = 2)
 text(x = 1,
-     y = CBR.quantiles[1],
-     labels = "Min. value",
+     y = CBR.quantiles[1] - 0.2,
+     labels = "Minimum\nvalue",
      pos = 2)
 
 arrows( x0 = 1,
@@ -165,7 +165,7 @@ arrows( x0 = 1,
         lwd = 2)
 text(x = 1,
      y = CBR.quantiles[5],
-     labels = "Max. value",
+     labels = "Maximum\nvalue",
      pos = 2)
 
 
@@ -183,7 +183,7 @@ arrows( x0 = 5,
         lwd = 2)
 text(x = 5,
      y = -0.2,
-     labels = "Min. value",
+     labels = "Minimum\nvalue",
      pos = 4)
 
 arrows( x0 = 5,
