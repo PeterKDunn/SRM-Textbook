@@ -159,7 +159,7 @@ plotSpinningWheel <- function(angle,
   numberColours <- rep(NA, 38)
   
   if (isLaTeX) { # LaTeX
-    numberColours <- rep( rgb(0.25, 0.25, 0.25, 
+    numberColours <- rep( rgb(0.45, 0.45, 0.45, 
                               max = 255, 
                               alpha = 125, 
                               names = "blackWheel"), 
