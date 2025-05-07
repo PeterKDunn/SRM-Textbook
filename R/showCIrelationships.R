@@ -3,7 +3,7 @@ showCIrelationships <- function(type = "sampling"){ # Either  "sampling"  or  "c
 
   normalTitle <- ifelse(type == "sampling",
                         expression(
-                          atop( bold(Sample)*":"~Values~of~hat(italic(p))~likely~to~be,
+                          atop( bold(Samples)*":"~Values~of~hat(italic(p))~likely~to~be,
                                 produced~with~the~given~value~of~italic(p) )),
                         expression(
                           atop( bold(Population)*":"~Values~of~italic(p)~likely~to~have,
@@ -43,8 +43,8 @@ points( x = 0,
         pch = 19)
 
 whatIsKnown <- ifelse( type == "sampling",
-                       expression(bold(Population)*":"~Value~of~italic(p)~known),
-                       expression(bold(Sample)*":"~Value~of~hat(italic(p))~known)
+                       expression(bold(Population)*":"~Value~of~italic(p)~known*":"~0.5),
+                       expression(bold(Sample)*":"~Value~of~hat(italic(p))~known*":"~0.44)
                        )
 
 text(x = 0,
@@ -58,52 +58,49 @@ points( x = c(-1.9, -0.5, 0.9, 1.2, 1.6),
         y = rep(0, 5),
         pch = 19,
         cex = 0.7)
-arrows(x0 = 0,
-       x1 = -1.9,
-       y0 = -0.40,
-       y1 = 0,
-       angle = 15,
-       length = 0.15,
-       code = ifelse(type == "sampling",
-                     2, 
-                     1))
-arrows(x0 = 0,
-       x1 = -0.5,
-       y0 = -0.40,
-       y1 = 0,
-       angle = 15,
-       length = 0.15,
-       code = ifelse(type == "sampling",
-                     2, 
-                     1))
-arrows(x0 = 0,
-       x1 = 0.9,
-       y0 = -0.4,
-       y1 = 0,
-       angle = 15,
-       length = 0.15,
-       code = ifelse(type == "sampling",
-                     2, 
-                     1))
-arrows(x0 = 0,
-       x1 = 1.2,
-       y0 = -0.40,
-       y1 = 0,
-       angle = 15,
-       length = 0.15,
-       code = ifelse(type == "sampling",
-                     2, 
-                     1))
 
-arrows(x0 = 0,
-       x1 = 1.6,
-       y0 = -0.40,
-       y1 = 0,
-       angle = 15,
-       length = 0.15,
-       code = ifelse(type == "sampling",
-                     2, 
-                     1))
+if (type == "sampling") {
+  straightarrow(from = c(0, -0.40),
+                to = c(-1.9, 0),
+                arr.pos = 0.8)
+  straightarrow(from = c(0, -0.40),
+                to = c(-0.5, 0),
+                arr.pos = 0.8)
+  straightarrow(from = c(0, -0.40),
+                to = c(-0.5, 0),
+                arr.pos = 0.8)
+  straightarrow(from = c(0, -0.4),
+                to = c(0.9, 0),
+                arr.pos = 0.8)
+  straightarrow(from = c(0, -0.40),
+                to = c(1.2, 0),
+                arr.pos = 0.8)
+  straightarrow(from = c(0, -0.40),
+                to = c(1.6, 0),
+                arr.pos = 0.8)
+} else {
+  straightarrow(to = c(0, -0.40),
+                from = c(-1.9, 0),
+                arr.pos = 0.3)
+  straightarrow(to = c(0, -0.40),
+                from = c(-0.5, 0),
+                arr.pos = 0.3)
+straightarrow(to = c(0, -0.40),
+                from = c(-0.5, 0),
+                arr.pos = 0.3)
+  straightarrow(to = c(0, -0.4),
+                from = c(0.9, 0),
+                arr.pos = 0.3)
+  straightarrow(to = c(0, -0.40),
+                from = c(1.2, 0),
+                arr.pos = 0.3)
+  straightarrow(to = c(0, -0.40),
+                from = c(1.6, 0),
+                arr.pos = 0.3)
+}
+
+
+
 
 polygon( x = c(-4, 4, 4, -4),
          y = c(-0.15, -0.15, -0.25, -0.25),
