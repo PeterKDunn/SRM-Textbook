@@ -39,7 +39,8 @@ Therefore, we could ask:
 
 > Is the *population* mean internal body temperature equal to $37.0$^o^C?
 
-A *decision* is sought about the value of the *population* mean body temperature; presumably, the population is people in general.
+A *decision* is sought about the value of the *population* mean body temperature.
+Presumably, the intended population is all people, though the population, in practice, may depend on what population is represented by the available data.
 
 The population mean internal body temperature will never be known: the internal body temperature of every person alive would need to be measured, and even those not yet born.
 A *sample* must be studied.
@@ -84,8 +85,8 @@ $$
   \text{s.e.}(\bar{x}) = \frac{s}{\sqrt{n}}.
 $$
 
-To draw a picture of this normal distribution, however, requires having sample information: the value of\ $s$ is needed.
-Fortunately, @data:mackowiak:bodytemp gathered body-temperature data, collated by @data:Shoemaker1996:Temperature
+To draw a picture of this normal distribution requires having sample information: the value of\ $s$ is needed.
+Fortunately, @data:mackowiak:bodytemp gathered body-temperature data for $n = 130$ people, collated by @data:Shoemaker1996:Temperature
 `r if (knitr::is_latex_output()) {
    '(Table\\ \\@ref(tab:DataBodyTemp); Fig.\\ \\@ref(fig:BodyTempHist)).'
 } else {
@@ -97,15 +98,10 @@ The data all come from
 >
 > --- @data:mackowiak:bodytemp, p. 1578
 
-so the population for the study (and RQ) should be defined accordingly.
+so the population for the study (and RQ) should be redefined accordingly.
+From software output (Fig.\ \@ref(fig:BodyTempjamovi)), the *sample* mean is $\bar{x} = 36.8052$^o^C\index{Mean!of a sample} and the *sample* standard deviation is $s = 0.4073$^o^C.
 
-The numerical summary, from software (Fig.\ \@ref(fig:BodyTempjamovi)), gives
-
-* the *sample* mean: $\bar{x} = 36.8052$ (in degrees C).\index{Mean!of a sample}
-* the *sample* standard deviation: $s = 0.4073$ (in degrees C).
-* the sample size: $n = 130$.
-
-Using this value of $s$, the sampling distribution of\ $\bar{x}$ can be described, if\ $\mu$ really was\ $37.0$, as having
+Using this value of $s$, the sampling distribution of\ $\bar{x}$ can be described, if\ $\mu$ really was\ $37.0$:
 
 * an approximate normal distribution,
 * with a sampling mean whose value is $\mu = 37.0$ (from\ $H_0$),
@@ -207,7 +203,7 @@ This enables questions to be asked about the likely values of\ $\bar{x}$ that wo
 For example, if\ $\mu$ really is\ $37.0$, the value of\ $\bar{x}$ will be *larger* than\ $37.0357$^o^C about\ $16$% of the time (using the $68$--$95$--$99.7$ rule).
 
 
-```{r BodyTempSamplingDist, fig.cap="The distribution of sample mean body temperatures, if the population mean is $37.0^\\circ$C and $n = 130$. The grey vertical lines are\\ $1$,\\ $2$ and\\ $3$ standard deviations from the mean.", fig.align="center", fig.height=3.5, fig.width=9, out.width='100%'}
+```{r BodyTempSamplingDist, fig.cap="The distribution of sample mean body temperatures, if the population mean is $37.0^\\circ$C and $n = 130$. The grey vertical lines are\\ $1$,\\ $2$ and\\ $3$ standard deviations from the mean.", fig.align="center", fig.height=3.5, fig.width=9, out.width='95%'}
 mn <- 37.0
 
 # These taken from Shoemaker's JSE data file
@@ -215,11 +211,11 @@ s <- 0.40732
 n <- 130
 
 se <- s/sqrt(n)
-par(mar = c(3, 0.15, 1, 0.15))
+par(mar = c(3, 3.15, 1, 0.15))
 
 out <- plotNormal(mn, 
                   s / sqrt(n),
-                  xlab = "Sample means from sample of size 130 (deg C)",
+                  xlab = expression(Sample~means~from~samples~of~size~130),
                   round.dec = 4,
                   ylim = c(0, 18.25),
                   cex.tickmarks = 0.9)
@@ -258,10 +254,8 @@ text(x = mn + (se / 2),
 ## Observations: $t$-score {#Tscores}
 \index{Test statistic!t@$t$-score}
 
-
-**Step\ 3** in the decision-making process is to make the observations.
-From the data, $\bar{x} = 36.8052$ (Fig.\ \@ref(fig:BodyTempjamovi)).
-Locating this value on the sampling distribution (Fig.\ \@ref(fig:BodyTempSamplingDistT)) shows that this observed sample mean is, relatively speaking, *extremely* low: a sample mean this low is very unlikely to occur in any sample of $n = 130$ when $\mu = 37.0$.
+**Step\ 3** of the decision-making process is to make the observations.
+Locating $\bar{x} = 36.8052$ on the sampling distribution (Fig.\ \@ref(fig:BodyTempSamplingDistT)) shows that this observed sample mean is, relatively speaking, *extremely* low: a sample mean this low is very unlikely to occur in any sample of $n = 130$ when $\mu = 37.0$.
 How many standard deviations is\ $\bar{x}$ away from $\mu = 37.0$?
 Compute:
 $$
@@ -272,8 +266,12 @@ $$
 This is like a $z$-score: it measures the number of standard deviations that the value is from the mean.
 However, it is not a $z$-score; it is a $t$-score.
 Both $t$- and $z$-scores measure *the number of standard deviations that a value is from the mean*.
-Here the value is a $t$-score, because the *population* standard deviation\ $\sigma$ is unknown, and the *sample* standard deviation is used to compute $\text{s.e.}(\bar{x})$.
+Here the value is a $t$-score, because the *population* standard deviation\ $\sigma$ is unknown, and the *sample* standard deviation is used instead to compute $\text{s.e.}(\bar{x})$.
 
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+Like $z$-scores, $t$-scores measure the number of standard deviations that a value is from the mean of the distribution.
+:::
 
 
 ```{r BodyTempSamplingDistT, fig.cap="The sample mean of $\\bar{x} = 36.8041^\\circ$C is very unlikely to have been observed in any sample of size $n = 130$, if the population mean really was $37.0^\\circ$C.\\spacex The standard deviation of this normal distribution is $\\text{s.e.}(\\bar{x}) = 0.035724$.", fig.align="center", fig.width=8, fig.height=2.5, out.width='85%'}
@@ -290,7 +288,7 @@ z36 <- (36.8 - mn)/(s / sqrt(n))
 par(mar = c(4, 1, 1, 1) )
 out <- plotNormal(mn,
                   s / sqrt(n),
-                  xlab = "Sample mean temperatures (in deg C)",
+                  xlab = expression(Sample~mean~temperatures~"(in "*{}^o*"C)"),
                   round.dec = 3,
                   showX = seq(-6, 3, by = 1) * s/sqrt(n) + mn,
                   xlim.hi = mn + 3.5 * se, 
@@ -303,9 +301,9 @@ arrows(xbar,
        0, 
        length = 0.18, 
        angle = 15)
-text(xbar, 
-     0.8 * max(out$y), 
-     "36.8 deg.",
+text(x = xbar, 
+     y = 0.8 * max(out$y), 
+     labels = expression(36.8^o*C),
      pos = 4)
 
 points( x = xbar,
@@ -315,19 +313,15 @@ points( x = xbar,
 ```
 
 
-::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
-Like $z$-scores, $t$-scores measure the number of standard deviations that a value is from the mean of the distribution.
-:::
-
 
 The calculation is therefore:
 $$
    t = \frac{36.8052 - 37.0}{0.035724} = -5.453.
 $$
 The observed sample mean is *more than five standard deviations below the population mean*, which is highly unusual based on the $68$--$95$--$99.7$ rule (Fig.\ \@ref(fig:BodyTempSamplingDistT)).
-This is persuasive evidence that $\mu$ is not $37.0$.
+This is very persuasive evidence that $\mu$ is not $37.0$.
 
-In general, when the sampling distribution has an approximate normal distribution, a $t$-score in hypothesis testing is
+In general, when the sampling distribution has an approximate normal distribution, a $t$-score in hypothesis testing is, when the *sample* standard deviation is used to compute the standard error
 \begin{equation}
    t 
    = 
@@ -363,14 +357,14 @@ The output (under the heading `p`) shows that the $P$-value is indeed very small
 
 ::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
 Some software reports a $P$-value of\ `0.000`, which really means that the $P$-value is zero to three decimal places.
-We should write $P < 0.001$: that is, the $P$-value is *smaller* than\ $0.001$.
+Since $P$-values can never be exactly zero, we should write $P < 0.001$: that is, the $P$-value is *smaller* than\ $0.001$.
 :::
 
 
 This $P$-value means that, if $\mu = 37.0$, a sample mean as low as\ $36.8052$ would be *very* unusual to observe (from a sample size of $n = 130$). 
 And yet, we did.
 Using the decision-making process, this implies that the initial assumption (the null hypothesis) is contradicted by the data: we observed something extremely unlikely if $\mu = 37.0$.
-That is, there is persuasive evidence that the *population* mean body temperature is *not*\ $37.0$^o^C.
+That is, there is very persuasive evidence that the *population* mean body temperature is *not*\ $37.0$^o^C.
 
 
 ```{r BodyTempTestjamovi, fig.cap="Software output for conducting the $t$-test for the body temperature data. The $P$-value is a two-tailed value.", fig.align="center", out.width="65%"}
