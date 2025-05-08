@@ -230,7 +230,7 @@
    text(x = mean( pos[1:2, 1]),
         y = 0.02,
         cex = 1,
-        labels = "Step 3: observe sample statistic")
+        labels = "Step 3: evaluate sample statistic")
    text(x = pos[5, 1],
         y = 0.02,
         cex = 1,
