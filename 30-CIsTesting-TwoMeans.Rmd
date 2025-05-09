@@ -128,6 +128,11 @@ The information can be found using software (Fig.\ \@ref(fig:SnakesSummaryTestja
 The appropriate summary for graphically summarising the *data* is (for example) a boxplot (Fig.\ \@ref(fig:SnakesErrorbar), left panel).\index{Graphs!boxplot}
 
 
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+No sample size or standard deviation is provided for the differences in Table\ \@ref(SnakesNumericalTest); these make no sense in the context of comparing two means.
+:::
+
+
 ```{r SnakesSummaryTestjamovi, fig.cap="Software output for the garter-snakes data.", fig.align="center", out.width=c("100%","65%"), fig.show='hold'}
 knitr::include_graphics("jamovi/Snakes/Snakes-Test.png")
 knitr::include_graphics("jamovi/Snakes/Snakes-Summary.png")
@@ -340,7 +345,7 @@ The *meaning* of the conclusions will be the same whichever direction is used.
 
 A useful way to compare the means of two (or more) groups is to display the CIs for the means of the groups being compared in an *error bar chart*.\index{Graphs!error bar charts}
 Error bars charts display the expected variation *in the sample means* from sample to sample, while boxplots display the variation *in the individual observations*.
-For the garter-snakes data, the error bar chart (Fig.\ \@ref(fig:SnakesErrorbar), right panel) shows the $95$%\ CI for each group; the mean has been added as a dot.
+For the garter-snakes data, the error bar chart (Fig.\ \@ref(fig:SnakesErrorbar), right panel) shows the $95$%\ CI for each group; the mean appears as a dot.
 
 The two CIs for the SVL are (using information from the bottom table in Fig.\ \@ref(fig:SnakesSummaryTestjamovi)):
 
@@ -467,7 +472,7 @@ arrows(1:3, mns - 2 * ses,
 \index{Sampling distribution!comparing two means}\index{Confidence intervals!comparing two means|(}
 
 Each sample will comprise different snakes, and give different SVLs. 
-The sample means for each group will differ from sample to sample, and the *difference* between the sample means will be different for each sample.
+The sample means for each group will differ from sample to sample, and the *difference* between the sample means will be different for each sample also.
 The *difference* between the sample means varies from sample to sample, and so has a sampling distribution and a standard error.
 
 
@@ -494,9 +499,9 @@ For the garter-snakes data, the differences between the sample means will have:
 
 The standard error of the difference between the means was computed using
 $$
-\text{s.e.}(\bar{x}_N - \bar{x}_C)
-= \sqrt{ \text{s.e.}(\bar{x}_N)^2 + \text{s.e.}(\bar{x}_C)^2}
-= \sqrt{ 1.216^2 + 2.1112^2 } = 2.437,
+  \text{s.e.}(\bar{x}_N - \bar{x}_C)
+  = \sqrt{ \text{s.e.}(\bar{x}_N)^2 + \text{s.e.}(\bar{x}_C)^2}
+  = \sqrt{ 1.216^2 + 2.1112^2 } = 2.437,
 $$
 the same value shown in the *second row* of the software output (Fig.\ \@ref(fig:SnakesSummaryTestjamovi)).
 
@@ -550,6 +555,9 @@ The *approximate* CI and the *exact* (from software) CIs are only slightly diffe
 ## Hypothesis tests for $\mu_1 - \mu_2$: $t$-test
 \index{Hypothesis testing!comparing two means|(}
 
+A hypothesis test can be used to decide if the SVL is different for the two regions.
+The parameter for the test is $\mu_N - \mu_C$.
+
 As always, the null hypothesis is the default 'no difference, no change, no relationship' position; any difference between the parameter and statistic is due to sampling variation (Sect.\ \@ref(AboutHypotheses)).
 Hence, the null hypothesis is 'no difference' between the population mean\ SVL of the two groups:
 
@@ -594,7 +602,6 @@ t
 = \frac{8.39 - 0}{2.4368} = 3.44,
 \end{align*}
 as in the software output.
-
 
 A $P$-value determines if the sample statistic is consistent with the assumption (i.e., $H_0$).
 Since the $t$-score is large, the $P$-value will be small using the $68$--$95$--$99.7$ rule\index{68@$68$--$95$--$99.7$ rule} (and less than\ $0.003$).
@@ -655,21 +662,24 @@ In this section, a very brief overview of using a one-way <span style="font-vari
 Importantly, this example shows that the basic principles of hypothesis testing from Chap.\ \@ref(MoreAboutTests) still apply.
 
 
-::: {.example #ANOVA name="ANOVA"}
-[*Dataset*: `BMI`]
-@johnson2021association collected data from hospital outpatients at an Irish hospital (Table\ \@ref(tab:BMIsummary)).
-One research question involves comparing the mean number of days per week that patients exercise for more than $30\mins$ (say, $\mu$) according to their smoking status: daily\ ($D$), occasionally\ ($O$) or not at all\ ($N$).
-An error bar chart can be used to display the three groups (Fig.\ \@ref(fig:BMIerrorbar)).\index{Graphs!error bar charts}
+<span style="font-variant:small-caps;">Anova</span> is a general tool that can be extended beyond just comparing more than two means, and used in many and varied context for the analysis of data.
 
-As per Sect.\ \@ref(AboutHypotheses), the null hypothesis is 'no difference' between the population means:
+
+::: {.example #ANOVA name="ANOVA"}
+[*Dataset*: `Lime`]
+@data:ForestBiomass2017 studied the foliage biomass of small-leaved lime trees from three sources: coppices ($C$); natural ($N$); planted $P$); see Example\ \@ref(exm:ErrorBarCharts2).
+A boxplot and error bar chart are shown in Fig.\ \@ref(fig:LimeTreesBoxErrorbar).
+A numerical summary is shown in Table\ \@ref(tab:LimeTreesSummary) (based on the output in Fig.\ \@ref(fig:LimeTreesjamovi)).
+
+To compare the mean foliage biomass of trees from the three sources, the null hypothesis is 'no difference' between the population means:
 $$
-\text{$H_0$:}\ \mu_D = \mu_O = \mu_N.
+  \text{$H_0$:}\ \mu_C = \mu_N = \mu_P.
 $$
 The alternative hypothesis is that the three means are not all equal. 
 This hypothesis encompasses many possibilities: for example, that the three means are *all* different from each other, or that the first is different from the other two (which are the same).
-Because the alternative hypothesis encompasses many possibilities, it is difficult to write using symbols, so we write:
+Because the alternative hypothesis encompasses many possibilities, we write:
 $$
-\text{$H_1$:}\ \text{Not all means are equal.}
+  \text{$H_1$:}\ \text{Not all means are equal.}
 $$
 
 
@@ -677,43 +687,48 @@ $$
 For comparing more than two means, the alternative hypothesis *is always two-tailed*.
 :::
 
-Performing an <span style="font-variant:small-caps;">anova</span> using software (Fig.\ \@ref(fig:BMIjamovi)) gives $P = 0.00007$.
-(The *test statistic* here is an $F$-score;\index{Test statistic!F@$F$-score} we don't discuss these further.)
-The $P$-value in this context means the same as usual (Sect.\ \@ref(AboutPvalues)): there is very strong evidence to support the alternative hypothesis (that the three means are *not* all equal).
+
+Performing an <span style="font-variant:small-caps;">anova</span> using software (Fig.\ \@ref(fig:LimeTreesjamovi)) gives $P = 0.005$.
+(The *test statistic* here is an $F$-score;\index{Test statistic!F@$F$-score} we don't discuss these further, but the $F$-score measures the overall difference between the three means.)
+The small $P$-value in this context means the same as usual (Sect.\ \@ref(AboutPvalues)): there is  persuasive evidence to support the alternative hypothesis (that the three means are *not* all equal).
 
 While we know the means are not all the same, we do not know *which* group means are different from which other group means.
-One option might be to compare all possible combinations of two groups (i.e., the means of groups\ $D$ and\ $O$; the means of groups\ $D$ and\ $N$; the means of groups\ $O$ and\ $N$) using three separate two-sample $t$-tests.
-However, this approach increases the probability of declaring a false positive (i.e., of making a Type\ I error; Sect.\ \@ref(TypeErrors)):\index{Type\ I error} *incorrectly* declaring a difference between two sets of means.
+One option might be to compare all possible combinations of two groups (i.e., the means of groups\ $C$ and\ $N$; the means of groups\ $C$ and\ $P$; the means of groups\ $N$ and\ $P$) using three separate two-sample $t$-tests.
+While  this approach is possible, it increases the probability of declaring a false positive (i.e., of making a Type\ I error; Sect.\ \@ref(TypeErrors)):\index{Type\ I error} *incorrectly* declaring that a difference exists between two sets of means.
 The correct approach requires methods beyond this book.
 :::
 
 
-```{r BMIsummary}
-data(BMI)
 
-BMItab <- array(dim = c(3, 4))
+```{r LimeTreesjamovi, echo=FALSE, fig.cap="Software output for testing hypotheses for the lime-trees data.", fig.align="center", out.width='55%'}
+knitr::include_graphics( "jamovi/Lime/LimeANOVA.png")
+```
 
-BMItab[, 1] <- tapply(BMI$exercise, 
-                      list(BMI$smoke), 
+
+```{r LimeTreesSummary}
+data(Lime)
+
+Limetab <- array(dim = c(3, 4))
+
+Limetab[, 1] <- tapply(Lime$Foliage, 
+                      list(Lime$Origin), 
                       "mean")
-BMItab[, 2] <- tapply(BMI$exercise, 
-                      list(BMI$smoke), 
+Limetab[, 2] <- tapply(Lime$Foliage, 
+                      list(Lime$Origin), 
                       "sd")
-BMItab[, 3] <- tapply(BMI$exercise, 
-                      list(BMI$smoke), 
+Limetab[, 3] <- tapply(Lime$Foliage, 
+                      list(Lime$Origin), 
                       "findStdError")
-BMItab[, 4] <- tapply(BMI$exercise, 
-                      list(BMI$smoke), 
+Limetab[, 4] <- tapply(Lime$Foliage, 
+                      list(Lime$Origin), 
                       "realLength")
 
-rownames(BMItab) <- c("Smokes daily",
-                      "Smokes occasionally",
-                      "Does not smoke")
+rownames(Limetab) <- names(table(Lime$Origin))
 
 if( knitr::is_latex_output() ) {
-  kable( pad(BMItab,
+  kable( pad(Limetab,
              surroundMaths = TRUE,
-             targetLength = c(4, 4, 5, 2),
+             targetLength = c(4, 4, 5, 3),
              decDigits = c(2, 2, 3, 0)),
          format = "latex",
          booktabs = TRUE,
@@ -724,70 +739,26 @@ if( knitr::is_latex_output() ) {
                        "Standard error",
                        "$n$"),
          align = "c",
-         caption = "Number of days per week where patients do more than $30$ mins of exercise.") %>%
+         caption = "Foliage biomass of lime trees (in kg) from different origins.") %>%
     column_spec(1, bold = TRUE) %>%
     row_spec(0, bold = TRUE) %>%
     kable_styling(font_size = 8)
 }
 if( knitr::is_html_output() ) {
-  kable(pad(BMItab,
+  kable(pad(Limetab,
             surroundMaths = TRUE,
-            targetLength = c(4, 4, 5, 2),
+            targetLength = c(4, 4, 5, 3),
             decDigits = c(2, 2, 3, 0)),
         format = "html",
         booktabs = TRUE,
         longtable = FALSE,
         align = "c",
-        caption = "Number of days per week where patients do more than $30$ mins of exercise.")
+         caption = "Foliage biomass of lime trees (in kg) from different origins.")
 }        
 ```
 
 
-```{r BMIerrorbar, fig.align="center", fig.cap="The error bar chart for comparing the number of days per week on which people do more than $30\\mins$\\ of exercise, for different smoking groups.", fig.width=5, out.width='60%', fig.height=3.25}
-mns <- BMItab[, 1]
-ses <- BMItab[, 3]
-ci.lo <- mns - ses*2
-ci.hi <- mns + ses*2
 
-par( mar = c(5, 5, 4, 2) + 0.1 )
-plot( range( c( ci.lo, ci.hi) ) ~ c(1, 3), 
-      type = "n",
-      ylim = c(0, 4),
-      xlim = c(0.5, 3.5),
-      pch = 19,
-      axes = FALSE,
-      main = "Error bars chart: average number of\ndays per week of 30 mins exercise",
-      xlab = "Smoking status", 
-      ylab = "Number of days\nper week",
-      sub = "(Error bars are 95%\ CIs)",
-      las = 1)
-axis(side = 1, 
-     at = 1:3, 
-     labels = c("Daily", "Occasionally", "Not all"), 
-     las = 1) 
-axis(side = 2, 
-     las = 1)
-box()
-
-points( mns ~ c(1:3), 
-        pch = 19)
-
-arrows(1:3, 
-       mns - 2 * ses, 
-       1:3, 
-       mns + 2 * ses, 
-       length = 0.05, 
-       angle = 90, 
-       code = 3)
-```
-
-
-<span style="font-variant:small-caps;">Anova</span> is a general tool that can be extended beyond just comparing more than two means, and used in many and varied context for the analysis of data.
-
-
-```{r BMIjamovi, echo=FALSE, fig.cap="Software output for testing hypotheses for the BMI data.", fig.align="center", out.width='55%'}
-knitr::include_graphics( "jamovi/BMI/ANOVA.png")
-```
 
 
 ## Example: speed signage {#SpeedSignage}
@@ -796,7 +767,7 @@ knitr::include_graphics( "jamovi/BMI/ANOVA.png")
 <img src="Illustrations/pexels-pixabay-315939.jpg" width="200px"/>
 </div>
 
-To reduce vehicle speeds on freeway exit ramps, @ma2019impacts studied adding additional signage.
+To reduce vehicle speeds on freeway exit ramps, @ma2019impacts studied the impact of additional signage.
 At one site (Ningxuan Freeway), speeds were recorded for $38$\ vehicles *before* the extra signage was added, and then for $41$ different vehicles *after* the extra signage was added.
 
 The researchers are hoping that the addition of extra signage will *reduce* the mean speed of the vehicles.
@@ -1021,8 +992,6 @@ lines( c(2 - bit, 2 + bit),
 
 
 
-Define\ $\mu$ as the mean speed (in\ km.h^$-1$^) on the exit ramp.
-Then, the parameter is $\mu_B - \mu_A$, the *reduction* in the population mean speed after signage is added.
 An approximate $95$% CI for the difference between the mean speeds is
 $$
 5.674 \pm (2 \times 2.9642),
@@ -1076,7 +1045,7 @@ They randomly allocated $32$\ patients into a control group (who drank hot water
 The total glucose (TG) was measured for each individual in both groups, both before the intervention and after eight weeks on the intervention.
 Summary data are given in Table\ \@ref(tab:TGsummaryTable).
 Evidence suggests that the chamomile tea group shows a mean reduction in TG (Sect.\ \@ref(ChamomileTea-Paired)), while the hot-water group shows no evidence of a reduction.
-That is, there appears to be a difference between the two groups regarding the change in TG.\spacex
+That is, there appears to be a difference between the two groups regarding the *change* in TG.\spacex
 However, the differences between the chamomile-tea and the hot-water groups may be due to the samples selected (i.e., sampling variation), so comparing the changes between the two groups is helpful.
 
 The following relational RQ can be asked:
@@ -1087,10 +1056,10 @@ Notice the RQ is one-tailed; the aim of the study is to determine if the chamomi
 
 This RQ is comparing two separate groups; specifically, comparing the *differences* between the two groups.
 This study contains both *within*-individuals comparisons (see Sect.\ \@ref(ChamomileTea-Paired)) and a *between*-individuals comparison (this section); see Fig.\ \@ref(fig:TeaSummaryAnnotated).
-This is equivalent to treating the differences for both groups as the two separate sets of data in the two-sample analysis.
+This is equivalent to treating the *differences* for both groups as the two separate sets of data in the two-sample analysis.
 
 
-```{r TeaSummaryAnnotated, fig.cap="The chamomile-tea study has two within-individuals comparisons, and a between-individuals comparison.", fig.align="center", out.width="100%"}
+```{r TeaSummaryAnnotated, fig.cap="The chamomile-tea study has two within-individuals comparisons, and a between-individuals comparison (comparing the differences in each group).", fig.align="center", out.width="100%"}
 knitr::include_graphics("OtherImages/ChamomileTea/ChamomileSummary-BetweenWithinGroups.png")
 # Editted with Krita
 ```
@@ -1476,7 +1445,7 @@ What does it *mean* when the difference is calculated in this way?
 1. Compute the standard error for the mean pain intensity for each group.
 1. Compute the standard error for the difference between the mean of the two groups.
 1. Sketch an error bar chart.
-1. Compute an approximate $95$%\ CI for the *difference* in the mean pain intensity for the treatments.
+1. Compute an approximate $95$%\ CI for the *difference* in mean pain intensity for the treatments.
 1. Compute an approximate $95$%\ CI for the population mean pain intensity for those treated with splinting.
 1. Write the hypotheses to answer the RQ.
 1. Compute the $t$-score, and approximate the $P$-value using the $68$--$95$--$99.7$ rule.
@@ -1547,7 +1516,7 @@ Carefully describe what it means.
 1. Is the test statistically valid?
 :::
 
-```{r Dentaljamovi, fig.cap="Software output for the sugar-consumption data; the Groups refer to whether or not the country is industrialised.", fig.align="center", out.width="95%"}
+```{r Dentaljamovi, fig.cap="Software output for the sugar-consumption data; the Groups refer to whether the country is industrialised (Yes) or not (No).", fig.align="center", out.width="95%"}
 knitr::include_graphics("jamovi/Dental/WoodwardWalker1994-ttest.png")
 ```
 
@@ -1558,7 +1527,7 @@ knitr::include_graphics("jamovi/Dental/WoodwardWalker1994-ttest.png")
 To reduce vehicle speeds on freeway exit ramps, @ma2019impacts studied using additional signage.
 At one site studied (Ningxuan Freeway), speeds were recorded at various points on the freeway exit for vehicles *before* the extra signage was added, and then for different vehicles *after* the extra signage was added.
 
-From this data, the *deceleration* of each vehicle was determined 
+In addition, the *deceleration* of each vehicle was determined 
 `r if (knitr::is_latex_output()) {
 '(Table\\ \\@ref(tab:SignageSummaryData))'
 } else {
@@ -1788,7 +1757,7 @@ Use the software output in Fig.\ \@ref(fig:BodyTempGenderjamoviHT) to perform th
 Comment on the practical significance of your results.
 :::
 
-```{r BodyTempGenderjamoviHT, fig.cap="Software output for the body-temperature data.", fig.align="center", out.width="90%"}
+```{r BodyTempGenderjamoviHT, fig.cap="Software output for the body-temperature data.", fig.align="center", out.width="100%"}
 knitr::include_graphics("jamovi/BodyTemp/BodyTempTestGender.png")
 ```
 
@@ -1883,9 +1852,9 @@ Why?
 1. True or false: one of the values for the CI is a negative value, which must be an error (as a negative number of DMFT is impossible).
 1. We are $95$%\ confident that the difference between the population means is:
 
-  * smaller for coeliacs;
-  * between\ $2.32$ higher for non-coeliacs to\ $2.76$ higher for coeliacs.
-  * between\ $2.76$ higher for non-coeliacs to\ $2.32$ higher for coeliacs.
+   * smaller for coeliacs;
+   * between\ $2.32$ higher for non-coeliacs to\ $2.76$ higher for coeliacs.
+   * between\ $2.76$ higher for non-coeliacs to\ $2.32$ higher for coeliacs.
 :::
 
 
@@ -1954,10 +1923,10 @@ The data are shown
 }
 `
 
-Consider this RQ:
+Use the data to answer this RQ:
 
 > For students, what is the difference between the mean reaction time while driving when using a mobile phone and when *not* using a mobile phone?
-
+:::
 
 
 ```{r PhoneDataTable}
@@ -2064,9 +2033,24 @@ rownames(Phone.DataSummary) <- c("Using phone",
 ```
 
 
+
+::: {.exercise #TwoMeansCIExercisesBMIanova}
+[*Dataset*: `BMI`]
+@johnson2021association collected data from hospital outpatients at an Irish hospital.
+One RQ in the study concerns comparing the mean number of days per week that patients exercise for more than $30\mins$ (say, $\mu$) according to their smoking status: daily\ ($D$), occasionally\ ($O$) or not at all\ ($N$).
+
+Use the output (Fig.\ \@ref(fig:BMIjamovi)) to answer the questions that follow.
+
+1. Construct an error bar chart to summarise the data. 
+1. Construct a numerical summary table.
+2. Perform a suitable hypothesis test, and answer the RQ,
 :::
 
-`r if( knitr::is_latex_output() ) "\\captionsetup{font=normalsize}"`
+
+```{r BMIjamovi, echo=FALSE, fig.cap="Software output for testing hypotheses for the BMI data.", fig.align="center", out.width='55%'}
+knitr::include_graphics( "jamovi/BMI/BMIANOVA.png")
+```
+
 
 
 <!-- QUICK REVIEW ANSWERS -->
