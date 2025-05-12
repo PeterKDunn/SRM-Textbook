@@ -14,7 +14,7 @@
 ```
 
 
-## Introduction: sorghum yield and borers {#CorReg-Intro}
+## Introduction: lifespan of dog breeds {#CorReg-Intro}
 \index{Correlation}
 
 So far, RQs about single variables (descriptive\ RQs) and RQs for comparisons (relational and repeated-measures\ RQs) have been studied.
@@ -23,67 +23,64 @@ The strength of the relationship (correlation) and the nature of that relationsh
 
 For this chapter, consider this RQ:
 
-> In sorghum crops in Brazil, is there a relationship between borer infestation and yield?
+> In dog breeds, is there a relationship between breed-weight and lifespan, in general?
 
-
-@da2024potential recorded the borer infestation in sorghum crops, for crops treated with and without insecticide [@da2024potentialDATA], shown in 
+@da2023dog recorded the average lifespan and average weight of $73$\ dog breeds [@da2023dogDATA];
 `r if( knitr::is_latex_output() ) {
-  'see Table\\ \\@ref(tab:BorersData).'
+  'see Table\\ \\@ref(tab:DogsLifeData).'
 } else {
-  'see Fig.\\ \\@ref(fig:BorersDataDT).'
+  'see Fig.\\ \\@ref(fig:dogslifeDataDT).'
 }`
-The data comprises two quantitative variables (Fig.\ \@ref(fig:BorersScatterjamovi2), left panel).\index{Graphs!scatterplot}
+The dog breed is the unit of analysis (the 'individual').\index{Units of analysis}
+The data comprises two quantitative variables (Fig.\ \@ref(fig:DogsLifeScatterjamovi2), left panel).\index{Graphs!scatterplot}
 
 
-
-```{r BorersData}
-data(Borers) 
-BorersSub <- subset(Borers,
-                    Hybrids=="AG1090")
-BorersSub <- BorersSub[, 7:8]
+```{r DogsLifeData}
+data(DogsLife) 
+row.names(DogsLife) <- NULL
 
 if( knitr::is_latex_output()){
-  BorersData <- rbind( head(BorersSub, 5),
-                       rep("$\\vdots$", 2), 
-                       tail(BorersSub, 5) )
-  knitr::kable( pad( BorersData,
+  DogsLifeData <- rbind( head(DogsLife[, c(1, 2, 5)], 5),
+                         rep("$\\vdots$", 3),
+                         tail(DogsLife[, c(1, 2, 5)], 5) )
+  knitr::kable( pad( DogsLifeData,
                      surroundMaths = TRUE,
-                     targetLength = c(5, 7),
-                     decDigits = c(2, 2)),
+                     targetLength = c(0, 5, 5),
+                     decDigits = c(0, 2, 2)),
                 format = "latex",
                 booktabs = TRUE,
                 longtable = FALSE,
                 escape = FALSE,
                 row.names = FALSE,
-                align = c("c", "c"),
+                align = c("r", "c", "c"),
                 linesep = "",
-                caption = "Sorghum yield and borer infestation.",
-                col.names = c( "Infestation (\\%)",
-                               "Yield (kg.ha$^{-1}$)") ) %>%
+                caption = "Information about various dog breeds. The first five and last five breeds only are shown.",
+                col.names = c( "Breed", 
+                               "Breed weight (in kg)",
+                               "Breed  lifespan (in years)") ) %>%
     kable_styling(font_size = 8) %>%
     row_spec(0, bold = TRUE)
 }
 ```
 
-
-
-```{r BorersDataDT, fig.cap="The sorghum-yield data.", fig.align="center"}
-data(Borers)
+```{r dogslifeDataDT, fig.cap="The dog-breed data.", fig.align="center"}
+data(DogsLife)
+row.names(DogsLife) <- NULL
 
 if( knitr::is_html_output() ) {
-  DT::datatable(Borers,
+  DT::datatable(DogsLife,
               list(scrollX = TRUE, 
 	            scrollY = TRUE, 
 		          ordering = FALSE),
-              caption = "The sorghum-yield data.") 
+              caption = "The dog-breed data.")
 }
 ```
 
 
-Knowing the amount of infestation provides some information about the yield: a moderate relationship between the variables seems evident.
+Knowing the breed-weight provides some information about the lifespan: a moderate relationship between the variables seems evident.
 The relationship also seems somewhat *linear*.
-The *Pearson correlation coefficient* (Fig.\ \@ref(fig:BorersScatterjamovi2), right panel)\index{Correlation coefficient (Pearson)} is $r = -0.888, so $R^2 = (-0.888) ^2 = 78.8%.
-This means that the unexplained variation in yield reduces by $78.8$% by knowing the amount of infestation.
+The *Pearson correlation coefficient* (Fig.\ \@ref(fig:DogsLifeScatterjamovi2), right panel)\index{Correlation coefficient (Pearson)} is $r = -0.712$, so $R^2 = (-0.712) ^2 = 50.7$%.
+This means that the unexplained variation in lifespan reduces by $50.7$% by knowing the breed-weight.
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -91,24 +88,22 @@ Recall that the *sample* correlation coefficient is denoted by\ $r$, and the *po
 :::
 
 
-```{r DogsLifeScatterjamovi2, fig.width=5.25, out.width=c('54%', '45%'), fig.align='center', fig.height=3.75, fig.cap="Sorghum yield against borer infestation. Left: scatterplot. Right: correlation output.", fig.show='hold'}
+```{r DogsLifeScatterjamovi2, fig.width=5.25, out.width=c('54%', '45%'), fig.align='center', fig.height=3.75, fig.cap="Lifespan of dog breeds against breed-weight. Left: scatterplot. Right: correlation output.", fig.show='hold'}
 
-par(mar = c(5, 5, 4, 2) + 0.1) # Makes room for the ^{-1} on ylab
-
-plot(Yield ~ Infestation,  
-     data = BorersSub, 
+plot(Lifespan ~ Weight, 
+     data = DogsLife,
      las = 1,
      pch = 19, 
-     xlim = c(0, 40),
-     ylim = c(1000, 6000),
+     ylim = c(4, 16),
+     xlim = c(0, 80),
      cex = 0.8,
-     main = "Yield and infestation in sorghum",
-     xlab = "Infestation (in %)",
-     ylab = expression(Yield~"(in"~kg.ha^-1*")"))
+     main = "Lifespan and weight\nof dog breeds",
+     xlab = "Weight (in kg)",
+     ylab = "Lifespan (in years)")
 # with(DogsLife,
 #      cor(Lifespan , Weight) )
 
-knitr::include_graphics("jamovi/Borers/Borers-Correlation-CI.png")
+knitr::include_graphics("jamovi/DogsLife/DogsLifeCorrelationCI.png")
 
 ```
 
@@ -120,16 +115,16 @@ knitr::include_graphics("jamovi/Borers/Borers-Correlation-CI.png")
 ### Correlation: CIs for $\rho$ {#CorrelationCI}
 \index{Confidence intervals!correlation coefficient|(}
 
-In the sorghum data, only one of the countless possible samples of sorghum crops has been studied to determine the yield and infestations, and the value of\ $r$ (an estimate of $\rho$, the *parameter*) will vary from sample to sample.
+In the dog-breed study, only one of the countless possible samples of dogs has been studied to determine the average breed-weights and lifespans, and the value of\ $r$ (an estimate of $\rho$, the *parameter*) will vary from sample to sample.
 That is, the value of\ $r$ has a sampling distribution, and sampling variation exists.\index{Sampling variation}
-The sampling distribution of\ $r$, however, does *not* have a normal distribution, so CIs for\ $\rho$ will be taken directly from software output (Fig.\ \@ref(fig:BorersScatterjamovi2), right panel).
-For the sorghum data, the $95$% CI for\ $\rho$ is from $-0.941$ to\ $-0.789$.
+The sampling distribution of\ $r$, however, does *not* have a normal distribution, so CIs for\ $\rho$ will be taken directly from software output (Fig.\ \@ref(fig:DogsLifeScatterjamovi2), right panel).
+For the dog-breed data, the $95$% CI for\ $\rho$ is from $-0.576$ to\ $-0.809$.
 This CI is not symmetrical: the value of\ $r$ is not halfway between these limits.
 We write:
 
-> For soghum crops, the correlation coefficient between yield and borers infestation percentage is\ $-0.888$, with a $95$% CI from $-0.941$ to\ $-0.789$ ($n = 73$).
+> For dog breeds, the correlation coefficient between breed lifespan and breed-weight is\ $-0.712$, with a $95$% CI from $-0.576$ to\ $-0.809$ ($n = 73$).
 
-In other words, a population with a correlation coefficient\ $\rho$ between $-0.576$ and\ $-0.809$ could reasonably have produced a sample correlation coefficient of $r = -0.712$ from a sample of size $n = 36$.
+In other words, a population with a correlation coefficient\ $\rho$ between $-0.576$ and\ $-0.809$ could reasonably have produced a sample correlation coefficient of $r = -0.712$ from a sample of size $n = 73$.
 
 
 ::: {.example #CycloneCorrelationCI name="Correlation"}
@@ -183,7 +178,7 @@ However, the output (Fig.\ \@ref(fig:DogsLifeScatterjamovi2), right panel)\index
 
 We write:
 
-> The sample presents very strong evidence (two-tailed $P < 0.0001$) that the sorghum yield is associated with corer infestation percentage ($r = -0.888$ with $95$% CI from $-941$ to $-0.789$; $n = 36$) in the population.
+> The sample presents very strong evidence (two-tailed $P < 0.0001$) that the average lifespan is associated with the breed-weight ($r = -0.712$ with $95$% CI from $-0.576$ to $-0.809$; $n = 73$) in the population.
 
 Notice the three features of writing conclusions again: an answer to the RQ, evidence to support the conclusion, and some sample summary information.
 
@@ -352,7 +347,7 @@ if (knitr::is_html_output()){
   set.seed(5000)
 x <- seq(0.5, 5, 
         length = 10)
-mu <- 2 + 3 * x 
+mu <- 2 + 3 * x
 y <- mu + rnorm(length(x), 0, 0.5) 
 m1 <- lm(y ~ x)
 
@@ -497,7 +492,7 @@ x <- seq(0.5, 5,
          length = 10)
 
 b0 <- 2
-b1 <- 3 
+b1 <- 3
 
 mu <- 2 + 3 * x
 y <- mu + rnorm(length(x), 0, 0.5)
@@ -719,7 +714,7 @@ In the equation, the intercept is $b_0 = 73\cms$ and the slope is $b_1 = 73\cms$
 
 
 :::{.example name="A rough approximation of the regression equation"}
-For the sorghum data (Fig.\ \@ref(fig:DogsLifeScatterjamovi2), left panel), a rough estimate of the regression line can be drawn on a scatterplot to estimate\ $b_0$ and\ $b_1$ (Fig.\ \@ref(fig:BorerRiseRun)).
+For the dog-breed data (Fig.\ \@ref(fig:DogsLifeScatterjamovi2), left panel), a rough estimate of the regression line can be drawn on a scatterplot to estimate\ $b_0$ and\ $b_1$ (Fig.\ \@ref(fig:DogBreedRiseRun)).
 The estimate of\ $b_0$ (the value of\ $y$ when $x = 0$) is roughly\ $13.5\ys$.
 
 The estimate of\ $b_1$ can be found using the rise-over-run idea.
@@ -739,42 +734,41 @@ The rough guess of the intercept\ $b_0$ is\ $13.5\ys$, while the rough guess of 
 :::
 
 
-```{r BorersRiseRun, fig.cap="Obtaining rough guesses for the regression equation for the dog-breed data. Left: approximating $b_0$. Right: approximating $b_1$ using rise-over-run. The plus signs on the right plot indicate the points used to estimate the slope.", fig.align="center", fig.width=9, fig.height=4, out.width='100%'}
-mSorghum <- lm( Yield ~ Infestation,
-             data = BorersSub) 
+```{r DogBreedRiseRun, fig.cap="Obtaining rough guesses for the regression equation for the dog-breed data. Left: approximating $b_0$. Right: approximating $b_1$ using rise-over-run. The plus signs on the right plot indicate the points used to estimate the slope.", fig.align="center", fig.width=9, fig.height=4, out.width='100%'}
+mLifespan <- lm( Lifespan ~ Weight,
+             data = DogsLife) 
 
   
-  b0 <- 4800
-  b1 <- -100 
+  b0 <- 13.5
+  b1 <- -0.1 
           
   par(mfrow = c(1, 2))
   
-  par(mar = c(5, 5, 4, 2) + 0.1)
-  plot(Yield ~ Infestation, 
-       data = BorersSub,
+  plot(Lifespan ~ Weight, 
+       data = DogsLife,
        col = "darkgrey",
-       xlim = c(-5, 40), 
-       ylim = c(900, 6000), 
+       xlim = c(-5, 80), 
+       ylim = c(4, 16), 
        las = 1, 
        axes = FALSE,
-       main = expression(Sorghum~yield*":"~approximating~italic(b)[0]),
-       xlab = expression(Infestation~italic(x)~"(in %)" ), 
-       ylab = expression(Yield~italic(y)~"(in"~kg.ha^-1*")"), 
+       main = expression(Dog~breeds*":"~approximating~italic(b)[0]),
+       xlab = expression(Breed~weight~italic(x)~"(in kg)" ), 
+       ylab = expression(Breed~lifespan~italic(y)~"(in y)" ), 
        pch = 19)
   
   box()
   grid()
   axis(side = 1,
        las = 1,
-       at = c(0, 20, 40),
+       at = c(0, 20, 40, 60, 80),
        labels = c(expression(italic(x)==0),
-                  20, 40))
+                  20, 40, 60, 80))
   
   axis(side = 2,
        las = 1,
-       at = c(1000, 2000, 3000, 4500, 6000) )
+       at = seq(4, 16, by = 4) )
   axis(side = 2,
-       at = 13.5, 
+       at = 13.5,
        las = 1,
        cex.axis = 0.8)
 
@@ -787,55 +781,51 @@ mSorghum <- lm( Yield ~ Infestation,
   abline(v = 0,
          lwd = 2,
          col = "darkgrey")
-  lines( x = c(-15, 20),
-         y = c(4500, 4500),
+  lines( x = c(-15, 12),
+         y = c(13.5, 13.5),
          lty = 1,
          lwd = 2,
          col = "darkgrey")
   
   
-  arrows(x0 = 23,
-         x1 = 20,
-         y0 = 5000,
-         y1 = 4500,
+  arrows(x0 = 20,
+         x1 = 10,
+         y0 = 15,
+         y1 = 13.5,
          #angle = 15,
          length = 0.1,
          lwd = 2)
-  text(x = 23,
-       y = 5000,
+  text(x = 20,
+       y = 15,
        pos = 4,
-       labels = expression( atop(Approximate,
-                                 value~of~italic(b)[0])) )
+       labels = expression(Approximate~value~of~italic(b)[0]))
   
   ######
   x1 <- 0
-  x2 <- 30
+  x2 <- 80  
   y1 <- b0 + (b1 * x1) 
   y2 <- b0 + (b1 * x2)
   
   # DATA
-  par(mar = c(5, 5, 4, 2) + 0.1)
-  plot(Yield ~ Infestation,
-       data = BorersSub, 
-       xlim = c(-5, 40), 
-       ylim = c(900, 6000), 
+  plot(Lifespan ~ Weight,
+       data = DogsLife, 
+       xlim = c(-5, 80), 
+       ylim = c(4, 16), 
        las = 1, 
        axes = FALSE,
-       main = expression(Sorghum~yield*":"~approximating~italic(b)[0]),
-       xlab = expression(Infestation~italic(x)~"(in %)" ), 
-       ylab = expression(Yield~italic(y)~"(in"~kg.ha^-1*")"), 
+       main = expression(Dog~breeds*":"~approximating~italic(b)[1]),
+       xlab = expression(Breed~weight~italic(x)~"(in kg)" ), 
+       ylab = expression(Breed~lifespan~italic(y)~"(in y)" ), 
        pch = 19)
   box()
   grid()
-
   axis(side = 1,
        las = 1,
-       at = c(0, 20, 40) )
+       at = c(0, 20, 40, 60, 80) )
   
   axis(side = 2,
        las = 1,
-       at = seq(1000, 6000, by = 1000) )
-
+       at = seq(4, 16, by = 4) )
   axis(side = 2,
        at = 13.5,
        las = 1,
@@ -853,8 +843,8 @@ mSorghum <- lm( Yield ~ Infestation,
   grid()
   
   
-  points(Yield ~ Infestation,
-         data = BorersSub,
+  points(Lifespan ~ Weight,
+         data = DogsLife,
          col = "darkgrey",
          pch = 19) 
   
@@ -894,36 +884,36 @@ mSorghum <- lm( Yield ~ Infestation,
     # RUN
     run <- x2 - x1
     arrows(x0 = x1 + 1, 
-           y0 = 1300, 
-           x1 = x2 - 1, 
-           y1 = 1300,
+           y0 = 5.5, 
+           x1 = x2 - 3, 
+           y1 = 5.5,
            lwd = 2,
            length = 0.1,
            angle = 10,
            col = "darkgrey",
            code = 2)
     text( mean( c(x1, x2)), 
-          1000, 
+          4.5, 
           labels = bquote("Run: "~ .(x2)-.(x1) == .(run)) ) # Get proper minus sign, not dash, for run
     
     # DATA + LINE + x1 + y1 + x2 + y2 + RUN + RISE
     # RISE
     arrows(x0 = 0, 
-           y0 = y1 - 3, 
+           y0 = y1 - 0.5, 
            x1 = 0, 
-           y1 = y2 + 3,
+           y1 = y2 + 0.25,
            lwd = 2,
            length = 0.1,
            angle = 10,
            col = "darkgrey",
            code = 2)
     rise <- y2 - y1
-    text( x = 0.75, 
-          y = 2300, 
+    text( x = 1, 
+          y = 8.75, 
           labels = "Rise: ",
           pos = 4)  
-    text( x = 0.75, 
-          y = 1700, 
+    text( x = 1, 
+          y = 7.5, 
           labels = bquote( .(y2)-.(y1) == .("\u2212") * .(abs(rise))), # To get a proper negative sign
           pos = 4 )  
     
@@ -1080,10 +1070,10 @@ However, one of those lines is the 'best' line in some sense,^[For those interes
 \index{Regression!equation!using software}\index{Software output!regression}
 
 ```{r}
-Borers.lm <- lm(Yield ~ Infestation, 
-            data = Borers)
-DB.b0 <- round( coef(Borers.lm)[1], 2)
-DB.b1 <- round( coef(Borers.lm)[2], 3)
+DB.lm <- lm(Lifespan ~ Weight, 
+            data = DogsLife)
+DB.b0 <- round( coef(DB.lm)[1], 2)
+DB.b1 <- round( coef(DB.lm)[2], 3)
 ```
 
 
@@ -1433,37 +1423,37 @@ The alternative hypothesis is two-tailed, based on the RQ.
 
 
 ```{r}
-DB.fitinfo <- summary(Borers.lm)$coefficients
+DB.fitinfo <- summary(DB.lm)$coefficients
 DB.t <- DB.fitinfo[, "t value"]
 DB.P <- DB.fitinfo[, "Pr(>|t|)"]
 ```
 
 
 Assuming the null hypothesis is true (i.e., that $\beta_1 = 0$), the possible values of the sample slope\ $b_1$ can be described (Def.\ \@ref(def:Beta1SamplingDistn)).
-The variation in the sample slope across all possible samples when $\beta_1 = 0$ is described (Fig.\ \@ref(fig:BorersSlopeSampDist)) using:
+The variation in the sample slope across all possible samples when $\beta_1 = 0$ is described (Fig.\ \@ref(fig:DogBreedSlopeSampDist)) using:
 
 * an approximate normal distribution,
 * with a sampling mean whose value is $\beta_1 = 0$ (from $H_0$), and 
-* a standard deviation of $\text{s.e.}(b_1) = 9.011$ (from software; Fig.\ \@ref(fig:BorersRegressionCI)).
+* a standard deviation of $\text{s.e.}(b_1) = 0.0109$ (from software; Fig.\ \@ref(fig:DogsLifeRegressionCI)).
 
 
-```{r BorersSlopeSampDist, fig.cap="The distribution of sample slopes for the dog-breed data, if the population slope is $\\beta_1 = 0$.", fig.align="center", fig.height=3.25, fig.width=8.25, out.width='85%'}
+```{r DogBreedSlopeSampDist, fig.cap="The distribution of sample slopes for the dog-breed data, if the population slope is $\\beta_1 = 0$.", fig.align="center", fig.height=3.25, fig.width=8.25, out.width='85%'}
 par( mar = c(5, 2, 1, 2))
 mn <- 0
-se <- 9.011
+se <- 0.011
 
 out <- plotNormal(mu = mn, 
                   sd = se,
                   round.dec = 4,
                   cex.axis = 0.95,
                   ylim = c(0, 55),
-                  showXlabels = c( -27.033,
-                                   -18.022,
-                                   -9.011,
+                  showXlabels = c( -0.0327,
+                                   -0.0218,
+                                   -0.0109,
                                    0,
-                                   9.011,
-                                   18.022,
-                                   27.033),
+                                   0.0109,
+                                   0.0218,
+                                   0.0327),
                   main = "", # Main title
                   xlab = "Sample regression slopes", # horizontal axis labels
                   showZ = TRUE) # Whether to show z = -3:3 or not
@@ -1496,27 +1486,27 @@ text(x = 0.011/2,
 ```
 
 
-The *observed* sample slope for the sorghum data is $b_1 = -101.2$.
-Locating this value on Fig.\ \@ref(fig:BorersSlopeSampDist) shows that it is *very* unlikely that any of the many possible samples would produce such a slope, just through sampling variation, if the population slope really was $\beta_1 = 0$.
+The *observed* sample slope for the dog-breed data is $b_1 = -0.181$.
+Locating this value on Fig.\ \@ref(fig:DogBreedSlopeSampDist) shows that it is *very* unlikely that any of the many possible samples would produce such a slope, just through sampling variation, if the population slope really was $\beta_1 = 0$.
 The *test statistic* is found using the usual approach when the sampling distribution has an approximate normal distribution, using a $t$-score:\index{Test statistic!t@$t$-score}
 \begin{align*}
    t 
    &= \frac{\text{observed value} - \text{mean of the distribution of the statistic}}{\text{std deviation of the distribution of the statistic}}\\
    &= \frac{ b_1 - \beta_1}{\text{s.e.}(b_1)} 
-    = \frac{-101.2 - 0}{9011} = -11.23,
+    = \frac{-0.0931 - 0}{0.0109} = -8.54,
 \end{align*}
-where the values of\ $b_1$ and\ $\text{s.e.}(b_1)$ are taken from the software output (Fig.\ \@ref(fig:BorersLifeRegressionCI)).
+where the values of\ $b_1$ and\ $\text{s.e.}(b_1)$ are taken from the software output (Fig.\ \@ref(fig:DogsLifeRegressionCI)).
 This $t$-score is the same value reported by the software. 
 
-To determine if the statistic is *consistent* with the null hypothesis, the $P$-value can be approximated using the $68$--$95$--$99.7$ rule, approximated using tables, or taken from software output (Fig.\ \@ref(fig:BorersRegressionCI)).
-Since $t = -11.23$, the $P$-value will be very small; software shows the *two*-tailed $P$-value is $P < 0.0001$.
+To determine if the statistic is *consistent* with the null hypothesis, the $P$-value can be approximated using the $68$--$95$--$99.7$ rule, approximated using tables, or taken from software output (Fig.\ \@ref(fig:DogsLifeRegressionCI)).
+Since $t = -8.54$, the $P$-value will be very small; software shows the *two*-tailed $P$-value is $P < 0.0001$.
 
 We write:
 
-> The sample presents very strong evidence ($t = -11.23$; two-tailed $P < 0.0001$) that, in the population, the yield of sorghum is related to the infestation percentage (slope: $-0.093$; $95$%\ CI from\ $-0.115$ to\ $-0.071$; $n = 73$).
+> The sample presents very strong evidence ($t = -8.54$; two-tailed $P < 0.0001$) that, in the population, the mean lifespan of dog breeds is related to the breed-weight (slope: $-0.093$; $95$%\ CI from\ $-0.115$ to\ $-0.071$; $n = 73$).
 
 Notice the three features of writing conclusions again:
-an answer to the RQ; evidence to support the conclusion ($t = -8.54$; two-tailed $P < 0.0001$); and some sample summary information (slope: $-101.2$; $95$%\ CI from\ $-119.5$ to\ $-82.9$; $n = 36$).
+an answer to the RQ; evidence to support the conclusion ($t = -8.54$; two-tailed $P < 0.0001$); and some sample summary information (slope: $-0.0931$; $95$%\ CI from\ $-0.115$ to\ $-0.071$; $n = 73$).
 
 
 ::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
@@ -1547,6 +1537,8 @@ We write:
 
 
 
+
+
 ## Statistical validity conditions {#ValidityCorrelationRegression}
 \index{Statistical validity (for inference)!correlation coefficient}\index{Statistical validity (for inference)!regression parameters}
 
@@ -1566,8 +1558,8 @@ For example, generalised linear models [@mypapers:dunnsmyth:glms] may be appropr
 
 
 ::: {.example #StatisticalValidityDogsLife name="Statistical validity"}
-For the sorghum data, the scatterplot (Fig.\ \@ref(fig:BorersScatterjamovi2), left panel) shows that the relationship is approximately linear, so using a (Pearson) correlation coefficient and a regression line is appropriate.
-For the hypothesis test, the variation in yield doesn't seem to be obviously getting consistently larger or smaller for heavier infestations, and the sample size is greater than\ 365$.
+For the dog-breed data, the scatterplot (Fig.\ \@ref(fig:DogsLifeScatterjamovi2), left panel) shows that the relationship is approximately linear, so using a (Pearson) correlation coefficient and a regression line is appropriate.
+For the hypothesis test, the variation in lifespans doesn't seem to be obviously getting consistently larger or smaller for heavier breeds (though two breeds with a lifespan near\ $6\kgs$ with a breed-weight near\ $20$ seem unusual), and the sample size is greater than\ $25$.
 The CIs and tests are statistically valid.
 :::
 
