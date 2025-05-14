@@ -71,7 +71,7 @@ showSampleSRS <- function(sizeHorizontal = 21,
     sampleSizeOlder   <-  sum( sample.pch == 19)
     sampleSizeYounger <- sum( sample.pch == 25)
     
-    sample.cex[ selected[1:i]] <- ifelse(static, 1.25, 1.75) # Does not impact size in printed text
+    sample.cex[ selected[1:i]] <- ifelse(static, 1.75, 1.75) # Does not impact size in printed text
     sample.bg[  selected[1:i]] <- plotDark
     sample.col[ selected[1:i]] <- plotDark
     

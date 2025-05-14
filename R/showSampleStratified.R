@@ -127,7 +127,7 @@ showSampleStratified <- function(sizeHorizontal = 21,
       
     sample.cexF <- rep(1, 
                        length = numA * sizeVertical)
-    sample.cexF[selectedA] <- 1.3
+    sample.cexF[selectedA] <- 1.75
     
     points( expand.grid(1:numA, 
                         1:sizeVertical), 
@@ -154,7 +154,7 @@ showSampleStratified <- function(sizeHorizontal = 21,
     
     sample.cexM <- rep(1, 
                        length = numB * sizeVertical)
-    sample.cexM[selectedB] <- 1.3
+    sample.cexM[selectedB] <- 1.75
     
     EGmale <- expand.grid(1:numB, 
                           1:sizeVertical)
