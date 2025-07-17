@@ -15,6 +15,7 @@ library("png")
 library("plotly")
 library("viridis")
 library("dplyr")
+library("slickR")
 library("webexercises") # For inline exercises
 library("gifski") # Trying for animations: https://bookdown.org/yihui/rmarkdown-cookbook/animation.html
 library("plotfunctions") # For adding images (e.g. icons) to diagrams
