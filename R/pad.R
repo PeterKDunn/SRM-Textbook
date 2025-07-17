@@ -33,7 +33,6 @@ pad <- function(x,
     if ( length(dim(x) ) == 1) x <- matrix( x, 
                                             nrow = 1,
                                             ncol = length(x))
-    
   }
   
   if (is.data.frame(x)) { # CONVERT to an array for our purposes
@@ -227,10 +226,10 @@ formatMatrix <- function(mat,
                                    nsmall = nsmall[i, j],
                                    justfy = justify,
                                    big.mark = big.mark,
+                                   scientific = FALSE,
                                    width = width[i, j] )
     }
   }
-  
   return(formattedMat)
 }
 
