@@ -20,7 +20,7 @@ The content covers:
 
 ## Book
 
-<a href="https://bookdown.org/pkaldunn/SRM-Textbook/"><img class="book" src="https://bookdown.org/pkaldunn/SRM-Textbook/OtherImages/coversmall.png" alt = "Scientific Research and Methodology: Textbook" height="400"></a>
+<a href="https://peterkdunn.github.io/SRM-Textbook/"><img class="book" src="https://peterkdunn.github.io/SRM-Textbook/OtherImages/coversmall.png" alt = "Scientific Research and Methodology: Textbook" height="400"></a>
 
 
 
