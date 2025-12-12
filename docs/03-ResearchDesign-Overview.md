@@ -1,0 +1,680 @@
+# (PART) Research design  {-}
+
+# Overview of research design {#ResearchDesignOverview}
+\index{Internal validity}
+\index{Research design|(}
+
+
+<!-- Introductions; easier to separate by format -->
+
+
+::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
+So far, you have learnt to ask an RQ.
+**In this chapter**, you will learn why research design is important, by learning to:
+You will learn to:
+
+* identify reasons why the value of the response variable varies.
+* identify and distinguish extraneous, confounding and lurking variables.
+* understand how chance impacts the values of the response variable.
+* explain external and internal validity.
+
+:::
+
+
+<img src="03-ResearchDesign-Overview_files/figure-html/unnamed-chunk-4-1.png" width="65%" height="33%" style="display: block; margin: auto;" />
+
+<!-- Define colours as appropriate -->
+
+
+
+
+
+
+## Introduction: internal and external validity {#IntroInternalValidity}
+\index{Internal validity}
+
+An RQ asks about a *population*.
+However, studying every member of a population is generally impossible due to cost, time, ethics, logistics and/or practicality.
+A subset of the population (a *sample*) is studied, comprising some *individuals* from the population.
+*Countless* different samples are possible.\index{Sample}
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+One challenge of research is learning about a population from studying just one of the countless possible samples.
+:::
+
+
+Being able to generalise about the population of interest from studying a sample is called *external validity*.\index{External validity}
+Chapter\ \@ref(Sampling) discusses how to select a suitable sample to study to enhance external validity.
+
+
+::: {.definition #ExternalValidity name="External validity"}
+*External validity* refers to the ability to generalise the results to the rest of the population, beyond just those in the sample studied.
+:::
+
+
+Apart from being externally valid, well-designed research studies should be *internally valid*.
+An internally valid study allows the researchers to focus on the relationship of interest between the response and explanatory variables, by eliminating, or accounting for, other sources of variation in the values of the response variable.
+These other sources are discussed in the rest of this chapter.
+
+
+
+::: {.definition #InternalValidity name="Internal validity"}
+*Internal validity* refers to the extent to which a cause-and-effect relationship can be established in a study.
+
+A study with *high* internal validity shows that the changes in the response variable can be (at least partially) attributed to changes in the explanatory variables; other explanations have been ruled out.
+:::
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+One challenge of research is learning about the relationship between the response and explanatory variables, when the value of the response variable can also be influenced by other factors. 
+:::
+
+
+Studies with *low* internal validity leave open other possibilities, apart from changes in the value of the explanatory variable, to explain changes in the value of the response variable.
+Ideally, all studies should be designed to be *internally valid* as far as possible.
+Internal validity is studied in more detail in Chap.\ \@ref(DesignInternal).
+Different research studies (Chap.\ \@ref(ResearchDesign)) differ in the extent to which they can achieve internal validity.
+
+
+<div style="float:right; width: 75px; padding:10px">
+<img src="Pics/iconmonstr-door-7-240.png" width="50px"/>
+</div>
+
+
+## Variation in the values of the response variable {#VariationInY}
+\index{Internal validity!sources of variation}
+
+In any study, the values of the response variable vary from individual to individual.
+Many reasons explain *why* these values vary.
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-startup-stock-photos-7357.jpg" width="200px"/>
+</div>
+
+
+::: {.example #Typing name="Study design"}
+Consider this RQ:
+
+> For students in a large university course, is the average typing speed (in words per minute) the same for those aged under\ $25$ ('younger') and $25$\ or over ('older')?
+:::
+
+
+The typing speed (the *response variable*) of the many individuals will vary: every student in the study recording exactly the same typing speed is highly unlikely.
+The variation in the values of students' typing speeds (Fig.\ \@ref(fig:Influences)) may be due to:
+
+* *the explanatory variable* (Sect.\ \@ref(FactorYExplanatory)).
+  The values of the explanatory variable may influence the values of the response variable.
+  Of course, they may not either; the purpose of the study is to find if, or to what extent, this is true.
+  In this example, the *explanatory variable* is the age group of the student, which may impact typing speed.
+* *other variables*, called *extraneous variables* (Sect.\ \@ref(ExtraneousVariables)).
+  Other variables (apart from the explanatory variable) may influence the response variable (perhaps more than the explanatory variable), such as 'sex of the person', or 'whether the person wears glasses'. 
+  The impact of these variables can be accommodated if the study is designed appropriately.
+* *chance* (or *randomness*, or *natural variation*)\index{Chance}\index{Natural variation} (Sect.\ \@ref(Chance)).
+  The same person doing the same thing repeatedly under the same conditions will not record exactly the same typing speed every attempt.
+  This is unavoidable, but good research design can minimise the size of this variation.
+
+Designing studies to maximise internal validity requires identifying important extraneous variables, and eliminating (as far as possible) anything that obscures the relationship between the response and explanatory variables.
+
+
+::: {.example #TypingPoor name="Design"}
+In the typing-speed study, suppose younger students were *always* asked to use their dominant hand, and older students *always* asked to use their non-dominant hand.
+Younger students would probably have a faster average typing speed, simply because they use their dominant hands (not due to age).
+This research design would produce a study with poor internal validity.
+:::
+
+
+<div class="figure" style="text-align: center">
+<img src="03-ResearchDesign-Overview_files/figure-html/Influences-1.png" alt="Other factors can influence the values of the response variable, besides the explanatory variable." width="90%" />
+<p class="caption">(\#fig:Influences)Other factors can influence the values of the response variable, besides the explanatory variable.</p>
+</div>
+
+
+
+<div style="float:right; width: 75px; padding:10px">
+<img src="Pics/iconmonstr-door-7-240.png" width="50px"/>
+</div>
+
+
+
+::: {.definition #StudyDesign name="Research design"}
+*Research design* refers to the decisions made by the researchers to maximise *external validity* and *internal validity*.
+:::
+
+
+Internal validity is one of the most important properties of scientific studies, and is relevant for reasoning about evidence more generally.
+Designing studies to maximise internal validity is the focus of Chap.\ \@ref(DesignInternal).
+
+
+::: {.tipBox .tip data-latex="{iconmonstr-info-6-240.png}"}
+Data collection is often tedious, time-consuming and expensive: you usually get one chance to collect data.
+In contrast, data (once collected) can be analysed as many times as necessary.
+Design the study properly the first time!
+:::
+
+
+## Variation due to changes in the explanatory variable {#FactorYExplanatory}
+\index{Explanatory variable}
+
+Changes in the values of the explanatory variable may, or may not, be associated with changes in the values of the response variable.
+If nothing else influenced the values of the response variable, life would be easy: any change of a given size in the value of the explanatory variable would *always* result in a change of the same size in the value of the response variable.
+
+
+::: {.example #TypingExplanatory name="Explanatory variable"}
+In the typing-speed study (Example\ \@ref(exm:Typing)), the explanatory variable is the age group.
+If nothing else influenced typing speed, every younger student would record the same typing speed every time, and every older student would record the same typing speed every time.
+This is clearly unreasonable.
+:::
+
+\clearpage
+
+
+## Variation due to changes in the extraneous variables {#ExtraneousVariables}
+\index{Variables!extraneous}
+
+Other variables (besides the explanatory variable) almost certainly exist which are associated with changes in the value of the response variable.
+These are called *extraneous variables*.
+
+
+::: {.definition #ExtraneousVariable name="Extraneous variable"}
+An *extraneous variable* is any variable associated with the response variable, but is not the explanatory variable.
+:::
+
+
+::: {.example #Typing2Extraneous name="Extraneous variables"}
+In the typing-speed study (Example\ \@ref(exm:Typing)), potential extraneous variables may include age, the presence or absence of certain medical conditions, the level of familiarity with computers, whether the person wears glasses, etc.
+:::
+
+
+The impact of some extraneous variables on the response variable can be reduced by fixing the values of the variable.
+These variables are called *control variables*.\index{Variables!control}
+
+
+::: {.definition #ControlVariables name="Control variables"}
+*Control (or controlled) variables* are extraneous variables whose values are fixed for the study.
+:::
+
+
+A *control variable* is different from a *control group* (Def.\ \@ref(def:Control)).
+
+
+::: {.example #TypingControl name="Control variables"}
+In the typing-speed study (Example\ \@ref(exm:Typing)), typing speeds would vary greatly if students used different types of keyboards; for example, if some students used mechanical keyboards, and some used on-screen keyboards (e.g., on a tablet).
+The impact of age is easier to detect if all students use the *same* keyboards, as this would reduce the variation in the typing speeds.
+
+'Type of keyboard' is a *control variable*.
+:::
+
+
+If *many* other variables are fixed in value (i.e., are control variables), the relationship between the explanatory and response variables is far easier to detect and measure. 
+However, using too many control variables may limit the population, and hence the generalisability of the results.
+In the typing-speed study, for example, restricting the study to left-handed males who do not wear glasses would restrict the results to a very narrow group of people.
+
+
+
+<div style="float:right; width: 75px; padding:10px">
+<img src="Pics/iconmonstr-resize-4-240.png" width="50px"/>
+</div>
+
+
+All extraneous variables are, by definition, related to the response variable.
+They may or may not also be associated with the explanatory variable.
+Extraneous variable *also* related to the explanatory variable are called *confounding variables* (or *confounders*); see Fig.\ \@ref(fig:InfluencesConfounding) (left panel).
+A confounding variable can obscure the true relationship between the response and explanatory variables.
+
+
+::: {.definition #ConfoundingVariable name="Confounding variable"}
+\index{Variables!confounding}\index{Confounding}
+A *confounding variable* (or a *confounder*) is an extraneous variable associated with the response *and* explanatory variables.
+:::
+
+
+::: {.definition #Confounding name="Confounding"}
+*Confounding* is when a third variable influences the observed relationship between the response and explanatory variable.
+:::
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Confounding variables are *associated* with both the response and explanatory variables.
+This does not necessarily mean the value of the confounding variable *causes* changes in the values of the response or explanatory variables.
+:::
+
+
+::: {.example #ConfoundingAssociations name="Confounding variables and associations"}
+Consider a study comparing the proportion of females and males wearing sunglasses while walking in a local park.
+To determine if the variable 'whether it is raining' is an *extraneous* variable, we ask:
+
+1. Is the wearing of sunglasses (the response variable) more or less likely if it is raining?
+
+The absence of rain may influence people to be more likely to wear sunglasses.
+Hence, 'whether it is raining' is very likely an extraneous variable.
+
+To determine if it is a *confounding* variable, we also ask:
+
+2. Is one sex (the explanatory variable) more likely to be walking in the park depending on whether it is raining?
+
+We do *not* ask if the presence of rain *changes* the sex of the person; we ask if the presence of rain is *associated* with different proportions of males and females walking in the presence of rain.
+It *may* be the case (for example) that males are more likely to walk in the rain than females, so 'whether it is raining' *may* be an extraneous variable (but it is not obvious).
+:::
+
+
+A relationship between the response and explanatory variables may be apparent, but only because *both* of these variables are associated with the confounding variable (Fig.\ \@ref(fig:InfluencesConfounding)).
+No relationship actually exists between the response and explanatory variables.
+
+
+::: {.example #ConfoundingCigaretteLighters name="Confounding variables"}
+People who carry cigarette lighters are more likely to get lung cancer. 
+The reason this relationship exists, however, is because of a *confounding variable*. 'Whether the person is a smoker' is probably associated with *both* the response and explanatory variables:
+
+* smokers are more likely to carry a cigarette lighter (the explanatory variable) than non-smokers.
+* smokers are more likely to develop lung cancer (the response variable) than non-smokers.
+
+No relationship actually exists between carrying a cigarette lighter are getting lung cancer.
+:::
+
+
+::: {.exampleExtra data-latex=""}
+Consider this RQ:
+
+> Among university students, is the percentage of females who know their own blood pressure the same as the percentage of males who know their own blood pressure?
+
+For this RQ, the *explanatory variable* is the sex of person, and the *response variable* is whether a student knows their own blood pressure.
+ A potential confounding variable is 'The program of study', since this is (potentially) related to *both* the response and explanatory variables:
+
+* 'Program of study' is related to sex (the explanatory variable): a higher percentage of females study nursing, while a greater percentage of males study engineering (at least, in Australia).
+* 'Program of study' is related to knowing your blood pressure (the response variable): nursing students probably practice taking each other's blood pressures so probably know their own, whereas engineering students do not.
+:::
+
+
+Managing confounding is *very* important, as ignoring confounding can completely change the observed relationship between the response and explanatory variables (see Sect.\ \@ref(KidneyExample)) and hence can compromise internal validity.
+Managing confounding is discussed in Sect.\ \@ref(ManagingConfounding).
+
+
+
+<div class="figure" style="text-align: center">
+<img src="03-ResearchDesign-Overview_files/figure-html/InfluencesConfounding-1.png" alt="Confounding variables are extraneous variables associated with the response and explanatory variables. Left: If the confounding variable is not measured (and so a lurking variable is present), an apparent association does exist between the response and explanatory variables. Usually, confounding is not as extreme as shown in this diagram, and the confounding variable may slightly change the relationship between response and explanatory variables. Right: In extreme confounding situations, as shown here, no real association between exists between the response and explanatory variables; the association is explained by a confounding variable. " width="100%" />
+<p class="caption">(\#fig:InfluencesConfounding)Confounding variables are extraneous variables associated with the response and explanatory variables. Left: If the confounding variable is not measured (and so a lurking variable is present), an apparent association does exist between the response and explanatory variables. Usually, confounding is not as extreme as shown in this diagram, and the confounding variable may slightly change the relationship between response and explanatory variables. Right: In extreme confounding situations, as shown here, no real association between exists between the response and explanatory variables; the association is explained by a confounding variable. </p>
+</div>
+
+
+If the values of potential confounding variables are recorded, their impact can be managed.
+However, sometimes the values of the confounding variables are not recorded (perhaps due to poor design); then, they are called *lurking variables* (Fig.\ \@ref(fig:InfluencesConfounding), left panel).
+Lurking variables can lead to wrong conclusions.
+
+
+::: {.definition #LurkingVariable name="Lurking variable"}
+\index{Variables!lurking}
+A *lurking variable* is an extraneous variable associated with the response *and* explanatory variables (that is, is a *confounding* variable), but whose values *are not* recorded in the study data.
+:::
+
+
+::: {.example #LurkingMoulds name="Lurking variables"}
+@joiner1981lurking [@wilson1952eb] wanted to determine if the time in the production mould influenced the strength of plastic parts (p.\ 55--56):
+
+> Hot plastic was introduced in the mold, pressed for $10\secs$, and removed. 
+> Another batch was then introduced into the same mold, pressed for $20\secs$, and so on, the time increasing with each batch.
+
+Greater time in the mould (explanatory variable) was found to be associated with greater plastic strength (response variable).
+However, mould temperature was later found to be a *lurking variable*, since it was associated with *both* the response and explanatory variables:
+
+* higher mould temperatures (the lurking variable) were associated with greater strength (the response variable).
+* higher mould temperatures (the lurking variable) were experienced by later batches with longer mould times (the explanatory variable), since the mould was hotter for the later batches.
+
+The cause of the greater strength was *not* the time in the mould; it was the higher temperature experienced by the later moulds (Fig.\ \@ref(fig:LurkingExampleMould)).
+:::
+
+
+<div class="figure" style="text-align: center">
+<img src="03-ResearchDesign-Overview_files/figure-html/LurkingExampleMould-1.png" alt="An example of a lurking variable. Left: the relationship as originally understood. Right: the relationship after the lurking variable was eventually exposed." width="100%" />
+<p class="caption">(\#fig:LurkingExampleMould)An example of a lurking variable. Left: the relationship as originally understood. Right: the relationship after the lurking variable was eventually exposed.</p>
+</div>
+
+
+To clarify the language (Table\ \@ref(tab:ClassifyExtraneous)):\index{Variables!lurking}\index{Variables!confounding}\index{Variables!extraneous}
+
+* extraneous variables are, by definition, always associated with the response variable.
+  If they are not recorded, and so the researchers are unaware of them, they become part of unexplained chance.
+* extraneous variables are called *confounding variables* if they are also related to the explanatory variable.
+* confounding variables are called *lurking variables*, if they are not recorded.
+
+These terms are not always used consistently by all researchers, but the *ideas* are important nonetheless.
+
+
+<!-- ```{r ClassifyExtraneous, fig.width=7, fig.height=2.25, out.width='80%', fig.cap="The relationships between extraneous, confounding and lurking variables.", fig.align="center"} -->
+<!-- source("R/showExtraneousTypes.R") -->
+<!-- showExtraneousTypes() -->
+<!-- ``` -->
+
+
+<table class="table" style="width: auto !important; margin-left: auto; margin-right: auto;">
+<caption>(\#tab:ClassifyExtraneous)The relationships between extraneous, confounding and lurking variables. Entries in <em>italics</em> indicate different types of extraneous variables.</caption>
+ <thead>
+<tr>
+<th style="empty-cells: hide;border-bottom:hidden;" colspan="1"></th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; font-weight: bold; " colspan="1"><div style="">Related to</div></th>
+<th style="border-bottom:hidden;padding-bottom:0; padding-left:3px;padding-right:3px;text-align: center; font-weight: bold; " colspan="1"><div style="">Related to</div></th>
+</tr>
+  <tr>
+   <th style="text-align:left;font-weight: bold;">   </th>
+   <th style="text-align:right;font-weight: bold;"> response only </th>
+   <th style="text-align:right;font-weight: bold;"> response and explanatory </th>
+  </tr>
+ </thead>
+<tbody>
+  <tr>
+   <td style="text-align:left;"> Measured/observed </td>
+   <td style="text-align:right;"> <span style="  font-style: italic;   ">Extraneous</span> </td>
+   <td style="text-align:right;"> <span style="  font-style: italic;   ">Extraneous (confounding)</span> </td>
+  </tr>
+  <tr>
+   <td style="text-align:left;"> Not measured/observed </td>
+   <td style="text-align:right;"> Chance </td>
+   <td style="text-align:right;"> <span style="  font-style: italic;   ">Extraneous (lurking)</span> </td>
+  </tr>
+</tbody>
+</table>
+
+
+To avoid lurking variables, researchers generally collect lots of information that may be relevant about the *individuals in the study* (such as age and sex if the study involves people) and *circumstances of the individuals in the study* (such as the temperature at the time of data collection), in case they are confounding variables.
+
+
+::: {.example #LowInternal name="Low internal validity"}
+@larson2021can reviewed numerous studies that used double-fortified salt to manage iodine and iron deficiencies.
+They concluded that the internal validity of studies was 'generally weak' (p.\ 265) due, in part, to 'unaccounted confounders' (i.e., lurking variables).
+:::
+
+ 
+## Variation due to natural variation (chance) {#Chance}
+\index{Chance}\index{Natural variation}
+
+*Chance variation* (or natural variation) refers to variation that cannot otherwise be explained: even repeating a study exactly the same way every time on the same individuals will not always produce the same values of the response variable.
+
+The influence of the explanatory variable is hard to detect if the amount of chance variation contributing to the response variable overwhelms the amount of variation produced by changes in the value of the explanatory variable.
+*Minimising the amount of the chance variation* requires using good design principles, and measuring as many other extraneous variables that may explain variation in the response variable as reasonable.
+
+Chance can impact the values of the response variable in different ways: 
+
+* each *individual* can produce different values of the response variable each time the response variable is measured (*within*-individuals *variation*).\index{Within-individual variation}
+* each individual in the study can produce different values of the response variable compared to *other* individuals (*between*-individuals *variation*).\index{Between-individual variation}
+
+Different strategies are needed to understand each of these sources of variation:
+
+* to estimate the amount of variation *within* individuals, multiple observations are needed from each unit of analysis (each individual).\index{Within-individual variation}
+* to estimate the amount of variation *between* individuals, multiple units of analysis (individuals) are needed.\index{Between-individual variation}
+
+
+::: {.example #TypingSpeedThree name="Three ways to sample"}
+Consider the typing-speed study (Example\ \@ref(exm:Typing)) again, and these three sampling approaches:
+
+* taking $30$\ observations from one younger student would tell us about variation in that student's typing speed, but very little about variation in younger students' typing speeds more generally.
+* taking one observation from $30$\ different younger students would tell us about variation in younger students' typing speeds in general.
+  We only have one measurement from each student, but since we might expect that the same person to produce similar (not identical) typing speeds, this should not be a big problem.
+* taking three observations from each of\ $10$ different younger students would tell us about variation in younger students' typing speeds in general, and a little about the variation in each students' typing speeds too.
+:::
+  
+
+## Chapter summary {#Chap6-Summary}
+
+Research questions are about populations, but samples are studied in practice.
+Studies that use a sample that represents the population of interest are called *externally valid*.
+
+In a research study, the main interest is usually the relationship between a *response variable* and *explanatory variable*.
+Well-designed studies that allow the researchers to focus on this relationship have good *internal validity*.
+Such studies eliminate, or account for, other explanations for the variation in the values of the response variable.
+
+The values of the response variable can be influenced by more than just the explanatory variable, such as
+*extraneous variables* (other variables not of primary interest), and  *chance*.
+
+Some extraneous variables are also related to the explanatory variable, and are called *confounding variables* (and are *lurking variables* if not recorded).
+If the research design makes it difficult to separate the relationship between the response and explanatory variable from other possible causes, the study has poor *internal validity*.
+
+
+## Quick review questions {#Chap6-QuickReview}
+
+::: {.webex-check .webex-box}
+@martnes2023physical compared the average time to complete a journey when (p.\ 1)
+
+> ... riding an electric-assisted bicycle with cargo ($30\kgs$) and without cargo...
+
+They recorded the age, height, weight, and resting metabolic rate of all subjects who completed the $4.5\kms$ ride.
+Each subject was allocated to ride both with *and* without cargo.
+
+Are the following statements *true* or *false*?
+
+1. The explanatory variable is 'the age of the subjects'. \tightlist
+<select class='webex-select'><option value='blank'></option><option value=''>TRUE</option><option value='answer'>FALSE</option></select>
+1. 'The height of the subjects' is a lurking variable.
+<select class='webex-select'><option value='blank'></option><option value=''>TRUE</option><option value='answer'>FALSE</option></select>
+1. The explanatory variable is 'whether the bicycle is ridden with or without cargo'.
+<select class='webex-select'><option value='blank'></option><option value='answer'>TRUE</option><option value=''>FALSE</option></select>
+1. 'Weight' is an extraneous variable.
+<select class='webex-select'><option value='blank'></option><option value='answer'>TRUE</option><option value=''>FALSE</option></select>
+1. The response variable is 'the time to complete the journey'.
+<select class='webex-select'><option value='blank'></option><option value='answer'>TRUE</option><option value=''>FALSE</option></select>
+1. 'Age' is a possible confounding variable. 
+<select class='webex-select'><option value='blank'></option><option value=''>TRUE</option><option value='answer'>FALSE</option></select>
+1. 'Resting metabolic rate' is a possible confounding variable. 
+<select class='webex-select'><option value='blank'></option><option value=''>TRUE</option><option value='answer'>FALSE</option></select>
+:::
+
+
+
+## Exercises {#ResearchDesignOverviewExercises}
+
+[Answers to odd-numbered exercises] are given at the end of the book. 
+
+
+
+::: {.exercise #MineArsenic}
+The *Giant Mine* in Yellowknife, Canada, ceased operation in 1999 after $50$\ years, during which $237\,000$ tonnes of arsenic trioxide was released.
+@houben2016factors examined the arsenic concentration in $25$\ lakes within a $25\kms$ radius of the mine $11$\ years after the mine closed, to determine if the arsenic concentration was related to the distance of the lake from the mine.
+They also recorded:
+
+:::::: {.cols data-latex=""}
+::: {.col data-latex="{0.46\textwidth}"}
+
+* the type of bedrock (volcanic; sedimentary; grandiorite). \tightlist
+* the ecology type (lowland; upland).
+:::
+
+::: {.col data-latex="{0.05\textwidth}"}
+\ 
+<!-- an empty Div (with a white space), serving as
+a column separator -->
+:::
+
+::: {.col data-latex="{0.46\textwidth}"}
+* the elevation of the lake (in metres). \tightlist
+* the lake area (in hectares).
+* the catchment area (in hectares).
+:::
+::::::
+
+
+Use this information to answer the following.
+
+1. What is the *response* variable?\tightlist  
+<div class='webex-radiogroup' id='radio_DYQMPYXZYL'><label><input type="radio" autocomplete="off" name="radio_DYQMPYXZYL" value="answer"></input> <span>Arsenic concentration</span></label><label><input type="radio" autocomplete="off" name="radio_DYQMPYXZYL" value=""></input> <span>Distance of the lake from the mine</span></label><label><input type="radio" autocomplete="off" name="radio_DYQMPYXZYL" value=""></input> <span>Type of bedrock</span></label><label><input type="radio" autocomplete="off" name="radio_DYQMPYXZYL" value=""></input> <span>Ecology type</span></label><label><input type="radio" autocomplete="off" name="radio_DYQMPYXZYL" value=""></input> <span>Elevation</span></label><label><input type="radio" autocomplete="off" name="radio_DYQMPYXZYL" value=""></input> <span>Lake area</span></label><label><input type="radio" autocomplete="off" name="radio_DYQMPYXZYL" value=""></input> <span>Catchment area</span></label></div>
+
+1. What is the *explanatory* variable?  
+<div class='webex-radiogroup' id='radio_VQQWSMISVX'><label><input type="radio" autocomplete="off" name="radio_VQQWSMISVX" value=""></input> <span>Arsenic concentration</span></label><label><input type="radio" autocomplete="off" name="radio_VQQWSMISVX" value="answer"></input> <span>Distance of the lake from the mine</span></label><label><input type="radio" autocomplete="off" name="radio_VQQWSMISVX" value=""></input> <span>Type of bedrock</span></label><label><input type="radio" autocomplete="off" name="radio_VQQWSMISVX" value=""></input> <span>Ecology type</span></label><label><input type="radio" autocomplete="off" name="radio_VQQWSMISVX" value=""></input> <span>Elevation</span></label><label><input type="radio" autocomplete="off" name="radio_VQQWSMISVX" value=""></input> <span>Lake area</span></label><label><input type="radio" autocomplete="off" name="radio_VQQWSMISVX" value=""></input> <span>Catchment area</span></label></div>
+
+1. Is the variable 'Catchment area' likely to be a *lurking* variable?  
+<div class='webex-radiogroup' id='radio_JAMQPCAOBD'><label><input type="radio" autocomplete="off" name="radio_JAMQPCAOBD" value=""></input> <span>No: it is not related to the response variable</span></label><label><input type="radio" autocomplete="off" name="radio_JAMQPCAOBD" value="answer"></input> <span>No: it is measured and recorded, so cannot be a lurking variable</span></label><label><input type="radio" autocomplete="off" name="radio_JAMQPCAOBD" value=""></input> <span>Yes: it may be related to the response and explanatory variables</span></label><label><input type="radio" autocomplete="off" name="radio_JAMQPCAOBD" value=""></input> <span>Yes: it may be related to the response variable</span></label></div>
+
+1. Is the variable 'Type of bedrock' likely to be a *confounding* variable?  
+<div class='webex-radiogroup' id='radio_UTTZYRSGBV'><label><input type="radio" autocomplete="off" name="radio_UTTZYRSGBV" value=""></input> <span>No: it is not related to the response variable</span></label><label><input type="radio" autocomplete="off" name="radio_UTTZYRSGBV" value=""></input> <span>No: it is measured and recorded, so cannot be a confounding variable</span></label><label><input type="radio" autocomplete="off" name="radio_UTTZYRSGBV" value="answer"></input> <span>Yes: it may be related to the response and explanatory variables</span></label><label><input type="radio" autocomplete="off" name="radio_UTTZYRSGBV" value=""></input> <span>Yes: it may be related to the response variable</span></label></div>
+
+1. What is the *best* description of the variable 'Ecology type':
+<div class='webex-radiogroup' id='radio_STGPYNMJQY'><label><input type="radio" autocomplete="off" name="radio_STGPYNMJQY" value=""></input> <span>Response variable</span></label><label><input type="radio" autocomplete="off" name="radio_STGPYNMJQY" value=""></input> <span>Explanatory variable</span></label><label><input type="radio" autocomplete="off" name="radio_STGPYNMJQY" value="answer"></input> <span>Confounding variable</span></label><label><input type="radio" autocomplete="off" name="radio_STGPYNMJQY" value=""></input> <span>Lurking variable</span></label></div>
+
+:::
+
+::: {.exercise #ResearchDesignOverviewStudy1}
+A study examined the relationship between diet quality and depression in Australian adolescents [@jacka2010associations].
+The researchers used a sample of $7\,114$ adolescents aged\ $10$--$14$ years old, and also measured information about (p.\ 435):
+
+> ... age, gender, socioeconomic status, parental education, parental work status, family conflict, poor family management, dieting behaviours, body mass index, physical activity, and smoking...
+
+1. Identify the response and explanatory variables.
+2. Which of the other listed variable reasonably could be considered *extraneous variables*, *confounding variables* and *lurking variables*?
+:::
+
+
+::: {.exercise #ResearchDesignOverviewStudy2}
+A newspaper article [@data:GreenTeaCutsRiskOfCancer] reported that 'Women who drank green tea at least three times a week were $14$\ per cent less likely to develop a cancer of the digestive system'.
+However, the final paragraph of the article notes that:
+  
+> Nobody can say whether green tea itself is the reason, since green tea lovers are often more health-conscious in general.
+
+Identify the explanatory and response variables, and explain the quotation using language introduced in this chapter.
+:::
+
+
+::: {.exercise #ResearchDesignOverviewStudy3}
+A study recorded the lung capacity (using Forced Expiratory Volume, or FEV, in litres) of children aged\ $3$ to\ $19$ [@data:Tager:FEV; @BIB:data:FEV], and also recorded whether not the children were smokers.
+One finding was that children who smoke have a *larger* average FEV (i.e., larger average lung capacity) than children who do *not* smoke, in general.
+
+Name a confounding variable that may explain this surprising finding.
+Would it be likely that this variable is a *lurking* variable?
+:::
+
+
+::: {.exercise #ResearchDesignOverviewRTEC}
+Consider a study to determine if the percentage of children who consume Ready-To-Eat-Cereals (<span style="font-variant:small-caps;">rtec</span>) for breakfast is the same for children aged between\ $5$ and\ $10$, as for children aged between\ $11$ and\ $15$.
+The researchers also measured the age of the child, the number of siblings living with the child, and the sex of the child.
+
+1. Which of these variables are extraneous variables? \tightlist
+   * The sex of the child.
+<select class='webex-select'><option value='blank'></option><option value='answer'>Yes</option><option value=''>No</option></select>
+   * Whether the child consumes <span style="font-variant:small-caps;">rtec</span>.
+<select class='webex-select'><option value='blank'></option><option value=''>Yes</option><option value='answer'>No</option></select>
+   * The age group of the child.
+<select class='webex-select'><option value='blank'></option><option value=''>Yes</option><option value='answer'>No</option></select>
+   * The age of the child.
+<select class='webex-select'><option value='blank'></option><option value='answer'>Yes</option><option value=''>No</option></select>
+   * The number of siblings living with the child.
+<select class='webex-select'><option value='blank'></option><option value='answer'>Yes</option><option value=''>No</option></select>
+
+
+2. Is the variable 'the sex of the child' a lurking variable?
+<div class='webex-radiogroup' id='radio_XEPLKLEBON'><label><input type="radio" autocomplete="off" name="radio_XEPLKLEBON" value=""></input> <span>Yes: it is likely to be related to the response variable</span></label><label><input type="radio" autocomplete="off" name="radio_XEPLKLEBON" value=""></input> <span>No: it is the explanatory variable</span></label><label><input type="radio" autocomplete="off" name="radio_XEPLKLEBON" value="answer"></input> <span>No: it is a variable that is recorded so it can&apos;t be a lurking variable</span></label><label><input type="radio" autocomplete="off" name="radio_XEPLKLEBON" value=""></input> <span>Yes: it is likely to be related to the explanatory variable</span></label><label><input type="radio" autocomplete="off" name="radio_XEPLKLEBON" value=""></input> <span>Yes: it is likely to be related to the response and explanatory variable</span></label></div>
+
+3. Is it reasonable to consider the weight of the child as a lurking variable?
+<div class='webex-radiogroup' id='radio_GELANRRHSL'><label><input type="radio" autocomplete="off" name="radio_GELANRRHSL" value=""></input> <span>No: it can&apos;t be a lurking variable because it is probably not related to all the extraneous variables.</span></label><label><input type="radio" autocomplete="off" name="radio_GELANRRHSL" value=""></input> <span>Yes, because it is related to whether the child consumes RTEC.</span></label><label><input type="radio" autocomplete="off" name="radio_GELANRRHSL" value="answer"></input> <span>Yes: It is not measured, and could be related to the age of the child, and whether the child consumes RTEC.</span></label><label><input type="radio" autocomplete="off" name="radio_GELANRRHSL" value=""></input> <span>No: it can&apos;t be a variable because it is not measured.</span></label><label><input type="radio" autocomplete="off" name="radio_GELANRRHSL" value=""></input> <span>Yes, because it is probably related to age group of the child.</span></label></div>
+
+:::
+
+
+
+::: {.exercise #DesignExpExtraneous}
+<!--
+Which of the following types of variables are special types of extraneous variables?  
+(a)\ Lurking variables; (b)\ explanatory variables; (c)\ confounding variables.
+-->
+
+Extraneous variables are variables that are related to the response variable.  
+Which of the following types of variables are special types of extraneous variables?
+
+* Lurking variables <select class='webex-select'><option value='blank'></option><option value='answer'>Extraneous</option><option value=''>Not extraneous</option></select> 
+* Explanatory variables <select class='webex-select'><option value='blank'></option><option value=''>Extraneous</option><option value='answer'>Not extraneous</option></select> 
+* Confounding variables <select class='webex-select'><option value='blank'></option><option value='answer'>Extraneous</option><option value=''>Not extraneous</option></select>
+
+:::
+
+
+::: {.exercise #DesignFindConfounderA}
+A study of New Zealanders found that people wearing hearing aids were more likely to have grey hair than people *not* wearing hearing aids.
+What confounding variable is likely to be present?
+:::
+
+
+::: {.exercise #DesignFindConfounderB}
+Researchers are studying a new (but expensive) insecticide that is claimed to be more effective for use in apple orchards than other (cheaper) insecticides.
+A study found that apple orchards where the farmers chose to use the new insecticide had a similar number of insects per tree than orchards where the farmers chose *not* to use the new insecticide,
+What confounding variable is likely to be present?
+:::
+
+
+::: {.exercise #DesignConfoundingVarA}
+An agricultural study recorded the wheat yield for $18$\ organic farms and $29$\ conventional farms.
+Farms across North Dakota and Kansas (USA) were used for the study, and the yield (in tonnes per hectare) was recorded from each farm.
+The organic farms were generally smaller than the non-organic farms, and located in areas with better soil quality.
+
+Which of these are likely to be confounding variables (if any)?
+Which may be useful control variables (if any)?
+Explain your reasoning.
+
+:::::: {.cols data-latex=""}
+:::: {.col data-latex="{0.30\textwidth}"}
+1. Crop yield.
+2. Soil quality.
+3. Climate.
+::::
+
+:::: {.col data-latex="{0.025\textwidth}"}
+\ 
+<!-- an empty Div (with a white space), serving as
+a column separator -->
+::::
+
+:::: {.col data-latex="{0.65\textwidth}"}
+4. The colour of the farmer's main tractor.
+5. The size of the farm.
+6. The hours of sunlight per day over the growing season.
+::::
+::::::
+
+:::
+
+
+::: {.exercise #DesignConfoundingVarB}
+A study of school teachers found a relationship between the average number of children plus grandchildren for the teacher, and having high blood pressure. 
+
+Which of these is likely to be a confounding variable? 
+Which may be useful control variables?
+Explain.
+
+:::::: {.cols data-latex=""}
+:::: {.col data-latex="{0.37\textwidth}"}
+1. Age of the teacher.
+2. Sex of the teacher.
+3. The colour of the teacher's car. 
+4. Whether the teacher is a smoker.
+::::
+
+:::: {.col data-latex="{0.025\textwidth}"}
+\ 
+<!-- an empty Div (with a white space), serving as
+a column separator -->
+::::
+
+:::: {.col data-latex="{0.58\textwidth}"}
+5. Whether the teacher is very health conscious.
+6. Whether the teacher has high blood pressure.
+7. Whether the teacher teaches a health subject.
+::::
+::::::
+
+:::
+
+
+
+
+
+
+<!-- QUICK REVIEW ANSWERS -->
+<!--
+::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
+**Answers to *Quick review* questions:**
+**1.** False.
+**2.** False.
+**3.** True.
+**4.** True.
+**5.** True.
+**6.** False.
+**7.** False (confounding variables are potentially related to the response *and* explanatory variables).
+:::
+-->
+

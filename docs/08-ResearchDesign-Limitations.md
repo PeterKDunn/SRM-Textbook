@@ -1,0 +1,441 @@
+
+# Research design limitations {#Interpretation}
+
+
+<!-- Introductions; easier to separate by format -->
+
+
+::: {.objectivesBox .objectives data-latex="{iconmonstr-target-4-240.png}"}
+So far, you have learnt to ask an RQ and design research studies.
+**In this chapter**, you will learn to identify limitations to:
+
+* internal validity.
+* external validity.
+* ecological validity.
+:::
+
+
+<img src="08-ResearchDesign-Limitations_files/figure-html/unnamed-chunk-4-1.png" width="65%" height="33%" style="display: block; margin: auto;" />
+
+
+<!-- Define colours as appropriate -->
+
+
+
+
+
+## Introduction {#Chap9-Intro}
+
+The type of study  (Chap.\ \@ref(ResearchDesign)) and the research design determine how the results of the study should be interpreted.
+Ideally, all studies would be perfectly externally and internally valid; in practice this is very difficult to achieve.
+Practically *every* study has limitations.
+The results of a study should be interpreted in light of these limitations.
+Limitations are not necessarily *problems*.
+
+Limitations generally can be discussed through three components.
+
+* *Internal validity* (Sect.\ \@ref(IntroInternalValidity)):
+  discuss any limitations to internal validity due to the research design (such as identifying possible confounding variables).
+  This is related to the *effectiveness* of the study within the sample (Sect.\ \@ref(InterpretStudyDesign)).
+* *External validity* (Sect.\ \@ref(IntroExternalValidity)):
+  discuss how well the sample represents the intended population.
+  This is related to the *generalisability* of the study to the intended population (Sect.\ \@ref(InterpretGeneralisability)).
+* *Ecological validity*:
+  discuss how well the study methods, materials and context approximate the real situation of interest.
+  This is related to the *practicality* of the results to real life (Sect.\ \@ref(InterpretApplicability)).
+
+All these issues should be addressed when considering the study limitations.
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Almost every study has limitations.
+*Identifying* potential limitations, and *discussing the likely impact* they have on the interpretation of the study results, is important and ethical.\index{Ethics}
+:::
+
+
+Different types of research studies have limitations.
+Experimental studies, in general, have higher internal validity than observational studies, since more of the research design in under the control of the researchers; for example, random allocation of treatments is possible to minimise confounding.
+
+
+:::{.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+Only well-designed and well-conducted experimental studies can show cause-and-effect relationships.
+:::
+
+
+However, experimental studies may suffer from poor *ecological* validity; for instance, laboratory experiments are often conducted under controlled temperature and humidity.
+Many experiments also require that people be told about being in a study (due to ethics), and so internal validity may be comprised (the Hawthorne effect).
+
+
+:::{.example #LimitationsStudyType name="Limitations due to the study type"}
+@giandomenico2022systematic studied retro-fitting houses with energy-saving devices, and found large discrepancies in energy savings for observational studies ($12.2$%) and experimental studies ($6.2$%).
+The authors say that 'this finding reinforces the importance of using study designs with high internal validity to evaluate program savings' (p.\ 692).
+:::
+
+
+## Limitations related to internal validity {#InterpretStudyDesign}
+\index{Limitations!research design (effectiveness)}
+
+Internal validity refers to the extent to which a cause-and-effect relationship can be established in a study, eliminating other possible explanations (Sect.\ \@ref(IntroInternalValidity)); that is, the *effectiveness* of the study in the sample. 
+A discussion of the limitations of internal validity should cover, as appropriate: possible confounding and lurking variables; the impact of the Hawthorne, observer, placebo and carryover effects; the impact of any other design decisions.
+
+If anything is likely to compromise internal validity, the implications on the interpretation of the results should be discussed.
+For example, if the participants were not blinded, this should be clearly stated, and the conclusion should indicate that the individuals in the study may have behaved differently than usual. 
+
+
+
+<!-- ```{r echo=FALSE, StudyProsCons} -->
+<!-- StudyPC <- array( dim = c(3, 6) ) -->
+<!-- colnames(StudyPC) <- c("Study type", -->
+<!--                        "C groups may be initially different", -->
+<!--                        "Individuals may decide C", -->
+<!--                        "Blinding researchers", -->
+<!--                        "Blinding individuals", -->
+<!--                        "Ecologically valid") -->
+
+<!-- StudyPC[1, ] <-  c("Observational", -->
+<!--                    "Yes", -->
+<!--                    "Yes", -->
+<!--                    "Difficulty", -->
+<!--                    "Probably", -->
+<!--                    "Likely") -->
+<!-- StudyPC[2, ] <- c("Quasi-experimental", -->
+<!--                   "Yes", -->
+<!--                   "No", -->
+<!--                   "Possible", -->
+<!--                   "Possible", -->
+<!--                   "Possible") -->
+<!-- StudyPC[3, ] <- c("True experiment", -->
+<!--                   "No", -->
+<!--                   "No", -->
+<!--                   "Possible", -->
+<!--                   "Possible", -->
+<!--                   "Possible") -->
+
+<!-- if( knitr::is_latex_output() ) { -->
+<!--    kable(StudyPC, -->
+<!--         format = "latex", -->
+<!--         longtable = FALSE, -->
+<!--         booktabs = TRUE, -->
+<!--         linesep = c( "\\addlinespace"), # Add a bit of space between all rows.  -->
+<!--         caption = "Study types and research questions", -->
+<!--         align = c("r", "c", "c", "c", "c", "c"))   %>% -->
+<!--    kable_styling(full_width = FALSE, font_size = 10) %>% -->
+<!--    column_spec(column = 1, width = "3cm") %>% -->
+<!--    column_spec(column = 2, width = "2cm") %>% -->
+<!--    column_spec(column = 3, width = "2cm") %>% -->
+<!--    column_spec(column = 4, width = "2cm") %>% -->
+<!--    column_spec(column = 5, width = "2cm") %>% -->
+<!--    column_spec(column = 6, width = "2cm") %>% -->
+<!--    row_spec(0, bold = TRUE) # Columns headings in bold -->
+<!-- } -->
+
+<!-- if( knitr::is_html_output() ) { -->
+
+<!--   out <- kable(StudyPC, -->
+<!--                format = "html", -->
+<!--                align = c("r", "c", "c", "c", "c", "l", "c", "c"), -->
+<!--                longtable = FALSE, -->
+<!--                caption = "Study types and research questions", -->
+<!--                booktabs = TRUE)  -->
+
+<!--   if ( knitr::is_html_output(excludes = "epub")) { -->
+<!--     kable_styling(out,  -->
+<!--                   full_width = FALSE) %>% -->
+<!--     row_spec(row = 0,  -->
+<!--              bold = TRUE)   -->
+<!--   } else { -->
+<!--     out   -->
+<!--   } -->
+<!-- } -->
+
+<!-- ``` -->
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Pics/iconmonstr-door-7-240.png" width="50px"/>
+</div>
+
+
+::: {.example #LimitationsSeeds name="Study limitations"}
+@axmann2020access randomly allocated Ugandan farmers to receive, or not receive, hybrid maize seeds.
+One potential threat to internal validity was that farmers receiving the hybrid seeds could share seeds with their neighbours.
+
+Hence, the researchers contacted the $75$\ farmers allocated to receive the hybrid seeds; none of the contacted farmers reported selling or giving seeds to other farmers. 
+This extra step increased the internal validity of the study.
+:::
+
+
+Maximising internal validity in *observational studies* is more difficult than in experimental studies (since random allocation is not possible).
+However, the internal validity of *experimental studies* involving people is often compromised because people must be informed that they are participating in a study.
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-ketut-subiyanto-4308195.jpg" width="200px"/>
+</div>
+
+
+::: {.example #InternalHandHygiene name="Internal validity"}
+In a study of the hand-hygiene practices of paramedics [@barr2017self], *self*-reported hand-hygiene practices were very different from what was reported by *peers*.
+That is, how people self-report their behaviours may not align with how they actually behave, which influenced the internal validity of the study.
+:::
+
+
+::: {.exampleExtra  data-latex=""}
+A study evaluated using a new therapy on elderly men, and listed some limitations of their study:
+
+> ... the researcher was not blinded and had prior knowledge of the research aims, disease status, and intervention. 
+> As such, these could all have influenced data recording [...]
+> The potential of reporting bias and observer bias could be reduced by implementing blinding in future studies.
+>
+> --- @kabata2021effect, p.\ 10
+:::
+
+
+
+
+## Limitations related to external validity {#InterpretGeneralisability}
+\index{Limitations!external validity (generalisability)}
+
+External validity refers to the ability to *generalise* the findings made from the sample to the entire *intended* population (Sect.\ \@ref(IntroExternalValidity)).
+For a study to be externally valid, it must first be internally valid: that is, if the study is not effective in the sample studied (i.e., internally valid), the results may not apply to the intended population either.
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Pics/iconmonstr-share-11-240.png" width="50px"/>
+</div>
+
+
+
+::: {.importantBox .important data-latex="{iconmonstr-warning-8-240.png}"}
+External validity refers to how well the sample is likely to represent the *intended population* in the RQ.
+
+If the population is Californians, then the study is externally valid if the sample is representative of Californians.
+The results *do not* have to apply to people in the rest of the United States to be externally valid (though this can be commented on too).
+The intended population is *Californians*.
+:::
+
+
+External validity depends on *how* the sample was obtained.
+Results from random samples\index{Sampling!random} (Sect.\ \@ref(RandomSamplingMethods)) are likely to generalise to the population and be externally valid.
+(The analyses in this book assume all samples are *simple random samples*.)
+Furthermore, results from approximately representative samples\index{Sampling!representative} (Sect.\ \@ref(Representative-samples)) *may* generalise to the population and be externally valid if those *in* the study are not obviously different from those *not in* the study.
+
+
+Any inclusion criteria,\index{Inclusion criteria} exclusion criteria\index{Inclusion criteria} or control variables\index{Variables!control} may also limit the external validity of the study.
+
+
+::: {.example #ExternalNZ name="External validity"}
+@data:Gammon2012:B12 identified (for well-documented reasons) a *population* of interest: 'women of South Asian origin living in New Zealand' (p.\ 21).
+The women in the *sample* were 'women of South Asian origin [...] recruited using a convenience sample method throughout Auckland' (p.\ 21).
+
+The results may not generalise to the *intended* population (*all* women of South Asian origin living in New Zealand) because all the women in the sample came from Auckland, and the sample was not a *random* sample from this population anyway.
+The study was still useful however, since we have still learnt information about the population that is represented by the sample, which may be *similar* to the intended population.
+:::
+
+
+::: {.example #ExternalBiochar name="Using biochar"}
+@farrar2018short studied growing ginger using biochar on one farm at Mt\ Mellum, Australia.
+The results may only generalise to growing ginger at Mt\ Mellum,  but since ginger is usually grown in similar types of climates and soils, the results *may* apply to other ginger farms also.
+:::
+
+
+\clearpage <!-- Seems necessary to make sure the running head is correct. Go figure. -->
+## Limitations related to ecological validity {#InterpretApplicability}
+\index{Limitations!ecological (practicality)}
+
+
+The likely *practicality* of the study results in the real world should also be discussed.
+This is called *ecological validity*.
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Pics/iconmonstr-recycling-9-240.png" width="50px"/>
+</div>
+
+
+::: {.definition #EcologicalValidity name="Ecological validity"}
+A study is *ecologically valid* if the study methods, materials and context closely approximate the real situation of interest.
+:::
+
+
+Studies don't *need* to be ecologically valid to be useful; much can be learnt under special conditions, as long as the potential limitations are understood when applying the results to the real world.
+The ecological validity of experimental studies may be compromised because the experimental conditions are sometimes highly controlled (for good reason).
+
+
+<div style="float:right; width: 222x; border: 1px; padding:10px">
+<img src="Illustrations/pexels-nappy-936019.jpg" width="200px"/>
+</div>
+
+
+::: {.example #EcologicalCups name="Ecological validity"}
+Consider a study to determine the proportion of people that buy coffee in a reusable cup.
+People could be *asked* about their behaviour.
+This study may not be ecologically valid, as what people *do* may not align with what they *say* they will do (i.e., subjective data).\index{Data!subjective}
+
+An alternative study could *watch* people buy coffee at various coffee shops, and record what people *do* in practice. (i.e., objective data).\index{Data!objective}
+This second study is more likely to be *ecologically valid*, as real-world behaviour is observed.
+:::
+
+
+:::{.exampleExtra data-latex=""}
+A study observed the effect of using high-mounted rear brake lights [@data:Kahgane1998:RearBrakeLights], which are now commonplace.
+The American study showed that such lights reduced rear-end collisions by about\ $50$%.
+However, after making these lights mandatory, rear-end collisions reduced by only\ $5$%. 
+Why?
+:::
+
+## Chapter summary {#Chap9-Summary}
+
+The limitations in a study need to be identified, and may be related to:
+
+* *internal validity* (effectiveness); how well the study is conducted within the sample, isolating the relationship of interest.
+* *external validity* (generalisability); how well the sample results are likely to apply to the intended population.
+* *ecological validity* (practicality); how well the results may apply to the real-world situation of interest.
+
+
+## Quick review questions {#Chap9-QuickReview}
+
+::: {.webex-check .webex-box}
+Are the following statements *true* or *false*?
+
+1. When interpreting the results of a study, the steps taken to maximise internal validity should be evaluated. \tightlist
+<select class='webex-select'><option value='blank'></option><option value='answer'>TRUE</option><option value=''>FALSE</option></select>
+2. If studies are not externally valid, then they are not useful. 
+<select class='webex-select'><option value='blank'></option><option value=''>TRUE</option><option value='answer'>FALSE</option></select>
+3. When interpreting the results of a study, the steps taken to maximise external validity do not need to be evaluated.
+<select class='webex-select'><option value='blank'></option><option value=''>TRUE</option><option value='answer'>FALSE</option></select>
+4. When interpreting the results of a study, ecological validity is about the impact of the study on the environment.
+<select class='webex-select'><option value='blank'></option><option value=''>TRUE</option><option value='answer'>FALSE</option></select>
+:::
+
+
+
+
+## Exercises {#InterpretationExercises}
+
+[Answers to odd-numbered exercises] are given at the end of the book. 
+
+
+
+::: {.exercise #ValidityLighting}
+@gentile2022improving examined how people can save energy through lighting choices.
+The study states (p.\ 9) that the results 'are limited to the [sample] and cannot be easily projected to other similar settings'.
+
+What type of validity is being discussed here?
+:::
+
+
+::: {.exercise #InterpretationExerciseValidities}
+Fill the blanks with the correct word: *internal*, *external* or *ecological*.
+
+When interpreting the results of studies, we consider the practicality (<select class='webex-select'><option value='blank'></option><option value=''>internal</option><option value=''>external</option><option value='answer'>ecological</option></select> validity),
+the generalisability 
+(<select class='webex-select'><option value='blank'></option><option value=''>internal</option><option value='answer'>external</option><option value=''>ecological</option></select> validity)
+and the effectiveness (<select class='webex-select'><option value='blank'></option><option value='answer'>internal</option><option value=''>external</option><option value=''>ecological</option></select> validity).
+:::
+
+
+::: {.exercise #InterpretationExerciseExternalValidity}
+A student project asked if 'the average word retention is higher in male students than female students at UniX'.
+When discussing *external validity*, the students stated:
+
+> We cannot say whether or not the general public have better or worse word retention compared to the students that we will be studying. 
+
+Why is the statement *not relevant* in a discussion of external validity?
+:::
+<!-- 2019 SEM2: Kai M.; Will C.; Riley A. -->
+
+
+::: {.exercise #InterpretationExerciseParachutes}
+@data:Yeh2018:Parachutes conducted an experimental study to 'determine if using a parachute prevents death or major traumatic injury when jumping from an aircraft'.
+
+The researchers randomised $23$\ volunteers into one of two groups: wearing a parachute, or wearing an empty backpack.
+The response variable was a measurement of death or major traumatic injury upon landing.
+From the study, death or major injury was the same in both groups ($0$% for each group).
+However, the study used 'small stationary aircraft on the ground, suggesting cautious extrapolation to high altitude jumps' (p.\ 1).
+
+Discuss the internal, external and ecological validity based on this information.
+:::
+
+
+::: {.exercise #InterpretationSleep}
+@delaney2018they examined how well hospital patients sleep at night.
+The researchers state that 'convenience sampling was used to recruit patients' (p.\ 2).
+Later, the researchers state that (p.\ 7):
+
+> ... patients requiring hospitalization will likely require some daytime nap periods. 
+> This study looks at sleep only in the night-time period $22$:$00$--$07$:$00$h, without the context of daytime sleep considered.
+
+Discuss the internal, external and ecological validity based on this information.
+:::
+
+
+
+::: {.exercise #LimitationsShopping}
+@botelho2019effect examined the food choices made when subjects were asked to shop for ingredients to make a last-minute meal.
+Half were told to prepare a 'healthy meal', and the other half told just to prepare a 'meal'.
+The authors emphasise that the purchases were 'simulated' (p.\ 436):
+
+> As participants did not have to pay for their selection, actual choices could be different.
+> Participants may also have not behaved in their usual manner since they were taking part in a research study...
+
+Discuss the internal, external and ecological validity based on this information.
+:::
+
+
+
+
+:::{.exercise #InterpretationCoughDrops}
+@johnson2018menthol studied the use of over-the-counter menthol cough-drops in people with a cough.
+One conclusion from the *observational* study of $548$ people was that, taking 'too many cough drops [...] may actually make coughs more severe',
+[as one author explained](https://www.fammed.wisc.edu/wren-study-excessive-use-menthol-cough-drops-actually-increase-coughs/).
+Critique this statement.
+:::
+
+
+:::{.exercise #StatementsWithErrors}
+Suppose a group of students was studying this RQ: 
+
+> Among Australians, is the average serum cholesterol concentration different for smokers and non-smokers?
+
+The students gave the following information about their study. 
+Explain *why* each of these statements is incorrect.
+
+1. The design is observational, as we cannot manipulate each person's serum cholesterol.
+2. The outcome is 'the average serum cholesterol concentration for smokers and non-smokers'.
+3. The study is not externally valid, as the results may not apply to all people in the world.
+4. The response variable is serum cholesterol.
+5. In this experiment, the population is 'Australians'.
+6. The data file will have two columns: one for smokers, and one for non-smokers.
+7. 'Whether the person owns a cat' is likely to be a confounding variable.
+8. The observer effect is not relevant, as the participants will know they are involved in a study.
+:::
+
+
+::: {.exercise #ValidityBeer}
+@delarue2019taking discuss studies where subjects rate the taste of new food products.
+They note that taste-testing studies should be externally and internally valid (p.\ 78):
+However, even with good internal and external validity, these studies often result in a 'high rate of failures of new launched products'.
+
+Discuss the internal, external and ecological validity based on this information.
+:::
+
+
+
+
+
+
+
+
+<!-- QUICK REVIEW ANSWERS -->
+<!--
+::: {.EOCanswerBox .EOCanswer data-latex="{iconmonstr-check-mark-14-240.png}"}
+**Answers to *Quick review* questions:**
+**1.** True.
+**2.** False.
+**3.** False.
+**4.** False.
+:::
+-->
+
+
+
