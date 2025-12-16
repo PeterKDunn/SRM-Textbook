@@ -7,7 +7,7 @@
 Most datasets used in this book are available in the **R**\ package **SRMData**, available free from [`CRAN`](https://CRAN.R-project.org/package=SRMData). The data files (comma-separated; csv files) can be downloaded from the list below by clicking on the data file name.
 
 <!--
-Most datasets used in this book are available in the **R**\ package **SRMData**, available free from [`CRAN`.](https://CRAN.R-project.org) Most datasets used in this book can also be downloaded from the online version of this book (`https://bookdown.org/pkaldunn/SRM-Textbook/`). 
+Most datasets used in this book are available in the **R**\ package **SRMData**, available free from [`CRAN`.](https://CRAN.R-project.org) Most datasets used in this book can also be downloaded from the online version of this book (`https://peterkdunn.github.io/SRM-Textbook/`). 
 -->
 In the list below (alphabetical within chapters), all datasets are from the **SRMData** package except when noted (in parentheses).
 Other packages listed are also available from `CRAN`.

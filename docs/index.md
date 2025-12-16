@@ -2,7 +2,7 @@
 title: "Scientific Research and Methodology"
 subtitle: "An introduction to quantitative research and statistics"
 author: "Peter K. Dunn"
-date: '2025-12-09 17:02:02.894409'
+date: '2025-12-12 16:49:18.267113'
 knit: render_book
 documentclass: krantz
 classoption: krantz2
@@ -193,7 +193,7 @@ Try it now:
 1. Is $2 + 2 = 4$?
 <select class='webex-select'><option value='blank'></option><option value='answer'>TRUE</option><option value=''>FALSE</option></select>
 1. Which one of these is FALSE?
-<div class='webex-radiogroup' id='radio_BQXNUEJXLD'><label><input type="radio" autocomplete="off" name="radio_BQXNUEJXLD" value=""></input> <span>The inventor of the fairy floss machine was a dentist</span></label><label><input type="radio" autocomplete="off" name="radio_BQXNUEJXLD" value=""></input> <span>Barack Obama has won two Grammy awards</span></label><label><input type="radio" autocomplete="off" name="radio_BQXNUEJXLD" value="answer"></input> <span>Once a year all of Wikipedia is printed, and placed in a vault in Norway.</span></label></div>
+<div class='webex-radiogroup' id='radio_GKWYRSLBUA'><label><input type="radio" autocomplete="off" name="radio_GKWYRSLBUA" value=""></input> <span>The inventor of the fairy floss machine was a dentist</span></label><label><input type="radio" autocomplete="off" name="radio_GKWYRSLBUA" value=""></input> <span>Barack Obama has won two Grammy awards</span></label><label><input type="radio" autocomplete="off" name="radio_GKWYRSLBUA" value="answer"></input> <span>Once a year all of Wikipedia is printed, and placed in a vault in Norway.</span></label></div>
 
 :::
 
@@ -216,7 +216,7 @@ In this book, you will learn to:
 ## How to cite this book {.unlisted .unnumbered}
 
 Peter K. Dunn (2024). *Scientific Research and Methodology: An introduction to quantitative research in science and health*.
-https://bookdown.org/pkaldunn/SRM-Textbook
+https://peterkdunn.github.io/SRM-Textbook/
 
 
 The online version of this book is licensed under the

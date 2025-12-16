@@ -1087,7 +1087,7 @@ Software output is shown in Fig.\ \@ref(fig:BurrosChisqjamoviPlot) (right panel)
   <tr>
    <th style="text-align:left;">   </th>
    <th style="text-align:center;"> Odds </th>
-   <th style="text-align:center;"> OR </th>
+   <th style="text-align:center;"> Odds ratio </th>
    <th style="text-align:center;"> Percentage </th>
    <th style="text-align:center;"> $n$ </th>
   </tr>
