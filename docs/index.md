@@ -2,7 +2,7 @@
 title: "Scientific Research and Methodology"
 subtitle: "An introduction to quantitative research and statistics"
 author: "Peter K. Dunn"
-date: '2026-07-23 15:12:51.474046'
+date: '2026-08-19 09:27:44.561043'
 knit: render_book
 documentclass: krantz
 classoption: krantz2
@@ -81,7 +81,7 @@ biblio-bst: plain.bst
 
 # Preface  {.unlisted .unnumbered}
 
-<img src="OtherImages/CRC-cover.jpg" style="display: block; margin: auto;" />
+<img src="OtherImages/CRC-cover.jpg" alt="" style="display: block; margin: auto;" />
 
 
 This book introduces quantitative research in the scientific and health disciplines, with an emphasis on introductory statistics.
@@ -169,7 +169,7 @@ On wider screens:
 
 * Words can be searched for using **Search** button on the menu:
   
-<img src="bs4-Search.png" width="233" />
+<img src="bs4-Search.png" alt="" width="233" />
 
 
 
@@ -193,7 +193,7 @@ Try it now:
 1. Is $2 + 2 = 4$?
 <select class='webex-select'><option value='blank'></option><option value='answer'>TRUE</option><option value=''>FALSE</option></select>
 1. Which one of these is FALSE?
-<div class='webex-radiogroup' id='radio_IJATFQPALY'><label><input type="radio" autocomplete="off" name="radio_IJATFQPALY" value=""></input> <span>The inventor of the fairy floss machine was a dentist</span></label><label><input type="radio" autocomplete="off" name="radio_IJATFQPALY" value=""></input> <span>Barack Obama has won two Grammy awards</span></label><label><input type="radio" autocomplete="off" name="radio_IJATFQPALY" value="answer"></input> <span>Once a year all of Wikipedia is printed, and placed in a vault in Norway.</span></label></div>
+<div class='webex-radiogroup' id='radio_BUQCYICFYP'><label><input type="radio" autocomplete="off" name="radio_BUQCYICFYP" value=""></input> <span>The inventor of the fairy floss machine was a dentist</span></label><label><input type="radio" autocomplete="off" name="radio_BUQCYICFYP" value=""></input> <span>Barack Obama has won two Grammy awards</span></label><label><input type="radio" autocomplete="off" name="radio_BUQCYICFYP" value="answer"></input> <span>Once a year all of Wikipedia is printed, and placed in a vault in Norway.</span></label></div>
 
 :::
 
