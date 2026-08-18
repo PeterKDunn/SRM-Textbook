@@ -302,13 +302,11 @@ padForNegative <- function(mat, whichNegative, verbose, poorMansNegative = FALSE
   } else {
     modifiedMat <- ifelse(whichNegative, 
                            paste0(leadingSpaces, 
-                                  "\\llap{$-{}$}", 
+                                  "\\llap{{-{}}}",   # We tried \\llap{\\ensuremath{-{}}}, but that did not work. Hoping this does
                                   noSpaceText),  # If TRUE, insert negative with leading spaces
                            mat)                    # If FALSE, keep the original
   }
-  if (verbose) cat("has_negative is:\n")
 
-  
   return(modifiedMat)
 }
 
